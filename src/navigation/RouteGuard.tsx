@@ -8,7 +8,8 @@ type Gate =
   | "contact"
   | "profile"
   | "preview"
-  | "consent";
+  | "consent"
+  | "docusign";
 
 export default function RouteGuard({
   require,
@@ -23,6 +24,7 @@ export default function RouteGuard({
   const hasCoverage = Array.isArray(data.coverage) && data.coverage.length > 0;
   const hasContact = !!data.contact;
   const hasProfile = !!data.profile;
+  const hasConsent = !!data.consent;
 
   // Until Preview/Consent pages are implemented, treat them as requiring the prior step
   const ok =
@@ -32,6 +34,7 @@ export default function RouteGuard({
     require === "profile"     ? hasContact :
     require === "preview"     ? hasProfile :
     require === "consent"     ? hasProfile :
+    require === "docusign"    ? hasConsent :
     false;
 
   if (!ok) {
@@ -40,6 +43,7 @@ export default function RouteGuard({
     if (!hasCoverage)    return <Navigate to="/coverage" replace />;
     if (!hasContact)     return <Navigate to="/contact" replace />;
     if (!hasProfile)     return <Navigate to="/profile" replace />;
+    if (!hasConsent)     return <Navigate to="/consent" replace />;
     return <Navigate to="/preview" replace />;
   }
 

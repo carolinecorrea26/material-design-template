@@ -23,7 +23,7 @@ export default function DevTools() {
   };
 
   // Only show Fill Out Page button on form pages
-  const isFormPage = ['/eligibility', '/coverage', '/contact', '/profile', '/payment'].includes(location.pathname);
+  const isFormPage = ['/membership', '/eligibility', '/coverage', '/contact', '/profile', '/payment', '/health-history'].includes(location.pathname);
 
   return (
     <>

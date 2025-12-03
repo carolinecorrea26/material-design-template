@@ -10,7 +10,14 @@ export default function RHFCheckbox({ name, label }: { name: string; label: stri
       control={control}
       render={({ field }) => (
         <FormControlLabel
-          control={<Checkbox checked={!!field.value} onChange={(_, v) => field.onChange(v)} />}
+          control={
+            <Checkbox 
+              checked={!!field.value} 
+              onChange={(_, v) => field.onChange(v)}
+              onBlur={field.onBlur}
+              name={field.name}
+            />
+          }
           label={label}
         />
       )}

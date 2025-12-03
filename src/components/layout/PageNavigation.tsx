@@ -33,7 +33,7 @@ interface PageNavigationProps {
 export default function PageNavigation({ 
   showBack = true, 
   showContinue = true,
-  continueText = "Continue",
+  continueText = "Next",
   onContinue,
   backPath
 }: PageNavigationProps) {

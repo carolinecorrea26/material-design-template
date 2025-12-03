@@ -85,11 +85,17 @@ export function ParityBreadcrumb({
 
     // Desktop: Show horizontal stepper
     return (
-      <Box sx={{ width: '100%' }}>
+      <Box sx={{ width: '100%', mx: 0 }}>
         <Stepper 
           activeStep={currentIndex} 
           alternativeLabel
           nonLinear
+          sx={{ 
+            width: '100%',
+            '& .MuiStepIcon-root.Mui-completed': {
+              color: 'success.main',
+            }
+          }}
         >
           {items.map((it, idx) => (
             <Step key={it.label} completed={idx < currentIndex}>

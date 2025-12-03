@@ -32,10 +32,10 @@ export default function Header() {
 
   // Category display names mapping
   const categoryNames: Record<CoverageCategory, string> = {
-    LI: "Life Insurance",
-    DI: "Disability Insurance",
-    OO: "Business Overhead Expense Information",
-    SH: "Supplemental Health Insurance"
+    LI: "Group Life Insurance",
+    DI: "Group Disability Insurance",
+    OO: "Group Office Overhead Expense Insurance",
+    SH: "Group Supplemental Health Insurance"
   };
 
   // Fetch products on mount
@@ -71,8 +71,12 @@ export default function Header() {
 
   return (
     <AppBar 
-      position="static" 
+      position="fixed" 
       elevation={0}
+      sx={{
+        top: 48, // Height of the "Need Help" banner
+        zIndex: 1100
+      }}
     >
       <Toolbar sx={{ maxWidth: 1200, width: '100%', mx: 'auto' }}>
         {/* Client logo(s) with home link */}

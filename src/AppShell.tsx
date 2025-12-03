@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Box, Container, Alert, Link } from "@mui/material";
+import { useLocation } from "react-router-dom";
 import { Phone as PhoneIcon, CalendarMonth as CalendarIcon } from "@mui/icons-material";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
@@ -14,6 +15,7 @@ import { commonStyles } from "./theme/commonStyles";
 type AppShellProps = { children: React.ReactNode };
 
 export function AppShell({ children }: AppShellProps) {
+  const location = useLocation();
   const [showPrivacyNotice, setShowPrivacyNotice] = React.useState(false);
   const [showScheduleCall, setShowScheduleCall] = React.useState(false);
   const [showCookieBanner, setShowCookieBanner] = React.useState(() => {
@@ -32,10 +34,11 @@ export function AppShell({ children }: AppShellProps) {
     <Box
       sx={{ 
         minHeight: "100vh", 
-        bgcolor: "background.default", 
+        bgcolor: location.pathname === '/' || location.pathname === '/landing' ? "white" : "#f4f5f8", 
+        background: location.pathname === '/' || location.pathname === '/landing' ? "white" : "linear-gradient(to right, #e4edff 0, #eff3faff 40%, #eff3faff 100%)",
         display: "flex", 
         flexDirection: "column",
-        pt: "48px", // height of the top banner
+        pt: "112px", // height of the top banner (48px) + header (64px)
         pb: showCookieBanner ? "80px" : 0 // padding only for cookie banner (fixed)
       }}
     >
@@ -103,13 +106,13 @@ export function AppShell({ children }: AppShellProps) {
         )}
       </Alert>
       <Header />
-      <Container sx={{ flex: 1 }}>
+      <Container sx={{ flex: 1, maxWidth: '750px !important' }}>
         {children}
       </Container>
       <Footer />
       
-      {/* Developer Tools - Only shown in development mode, part of page flow */}
-      {import.meta.env.DEV && <DevTools />}
+      {/* Developer Tools - Available in all builds for prototype testing */}
+      <DevTools />
       
       <PageLoader open={isLoadingPage} />
       {showCookieBanner && (

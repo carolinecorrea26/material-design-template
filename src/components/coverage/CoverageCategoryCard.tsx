@@ -39,13 +39,7 @@ export default function CoverageCategoryCard({
     >
       <CardContent>
         <Stack spacing={2}>
-          <Box sx={commonStyles.coverageCategoryHeader}>
-            <CoverageIcon 
-              category={category} 
-              fontSize="large" 
-              color="primary.main"
-              sx={commonStyles.coverageCategoryIcon}
-            />
+          <Box>
             <Typography variant="h5" sx={{ fontWeight: 600 }}>
               {getCoverageLabel(category)}
             </Typography>
@@ -53,6 +47,9 @@ export default function CoverageCategoryCard({
           <Typography color="text.secondary">
             {description}
           </Typography>
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              Coverage Details:
+            </Typography>
           <Stack spacing={1} sx={{ pt: 1 }}>
             {products.map((product, index) => (
               <Box

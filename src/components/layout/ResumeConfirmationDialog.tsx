@@ -33,7 +33,7 @@ export default function ResumeConfirmationDialog({
         }}
       >
         <Typography variant="h6" component="div">
-          Resume Application?
+          Resume Application
         </Typography>
         <IconButton
           edge="end"

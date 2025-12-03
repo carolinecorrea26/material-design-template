@@ -1,17 +1,19 @@
 import * as React from "react";
 import {
   Card, CardContent, Stack, Typography, Select, MenuItem, FormControl, InputLabel,
-  Button, Box, Container, Dialog, DialogTitle, DialogContent,
-  DialogContentText, DialogActions, Link, Alert, Checkbox, FormControlLabel, Chip
+  Button, Box, Alert, Checkbox, FormControlLabel, Divider, Tooltip, Chip,
+  Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
 } from "@mui/material";
-import { FlashOn as QuickDecisionIcon, Person, People, ChildFriendly } from "@mui/icons-material";
+import { Person, People, ChildFriendly, InfoOutlined } from "@mui/icons-material";
 import PageHeader from "../components/layout/PageHeader";
 import PageNavigation from "../components/layout/PageNavigation";
 import { useAppData } from "../state/AppDataContext";
+import { useStepper } from "../state/StepperContext";
 import { useNavigate } from "react-router-dom";
 import { getProducts, quoteRate } from "../api/client";
+import { getClientConfig } from "../config/clients";
 import type { Applicant, Product, SelectedItem, CoverageCategory } from "../types/app";
-import CoverageIcon, { getCoverageLabel } from "../utils/coverageIcons";
+import { getCoverageLabel } from "../utils/coverageIcons";
 import { commonStyles } from "../theme/commonStyles";
 // import { useSnackbar } from "../components/feedback/SnackbarProvider";
 
@@ -21,7 +23,10 @@ type SelKey = `${string}:${Applicant}`; // productId:applicant
 
 export default function Coverage() {
   const { data, setCoverage } = useAppData();
+  const { next, markComplete } = useStepper();
   const navigate = useNavigate();
+  const clientConfig = getClientConfig();
+  const isAMA = clientConfig.id === 'ama';
 
   // const { notify } = useSnackbar();
 
@@ -55,7 +60,9 @@ export default function Coverage() {
   const [amountByKey, setAmountByKey] = React.useState<Record<SelKey, number | "">>({});
   const [rateByKey, setRateByKey] = React.useState<Record<SelKey, number>>({});
   const [selectedByKey, setSelectedByKey] = React.useState<Record<SelKey, boolean>>({});
-  const [showQuickDecisionModal, setShowQuickDecisionModal] = React.useState(false);
+  const [optionalBenefitsByKey, setOptionalBenefitsByKey] = React.useState<Record<SelKey, Record<string, boolean>>>({});
+  const [surgicalOptionAmountByKey, setSurgicalOptionAmountByKey] = React.useState<Record<SelKey, number | "">>({});
+  const [showLearnMoreModal, setShowLearnMoreModal] = React.useState(false);
   // const [expandedCategories, setExpandedCategories] = React.useState<Set<string>>(new Set());
   const [submitAttempted, setSubmitAttempted] = React.useState(false);
 
@@ -102,35 +109,14 @@ export default function Coverage() {
   // Expand the first category by default when products are loaded
   React.useEffect(() => {
     if (products.length > 0) {
-      // Group products by category to find the first category
-      const productsByCategory = products.reduce((acc, p) => {
-        if (!acc[p.category]) acc[p.category] = [];
-        acc[p.category].push(p);
-        return acc;
-      }, {} as Record<string, Product[]>);
-
-      // Get the first category that has visible products
-      const firstCategory = Object.keys(productsByCategory).find(category => {
-        const categoryProducts = productsByCategory[category];
-        return categoryProducts.some(p => {
-          const allowedApplicants = chosenApplicants.filter(a => {
-            if (!p.eligibleApplicants.includes(a)) return false;
-            if (a === "self" && selfCats.size && !selfCats.has(p.category)) return false;
-            if (a === "spouse" && spouseCats.size && !spouseCats.has(p.category)) return false;
-            return true;
-          });
-          return allowedApplicants.length > 0;
-        });
-      });
-
-      // if (firstCategory) {
-      //   setExpandedCategories(new Set([firstCategory]));
-      // }
-
       // Initialize amounts to lowest available for all eligible products
       const initialAmounts: Record<SelKey, number> = {};
       const initialSelections: Record<SelKey, boolean> = {};
+      const initialRiders: Record<SelKey, Record<string, boolean>> = {};
 
+      // Check if we have saved coverage data to restore
+      const savedCoverage = data.coverage;
+      
       products.forEach(p => {
         chosenApplicants.forEach(app => {
           if (!p.eligibleApplicants.includes(app)) return;
@@ -138,18 +124,35 @@ export default function Coverage() {
           if (app === "spouse" && spouseCats.size && !spouseCats.has(p.category)) return;
 
           const key: SelKey = `${p.id}:${app}`;
-          if (p.amounts.length > 0) {
+          
+          // Check if this product/applicant combination was previously saved
+          const savedItem = savedCoverage?.find(
+            item => item.productId === p.id && item.applicant === app
+          );
+          
+          if (savedItem) {
+            // Restore saved data
+            initialAmounts[key] = savedItem.amount;
+            initialSelections[key] = true;
+            if (savedItem.riders) {
+              initialRiders[key] = savedItem.riders as Record<string, boolean>;
+            }
+          } else if (p.amounts.length > 0) {
+            // Set default lowest amount for products that weren't selected
             const lowestAmount = Math.min(...p.amounts);
             initialAmounts[key] = lowestAmount;
-            initialSelections[key] = false; // Don't auto-select, just set amounts
+            initialSelections[key] = false;
           }
         });
       });
 
       setAmountByKey(initialAmounts);
       setSelectedByKey(initialSelections);
+      if (Object.keys(initialRiders).length > 0) {
+        setOptionalBenefitsByKey(initialRiders);
+      }
     }
-  }, [products, chosenApplicants, selfCats, spouseCats, elig]);
+  }, [products, chosenApplicants, selfCats, spouseCats, elig, data.coverage]);
 
   // Get initial quotes for all initialized amounts
   React.useEffect(() => {
@@ -180,6 +183,53 @@ export default function Coverage() {
       });
     }
   }, [amountByKey, products, elig]);
+
+  // Auto-save coverage selections when they change
+  const autoSaveTimeoutRef = React.useRef<NodeJS.Timeout>();
+  React.useEffect(() => {
+    // Only save if we have products loaded and some selections
+    if (products.length === 0) return;
+    
+    // Debounce auto-save to prevent infinite loops
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current);
+    }
+    
+    autoSaveTimeoutRef.current = setTimeout(() => {
+      const selections: SelectedItem[] = [];
+      for (const [key, isSelected] of Object.entries(selectedByKey)) {
+        if (!isSelected) continue;
+        const amt = amountByKey[key as SelKey];
+        if (amt === "") continue;
+        const rate = rateByKey[key as SelKey];
+        if (typeof rate !== "number") continue;
+        const [productId, applicant] = key.split(":") as [string, Applicant];
+        
+        // Get riders for this product/applicant combination
+        const riders = optionalBenefitsByKey[key as SelKey];
+        
+        selections.push({
+          productId,
+          applicant,
+          amount: Number(amt),
+          estMonthly: rate,
+          riders: riders || {}
+        });
+      }
+      
+      // Save to context (this will trigger sessionStorage save)
+      if (selections.length > 0) {
+        setCoverage(selections);
+      }
+    }, 300); // 300ms debounce
+    
+    return () => {
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedByKey, amountByKey, rateByKey, optionalBenefitsByKey, products]);
 
   // DevTools: Fill form with test coverage selections
   React.useEffect(() => {
@@ -281,16 +331,23 @@ export default function Coverage() {
       const rate = rateByKey[key as SelKey];
       if (typeof rate !== "number") continue;
       const [productId, applicant] = key.split(":") as [string, Applicant];
+      
+      // Get riders for this product/applicant combination
+      const riders = optionalBenefitsByKey[key as SelKey];
+      
       selections.push({
         productId,
         applicant,
         amount: Number(amt),
-        estMonthly: rate
+        estMonthly: rate,
+        riders: riders || {}
       });
     }
     // save locally for later pages
     setCoverage(selections);
     // notify("Coverage selection saved.", "success");
+    markComplete();
+    next();
     navigate("/contact");
   };
 
@@ -345,27 +402,6 @@ export default function Coverage() {
           You must make a coverage selection. Please check at least one product below.
         </Alert>
       )}
-
-      <Alert 
-        severity="success"
-        icon={<QuickDecisionIcon />}
-        sx={{
-          ...commonStyles.successAlert,
-          '& .MuiAlert-icon': { color: 'success.main' }
-        }}
-      >
-        <Typography variant="body2">
-          <strong>QuickDecision<sup>SM</sup></strong> allows you to get a faster decision on your application with typically no medical exam using medical underwriting automated processing. Eligibility factors include coverage amount, age, and state availability. If QuickDecision is not available, you may apply on a standard underwritten basis.{' '}
-          <Link 
-            component="button" 
-            variant="body2" 
-            onClick={() => setShowQuickDecisionModal(true)}
-            sx={{ ...commonStyles.primaryLink, verticalAlign: 'baseline' }}
-          >
-            Learn More
-          </Link>
-        </Typography>
-      </Alert>
 
       {/* Coverage Options */}
       {(() => {
@@ -429,19 +465,15 @@ export default function Coverage() {
                 <Stack spacing={2}>
                   {/* Category Header */}
                   <Box sx={commonStyles.coverageCategoryHeader}>
-                    <CoverageIcon 
-                      category={category as CoverageCategory} 
-                      fontSize="large" 
-                      color="primary.main"
-                      sx={commonStyles.coverageCategoryIcon}
-                    />
                     <Typography variant="h4">
                       {getCoverageLabel(category as CoverageCategory)}
                     </Typography>
                   </Box>
 
+                  <Divider sx={{ my: 2 }} />
+
                   {/* Products */}
-                  <Stack spacing={3}>
+                  <Stack spacing={3} divider={<Divider />}>
                       {/* Group by product, then show all eligible applicants */}
                       {visibleProducts.map((p) => {
                         const allowedApplicants = chosenApplicants.filter(a => {
@@ -463,18 +495,159 @@ export default function Coverage() {
                         return (
                           <Box key={p.id}>
                             {/* Product Section Header */}
-                            <Stack direction="row" spacing={1} alignItems="center" justifyContent="center" sx={{ mb: 2 }}>
-                              <Typography variant="h5">
+                            <Box 
+                              sx={{ 
+                                mb: 2, 
+                                bgcolor: 'primary.main', 
+                                color: 'white',
+                                p: 1.5,
+                                borderRadius: 1
+                              }}
+                            >
+                              <Typography variant="h5" sx={{ color: 'white' }}>
                                 {p.name}
                               </Typography>
-                              {p.quickDecision && (
-                                <Chip
-                                  icon={<QuickDecisionIcon sx={{ color: 'success.main' }} />}
-                                  size="small"
-                                  sx={commonStyles.iconOnlyChip}
-                                />
-                              )}
-                            </Stack>
+                            </Box>
+
+                            {/* Product Description - Only for Term Life Insurance */}
+                            {p.name === "Term Life Insurance" && (
+                              <Alert severity="info" sx={{ ...commonStyles.infoAlert, mb: 2 }}>
+                                <Typography variant="body2">
+                                  Annual Renewable Group Term Life, designed to provide protection for both you and your family. Optional Chronic Illness Rider (CIR) available.
+                                </Typography>
+                                <Typography variant="body2" sx={{ mt: 1 }}>
+                                  QuickDecision<sup>SM</sup> allows you to get a faster decision on your application with typically no medical exam using medical underwriting automated processing. Eligibility factors include coverage amount, age, and state availability. If QuickDecision is not available, you may apply on a standard underwritten basis.{' '}
+                                  <Button 
+                                    variant="text" 
+                                    size="small" 
+                                    onClick={() => setShowLearnMoreModal(true)}
+                                    sx={{ p: 0, minWidth: 'auto', textTransform: 'none', fontWeight: 'bold' }}
+                                  >
+                                    Learn More
+                                  </Button>
+                                </Typography>
+                              </Alert>
+                            )}
+
+                            {/* Product Description - Only for 10-Year Level Term Life Insurance */}
+                            {p.name === "10 Year Level Term Life Insurance" && (
+                              <Alert severity="info" sx={{ ...commonStyles.infoAlert, mb: 2 }}>
+                                <Typography variant="body2">
+                                  Rates for coverage are expected to remain level but are not guaranteed.
+                                </Typography>
+                                <Typography variant="body2" sx={{ mt: 1 }}>
+                                  QuickDecision<sup>SM</sup> allows you to get a faster decision on your application with typically no medical exam using medical underwriting automated processing. Eligibility factors include coverage amount, age, and state availability. If QuickDecision is not available, you may apply on a standard underwritten basis.{' '}
+                                  <Button 
+                                    variant="text" 
+                                    size="small" 
+                                    onClick={() => setShowLearnMoreModal(true)}
+                                    sx={{ p: 0, minWidth: 'auto', textTransform: 'none', fontWeight: 'bold' }}
+                                  >
+                                    Learn More
+                                  </Button>
+                                </Typography>
+                              </Alert>
+                            )}
+
+                            {/* Product Description - Only for 20-Year Level Term Life Insurance */}
+                            {p.name === "20-Year Level Term Life Insurance" && (
+                              <Alert severity="info" sx={{ ...commonStyles.infoAlert, mb: 2 }}>
+                                <Typography variant="body2">
+                                  Great fit for those in their 30s and 40s! A 20 year term can bring stability to your financial planning.
+                                </Typography>
+                                <Typography variant="body2" sx={{ mt: 1 }}>
+                                  QuickDecision<sup>SM</sup> allows you to get a faster decision on your application with typically no medical exam using medical underwriting automated processing. Eligibility factors include coverage amount, age, and state availability. If QuickDecision is not available, you may apply on a standard underwritten basis.{' '}
+                                  <Button 
+                                    variant="text" 
+                                    size="small" 
+                                    onClick={() => setShowLearnMoreModal(true)}
+                                    sx={{ p: 0, minWidth: 'auto', textTransform: 'none', fontWeight: 'bold' }}
+                                  >
+                                    Learn More
+                                  </Button>
+                                </Typography>
+                              </Alert>
+                            )}
+
+                            {/* Product Description - Only for Accidental Death and Dismemberment Insurance */}
+                            {p.name === "Accidental Death and Dismemberment Insurance" && (
+                              <Alert severity="info" sx={{ ...commonStyles.infoAlert, mb: 2 }}>
+                                <Typography variant="body2">
+                                  Accidents are unpredictable. This guaranteed acceptance coverage can help you safeguard your family finances should an accident occur.
+                                </Typography>
+                              </Alert>
+                            )}
+
+                            {/* Product Description - Only for Long-Term Disability Plus Insurance */}
+                            {p.name === "Long-Term Disability Plus Insurance" && (
+                              <Alert severity="info" sx={{ ...commonStyles.infoAlert, mb: 2 }}>
+                                <Typography variant="body2">
+                                  Benefits are paid directly to you for disabilities due to a covered sickness or injury up to age 65. Various additional features that could be beneficial to you exist with this coverage.
+                                </Typography>
+                                <Typography variant="body2" sx={{ mt: 1 }}>
+                                  QuickDecision<sup>SM</sup> allows you to get a faster decision on your application with typically no medical exam using medical underwriting automated processing. Eligibility factors include coverage amount, age, and state availability. If QuickDecision is not available, you may apply on a standard underwritten basis.{' '}
+                                  <Button 
+                                    variant="text" 
+                                    size="small" 
+                                    onClick={() => setShowLearnMoreModal(true)}
+                                    sx={{ p: 0, minWidth: 'auto', textTransform: 'none', fontWeight: 'bold' }}
+                                  >
+                                    Learn More
+                                  </Button>
+                                </Typography>
+                              </Alert>
+                            )}
+
+                            {/* Product Description - Only for Hospital Income Insurance */}
+                            {(p.name === "Hospital Money Insurance" || p.name === "Hospital Income Insurance") && (
+                              <>
+                                <Alert severity="info" sx={{ ...commonStyles.infoAlert, mb: 2 }}>
+                                  <Typography variant="body2">
+                                    Guaranteed coverage to help offset costs during a hospital stay. Benefits paid directly to you to use where you need the most. Coverage is subject to a pre-existing condition limitation. Please see the brochure for detail.
+                                  </Typography>
+                                  <Typography variant="body2" sx={{ mt: 1, fontWeight: 'bold' }}>
+                                    THIS IS A SUPPLEMENT TO HEALTH INSURANCE AND IS NOT A SUBSTITUTE FOR MAJOR MEDICAL COVERAGE.
+                                  </Typography>
+                                </Alert>
+                                
+                                <Box sx={{ 
+                                  bgcolor: 'white', 
+                                  border: 1, 
+                                  borderColor: 'grey.300', 
+                                  borderRadius: 1, 
+                                  p: 2, 
+                                  mb: 2,
+                                  fontSize: '14pt'
+                                }}>
+                                  <Typography variant="body2" sx={{ fontSize: '14pt', mb: 1, fontWeight: 'bold', textAlign: 'center' }}>
+                                    IMPORTANT: This is a fixed indemnity policy,<br />NOT health insurance
+                                  </Typography>
+                                  <Typography variant="body2" sx={{ fontSize: '14pt', mb: 1 }}>
+                                    This fixed indemnity policy may pay you a limited dollar amount if you're sick or hospitalized. You're still responsible for paying the cost of your care.
+                                  </Typography>
+                                  <Typography component="ul" variant="body2" sx={{ fontSize: '14pt', mb: 1, pl: 3 }}>
+                                    <li>The payment you get isn't based on the size of your medical bill.</li>
+                                    <li>There might be a limit on how much this policy will pay each year.</li>
+                                    <li>This policy isn't a substitute for comprehensive health insurance.</li>
+                                    <li>Since this policy isn't health insurance, it doesn't have to include most Federal consumer protections that apply to health insurance.</li>
+                                  </Typography>
+                                  <Typography variant="body2" sx={{ fontSize: '14pt', mb: 1, fontWeight: 'bold' }}>
+                                    Looking for comprehensive health insurance?
+                                  </Typography>
+                                  <Typography component="ul" variant="body2" sx={{ fontSize: '14pt', mb: 1, pl: 3 }}>
+                                    <li>Visit HealthCare.gov or call 1-800-318-2596 (TTY: 1-855-889-4325) to find health coverage options.</li>
+                                    <li>To find out if you can get health insurance through your job, or a family member's job, contact the employer.</li>
+                                  </Typography>
+                                  <Typography variant="body2" sx={{ fontSize: '14pt', mb: 1, fontWeight: 'bold' }}>
+                                    Questions about this policy?
+                                  </Typography>
+                                  <Typography component="ul" variant="body2" sx={{ fontSize: '14pt', pl: 3 }}>
+                                    <li>For questions or complaints about this policy, contact your State Department of Insurance. Find their number on the National Association of Insurance Commissioners' website (naic.org) under "Insurance Departments."</li>
+                                    <li>If you have this policy through your job, or a family member's job, contact the employer.</li>
+                                  </Typography>
+                                </Box>
+                              </>
+                            )}
 
                             {/* All applicant variants for this product */}
                             <Stack spacing={2}>
@@ -504,7 +677,45 @@ export default function Coverage() {
                                         {isLifeInsurance && app === "self" && (
                                           <Alert severity="info" sx={commonStyles.infoAlert}>
                                             <Typography variant="body2">
+                                              {p.name === "10 Year Level Term Life Insurance" ? (
+                                                "The maximum available through New York Life Insurance Company for any individual is $2,000,000, whether coverage is in one or divided among several group policies. See brochure for details regarding rate expectations/guarantees."
+                                              ) : (
+                                                "The maximum available through New York Life Insurance Company for any individual is $2,000,000, whether coverage is in one or divided among several group policies."
+                                              )}
+                                            </Typography>
+                                          </Alert>
+                                        )}
+
+                                        {/* Accidental Death and Dismemberment Insurance Alerts */}
+                                        {p.category === "LI" && p.name === "Accidental Death and Dismemberment Insurance" && app === "self" && (
+                                          <Alert severity="info" sx={commonStyles.infoAlert}>
+                                            <Typography variant="body2">
                                               The maximum available through New York Life Insurance Company for any individual is $2,000,000, whether coverage is in one or divided among several group policies.
+                                            </Typography>
+                                          </Alert>
+                                        )}
+
+                                        {p.category === "LI" && p.name === "Accidental Death and Dismemberment Insurance" && app === "spouse" && (
+                                          <Alert severity="info" sx={commonStyles.infoAlert}>
+                                            <Typography variant="body2">
+                                              Spouse coverage cannot exceed member coverage (including in force or requested coverage).
+                                            </Typography>
+                                          </Alert>
+                                        )}
+
+                                        {/* Long-Term Disability Plus Insurance Alerts */}
+                                        {p.name === "Long-Term Disability Plus Insurance" && app === "self" && (
+                                          <Alert severity="info" sx={commonStyles.infoAlert}>
+                                            <Typography variant="body2">
+                                              The maximum available through all ABE Group Insurance underwritten by New York Life Insurance Company is $12,000 for a member whether coverage is in one or divided among several group policies.
+                                            </Typography>
+                                          </Alert>
+                                        )}
+
+                                        {p.name === "Long-Term Disability Plus Insurance" && app === "spouse" && (
+                                          <Alert severity="info" sx={commonStyles.infoAlert}>
+                                            <Typography variant="body2">
+                                              Spouse coverage cannot exceed nine times member coverage. The maximum available through all ABE Group Insurance underwritten by New York Life Insurance Company is $5,000 for a spouse, whether coverage is in one or divided among several group policies.
                                             </Typography>
                                           </Alert>
                                         )}
@@ -517,18 +728,20 @@ export default function Coverage() {
                                           </Alert>
                                         )}
 
-                                        {isLifeInsurance && app === "child" && (
-                                          <Alert severity="info" sx={commonStyles.infoAlert}>
-                                            <Typography variant="body2">
-                                              Child coverage is available for all unmarried dependent children from live birth to age 26. Coverage amount is per child and covers all eligible children.
-                                            </Typography>
-                                          </Alert>
-                                        )}
-
                                         {/* Estimated Cost */}
+                                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                                          Estimated Cost<sup>1</sup>
+                                        </Typography>
                                         {typeof rate === "number" && val !== "" ? (
-                                          <Box sx={commonStyles.coveragePricingDisplay}>
-                                            <Typography variant="h2" color="primary.light" sx={commonStyles.coveragePricingAmount}>
+                                          <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
+                                            <Typography 
+                                              color="primary.light" 
+                                              sx={{ 
+                                                fontSize: { xs: '2rem', md: '2rem' },
+                                                fontWeight: 'bold',
+                                                lineHeight: 1
+                                              }}
+                                            >
                                               ${rate.toFixed(2)}
                                             </Typography>
                                             <Typography color="text.secondary">/ month</Typography>
@@ -541,15 +754,14 @@ export default function Coverage() {
                                           </Box>
                                         )}
 
-                                        {/* Coverage Amount */}
-                                        <FormControl fullWidth>
-                                          <InputLabel>Coverage Amount</InputLabel>
+                                        {/* Benefit Amount */}
+                                        <FormControl fullWidth sx={{ mt: 3 }}>
+                                          <InputLabel>Benefit Amount</InputLabel>
                                           <Select
                                             value={val}
-                                            label="Coverage Amount"
+                                            label="Benefit Amount"
                                             onChange={(e) => onChangeAmount(key, p.id, app, e.target.value as number)}
                                           >
-                                            <MenuItem value=""><em>None</em></MenuItem>
                                             {p.amounts.map(a => (
                                               <MenuItem key={a} value={a}>
                                                 {p.category === "DI" || p.category === "OO" ? `$${a}/mo` : `$${a.toLocaleString()}`}
@@ -558,24 +770,195 @@ export default function Coverage() {
                                           </Select>
                                         </FormControl>
 
+                                        {/* QuickDecision Indicator - only for products with QuickDecision notes and not for children */}
+                                        {(p.name === "Term Life Insurance" || p.name === "10 Year Level Term Life Insurance" || p.name === "20-Year Level Term Life Insurance" || p.name === "Long-Term Disability Plus Insurance") && app !== 'child' && (
+                                          <Box sx={{ display: 'flex', justifyContent: 'flex-start', mt: 1 }}>
+                                            <Tooltip 
+                                              title={
+                                                // Show Standard Underwriting if optional benefits are selected for Term Life
+                                                (p.name === "Term Life Insurance" && optionalBenefitsByKey[key]?.chronicIllnessRider) ?
+                                                  "If QuickDecision is not available, you may apply on a standard underwritten basis. You will be asked about your health and medical history, and may be requested to schedule a brief medical exam." :
+                                                  "QuickDecision\u1d43\u1d50 allows you to get a faster decision on your application with typically no medical exam using medical underwriting automated processing. Eligibility factors include coverage amount, age, and state availability. If QuickDecision is not available, you may apply on a standard underwritten basis."
+                                              }
+                                              arrow
+                                              placement="top"
+                                              enterTouchDelay={0}
+                                              leaveTouchDelay={3000}
+                                            >
+                                              <Chip
+                                                label={
+                                                  <Stack direction="row" alignItems="center" spacing={0.5}>
+                                                    <Typography 
+                                                      variant="caption" 
+                                                      sx={{ 
+                                                        color: (p.name === "Term Life Insurance" && optionalBenefitsByKey[key]?.chronicIllnessRider) ? 
+                                                          'text.primary' : 'white' 
+                                                      }}
+                                                    >
+                                                      {(p.name === "Term Life Insurance" && optionalBenefitsByKey[key]?.chronicIllnessRider) ?
+                                                        "Standard Underwriting" :
+                                                        "QuickDecision"}
+                                                    </Typography>
+                                                    <InfoOutlined 
+                                                      sx={{ 
+                                                        fontSize: '14px', 
+                                                        color: (p.name === "Term Life Insurance" && optionalBenefitsByKey[key]?.chronicIllnessRider) ? 
+                                                          'text.primary' : 'white' 
+                                                      }} 
+                                                    />
+                                                  </Stack>
+                                                }
+                                                size="small"
+                                                color={
+                                                  (p.name === "Term Life Insurance" && optionalBenefitsByKey[key]?.chronicIllnessRider) ?
+                                                    "default" :
+                                                    "success"
+                                                }
+                                                variant="filled"
+                                              />
+                                            </Tooltip>
+                                          </Box>
+                                        )}
+
                                         {/* Add Coverage Checkbox */}
-                                        <Box sx={commonStyles.checkboxOption(selectedByKey[key])}>
-                                          <FormControlLabel
-                                            control={<Checkbox checked={!!selectedByKey[key]} onChange={(_,v)=>onChangeSelection(key, v)} />}
-                                            label={`Add this coverage for ${app === 'self' ? 'yourself' : app === 'spouse' ? 'your spouse' : 'your child(ren)'}`}
-                                            sx={commonStyles.checkboxGroup}
-                                          />
-                                        </Box>
+                                        <FormControlLabel
+                                          control={<Checkbox checked={!!selectedByKey[key]} onChange={(_,v)=>onChangeSelection(key, v)} />}
+                                          label={`Add this coverage for ${app === 'self' ? 'yourself' : app === 'spouse' ? 'your spouse' : 'your child(ren)'}`}
+                                        />
+
+                                        {/* Optional Benefits Section - Term Life Insurance Only (Self and Spouse) */}
+                                        {p.name === "Term Life Insurance" && selectedByKey[key] && (app === 'self' || app === 'spouse') && (
+                                          <Box sx={{ mt: 2, mb: 2 }}>
+                                            <Typography variant="h6" gutterBottom>
+                                              Optional Benefit(s)
+                                            </Typography>
+                                            <FormControlLabel
+                                              control={
+                                                <Checkbox
+                                                  checked={optionalBenefitsByKey[key]?.['chronicIllnessRider'] || false}
+                                                  onChange={(e) => {
+                                                    setOptionalBenefitsByKey(prev => ({
+                                                      ...prev,
+                                                      [key]: {
+                                                        ...prev[key],
+                                                        chronicIllnessRider: e.target.checked
+                                                      }
+                                                    }));
+                                                  }}
+                                                />
+                                              }
+                                              label="Chronic Illness Rider (CIR)"
+                                            />
+                                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1, ml: 4 }}>
+                                              Chronic Illness Rider (CIR): Accelerate up to 50% of the portion of your life insurance subject to the Chronic Illness Rider should you be permanently unable to perform 2 out of 6 activities of daily living or require substantial care due to permanent cognitive impairment.
+                                            </Typography>
+                                          </Box>
+                                        )}
+
+                                        {/* Optional Benefits Section - Hospital Income Insurance Only (Self and Spouse) */}
+                                        {(p.name === "Hospital Income Insurance" || p.name === "Hospital Money Insurance") && selectedByKey[key] && (app === 'self' || app === 'spouse') && (
+                                          <Box sx={{ mt: 2, mb: 2 }}>
+                                            <Typography variant="h6" gutterBottom>
+                                              Optional Benefit(s)
+                                            </Typography>
+                                            <FormControlLabel
+                                              control={
+                                                <Checkbox
+                                                  checked={optionalBenefitsByKey[key]?.['surgicalOption'] || false}
+                                                  onChange={(e) => {
+                                                    setOptionalBenefitsByKey(prev => ({
+                                                      ...prev,
+                                                      [key]: {
+                                                        ...prev[key],
+                                                        surgicalOption: e.target.checked
+                                                      }
+                                                    }));
+                                                    // Clear surgical option amount if unchecked
+                                                    if (!e.target.checked) {
+                                                      setSurgicalOptionAmountByKey(prev => ({
+                                                        ...prev,
+                                                        [key]: ""
+                                                      }));
+                                                    }
+                                                  }}
+                                                />
+                                              }
+                                              label="Surgical Option"
+                                            />
+                                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1, ml: 4 }}>
+                                              Surgical Option: Pay a specified amount for a qualifying surgical procedure up to the maximum for the option selected. See brochure/certificate for exclusions. Note: Selection applies to all applicants for whom you are requesting Hospital Money Insurance.
+                                            </Typography>
+                                            
+                                            {/* Surgical Option Coverage Amount Dropdown */}
+                                            {optionalBenefitsByKey[key]?.['surgicalOption'] && (
+                                              <FormControl fullWidth sx={{ mt: 2, ml: 4, pr: 4 }}>
+                                                <InputLabel>Coverage Amount</InputLabel>
+                                                <Select
+                                                  value={surgicalOptionAmountByKey[key] ?? ""}
+                                                  label="Coverage Amount"
+                                                  onChange={(e) => {
+                                                    setSurgicalOptionAmountByKey(prev => ({
+                                                      ...prev,
+                                                      [key]: e.target.value as number
+                                                    }));
+                                                  }}
+                                                >
+                                                  <MenuItem value={1000}>$1,000</MenuItem>
+                                                  <MenuItem value={2000}>$2,000</MenuItem>
+                                                  <MenuItem value={3000}>$3,000</MenuItem>
+                                                  <MenuItem value={4000}>$4,000</MenuItem>
+                                                  <MenuItem value={5000}>$5,000</MenuItem>
+                                                </Select>
+                                              </FormControl>
+                                            )}
+                                          </Box>
+                                        )}
                                       </Stack>
                                     </CardContent>
                                   </Card>
                                 );
                               })}
                             </Stack>
+
+                            {/* AMA-Specific: Estimated Cost Breakdown - After all applicants */}
+                            {isAMA && (
+                              <Card variant="outlined" sx={{ ...commonStyles.coverageCard, mt: 2 }}>
+                                <CardContent>
+                                  <Typography variant="h6" gutterBottom>
+                                    Estimated Cost Breakdown
+                                  </Typography>
+                                  <Stack spacing={1}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                      <Typography variant="body2">Premium Cost:</Typography>
+                                      <Typography variant="body2" fontWeight={500}>$45.00</Typography>
+                                    </Box>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                      <Typography variant="body2">Non-AMA Member Policy Fee:</Typography>
+                                      <Typography variant="body2" fontWeight={500}>$25.00</Typography>
+                                    </Box>
+                                    <Divider />
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                      <Typography variant="body1" fontWeight={600}>Total:</Typography>
+                                      <Typography variant="body1" fontWeight={600}>$70.00</Typography>
+                                    </Box>
+                                    <Typography variant="body2" sx={{ mt: 2 }}>
+                                      Questions? Call{' '}
+                                      <Typography
+                                        component="a"
+                                        href="tel:888-627-5902"
+                                        sx={{ color: 'primary.main', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+                                      >
+                                        888-627-5902
+                                      </Typography>
+                                    </Typography>
+                                  </Stack>
+                                </CardContent>
+                              </Card>
+                            )}
                           </Box>
                         );
                       })}
-                    </Stack>
+                  </Stack>
                 </Stack>
               </CardContent>
             </Card>
@@ -583,12 +966,19 @@ export default function Coverage() {
         });
       })()}
 
+      {/* Footnote */}
+      <Box sx={{ mt: 4, mb: 2, px: 2 }}>
+        <Typography variant="body2" color="text.secondary">
+          <sup>1</sup>Quoted cost is the best rate available based on the information you provided. Final cost may be based upon factors such as gender, health status, and use of tobacco/nicotine. Rates current as of 2025.
+        </Typography>
+      </Box>
+
       <PageNavigation onContinue={handleContinue} backPath="/eligibility" />
 
-      {/* QuickDecision Modal */}
+      {/* Learn More Modal */}
       <Dialog 
-        open={showQuickDecisionModal} 
-        onClose={() => setShowQuickDecisionModal(false)}
+        open={showLearnMoreModal} 
+        onClose={() => setShowLearnMoreModal(false)}
         maxWidth="sm"
         fullWidth
       >
@@ -599,7 +989,7 @@ export default function Coverage() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowQuickDecisionModal(false)}>Close</Button>
+          <Button onClick={() => setShowLearnMoreModal(false)}>Close</Button>
         </DialogActions>
       </Dialog>
     </Stack>

@@ -1,11 +1,13 @@
 export type PageId =
   | "landing"
+  | "membership"
   | "eligibility"
   | "coverage"
   | "contact"
   | "profile"
   | "preview"
-  | "payment"     // doc = section; expose as page optionally
+  | "consent"
+  | "docusign"
   | "receipt"
   | "resume";
 
@@ -19,13 +21,14 @@ export interface AppPage {
 
 export const PAGES: AppPage[] = [
   { id: "landing",     path: "/",              title: "Landing",        section: "system" },
+  { id: "membership",  path: "/membership",    title: "Membership",     section: "application" },
   { id: "eligibility", path: "/eligibility",   title: "Eligibility",    section: "application" },
   { id: "coverage",    path: "/coverage",      title: "Coverage",       section: "application" },
   { id: "contact",     path: "/contact",       title: "Contact",        section: "application" },
   { id: "profile",     path: "/profile",       title: "Profile",        section: "application" },
-  { id: "preview",     path: "/preview",       title: "Review",        section: "application" },
-  // If you prefer to keep Payment embedded, comment this out and render it within Preview/Consent as needed.
-  { id: "payment",     path: "/payment",       title: "Authorize",      section: "application" },
-  { id: "receipt",   path: "/receipt",     title: "Receipt",      section: "post-submit" },
+  { id: "preview",     path: "/preview",      title: "Review",         section: "application" },
+  { id: "consent",     path: "/consent",      title: "Authorize",      section: "application" },
+  { id: "docusign",    path: "/docusign",     title: "Sign",           section: "post-submit" },
+  { id: "receipt",     path: "/receipt",      title: "Receipt",        section: "post-submit" },
   { id: "resume",      path: "/resume",        title: "Resume",         section: "system" }
 ];

@@ -1,6 +1,6 @@
 import * as React from "react";
-import { 
-  Stack, Typography, Alert, Box, Card, CardContent, Button
+import {
+  Stack, Typography, Alert, Box, Card, CardContent, Button, FormLabel
 } from "@mui/material";
 import PageHeader from "../components/layout/PageHeader";
 import PageNavigation from "../components/layout/PageNavigation";
@@ -10,12 +10,13 @@ import RHFTextField from "../components/form/RHFTextField";
 import RHFRadioGroup from "../components/form/RHFRadioGroup";
 import RHFSelect from "../components/form/RHFSelect";
 import RHFCurrencyField from "../components/form/RHFCurrencyField";
+import RHFCheckbox from "../components/form/RHFCheckbox";
 import { ProfileSchema, type ProfileForm } from "../validation/profile";
 import { useAppData } from "../state/AppDataContext";
 import { useStepper } from "../state/StepperContext";
 import { useNavigate } from "react-router-dom";
 import { useScrollToFirstError } from "../hooks/useScrollToFirstError";
-import { Person, People, Security, FamilyRestroom } from '@mui/icons-material';
+import { Person, People, FamilyRestroom, Payment } from '@mui/icons-material';
 import { commonStyles } from "../theme/commonStyles";
 
 
@@ -24,6 +25,17 @@ export default function Profile() {
   const { data, setProfile } = useAppData();
   const { markComplete } = useStepper();
   const navigate = useNavigate();
+
+  // State for showing autosave success message
+  const [showAutosaveAlert, setShowAutosaveAlert] = React.useState(false);
+
+  // Check if autosave is enabled and show alert on page load
+  React.useEffect(() => {
+    const autosaveEnabled = sessionStorage.getItem("nyl-autosave-enabled") === "1";
+    if (autosaveEnabled) {
+      setShowAutosaveAlert(true);
+    }
+  }, []);
 
   // Check if spouse was selected in eligibility
   const spouseSelected = data.eligibility?.applicants?.spouse || false;
@@ -182,7 +194,75 @@ export default function Profile() {
       spouseAddBeneficiaryRelationship: "",
       spouseAddBeneficiaryShare: "",
       spouseAddTrustName: "",
-      spouseAddTrustDate: ""
+      spouseAddTrustDate: "",
+      
+      // Payment Information
+      wantsToAddPayment: undefined,
+      
+      // Term Life Insurance Payment
+      termLifePaymentMethod: undefined,
+      termLifePaymentFrequency: undefined,
+      
+      // 10-Year Level Term Life Insurance Payment
+      tenYearTermPaymentMethod: undefined,
+      tenYearTermPaymentFrequency: undefined,
+      
+      // 20-Year Level Term Life Insurance Payment
+      twentyYearTermPaymentMethod: undefined,
+      twentyYearTermPaymentFrequency: undefined,
+      
+      // Accidental Death and Dismemberment Insurance Payment
+      addPaymentMethod: undefined,
+      addPaymentFrequency: undefined,
+      
+      // Long-Term Disability Plus Insurance Payment
+      longTermDisabilityPaymentMethod: undefined,
+      longTermDisabilityPaymentFrequency: undefined,
+      
+      // Mid-Term Disability Insurance Payment
+      midTermDisabilityPaymentMethod: undefined,
+      midTermDisabilityPaymentFrequency: undefined,
+      
+      // Professional Overhead Expense Disability Insurance Payment
+      professionalOverheadPaymentMethod: undefined,
+      professionalOverheadPaymentFrequency: undefined,
+      
+      // Critical Illness Insurance Payment
+      criticalIllnessPaymentMethod: undefined,
+      criticalIllnessPaymentFrequency: undefined,
+      
+      // Hospital Money Insurance Payment
+      hospitalMoneyPaymentMethod: undefined,
+      hospitalMoneyPaymentFrequency: undefined,
+      
+      // Bank Account Details
+      routingNumber: "",
+      accountNumber: "",
+      nameOnAccount: "",
+      bankInstitution: "",
+      bankAccountConsent: false,
+      
+      // Financial Information
+      totalNetWorth: "",
+      totalAnnualUnearnedIncome: "",
+      isSelfEmployed: undefined,
+      isSoleProprietor: false,
+      isProfessionalCorp: false,
+      soleProprietorGrossIncome: "",
+      soleProprietorGrossEarnings: "",
+      soleProprietorBusinessExpenses: "",
+      professionalCorpAnnualSalary: "",
+      professionalCorpSCorpDistribution: "",
+      professionalCorpDividends: "",
+      professionalCorpBonus: "",
+      professionalCorpBonusType: undefined,
+      professionalCorpCommission: "",
+      professionalCorpCommissionType: undefined,
+      professionalCorpBenefitsCost: "",
+      selfEmploymentDuration: "",
+      isWorkingFromHome: undefined,
+      hasWorkOutsideHome: undefined,
+      workDetailsExplanation: ""
     }
   });
   useScrollToFirstError(methods);
@@ -209,6 +289,182 @@ export default function Profile() {
   const spouseTenYearTermBeneficiaryType = useWatch({ control: methods.control, name: "spouseTenYearTermBeneficiaryType" });
   const spouseTwentyYearTermBeneficiaryType = useWatch({ control: methods.control, name: "spouseTwentyYearTermBeneficiaryType" });
   const spouseAddBeneficiaryType = useWatch({ control: methods.control, name: "spouseAddBeneficiaryType" });
+  
+  // Watch for payment conditional fields
+  const wantsToAddPayment = useWatch({ control: methods.control, name: "wantsToAddPayment" });
+  const termLifePaymentMethod = useWatch({ control: methods.control, name: "termLifePaymentMethod" });
+  const tenYearTermPaymentMethod = useWatch({ control: methods.control, name: "tenYearTermPaymentMethod" });
+  const twentyYearTermPaymentMethod = useWatch({ control: methods.control, name: "twentyYearTermPaymentMethod" });
+  const addPaymentMethod = useWatch({ control: methods.control, name: "addPaymentMethod" });
+  const longTermDisabilityPaymentMethod = useWatch({ control: methods.control, name: "longTermDisabilityPaymentMethod" });
+  const midTermDisabilityPaymentMethod = useWatch({ control: methods.control, name: "midTermDisabilityPaymentMethod" });
+  const professionalOverheadPaymentMethod = useWatch({ control: methods.control, name: "professionalOverheadPaymentMethod" });
+  const criticalIllnessPaymentMethod = useWatch({ control: methods.control, name: "criticalIllnessPaymentMethod" });
+  const hospitalMoneyPaymentMethod = useWatch({ control: methods.control, name: "hospitalMoneyPaymentMethod" });
+  
+  // Watch for payment frequency fields
+  const termLifePaymentFrequency = useWatch({ control: methods.control, name: "termLifePaymentFrequency" });
+  const tenYearTermPaymentFrequency = useWatch({ control: methods.control, name: "tenYearTermPaymentFrequency" });
+  const twentyYearTermPaymentFrequency = useWatch({ control: methods.control, name: "twentyYearTermPaymentFrequency" });
+  const addPaymentFrequency = useWatch({ control: methods.control, name: "addPaymentFrequency" });
+  const longTermDisabilityPaymentFrequency = useWatch({ control: methods.control, name: "longTermDisabilityPaymentFrequency" });
+  const midTermDisabilityPaymentFrequency = useWatch({ control: methods.control, name: "midTermDisabilityPaymentFrequency" });
+  const professionalOverheadPaymentFrequency = useWatch({ control: methods.control, name: "professionalOverheadPaymentFrequency" });
+  const criticalIllnessPaymentFrequency = useWatch({ control: methods.control, name: "criticalIllnessPaymentFrequency" });
+  const hospitalMoneyPaymentFrequency = useWatch({ control: methods.control, name: "hospitalMoneyPaymentFrequency" });
+  
+  // Check if any payment method requires bank account
+  const needsBankAccount = [
+    termLifePaymentMethod,
+    tenYearTermPaymentMethod, 
+    twentyYearTermPaymentMethod,
+    addPaymentMethod,
+    longTermDisabilityPaymentMethod,
+    midTermDisabilityPaymentMethod,
+    professionalOverheadPaymentMethod,
+    criticalIllnessPaymentMethod,
+    hospitalMoneyPaymentMethod
+  ].some(method => method === "bank_account");
+
+  // Helper function to check if estimated costs should show (both method and frequency selected)
+  const shouldShowEstimatedCost = (method: string | undefined, frequency: string | undefined) => {
+    return method && frequency;
+  };
+
+  // Get coverage data to determine which applicants are selected for each product
+  const appData = useAppData();
+  const coverageData = appData.data.coverage || [];
+  
+  // Helper function to get selected applicants for a product
+  const getSelectedApplicants = (productId: string): string[] => {
+    const selectedItems = coverageData.filter(item => item.productId === productId);
+    const applicants: string[] = [];
+    
+    selectedItems.forEach(item => {
+      if (item.applicant === 'self') applicants.push('Self');
+      if (item.applicant === 'spouse') applicants.push('Spouse');
+      if (item.applicant === 'child') applicants.push('Child(ren)');
+    });
+    
+    // Remove duplicates
+    return [...new Set(applicants)];
+  };
+
+  // Helper function to calculate total estimated cost
+  const calculateTotalCost = (productId: string, frequency: string | undefined): number => {
+    if (!frequency) return 0;
+    
+    const applicants = getSelectedApplicants(productId);
+    let total = 0;
+    
+    // Sample costs for demonstration - these would come from actual data
+    // Using common product IDs that might be used in the system
+    const costMap: Record<string, Record<string, Record<string, number>>> = {
+      'li-term': {
+        monthly: { 'Self': 4.64, 'Spouse': 2.83, 'Child(ren)': 0.75 },
+        quarterly: { 'Self': 13.91, 'Spouse': 8.50, 'Child(ren)': 2.25 },
+        semiannually: { 'Self': 27.82, 'Spouse': 17.00, 'Child(ren)': 4.50 },
+        annually: { 'Self': 55.64, 'Spouse': 34.00, 'Child(ren)': 9.00 }
+      },
+      'li-10yr': {
+        monthly: { 'Self': 1.82, 'Spouse': 1.25, 'Child(ren)': 0.75 },
+        quarterly: { 'Self': 5.46, 'Spouse': 3.75, 'Child(ren)': 2.25 },
+        semiannually: { 'Self': 10.92, 'Spouse': 7.50, 'Child(ren)': 4.50 },
+        annually: { 'Self': 21.84, 'Spouse': 15.00, 'Child(ren)': 9.00 }
+      }
+      // Other products would have $0 costs as specified in the requirement
+    };
+    
+    applicants.forEach(applicant => {
+      total += costMap[productId]?.[frequency]?.[applicant] || 0;
+    });
+    
+    return total;
+  };
+
+  // Helper function to get individual applicant cost
+  const getApplicantCost = (productId: string, frequency: string | undefined, applicant: string): number => {
+    if (!frequency) return 0;
+    
+    const costMap: Record<string, Record<string, Record<string, number>>> = {
+      'li-term': {
+        monthly: { 'Self': 4.64, 'Spouse': 2.83, 'Child(ren)': 0.75 },
+        quarterly: { 'Self': 13.91, 'Spouse': 8.50, 'Child(ren)': 2.25 },
+        semiannually: { 'Self': 27.82, 'Spouse': 17.00, 'Child(ren)': 4.50 },
+        annually: { 'Self': 55.64, 'Spouse': 34.00, 'Child(ren)': 9.00 }
+      },
+      'li-10yr': {
+        monthly: { 'Self': 1.82, 'Spouse': 1.25, 'Child(ren)': 0.75 },
+        quarterly: { 'Self': 5.46, 'Spouse': 3.75, 'Child(ren)': 2.25 },
+        semiannually: { 'Self': 10.92, 'Spouse': 7.50, 'Child(ren)': 4.50 },
+        annually: { 'Self': 21.84, 'Spouse': 15.00, 'Child(ren)': 9.00 }
+      }
+    };
+    
+    return costMap[productId]?.[frequency]?.[applicant] || 0;
+  };
+
+  // Component for displaying estimated costs with $0 for products without pricing
+  const renderEstimatedCostSection = (productId: string, paymentMethod: string | undefined, paymentFrequency: string | undefined, hasActualCosts = false) => {
+    if (!shouldShowEstimatedCost(paymentMethod, paymentFrequency)) {
+      return null;
+    }
+
+    const selectedApplicants = getSelectedApplicants(productId);
+    
+    if (selectedApplicants.length === 0) {
+      return (
+        <Box>
+          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600, mb: 1 }}>
+            Estimated Cost:
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            No applicants selected for this product
+          </Typography>
+        </Box>
+      );
+    }
+
+    if (hasActualCosts) {
+      const totalCost = calculateTotalCost(productId, paymentFrequency);
+      return (
+        <Box>
+          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600, mb: 1 }}>
+            Estimated Cost:
+          </Typography>
+          <Stack spacing={1}>
+            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
+              Total: ${totalCost.toFixed(2)} / {paymentFrequency}
+            </Typography>
+            {selectedApplicants.map(applicant => (
+              <Typography key={applicant} variant="body2" color="text.secondary">
+                • {applicant}: ${getApplicantCost(productId, paymentFrequency, applicant).toFixed(2)} / {paymentFrequency}
+              </Typography>
+            ))}
+          </Stack>
+        </Box>
+      );
+    } else {
+      // For $0 products
+      return (
+        <Box>
+          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600, mb: 1 }}>
+            Estimated Cost:
+          </Typography>
+          <Stack spacing={1}>
+            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
+              Total: $0.00 / {paymentFrequency}
+            </Typography>
+            {selectedApplicants.map(applicant => (
+              <Typography key={applicant} variant="body2" color="text.secondary">
+                • {applicant}: $0.00 / {paymentFrequency}
+              </Typography>
+            ))}
+          </Stack>
+        </Box>
+      );
+    }
+  };
 
   // DevTools: Fill form with test data
   React.useEffect(() => {
@@ -307,8 +563,16 @@ export default function Profile() {
         tenYearTermBeneficiaryShare: "100",
         twentyYearTermBeneficiaryType: "individual" as const,
         twentyYearTermBeneficiaryDesignation: "primary" as const,
+        twentyYearTermBeneficiaryFirstName: "Jane",
+        twentyYearTermBeneficiaryLastName: "Doe",
+        twentyYearTermBeneficiaryRelationship: "spouse",
+        twentyYearTermBeneficiaryShare: "100",
         addBeneficiaryType: "individual" as const,
         addBeneficiaryDesignation: "primary" as const,
+        addBeneficiaryFirstName: "Jane",
+        addBeneficiaryLastName: "Doe",
+        addBeneficiaryRelationship: "spouse",
+        addBeneficiaryShare: "100",
         
         // Beneficiary Information - Spouse test data
         spouseTermLifeBeneficiaryType: spouseSelected ? ("individual" as const) : undefined,
@@ -325,8 +589,50 @@ export default function Profile() {
         spouseTenYearTermBeneficiaryShare: spouseSelected ? "100" : undefined,
         spouseTwentyYearTermBeneficiaryType: spouseSelected ? ("individual" as const) : undefined,
         spouseTwentyYearTermBeneficiaryDesignation: spouseSelected ? ("primary" as const) : undefined,
+        spouseTwentyYearTermBeneficiaryFirstName: spouseSelected ? "John" : undefined,
+        spouseTwentyYearTermBeneficiaryLastName: spouseSelected ? "Doe" : undefined,
+        spouseTwentyYearTermBeneficiaryRelationship: spouseSelected ? "spouse" : undefined,
+        spouseTwentyYearTermBeneficiaryShare: spouseSelected ? "100" : undefined,
         spouseAddBeneficiaryType: spouseSelected ? ("individual" as const) : undefined,
-        spouseAddBeneficiaryDesignation: spouseSelected ? ("primary" as const) : undefined
+        spouseAddBeneficiaryDesignation: spouseSelected ? ("primary" as const) : undefined,
+        spouseAddBeneficiaryFirstName: spouseSelected ? "John" : undefined,
+        spouseAddBeneficiaryLastName: spouseSelected ? "Doe" : undefined,
+        spouseAddBeneficiaryRelationship: spouseSelected ? "spouse" : undefined,
+        spouseAddBeneficiaryShare: spouseSelected ? "100" : undefined,
+        
+        // Payment Information
+        wantsToAddPayment: "yes" as const,
+        termLifePaymentMethod: "bank_account" as const,
+        termLifePaymentFrequency: "monthly" as const,
+        tenYearTermPaymentMethod: "bank_account" as const,
+        tenYearTermPaymentFrequency: "monthly" as const,
+        twentyYearTermPaymentMethod: "bank_account" as const,
+        twentyYearTermPaymentFrequency: "quarterly" as const,
+        addPaymentMethod: "bank_account" as const,
+        addPaymentFrequency: "monthly" as const,
+        longTermDisabilityPaymentMethod: "bank_account" as const,
+        longTermDisabilityPaymentFrequency: "monthly" as const,
+        
+        // Bank Account Details
+        routingNumber: "021000021",
+        accountNumber: "123456789",
+        nameOnAccount: "John Doe",
+        bankInstitution: "Chase Bank",
+        bankAccountConsent: true,
+        
+        // Financial Information
+        totalNetWorth: "500000",
+        totalAnnualUnearnedIncome: "25000",
+        isSelfEmployed: "yes" as const,
+        isSoleProprietor: true,
+        isProfessionalCorp: false,
+        soleProprietorGrossIncome: "200000",
+        soleProprietorGrossEarnings: "150000",
+        soleProprietorBusinessExpenses: "50000",
+        selfEmploymentDuration: "5",
+        isWorkingFromHome: "no" as const,
+        hasWorkOutsideHome: "yes" as const,
+        workDetailsExplanation: "Office location in downtown"
       };
       
       methods.reset(filledData);
@@ -339,7 +645,8 @@ export default function Profile() {
   const onSubmit = (values: ProfileForm) => {
     setProfile(values);
     markComplete();
-    navigate("/payment");
+    // next();
+    navigate("/health-history");
   };
 
   // Height options for dropdown
@@ -473,6 +780,16 @@ export default function Profile() {
             notes="To complete your application, please provide all the necessary information below. This will help us process your application quickly and accurately."
           />
 
+          {/* Autosave Success Alert */}
+          {showAutosaveAlert && (
+            <Alert 
+              severity="success" 
+              onClose={() => setShowAutosaveAlert(false)}
+            >
+              Your progress is being saved automatically.
+            </Alert>
+          )}
+
           <Stack spacing={4}>
             {/* Main Personal Information Card */}
             <Card sx={commonStyles.categoryCard}>
@@ -480,11 +797,6 @@ export default function Profile() {
                 <Stack spacing={2}>
                   {/* Category Header */}
                   <Box sx={commonStyles.coverageCategoryHeader}>
-                    <Person 
-                      fontSize="large" 
-                      color="primary"
-                      sx={commonStyles.coverageCategoryIcon}
-                    />
                     <Typography variant="h4" sx={commonStyles.coverageCategoryTitle}>
                       Personal Information
                     </Typography>
@@ -509,21 +821,19 @@ export default function Profile() {
                       </Box>
                       
                       <Stack spacing={2}>
-                  {/* Height and Weight Row */}
-                  <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                    <RHFSelect 
-                      name="heightFt" 
-                      label="Height (ft.)" 
-                      options={heightOptions}
-                      required 
-                    />
-                    <RHFTextField 
-                      name="weight" 
-                      label="Weight (lbs.)" 
-                      type="number"
-                      required 
-                    />
-                  </Stack>
+                  {/* Height and Weight */}
+                  <RHFSelect 
+                    name="heightFt" 
+                    label="Height (ft.)" 
+                    options={heightOptions}
+                    required 
+                  />
+                  <RHFTextField 
+                    name="weight" 
+                    label="Weight (lbs.)" 
+                    type="number"
+                    required 
+                  />
 
                   {/* Weight 12 Months Ago */}
                   <RHFTextField 
@@ -736,20 +1046,18 @@ export default function Profile() {
                     </Box>
                     
                     <Stack spacing={3}>
-                      {/* Height and Weight Row */}
-                      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                        <RHFTextField 
-                          name="spouseHeightFt" 
-                          label="Height (ft.)" 
-                          placeholder="5'6&quot;" 
-                        />
-                        <RHFTextField 
-                          name="spouseWeight" 
-                          label="Weight (lbs.)" 
-                          type="number" 
-                          placeholder="140"
-                        />
-                      </Stack>
+                      {/* Height and Weight */}
+                      <RHFTextField 
+                        name="spouseHeightFt" 
+                        label="Height (ft.)" 
+                        placeholder="5'6&quot;" 
+                      />
+                      <RHFTextField 
+                        name="spouseWeight" 
+                        label="Weight (lbs.)" 
+                        type="number" 
+                        placeholder="140"
+                      />
 
                       {/* Weight 12 Months Ago */}
                       <RHFTextField 
@@ -930,17 +1238,333 @@ export default function Profile() {
               </CardContent>
             </Card>
 
+            {/* Financial Information Card - Only show if self applies for disability with high coverage */}
+            <Card sx={commonStyles.categoryCard}>
+              <CardContent>
+                <Stack spacing={2}>
+                  {/* Category Header */}
+                  <Box sx={commonStyles.coverageCategoryHeader}>
+                    <Typography variant="h4" sx={commonStyles.coverageCategoryTitle}>
+                      Financial Information
+                    </Typography>
+                  </Box>
+
+                  {/* Your Financial Information Card */}
+                  <Card variant="outlined" sx={commonStyles.coverageCard}>
+                    <CardContent>
+                      <Stack spacing={2}>
+                        {/* Section Header */}
+                        <Box>
+                          <Stack direction="row" spacing={1} alignItems="center">
+                            <Person color="primary" />
+                            <Typography variant="h6">
+                              Your Financial Information
+                            </Typography>
+                          </Stack>
+                        </Box>
+
+                        <Stack spacing={3}>
+                          {/* Total Net Worth */}
+                          <Box>
+                            <FormLabel required>
+                              Total net worth (Liquid Assets minus Liabilities)
+                            </FormLabel>
+                            <RHFCurrencyField 
+                              name="totalNetWorth" 
+                              required 
+                              fullWidth
+                            />
+                          </Box>
+
+                          {/* Total Annual Unearned Income */}
+                          <Box>
+                            <FormLabel required>
+                              Total annual unearned income (As reported to IRS – e.g. Interest, Dividends, Royalties, Rental Income etc.)
+                            </FormLabel>
+                            <RHFCurrencyField 
+                              name="totalAnnualUnearnedIncome" 
+                              required 
+                              fullWidth
+                            />
+                          </Box>
+
+                          {/* Self-Employed Question */}
+                          <RHFRadioGroup
+                            name="isSelfEmployed"
+                            label="Are you self-employed?"
+                            options={[
+                              { label: "Yes", value: "yes" },
+                              { label: "No", value: "no" }
+                            ]}
+                            required
+                          />
+
+                          {/* Self-Employment Sections - Only show if self-employed */}
+                          {methods.watch('isSelfEmployed') === 'yes' && (
+                            <>
+                              {/* Sources of Income */}
+                              <Box>
+                                <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                                  Complete all sources of income:
+                                </Typography>
+                                
+                                <Stack spacing={2}>
+                                  <RHFCheckbox 
+                                    name="isSoleProprietor" 
+                                    label="Sole proprietor or partner"
+                                  />
+                                  
+                                  <RHFCheckbox 
+                                    name="isProfessionalCorp" 
+                                    label="Professional corporation"
+                                  />
+                                </Stack>
+                              </Box>
+
+                              {/* Sole Proprietor or Partner Section */}
+                              {methods.watch('isSoleProprietor') && (
+                                <Box sx={{ p: 2, border: 1, borderColor: 'divider', borderRadius: 1 }}>
+                                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                                    Sole Proprietor or Partner
+                                  </Typography>
+                                  
+                                  <Stack spacing={2}>
+                                    <Box>
+                                      <FormLabel required>
+                                        Gross earned income (share of partnership income) Past 12 months or fiscal year ending
+                                      </FormLabel>
+                                      <RHFCurrencyField 
+                                        name="soleProprietorGrossIncome" 
+                                        required 
+                                        fullWidth
+                                      />
+                                    </Box>
+                                    
+                                    <Box>
+                                      <FormLabel required>
+                                        Gross earnings before business expenses and taxes
+                                      </FormLabel>
+                                      <RHFCurrencyField 
+                                        name="soleProprietorGrossEarnings" 
+                                        required 
+                                        fullWidth
+                                      />
+                                    </Box>
+                                    
+                                    <Box>
+                                      <FormLabel required>
+                                        Total business expenses for above period (your share)
+                                      </FormLabel>
+                                      <RHFCurrencyField 
+                                        name="soleProprietorBusinessExpenses" 
+                                        required 
+                                        fullWidth
+                                      />
+                                    </Box>
+                                    
+                                    {/* Calculated Net Earned Income */}
+                                    <Box>
+                                      <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600, mb: 1 }}>
+                                        Net earned income, before personal income tax:*
+                                      </Typography>
+                                      <Typography variant="h6" color="primary">
+                                        ${(() => {
+                                          const grossEarnings = parseFloat(methods.watch('soleProprietorGrossEarnings') || '0');
+                                          const businessExpenses = parseFloat(methods.watch('soleProprietorBusinessExpenses') || '0');
+                                          return Math.max(0, grossEarnings - businessExpenses).toFixed(2);
+                                        })()}
+                                      </Typography>
+                                    </Box>
+                                  </Stack>
+                                </Box>
+                              )}
+
+                              {/* Professional Corporation Section */}
+                              {methods.watch('isProfessionalCorp') && (
+                                <Box sx={{ p: 2, border: 1, borderColor: 'divider', borderRadius: 1 }}>
+                                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                                    Professional Corporation
+                                  </Typography>
+                                  
+                                  <Stack spacing={2}>
+                                    <Box>
+                                      <FormLabel required>
+                                        Annual salary drawn currently
+                                      </FormLabel>
+                                      <RHFCurrencyField 
+                                        name="professionalCorpAnnualSalary" 
+                                        required 
+                                        fullWidth
+                                      />
+                                    </Box>
+                                    
+                                    <Box>
+                                      <FormLabel required>
+                                        Your share of S-Corp distribution, if any
+                                      </FormLabel>
+                                      <RHFCurrencyField 
+                                        name="professionalCorpSCorpDistribution" 
+                                        required 
+                                        fullWidth
+                                      />
+                                    </Box>
+                                    
+                                    <Box>
+                                      <FormLabel required>
+                                        Your share of dividends
+                                      </FormLabel>
+                                      <RHFCurrencyField 
+                                        name="professionalCorpDividends" 
+                                        required 
+                                        fullWidth
+                                      />
+                                    </Box>
+                                    
+                                    <Box>
+                                      <FormLabel required>
+                                        Payment of bonus
+                                      </FormLabel>
+                                      <RHFCurrencyField 
+                                        name="professionalCorpBonus" 
+                                        required 
+                                        fullWidth
+                                      />
+                                    </Box>
+                                    
+                                    <RHFRadioGroup
+                                      name="professionalCorpBonusType"
+                                      label="Was bonus a"
+                                      options={[
+                                        { label: "Annual payment", value: "annual" },
+                                        { label: "One-time payment", value: "onetime" }
+                                      ]}
+                                      required
+                                    />
+                                    
+                                    <Box>
+                                      <FormLabel required>
+                                        Payment of commission
+                                      </FormLabel>
+                                      <RHFCurrencyField 
+                                        name="professionalCorpCommission" 
+                                        required 
+                                        fullWidth
+                                      />
+                                    </Box>
+                                    
+                                    <RHFRadioGroup
+                                      name="professionalCorpCommissionType"
+                                      label="Was the commission a"
+                                      options={[
+                                        { label: "Annual payment", value: "annual" },
+                                        { label: "One-time payment", value: "onetime" }
+                                      ]}
+                                      required
+                                    />
+                                    
+                                    <Box>
+                                      <FormLabel required>
+                                        Annual Cost of corporate-paid benefits (e.g. Life or Health Insurance premiums, pension or profit sharing trust contributions paid on your behalf)
+                                      </FormLabel>
+                                      <RHFCurrencyField 
+                                        name="professionalCorpBenefitsCost" 
+                                        required 
+                                        fullWidth
+                                      />
+                                    </Box>
+                                    
+                                    {/* Calculated Total Annual Earned Income */}
+                                    <Box>
+                                      <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600, mb: 1 }}>
+                                        Total annual earned income:*
+                                      </Typography>
+                                      <Typography variant="h6" color="primary">
+                                        ${(() => {
+                                          const salary = parseFloat(methods.watch('professionalCorpAnnualSalary') || '0');
+                                          const distribution = parseFloat(methods.watch('professionalCorpSCorpDistribution') || '0');
+                                          const dividends = parseFloat(methods.watch('professionalCorpDividends') || '0');
+                                          const bonus = parseFloat(methods.watch('professionalCorpBonus') || '0');
+                                          const commission = parseFloat(methods.watch('professionalCorpCommission') || '0');
+                                          const benefits = parseFloat(methods.watch('professionalCorpBenefitsCost') || '0');
+                                          return (salary + distribution + dividends + bonus + commission + benefits).toFixed(2);
+                                        })()}
+                                      </Typography>
+                                    </Box>
+                                  </Stack>
+                                </Box>
+                              )}
+
+                              {/* Self-Employment Details */}
+                              <Box sx={{ p: 2, border: 1, borderColor: 'divider', borderRadius: 1 }}>
+                                <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                                  Self-Employment Details
+                                </Typography>
+                                
+                                <Stack spacing={2}>
+                                  <Box>
+                                    <FormLabel required>
+                                      How long have you been self-employed?
+                                    </FormLabel>
+                                    <RHFTextField 
+                                      name="selfEmploymentDuration" 
+                                      required 
+                                    />
+                                  </Box>
+                                  
+                                  <RHFRadioGroup
+                                    name="isWorkingFromHome"
+                                    label="Are you working out of your home?"
+                                    options={[
+                                      { label: "Yes", value: "yes" },
+                                      { label: "No", value: "no" }
+                                    ]}
+                                    required
+                                  />
+                                  
+                                  {methods.watch('isWorkingFromHome') === 'yes' && (
+                                    <>
+                                      <RHFRadioGroup
+                                        name="hasWorkOutsideHome"
+                                        label='If "Yes", is any work conducted outside of the home?'
+                                        options={[
+                                          { label: "Yes", value: "yes" },
+                                          { label: "No", value: "no" }
+                                        ]}
+                                        required
+                                      />
+                                      
+                                      <Box>
+                                        <FormLabel required>
+                                          Please explain and/or provide details including average number of days per week clients are seen
+                                        </FormLabel>
+                                        <RHFTextField 
+                                          name="workDetailsExplanation" 
+                                          multiline
+                                          rows={3}
+                                          required 
+                                          fullWidth
+                                        />
+                                      </Box>
+                                    </>
+                                  )}
+                                </Stack>
+                              </Box>
+                            </>
+                          )}
+                        </Stack>
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                </Stack>
+              </CardContent>
+            </Card>
+
             {/* Main Other Coverage Card */}
             <Card sx={commonStyles.categoryCard}>
               <CardContent>
                 <Stack spacing={2}>
                   {/* Category Header */}
                   <Box sx={commonStyles.coverageCategoryHeader}>
-                    <Security 
-                      fontSize="large" 
-                      color="primary"
-                      sx={commonStyles.coverageCategoryIcon}
-                    />
                     <Typography variant="h4" sx={commonStyles.coverageCategoryTitle}>
                       Other Coverage
                     </Typography>
@@ -995,11 +1619,16 @@ export default function Profile() {
                               {/* Conditional fields - only show if has other life insurance */}
                               {methods.watch('hasOtherLifeInsurance') === 'yes' && (
                                 <>
-                                  <RHFCurrencyField 
-                                    name="otherLifeInsuranceAmount" 
-                                    label="What is the total amount in all companies?"
-                                    required 
-                                  />
+                                  <Box>
+                                    <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                                      What is the total amount in all companies? <Box component="span" sx={{ color: 'error.main' }}>*</Box>
+                                    </Typography>
+                                    <RHFCurrencyField 
+                                      name="otherLifeInsuranceAmount" 
+                                      required 
+                                      fullWidth
+                                    />
+                                  </Box>
 
                                   <RHFRadioGroup
                                     name="lifeInsuranceReplacement"
@@ -1092,11 +1721,17 @@ export default function Profile() {
                                           required 
                                         />
                                         
-                                        <RHFCurrencyField 
-                                          name={`disabilityCompanies.${index}.monthlyBenefit`} 
-                                          label="Monthly Benefit Amount"
-                                          required 
-                                        />
+                                        <Box>
+                                          <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                                            Monthly Benefit Amount <Box component="span" sx={{ color: 'error.main' }}>*</Box>
+                                          </Typography>
+                                          <RHFCurrencyField 
+                                            name={`disabilityCompanies.${index}.monthlyBenefit`} 
+                                            required 
+                                            fullWidth
+                                            helperText="You can find your current coverage amount in your recent statement from your carrier."
+                                          />
+                                        </Box>
                                         
                                         <RHFSelect 
                                           name={`disabilityCompanies.${index}.benefitPeriod`} 
@@ -1150,11 +1785,16 @@ export default function Profile() {
                                   />
 
                                   {methods.watch('disabilityReplacement') === 'yes' && (
-                                    <RHFCurrencyField 
-                                      name="disabilityReplacementAmount" 
-                                      label="How much will be replaced?"
-                                      required 
-                                    />
+                                    <Box>
+                                      <FormLabel required>
+                                        How much will be replaced?
+                                      </FormLabel>
+                                      <RHFCurrencyField 
+                                        name="disabilityReplacementAmount" 
+                                        required 
+                                        fullWidth
+                                      />
+                                    </Box>
                                   )}
                                 </>
                               )}
@@ -1209,10 +1849,14 @@ export default function Profile() {
                                 {/* Conditional fields - only show if spouse has other life insurance */}
                                 {methods.watch('spouseHasOtherLifeInsurance') === 'yes' && (
                                   <>
-                                    <RHFCurrencyField 
-                                      name="spouseOtherLifeInsuranceAmount" 
-                                      label="What is the total amount in all companies?"
-                                    />
+                                    <Box>
+                                      <FormLabel required>
+                                        What is the total amount in all companies?
+                                      </FormLabel>
+                                      <RHFCurrencyField 
+                                        name="spouseOtherLifeInsuranceAmount" 
+                                      />
+                                    </Box>
 
                                     <RHFRadioGroup
                                       name="spouseLifeInsuranceReplacement"
@@ -1300,10 +1944,15 @@ export default function Profile() {
                                             placeholder="Company name"
                                           />
                                           
-                                          <RHFCurrencyField 
-                                            name={`spouseDisabilityCompanies.${index}.monthlyBenefit`} 
-                                            label="Monthly Benefit Amount"
-                                          />
+                                          <Box>
+                                            <FormLabel required>
+                                              Monthly Benefit Amount
+                                            </FormLabel>
+                                            <RHFCurrencyField 
+                                              name={`spouseDisabilityCompanies.${index}.monthlyBenefit`} 
+                                              helperText="You can find your current coverage amount in your recent statement from your carrier."
+                                            />
+                                          </Box>
                                           
                                           <RHFSelect 
                                             name={`spouseDisabilityCompanies.${index}.benefitPeriod`} 
@@ -1354,10 +2003,14 @@ export default function Profile() {
                                     />
 
                                     {methods.watch('spouseDisabilityReplacement') === 'yes' && (
-                                      <RHFCurrencyField 
-                                        name="spouseDisabilityReplacementAmount" 
-                                        label="How much will be replaced?"
-                                      />
+                                      <Box>
+                                        <FormLabel required>
+                                          How much will be replaced?
+                                        </FormLabel>
+                                        <RHFCurrencyField 
+                                          name="spouseDisabilityReplacementAmount" 
+                                        />
+                                      </Box>
                                     )}
                                   </>
                                 )}
@@ -1379,11 +2032,6 @@ export default function Profile() {
               <Stack spacing={2}>
                 {/* Category Header */}
                 <Box sx={commonStyles.coverageCategoryHeader}>
-                  <FamilyRestroom 
-                    fontSize="large" 
-                    color="primary"
-                    sx={commonStyles.coverageCategoryIcon}
-                  />
                   <Typography variant="h4" sx={commonStyles.coverageCategoryTitle}>
                     Beneficiary Information
                   </Typography>
@@ -2084,6 +2732,403 @@ export default function Profile() {
                       </Card>
                     )}
                   </>
+                )}
+              </Stack>
+            </CardContent>
+          </Card>
+
+          {/* Main Payment Information Card */}
+          <Card sx={commonStyles.categoryCard}>
+            <CardContent>
+              <Stack spacing={2}>
+                {/* Category Header */}
+                <Box sx={commonStyles.coverageCategoryHeader}>
+                  <Typography variant="h4" sx={commonStyles.coverageCategoryTitle}>
+                    Payment Information
+                  </Typography>
+                </Box>
+
+                <Alert severity="info">
+                  Please indicate how you would like to pay for this insurance. You won't be billed until underwriting and review are approved for coverage. We make sure your payment is secure. You may find more details about your privacy and safety in the privacy notice.
+                </Alert>
+
+                <RHFRadioGroup
+                  name="wantsToAddPayment"
+                  label="Do you want to add payment information now?"
+                  options={[
+                    { label: "Yes", value: "yes" },
+                    { label: "No", value: "no" }
+                  ]}
+                  required
+                />
+
+                {wantsToAddPayment === "yes" && (
+                  <Card variant="outlined" sx={commonStyles.coverageCard}>
+                    <CardContent>
+                      <Stack spacing={2}>
+                        {/* Section Header */}
+                        <Box>
+                          <Stack direction="row" spacing={1} alignItems="center">
+                            <Payment color="primary" />
+                            <Typography variant="h6">
+                              Your Payment
+                            </Typography>
+                          </Stack>
+                        </Box>
+
+                        <Stack spacing={3}>
+                          {/* Term Life Insurance Payment */}
+                          <Box>
+                            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                              Term Life Insurance
+                            </Typography>
+                            
+                            <Stack spacing={2}>
+                              <RHFRadioGroup
+                                name="termLifePaymentMethod"
+                                label="Select new payment method"
+                                options={[
+                                  { label: "Bill Me", value: "bill_me" },
+                                  { label: "Bank Account", value: "bank_account" }
+                                ]}
+                                required
+                              />
+
+                              <RHFSelect 
+                                name="termLifePaymentFrequency" 
+                                label="Payment Frequency" 
+                                options={[
+                                  { label: "Monthly", value: "monthly" },
+                                  { label: "Quarterly", value: "quarterly" },
+                                  { label: "Semiannually", value: "semiannually" },
+                                  { label: "Annually", value: "annually" }
+                                ]}
+                                required
+                              />
+
+                              {renderEstimatedCostSection('li-term', termLifePaymentMethod, termLifePaymentFrequency, true)}
+                            </Stack>
+                          </Box>
+
+                          {/* 10-Year Level Term Life Insurance Payment */}
+                          <Box>
+                            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                              10-Year Level Term Life Insurance
+                            </Typography>
+                            
+                            <Stack spacing={2}>
+                              <RHFRadioGroup
+                                name="tenYearTermPaymentMethod"
+                                label="Select new payment method"
+                                options={[
+                                  { label: "Bill Me", value: "bill_me" },
+                                  { label: "Bank Account", value: "bank_account" }
+                                ]}
+                                required
+                              />
+
+                              <RHFSelect 
+                                name="tenYearTermPaymentFrequency" 
+                                label="Payment Frequency" 
+                                options={[
+                                  { label: "Monthly", value: "monthly" },
+                                  { label: "Quarterly", value: "quarterly" },
+                                  { label: "Semiannually", value: "semiannually" },
+                                  { label: "Annually", value: "annually" }
+                                ]}
+                                required
+                              />
+
+                              {renderEstimatedCostSection('li-10yr', tenYearTermPaymentMethod, tenYearTermPaymentFrequency, true)}
+                            </Stack>
+                          </Box>
+
+                          {/* 20-Year Level Term Life Insurance Payment */}
+                          <Box>
+                            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                              20-Year Level Term Life Insurance
+                            </Typography>
+                            
+                            <Stack spacing={2}>
+                              <RHFRadioGroup
+                                name="twentyYearTermPaymentMethod"
+                                label="Select new payment method"
+                                options={[
+                                  { label: "Bill Me", value: "bill_me" },
+                                  { label: "Bank Account", value: "bank_account" }
+                                ]}
+                                required
+                              />
+
+                              <RHFSelect 
+                                name="twentyYearTermPaymentFrequency" 
+                                label="Payment Frequency" 
+                                options={[
+                                  { label: "Monthly", value: "monthly" },
+                                  { label: "Quarterly", value: "quarterly" },
+                                  { label: "Semiannually", value: "semiannually" },
+                                  { label: "Annually", value: "annually" }
+                                ]}
+                                required
+                              />
+
+                              {renderEstimatedCostSection('li-20yr', twentyYearTermPaymentMethod, twentyYearTermPaymentFrequency, false)}
+                            </Stack>
+                          </Box>
+
+                          {/* Accidental Death and Dismemberment Insurance Payment */}
+                          <Box>
+                            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                              Accidental Death and Dismemberment Insurance
+                            </Typography>
+                            
+                            <Stack spacing={2}>
+                              <RHFRadioGroup
+                                name="addPaymentMethod"
+                                label="Select new payment method"
+                                options={[
+                                  { label: "Bill Me", value: "bill_me" },
+                                  { label: "Bank Account", value: "bank_account" }
+                                ]}
+                                required
+                              />
+
+                              <RHFSelect 
+                                name="addPaymentFrequency" 
+                                label="Payment Frequency" 
+                                options={[
+                                  { label: "Monthly", value: "monthly" },
+                                  { label: "Quarterly", value: "quarterly" },
+                                  { label: "Semiannually", value: "semiannually" },
+                                  { label: "Annually", value: "annually" }
+                                ]}
+                                required
+                              />
+
+                              {renderEstimatedCostSection('li-premier-accident', addPaymentMethod, addPaymentFrequency, false)}
+                            </Stack>
+                          </Box>
+
+                          {/* Long-Term Disability Plus Insurance Payment */}
+                          <Box>
+                            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                              Long-Term Disability Plus Insurance
+                            </Typography>
+                            
+                            <Stack spacing={2}>
+                              <RHFRadioGroup
+                                name="longTermDisabilityPaymentMethod"
+                                label="Select new payment method"
+                                options={[
+                                  { label: "Bill Me", value: "bill_me" },
+                                  { label: "Bank Account", value: "bank_account" }
+                                ]}
+                                required
+                              />
+
+                              <RHFSelect 
+                                name="longTermDisabilityPaymentFrequency" 
+                                label="Payment Frequency" 
+                                options={[
+                                  { label: "Monthly", value: "monthly" },
+                                  { label: "Quarterly", value: "quarterly" },
+                                  { label: "Semiannually", value: "semiannually" },
+                                  { label: "Annually", value: "annually" }
+                                ]}
+                                required
+                              />
+
+                              {renderEstimatedCostSection('di-level-rated', longTermDisabilityPaymentMethod, longTermDisabilityPaymentFrequency, false)}
+                            </Stack>
+                          </Box>
+
+                          {/* Mid-Term Disability Insurance Payment */}
+                          <Box>
+                            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                              Mid-Term Disability Insurance
+                            </Typography>
+                            
+                            <Stack spacing={2}>
+                              <RHFRadioGroup
+                                name="midTermDisabilityPaymentMethod"
+                                label="Select new payment method"
+                                options={[
+                                  { label: "Bill Me", value: "bill_me" },
+                                  { label: "Bank Account", value: "bank_account" }
+                                ]}
+                                required
+                              />
+
+                              <RHFSelect 
+                                name="midTermDisabilityPaymentFrequency" 
+                                label="Payment Frequency" 
+                                options={[
+                                  { label: "Monthly", value: "monthly" },
+                                  { label: "Quarterly", value: "quarterly" },
+                                  { label: "Semiannually", value: "semiannually" },
+                                  { label: "Annually", value: "annually" }
+                                ]}
+                                required
+                              />
+
+                              {renderEstimatedCostSection('di-step-rated', midTermDisabilityPaymentMethod, midTermDisabilityPaymentFrequency, false)}
+                            </Stack>
+                          </Box>
+
+                          {/* Professional Overhead Expense Disability Insurance Payment */}
+                          <Box>
+                            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                              Professional Overhead Expense Disability Insurance
+                            </Typography>
+                            
+                            <Stack spacing={2}>
+                              <RHFRadioGroup
+                                name="professionalOverheadPaymentMethod"
+                                label="Select new payment method"
+                                options={[
+                                  { label: "Bill Me", value: "bill_me" },
+                                  { label: "Bank Account", value: "bank_account" }
+                                ]}
+                                required
+                              />
+
+                              <RHFSelect 
+                                name="professionalOverheadPaymentFrequency" 
+                                label="Payment Frequency" 
+                                options={[
+                                  { label: "Monthly", value: "monthly" },
+                                  { label: "Quarterly", value: "quarterly" },
+                                  { label: "Semiannually", value: "semiannually" },
+                                  { label: "Annually", value: "annually" }
+                                ]}
+                                required
+                              />
+
+                              {renderEstimatedCostSection('oo-office-overhead', professionalOverheadPaymentMethod, professionalOverheadPaymentFrequency, false)}
+                            </Stack>
+                          </Box>
+
+                          {/* Critical Illness Insurance Payment */}
+                          <Box>
+                            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                              Critical Illness Insurance
+                            </Typography>
+                            
+                            <Stack spacing={2}>
+                              <RHFRadioGroup
+                                name="criticalIllnessPaymentMethod"
+                                label="Select new payment method"
+                                options={[
+                                  { label: "Bill Me", value: "bill_me" },
+                                  { label: "Bank Account", value: "bank_account" }
+                                ]}
+                                required
+                              />
+
+                              <RHFSelect 
+                                name="criticalIllnessPaymentFrequency" 
+                                label="Payment Frequency" 
+                                options={[
+                                  { label: "Monthly", value: "monthly" },
+                                  { label: "Quarterly", value: "quarterly" },
+                                  { label: "Semiannually", value: "semiannually" },
+                                  { label: "Annually", value: "annually" }
+                                ]}
+                                required
+                              />
+
+                              {renderEstimatedCostSection('sh-critical-illness', criticalIllnessPaymentMethod, criticalIllnessPaymentFrequency, false)}
+                            </Stack>
+                          </Box>
+
+                          {/* Hospital Money Insurance Payment */}
+                          <Box>
+                            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                              Hospital Money Insurance
+                            </Typography>
+                            
+                            <Stack spacing={2}>
+                              <RHFRadioGroup
+                                name="hospitalMoneyPaymentMethod"
+                                label="Select new payment method"
+                                options={[
+                                  { label: "Bill Me", value: "bill_me" },
+                                  { label: "Bank Account", value: "bank_account" }
+                                ]}
+                                required
+                              />
+
+                              <RHFSelect 
+                                name="hospitalMoneyPaymentFrequency" 
+                                label="Payment Frequency" 
+                                options={[
+                                  { label: "Monthly", value: "monthly" },
+                                  { label: "Quarterly", value: "quarterly" },
+                                  { label: "Semiannually", value: "semiannually" },
+                                  { label: "Annually", value: "annually" }
+                                ]}
+                                required
+                              />
+
+                              {renderEstimatedCostSection('sh-hospital-income', hospitalMoneyPaymentMethod, hospitalMoneyPaymentFrequency, false)}
+                            </Stack>
+                          </Box>
+
+                          {/* Bank Account Details - Show if any payment method is bank account */}
+                          {needsBankAccount && (
+                            <Box>
+                              <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                                Bank Account Details
+                              </Typography>
+                              
+                              <Stack spacing={2}>
+                                <RHFTextField 
+                                  name="routingNumber" 
+                                  label="Routing Number" 
+                                  type="number"
+                                  required
+                                />
+
+                                <RHFTextField 
+                                  name="accountNumber" 
+                                  label="Account Number" 
+                                  type="number"
+                                  required
+                                />
+
+                                <RHFTextField 
+                                  name="nameOnAccount" 
+                                  label="Name on Account" 
+                                  required
+                                />
+
+                                <RHFTextField 
+                                  name="bankInstitution" 
+                                  label="Bank/Institution" 
+                                  required
+                                />
+
+                                <Box sx={{ mt: 3 }}>
+                                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                                    Bank Account Information
+                                  </Typography>
+                                  
+                                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                    "Based on the billing frequency which I selected above, I request and authorize American Bar Endowment Plan Administrator to make withdrawals against the account specified above or any other account subsequently identified by me, and each bank to process those withdrawals as if I had signed them, for the purpose of collecting premium contributions due under each insurance plan indicated as AutoPay(ETF) in this Application Form."
+                                  </Typography>
+
+                                  <RHFCheckbox
+                                    name="bankAccountConsent"
+                                    label="I have reviewed the information above and consent to the terms by checking this box."
+                                  />
+                                </Box>
+                              </Stack>
+                            </Box>
+                          )}
+                        </Stack>
+                      </Stack>
+                    </CardContent>
+                  </Card>
                 )}
               </Stack>
             </CardContent>

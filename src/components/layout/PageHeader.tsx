@@ -22,32 +22,40 @@ export default function PageHeader({ title, notes }: PageHeaderProps) {
 
   const applicationPages = React.useMemo(() => PAGES.filter(p => p.section === "application"), []);
   const currentIndex = applicationPages.findIndex(p => p.path === location.pathname);
-  const inAppFlow = currentIndex >= 0;
+  
+  // Special handling for sub-pages like health-history (child of profile)
+  const effectiveIndex = currentIndex >= 0 
+    ? currentIndex 
+    : location.pathname === "/health-history" 
+      ? applicationPages.findIndex(p => p.path === "/profile")
+      : -1;
+  
+  const inAppFlow = effectiveIndex >= 0;
 
   return (
-    <Stack spacing={{ xs: 2, md: 4 }} sx={commonStyles.marginBottom3}>
+    <Stack spacing={{ xs: 4, md: 6 }} sx={commonStyles.marginBottom3}>
       {inAppFlow && (
         <ParityBreadcrumb
           variant="stepper"
           items={applicationPages.map(p => ({ label: p.title, to: p.path }))}
-          currentIndex={currentIndex}
+          currentIndex={effectiveIndex}
           numericSteps={false}
         />
       )}
-      <Stack spacing={1} alignItems="center">
+      <Stack spacing={1} alignItems="flex-start">
         <Typography
           ref={h1Ref}
           tabIndex={-1}
           component="h1"
           variant="h2"
-          sx={{ ...commonStyles.noOutline, textAlign: "center" }}
+          sx={{ ...commonStyles.noOutline, textAlign: "left" }}
         >
           {title}
         </Typography>
         {notes && (
           <Typography
             color="text.secondary"
-            sx={commonStyles.maxWidthText}
+            sx={{ ...commonStyles.maxWidthText, textAlign: "left" }}
           >
             {notes}
           </Typography>

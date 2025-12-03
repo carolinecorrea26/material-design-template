@@ -3,7 +3,7 @@ import {
   Box, Container, Stack, Typography, Button, Card, CardContent,
   ToggleButton, ToggleButtonGroup, TextField, MenuItem, Link
 } from "@mui/material";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate, useSearchParams } from "react-router-dom";
 import RadioGroup from "../components/form/RadioGroup";
 import { 
   ArrowRightAlt as ArrowRightAltIcon
@@ -17,6 +17,7 @@ import type { Product, CoverageCategory } from "../types/app";
 
 export default function Landing() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const branding = getClientBranding();
   const quoteRef = React.useRef<HTMLElement>(null);
   const [coverageType, setCoverageType] = React.useState<'life' | 'disability'>('life');
@@ -78,6 +79,13 @@ export default function Landing() {
     }).filter(Boolean);
   }, [products]);
 
+  // Check for advisor URL parameter
+  React.useEffect(() => {
+    if (searchParams.get('form') === 'advisor') {
+      navigate('/advisor');
+    }
+  }, [searchParams, navigate]);
+
   const scrollToQuote = () => {
     quoteRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
@@ -88,7 +96,7 @@ export default function Landing() {
 
   const handleBeginApplication = () => {
     setShowQuoteModal(false);
-    navigate('/eligibility');
+    navigate('/membership');
   };
 
   return (
@@ -110,6 +118,7 @@ export default function Landing() {
                   variant="h1" 
                   component="h1"
                   sx={{ 
+                    fontSize: { xs: '1.75rem', sm: '1.75rem', md: '2rem', lg: '2.5rem' },
                     textAlign: 'center'
                   }}
                 >
@@ -132,12 +141,12 @@ export default function Landing() {
                   sx={{ 
                     mt: 1, 
                     width: { xs: '100%', sm: 'auto' },
-                    alignItems: { xs: 'stretch', sm: 'center' }
+                  alignItems: { xs: 'stretch', sm: 'center' }
                   }}
                 >
                   <Button 
                     component={RouterLink} 
-                    to="/eligibility" 
+                    to="/membership" 
                     variant="contained" 
                     size="large"
                     endIcon={<ArrowRightAltIcon />}
@@ -168,19 +177,19 @@ export default function Landing() {
         </Container>
         
         {/* Hero Image */}
-        <Box
+        {/* <Box
           component="img"
           src={branding.heroImage || '/brand/default/hero.png'}
           alt={branding.heroImageAlt || 'Insurance Coverage'}
           sx={{
-            width: { xs: '100%', sm: '85%', md: '70%' },
+            width: { xs: '100%', sm: '100%', md: '100%' },
             height: 'auto',
             maxHeight: { xs: 280, sm: 350, md: 400 },
             objectFit: 'cover',
             display: 'block',
             mx: 'auto'
           }}
-        />
+        /> */}
       </Box>
 
       {/* Quote Section */}
@@ -218,7 +227,7 @@ export default function Landing() {
 
                   {/* Always Displayed Fields */}
                   <TextField
-                    label="Date of Birth"
+                    label="Birthday"
                     type="date"
                     value={birthday}
                     onChange={(e) => setBirthday(e.target.value)}
@@ -463,7 +472,7 @@ export default function Landing() {
             <Box textAlign="center" sx={{ pt: 4 }}>
               <Button 
                 component={RouterLink} 
-                to="/eligibility" 
+                to="/membership" 
                 variant="contained" 
                 size="large"
                 endIcon={<ArrowRightAltIcon />}
@@ -510,7 +519,7 @@ export default function Landing() {
             <Box textAlign="center" sx={{ pt: 4 }}>
               <Button 
                 component={RouterLink} 
-                to="/eligibility" 
+                to="/membership" 
                 variant="contained" 
                 size="large"
                 endIcon={<ArrowRightAltIcon />}
@@ -567,20 +576,20 @@ export default function Landing() {
                 </Typography>
                 <Stack direction="row" spacing={3} flexWrap="wrap" justifyContent="center">
                   <Box>
-                    <Typography sx={{ fontSize: '1.25rem', fontWeight: 700, lineHeight: 1, color: 'primary.light' }}>A++</Typography>
-                    <Typography sx={{ fontSize: '0.625rem', lineHeight: 1.2, color: 'text.secondary' }}>A.M. Best</Typography>
+                    <Typography variant="h5" color="primary">A++</Typography>
+                    <Typography variant="caption" color="text.secondary">A.M. Best</Typography>
                   </Box>
                   <Box>
-                    <Typography sx={{ fontSize: '1.25rem', fontWeight: 700, lineHeight: 1, color: 'primary.light' }}>AAA</Typography>
-                    <Typography sx={{ fontSize: '0.625rem', lineHeight: 1.2, color: 'text.secondary' }}>Fitch Ratings</Typography>
+                    <Typography variant="h5" color="primary">AAA</Typography>
+                    <Typography variant="caption" color="text.secondary">Fitch Ratings</Typography>
                   </Box>
                   <Box>
-                    <Typography sx={{ fontSize: '1.25rem', fontWeight: 700, lineHeight: 1, color: 'primary.light' }}>Aa1</Typography>
-                    <Typography sx={{ fontSize: '0.625rem', lineHeight: 1.2, color: 'text.secondary' }}>Moody's Investors Service</Typography>
+                    <Typography variant="h5" color="primary">Aa1</Typography>
+                    <Typography variant="caption" color="text.secondary">Moody's Investors Service</Typography>
                   </Box>
                   <Box>
-                    <Typography sx={{ fontSize: '1.25rem', fontWeight: 700, lineHeight: 1, color: 'primary.light' }}>AA+</Typography>
-                    <Typography sx={{ fontSize: '0.625rem', lineHeight: 1.2, color: 'text.secondary' }}>Standard & Poor's</Typography>
+                    <Typography variant="h5" color="primary">AA+</Typography>
+                    <Typography variant="caption" color="text.secondary">Standard & Poor's</Typography>
                   </Box>
                 </Stack>
                 <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>

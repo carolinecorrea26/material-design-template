@@ -15,6 +15,7 @@ export interface SelectedItem {
   applicant: Applicant;
   amount: number;
   estMonthly: number; // MOCK rate computed client- or server-side
+  riders?: Record<string, boolean | number>; // optional riders with boolean or amount values
 }
 
 export interface EligibilityDefaults {

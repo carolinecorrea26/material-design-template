@@ -17,7 +17,9 @@ export const ContactSchema = z.object({
   
   // Business Information (conditional)
   businessName: z.string().optional(),
-  businessType: z.string().optional(),
+  businessType: z.enum(["sole_proprietor", "corporation", "partnership"], {
+    message: "Please select a business type"
+  }).optional(),
   businessAddressSameAsHome: z.boolean().optional(),
   businessStreetAddress: z.string().optional(),
   businessAptSuite: z.string().optional(),
@@ -30,19 +32,6 @@ export const ContactSchema = z.object({
   spousePhoneNumber: z.string().optional(),
   spousePhoneType: z.enum(["home", "business", "mobile"]).optional(),
   spouseEmail: z.string().email("Valid email is required").optional(),
-}).refine((data) => {
-  // If correspondence is to business, require business fields
-  if (data.correspondenceTo === "business") {
-    return (
-      data.businessName &&
-      data.businessType &&
-      (data.businessAddressSameAsHome || 
-       (data.businessStreetAddress && data.businessCity && data.businessState && data.businessZipCode))
-    );
-  }
-  return true;
-}, {
-  message: "Business information is required when sending correspondence to business address"
 });
 
 export type ContactForm = z.infer<typeof ContactSchema>;

@@ -177,33 +177,99 @@ export const ProfileSchema = z.object({
   spouseAddBeneficiaryShare: z.string().optional(),
   spouseAddTrustName: z.string().optional(),
   spouseAddTrustDate: z.string().optional(),
-}).refine((data) => {
+  
+  // Payment Information
+  wantsToAddPayment: z.enum(["yes", "no"]).optional(),
+  
+  // Term Life Insurance Payment
+  termLifePaymentMethod: z.enum(["bill_me", "bank_account"]).optional(),
+  termLifePaymentFrequency: z.enum(["monthly", "quarterly", "semiannually", "annually"]).optional(),
+  
+  // 10-Year Level Term Life Insurance Payment
+  tenYearTermPaymentMethod: z.enum(["bill_me", "bank_account"]).optional(),
+  tenYearTermPaymentFrequency: z.enum(["monthly", "quarterly", "semiannually", "annually"]).optional(),
+  
+  // 20-Year Level Term Life Insurance Payment
+  twentyYearTermPaymentMethod: z.enum(["bill_me", "bank_account"]).optional(),
+  twentyYearTermPaymentFrequency: z.enum(["monthly", "quarterly", "semiannually", "annually"]).optional(),
+  
+  // Accidental Death and Dismemberment Insurance Payment
+  addPaymentMethod: z.enum(["bill_me", "bank_account"]).optional(),
+  addPaymentFrequency: z.enum(["monthly", "quarterly", "semiannually", "annually"]).optional(),
+  
+  // Long-Term Disability Plus Insurance Payment
+  longTermDisabilityPaymentMethod: z.enum(["bill_me", "bank_account"]).optional(),
+  longTermDisabilityPaymentFrequency: z.enum(["monthly", "quarterly", "semiannually", "annually"]).optional(),
+  
+  // Mid-Term Disability Insurance Payment
+  midTermDisabilityPaymentMethod: z.enum(["bill_me", "bank_account"]).optional(),
+  midTermDisabilityPaymentFrequency: z.enum(["monthly", "quarterly", "semiannually", "annually"]).optional(),
+  
+  // Professional Overhead Expense Disability Insurance Payment
+  professionalOverheadPaymentMethod: z.enum(["bill_me", "bank_account"]).optional(),
+  professionalOverheadPaymentFrequency: z.enum(["monthly", "quarterly", "semiannually", "annually"]).optional(),
+  
+  // Critical Illness Insurance Payment
+  criticalIllnessPaymentMethod: z.enum(["bill_me", "bank_account"]).optional(),
+  criticalIllnessPaymentFrequency: z.enum(["monthly", "quarterly", "semiannually", "annually"]).optional(),
+  
+  // Hospital Money Insurance Payment
+  hospitalMoneyPaymentMethod: z.enum(["bill_me", "bank_account"]).optional(),
+  hospitalMoneyPaymentFrequency: z.enum(["monthly", "quarterly", "semiannually", "annually"]).optional(),
+  
+  // Bank Account Details
+  routingNumber: z.string().optional(),
+  accountNumber: z.string().optional(),
+  nameOnAccount: z.string().optional(),
+  bankInstitution: z.string().optional(),
+  bankAccountConsent: z.boolean().optional(),
+}).superRefine((data, ctx) => {
   // If has driver's license is yes, then license number and state are required
   if (data.hasDriversLicense === "yes") {
-    return data.driversLicenseNumber && data.driversLicenseState;
+    if (!data.driversLicenseNumber) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Driver's license number is required",
+        path: ["driversLicenseNumber"]
+      });
+    }
+    if (!data.driversLicenseState) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Driver's license state is required",
+        path: ["driversLicenseState"]
+      });
+    }
   }
-  return true;
-}, {
-  message: "Driver's license number and state are required when you have a driver's license",
-  path: ["driversLicenseNumber"]
-}).refine((data) => {
+  
   // If residency intent outside US is yes, then duration and country are required
   if (data.residencyIntentOutsideUS === "yes") {
-    return data.residencyDurationMonths && data.residencyCountry;
+    if (!data.residencyDurationMonths) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Duration is required",
+        path: ["residencyDurationMonths"]
+      });
+    }
+    if (!data.residencyCountry) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Country is required",
+        path: ["residencyCountry"]
+      });
+    }
   }
-  return true;
-}, {
-  message: "Duration and country are required when intending to reside outside US/Canada",
-  path: ["residencyDurationMonths"]
-}).refine((data) => {
+  
   // If residency intent for six months is yes, then country is required
   if (data.residencyIntentSixMonths === "yes") {
-    return data.residencySixMonthsCountry;
+    if (!data.residencySixMonthsCountry) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Country is required",
+        path: ["residencySixMonthsCountry"]
+      });
+    }
   }
-  return true;
-}, {
-  message: "Country is required when intending to reside outside US/Canada for more than six months",
-  path: ["residencySixMonthsCountry"]
 });
 
 export type ProfileForm = z.infer<typeof ProfileSchema>;

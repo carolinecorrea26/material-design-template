@@ -1,11 +1,33 @@
 import { Controller, useFormContext } from "react-hook-form";
 import { FormLabel, FormHelperText, Box, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import { commonStyles } from "../../theme/commonStyles";
+import * as React from "react";
 
 export default function RHFRadioGroup({
   name, label, options, required
 }: { name: string; label: string; options: Array<{ label: string; value: string|number }>; required?: boolean }) {
   const { control } = useFormContext();
+  
+  const handleKeyDown = (event: React.KeyboardEvent, currentValue: any, onChange: (value: any) => void) => {
+    const currentIndex = options.findIndex(o => o.value === currentValue);
+    let newIndex = currentIndex;
+    
+    switch(event.key) {
+      case 'ArrowRight':
+      case 'ArrowDown':
+        event.preventDefault();
+        newIndex = currentIndex < options.length - 1 ? currentIndex + 1 : 0;
+        onChange(options[newIndex].value);
+        break;
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        event.preventDefault();
+        newIndex = currentIndex > 0 ? currentIndex - 1 : options.length - 1;
+        onChange(options[newIndex].value);
+        break;
+    }
+  };
+  
   return (
     <Controller
       name={name}
@@ -21,7 +43,10 @@ export default function RHFRadioGroup({
                 field.onChange(value);
               }
             }}
+            onBlur={field.onBlur}
+            onKeyDown={(e) => handleKeyDown(e, field.value, field.onChange)}
             fullWidth
+            aria-label={label}
             sx={fieldState.error ? {
               '& .MuiToggleButton-root': {
                 borderColor: 'error.main',
@@ -32,7 +57,11 @@ export default function RHFRadioGroup({
             } : undefined}
           >
             {options.map(o => (
-              <ToggleButton key={String(o.value)} value={o.value}>
+              <ToggleButton 
+                key={String(o.value)} 
+                value={o.value}
+                aria-label={o.label}
+              >
                 {o.label}
               </ToggleButton>
             ))}

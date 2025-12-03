@@ -194,7 +194,8 @@ export const commonStyles = {
   footer: {
     mt: 6,
     py: 4,
-    bgcolor: 'background.paper',
+    bgcolor: '#1a1a1a',
+    color: '#ffffff',
     borderTop: 1,
     borderColor: 'divider'
   } as SxProps<Theme>,
@@ -240,7 +241,7 @@ export const commonStyles = {
 
   primaryLink: {
     color: 'primary.main',
-    fontWeight: 700,
+    fontWeight: 600,
     textDecoration: 'none',
     '&:hover': {
       textDecoration: 'underline'
@@ -305,6 +306,15 @@ export const commonStyles = {
   } as SxProps<Theme>),
 
   formLabel: {
+    mb: 1,
+    display: 'block'
+  } as SxProps<Theme>,
+
+  // Field label style for non-floating labels
+  fieldLabel: {
+    color: 'rgba(0, 0, 0, 0.87)',
+    fontSize: '0.875rem',
+    fontWeight: 500,
     mb: 1,
     display: 'block'
   } as SxProps<Theme>,
@@ -459,5 +469,16 @@ export const commonStyles = {
   coverageBulletPoint: {
     color: 'text.secondary',
     fontWeight: 400
+  } satisfies SxProps<Theme>,
+
+  // ==========================================
+  // ACCORDION STYLES
+  // ==========================================
+
+  accordionSummary: {
+    bgcolor: 'grey.50',
+    '&:hover': {
+      bgcolor: 'grey.100'
+    }
   } satisfies SxProps<Theme>
 };

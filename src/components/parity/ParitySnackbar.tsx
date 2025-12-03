@@ -22,7 +22,7 @@ export function ParitySnackbar({ open, onClose, message, severity = "info", inli
       open={open}
       autoHideDuration={persistent ? null : 4000}
       onClose={onClose}
-      anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
     >
       <Alert onClose={onClose} severity={severity} variant="filled" sx={{ width: "100%" }}>
         {message}

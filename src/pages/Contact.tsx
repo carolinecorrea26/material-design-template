@@ -29,6 +29,19 @@ export default function Contact() {
   const spouseSelected = data.eligibility?.applicants?.spouse || false;
   const userState = data.eligibility?.state || "";
 
+  // Business type options
+  const businessTypeOptions = [
+    { label: "Sole Proprietor", value: "sole_proprietor" },
+    { label: "Corporation", value: "corporation" },
+    { label: "Partnership", value: "partnership" }
+  ];
+
+  // Check if user applied for DI or OO products
+  const hasDisabilityOrOfficeOverheadProducts = data.coverage?.some(item => {
+    // Look for products with DI or OO category
+    return item.productId.startsWith('di-') || item.productId.startsWith('oo-');
+  }) || false;
+
   const methods = useForm<ContactForm>({
     resolver: zodResolver(ContactSchema),
     mode: "onSubmit",
@@ -43,7 +56,7 @@ export default function Contact() {
       phoneType: undefined,
       correspondenceTo: undefined,
       businessName: "",
-      businessType: "",
+      businessType: undefined,
       businessAddressSameAsHome: false,
       businessStreetAddress: "",
       businessAptSuite: "",
@@ -61,6 +74,9 @@ export default function Contact() {
 
   const correspondenceTo = useWatch({ control: methods.control, name: "correspondenceTo" });
   const businessAddressSameAsHome = useWatch({ control: methods.control, name: "businessAddressSameAsHome" });
+
+  // Show business information if correspondence is to business OR user applied for DI/OO products
+  const shouldShowBusinessInfo = correspondenceTo === "business" || hasDisabilityOrOfficeOverheadProducts;
 
   // Copy home address to business address when checkbox is checked
   React.useEffect(() => {
@@ -85,16 +101,16 @@ export default function Contact() {
         zipCode: "10001",
         phoneNumber: "555-123-4567",
         phoneType: "mobile",
-        correspondenceTo: "residential",
-        businessName: "",
-        businessType: "",
+        correspondenceTo: "business",
+        businessName: "Acme Corporation",
+        businessType: "corporation",
         businessAddressSameAsHome: false,
-        businessStreetAddress: "",
-        businessAptSuite: "",
-        businessCity: "",
-        businessState: "",
-        businessZipCode: "",
-        businessPhoneNumber: "",
+        businessStreetAddress: "456 Business Ave",
+        businessAptSuite: "Suite 200",
+        businessCity: "New York",
+        businessState: "NY",
+        businessZipCode: "10002",
+        businessPhoneNumber: "555-234-5678",
         spousePhoneNumber: spouseSelected ? "555-987-6543" : "",
         spousePhoneType: spouseSelected ? "home" : undefined,
         spouseEmail: spouseSelected ? "spouse@example.com" : ""
@@ -108,9 +124,28 @@ export default function Contact() {
   }, [methods, userState, spouseSelected]);
 
   const onSubmit = (values: ContactForm) => {
+    // Custom validation for business information
+    if (shouldShowBusinessInfo) {
+      const errors: string[] = [];
+      
+      if (!values.businessName) errors.push("Business name is required");
+      if (!values.businessType) errors.push("Business type is required");
+      
+      if (!values.businessAddressSameAsHome) {
+        if (!values.businessStreetAddress) errors.push("Business street address is required");
+        if (!values.businessCity) errors.push("Business city is required");
+        if (!values.businessState) errors.push("Business state is required");
+        if (!values.businessZipCode) errors.push("Business zip code is required");
+      }
+      
+      if (errors.length > 0) {
+        notify(errors.join(", "), "error");
+        return;
+      }
+    }
+    
     setContact(values);
     enableAutosave();
-    notify("Your progress is being saved automatically.", "success", true);
     markComplete();
     next();
     navigate("/profile");
@@ -122,7 +157,7 @@ export default function Contact() {
         <Stack spacing={2}>
           <PageHeader 
             title="Contact Information"
-            notes="Please provide your contact information so we can reach you about your application."
+            notes="Please provide your contact information below. This ensures we can reach you if we have questions and keep you informed about your application status."
           />
 
           {/* Page-level Error Alert */}
@@ -138,11 +173,6 @@ export default function Contact() {
               <Stack spacing={2}>
                 {/* Category Header */}
                 <Box sx={commonStyles.coverageCategoryHeader}>
-                  <Email 
-                    fontSize="large" 
-                    color="primary"
-                    sx={commonStyles.coverageCategoryIcon}
-                  />
                   <Typography variant="h4" sx={commonStyles.coverageCategoryTitle}>
                     Contact Information
                   </Typography>
@@ -229,100 +259,97 @@ export default function Contact() {
                           ]}
                           required
                         />
+
+                        {/* Business Information Section - Conditional */}
+                        {shouldShowBusinessInfo && (
+                          <Box sx={{ mt: 3, p: 2, border: 1, borderColor: 'divider', borderRadius: 1 }}>
+                            <Stack spacing={2}>
+                              {/* Business Information Header */}
+                              <Box>
+                                <Stack direction="row" spacing={1} alignItems="center">
+                                  <Typography variant="h6">
+                                    Business/Employer Information
+                                  </Typography>
+                                </Stack>
+                              </Box>
+
+                              <Alert severity="info">
+                                Please include the following details of your business or employer.
+                              </Alert>
+                              
+                              <RHFTextField 
+                                name="businessName" 
+                                label="Name of Business or Employer" 
+                                required 
+                              />
+                              <RHFSelect 
+                                name="businessType" 
+                                label="Type of Business" 
+                                options={businessTypeOptions}
+                                required 
+                              />
+                              
+                              <FormControlLabel
+                                control={
+                                  <Checkbox 
+                                    checked={businessAddressSameAsHome || false}
+                                    onChange={(e) => methods.setValue("businessAddressSameAsHome", e.target.checked)}
+                                  />
+                                }
+                                label="Business address is the same as home address"
+                              />
+                              
+                              {!businessAddressSameAsHome && (
+                                <>
+                                  <RHFTextField 
+                                    name="businessStreetAddress" 
+                                    label="Business Street Address" 
+                                    required 
+                                  />
+                                  <RHFTextField 
+                                    name="businessAptSuite" 
+                                    label="Apt/Suite" 
+                                  />
+                                  
+                                  <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+                                    <Box sx={{ flex: 1 }}>
+                                      <RHFTextField 
+                                        name="businessCity" 
+                                        label="City" 
+                                        required 
+                                      />
+                                    </Box>
+                                    <Box sx={{ width: { md: '150px' } }}>
+                                      <RHFSelect 
+                                        name="businessState" 
+                                        label="State" 
+                                        options={STATE_OPTIONS}
+                                        required 
+                                      />
+                                    </Box>
+                                    <Box sx={{ width: { md: '120px' } }}>
+                                      <RHFTextField 
+                                        name="businessZipCode" 
+                                        label="Zip Code" 
+                                        required 
+                                      />
+                                    </Box>
+                                  </Stack>
+
+                                  <RHFTextField 
+                                    name="businessPhoneNumber" 
+                                    label="Business Phone Number" 
+                                  />
+                                </>
+                              )}
+                            </Stack>
+                          </Box>
+                        )}
                       </Stack>
                     </Stack>
                   </CardContent>
                 </Card>
 
-                {/* Business Information Card - Conditional */}
-                {correspondenceTo === "business" && (
-                  <Card variant="outlined" sx={commonStyles.coverageCard}>
-                    <CardContent>
-                      <Stack spacing={2}>
-                        {/* Section Header */}
-                        <Box>
-                          <Stack direction="row" spacing={1} alignItems="center">
-                            <ContactMail color="primary" />
-                            <Typography variant="h6">
-                              Business/Employer Information
-                            </Typography>
-                          </Stack>
-                        </Box>
-
-                        <Alert severity="info">
-                          Please include the following details of your business or employer.
-                        </Alert>
-                        
-                        <Stack spacing={2}>
-                          <RHFTextField 
-                            name="businessName" 
-                            label="Name of Business or Employer" 
-                            required 
-                          />
-                          <RHFTextField 
-                            name="businessType" 
-                            label="Type of Business" 
-                            required 
-                          />
-                          
-                          <FormControlLabel
-                            control={
-                              <Checkbox 
-                                checked={businessAddressSameAsHome || false}
-                                onChange={(e) => methods.setValue("businessAddressSameAsHome", e.target.checked)}
-                              />
-                            }
-                            label="Business address is the same as home address"
-                          />
-                          
-                          {!businessAddressSameAsHome && (
-                            <>
-                              <RHFTextField 
-                                name="businessStreetAddress" 
-                                label="Business Street Address" 
-                                required 
-                              />
-                              <RHFTextField 
-                                name="businessAptSuite" 
-                                label="Apt/Suite" 
-                              />
-                              
-                              <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                                <Box sx={{ flex: 1 }}>
-                                  <RHFTextField 
-                                    name="businessCity" 
-                                    label="City" 
-                                    required 
-                                  />
-                                </Box>
-                                <Box sx={{ width: { md: '150px' } }}>
-                                  <RHFSelect 
-                                    name="businessState" 
-                                    label="State" 
-                                    options={STATE_OPTIONS}
-                                    required 
-                                  />
-                                </Box>
-                                <Box sx={{ width: { md: '120px' } }}>
-                                  <RHFTextField 
-                                    name="businessZipCode" 
-                                    label="Zip Code" 
-                                    required 
-                                  />
-                                </Box>
-                              </Stack>
-                            </>
-                          )}
-                          
-                          <RHFTextField 
-                            name="businessPhoneNumber" 
-                            label="Business Phone Number" 
-                          />
-                        </Stack>
-                      </Stack>
-                    </CardContent>
-                  </Card>
-                )}
 
                 {/* Spouse Contact Card - Conditional */}
                 {spouseSelected && (

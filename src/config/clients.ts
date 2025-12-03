@@ -1,8 +1,12 @@
-export type ClientId = 'abe' | 'ama' | 'avmalifetrust' | 'waepa' | 'ieee' | 'default';
+import { THEME_COLORS, type ThemeColorName } from './themeColors';
+
+export type ClientId = 'abe' | 'ama' | 'avmalifetrust' | 'waepa' | 'ieee' | 'demo' | 'default';
 
 export interface ClientBranding {
   /** Client display name */
   name: string;
+  /** Client acronym */
+  acronym: string;
   /** Path to primary logo */
   logo: string;
   /** Path to partner logo (optional) */
@@ -32,12 +36,12 @@ export interface ClientBranding {
 }
 
 export interface ClientTheme {
-  /** Primary brand color - Material UI will auto-generate light/dark variants */
-  primaryColor?: string;
+  /** Theme color name - references a predefined color palette */
+  colorName: ThemeColorName;
 }
 
 export interface ClientFieldLabels {
-  /** Label for date of birth fields */
+  /** Label for birthday fields */
   dateOfBirth?: string;
   /** Label for gender fields */
   gender?: string;
@@ -91,6 +95,7 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
     id: 'abe',
     branding: {
       name: 'American Bar Endowment',
+      acronym: 'ABE',
       logo: '/brand/abe/logo.png',
       logoAlt: 'ABE Logo',
       partnerLogo: '/brand/nyl/logo.png',
@@ -116,10 +121,10 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       phoneDisplay: '(800) 621-8981',
     },
     theme: {
-      primaryColor: '#0e7490',
+      colorName: 'green',
     },
     fieldLabels: {
-      dateOfBirth: 'Date of Birth',
+      dateOfBirth: 'Birthday',
       gender: 'Gender',
       state: 'State',
       nicotineUse: 'Do you use nicotine products?',
@@ -142,6 +147,7 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
     id: 'ama',
     branding: {
       name: 'American Medical Association',
+      acronym: 'AMA',
       logo: '/brand/ama/logo.png',
       logoAlt: 'AMA Logo',
       partnerLogo: '/brand/nyl/logo.png',
@@ -168,10 +174,10 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       scheduleCallUrl: 'https://calendly.com/insurance-specialists-1/ama-insurance-website-inquiry?month=2025-10',
     },
     theme: {
-      primaryColor: '#003d79',
+      colorName: 'blue',
     },
     fieldLabels: {
-      dateOfBirth: 'Date of Birth',
+      dateOfBirth: 'Birthday',
       gender: 'Gender',
       state: 'State',
       nicotineUse: 'Do you use tobacco products?',
@@ -204,6 +210,7 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
     id: 'avmalifetrust',
     branding: {
       name: 'American Veterinary Medical Association',
+      acronym: 'AVMA',
       logo: '/brand/avmalifetrust/logo.png',
       logoAlt: 'AVMA Life Trust Logo',
       partnerLogo: '/brand/nyl/logo.png',
@@ -225,10 +232,10 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       phoneDisplay: '(800) 621-8981',
     },
     theme: {
-      primaryColor: '#0e7490',
+      colorName: 'green',
     },
     fieldLabels: {
-      dateOfBirth: 'Date of Birth',
+      dateOfBirth: 'Birthday',
       gender: 'Gender',
       state: 'State',
       nicotineUse: 'Do you use tobacco products?',
@@ -251,6 +258,7 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
     id: 'waepa',
     branding: {
       name: 'Worldwide Assurance for Employees of Public Agencies',
+      acronym: 'WAEPA',
       logo: '/brand/waepa/logo.png',
       logoAlt: 'WAEPA Logo',
       partnerLogo: '/brand/nyl/logo.png',
@@ -268,10 +276,10 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       phoneHours: 'M-Th 8:30am - 6:30pm, F 8:30am - 5:00pm, ET',
     },
     theme: {
-      primaryColor: '#003d79',
+      colorName: 'blue',
     },
     fieldLabels: {
-      dateOfBirth: 'Date of Birth',
+      dateOfBirth: 'Birthday',
       gender: 'Gender',
       state: 'State',
       nicotineUse: 'Do you use tobacco products?',
@@ -294,6 +302,7 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
     id: 'ieee',
     branding: {
       name: 'IEEE',
+      acronym: 'IEEE',
       logo: '/brand/ieee/logo.png',
       logoAlt: 'IEEE Logo',
       partnerLogo: '/brand/nyl/logo.png',
@@ -314,10 +323,10 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       phoneHours: 'M-F 8:00am-5:00pm ET',
     },
     theme: {
-      primaryColor: '#003d79',
+      colorName: 'blue',
     },
     fieldLabels: {
-      dateOfBirth: 'Date of Birth',
+      dateOfBirth: 'Birthday',
       gender: 'Gender',
       state: 'State',
       nicotineUse: 'Do you use tobacco products?',
@@ -336,10 +345,56 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
     },
   },
   
+  demo: {
+    id: 'demo',
+    branding: {
+      name: 'Demo Insurance',
+      acronym: 'DEMO',
+      logo: '/brand/nyl/logo.png',
+      logoAlt: 'New York Life Logo',
+      heroImage: '/brand/nyl/hero.png',
+      heroImageAlt: 'Demo Insurance Coverage',
+      heroTitle: 'Demo Site - Insurance Coverage Options',
+      heroSubtitle: 'Explore our comprehensive insurance products designed to protect you and your family.',
+      products: [
+        'Term Life Insurance',
+        '10 Year Level Term Life Insurance',
+        'Long-Term Disability Plus Insurance',
+        'Critical Illness',
+        'Hospital Money Insurance',
+        'Short-Term Disability Insurance'
+      ],
+      phone: '8006218981',
+      phoneDisplay: '(800) 621-8981',
+    },
+    theme: {
+      colorName: 'blue',
+    },
+    fieldLabels: {
+      dateOfBirth: 'Birthday',
+      gender: 'Gender',
+      state: 'State',
+      nicotineUse: 'Do you use tobacco products?',
+    },
+    membershipQuestion: {
+      primaryQuestion: 'Are you an active member of Demo Insurance?',
+      spouseQuestion: 'Is your spouse an active member of Demo Insurance?',
+      type: 'radio',
+    },
+    features: {
+      showPartnerLogo: false,
+      showRatingBadges: true,
+      enableDisabilityInsurance: true,
+      enableLifeInsurance: true,
+      showCoverageDetails: true,
+    },
+  },
+  
   default: {
     id: 'default',
     branding: {
       name: 'New York Life',
+      acronym: 'NYL',
       logo: '/brand/nyl/logo.png',
       logoAlt: 'New York Life Logo',
       heroImage: '/brand/nyl/hero.png',
@@ -359,10 +414,10 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       phoneDisplay: '(800) 621-8981',
     },
     theme: {
-      primaryColor: '#003d79',
+      colorName: 'blue',
     },
     fieldLabels: {
-      dateOfBirth: 'Date of Birth',
+      dateOfBirth: 'Birthday',
       gender: 'Gender',
       state: 'State',
       nicotineUse: 'Do you use tobacco?',
@@ -487,14 +542,14 @@ export function getClientBranding(): ClientBranding {
 
 /**
  * Get client theme colors
- * Returns primary color for Material UI theme generation
+ * Returns primary color variants for Material UI theme generation
  */
-export function getClientTheme(): { primaryColor: string } {
-  const theme = getClientConfig().theme;
+export function getClientTheme() {
+  const config = getClientConfig();
+  const colorName = config.theme.colorName;
+  const colors = THEME_COLORS[colorName];
   
-  return {
-    primaryColor: theme.primaryColor || '#003d79',
-  };
+  return colors.primary;
 }
 
 /**

@@ -30,13 +30,13 @@ function getCoverageIcon(category: CoverageCategory) {
 function getCoverageLabel(category: CoverageCategory): string {
   switch (category) {
     case 'LI':
-      return 'Life Insurance';
+      return 'Group Life Insurance';
     case 'DI':
-      return 'Disability Insurance';
+      return 'Group Disability Insurance';
     case 'OO':
-      return 'Business Overhead Expense Insurance';
+      return 'Group Office Overhead Expense Insurance';
     case 'SH':
-      return 'Supplemental Health Insurance';
+      return 'Group Supplemental Health Insurance';
     default:
       return category;
   }

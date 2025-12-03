@@ -2,9 +2,9 @@ import React from 'react';
 import {
   Stack, Typography, FormGroup, FormControlLabel, Checkbox,
   Dialog, DialogTitle, DialogContent, DialogContentText, IconButton,
-  Box, Alert, FormControl, InputLabel, Select, MenuItem, FormHelperText, Button
+  Box, Alert, FormControl, InputLabel, Select, MenuItem, FormHelperText, Button, FormLabel
 } from "@mui/material";
-import { BlockOutlined, People, Person, ChildFriendly, Close as CloseIcon } from '@mui/icons-material';
+import { BlockOutlined, People, Person, ChildFriendly, Close as CloseIcon, Add as AddIcon } from '@mui/icons-material';
 import PageHeader from "../components/layout/PageHeader";
 import PageNavigation from "../components/layout/PageNavigation";
 import { CollapsibleSection } from "../components/common";
@@ -195,35 +195,18 @@ export default function Eligibility() {
         const toggle = (code: CoverageCat) =>
           field.onChange(val.includes(code) ? val.filter(c => c !== code) : [...val, code]);
         const labelFor = (c: CoverageCat) =>
-          c === "LI" ? "Life Insurance" :
+          c === "LI" ? "Life and/or Accidental Death & Dismemberment (AD&D)" :
           c === "DI" ? "Disability Insurance" :
-          c === "OO" ? "Business Overhead Expense Insurance" :
+          c === "OO" ? "Office Overhead Expense Insurance" :
           "Supplemental Health Insurance";
         return (
-          <Stack spacing={2}>
+          <Stack>
             {opts.map(opt => (
-              <Box
+              <FormControlLabel
                 key={opt}
-                sx={{
-                  border: 1,
-                  borderColor: val.includes(opt) ? 'primary.main' : 'divider',
-                  borderRadius: 1,
-                  px: 1.5,
-                  py: 1,
-                  bgcolor: val.includes(opt) ? 'rgba(25, 118, 210, 0.08)' : 'background.paper',
-                  transition: 'all 0.2s ease-in-out',
-                  '&:hover': {
-                    borderColor: 'grey.400',
-                    bgcolor: val.includes(opt) ? 'rgba(25, 118, 210, 0.08)' : 'action.hover'
-                  }
-                }}
-              >
-                <FormControlLabel
-                  control={<Checkbox checked={val.includes(opt)} onChange={() => toggle(opt)} />}
-                  label={labelFor(opt)}
-                  sx={{ my: 0, width: '100%', mr: 0 }}
-                />
-              </Box>
+                control={<Checkbox checked={val.includes(opt)} onChange={() => toggle(opt)} />}
+                label={labelFor(opt)}
+              />
             ))}
           </Stack>
         );
@@ -298,7 +281,7 @@ export default function Eligibility() {
         <Stack spacing={2}>
           <PageHeader 
             title="Check Eligibility"
-            notes="Please provide the following information to determine your eligibility for coverage."
+            notes="Please provide the following information to determine your eligibility for coverage. This program provides exclusive group rates."
           />
 
           {/* Page-level Error Alert */}
@@ -310,39 +293,30 @@ export default function Eligibility() {
           
           {/* Section 1: Who is this insurance for? */}
           <Box sx={commonStyles.applicantsBox(!!methods.formState.errors.applicants)}>
-            <Typography variant="h6" sx={commonStyles.sectionHeading}>
-              Who is this insurance for? <Typography component="span" color="error">*</Typography>
-            </Typography>
-            <FormGroup sx={{ '& > *:not(:last-child)': { mb: 2 } }}>
+            <FormLabel required>
+              Who is this insurance for?
+            </FormLabel>
+            <FormGroup>
               <Controller name="applicants.self" control={methods.control}
                 render={({ field }) => (
-                  <Box sx={commonStyles.checkboxOption(field.value)}>
-                    <FormControlLabel
-                      control={<Checkbox checked={!!field.value} onChange={(_,v)=>field.onChange(v)} />}
-                      label="Myself"
-                      sx={commonStyles.checkboxGroup}
-                    />
-                  </Box>
+                  <FormControlLabel
+                    control={<Checkbox checked={!!field.value} onChange={(_,v)=>field.onChange(v)} />}
+                    label="Myself"
+                  />
                 )} />
               <Controller name="applicants.spouse" control={methods.control}
                 render={({ field }) => (
-                  <Box sx={commonStyles.checkboxOption(field.value)}>
-                    <FormControlLabel
-                      control={<Checkbox checked={!!field.value} onChange={(_,v)=>field.onChange(v)} />}
-                      label="Spouse"
-                      sx={commonStyles.checkboxGroup}
-                    />
-                  </Box>
+                  <FormControlLabel
+                    control={<Checkbox checked={!!field.value} onChange={(_,v)=>field.onChange(v)} />}
+                    label="Spouse"
+                  />
                 )} />
               <Controller name="applicants.child" control={methods.control}
                 render={({ field }) => (
-                  <Box sx={commonStyles.checkboxOption(field.value)}>
-                    <FormControlLabel
-                      control={<Checkbox checked={!!field.value} onChange={(_,v)=>field.onChange(v)} />}
-                      label="Child(ren)"
-                      sx={commonStyles.checkboxGroup}
-                    />
-                  </Box>
+                  <FormControlLabel
+                    control={<Checkbox checked={!!field.value} onChange={(_,v)=>field.onChange(v)} />}
+                    label="Child(ren)"
+                  />
                 )} />
             </FormGroup>
             {methods.formState.errors.applicants?.message && (
@@ -352,11 +326,10 @@ export default function Eligibility() {
             )}
           </Box>
 
-          {/* Your Eligibility Section */}
+          {/* Your Eligibility Section - Always visible */}
           <CollapsibleSection
             title="Your Eligibility"
             icon={<Person color="primary" />}
-            defaultExpanded={true}
           >
             <Stack spacing={3}>
                 <Alert severity="info">
@@ -365,45 +338,47 @@ export default function Eligibility() {
                 
                 {renderMembershipQuestion("isMember", membershipQuestion?.primaryQuestion || "Are you an active member of a State, Local, or Specialty Bar Association?")}                <Stack 
                   direction={{ xs: 'column', md: 'row' }} 
-                  spacing={2} 
-                  sx={{ 
-                    '& .MuiFormControl-root': { width: '100%' },
-                    '& > :nth-of-type(1)': { width: { md: '150px' } },  // Title
-                    '& > :nth-of-type(2)': { flex: { md: 1 } },         // First Name
-                    '& > :nth-of-type(3)': { width: { md: '60px' } },   // MI
-                    '& > :nth-of-type(4)': { flex: { md: 1 } },         // Last Name
-                    '& > :nth-of-type(5)': { width: { md: '100px' } },  // Suffix
-                  }}
+                  spacing={2}
                 >
-                  <RHFSelect
-                    name="title"
-                    label="Title"
-                    options={TITLE_OPTIONS}
-                  />
-                  <RHFTextField
-                    name="firstName"
-                    label="First Name"
-                    required
-                  />
-                  <RHFTextField
-                    name="middleInitial"
-                    label="MI"
-                    inputProps={{ maxLength: 1 }}
-                  />
-                  <RHFTextField
-                    name="lastName"
-                    label="Last Name"
-                    required
-                  />
-                  <RHFTextField
-                    name="suffix"
-                    label="Suffix"
-                  />
+                  <Box sx={{ width: { xs: '100%', md: '120px' } }}>
+                    <RHFSelect
+                      name="title"
+                      label="Title"
+                      options={TITLE_OPTIONS}
+                    />
+                  </Box>
+                  <Box sx={{ flex: { xs: '1', md: '1' } }}>
+                    <RHFTextField
+                      name="firstName"
+                      label="First Name"
+                      required
+                    />
+                  </Box>
+                  <Box sx={{ width: { xs: '100%', md: '80px' } }}>
+                    <RHFTextField
+                      name="middleInitial"
+                      label="MI"
+                      inputProps={{ maxLength: 1 }}
+                    />
+                  </Box>
+                  <Box sx={{ flex: { xs: '1', md: '1' } }}>
+                    <RHFTextField
+                      name="lastName"
+                      label="Last Name"
+                      required
+                    />
+                  </Box>
+                  <Box sx={{ width: { xs: '100%', md: '100px' } }}>
+                    <RHFTextField
+                      name="suffix"
+                      label="Suffix"
+                    />
+                  </Box>
                 </Stack>
 
                 <RHFTextField 
                   name="birthday"
-                  label="Date of Birth" 
+                  label="Birthday" 
                   type="date"
                   required
                   InputLabelProps={{ shrink: true }}
@@ -433,10 +408,10 @@ export default function Eligibility() {
                 {watchSelf && (
                   <Stack spacing={2}>
                     <Box>
-                      <Typography variant="h6" sx={commonStyles.sectionHeading}>
-                        Choose the group coverage(s) you are interested in: <Typography component="span" color="error">*</Typography>
-                      </Typography>
-                      {covBox("selfCoverages", SELF_OPTS)}
+                      <FormLabel required>
+                        Choose the group coverage(s) you are interested in:
+                      </FormLabel>
+                      {covBox("spouseCoverages", SPOUSE_OPTS)}
                       {methods.formState.submitCount > 0 && selfCov?.length === 0 && (
                         <FormHelperText error sx={commonStyles.formHelperText}>
                           Please select a coverage option.
@@ -446,10 +421,6 @@ export default function Eligibility() {
 
                     {/* Nicotine for LI/SH */}
                     {selfCov && (selfCov.includes("LI") || selfCov.includes("SH")) && (
-                      <Box sx={commonStyles.subsectionBox}>
-                        <Stack direction="row" spacing={1} alignItems="center" sx={commonStyles.inlineHeadingSpacing}>
-                          <Typography variant="subtitle1" sx={commonStyles.subsectionHeadingBold}>Tobacco Use</Typography>
-                        </Stack>
                         <Stack spacing={2}>
                           <RHFRadioGroup
                             name="smokerSelf"
@@ -499,15 +470,10 @@ export default function Eligibility() {
                             </>
                           )}
                         </Stack>
-                      </Box>
                     )}
 
                     {/* DI extras */}
                     {selfCov && selfCov.includes("DI") && (
-                      <Box sx={commonStyles.subsectionBox}>
-                        <Stack direction="row" spacing={1} alignItems="center" sx={commonStyles.inlineHeadingSpacing}>
-                          <Typography variant="subtitle1" sx={commonStyles.subsectionHeadingBold}>Income Information</Typography>
-                        </Stack>
                         <Stack spacing={2}>
                           <Controller
                             name="selfAvgIncome"
@@ -530,15 +496,10 @@ export default function Eligibility() {
                           />
                           <RHFTextField name="selfHoursPerWeek" label="# Hours You Work/Week" required />
                         </Stack>
-                      </Box>
                     )}
 
                     {/* OO extras */}
                     {selfCov && selfCov.includes("OO") && (
-                      <Box sx={commonStyles.subsectionBox}>
-                        <Stack direction="row" spacing={1} alignItems="center" sx={commonStyles.inlineHeadingSpacing}>
-                          <Typography variant="subtitle1" sx={commonStyles.subsectionHeadingBold}>Business Overhead Expense Information</Typography>
-                        </Stack>
                         <Stack spacing={2}>
                           <Controller
                             name="selfMonthlyExpenses"
@@ -584,7 +545,6 @@ export default function Eligibility() {
                             )}
                           />
                         </Stack>
-                      </Box>
                     )}
                   </Stack>
                 )}
@@ -596,7 +556,6 @@ export default function Eligibility() {
             <CollapsibleSection
               title="Spouse Eligibility"
               icon={<People color="primary" />}
-              defaultExpanded={true}
             >
               <Stack spacing={3}>
                 <Alert severity="info">
@@ -609,36 +568,40 @@ export default function Eligibility() {
                     {/* Spouse Name Fields */}
                     <Stack 
                       direction={{ xs: 'column', md: 'row' }} 
-                      spacing={2} 
-                      sx={{ 
-                        '& .MuiFormControl-root': { width: '100%' },
-                        '& > :nth-of-type(1)': { width: { md: '150px' } },  // Title
-                        '& > :nth-of-type(2)': { flex: { md: 1 } },         // First Name
-                        '& > :nth-of-type(3)': { width: { md: '60px' } },   // MI
-                        '& > :nth-of-type(4)': { flex: { md: 1 } },         // Last Name
-                        '& > :nth-of-type(5)': { width: { md: '100px' } },  // Suffix
-                      }}
+                      spacing={2}
                     >
-                      <RHFSelect
-                        name="spouseTitle"
-                        label="Title"
-                        options={TITLE_OPTIONS}
-                      />
-                      <RHFTextField name="spouseFirstName" label="First Name" required />
-                      <RHFTextField name="spouseMiddleInitial" label="MI" />
-                      <RHFTextField name="spouseLastName" label="Last Name" required />
-                      <RHFTextField name="spouseSuffix" label="Suffix" />
+                      <Box sx={{ width: { xs: '100%', md: '120px' } }}>
+                        <RHFSelect
+                          name="spouseTitle"
+                          label="Title"
+                          options={TITLE_OPTIONS}
+                        />
+                      </Box>
+                      <Box sx={{ flex: { xs: '1', md: '1' } }}>
+                        <RHFTextField name="spouseFirstName" label="First Name" required />
+                      </Box>
+                      <Box sx={{ width: { xs: '100%', md: '80px' } }}>
+                        <RHFTextField 
+                          name="spouseMiddleInitial" 
+                          label="MI" 
+                          inputProps={{ maxLength: 1 }}
+                        />
+                      </Box>
+                      <Box sx={{ flex: { xs: '1', md: '1' } }}>
+                        <RHFTextField name="spouseLastName" label="Last Name" required />
+                      </Box>
+                      <Box sx={{ width: { xs: '100%', md: '100px' } }}>
+                        <RHFTextField name="spouseSuffix" label="Suffix" />
+                      </Box>
                     </Stack>
 
-                    <RHFTextField 
+                      <RHFTextField 
                       name="spouseBirthday"
-                      label="Date of Birth" 
+                      label="Birthday" 
                       type="date"
                       required
                       InputLabelProps={{ shrink: true }}
-                    />
-
-                    {/* Spouse Gender */}
+                    />                    {/* Spouse Gender */}
                     <RHFRadioGroup
                       name="spouseGender"
                       label="Gender"
@@ -669,10 +632,6 @@ export default function Eligibility() {
 
                     {/* Nicotine for LI/SH */}
                     {spouseCov && (spouseCov.includes("LI") || spouseCov.includes("SH")) && (
-                      <Box sx={commonStyles.subsectionBox}>
-                        <Stack direction="row" spacing={1} alignItems="center" sx={commonStyles.inlineHeadingSpacing}>
-                          <Typography variant="subtitle1" sx={commonStyles.subsectionHeadingBold}>Tobacco Use</Typography>
-                        </Stack>
                         <Stack spacing={2}>
                           <RHFRadioGroup
                             name="smokerSpouse"
@@ -722,26 +681,10 @@ export default function Eligibility() {
                             </>
                           )}
                         </Stack>
-                      </Box>
                     )}
 
                     {/* DI extras */}
                     {spouseCov && spouseCov.includes("DI") && (
-                      <Box sx={{ 
-                        p: 2, 
-                        border: 1, 
-                        borderColor: 'divider', 
-                        borderRadius: 1,
-                        bgcolor: 'grey.50',
-                        '& .MuiTextField-root, & .MuiFormControl-root': {
-                          '& .MuiOutlinedInput-root, & .MuiSelect-outlined': {
-                            bgcolor: 'background.paper'
-                          }
-                        }
-                      }}>
-                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-                          <Typography variant="subtitle1" sx={commonStyles.subsectionHeadingBold}>Income Information</Typography>
-                        </Stack>
                         <Stack spacing={2}>
                           <Controller
                             name="spouseAvgIncome"
@@ -762,21 +705,19 @@ export default function Eligibility() {
                               />
                             )}
                           />
-                          <RHFTextField name="spouseHoursPerWeek" label="# Hours/Week" required />
+                          <RHFTextField name="spouseHoursPerWeek" label="# Hours You Work/Week" required />
                         </Stack>
-                      </Box>
                     )}
                   </Stack>
-                </Stack>
-              </CollapsibleSection>
-            </Box>
+              </Stack>
+            </CollapsibleSection>
+          </Box>
 
           {/* Child Section */}
           <Box sx={{ display: (watchChild || hasChildErrors) ? 'block' : 'none' }}>
             <CollapsibleSection
               title="Child Eligibility"
               icon={<ChildFriendly color="primary" />}
-              defaultExpanded={true}
             >
               <Stack spacing={2}>
                 <Alert severity="info">
@@ -796,7 +737,7 @@ export default function Eligibility() {
                         <Stack spacing={2}>
                           <Stack direction="row" justifyContent="space-between" alignItems="center">
                             <Typography variant="subtitle1" sx={commonStyles.subsectionHeadingBold}>
-                              Child {index + 1}
+                              Child Information
                             </Typography>
                             {methods.watch("children").length > 1 && (
                               <Button
@@ -821,15 +762,13 @@ export default function Eligibility() {
                             </Box>
                           </Stack>
                           
-                          <RHFTextField 
+                            <RHFTextField 
                             name={`children.${index}.birthday`}
-                            label="Date of Birth" 
+                            label="Birthday" 
                             type="date"
                             required
                             InputLabelProps={{ shrink: true }}
-                          />
-                          
-                          <RHFRadioGroup
+                          />                          <RHFRadioGroup
                             name={`children.${index}.gender`}
                             label="Gender"
                             options={[{label:"Male",value:"male"},{label:"Female",value:"female"}]}
@@ -848,6 +787,7 @@ export default function Eligibility() {
                     
                 <Button
                   variant="outlined"
+                  startIcon={<AddIcon />}
                   onClick={() => {
                     const currentChildren = methods.getValues("children");
                     methods.setValue("children", [...currentChildren, { firstName: "", lastName: "", birthday: "", gender: undefined, militaryDischarge: undefined }]);

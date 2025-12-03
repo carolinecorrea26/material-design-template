@@ -17,10 +17,16 @@ export function StepperProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Only consider application section pages for stepper navigation
+  const appPages = React.useMemo(() => 
+    PAGES.filter(p => p.section === "application"), 
+    []
+  );
+
   const indexFromPath = React.useMemo(() => {
-    const idx = PAGES.findIndex(p => p.path === location.pathname);
+    const idx = appPages.findIndex(p => p.path === location.pathname);
     return idx >= 0 ? idx : 0;
-  }, [location.pathname]);
+  }, [location.pathname, appPages]);
 
   const [activeIndex, setActiveIndex] = React.useState(indexFromPath);
   const [completed, setCompleted] = React.useState<Set<number>>(new Set());
@@ -30,11 +36,11 @@ export function StepperProvider({ children }: { children: React.ReactNode }) {
   }, [indexFromPath]);
 
   const goTo = (index: number) => {
-    const target = PAGES[index];
+    const target = appPages[index];
     if (target) navigate(target.path);
   };
 
-  const next = () => goTo(Math.min(activeIndex + 1, PAGES.length - 1));
+  const next = () => goTo(Math.min(activeIndex + 1, appPages.length - 1));
   const prev = () => goTo(Math.max(activeIndex - 1, 0));
 
   const markComplete = (index = activeIndex) => {

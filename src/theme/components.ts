@@ -129,7 +129,11 @@ export const components: Components<Theme> = {
   MuiFormLabel: {
     styleOverrides: {
       root: ({ theme }) => ({
-        color: theme.palette.text.primary,
+        color: 'rgba(0, 0, 0, 0.87)',
+        // fontSize: '0.875rem',
+        fontWeight: 500,
+        marginBottom: '8px',
+        display: 'block',
         '&.Mui-focused': {
           color: theme.palette.primary.main
         }
@@ -255,38 +259,44 @@ export const components: Components<Theme> = {
   },
   MuiTextField: {
     styleOverrides: {
-      root: {
+      root: ({ theme }) => ({
         '& .MuiOutlinedInput-root': {
           backgroundColor: 'white'
+        },
+        '& .MuiOutlinedInput-input': {
+          // color: theme.palette.primary.main,
+          // fontWeight: 500
         }
-      }
+      })
     }
   },
   MuiSelect: {
     styleOverrides: {
-      root: {
+      root: ({ theme }) => ({
         '& .MuiOutlinedInput-root': {
           backgroundColor: 'white'
+        },
+        '& .MuiSelect-select': {
+          // color: theme.palette.primary.main,
+          // fontWeight: 500
         }
-      }
+      })
     }
   },
   MuiFormControl: {
     styleOverrides: {
-      root: {
+      root: ({ theme }) => ({
         '& .MuiOutlinedInput-root': {
           backgroundColor: 'white'
+        },
+        '& .MuiOutlinedInput-input': {
+          // color: theme.palette.primary.main,
+          // fontWeight: 500
         }
-      }
+      })
     }
   },
-  MuiCheckbox: {
-    styleOverrides: {
-      root: {
-        backgroundColor: 'white'
-      }
-    }
-  },
+
   MuiRadio: {
     styleOverrides: {
       root: {
