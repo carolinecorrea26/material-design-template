@@ -2,6 +2,8 @@ import { Stack, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { PAGES } from "../../config/pages";
 import { commonStyles } from "../../theme/commonStyles";
+import { useLayout } from "../../state/LayoutContext";
+import { getClientFeatures } from "../../config/clients";
 
 interface PageNavigationProps {
   /**
@@ -38,11 +40,28 @@ export default function PageNavigation({
   backPath
 }: PageNavigationProps) {
   const navigate = useNavigate();
-  const applicationPages = PAGES.filter(p => p.section === "application");
+  const { layoutMode } = useLayout();
+  const features = getClientFeatures();
+  
+  // Filter application pages based on client configuration
+  const applicationPages = PAGES.filter(p => {
+    if (p.section !== "application") return false;
+    
+    // Filter out membership page if not enabled for this client
+    if (p.path === "/membership" && !features.showMembershipPage) {
+      return false;
+    }
+    
+    return true;
+  });
   
   // Find the current page in the flow
   const currentPath = window.location.pathname;
   const currentIndex = applicationPages.findIndex(p => p.path === currentPath);
+  
+  // In single-page mode, hide back button on first page (index 0)
+  const isFirstPage = currentIndex === 0;
+  const shouldShowBack = showBack && !(layoutMode === 'single-page' && isFirstPage);
   
   // Determine back path if not explicitly provided
   const defaultBackPath = currentIndex > 0 
@@ -61,7 +80,7 @@ export default function PageNavigation({
       sx={commonStyles.pageNavigation}
     >
       <div>
-        {showBack && (
+        {shouldShowBack && (
           <Button 
             variant="outlined" 
             onClick={handleBack}

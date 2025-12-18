@@ -2,6 +2,7 @@ import * as React from "react";
 import { useRoutes, Navigate } from "react-router-dom";
 import { LinearProgress, Box } from "@mui/material";
 import RouteGuard from "./navigation/RouteGuard";
+import { getClientFeatures } from "./config/clients";
 
 const Landing     = React.lazy(() => import("./pages/Landing"));
 const AdvisorLogin = React.lazy(() => import("./pages/AdvisorLogin"));
@@ -19,6 +20,8 @@ const Receipt     = React.lazy(() => import("./pages/Receipt"));
 const Resume      = React.lazy(() => import("./pages/Resume"));
 const Styleguide  = React.lazy(() => import("./pages/Styleguide"));
 const ProjectStructure = React.lazy(() => import("./pages/ProjectStructure"));
+const SiteSetup   = React.lazy(() => import("./pages/SiteSetup"));
+const SiteRequirements = React.lazy(() => import("./pages/SiteRequirements"));
 
 
 function SuspenseWrap({ children }: { children: React.ReactNode }) {
@@ -36,13 +39,17 @@ function SuspenseWrap({ children }: { children: React.ReactNode }) {
 }
 
 export function AppRoutes() {
+  const features = getClientFeatures();
+  
   const routes = [
     { path: "/", element: <SuspenseWrap><Landing /></SuspenseWrap> },
     { path: "/advisor", element: <SuspenseWrap><AdvisorLogin /></SuspenseWrap> },
 
-    { path: "/membership", element:
-      <SuspenseWrap><Membership /></SuspenseWrap>
-    },
+    // Conditionally include membership page based on client configuration
+    ...(features.showMembershipPage ? [{
+      path: "/membership", 
+      element: <SuspenseWrap><Membership /></SuspenseWrap>
+    }] : []),
 
     { path: "/eligibility", element:
       <SuspenseWrap><Eligibility /></SuspenseWrap>
@@ -122,6 +129,7 @@ export function AppRoutes() {
 
     { path: "/styleguide", element: <SuspenseWrap><Styleguide /></SuspenseWrap> },
     { path: "/project-structure", element: <SuspenseWrap><ProjectStructure /></SuspenseWrap> },
+    { path: "/site-requirements", element: <SuspenseWrap><SiteRequirements /></SuspenseWrap> },
 
   ];
 

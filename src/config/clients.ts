@@ -1,6 +1,6 @@
 import { THEME_COLORS, type ThemeColorName } from './themeColors';
 
-export type ClientId = 'abe' | 'ama' | 'avmalifetrust' | 'waepa' | 'ieee' | 'demo' | 'default';
+export type ClientId = 'abe' | 'ama' | 'avmalifetrust' | 'waepa' | 'ieee' | 'nar' | 'demo' | 'default';
 
 export interface ClientBranding {
   /** Client display name */
@@ -33,6 +33,15 @@ export interface ClientBranding {
   phoneHours?: string;
   /** Schedule call URL (optional) */
   scheduleCallUrl?: string;
+  /** Support email address */
+  email?: string;
+  /** Physical mailing address */
+  address?: {
+    street?: string;
+    city?: string;
+    state?: string;
+    zip?: string;
+  };
 }
 
 export interface ClientTheme {
@@ -76,6 +85,8 @@ export interface ClientFeatures {
   enableLifeInsurance?: boolean;
   /** Whether to show coverage details */
   showCoverageDetails?: boolean;
+  /** Whether to show membership page */
+  showMembershipPage?: boolean;
 }
 
 export interface ClientConfig {
@@ -85,6 +96,15 @@ export interface ClientConfig {
   fieldLabels?: ClientFieldLabels;
   membershipQuestion?: ClientMembershipQuestion;
   features?: ClientFeatures;
+  /** Product fixture file to use (e.g., 'products', 'products-nar') */
+  productsFile?: string;
+  /** Available coverage categories for this client */
+  coverageCategories?: Array<'LI' | 'DI' | 'OO' | 'SH'>;
+  /** Optional pages configuration */
+  pages?: {
+    /** List of page paths to exclude from this client */
+    exclude?: string[];
+  };
 }
 
 /**
@@ -140,7 +160,10 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       enableDisabilityInsurance: true,
       enableLifeInsurance: true,
       showCoverageDetails: true,
+      showMembershipPage: false,
     },
+    productsFile: 'products',
+    coverageCategories: ['LI', 'DI', 'OO', 'SH'],
   },
   
   ama: {
@@ -203,7 +226,10 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       enableDisabilityInsurance: true,
       enableLifeInsurance: true,
       showCoverageDetails: true,
+      showMembershipPage: false,
     },
+    productsFile: 'products',
+    coverageCategories: ['LI', 'DI', 'SH'],
   },
   
   avmalifetrust: {
@@ -251,7 +277,10 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       enableDisabilityInsurance: true,
       enableLifeInsurance: true,
       showCoverageDetails: true,
+      showMembershipPage: false,
     },
+    productsFile: 'products',
+    coverageCategories: ['LI', 'DI', 'OO'],
   },
   
   waepa: {
@@ -295,7 +324,10 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       enableDisabilityInsurance: true,
       enableLifeInsurance: true,
       showCoverageDetails: true,
+      showMembershipPage: true,
     },
+    productsFile: 'products',
+    coverageCategories: ['LI', 'DI'],
   },
   
   ieee: {
@@ -342,7 +374,10 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       enableDisabilityInsurance: true,
       enableLifeInsurance: true,
       showCoverageDetails: true,
+      showMembershipPage: false,
     },
+    productsFile: 'products',
+    coverageCategories: ['LI', 'DI', 'SH'],
   },
   
   demo: {
@@ -387,7 +422,58 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       enableDisabilityInsurance: true,
       enableLifeInsurance: true,
       showCoverageDetails: true,
+      showMembershipPage: false,
     },
+    productsFile: 'products-demo',
+    coverageCategories: ['LI', 'DI', 'SH'],
+  },
+  
+  nar: {
+    id: 'nar',
+    branding: {
+      name: 'National Association of REALTORS®',
+      acronym: 'NAR',
+      logo: '/brand/nar/logo.png',
+      logoAlt: 'NAR Logo',
+      partnerLogo: '/brand/nyl/logo.png',
+      partnerLogoAlt: 'New York Life Logo',
+      heroImage: '/brand/nar/hero.png',
+      heroImageAlt: 'Real Estate Professionals',
+      heroTitle: 'Insurance coverage designed for REALTORS®.',
+      heroSubtitle: 'Group Life and Disability Insurance available exclusively to National Association of REALTORS® members. Start your application today.',
+      products: [
+        'REALTORS® Group Term Life Insurance',
+        'REALTORS® Mature Group Term Life Insurance',
+        'REALTORS® Group AD&D (Accidental Death and Dismemberment) Insurance',
+        'REALTORS® Group Short Term Disability'
+      ],
+      phone: '8449270527',
+      phoneDisplay: '(844) 927-0527',
+    },
+    theme: {
+      colorName: 'blue',
+    },
+    fieldLabels: {
+      dateOfBirth: 'Birthday',
+      gender: 'Gender',
+      state: 'State',
+      nicotineUse: 'Do you use tobacco products?',
+    },
+    membershipQuestion: {
+      primaryQuestion: 'Are you a member of the National Association of REALTORS®?',
+      spouseQuestion: 'Is your spouse a member of the National Association of REALTORS®?',
+      type: 'radio',
+    },
+    features: {
+      showPartnerLogo: true,
+      showRatingBadges: true,
+      enableDisabilityInsurance: true,
+      enableLifeInsurance: true,
+      showCoverageDetails: true,
+      showMembershipPage: false,
+    },
+    productsFile: 'products-nar',
+    coverageCategories: ['LI', 'DI'],
   },
   
   default: {
@@ -433,7 +519,10 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       enableDisabilityInsurance: true,
       enableLifeInsurance: true,
       showCoverageDetails: true,
+      showMembershipPage: false,
     },
+    productsFile: 'products',
+    coverageCategories: ['LI', 'DI', 'OO', 'SH'],
   },
 };
 
@@ -571,6 +660,23 @@ export function getClientMembershipQuestion(): ClientMembershipQuestion | undefi
  */
 export function getClientFeatures(): ClientFeatures {
   return getClientConfig().features || {};
+}
+
+/**
+ * Get available coverage categories for the client
+ * Returns all categories if not specified in config
+ */
+export function getClientCoverageCategories(): Array<'LI' | 'DI' | 'OO' | 'SH'> {
+  const config = getClientConfig();
+  return config.coverageCategories || ['LI', 'DI', 'OO', 'SH'];
+}
+
+/**
+ * Check if a coverage category is available for the client
+ */
+export function isCategoryCategoryAvailable(category: 'LI' | 'DI' | 'OO' | 'SH'): boolean {
+  const categories = getClientCoverageCategories();
+  return categories.includes(category);
 }
 
 /**

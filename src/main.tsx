@@ -11,6 +11,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { StepperProvider } from "./state/StepperContext";
 import { AppDataProvider } from "./state/AppDataContext";
+import { LayoutProvider } from "./state/LayoutContext";
 
 
 // Start MSW only in development
@@ -26,12 +27,14 @@ prepareApp().then(() => {
     <React.StrictMode>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <BrowserRouter>
-          <StepperProvider>
-              <AppDataProvider>
-                <App />
-              </AppDataProvider>
-          </StepperProvider>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
+          <LayoutProvider>
+            <StepperProvider>
+                <AppDataProvider>
+                  <App />
+                </AppDataProvider>
+            </StepperProvider>
+          </LayoutProvider>
         </BrowserRouter>
       </ThemeProvider>
     </React.StrictMode>

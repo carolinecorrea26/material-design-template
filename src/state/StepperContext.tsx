@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PAGES } from "../config/pages";
+import { getClientFeatures } from "../config/clients";
 
 type StepperState = {
   activeIndex: number;
@@ -18,10 +19,20 @@ export function StepperProvider({ children }: { children: React.ReactNode }) {
   const location = useLocation();
 
   // Only consider application section pages for stepper navigation
-  const appPages = React.useMemo(() => 
-    PAGES.filter(p => p.section === "application"), 
-    []
-  );
+  // Filter based on client configuration
+  const appPages = React.useMemo(() => {
+    const features = getClientFeatures();
+    return PAGES.filter(p => {
+      if (p.section !== "application") return false;
+      
+      // Filter out membership page if not enabled for this client
+      if (p.path === "/membership" && !features.showMembershipPage) {
+        return false;
+      }
+      
+      return true;
+    });
+  }, []);
 
   const indexFromPath = React.useMemo(() => {
     const idx = appPages.findIndex(p => p.path === location.pathname);

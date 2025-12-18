@@ -17,6 +17,8 @@ export interface AppPage {
   title: string;
   // optional: feature flags, guards, or section tags
   section?: "application" | "system" | "post-submit";
+  /** Feature flag key to check if page should be shown */
+  requiresFeature?: keyof import('./clients').ClientFeatures;
 }
 
 export const PAGES: AppPage[] = [

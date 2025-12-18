@@ -1,12 +1,14 @@
 import * as React from "react";
-import { Box, Button, Stack, IconButton, Drawer, Typography, Divider } from "@mui/material";
+import { Box, Button, Stack, IconButton, Drawer, Typography, Divider, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { Settings } from "@mui/icons-material";
 import ClientSwitcher from "./ClientSwitcher";
+import { useLayout } from "../../state/LayoutContext";
 
 export default function DevTools() {
   const location = useLocation();
   const [open, setOpen] = React.useState(false);
+  const { layoutMode, setLayoutMode } = useLayout();
 
   const handleResetApp = () => {
     // Clear all localStorage data
@@ -86,6 +88,24 @@ export default function DevTools() {
                 CLIENT
               </Typography>
               <ClientSwitcher />
+            </Box>
+
+            <Divider sx={{ borderColor: 'divider' }} />
+
+            <Box>
+              <Typography variant="caption" sx={{ color: 'text.secondary', mb: 1, display: 'block' }}>
+                LAYOUT MODE
+              </Typography>
+              <ToggleButtonGroup
+                value={layoutMode}
+                exclusive
+                onChange={(_e, value) => value && setLayoutMode(value)}
+                fullWidth
+                size="small"
+              >
+                <ToggleButton value="multi-page">Multi-Page</ToggleButton>
+                <ToggleButton value="single-page">Single-Page</ToggleButton>
+              </ToggleButtonGroup>
             </Box>
 
             <Divider sx={{ borderColor: 'divider' }} />
@@ -172,6 +192,23 @@ export default function DevTools() {
                   }}
                 >
                   Project Structure
+                </Button>
+                <Button
+                  component={RouterLink}
+                  to="/site-requirements"
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    color: 'text.primary',
+                    borderColor: 'divider',
+                    justifyContent: 'flex-start',
+                    '&:hover': {
+                      borderColor: 'primary.main',
+                      bgcolor: 'grey.50',
+                    },
+                  }}
+                >
+                  Site Requirements
                 </Button>
               </Stack>
             </Box>

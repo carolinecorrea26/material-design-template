@@ -4,7 +4,7 @@ import {
   Button, Box, Alert, Checkbox, FormControlLabel, Divider, Tooltip, Chip,
   Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
 } from "@mui/material";
-import { Person, People, ChildFriendly, InfoOutlined } from "@mui/icons-material";
+import { Person, People, ChildFriendly, InfoOutlined, Shield } from "@mui/icons-material";
 import PageHeader from "../components/layout/PageHeader";
 import PageNavigation from "../components/layout/PageNavigation";
 import { useAppData } from "../state/AppDataContext";
@@ -460,22 +460,16 @@ export default function Coverage() {
           // const isExpanded = expandedCategories.has(category);
 
           return (
-            <Card key={category} sx={commonStyles.categoryCard}>
-              <CardContent>
-                <Stack spacing={2}>
-                  {/* Category Header */}
-                  <Box sx={commonStyles.coverageCategoryHeader}>
-                    <Typography variant="h4">
-                      {getCoverageLabel(category as CoverageCategory)}
-                    </Typography>
-                  </Box>
+            <Box key={category}>
+              {/* Category Header - Outside of cards */}
+              <Typography variant="h4" sx={{ mb: 3, fontWeight: 600 }}>
+                {getCoverageLabel(category as CoverageCategory)}
+              </Typography>
 
-                  <Divider sx={{ my: 2 }} />
-
-                  {/* Products */}
-                  <Stack spacing={3} divider={<Divider />}>
-                      {/* Group by product, then show all eligible applicants */}
-                      {visibleProducts.map((p) => {
+              {/* Products - Each in its own card */}
+              <Stack spacing={3}>
+                  {/* Group by product, then show all eligible applicants */}
+                  {visibleProducts.map((p) => {
                         const allowedApplicants = chosenApplicants.filter(a => {
                           if (!p.eligibleApplicants.includes(a)) return false;
                           if (a === "self" && selfCats.size && !selfCats.has(p.category)) return false;
@@ -493,21 +487,16 @@ export default function Coverage() {
                         if (allowedApplicants.length === 0) return null;
 
                         return (
-                          <Box key={p.id}>
-                            {/* Product Section Header */}
-                            <Box 
-                              sx={{ 
-                                mb: 2, 
-                                bgcolor: 'primary.main', 
-                                color: 'white',
-                                p: 1.5,
-                                borderRadius: 1
-                              }}
-                            >
-                              <Typography variant="h5" sx={{ color: 'white' }}>
-                                {p.name}
-                              </Typography>
-                            </Box>
+                          <Card key={p.id} sx={commonStyles.categoryCard}>
+                            <CardContent>
+                              <Stack spacing={2}>
+                                {/* Product Section Header */}
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1, borderBottom: 2, borderColor: 'divider' }}>
+                                  <Shield sx={{ color: 'primary.main', fontSize: 28 }} />
+                                  <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                                    {p.name}
+                                  </Typography>
+                                </Box>
 
                             {/* Product Description - Only for Term Life Insurance */}
                             {p.name === "Term Life Insurance" && (
@@ -735,7 +724,7 @@ export default function Coverage() {
                                         {typeof rate === "number" && val !== "" ? (
                                           <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
                                             <Typography 
-                                              color="primary.light" 
+                                              color="primary" 
                                               sx={{ 
                                                 fontSize: { xs: '2rem', md: '2rem' },
                                                 fontWeight: 'bold',
@@ -955,13 +944,13 @@ export default function Coverage() {
                                 </CardContent>
                               </Card>
                             )}
-                          </Box>
+                              </Stack>
+                            </CardContent>
+                          </Card>
                         );
                       })}
-                  </Stack>
-                </Stack>
-              </CardContent>
-            </Card>
+              </Stack>
+            </Box>
           );
         });
       })()}

@@ -118,9 +118,9 @@ export default function DocuSign() {
                     Preview:
                   </Typography>
                   <Typography 
+                    variant="h3"
                     sx={{ 
                       fontFamily: "'Brush Script MT', cursive",
-                      fontSize: '2rem',
                       color: 'primary.main',
                       mt: 1
                     }}

@@ -8,17 +8,22 @@ import RadioGroup from "../components/form/RadioGroup";
 import { 
   ArrowRightAlt as ArrowRightAltIcon
 } from "@mui/icons-material";
-import { getClientBranding } from "../config/clients";
+import { getClientBranding, getClientFeatures } from "../config/clients";
 import CoverageCategoryCard from "../components/coverage/CoverageCategoryCard";
 import { commonStyles } from "../theme/commonStyles";
 import QuoteModal from "../components/coverage/QuoteModal";
 import { getProducts } from "../api/client";
 import type { Product, CoverageCategory } from "../types/app";
 
-export default function Landing() {
+interface LandingProps {
+  hideNonHero?: boolean;
+}
+
+export default function Landing({ hideNonHero = false }: LandingProps) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const branding = getClientBranding();
+  const features = getClientFeatures();
   const quoteRef = React.useRef<HTMLElement>(null);
   const [coverageType, setCoverageType] = React.useState<'life' | 'disability'>('life');
   const [birthday, setBirthday] = React.useState('');
@@ -96,7 +101,9 @@ export default function Landing() {
 
   const handleBeginApplication = () => {
     setShowQuoteModal(false);
-    navigate('/membership');
+    // Navigate to membership if enabled, otherwise go to eligibility
+    const firstPage = features.showMembershipPage ? '/membership' : '/eligibility';
+    navigate(firstPage);
   };
 
   return (
@@ -118,7 +125,7 @@ export default function Landing() {
                   variant="h1" 
                   component="h1"
                   sx={{ 
-                    fontSize: { xs: '1.75rem', sm: '1.75rem', md: '2rem', lg: '2.5rem' },
+                    fontSize: { xs: '1.75rem', sm: '1.75rem', md: '2rem', lg: '2.75rem' },
                     textAlign: 'center'
                   }}
                 >
@@ -135,67 +142,72 @@ export default function Landing() {
                 >
                   {branding.heroSubtitle}
                 </Typography>
-                <Stack 
-                  direction={{ xs: 'column', sm: 'row' }} 
-                  spacing={2} 
-                  sx={{ 
-                    mt: 1, 
-                    width: { xs: '100%', sm: 'auto' },
-                  alignItems: { xs: 'stretch', sm: 'center' }
-                  }}
-                >
-                  <Button 
-                    component={RouterLink} 
-                    to="/membership" 
-                    variant="contained" 
-                    size="large"
-                    endIcon={<ArrowRightAltIcon />}
+                {!hideNonHero && (
+                  <Stack 
+                    direction={{ xs: 'column', sm: 'row' }} 
+                    spacing={2} 
                     sx={{ 
-                      py: 1.5, 
-                      px: 4,
-                      width: { xs: '100%', sm: 'auto' }
+                      mt: 1, 
+                      width: { xs: '100%', sm: 'auto' },
+                      alignItems: { xs: 'stretch', sm: 'center' }
                     }}
                   >
-                    Begin Application
-                  </Button>
-                  <Button 
-                    onClick={scrollToQuote}
-                    variant="outlined" 
-                    size="large"
-                    sx={{ 
-                      py: 1.5, 
-                      px: 4,
-                      width: { xs: '100%', sm: 'auto' }
-                    }}
-                  >
-                    Get Quote
-                  </Button>
-                </Stack>
+                    <Button 
+                      component={RouterLink} 
+                      to={features.showMembershipPage ? '/membership' : '/eligibility'} 
+                      variant="contained" 
+                      size="large"
+                      endIcon={<ArrowRightAltIcon />}
+                      sx={{ 
+                        py: 1.5, 
+                        px: 4,
+                        width: { xs: '100%', sm: 'auto' }
+                      }}
+                    >
+                      Begin Application
+                    </Button>
+                    <Button 
+                      onClick={scrollToQuote}
+                      variant="outlined" 
+                      size="large"
+                      sx={{ 
+                        py: 1.5, 
+                        px: 4,
+                        width: { xs: '100%', sm: 'auto' }
+                      }}
+                    >
+                      Get Quote
+                    </Button>
+                  </Stack>
+                )}
               </Stack>
             </Box>
           </Box>
         </Container>
         
         {/* Hero Image */}
-        {/* <Box
+        <Box
           component="img"
           src={branding.heroImage || '/brand/default/hero.png'}
+          // src={'https://img.lovepik.com/background/20211022/medium/lovepik-taobao-tmall-e-commerce-banner-background-image_500603827.jpg'}
           alt={branding.heroImageAlt || 'Insurance Coverage'}
           sx={{
-            width: { xs: '100%', sm: '100%', md: '100%' },
+            width: { xs: '80%', sm: '80%', md: '80%' },
             height: 'auto',
             maxHeight: { xs: 280, sm: 350, md: 400 },
             objectFit: 'cover',
             display: 'block',
             mx: 'auto'
           }}
-        /> */}
+        />
       </Box>
 
-      {/* Quote Section */}
-      <Box
-        ref={quoteRef}
-        sx={{
+      {!hideNonHero && (
+        <>
+          {/* Quote Section */}
+          <Box
+            ref={quoteRef}
+            sx={{
           bgcolor: 'grey.50',
           py: { xs: 4, md: 5 },
           borderBottom: 1,
@@ -221,8 +233,8 @@ export default function Landing() {
                     fullWidth
                     sx={{ mb: 1 }}
                   >
-                    <ToggleButton value="life">Life Insurance</ToggleButton>
-                    <ToggleButton value="disability">Disability Insurance</ToggleButton>
+                    <ToggleButton value="life">Group Life</ToggleButton>
+                    <ToggleButton value="disability">Group Disability</ToggleButton>
                   </ToggleButtonGroup>
 
                   {/* Always Displayed Fields */}
@@ -380,21 +392,7 @@ export default function Landing() {
             <Stack direction="column" spacing={4}>
               <Box>
                 <Stack direction="row" spacing={3} alignItems="flex-start">
-                  <Box
-                    sx={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: '50%',
-                      bgcolor: 'primary.main',
-                      color: 'white',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '1.125rem',
-                      fontWeight: 700,
-                      flexShrink: 0
-                    }}
-                  >
+                  <Box sx={commonStyles.stepNumberCircle}>
                     1
                   </Box>
                   <Box>
@@ -410,21 +408,7 @@ export default function Landing() {
 
               <Box>
                 <Stack direction="row" spacing={3} alignItems="flex-start">
-                  <Box
-                    sx={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: '50%',
-                      bgcolor: 'primary.main',
-                      color: 'white',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '1.125rem',
-                      fontWeight: 700,
-                      flexShrink: 0
-                    }}
-                  >
+                  <Box sx={commonStyles.stepNumberCircle}>
                     2
                   </Box>
                   <Box>
@@ -440,21 +424,7 @@ export default function Landing() {
 
               <Box>
                 <Stack direction="row" spacing={3} alignItems="flex-start">
-                  <Box
-                    sx={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: '50%',
-                      bgcolor: 'primary.main',
-                      color: 'white',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '1.125rem',
-                      fontWeight: 700,
-                      flexShrink: 0
-                    }}
-                  >
+                  <Box sx={commonStyles.stepNumberCircle}>
                     3
                   </Box>
                   <Box>
@@ -472,7 +442,7 @@ export default function Landing() {
             <Box textAlign="center" sx={{ pt: 4 }}>
               <Button 
                 component={RouterLink} 
-                to="/membership" 
+                to={features.showMembershipPage ? '/membership' : '/eligibility'} 
                 variant="contained" 
                 size="large"
                 endIcon={<ArrowRightAltIcon />}
@@ -519,7 +489,7 @@ export default function Landing() {
             <Box textAlign="center" sx={{ pt: 4 }}>
               <Button 
                 component={RouterLink} 
-                to="/membership" 
+                to={features.showMembershipPage ? '/membership' : '/eligibility'} 
                 variant="contained" 
                 size="large"
                 endIcon={<ArrowRightAltIcon />}
@@ -576,19 +546,19 @@ export default function Landing() {
                 </Typography>
                 <Stack direction="row" spacing={3} flexWrap="wrap" justifyContent="center">
                   <Box>
-                    <Typography variant="h5" color="primary">A++</Typography>
+                    <Typography variant="h1" color="primary">A++</Typography>
                     <Typography variant="caption" color="text.secondary">A.M. Best</Typography>
                   </Box>
                   <Box>
-                    <Typography variant="h5" color="primary">AAA</Typography>
+                    <Typography variant="h1" color="primary">AAA</Typography>
                     <Typography variant="caption" color="text.secondary">Fitch Ratings</Typography>
                   </Box>
                   <Box>
-                    <Typography variant="h5" color="primary">Aa1</Typography>
+                    <Typography variant="h1" color="primary">Aa1</Typography>
                     <Typography variant="caption" color="text.secondary">Moody's Investors Service</Typography>
                   </Box>
                   <Box>
-                    <Typography variant="h5" color="primary">AA+</Typography>
+                    <Typography variant="h1" color="primary">AA+</Typography>
                     <Typography variant="caption" color="text.secondary">Standard & Poor's</Typography>
                   </Box>
                 </Stack>
@@ -600,6 +570,8 @@ export default function Landing() {
           </Stack>
         </Container>
       </Box>
+        </>
+      )}
 
       {/* Quote Modal */}
       <QuoteModal

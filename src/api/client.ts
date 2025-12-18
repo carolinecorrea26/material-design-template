@@ -1,26 +1,32 @@
 import type { Product, EligibilityDefaults, RateQuoteRequest, RateQuoteResponse } from "../types/app";
-import { ACTIVE_CLIENT_ID } from "../config/clients";
+import { ACTIVE_CLIENT_ID, getClientConfig } from "../config/clients";
+import productsStandard from "../data/fixtures/products.json";
+import productsDemo from "../data/fixtures/products-demo.json";
+import productsNar from "../data/fixtures/products-nar.json";
 
 // In development, use direct imports instead of MSW
 // const isDev = import.meta.env.DEV;
 const isDev = true;
 
+// Map of product files
+const PRODUCT_FILES: Record<string, Product[]> = {
+  'products': productsStandard,
+  'products-demo': productsDemo,
+  'products-nar': productsNar,
+};
+
 export async function getProducts(): Promise<Product[]> {
   try {
-    // Use demo products for demo client, otherwise use standard products
-    const productsPath = ACTIVE_CLIENT_ID === 'demo' 
-      ? "/data/fixtures/products-demo.json"
-      : "/data/fixtures/products.json";
+    const clientConfig = getClientConfig();
+    const productsFile = clientConfig.productsFile || 'products';
     
-    const res = await fetch(productsPath, {
-      headers: { Accept: "application/json" }
-    });
+    // Get products from the configured file
+    let products = PRODUCT_FILES[productsFile] || productsStandard;
     
-    if (!res.ok) {
-      throw new Error(`Failed to fetch ${productsPath}: ${res.status} ${res.statusText}`);
+    // Filter by coverage categories if specified
+    if (clientConfig.coverageCategories && clientConfig.coverageCategories.length > 0) {
+      products = products.filter(p => clientConfig.coverageCategories!.includes(p.category));
     }
-    
-    const products = await res.json() as Product[];
     
     if (!Array.isArray(products) || products.length === 0) {
       throw new Error("Invalid or empty products data");

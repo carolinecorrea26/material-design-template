@@ -7,8 +7,8 @@
 export const THEME_COLORS = {
   blue: {
     primary: {
-      main: '#1a5792',
-      dark: '#004964',
+      main: '#015ac2',
+      dark: '#003b80',
     },
   },
   green: {
@@ -46,9 +46,9 @@ export type ThemeColorName = keyof typeof THEME_COLORS;
  */
 export const UI_COLORS = {
   success: {
-    main: '#008407ff',
+    main: '#00a16e',
     light: '#4caf50',
-    dark: '#1b5e20',
+    dark: '#007551',
   },
   error: {
     main: '#d32f2f',

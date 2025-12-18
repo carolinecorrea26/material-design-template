@@ -10,6 +10,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAppData } from "../state/AppDataContext";
+import { useStepper } from "../state/StepperContext";
 import { useNavigate } from "react-router-dom";
 import { commonStyles } from "../theme/commonStyles";
 import { getClientConfig } from "../config/clients";
@@ -44,6 +45,7 @@ type MembershipForm = z.infer<typeof MembershipSchema>;
 
 export default function Membership() {
   const { data, setMembership } = useAppData();
+  const { markComplete } = useStepper();
   const navigate = useNavigate();
   const clientConfig = getClientConfig();
 
@@ -85,6 +87,7 @@ export default function Membership() {
   const onSubmit = (formData: MembershipForm) => {
     console.log("Membership submitted:", formData);
     setMembership(formData);
+    markComplete();
     navigate("/eligibility");
   };
 

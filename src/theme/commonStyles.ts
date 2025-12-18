@@ -93,6 +93,20 @@ export const commonStyles = {
   sectionTitle: {
   } as SxProps<Theme>,
 
+  // Step number circle for landing page
+  stepNumberCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: '50%',
+    bgcolor: 'primary.main',
+    color: 'white',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: 700,
+    flexShrink: 0
+  } as SxProps<Theme>,
+
   // Typography hierarchy for form pages
   pageTitle: {
     variant: 'h2' as const,

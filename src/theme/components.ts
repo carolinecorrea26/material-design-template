@@ -116,7 +116,8 @@ export const components: Components<Theme> = {
   MuiInputLabel: {
     styleOverrides: {
       root: ({ theme }) => ({
-        color: theme.palette.text.primary,
+        color: theme.palette.text.secondary,
+        fontWeight: 400,
         '&.Mui-focused': {
           color: theme.palette.primary.main
         }
