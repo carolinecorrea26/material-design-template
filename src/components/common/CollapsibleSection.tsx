@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, CardContent, Stack, Typography, Box } from '@mui/material';
+import { commonStyles } from '../../theme/commonStyles';
 
 interface CollapsibleSectionProps {
   title: string;
@@ -18,10 +19,14 @@ export default function CollapsibleSection({
 
   return (
     <Card elevation={elevation} sx={{ bgcolor: 'grey.50' }}>
-      <CardContent>
+      <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
         <Stack spacing={3}>
-          <Stack direction="row" spacing={1} alignItems="center">
-            {icon}
+          <Stack direction="row" spacing={1.5} alignItems="center">
+            {icon && (
+              <Box sx={commonStyles.iconCircle}>
+                {icon}
+              </Box>
+            )}
             <Typography variant="h6">{title}</Typography>
           </Stack>
 

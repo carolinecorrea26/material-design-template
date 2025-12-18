@@ -812,8 +812,10 @@ export default function Profile() {
                     <Stack spacing={2}>
                       {/* Card Header */}
                       <Box>
-                        <Stack direction="row" spacing={1} alignItems="center">
-                          <Person color="primary" />
+                        <Stack direction="row" spacing={1.5} alignItems="center">
+                          <Box sx={commonStyles.iconCircle}>
+                            <Person color="primary" />
+                          </Box>
                           <Typography variant="h6">
                             Your Personal Information
                           </Typography>
@@ -1037,8 +1039,10 @@ export default function Profile() {
                   <Stack spacing={2}>
                     {/* Section Header */}
                     <Box>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <People color="primary" />
+                      <Stack direction="row" spacing={1.5} alignItems="center">
+                        <Box sx={commonStyles.iconCircle}>
+                          <People color="primary" />
+                        </Box>
                         <Typography variant="h6">
                           Spouse Personal Information
                         </Typography>
@@ -1255,8 +1259,10 @@ export default function Profile() {
                       <Stack spacing={2}>
                         {/* Section Header */}
                         <Box>
-                          <Stack direction="row" spacing={1} alignItems="center">
-                            <Person color="primary" />
+                          <Stack direction="row" spacing={1.5} alignItems="center">
+                            <Box sx={commonStyles.iconCircle}>
+                              <Person color="primary" />
+                            </Box>
                             <Typography variant="h6">
                               Your Financial Information
                             </Typography>
@@ -1580,8 +1586,10 @@ export default function Profile() {
                       <Stack spacing={2}>
                         {/* Section Header */}
                         <Box>
-                          <Stack direction="row" spacing={1} alignItems="center">
-                            <Person color="primary" />
+                          <Stack direction="row" spacing={1.5} alignItems="center">
+                            <Box sx={commonStyles.iconCircle}>
+                              <Person color="primary" />
+                            </Box>
                             <Typography variant="h6">
                               Your Other Coverage
                             </Typography>
@@ -1812,8 +1820,10 @@ export default function Profile() {
                         <Stack spacing={2}>
                           {/* Section Header */}
                           <Box>
-                            <Stack direction="row" spacing={1} alignItems="center">
-                              <People color="primary" />
+                            <Stack direction="row" spacing={1.5} alignItems="center">
+                              <Box sx={commonStyles.iconCircle}>
+                                <People color="primary" />
+                              </Box>
                               <Typography variant="h6">
                                 Spouse Other Coverage
                               </Typography>

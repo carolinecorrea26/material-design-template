@@ -340,7 +340,7 @@ export default function Eligibility() {
                   direction={{ xs: 'column', md: 'row' }} 
                   spacing={2}
                 >
-                  <Box sx={{ width: { xs: '100%', md: '120px' } }}>
+                  <Box sx={{ width: { xs: '100%', md: '100px' } }}>
                     <RHFSelect
                       name="title"
                       label="Title"
@@ -354,7 +354,7 @@ export default function Eligibility() {
                       required
                     />
                   </Box>
-                  <Box sx={{ width: { xs: '100%', md: '80px' } }}>
+                  <Box sx={{ width: { xs: '100%', md: '60px' } }}>
                     <RHFTextField
                       name="middleInitial"
                       label="MI"
@@ -382,7 +382,8 @@ export default function Eligibility() {
                   type="date"
                   required
                   InputLabelProps={{ shrink: true }}
-                />
+                  autoComplete="bday"
+                  />
 
                 <RHFRadioGroup
                   name="gender"
@@ -402,6 +403,7 @@ export default function Eligibility() {
                   type="email"
                   required
                   helperText="Provide a valid email address where you can receive important updates about your application."
+                  autoComplete="email"
                 />
                 
                 {/* Coverage Options - Only show when "Myself" is selected */}
@@ -411,7 +413,7 @@ export default function Eligibility() {
                       <FormLabel required>
                         Choose the group coverage(s) you are interested in:
                       </FormLabel>
-                      {covBox("spouseCoverages", SPOUSE_OPTS)}
+                      {covBox("selfCoverages", SELF_OPTS)}
                       {methods.formState.submitCount > 0 && selfCov?.length === 0 && (
                         <FormHelperText error sx={commonStyles.formHelperText}>
                           Please select a coverage option.
@@ -570,7 +572,7 @@ export default function Eligibility() {
                       direction={{ xs: 'column', md: 'row' }} 
                       spacing={2}
                     >
-                      <Box sx={{ width: { xs: '100%', md: '120px' } }}>
+                      <Box sx={{ width: { xs: '100%', md: '100px' } }}>
                         <RHFSelect
                           name="spouseTitle"
                           label="Title"
@@ -580,7 +582,7 @@ export default function Eligibility() {
                       <Box sx={{ flex: { xs: '1', md: '1' } }}>
                         <RHFTextField name="spouseFirstName" label="First Name" required />
                       </Box>
-                      <Box sx={{ width: { xs: '100%', md: '80px' } }}>
+                      <Box sx={{ width: { xs: '100%', md: '60px' } }}>
                         <RHFTextField 
                           name="spouseMiddleInitial" 
                           label="MI" 

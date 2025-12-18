@@ -102,7 +102,7 @@ export default function Consent() {
                 border: 1,
                 borderColor: "divider",
                 borderRadius: 1,
-                p: 3,
+                p: { xs: 2, sm: 3 },
                 bgcolor: "background.default",
               }}
             >
@@ -171,7 +171,7 @@ export default function Consent() {
                 border: 1,
                 borderColor: "divider",
                 borderRadius: 1,
-                p: 3,
+                p: { xs: 2, sm: 3 },
                 bgcolor: "background.default",
               }}
             >

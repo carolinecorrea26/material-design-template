@@ -47,7 +47,7 @@ export default function ResumeConfirmationDialog({
       <Divider />
       <DialogContent sx={{ pt: 2 }}>
         <DialogContentText id="resume-dialog-description">
-          You're about to continue an application you started earlier. Do you want to proceed?
+         You're about to leave your current application to resume a saved one. This may result in lost progress. Do you want to continue?
         </DialogContentText>
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 2 }}>

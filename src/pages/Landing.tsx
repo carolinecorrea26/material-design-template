@@ -111,9 +111,9 @@ export default function Landing({ hideNonHero = false }: LandingProps) {
       {/* Hero Section */}
       <Box
         sx={{
-          bgcolor: 'background.paper',
-          borderBottom: 1,
-          borderColor: 'divider'
+          background: 'transparent',
+          // borderBottom: 1,
+          // borderColor: 'divider'
         }}
       >
         {/* Content Above Image */}
@@ -125,7 +125,7 @@ export default function Landing({ hideNonHero = false }: LandingProps) {
                   variant="h1" 
                   component="h1"
                   sx={{ 
-                    fontSize: { xs: '1.75rem', sm: '1.75rem', md: '2rem', lg: '2.75rem' },
+                    fontSize: { xs: '2rem', sm: '2.25rem', md: '2.5rem', lg: '3rem' },
                     textAlign: 'center'
                   }}
                 >
@@ -185,21 +185,22 @@ export default function Landing({ hideNonHero = false }: LandingProps) {
           </Box>
         </Container>
         
-        {/* Hero Image */}
-        <Box
-          component="img"
-          src={branding.heroImage || '/brand/default/hero.png'}
-          // src={'https://img.lovepik.com/background/20211022/medium/lovepik-taobao-tmall-e-commerce-banner-background-image_500603827.jpg'}
-          alt={branding.heroImageAlt || 'Insurance Coverage'}
-          sx={{
-            width: { xs: '80%', sm: '80%', md: '80%' },
-            height: 'auto',
-            maxHeight: { xs: 280, sm: 350, md: 400 },
-            objectFit: 'cover',
-            display: 'block',
-            mx: 'auto'
-          }}
-        />
+        {/* Hero Image - Hidden in single-page layout */}
+        {!hideNonHero && (
+          <Box
+            component="img"
+            src={branding.heroImage || '/brand/default/hero.png'}
+            alt={branding.heroImageAlt || 'Insurance Coverage'}
+            sx={{
+              width: { xs: '80%', sm: '80%', md: '80%' },
+              height: 'auto',
+              maxHeight: { xs: 280, sm: 350, md: 400 },
+              objectFit: 'cover',
+              display: 'block',
+              mx: 'auto'
+            }}
+          />
+        )}
       </Box>
 
       {!hideNonHero && (

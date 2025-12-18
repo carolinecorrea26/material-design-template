@@ -188,8 +188,10 @@ export default function Contact() {
                     <Stack spacing={2}>
                       {/* Applicant Header */}
                       <Box>
-                        <Stack direction="row" spacing={1} alignItems="center">
-                          <Person color="primary" />
+                        <Stack direction="row" spacing={1.5} alignItems="center">
+                          <Box sx={commonStyles.iconCircle}>
+                            <Person color="primary" />
+                          </Box>
                           <Typography variant="h6">
                             Your Contact
                           </Typography>
@@ -358,8 +360,10 @@ export default function Contact() {
                       <Stack spacing={2}>
                         {/* Applicant Header */}
                         <Box>
-                          <Stack direction="row" spacing={1} alignItems="center">
-                            <People color="primary" />
+                          <Stack direction="row" spacing={1.5} alignItems="center">
+                            <Box sx={commonStyles.iconCircle}>
+                              <People color="primary" />
+                            </Box>
                             <Typography variant="h6">
                               Spouse Contact
                             </Typography>

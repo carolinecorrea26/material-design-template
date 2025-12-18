@@ -34,11 +34,9 @@ export function AppShell({ children }: AppShellProps) {
     <Box
       sx={{ 
         minHeight: "100vh", 
-        bgcolor: location.pathname === '/' || location.pathname === '/landing' ? "white" : "#f4f5f8", 
-        background: location.pathname === '/' || location.pathname === '/landing' ? "white" : "linear-gradient(to right, #e4edff 0, #eff3faff 40%, #eff3faff 100%)",
+        background: "linear-gradient(to right, #e4edff 0, #eff3faff 40%, #eff3faff 100%)",
         display: "flex", 
         flexDirection: "column",
-        pt: "112px", // height of the top banner (48px) + header (64px)
         pb: showCookieBanner ? "80px" : 0 // padding only for cookie banner (fixed)
       }}
     >
@@ -49,11 +47,6 @@ export function AppShell({ children }: AppShellProps) {
           borderRadius: 0,
           bgcolor: "primary.dark",
           color: "common.white",
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 1200,
           "& .MuiAlert-message": {
             width: "100%",
             textAlign: "center",

@@ -460,7 +460,7 @@ export default function Coverage() {
           // const isExpanded = expandedCategories.has(category);
 
           return (
-            <Box key={category}>
+            <Box key={category} sx={{ mb: 4 }}>
               {/* Category Header - Outside of cards */}
               <Typography variant="h4" sx={{ mb: 3, fontWeight: 600 }}>
                 {getCoverageLabel(category as CoverageCategory)}
@@ -488,11 +488,11 @@ export default function Coverage() {
 
                         return (
                           <Card key={p.id} sx={commonStyles.categoryCard}>
-                            <CardContent>
+                            <CardContent sx={{ borderTop: '6px solid', borderTopColor: 'primary.main' }}>
                               <Stack spacing={2}>
                                 {/* Product Section Header */}
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1, borderBottom: 2, borderColor: 'divider' }}>
-                                  <Shield sx={{ color: 'primary.main', fontSize: 28 }} />
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1}}>
+                                  
                                   <Typography variant="h5" sx={{ fontWeight: 600 }}>
                                     {p.name}
                                   </Typography>
@@ -652,10 +652,12 @@ export default function Coverage() {
                                       <Stack spacing={2}>
                                         {/* Applicant Header */}
                                         <Box>
-                                          <Stack direction="row" spacing={1} alignItems="center">
-                                            {app === 'self' && <Person color="primary" />}
-                                            {app === 'spouse' && <People color="primary" />}
-                                            {app === 'child' && <ChildFriendly color="primary" />}
+                                          <Stack direction="row" spacing={1.5} alignItems="center">
+                                            <Box sx={commonStyles.iconCircle}>
+                                              {app === 'self' && <Person color="primary" />}
+                                              {app === 'spouse' && <People color="primary" />}
+                                              {app === 'child' && <ChildFriendly color="primary" />}
+                                            </Box>
                                             <Typography variant="h6">
                                               {app === 'self' ? 'Your' : app === 'spouse' ? 'Spouse' : 'Child'} {p.name}
                                             </Typography>
@@ -812,7 +814,7 @@ export default function Coverage() {
                                         {/* Add Coverage Checkbox */}
                                         <FormControlLabel
                                           control={<Checkbox checked={!!selectedByKey[key]} onChange={(_,v)=>onChangeSelection(key, v)} />}
-                                          label={`Add this coverage for ${app === 'self' ? 'yourself' : app === 'spouse' ? 'your spouse' : 'your child(ren)'}`}
+                                          label={`Add for ${app === 'self' ? 'yourself' : app === 'spouse' ? 'your spouse' : 'your child(ren)'}`}
                                         />
 
                                         {/* Optional Benefits Section - Term Life Insurance Only (Self and Spouse) */}

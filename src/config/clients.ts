@@ -437,9 +437,9 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       logoAlt: 'NAR Logo',
       partnerLogo: '/brand/nyl/logo.png',
       partnerLogoAlt: 'New York Life Logo',
-      heroImage: '/brand/nar/hero.png',
+      heroImage: '/brand/nar/hero.svg',
       heroImageAlt: 'Real Estate Professionals',
-      heroTitle: 'Insurance coverage designed for REALTORS®.',
+      heroTitle: 'Insurance designed for REALTORS®',
       heroSubtitle: 'Group Life and Disability Insurance available exclusively to National Association of REALTORS® members. Start your application today.',
       products: [
         'REALTORS® Group Term Life Insurance',

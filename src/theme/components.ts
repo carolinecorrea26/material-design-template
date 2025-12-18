@@ -130,7 +130,7 @@ export const components: Components<Theme> = {
   MuiFormLabel: {
     styleOverrides: {
       root: ({ theme }) => ({
-        color: 'rgba(0, 0, 0, 0.87)',
+        color: 'rgba(0, 0, 0, 0.7)',
         // fontSize: '0.875rem',
         fontWeight: 500,
         marginBottom: '8px',

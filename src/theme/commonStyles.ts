@@ -107,6 +107,18 @@ export const commonStyles = {
     flexShrink: 0
   } as SxProps<Theme>,
 
+  // Icon circle background for self/spouse/child icons
+  iconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: '50%',
+    bgcolor: 'rgba(25, 118, 210, 0.08)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0
+  } as SxProps<Theme>,
+
   // Typography hierarchy for form pages
   pageTitle: {
     variant: 'h2' as const,
@@ -137,7 +149,7 @@ export const commonStyles = {
   // ==========================================
 
   paperBox: {
-    p: 3,
+    p: { xs: 2, sm: 3 },
     bgcolor: 'background.paper',
     borderRadius: 1.5,
     boxShadow: 2
@@ -326,7 +338,7 @@ export const commonStyles = {
 
   // Field label style for non-floating labels
   fieldLabel: {
-    color: 'rgba(0, 0, 0, 0.87)',
+    color: 'rgba(0, 0, 0, 0.7)',
     fontSize: '0.875rem',
     fontWeight: 500,
     mb: 1,
@@ -338,7 +350,7 @@ export const commonStyles = {
   // ==========================================
 
   applicantsBox: (hasError?: boolean) => ({
-    p: 3,
+    p: { xs: 2, sm: 3 },
     bgcolor: 'grey.50',
     borderRadius: 1.5,
     boxShadow: 2,

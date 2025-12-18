@@ -9,15 +9,18 @@ import MenuIcon from '@mui/icons-material/Menu';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
 import { commonStyles } from "../../theme/commonStyles";
 import { getClientBranding } from "../../config/clients";
 import { getProducts } from "../../api/client";
 import type { Product, CoverageCategory } from "../../types/app";
 import ResumeConfirmationDialog from "./ResumeConfirmationDialog";
+import { useLayout } from "../../state/LayoutContext";
 
 export default function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { layoutMode } = useLayout();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
   const branding = getClientBranding();
@@ -61,7 +64,17 @@ export default function Header() {
 
   const handleResumeClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    setShowResumeDialog(true);
+    
+    // Determine if we should show the modal
+    const isOnLandingPage = location.pathname === '/' || location.pathname === '/landing';
+    const shouldShowModal = layoutMode === 'single-page' || (layoutMode === 'multi-page' && !isOnLandingPage);
+    
+    if (shouldShowModal) {
+      setShowResumeDialog(true);
+    } else {
+      // Multi-page layout on landing page: navigate directly
+      navigate('/resume');
+    }
   };
 
   const handleResumeConfirm = () => {
@@ -71,10 +84,9 @@ export default function Header() {
 
   return (
     <AppBar 
-      position="fixed" 
+      position="static"
       elevation={0}
       sx={{
-        top: 48, // Height of the "Need Help" banner
         zIndex: 1100
       }}
     >
@@ -163,7 +175,16 @@ export default function Header() {
                     <ListItemButton 
                       onClick={() => {
                         setMobileMenuOpen(false);
-                        setShowResumeDialog(true);
+                        
+                        // Same logic as desktop
+                        const isOnLandingPage = location.pathname === '/' || location.pathname === '/landing';
+                        const shouldShowModal = layoutMode === 'single-page' || (layoutMode === 'multi-page' && !isOnLandingPage);
+                        
+                        if (shouldShowModal) {
+                          setShowResumeDialog(true);
+                        } else {
+                          navigate('/resume');
+                        }
                       }}
                     >
                       <ListItemText primary="Resume Application" />

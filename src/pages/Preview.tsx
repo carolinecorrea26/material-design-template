@@ -113,8 +113,10 @@ export default function Preview() {
 
   // Helper to render subsection header without edit button
   const renderSectionHeader = (title: string, icon: React.ReactNode) => (
-    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-      {icon}
+    <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
+      <Box sx={commonStyles.iconCircle}>
+        {icon}
+      </Box>
       <Typography variant="h6">{title}</Typography>
     </Stack>
   );

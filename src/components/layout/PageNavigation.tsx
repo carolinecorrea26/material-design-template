@@ -1,8 +1,9 @@
 import { Stack, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { PAGES } from "../../config/pages";
 import { commonStyles } from "../../theme/commonStyles";
 import { useLayout } from "../../state/LayoutContext";
+import { useSinglePageLayout } from "../../layouts/SinglePageLayout";
 import { getClientFeatures } from "../../config/clients";
 
 interface PageNavigationProps {
@@ -40,7 +41,9 @@ export default function PageNavigation({
   backPath
 }: PageNavigationProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { layoutMode } = useLayout();
+  const singlePageContext = useSinglePageLayout();
   const features = getClientFeatures();
   
   // Filter application pages based on client configuration
@@ -56,16 +59,21 @@ export default function PageNavigation({
   });
   
   // Find the current page in the flow
-  const currentPath = window.location.pathname;
+  const currentPath = location.pathname;
   const currentIndex = applicationPages.findIndex(p => p.path === currentPath);
   
+  // In single-page mode, use the context pageIndex; otherwise use currentIndex
+  const effectiveIndex = singlePageContext.isSinglePage && singlePageContext.pageIndex !== undefined
+    ? singlePageContext.pageIndex
+    : currentIndex;
+  
   // In single-page mode, hide back button on first page (index 0)
-  const isFirstPage = currentIndex === 0;
+  const isFirstPage = effectiveIndex === 0;
   const shouldShowBack = showBack && !(layoutMode === 'single-page' && isFirstPage);
   
   // Determine back path if not explicitly provided
-  const defaultBackPath = currentIndex > 0 
-    ? applicationPages[currentIndex - 1].path 
+  const defaultBackPath = effectiveIndex > 0 
+    ? applicationPages[effectiveIndex - 1].path 
     : "/";
   
   const handleBack = () => {

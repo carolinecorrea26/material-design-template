@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Box, Container, Stack, Typography, Card, CardContent, Collapse, Button } from "@mui/material";
-import { CheckCircle, Edit } from "@mui/icons-material";
+import { Check, Edit } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PAGES } from "../config/pages";
 import { getClientFeatures } from "../config/clients";
@@ -16,8 +16,15 @@ import HealthHistory from "../pages/HealthHistory";
 import Preview from "../pages/Preview";
 import Consent from "../pages/Consent";
 
-// Context to signal single-page layout mode
-const SinglePageLayoutContext = React.createContext(false);
+// Context to signal single-page layout mode and provide page index
+interface SinglePageLayoutContextType {
+  isSinglePage: boolean;
+  pageIndex?: number;
+}
+
+const SinglePageLayoutContext = React.createContext<SinglePageLayoutContextType>({ 
+  isSinglePage: false 
+});
 export const useSinglePageLayout = () => React.useContext(SinglePageLayoutContext);
 
 const PAGE_COMPONENTS: Record<string, React.ComponentType> = {
@@ -50,19 +57,19 @@ function PageSection({ path, title, isActive, isCompleted, onEdit, children, pag
         borderColor: 'divider'
       }}
     >
-      <CardContent sx={{ p: 0 }}>
+      <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
         {/* Section Header */}
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            p: 3,
-            bgcolor: isActive ? 'rgba(25, 118, 210, 0.08)' : isCompleted ? 'rgba(46, 125, 50, 0.08)' : 'grey.50',
+            p: { xs: 2, sm: 3 },
+            bgcolor: isActive ? 'rgba(25, 118, 210, 0.08)' : 'grey.50',
             cursor: isCompleted && !isActive ? 'pointer' : 'default',
             transition: 'background-color 0.2s',
             '&:hover': isCompleted && !isActive ? {
-              bgcolor: 'rgba(46, 125, 50, 0.12)'
+              bgcolor: 'rgba(25, 118, 210, 0.12)'
             } : {}
           }}
           onClick={() => {
@@ -78,7 +85,7 @@ function PageSection({ path, title, isActive, isCompleted, onEdit, children, pag
                 width: 32,
                 height: 32,
                 borderRadius: '50%',
-                bgcolor: isCompleted ? 'success.main' : isActive ? 'primary.main' : 'grey.300',
+                bgcolor: isCompleted && !isActive ? 'success.main' : isActive ? 'primary.main' : 'grey.300',
                 color: 'white',
                 display: 'flex',
                 alignItems: 'center',
@@ -88,14 +95,14 @@ function PageSection({ path, title, isActive, isCompleted, onEdit, children, pag
                 flexShrink: 0
               }}
             >
-              {isCompleted ? <CheckCircle sx={{ fontSize: 20 }} /> : pageNumber}
+              {isCompleted && !isActive ? <Check sx={{ fontSize: 20 }} /> : pageNumber}
             </Box>
             
             <Typography 
               variant="h5" 
               sx={{ 
                 fontWeight: 600,
-                color: isActive ? 'primary.main' : isCompleted ? 'success.main' : 'text.primary'
+                color: isActive ? 'primary.main' : 'text.primary'
               }}
             >
               {title}
@@ -120,7 +127,7 @@ function PageSection({ path, title, isActive, isCompleted, onEdit, children, pag
 
         {/* Section Content */}
         <Collapse in={isActive} timeout="auto" unmountOnExit>
-          <Box sx={{ p: 3 }}>
+          <Box sx={{ p: { xs: 2, sm: 3 } }}>
             {children}
           </Box>
         </Collapse>
@@ -159,11 +166,11 @@ export default function SinglePageLayout() {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+    <Box sx={{ minHeight: '100vh' }}>
       {/* Landing Hero Section (simplified) */}
       <Box sx={{ 
-        bgcolor: 'background.paper',
-        borderBottom: 1,
+        background: 'transparent',
+        // borderBottom: 1,
         borderColor: 'divider',
         mb: 4
       }}>
@@ -171,33 +178,31 @@ export default function SinglePageLayout() {
       </Box>
 
       {/* Form Sections */}
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Stack spacing={0}>
-          {applicationPages.map((page, index) => {
-            const PageComponent = PAGE_COMPONENTS[page.path];
-            if (!PageComponent) return null;
+      <Stack spacing={0} sx={{ maxWidth: 'lg', mx: 'auto' }}>
+        {applicationPages.map((page, index) => {
+          const PageComponent = PAGE_COMPONENTS[page.path];
+          if (!PageComponent) return null;
 
-            const isActive = index === activePageIndex;
-            const isCompleted = completed.has(index);
+          const isActive = index === activePageIndex;
+          const isCompleted = completed.has(index);
 
-            return (
-              <PageSection
-                key={page.path}
-                path={page.path}
-                title={page.title}
-                isActive={isActive}
-                isCompleted={isCompleted}
-                onEdit={() => handleEdit(index)}
-                pageNumber={index + 1}
-              >
-                <SinglePageLayoutContext.Provider value={true}>
-                  <PageComponent />
-                </SinglePageLayoutContext.Provider>
-              </PageSection>
-            );
-          })}
-        </Stack>
-      </Container>
+          return (
+            <PageSection
+              key={page.path}
+              path={page.path}
+              title={page.title}
+              isActive={isActive}
+              isCompleted={isCompleted}
+              onEdit={() => handleEdit(index)}
+              pageNumber={index + 1}
+            >
+              <SinglePageLayoutContext.Provider value={{ isSinglePage: true, pageIndex: index }}>
+                <PageComponent />
+              </SinglePageLayoutContext.Provider>
+            </PageSection>
+          );
+        })}
+      </Stack>
     </Box>
   );
 }
