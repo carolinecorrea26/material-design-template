@@ -1,0 +1,75 @@
+[
+  {
+    "id": "li-20yr",
+    "name": "20-Year Level Term Life Insurance",
+    "category": "LI",
+    "eligibleApplicants": ["self", "spouse", "child"],
+    "amounts": [50000, 100000, 250000, 500000],
+    "quickDecision": false
+  },
+
+  {
+    "id": "li-10yr",
+    "name": "10-Year Level Term Life Insurance",
+    "category": "LI",
+    "eligibleApplicants": ["self", "spouse", "child"],
+    "amounts": [50000, 100000, 250000, 500000],
+    "quickDecision": false
+  },
+  {
+    "id": "li-term",
+    "name": "Term Life Insurance",
+    "category": "LI",
+    "eligibleApplicants": ["self", "spouse", "child"],
+    "amounts": [50000, 100000, 250000, 500000],
+    "quickDecision": true
+  },
+  {
+    "id": "li-preferred",
+    "name": "Preferred Term Life Insurance",
+    "category": "LI",
+    "eligibleApplicants": ["self", "spouse", "child"],
+    "amounts": [50000, 100000, 250000, 500000],
+    "quickDecision": false
+  },
+  {
+    "id": "li-premier-accident",
+    "name": "Premier Accident Insurance",
+    "category": "LI",
+    "eligibleApplicants": ["self", "spouse", "child"],
+    "amounts": [50000, 100000, 250000, 500000],
+    "quickDecision": false
+  },
+  {
+    "id": "di-step-rated",
+    "name": "Disability Insurance with Step Rated Premiums",
+    "category": "DI",
+    "eligibleApplicants": ["self", "spouse"],
+    "amounts": [1000, 2000, 3000, 4000],
+    "quickDecision": false
+  },
+  {
+    "id": "di-level-rated",
+    "name": "Disability Insurance with Level Rated Premiums",
+    "category": "DI",
+    "eligibleApplicants": ["self", "spouse"],
+    "amounts": [1000, 2000, 3000, 4000],
+    "quickDecision": false
+  },
+  {
+    "id": "oo-office-overhead",
+    "name": "Office Overhead Expense Insurance",
+    "category": "OO",
+    "eligibleApplicants": ["self"],
+    "amounts": [500, 1000, 2000],
+    "quickDecision": false
+  },
+  {
+    "id": "sh-hospital-income",
+    "name": "Hospital Income Insurance",
+    "category": "SH",
+    "eligibleApplicants": ["self", "spouse", "child"],
+    "amounts": [10000, 20000],
+    "quickDecision": false
+  }
+]

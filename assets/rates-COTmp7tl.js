@@ -1,0 +1,1 @@
+const i={"li-term":.18,"li-10yr":.2,"li-20yr":.22,"li-50plus":.25,"li-adndi":.06,"di-ltd-plus":1.2,"di-ltd":1.1,"di-mtd":.9,"di-std":.7,"oo-poe":.8,"sh-ci":.05,"sh-hmi":.03},d={base:i};export{i as base,d as default};
