@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { Phone as PhoneIcon, CalendarMonth as CalendarIcon } from "@mui/icons-material";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
+import ApplicationProgress from "./components/layout/ApplicationProgress";
 import DevTools from "./components/dev/DevTools";
 import { PrivacyNotice } from "./components/common/PrivacyNotice";
 import { PageLoader } from "./components/common/PageLoader";
@@ -34,7 +35,8 @@ export function AppShell({ children }: AppShellProps) {
     <Box
       sx={{ 
         minHeight: "100vh", 
-        background: "linear-gradient(to right, #e4edff 0, #eff3faff 40%, #eff3faff 100%)",
+        // background: "linear-gradient(to right, #e4edff 0, #eff3faff 40%, #eff3faff 100%)",
+        background: "linear-gradient(to right, rgb(228, 237, 255) 0px, rgb(239, 243, 250) 40%, rgb(239, 243, 250) 100%)",
         display: "flex", 
         flexDirection: "column",
         pb: showCookieBanner ? "80px" : 0 // padding only for cookie banner (fixed)
@@ -99,7 +101,8 @@ export function AppShell({ children }: AppShellProps) {
         )}
       </Alert>
       <Header />
-      <Container sx={{ flex: 1, maxWidth: '750px !important' }}>
+      <ApplicationProgress />
+      <Container sx={{ flex: 1, maxWidth: '900px !important' }}>
         {children}
       </Container>
       <Footer />

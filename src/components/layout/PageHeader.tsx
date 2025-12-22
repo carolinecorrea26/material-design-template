@@ -54,14 +54,7 @@ export default function PageHeader({ title, notes, hideTitle = false }: PageHead
 
   return (
     <Stack spacing={{ xs: 4, md: 6 }} sx={commonStyles.marginBottom3}>
-      {!shouldHideTitle && inAppFlow && (
-        <ParityBreadcrumb
-          variant="stepper"
-          items={applicationPages.map(p => ({ label: p.title, to: p.path }))}
-          currentIndex={effectiveIndex}
-          numericSteps={false}
-        />
-      )}
+      {/* ParityBreadcrumb stepper removed - replaced by ApplicationProgress component */}
       <Stack spacing={1} alignItems="flex-start">
         {!shouldHideTitle && (
           <Typography

@@ -8,7 +8,7 @@ import RadioGroup from "../components/form/RadioGroup";
 import { 
   ArrowRightAlt as ArrowRightAltIcon
 } from "@mui/icons-material";
-import { getClientBranding, getClientFeatures } from "../config/clients";
+import { getClientBranding, getClientFeatures, getClientTheme } from "../config/clients";
 import CoverageCategoryCard from "../components/coverage/CoverageCategoryCard";
 import { commonStyles } from "../theme/commonStyles";
 import QuoteModal from "../components/coverage/QuoteModal";
@@ -24,6 +24,7 @@ export default function Landing({ hideNonHero = false }: LandingProps) {
   const [searchParams] = useSearchParams();
   const branding = getClientBranding();
   const features = getClientFeatures();
+  const theme = getClientTheme();
   const quoteRef = React.useRef<HTMLElement>(null);
   const [coverageType, setCoverageType] = React.useState<'life' | 'disability'>('life');
   const [birthday, setBirthday] = React.useState('');
@@ -185,17 +186,19 @@ export default function Landing({ hideNonHero = false }: LandingProps) {
           </Box>
         </Container>
         
-        {/* Hero Image - Hidden in single-page layout */}
-        {!hideNonHero && (
+        {/* Hero Image - Hidden in single-page layout or if heroImageType is 'none' */}
+        {!hideNonHero && theme.heroImageType !== 'none' && branding.heroImage && (
           <Box
             component="img"
             src={branding.heroImage || '/brand/default/hero.png'}
             alt={branding.heroImageAlt || 'Insurance Coverage'}
             sx={{
-              width: { xs: '80%', sm: '80%', md: '80%' },
+              width: { xs: '80%', sm: '80%', md: '60%' },
               height: 'auto',
-              maxHeight: { xs: 280, sm: 350, md: 400 },
-              objectFit: 'cover',
+              maxHeight: theme.heroImageType === 'graphic' 
+                ? { xs: 200, sm: 250, md: 300 }
+                : { xs: 280, sm: 350, md: 400 },
+              objectFit: theme.heroImageType === 'graphic' ? 'contain' : 'cover',
               display: 'block',
               mx: 'auto'
             }}

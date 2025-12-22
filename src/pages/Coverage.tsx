@@ -488,7 +488,7 @@ export default function Coverage() {
 
                         return (
                           <Card key={p.id} sx={commonStyles.categoryCard}>
-                            <CardContent sx={{ borderTop: '6px solid', borderTopColor: 'primary.main' }}>
+                            <CardContent>
                               <Stack spacing={2}>
                                 {/* Product Section Header */}
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1}}>

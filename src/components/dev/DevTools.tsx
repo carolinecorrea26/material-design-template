@@ -25,7 +25,9 @@ export default function DevTools() {
   };
 
   // Only show Fill Out Page button on form pages
-  const isFormPage = ['/membership', '/eligibility', '/coverage', '/contact', '/profile', '/payment', '/health-history'].includes(location.pathname);
+  // In single-page layout, always show it since form pages are on the same page
+  const isFormPage = layoutMode === 'single-page' || 
+    ['/membership', '/eligibility', '/coverage', '/contact', '/profile', '/payment', '/health-history'].includes(location.pathname);
 
   return (
     <>

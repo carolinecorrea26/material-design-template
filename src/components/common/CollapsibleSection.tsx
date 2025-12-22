@@ -18,7 +18,7 @@ export default function CollapsibleSection({
   // const [expanded, setExpanded] = useState(defaultExpanded);
 
   return (
-    <Card elevation={elevation} sx={{ bgcolor: 'grey.50' }}>
+    <Card elevation={elevation} sx={{ bgcolor: 'background.paper' }}>
       <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
         <Stack spacing={3}>
           <Stack direction="row" spacing={1.5} alignItems="center">

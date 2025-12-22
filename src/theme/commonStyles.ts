@@ -338,7 +338,7 @@ export const commonStyles = {
 
   // Field label style for non-floating labels
   fieldLabel: {
-    color: 'rgba(0, 0, 0, 0.7)',
+    color: 'rgba(0, 0, 0, 0.4)',
     fontSize: '0.875rem',
     fontWeight: 500,
     mb: 1,
@@ -351,7 +351,7 @@ export const commonStyles = {
 
   applicantsBox: (hasError?: boolean) => ({
     p: { xs: 2, sm: 3 },
-    bgcolor: 'grey.50',
+    bgcolor: 'background.paper',
     borderRadius: 1.5,
     boxShadow: 2,
     ...(hasError && {

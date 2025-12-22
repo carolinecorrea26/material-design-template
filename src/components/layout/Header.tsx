@@ -22,7 +22,7 @@ export default function Header() {
   const location = useLocation();
   const { layoutMode } = useLayout();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const branding = getClientBranding();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [showResumeDialog, setShowResumeDialog] = React.useState(false);
@@ -90,7 +90,7 @@ export default function Header() {
         zIndex: 1100
       }}
     >
-      <Toolbar sx={{ maxWidth: 1200, width: '100%', mx: 'auto' }}>
+      <Toolbar sx={{ maxWidth: 900, width: '100%', mx: 'auto' }}>
         {/* Client logo(s) with home link */}
         <Link
           component={RouterLink}

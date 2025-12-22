@@ -47,6 +47,8 @@ export interface ClientBranding {
 export interface ClientTheme {
   /** Theme color name - references a predefined color palette */
   colorName: ThemeColorName;
+  /** Hero image display type: 'standard' for photo, 'graphic' for illustration, 'none' to hide */
+  heroImageType?: 'standard' | 'graphic' | 'none';
 }
 
 export interface ClientFieldLabels {
@@ -142,6 +144,7 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
     },
     theme: {
       colorName: 'green',
+      heroImageType: 'standard',
     },
     fieldLabels: {
       dateOfBirth: 'Birthday',
@@ -439,7 +442,7 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       partnerLogoAlt: 'New York Life Logo',
       heroImage: '/brand/nar/hero.svg',
       heroImageAlt: 'Real Estate Professionals',
-      heroTitle: 'Insurance designed for REALTORS®',
+      heroTitle: 'Life & Disability Insurance for REALTORS®',
       heroSubtitle: 'Group Life and Disability Insurance available exclusively to National Association of REALTORS® members. Start your application today.',
       products: [
         'REALTORS® Group Term Life Insurance',
@@ -452,6 +455,7 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
     },
     theme: {
       colorName: 'blue',
+      heroImageType: 'graphic',
     },
     fieldLabels: {
       dateOfBirth: 'Birthday',
