@@ -1,0 +1,34 @@
+[
+  {
+    "id": "li-term",
+    "name": "Term Life Insurance",
+    "category": "LI",
+    "eligibleApplicants": ["self", "spouse", "child"],
+    "amounts": [50000, 100000, 250000, 500000],
+    "quickDecision": true
+  },
+  {
+    "id": "li-10yr",
+    "name": "10-Year Level Term Life Insurance",
+    "category": "LI",
+    "eligibleApplicants": ["self", "spouse", "child"],
+    "amounts": [50000, 100000, 250000, 500000],
+    "quickDecision": true
+  },
+  {
+    "id": "li-20yr",
+    "name": "20-Year Level Term Life Insurance",
+    "category": "LI",
+    "eligibleApplicants": ["self", "spouse", "child"],
+    "amounts": [50000, 100000, 250000, 500000],
+    "quickDecision": true
+  },
+  {
+    "id": "li-add",
+    "name": "Accidental Death and Dismemberment Insurance",
+    "category": "LI",
+    "eligibleApplicants": ["self", "spouse", "child"],
+    "amounts": [50000, 100000, 250000, 500000],
+    "quickDecision": false
+  }
+]

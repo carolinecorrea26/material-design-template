@@ -1,0 +1,18 @@
+[
+  {
+    "id": "li-group-term",
+    "name": "Group Term Life Insurance",
+    "category": "LI",
+    "eligibleApplicants": ["self", "spouse", "child"],
+    "amounts": [50000, 100000, 250000, 500000],
+    "quickDecision": true
+  },
+  {
+    "id": "di-short-term",
+    "name": "Group Short-Term Disability Income Insurance Plan",
+    "category": "DI",
+    "eligibleApplicants": ["self"],
+    "amounts": [1000, 2000, 3000, 4000],
+    "quickDecision": false
+  }
+]

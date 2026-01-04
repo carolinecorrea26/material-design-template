@@ -1,0 +1,34 @@
+[
+  {
+    "id": "nar-term-life",
+    "name": "REALTORS® Group Term Life Insurance",
+    "category": "LI",
+    "eligibleApplicants": ["self", "spouse"],
+    "amounts": [50000, 100000, 250000, 500000, 750000, 1000000],
+    "quickDecision": false
+  },
+  {
+    "id": "nar-mature-term",
+    "name": "REALTORS® Mature Group Term Life Insurance",
+    "category": "LI",
+    "eligibleApplicants": ["self", "spouse"],
+    "amounts": [25000, 50000, 75000, 100000],
+    "quickDecision": false
+  },
+  {
+    "id": "nar-add",
+    "name": "REALTORS® Group AD&D (Accidental Death and Dismemberment) Insurance",
+    "category": "LI",
+    "eligibleApplicants": ["self", "spouse"],
+    "amounts": [50000, 100000, 250000, 500000],
+    "quickDecision": false
+  },
+  {
+    "id": "nar-std",
+    "name": "REALTORS® Group Short Term Disability",
+    "category": "DI",
+    "eligibleApplicants": ["self"],
+    "amounts": [1000, 2000, 3000, 4000, 5000],
+    "quickDecision": false
+  }
+]
