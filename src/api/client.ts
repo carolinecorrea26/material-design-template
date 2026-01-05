@@ -10,9 +10,8 @@ import productsCalbar from "../data/fixtures/products-calbar.json";
 import productsAvmalifetrust from "../data/fixtures/products-avmalifetrust.json";
 import productsWaepa from "../data/fixtures/products-waepa.json";
 import productsIeee from "../data/fixtures/products-ieee.json";
-
-// In development, use direct imports instead of MSW
-const isDev = import.meta.env.DEV;
+import eligibilityData from "../data/fixtures/eligibility.json";
+import ratesData from "../data/fixtures/rates.json";
 
 // Product file registry - add new clients here
 const PRODUCT_FILES: Record<string, Product[]> = {
@@ -52,53 +51,27 @@ export async function getProducts(): Promise<Product[]> {
 }
 
 export async function getEligibilityDefaults(): Promise<EligibilityDefaults> {
-  if (isDev) {
-    const eligibility = await import("../data/fixtures/eligibility.json");
-    return eligibility.default as EligibilityDefaults;
-  }
-
-  const r = await fetch("/api/eligibility/defaults");
-  if (!r.ok) throw new Error("Failed to fetch eligibility defaults");
-  return r.json();
+  // Always use mock data (this is a prototype without a real backend)
+  return eligibilityData as EligibilityDefaults;
 }
 
 export async function quoteRate(payload: RateQuoteRequest): Promise<RateQuoteResponse> {
-  if (isDev) {
-    try {
-      const rates = await import("../data/fixtures/rates.json");
-      const base = (rates.default?.base as Record<string, number>)?.[payload.productId] ?? 0.1;
-
-      // Simple calculation for demo
-      const ageBandFactor = (age?: number) =>
-        age == null ? 1 : age < 30 ? 1 : age < 40 ? 1.1 : age < 50 ? 1.25 : age < 60 ? 1.5 : 1.75;
-      const nicotineFactor = (smoker?: boolean) => (smoker ? 1.25 : 1);
-      const round2 = (n: number) => Math.round(n * 100) / 100;
-
-      const monthly = round2(
-        base * (payload.amount / 1000) * nicotineFactor(payload.smoker) * ageBandFactor(payload.age)
-      );
-
-      return { monthly };
-    } catch (error) {
-      throw new Error(`Failed to load rates fixture: ${error instanceof Error ? error.message : String(error)}`);
-    }
-  }
-
-  const r = await fetch("/api/rate/quote", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
-  
-  if (!r.ok) {
-    const text = await r.text();
-    throw new Error(`Failed to quote rate: ${r.status} ${r.statusText}. Response: ${text.substring(0, 200)}`);
-  }
-  
-  const responseText = await r.text();
+  // Always use mock data (this is a prototype without a real backend)
   try {
-    return JSON.parse(responseText);
-  } catch (parseError) {
-    throw new Error(`Invalid JSON in quoteRate response: ${parseError instanceof Error ? parseError.message : String(parseError)}. Response: ${responseText.substring(0, 200)}`);
+    const base = (ratesData?.base as Record<string, number>)?.[payload.productId] ?? 0.1;
+
+    // Simple calculation for demo
+    const ageBandFactor = (age?: number) =>
+      age == null ? 1 : age < 30 ? 1 : age < 40 ? 1.1 : age < 50 ? 1.25 : age < 60 ? 1.5 : 1.75;
+    const nicotineFactor = (smoker?: boolean) => (smoker ? 1.25 : 1);
+    const round2 = (n: number) => Math.round(n * 100) / 100;
+
+    const monthly = round2(
+      base * (payload.amount / 1000) * nicotineFactor(payload.smoker) * ageBandFactor(payload.age)
+    );
+
+    return { monthly };
+  } catch (error) {
+    throw new Error(`Failed to calculate rate: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
