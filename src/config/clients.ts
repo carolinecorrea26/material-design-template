@@ -192,7 +192,7 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       phoneDisplay: '(800) 621-8981',
     },
     theme: {
-      colorName: 'green',
+      colorName: 'blue',
       heroImageType: 'none',
     },
     fieldLabels: {

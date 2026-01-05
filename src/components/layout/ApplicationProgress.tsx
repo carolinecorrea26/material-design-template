@@ -29,13 +29,17 @@ export default function ApplicationProgress() {
   // Find current page index
   const currentIndex = applicationPages.findIndex(p => p.path === location.pathname);
   
-  // Don't show progress bar if not on an application page (unless in single-page mode)
-  if (currentIndex === -1 && layoutMode !== 'single-page') {
+  // Don't show progress bar in single-page mode
+  if (layoutMode === 'single-page') {
+    return null;
+  }
+  
+  // Don't show progress bar if not on an application page
+  if (currentIndex === -1) {
     return null;
   }
 
-  // In single-page mode, default to first step if no match found
-  const effectiveIndex = currentIndex === -1 ? 0 : currentIndex;
+  const effectiveIndex = currentIndex;
   const currentStep = effectiveIndex + 1;
   const totalSteps = applicationPages.length;
   const progressPercent = (currentStep / totalSteps) * 100;

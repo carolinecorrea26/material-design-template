@@ -12,11 +12,13 @@ import { ScheduleCallModal } from "./components/common/ScheduleCallModal";
 import { usePageTransition } from "./hooks/usePageTransition";
 import { getClientBranding, getClientConfig } from "./config/clients";
 import { commonStyles } from "./theme/commonStyles";
+import { useLayout } from "./state/LayoutContext";
 
 type AppShellProps = { children: React.ReactNode };
 
 export function AppShell({ children }: AppShellProps) {
   const location = useLocation();
+  const { layoutMode } = useLayout();
   const [showPrivacyNotice, setShowPrivacyNotice] = React.useState(false);
   const [showScheduleCall, setShowScheduleCall] = React.useState(false);
   const [showCookieBanner, setShowCookieBanner] = React.useState(() => {
@@ -46,7 +48,7 @@ export function AppShell({ children }: AppShellProps) {
     <Box
       sx={{ 
         minHeight: "100vh", 
-        bgcolor: location.pathname === '/' ? '#faf9f5' : '#f9fafc',
+        bgcolor: (location.pathname === '/' || layoutMode === 'single-page') ? '#faf9f6' : '#f9fafc',
         display: "flex", 
         flexDirection: "column",
         pb: showCookieBanner ? "80px" : 0 // padding only for cookie banner (fixed)
@@ -206,7 +208,7 @@ export function AppShell({ children }: AppShellProps) {
       <ApplicationProgress />
       <Container sx={{ 
         flex: 1, 
-        maxWidth: location.pathname === '/' ? '1600px !important' : '900px !important'
+        maxWidth: (location.pathname === '/' || layoutMode === 'single-page') ? '1600px !important' : '900px !important'
       }}>
         {children}
       </Container>

@@ -166,19 +166,19 @@ export default function SinglePageLayout() {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'background.paper' }}>
-      {/* Landing Hero Section (simplified) */}
+    <Box sx={{ minHeight: '100vh', bgcolor: '#faf9f6' }}>
+      {/* Landing Hero Section (simplified) - Full Width */}
       <Box sx={{ 
-        background: 'transparent',
-        // borderBottom: 1,
-        borderColor: 'divider',
-        mb: 4
+        width: '100%',
+        maxWidth: 'none',
+        mb: 4,
+        mx: 0
       }}>
         <Landing hideNonHero />
       </Box>
 
-      {/* Form Sections */}
-      <Stack spacing={0} sx={{ maxWidth: 'lg', mx: 'auto', pb: 6 }}>
+      {/* Form Sections - Constrained Width */}
+      <Stack spacing={0} sx={{ maxWidth: '900px', mx: 'auto', pb: 6 }}>
         {applicationPages.map((page, index) => {
           const PageComponent = PAGE_COMPONENTS[page.path];
           if (!PageComponent) return null;
