@@ -9,11 +9,12 @@ import { useLayout } from "../../state/LayoutContext";
 
 interface PageHeaderProps {
   title: string;
-  notes?: string;
+  notes?: string | React.ReactNode;
   hideTitle?: boolean;
+  centered?: boolean;
 }
 
-export default function PageHeader({ title, notes, hideTitle = false }: PageHeaderProps) {
+export default function PageHeader({ title, notes, hideTitle = false, centered = false }: PageHeaderProps) {
   const location = useLocation();
   const { layoutMode } = useLayout();
   const h1Ref = React.useRef<HTMLHeadingElement>(null);
@@ -55,14 +56,14 @@ export default function PageHeader({ title, notes, hideTitle = false }: PageHead
   return (
     <Stack spacing={{ xs: 4, md: 6 }} sx={commonStyles.marginBottom3}>
       {/* ParityBreadcrumb stepper removed - replaced by ApplicationProgress component */}
-      <Stack spacing={1} alignItems="flex-start">
+      <Stack spacing={1} alignItems={centered ? "center" : "flex-start"}>
         {!shouldHideTitle && (
           <Typography
             ref={h1Ref}
             tabIndex={-1}
             component="h1"
             variant="h2"
-            sx={{ ...commonStyles.noOutline, textAlign: "left" }}
+            sx={{ ...commonStyles.noOutline, textAlign: centered ? "center" : "left" }}
           >
             {title}
           </Typography>
@@ -70,7 +71,7 @@ export default function PageHeader({ title, notes, hideTitle = false }: PageHead
         {notes && (
           <Typography
             color="text.secondary"
-            sx={{ ...commonStyles.maxWidthText, textAlign: "left" }}
+            sx={{ ...commonStyles.maxWidthText, textAlign: centered ? "center" : "left" }}
           >
             {notes}
           </Typography>

@@ -60,12 +60,16 @@ export default function ApplicationProgress() {
       } else if (effectiveIndex < applicationPages.length - 1) {
         // If no buttons found, navigate directly to next page
         navigate(applicationPages[effectiveIndex + 1].path);
+      } else if (effectiveIndex === applicationPages.length - 1) {
+        // If on last application page (Consent), navigate to DocuSign
+        navigate('/docusign');
       }
     }
   };
 
   const canGoBack = effectiveIndex > 0;
-  const canGoNext = effectiveIndex < applicationPages.length - 1;
+  // Allow next button on last page to go to next step
+  const canGoNext = effectiveIndex < applicationPages.length;
 
   return (
     <Box
