@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Box, Button, Typography, LinearProgress, useMediaQuery, useTheme } from "@mui/material";
-import { ChevronLeft, ChevronRight, CheckCircle } from "@mui/icons-material";
+import { ChevronLeft, ChevronRight, CheckCircle, LocationOn } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PAGES } from "../../config/pages";
 import { getClientFeatures } from "../../config/clients";
@@ -200,25 +200,11 @@ export default function ApplicationProgress() {
                         <CheckCircle sx={{ fontSize: 14, color: 'success.main' }} />
                       )}
                       {isActive && (
-                        <Box
-                          sx={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: '50%',
-                            bgcolor: 'success.main',
-                            boxShadow: '0 0 8px rgba(0, 166, 110, 0.6)',
-                            animation: 'pulse 2s ease-in-out infinite',
-                            '@keyframes pulse': {
-                              '0%, 100%': {
-                                opacity: 1,
-                                transform: 'scale(1)'
-                              },
-                              '50%': {
-                                opacity: 0.7,
-                                transform: 'scale(1.1)'
-                              }
-                            }
-                          }}
+                        <LocationOn 
+                          sx={{ 
+                            fontSize: 18, 
+                            color: 'primary.dark'
+                          }} 
                         />
                       )}
                     </Box>

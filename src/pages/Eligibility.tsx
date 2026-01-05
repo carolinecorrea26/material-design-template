@@ -14,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import RHFTextField from "../components/form/RHFTextField";
 import RHFRadioGroup from "../components/form/RHFRadioGroup";
 import RHFSelect from "../components/form/RHFSelect";
+import DateField from "../components/form/DateField";
 import { EligibilitySchema, type EligibilityForm, CoverageCat } from "../validation/eligibility";
 import { useAppData } from "../state/AppDataContext";
 import { useStepper } from "../state/StepperContext";
@@ -376,14 +377,12 @@ export default function Eligibility() {
                   </Box>
                 </Stack>
 
-                <RHFTextField 
+                <DateField
                   name="birthday"
-                  label="Birthday" 
-                  type="date"
+                  label="Birthday"
                   required
-                  InputLabelProps={{ shrink: true }}
                   autoComplete="bday"
-                  />
+                />
 
                 <RHFRadioGroup
                   name="gender"
@@ -597,12 +596,10 @@ export default function Eligibility() {
                       </Box>
                     </Stack>
 
-                      <RHFTextField 
-                      name="spouseBirthday"
-                      label="Birthday" 
-                      type="date"
-                      required
-                      InputLabelProps={{ shrink: true }}
+                    <DateField 
+                    name="spouseBirthday"
+                    label="Birthday" 
+                    required
                     />                    {/* Spouse Gender */}
                     <RHFRadioGroup
                       name="spouseGender"
@@ -764,12 +761,10 @@ export default function Eligibility() {
                             </Box>
                           </Stack>
                           
-                            <RHFTextField 
-                            name={`children.${index}.birthday`}
-                            label="Birthday" 
-                            type="date"
-                            required
-                            InputLabelProps={{ shrink: true }}
+                          <DateField 
+                          name={`children.${index}.birthday`}
+                          label="Birthday" 
+                          required
                           />                          <RHFRadioGroup
                             name={`children.${index}.gender`}
                             label="Gender"

@@ -1,13 +1,14 @@
 import { Controller, useFormContext } from 'react-hook-form';
-import RHFTextField from './RHFTextField';
+import { TextField } from '@mui/material';
 
 interface DateFieldProps {
   name: string;
   label: string;
   required?: boolean;
+  autoComplete?: string;
 }
 
-export default function DateField({ name, label, required = false }: DateFieldProps) {
+export default function DateField({ name, label, required = false, autoComplete }: DateFieldProps) {
   const { control } = useFormContext();
 
   return (
@@ -15,11 +16,15 @@ export default function DateField({ name, label, required = false }: DateFieldPr
       name={name}
       control={control}
       render={({ field, fieldState }) => (
-        <RHFTextField
-          name={field.name}
+        <TextField
+          {...field}
           label={label}
           required={required}
-          value={field.value}
+          autoComplete={autoComplete}
+          placeholder="MM/DD/YYYY"
+          error={!!fieldState.error}
+          helperText={fieldState.error?.message}
+          fullWidth
           onChange={(e) => {
             let value = e.target.value.replace(/\D/g, '');
             if (value.length >= 2) {
@@ -30,9 +35,10 @@ export default function DateField({ name, label, required = false }: DateFieldPr
             }
             field.onChange(value);
           }}
-          inputProps={{ maxLength: 10 }}
-          error={!!fieldState.error}
-          helperText={fieldState.error?.message || "MM/DD/YYYY"}
+          inputProps={{ 
+            maxLength: 10,
+            inputMode: 'numeric'
+          }}
         />
       )}
     />
