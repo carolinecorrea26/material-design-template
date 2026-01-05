@@ -14,6 +14,7 @@ import RHFSelect from "../components/form/RHFSelect";
 import RHFRadioGroup from "../components/form/RHFRadioGroup";
 import RHFCheckbox from "../components/form/RHFCheckbox";
 import RHFCurrencyField from "../components/form/RHFCurrencyField";
+import DateField from "../components/form/DateField";
 import { ParityBreadcrumb } from "../components/parity";
 import { commonStyles } from "../theme/commonStyles";
 import { THEME_COLORS, UI_COLORS } from "../config/themeColors";
@@ -402,11 +403,9 @@ export default function Styleguide() {
               label="Currency Field"
             />
             
-            <TextField 
-              type="date"
+            <DateField 
+              name="dateField"
               label="Date Field"
-              fullWidth
-              InputLabelProps={{ shrink: true }}
             />
             
             <RHFSelect 
@@ -465,12 +464,10 @@ export default function Styleguide() {
             
             <TextField 
               type="date"
+             DateField 
+              name="requiredDateField"
               label="Required Date Field"
-              fullWidth
               required
-              InputLabelProps={{ shrink: true }}
-            />
-            
             <RHFSelect 
               name="requiredSelectField" 
               label="Required Select Field"

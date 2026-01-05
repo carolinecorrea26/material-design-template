@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Box, Button, Typography, LinearProgress, useMediaQuery, useTheme } from "@mui/material";
-import { ChevronLeft, ChevronRight, CheckCircle, LocationOn } from "@mui/icons-material";
+import { ChevronLeft, ChevronRight, VerifiedUser, VerifiedUserOutlined, Shield, GppGood, PersonPin, MyLocation, Security } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PAGES } from "../../config/pages";
 import { getClientFeatures } from "../../config/clients";
@@ -52,18 +52,25 @@ export default function ApplicationProgress() {
     const submitButton = document.querySelector('button[type="submit"]') as HTMLButtonElement;
     if (submitButton) {
       submitButton.click();
-    } else {
-      // Look for any continue/next button in the page navigation
-      const continueButton = document.querySelector('.page-navigation button[variant="contained"]') as HTMLButtonElement;
+      return;
+    }
+    
+    // Look for PageNavigation continue button (the contained button in page-navigation)
+    const pageNavigation = document.querySelector('.page-navigation');
+    if (pageNavigation) {
+      const continueButton = pageNavigation.querySelector('button.MuiButton-contained') as HTMLButtonElement;
       if (continueButton) {
         continueButton.click();
-      } else if (effectiveIndex < applicationPages.length - 1) {
-        // If no buttons found, navigate directly to next page
-        navigate(applicationPages[effectiveIndex + 1].path);
-      } else if (effectiveIndex === applicationPages.length - 1) {
-        // If on last application page (Consent), navigate to DocuSign
-        navigate('/docusign');
+        return;
       }
+    }
+    
+    // Fallback: navigate directly if no buttons found
+    if (effectiveIndex < applicationPages.length - 1) {
+      navigate(applicationPages[effectiveIndex + 1].path);
+    } else if (effectiveIndex === applicationPages.length - 1) {
+      // If on last application page (Consent), navigate to DocuSign
+      navigate('/docusign');
     }
   };
 
@@ -197,12 +204,12 @@ export default function ApplicationProgress() {
                     {/* Reserve space for indicator/checkmark to prevent shifting */}
                     <Box sx={{ width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                       {isCompleted && (
-                        <CheckCircle sx={{ fontSize: 14, color: 'success.main' }} />
+                        <GppGood sx={{ fontSize: 18, color: 'success.main' }} />
                       )}
                       {isActive && (
-                        <LocationOn 
+                        <Security 
                           sx={{ 
-                            fontSize: 18, 
+                            fontSize: 16, 
                             color: 'primary.dark'
                           }} 
                         />
@@ -212,14 +219,14 @@ export default function ApplicationProgress() {
                       variant="body2"
                       sx={{
                         fontWeight: isCompleted 
-                          ? 500
+                          ? 900
                           : isActive
                           ? 900
                           : 500,
                         color: isCompleted
-                          ? 'primary.main'
+                          ? 'success.main'
                           : isActive
-                          ? 'primary.main'
+                          ? 'primary.dark'
                           : 'text.secondary',
                         transition: 'color 0.2s'
                       }}

@@ -245,12 +245,23 @@ const QuoteForm: React.FC<{
                 }}>
                   <TextField
                     label="Birthday"
-                    type="date"
                     value={birthday}
-                    onChange={(e) => setBirthday(e.target.value)}
-                    // size="small"
+                    onChange={(e) => {
+                      let value = e.target.value.replace(/\D/g, '');
+                      if (value.length >= 2) {
+                        value = value.slice(0, 2) + '/' + value.slice(2);
+                      }
+                      if (value.length >= 5) {
+                        value = value.slice(0, 5) + '/' + value.slice(5, 9);
+                      }
+                      setBirthday(value);
+                    }}
+                    placeholder="MM/DD/YYYY"
                     fullWidth
-                    InputLabelProps={{ shrink: true }}
+                    inputProps={{ 
+                      maxLength: 10,
+                      inputMode: 'numeric'
+                    }}
                   />
 
                   <TextField

@@ -11,6 +11,7 @@ import RHFRadioGroup from "../components/form/RHFRadioGroup";
 import RHFSelect from "../components/form/RHFSelect";
 import RHFCurrencyField from "../components/form/RHFCurrencyField";
 import RHFCheckbox from "../components/form/RHFCheckbox";
+import DateField from "../components/form/DateField";
 import { ProfileSchema, type ProfileForm } from "../validation/profile";
 import { useAppData } from "../state/AppDataContext";
 import { useStepper } from "../state/StepperContext";
@@ -2152,10 +2153,9 @@ export default function Profile() {
                                           label="Name of Trust" 
                                           required
                                         />
-                                        <RHFTextField 
+                                        <DateField 
                                           name="termLifeTrustDate" 
-                                          label="Date of Trust (mm/dd/yyyy)" 
-                                          placeholder="mm/dd/yyyy"
+                                          label="Date of Trust" 
                                           required
                                         />
                                       </Stack>
@@ -2236,10 +2236,9 @@ export default function Profile() {
                                           label="Name of Trust" 
                                           required
                                         />
-                                        <RHFTextField 
+                                        <DateField 
                                           name="tenYearTermTrustDate" 
-                                          label="Date of Trust (mm/dd/yyyy)" 
-                                          placeholder="mm/dd/yyyy"
+                                          label="Date of Trust" 
                                           required
                                         />
                                       </Stack>
@@ -2320,10 +2319,9 @@ export default function Profile() {
                                           label="Name of Trust" 
                                           required
                                         />
-                                        <RHFTextField 
+                                        <DateField 
                                           name="twentyYearTermTrustDate" 
-                                          label="Date of Trust (mm/dd/yyyy)" 
-                                          placeholder="mm/dd/yyyy"
+                                          label="Date of Trust" 
                                           required
                                         />
                                       </Stack>
@@ -2404,10 +2402,9 @@ export default function Profile() {
                                       label="Name of Trust" 
                                       required
                                     />
-                                    <RHFTextField 
+                                    <DateField 
                                       name="addTrustDate" 
-                                      label="Date of Trust (mm/dd/yyyy)" 
-                                      placeholder="mm/dd/yyyy"
+                                      label="Date of Trust" 
                                       required
                                     />
                                   </Stack>
@@ -2499,10 +2496,9 @@ export default function Profile() {
                                               name="spouseTermLifeTrustName" 
                                               label="Name of Trust" 
                                             />
-                                            <RHFTextField 
+                                            <DateField 
                                               name="spouseTermLifeTrustDate" 
-                                              label="Date of Trust (mm/dd/yyyy)" 
-                                              placeholder="mm/dd/yyyy"
+                                              label="Date of Trust" 
                                             />
                                           </Stack>
                                         )}
@@ -2575,10 +2571,9 @@ export default function Profile() {
                                               name="spouseTenYearTermTrustName" 
                                               label="Name of Trust" 
                                             />
-                                            <RHFTextField 
+                                            <DateField 
                                               name="spouseTenYearTermTrustDate" 
-                                              label="Date of Trust (mm/dd/yyyy)" 
-                                              placeholder="mm/dd/yyyy"
+                                              label="Date of Trust" 
                                             />
                                           </Stack>
                                         )}
@@ -2651,10 +2646,9 @@ export default function Profile() {
                                               name="spouseTwentyYearTermTrustName" 
                                               label="Name of Trust" 
                                             />
-                                            <RHFTextField 
+                                            <DateField 
                                               name="spouseTwentyYearTermTrustDate" 
-                                              label="Date of Trust (mm/dd/yyyy)" 
-                                              placeholder="mm/dd/yyyy"
+                                              label="Date of Trust" 
                                             />
                                           </Stack>
                                         )}
@@ -2727,10 +2721,9 @@ export default function Profile() {
                                           name="spouseAddTrustName" 
                                           label="Name of Trust" 
                                         />
-                                        <RHFTextField 
+                                        <DateField 
                                           name="spouseAddTrustDate" 
-                                          label="Date of Trust (mm/dd/yyyy)" 
-                                          placeholder="mm/dd/yyyy"
+                                          label="Date of Trust" 
                                         />
                                       </Stack>
                                     )}

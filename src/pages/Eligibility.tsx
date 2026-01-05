@@ -433,12 +433,10 @@ export default function Eligibility() {
                           {/* Tobacco use details - show if yes */}
                           {selfSmoker === "yes" && (
                             <>
-                              <RHFTextField 
+                              <DateField 
                                 name="selfTobaccoLastUsed"
                                 label="Last Used" 
-                                type="date"
                                 required
-                                InputLabelProps={{ shrink: true }}
                               />
                               
                               <Controller
@@ -642,12 +640,10 @@ export default function Eligibility() {
                           {/* Tobacco use details - show if yes */}
                           {spouseSmoker === "yes" && (
                             <>
-                              <RHFTextField 
+                              <DateField 
                                 name="spouseTobaccoLastUsed"
                                 label="Last Used" 
-                                type="date"
                                 required
-                                InputLabelProps={{ shrink: true }}
                               />
                               
                               <Controller

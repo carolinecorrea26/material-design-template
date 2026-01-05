@@ -21,9 +21,8 @@ export default function DateField({ name, label, required = false, autoComplete 
           label={label}
           required={required}
           autoComplete={autoComplete}
-          placeholder="MM/DD/YYYY"
           error={!!fieldState.error}
-          helperText={fieldState.error?.message}
+          helperText={fieldState.error?.message || 'MM/DD/YYYY'}
           fullWidth
           onChange={(e) => {
             let value = e.target.value.replace(/\D/g, '');
