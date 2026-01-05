@@ -244,7 +244,7 @@ const QuoteForm: React.FC<{
                   alignItems: 'end'
                 }}>
                   <TextField
-                    label="Birthday"
+                    label="Birthday (mm/dd/yyyy)"
                     value={birthday}
                     onChange={(e) => {
                       let value = e.target.value.replace(/\D/g, '');
@@ -256,7 +256,7 @@ const QuoteForm: React.FC<{
                       }
                       setBirthday(value);
                     }}
-                    placeholder="MM/DD/YYYY"
+                    // helperText="MM/DD/YYYY"
                     fullWidth
                     inputProps={{ 
                       maxLength: 10,

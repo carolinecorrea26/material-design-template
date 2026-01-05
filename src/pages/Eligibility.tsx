@@ -135,7 +135,7 @@ export default function Eligibility() {
         selfMonthlyExpenses: "$5,000",
         selfRespPct: "100",
         smokerSelf: "yes",
-        selfTobaccoLastUsed: "2020-06-15",
+        selfTobaccoLastUsed: "06/15/2020",
         selfTobaccoProducts: [
           "Betel nut", "Chewing tobacco", "Cigar", "Cigarettes", "E-Cigarettes",
           "Nicotine gum", "Nicotine inhaler", "Nicotine lozenge", "Nicotine patch",
@@ -146,14 +146,14 @@ export default function Eligibility() {
         spouseFirstName: "Jane",
         spouseMiddleInitial: "B",
         spouseLastName: "Doe",
-        spouseBirthday: "1987-03-22",
+        spouseBirthday: "03/22/1987",
         spouseGender: "female",
         spouseEmail: "jane.doe@example.com",
         spouseCoverages: ["LI", "DI", "SH"],
         spouseAvgIncome: "$4,500",
         spouseHoursPerWeek: "35",
         smokerSpouse: "yes",
-        spouseTobaccoLastUsed: "2019-11-08",
+        spouseTobaccoLastUsed: "11/08/2019",
         spouseTobaccoProducts: [
           "Betel nut", "Chewing tobacco", "Cigar", "Cigarettes", "E-Cigarettes",
           "Nicotine gum", "Nicotine inhaler", "Nicotine lozenge", "Nicotine patch",
@@ -163,7 +163,7 @@ export default function Eligibility() {
         children: [{
           firstName: "Alex",
           lastName: "Doe",
-          birthday: "2015-08-10",
+          birthday: "08/10/2015",
           gender: "male",
           militaryDischarge: "no"
         }]
