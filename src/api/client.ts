@@ -1,5 +1,5 @@
 import type { Product, EligibilityDefaults, RateQuoteRequest, RateQuoteResponse } from "../types/app";
-import { ACTIVE_CLIENT_ID, getClientConfig } from "../config/clients";
+import { getClientConfig } from "../config/clients";
 
 // Static imports for all product files (ensures they're always bundled)
 import productsStandard from "../data/fixtures/products.json";
@@ -11,16 +11,19 @@ import productsAvmalifetrust from "../data/fixtures/products-avmalifetrust.json"
 import productsWaepa from "../data/fixtures/products-waepa.json";
 import productsIeee from "../data/fixtures/products-ieee.json";
 
+// In development, use direct imports instead of MSW
+const isDev = import.meta.env.DEV;
+
 // Product file registry - add new clients here
 const PRODUCT_FILES: Record<string, Product[]> = {
-  'products': productsStandard,
-  'products-demo': productsDemo,
-  'products-nar': productsNar,
-  'products-ama': productsAma,
-  'products-calbar': productsCalbar,
-  'products-avmalifetrust': productsAvmalifetrust,
-  'products-waepa': productsWaepa,
-  'products-ieee': productsIeee,
+  'products': productsStandard as Product[],
+  'products-demo': productsDemo as Product[],
+  'products-nar': productsNar as Product[],
+  'products-ama': productsAma as Product[],
+  'products-calbar': productsCalbar as Product[],
+  'products-avmalifetrust': productsAvmalifetrust as Product[],
+  'products-waepa': productsWaepa as Product[],
+  'products-ieee': productsIeee as Product[],
 };
 
 export async function getProducts(): Promise<Product[]> {

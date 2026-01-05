@@ -313,15 +313,16 @@ export default function Coverage() {
   // }, [selectedByKey, amountByKey, rateByKey]);
 
   const handleContinue = () => {
-    setSubmitAttempted(true);
-    
     // Check if at least one product is selected
     const hasSelection = Object.values(selectedByKey).some(selected => selected === true);
     
     if (!hasSelection) {
+      setSubmitAttempted(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
+    
+    setSubmitAttempted(true);
     
     const selections: SelectedItem[] = [];
     for (const [key, selected] of Object.entries(selectedByKey)) {
