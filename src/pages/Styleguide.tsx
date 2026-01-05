@@ -468,6 +468,7 @@ export default function Styleguide() {
               name="requiredDateField"
               label="Required Date Field"
               required
+            />
             <RHFSelect 
               name="requiredSelectField" 
               label="Required Select Field"
