@@ -8,7 +8,7 @@ export const THEME_COLORS = {
   blue: {
     primary: {
       main: '#1e5dd1',
-      // main: '#0468ff', NYL blue
+      // main: '#1e5dd1', NYL blue
       // main: '#1860f2',
       dark: '#002975',
       // dark: '#001e94',
@@ -24,8 +24,8 @@ export const THEME_COLORS = {
   },
   purple: {
     primary: {
-      main: '#7c3aed',
-      dark: '#6b21a8',
+      main: '#6827d7ff',
+      dark: '#3f0073ff',
       light: '#a78bfa',
     },
   },

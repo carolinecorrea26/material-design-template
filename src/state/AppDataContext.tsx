@@ -1,9 +1,30 @@
 import * as React from "react";
-import type { EligibilityForm } from "../validation/eligibility";
+import type { EligibilityForm, CoverageCat } from "../validation/eligibility";
+import type { ApplicantType } from "../constants/getStartedProducts";
 import type { ContactForm } from "../validation/contact";
 import type { ProfileForm } from "../validation/profile";
 import type { HealthHistoryForm } from "../validation/healthHistory";
 import type { SelectedItem } from "../types/app";
+
+type ApplicantFlags = {
+  self: boolean;
+  spouse: boolean;
+  child: boolean;
+};
+
+type CoverageSummary = {
+  self: CoverageCat[];
+  spouse: CoverageCat[];
+  child: CoverageCat[];
+};
+
+type GetStartedData = {
+  productSelections: string[];
+  productApplicantSelections: Record<string, ApplicantType[]>;
+  applicants: ApplicantFlags;
+  coverageByApplicant: CoverageSummary;
+  updatedAt: string;
+};
 
 type ConsentForm = {
   electronicConsent: boolean;
@@ -25,6 +46,7 @@ type MembershipForm = {
 
 type AppData = {
   isAdvisorFlow?: boolean;
+  getStarted?: GetStartedData;
   membership?: MembershipForm;
   eligibility?: EligibilityForm;
   coverage?: SelectedItem[];
@@ -37,6 +59,7 @@ type AppData = {
 type Ctx = {
   data: AppData;
   setIsAdvisorFlow: (v: boolean) => void;
+  setGetStarted: (v: GetStartedData) => void;
   setMembership: (v: MembershipForm) => void;
   setEligibility: (v: EligibilityForm) => void;
   setCoverage: (v: SelectedItem[]) => void;
@@ -60,22 +83,44 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
     }
   });
 
-  const setIsAdvisorFlow = (v: boolean) => setData(d => ({ ...d, isAdvisorFlow: v }));
-  const setMembership = (v: MembershipForm) => setData(d => ({ ...d, membership: v }));
-  const setEligibility = (v: EligibilityForm) => setData(d => ({ ...d, eligibility: v }));
-  const setCoverage = (v: SelectedItem[]) => setData(d => ({ ...d, coverage: v }));
-  const setContact = (v: ContactForm) => setData(d => ({ ...d, contact: v }));
-  const setProfile = (v: ProfileForm) => setData(d => ({ ...d, profile: v }));
-  const setHealthHistory = (v: HealthHistoryForm) => setData(d => ({ ...d, healthHistory: v }));
-  const setConsent = (v: ConsentForm) => setData(d => ({ ...d, consent: v }));
+  const setIsAdvisorFlow = (v: boolean) =>
+    setData((d) => ({ ...d, isAdvisorFlow: v }));
+  const setGetStarted = (v: GetStartedData) =>
+    setData((d) => ({ ...d, getStarted: v }));
+  const setMembership = (v: MembershipForm) =>
+    setData((d) => ({ ...d, membership: v }));
+  const setEligibility = (v: EligibilityForm) =>
+    setData((d) => ({ ...d, eligibility: v }));
+  const setCoverage = (v: SelectedItem[]) =>
+    setData((d) => ({ ...d, coverage: v }));
+  const setContact = (v: ContactForm) => setData((d) => ({ ...d, contact: v }));
+  const setProfile = (v: ProfileForm) => setData((d) => ({ ...d, profile: v }));
+  const setHealthHistory = (v: HealthHistoryForm) =>
+    setData((d) => ({ ...d, healthHistory: v }));
+  const setConsent = (v: ConsentForm) => setData((d) => ({ ...d, consent: v }));
 
-  // only autosave after Contact submit, per doc
   React.useEffect(() => {
-    const enabled = sessionStorage.getItem(AUTOSAVE_FLAG) === "1";
-    if (enabled) sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }, [data]);
 
-  return <Ctx.Provider value={{ data, setIsAdvisorFlow, setMembership, setEligibility, setCoverage, setContact, setProfile, setHealthHistory, setConsent }}>{children}</Ctx.Provider>;
+  return (
+    <Ctx.Provider
+      value={{
+        data,
+        setIsAdvisorFlow,
+        setGetStarted,
+        setMembership,
+        setEligibility,
+        setCoverage,
+        setContact,
+        setProfile,
+        setHealthHistory,
+        setConsent,
+      }}
+    >
+      {children}
+    </Ctx.Provider>
+  );
 }
 
 export function useAppData() {

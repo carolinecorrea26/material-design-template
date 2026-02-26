@@ -1,5 +1,15 @@
 import * as React from "react";
-import { Box, Button, Stack, IconButton, Drawer, Typography, Divider, ToggleButtonGroup, ToggleButton } from "@mui/material";
+import {
+  Box,
+  Button,
+  Stack,
+  IconButton,
+  Drawer,
+  Typography,
+  Divider,
+  ToggleButtonGroup,
+  ToggleButton,
+} from "@mui/material";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { Settings } from "@mui/icons-material";
 import ClientSwitcher from "./ClientSwitcher";
@@ -21,13 +31,24 @@ export default function DevTools() {
 
   const handleFillOutPage = () => {
     // Dispatch a custom event that pages can listen to
-    window.dispatchEvent(new CustomEvent('devtools:fillform'));
+    window.dispatchEvent(new CustomEvent("devtools:fillform"));
   };
 
   // Only show Fill Out Page button on form pages
   // In single-page layout, always show it since form pages are on the same page
-  const isFormPage = layoutMode === 'single-page' || 
-    ['/membership', '/eligibility', '/coverage', '/contact', '/profile', '/payment', '/health-history', '/consent'].includes(location.pathname);
+  const isFormPage =
+    layoutMode === "single-page" ||
+    [
+      "/get-started",
+      "/membership",
+      "/eligibility",
+      "/coverage",
+      "/contact",
+      "/profile",
+      "/payment",
+      "/health-history",
+      "/consent",
+    ].includes(location.pathname);
 
   return (
     <>
@@ -35,18 +56,18 @@ export default function DevTools() {
       <IconButton
         onClick={() => setOpen(true)}
         sx={{
-          position: 'fixed',
+          position: "fixed",
           right: open ? 320 : 0, // Shift left when drawer is open
-          top: '50%',
-          transform: 'translateY(-50%)',
-          bgcolor: 'grey.100',
-          color: 'text.primary',
-          borderRadius: '8px 0 0 8px',
-          padding: '12px 8px',
+          top: "50%",
+          transform: "translateY(-50%)",
+          bgcolor: "grey.100",
+          color: "text.primary",
+          borderRadius: "8px 0 0 8px",
+          padding: "12px 8px",
           zIndex: 1300,
-          transition: 'right 0.3s ease',
-          '&:hover': {
-            bgcolor: 'grey.200',
+          transition: "right 0.3s ease",
+          "&:hover": {
+            bgcolor: "grey.200",
           },
         }}
       >
@@ -59,17 +80,25 @@ export default function DevTools() {
         open={open}
         onClose={() => setOpen(false)}
         sx={{
-          '& .MuiDrawer-paper': {
+          "& .MuiDrawer-paper": {
             width: 320,
-            bgcolor: 'grey.50',
-            color: 'text.primary',
+            bgcolor: "grey.50",
+            color: "text.primary",
           },
         }}
       >
         <Box sx={{ p: 2 }}>
           {/* Header */}
-          <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
-            <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 600 }}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{ mb: 2 }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ color: "primary.main", fontWeight: 600 }}
+            >
               Dev Tools
             </Typography>
             {/* <IconButton 
@@ -81,21 +110,27 @@ export default function DevTools() {
             </IconButton> */}
           </Stack>
 
-          <Divider sx={{ borderColor: 'divider', mb: 2 }} />
+          <Divider sx={{ borderColor: "divider", mb: 2 }} />
 
           {/* Content */}
           <Stack spacing={2}>
             <Box>
-              <Typography variant="caption" sx={{ color: 'text.secondary', mb: 1, display: 'block' }}>
+              <Typography
+                variant="caption"
+                sx={{ color: "text.secondary", mb: 1, display: "block" }}
+              >
                 CLIENT
               </Typography>
               <ClientSwitcher />
             </Box>
 
-            <Divider sx={{ borderColor: 'divider' }} />
+            <Divider sx={{ borderColor: "divider" }} />
 
             <Box>
-              <Typography variant="caption" sx={{ color: 'text.secondary', mb: 1, display: 'block' }}>
+              <Typography
+                variant="caption"
+                sx={{ color: "text.secondary", mb: 1, display: "block" }}
+              >
                 LAYOUT MODE
               </Typography>
               <ToggleButtonGroup
@@ -110,10 +145,13 @@ export default function DevTools() {
               </ToggleButtonGroup>
             </Box>
 
-            <Divider sx={{ borderColor: 'divider' }} />
+            <Divider sx={{ borderColor: "divider" }} />
 
             <Box>
-              <Typography variant="caption" sx={{ color: 'text.secondary', mb: 1, display: 'block' }}>
+              <Typography
+                variant="caption"
+                sx={{ color: "text.secondary", mb: 1, display: "block" }}
+              >
                 FORM ACTIONS
               </Typography>
               <Stack spacing={1}>
@@ -123,12 +161,12 @@ export default function DevTools() {
                     fullWidth
                     variant="outlined"
                     sx={{
-                      color: 'text.primary',
-                      borderColor: 'divider',
-                      justifyContent: 'flex-start',
-                      '&:hover': {
-                        borderColor: 'success.main',
-                        bgcolor: 'success.lighter',
+                      color: "text.primary",
+                      borderColor: "divider",
+                      justifyContent: "flex-start",
+                      "&:hover": {
+                        borderColor: "success.main",
+                        bgcolor: "success.lighter",
                       },
                     }}
                   >
@@ -140,12 +178,12 @@ export default function DevTools() {
                   fullWidth
                   variant="outlined"
                   sx={{
-                    color: 'text.primary',
-                    borderColor: 'divider',
-                    justifyContent: 'flex-start',
-                    '&:hover': {
-                      borderColor: 'error.main',
-                      bgcolor: 'error.lighter',
+                    color: "text.primary",
+                    borderColor: "divider",
+                    justifyContent: "flex-start",
+                    "&:hover": {
+                      borderColor: "error.main",
+                      bgcolor: "error.lighter",
                     },
                   }}
                 >
@@ -154,10 +192,13 @@ export default function DevTools() {
               </Stack>
             </Box>
 
-            <Divider sx={{ borderColor: 'divider' }} />
+            <Divider sx={{ borderColor: "divider" }} />
 
             <Box>
-              <Typography variant="caption" sx={{ color: 'text.secondary', mb: 1, display: 'block' }}>
+              <Typography
+                variant="caption"
+                sx={{ color: "text.secondary", mb: 1, display: "block" }}
+              >
                 DOCUMENTATION
               </Typography>
               <Stack spacing={1}>
@@ -167,12 +208,12 @@ export default function DevTools() {
                   fullWidth
                   variant="outlined"
                   sx={{
-                    color: 'text.primary',
-                    borderColor: 'divider',
-                    justifyContent: 'flex-start',
-                    '&:hover': {
-                      borderColor: 'primary.main',
-                      bgcolor: 'grey.50',
+                    color: "text.primary",
+                    borderColor: "divider",
+                    justifyContent: "flex-start",
+                    "&:hover": {
+                      borderColor: "primary.main",
+                      bgcolor: "grey.50",
                     },
                   }}
                 >
@@ -184,12 +225,12 @@ export default function DevTools() {
                   fullWidth
                   variant="outlined"
                   sx={{
-                    color: 'text.primary',
-                    borderColor: 'divider',
-                    justifyContent: 'flex-start',
-                    '&:hover': {
-                      borderColor: 'primary.main',
-                      bgcolor: 'grey.50',
+                    color: "text.primary",
+                    borderColor: "divider",
+                    justifyContent: "flex-start",
+                    "&:hover": {
+                      borderColor: "primary.main",
+                      bgcolor: "grey.50",
                     },
                   }}
                 >
@@ -201,12 +242,12 @@ export default function DevTools() {
                   fullWidth
                   variant="outlined"
                   sx={{
-                    color: 'text.primary',
-                    borderColor: 'divider',
-                    justifyContent: 'flex-start',
-                    '&:hover': {
-                      borderColor: 'primary.main',
-                      bgcolor: 'grey.50',
+                    color: "text.primary",
+                    borderColor: "divider",
+                    justifyContent: "flex-start",
+                    "&:hover": {
+                      borderColor: "primary.main",
+                      bgcolor: "grey.50",
                     },
                   }}
                 >

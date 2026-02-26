@@ -1,6 +1,15 @@
-import { THEME_COLORS, type ThemeColorName } from './themeColors';
+import { THEME_COLORS, type ThemeColorName } from "./themeColors";
 
-export type ClientId = 'abe' | 'ama' | 'avmalifetrust' | 'waepa' | 'ieee' | 'nar' | 'calbar' | 'demo' | 'default';
+export type ClientId =
+  | "abe"
+  | "ama"
+  | "avmalifetrust"
+  | "waepa"
+  | "ieee"
+  | "nar"
+  | "calbar"
+  | "demo"
+  | "default";
 
 export interface ClientBranding {
   /** Client display name */
@@ -9,6 +18,8 @@ export interface ClientBranding {
   acronym: string;
   /** Path to primary logo */
   logo: string;
+  /** Optional max width for logo in px */
+  logoMaxWidth?: number;
   /** Path to partner logo (optional) */
   partnerLogo?: string;
   /** Alternate text for logo */
@@ -48,7 +59,7 @@ export interface ClientTheme {
   /** Theme color name - references a predefined color palette */
   colorName: ThemeColorName;
   /** Hero image display type: 'standard' for photo, 'graphic' for illustration, 'none' to hide */
-  heroImageType?: 'standard' | 'graphic' | 'none';
+  heroImageType?: "standard" | "graphic" | "none";
 }
 
 export interface ClientFieldLabels {
@@ -69,7 +80,7 @@ export interface ClientMembershipQuestion {
   /** Question text for spouse member (optional) */
   spouseQuestion?: string;
   /** Type of question: 'radio' for Y/N, 'select' for dropdown */
-  type: 'radio' | 'select';
+  type: "radio" | "select";
   /** Options for primary member select type questions */
   options?: Array<{ label: string; value: string }>;
   /** Options for spouse member select type questions (optional, falls back to options) */
@@ -101,7 +112,7 @@ export interface ClientConfig {
   /** Product fixture file to use (e.g., 'products', 'products-nar') */
   productsFile?: string;
   /** Available coverage categories for this client */
-  coverageCategories?: Array<'LI' | 'DI' | 'OO' | 'SH'>;
+  coverageCategories?: Array<"LI" | "DI" | "OO" | "SH">;
   /** Optional pages configuration */
   pages?: {
     /** List of page paths to exclude from this client */
@@ -114,48 +125,51 @@ export interface ClientConfig {
  */
 export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
   abe: {
-    id: 'abe',
+    id: "abe",
     branding: {
-      name: 'American Bar Endowment',
-      acronym: 'ABE',
-      logo: '/brand/abe/logo.png',
-      logoAlt: 'ABE Logo',
-      partnerLogo: '/brand/nyl/logo.png',
-      partnerLogoAlt: 'New York Life Logo',
-      heroImage: '/brand/abe/hero.png',
-      heroImageAlt: 'Bar Association Members',
-      heroTitle: 'Insurance exclusively for Bar Association Members.',
-      heroSubtitle: 'Group Life, Disability and Supplemental Insurance available exclusively to Bar Association Members. Start your application today.',
+      name: "American Bar Endowment",
+      acronym: "ABE",
+      logo: "/brand/abe/logo.png",
+      logoAlt: "ABE Logo",
+      partnerLogo: "/brand/nyl/logo.png",
+      partnerLogoAlt: "New York Life Logo",
+      heroImage: "/brand/abe/hero.png",
+      heroImageAlt: "Bar Association Members",
+      heroTitle: "Insurance exclusively for Bar Association Members.",
+      heroSubtitle:
+        "Group Life, Disability and Supplemental Insurance available exclusively to Bar Association Members. Start your application today.",
       products: [
-        'Term Life Insurance',
-        '10-Year Level Term Life Insurance',
-        '20-Year Level Term Life Insurance',
-        '50+ Multi-Benefit Term Life Insurance',
-        'Accidental Death and Dismemberment Insurance',
-        'Long-Term Disability Plus Insurance',
-        'Long-Term Disability Insurance',
-        'Mid-Term Disability Insurance',
-        'Professional Overhead Expense Disability Insurance',
-        'Critical Illness',
-        'Hospital Money Insurance'
+        "Term Life Insurance",
+        "10-Year Level Term Life Insurance",
+        "20-Year Level Term Life Insurance",
+        "50+ Multi-Benefit Term Life Insurance",
+        "Accidental Death and Dismemberment Insurance",
+        "Long-Term Disability Plus Insurance",
+        "Long-Term Disability Insurance",
+        "Mid-Term Disability Insurance",
+        "Professional Overhead Expense Disability Insurance",
+        "Critical Illness",
+        "Hospital Money Insurance",
       ],
-      phone: '8006218981',
-      phoneDisplay: '(800) 621-8981',
+      phone: "8006218981",
+      phoneDisplay: "(800) 621-8981",
     },
     theme: {
-      colorName: 'green',
-      heroImageType: 'none',
+      colorName: "green",
+      heroImageType: "none",
     },
     fieldLabels: {
-      dateOfBirth: 'Birthday',
-      gender: 'Gender',
-      state: 'State',
-      nicotineUse: 'Do you use nicotine products?',
+      dateOfBirth: "Birthday",
+      gender: "Gender",
+      state: "State",
+      nicotineUse: "Do you use nicotine products?",
     },
     membershipQuestion: {
-      primaryQuestion: 'Are you an active member of a State, Local, or Specialty Bar Association?',
-      spouseQuestion: 'Is your spouse an active member of a State, Local, or Specialty Bar Association?',
-      type: 'radio',
+      primaryQuestion:
+        "Are you an active member of a State, Local, or Specialty Bar Association?",
+      spouseQuestion:
+        "Is your spouse an active member of a State, Local, or Specialty Bar Association?",
+      type: "radio",
     },
     features: {
       showPartnerLogo: true,
@@ -165,46 +179,47 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       showCoverageDetails: true,
       showMembershipPage: false,
     },
-    productsFile: 'products',
-    coverageCategories: ['LI', 'DI', 'OO', 'SH'],
+    productsFile: "products",
+    coverageCategories: ["LI", "DI", "OO", "SH"],
   },
-  
+
   calbar: {
-    id: 'calbar',
+    id: "calbar",
     branding: {
-      name: 'California Bar Association',
-      acronym: 'CALBAR',
-      logo: '/brand/calbar/logo.png',
-      logoAlt: 'California Bar Logo',
-      partnerLogo: '/brand/nyl/logo.png',
-      partnerLogoAlt: 'New York Life Logo',
-      heroImage: '/brand/calbar/hero.png',
-      heroImageAlt: 'California Bar Members',
-      heroTitle: 'Coverage You Can Depend On',
-      heroSubtitle: 'As a California licensed attorney, you have access to portable group life insurance sponsored by the State Bar of California. With exclusive rates, you can decide your level of coverage quickly and easily online.',
+      name: "California Bar Association",
+      acronym: "CALBAR",
+      logo: "/brand/calbar/logo.png",
+      logoAlt: "California Bar Logo",
+      partnerLogo: "/brand/nyl/logo.png",
+      partnerLogoAlt: "New York Life Logo",
+      heroImage: "/brand/calbar/hero.png",
+      heroImageAlt: "California Bar Members",
+      heroTitle: "Coverage You Can Depend On",
+      heroSubtitle:
+        "As a California licensed attorney, you have access to portable group life insurance sponsored by the State Bar of California. With exclusive rates, you can decide your level of coverage quickly and easily online.",
       products: [
-        'Term Life Insurance',
-        '10-Year Level Term Life Insurance',
-        '20-Year Level Term Life Insurance',
-        'Accidental Death and Dismemberment Insurance',
+        "Term Life Insurance",
+        "10-Year Level Term Life Insurance",
+        "20-Year Level Term Life Insurance",
+        "Accidental Death and Dismemberment Insurance",
       ],
-      phone: '8006218981',
-      phoneDisplay: '(800) 621-8981',
+      phone: "8006218981",
+      phoneDisplay: "(800) 621-8981",
     },
     theme: {
-      colorName: 'blue',
-      heroImageType: 'none',
+      colorName: "blue",
+      heroImageType: "none",
     },
     fieldLabels: {
-      dateOfBirth: 'Birthday',
-      gender: 'Gender',
-      state: 'State',
-      nicotineUse: 'Do you use nicotine products?',
+      dateOfBirth: "Birthday",
+      gender: "Gender",
+      state: "State",
+      nicotineUse: "Do you use nicotine products?",
     },
     membershipQuestion: {
-      primaryQuestion: 'Are you a California licensed attorney?',
-      spouseQuestion: 'Is your spouse a California licensed attorney?',
-      type: 'radio',
+      primaryQuestion: "Are you a California licensed attorney?",
+      spouseQuestion: "Is your spouse a California licensed attorney?",
+      type: "radio",
     },
     features: {
       showPartnerLogo: true,
@@ -214,64 +229,64 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       showCoverageDetails: true,
       showMembershipPage: false,
     },
-    productsFile: 'products-calbar',
-    coverageCategories: ['LI'],
+    productsFile: "products-calbar",
+    coverageCategories: ["LI"],
   },
-  
+
   ama: {
-    id: 'ama',
+    id: "ama",
     branding: {
-      name: 'American Medical Association',
-      acronym: 'AMA',
-      logo: '/brand/ama/logo.png',
-      logoAlt: 'AMA Logo',
-      partnerLogo: '/brand/nyl/logo.png',
-      partnerLogoAlt: 'New York Life Logo',
-      heroImage: '/brand/ama/hero.png',
-      heroImageAlt: 'AMA Members',
-      heroTitle: 'Help safeguard your financial future.',
-      heroSubtitle: 'AMA-sponsored coverage designed to protect you, your family and your career underwritten by New York Life Insurance Company.',
+      name: "American Medical Association",
+      acronym: "AMA",
+      logo: "/brand/ama/logo.png",
+      logoAlt: "AMA Logo",
+      partnerLogo: "/brand/nyl/logo.png",
+      partnerLogoAlt: "New York Life Logo",
+      heroImage: "/brand/ama/hero.png",
+      heroImageAlt: "AMA Members",
+      heroTitle: "Help safeguard your financial future.",
+      heroSubtitle:
+        "AMA-sponsored coverage designed to protect you, your family and your career underwritten by New York Life Insurance Company.",
       products: [
-        '20-Year Level Term Life Insurance',
-        '15-Year Level Term Life Insurance',
-        '10-Year Level Term Life Insurance',
-        'Term Life Insurance',
-        'Preferred Term Life Insurance',
-        'Premier Accident Insurance',
-        'Disability Insurance with Step Rated Premiums',
-        'Disability Insurance with Level Rated Premiums',
-        'Office Overhead Expense Insurance',
-        'Hospital Income Insurance'
+        "20-Year Level Term Life Insurance",
+        "15-Year Level Term Life Insurance",
+        "10-Year Level Term Life Insurance",
+        "Term Life Insurance",
+        "Preferred Term Life Insurance",
+        "Premier Accident Insurance",
+        "Disability Insurance with Step Rated Premiums",
+        "Disability Insurance with Level Rated Premiums",
+        "Office Overhead Expense Insurance",
+        "Hospital Income Insurance",
       ],
-      phone: '8886275902',
-      phoneDisplay: '888-627-5902',
-      phoneHours: 'M-F 8:00am-5:00pm CT',
-      scheduleCallUrl: 'https://calendly.com/insurance-specialists-1/ama-insurance-website-inquiry?month=2025-10',
+      phone: "8886275902",
+      phoneDisplay: "888-627-5902",
+      phoneHours: "M-F 8:00am-5:00pm CT",
+      scheduleCallUrl:
+        "https://calendly.com/insurance-specialists-1/ama-insurance-website-inquiry?month=2025-10",
     },
     theme: {
-      colorName: 'blue',
-      heroImageType: 'none',
+      colorName: "blue",
+      heroImageType: "none",
     },
     fieldLabels: {
-      dateOfBirth: 'Birthday',
-      gender: 'Gender',
-      state: 'State',
-      nicotineUse: 'Do you use tobacco products?',
+      dateOfBirth: "Birthday",
+      gender: "Gender",
+      state: "State",
+      nicotineUse: "Do you use tobacco products?",
     },
     membershipQuestion: {
-      primaryQuestion: 'I am a (select one)',
-      spouseQuestion: 'Spouse Specialty',
-      type: 'select',
+      primaryQuestion: "I am a (select one)",
+      spouseQuestion: "Spouse Specialty",
+      type: "select",
       options: [
-        { label: 'Physician', value: 'physician' },
-        { label: 'Resident', value: 'resident' },
-        { label: 'Student', value: 'student' },
-        { label: 'Retired Physician', value: 'retired' },
-        { label: 'Spouse of Physician', value: 'spouse' },
+        { label: "Physician", value: "physician" },
+        { label: "Resident", value: "resident" },
+        { label: "Student", value: "student" },
+        { label: "Retired Physician", value: "retired" },
+        { label: "Spouse of Physician", value: "spouse" },
       ],
-      spouseOptions: [
-        { label: 'Spouse of Physician', value: 'spouse' },
-      ],
+      spouseOptions: [{ label: "Spouse of Physician", value: "spouse" }],
     },
     features: {
       showPartnerLogo: true,
@@ -281,54 +296,57 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       showCoverageDetails: true,
       showMembershipPage: false,
     },
-    productsFile: 'products-ama',
-    coverageCategories: ['LI', 'DI', 'OO', 'SH'],
+    productsFile: "products-ama",
+    coverageCategories: ["LI", "DI", "OO", "SH"],
   },
-  
+
   avmalifetrust: {
-    id: 'avmalifetrust',
+    id: "avmalifetrust",
     branding: {
-      name: 'American Veterinary Medical Association',
-      acronym: 'AVMA',
-      logo: '/brand/avmalifetrust/logo.png',
-      logoAlt: 'AVMA Life Trust Logo',
-      partnerLogo: '/brand/nyl/logo.png',
-      partnerLogoAlt: 'New York Life Logo',
-      heroImage: '/brand/avmalifetrust/hero.png',
-      heroImageAlt: 'AVMA Members',
-      heroTitle: 'Help safeguard your financial future.',
-      heroSubtitle: 'Coverage designed for you, available at member exclusive rates.',
+      name: "American Veterinary Medical Association",
+      acronym: "AVMA",
+      logo: "/brand/avmalifetrust/logo.png",
+      logoAlt: "AVMA Life Trust Logo",
+      partnerLogo: "/brand/nyl/logo.png",
+      partnerLogoAlt: "New York Life Logo",
+      heroImage: "/brand/avmalifetrust/hero.png",
+      heroImageAlt: "AVMA Members",
+      heroTitle: "Help safeguard your financial future.",
+      heroSubtitle:
+        "Coverage designed for you, available at member exclusive rates.",
       products: [
-        'Family Group Life Insurance',
-        '10-Year Level Term Life Insurance',
-        '20-Year Level Term Life Insurance',
-        '45+ Term Life Advanced Insurance',
-        'Large Scale Accidental Death and Dismemberment Insurance',
-        'Basic Protection Package',
-        'Long-Term Disability Insurance',
-        'Short-Term Disability Insurance',
-        'Student Loan Disability Insurance (Supplemental Disability)',
-        'Professional Overhead Expense Insurance',
-        'Critical Illness Insurance',
-        'Hospital Indemnity Insurance'
+        "Family Group Life Insurance",
+        "10-Year Level Term Life Insurance",
+        "20-Year Level Term Life Insurance",
+        "45+ Term Life Advanced Insurance",
+        "Large Scale Accidental Death and Dismemberment Insurance",
+        "Basic Protection Package",
+        "Long-Term Disability Insurance",
+        "Short-Term Disability Insurance",
+        "Student Loan Disability Insurance (Supplemental Disability)",
+        "Professional Overhead Expense Insurance",
+        "Critical Illness Insurance",
+        "Hospital Indemnity Insurance",
       ],
-      phone: '8006218981',
-      phoneDisplay: '(800) 621-8981',
+      phone: "8006218981",
+      phoneDisplay: "(800) 621-8981",
     },
     theme: {
-      colorName: 'green',
-      heroImageType: 'none',
+      colorName: "green",
+      heroImageType: "none",
     },
     fieldLabels: {
-      dateOfBirth: 'Birthday',
-      gender: 'Gender',
-      state: 'State',
-      nicotineUse: 'Do you use tobacco products?',
+      dateOfBirth: "Birthday",
+      gender: "Gender",
+      state: "State",
+      nicotineUse: "Do you use tobacco products?",
     },
     membershipQuestion: {
-      primaryQuestion: 'Are you an active member of the American Veterinary Medical Association?',
-      spouseQuestion: 'Is your spouse an active member of the American Veterinary Medical Association?',
-      type: 'radio',
+      primaryQuestion:
+        "Are you an active member of the American Veterinary Medical Association?",
+      spouseQuestion:
+        "Is your spouse an active member of the American Veterinary Medical Association?",
+      type: "radio",
     },
     features: {
       showPartnerLogo: true,
@@ -338,45 +356,47 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       showCoverageDetails: true,
       showMembershipPage: false,
     },
-    productsFile: 'products-avmalifetrust',
-    coverageCategories: ['LI', 'DI', 'OO'],
+    productsFile: "products-avmalifetrust",
+    coverageCategories: ["LI", "DI", "OO"],
   },
-  
+
   waepa: {
-    id: 'waepa',
+    id: "waepa",
     branding: {
-      name: 'Worldwide Assurance for Employees of Public Agencies',
-      acronym: 'WAEPA',
-      logo: '/brand/waepa/logo.png',
-      logoAlt: 'WAEPA Logo',
-      partnerLogo: '/brand/nyl/logo.png',
-      partnerLogoAlt: 'New York Life Logo',
-      heroImage: '/brand/waepa/hero.png',
-      heroImageAlt: 'WAEPA Members',
-      heroTitle: 'Safeguard your family\'s future.',
-      heroSubtitle: 'Group Term Life and Group Short Term Disability Insurance, available exclusively to Civilian Federal Employees. Start your application today.',
+      name: "Worldwide Assurance for Employees of Public Agencies",
+      acronym: "WAEPA",
+      logo: "/brand/waepa/logo.png",
+      logoMaxWidth: 150,
+      logoAlt: "WAEPA Logo",
+      partnerLogo: "/brand/nyl/logo.png",
+      partnerLogoAlt: "New York Life Logo",
+      heroImage: "/brand/waepa/hero.png",
+      heroImageAlt: "WAEPA Members",
+      heroTitle: "Safeguard your family's future.",
+      heroSubtitle:
+        "Group Term Life and Group Short Term Disability Insurance, available exclusively to Civilian Federal Employees. Start your application today.",
       products: [
-        'Group Term Life Insurance',
-        'Group Short-Term Disability Income Insurance Plan'
+        "Group Term Life Insurance",
+        "Group Short-Term Disability Income Insurance Plan",
       ],
-      phone: '8003683484',
-      phoneDisplay: '800-368-3484',
-      phoneHours: 'M-Th 8:30am - 6:30pm, F 8:30am - 5:00pm, ET',
+      phone: "8003683484",
+      phoneDisplay: "800-368-3484",
+      phoneHours: "M-Th 8:30am - 6:30pm, F 8:30am - 5:00pm, ET",
     },
     theme: {
-      colorName: 'blue',
-      heroImageType: 'none',
+      colorName: "blue",
+      heroImageType: "none",
     },
     fieldLabels: {
-      dateOfBirth: 'Birthday',
-      gender: 'Gender',
-      state: 'State',
-      nicotineUse: 'Do you use tobacco products?',
+      dateOfBirth: "Birthday",
+      gender: "Gender",
+      state: "State",
+      nicotineUse: "Do you use tobacco products?",
     },
     membershipQuestion: {
-      primaryQuestion: 'Are you a civilian federal employee?',
-      spouseQuestion: 'Is your spouse a civilian federal employee?',
-      type: 'radio',
+      primaryQuestion: "Are you a civilian federal employee?",
+      spouseQuestion: "Is your spouse a civilian federal employee?",
+      type: "radio",
     },
     features: {
       showPartnerLogo: true,
@@ -384,50 +404,51 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       enableDisabilityInsurance: true,
       enableLifeInsurance: true,
       showCoverageDetails: true,
-      showMembershipPage: true,
+      showMembershipPage: false,
     },
-    productsFile: 'products-waepa',
-    coverageCategories: ['LI', 'DI'],
+    productsFile: "products-waepa",
+    coverageCategories: ["LI", "DI"],
   },
-  
+
   ieee: {
-    id: 'ieee',
+    id: "ieee",
     branding: {
-      name: 'IEEE',
-      acronym: 'IEEE',
-      logo: '/brand/ieee/logo.png',
-      logoAlt: 'IEEE Logo',
-      partnerLogo: '/brand/nyl/logo.png',
-      partnerLogoAlt: 'New York Life Logo',
-      heroImage: '/brand/ieee/hero.png',
-      heroImageAlt: 'IEEE Members',
-      heroTitle: 'Help safeguard your financial future.',
-      heroSubtitle: 'Coverage designed for you, available at member exclusive rates.',
+      name: "IEEE",
+      acronym: "IEEE",
+      logo: "/brand/ieee/logo.png",
+      logoAlt: "IEEE Logo",
+      partnerLogo: "/brand/nyl/logo.png",
+      partnerLogoAlt: "New York Life Logo",
+      heroImage: "/brand/ieee/hero.png",
+      heroImageAlt: "IEEE Members",
+      heroTitle: "Help safeguard your financial future.",
+      heroSubtitle:
+        "Coverage designed for you, available at member exclusive rates.",
       products: [
-        'Group Term Life Insurance Plan',
-        'Group 10-Year Level Term Life Insurance',
-        'Group 20-Year Level Term Life Insurance',
-        'Accidental Death and Dismemberment',
-        'Group Disability Income Insurance'
+        "Group Term Life Insurance Plan",
+        "Group 10-Year Level Term Life Insurance",
+        "Group 20-Year Level Term Life Insurance",
+        "Accidental Death and Dismemberment",
+        "Group Disability Income Insurance",
       ],
-      phone: '8006784333',
-      phoneDisplay: '800-678-IEEE (4333)',
-      phoneHours: 'M-F 8:00am-5:00pm ET',
+      phone: "8006784333",
+      phoneDisplay: "800-678-IEEE (4333)",
+      phoneHours: "M-F 8:00am-5:00pm ET",
     },
     theme: {
-      colorName: 'blue',
-      heroImageType: 'none',
+      colorName: "blue",
+      heroImageType: "none",
     },
     fieldLabels: {
-      dateOfBirth: 'Birthday',
-      gender: 'Gender',
-      state: 'State',
-      nicotineUse: 'Do you use tobacco products?',
+      dateOfBirth: "Birthday",
+      gender: "Gender",
+      state: "State",
+      nicotineUse: "Do you use tobacco products?",
     },
     membershipQuestion: {
-      primaryQuestion: 'Are you an active member of IEEE?',
-      spouseQuestion: 'Is your spouse an active member of IEEE?',
-      type: 'radio',
+      primaryQuestion: "Are you an active member of IEEE?",
+      spouseQuestion: "Is your spouse an active member of IEEE?",
+      type: "radio",
     },
     features: {
       showPartnerLogo: true,
@@ -437,44 +458,47 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       showCoverageDetails: true,
       showMembershipPage: false,
     },
-    productsFile: 'products-ieee',
-    coverageCategories: ['LI', 'DI', 'SH'],
+    productsFile: "products-ieee",
+    coverageCategories: ["LI", "DI", "SH"],
   },
-  
+
   demo: {
-    id: 'demo',
+    id: "demo",
     branding: {
-      name: 'Demo Insurance',
-      acronym: 'DEMO',
-      logo: '/brand/nyl/logo.png',
-      logoAlt: 'New York Life Logo',
-      heroImage: '/brand/nyl/hero.png',
-      heroImageAlt: 'Demo Insurance Coverage',
-      heroTitle: 'Demo Site - Insurance Coverage Options',
-      heroSubtitle: 'Explore our comprehensive insurance products designed to protect you and your family.',
+      name: "Demo Insurance",
+      acronym: "DEMO",
+      logo: "/brand/nyl/logo.png",
+      logoAlt: "New York Life Logo",
+      heroImage: "/brand/nyl/hero.png",
+      heroImageAlt: "Demo Insurance Coverage",
+      heroTitle: "Demo Site - Insurance Coverage Options",
+      heroSubtitle:
+        "Explore our comprehensive insurance products designed to protect you and your family.",
       products: [
-        'Term Life Insurance',
-        '10 Year Level Term Life Insurance',
-        'Long-Term Disability Plus Insurance',
-        'Critical Illness',
-        'Hospital Money Insurance',
-        'Short-Term Disability Insurance'
+        "Term Life Insurance",
+        "10 Year Level Term Life Insurance",
+        "Long-Term Disability Plus Insurance",
+        "Critical Illness",
+        "Hospital Money Insurance",
+        "Short-Term Disability Insurance",
       ],
-      phone: '8006218981',
-      phoneDisplay: '(800) 621-8981',
+      phone: "8006218981",
+      phoneDisplay: "(800) 621-8981",
     },
     theme: {
-      colorName: 'blue',      heroImageType: 'none',    },
+      colorName: "purple",
+      heroImageType: "none",
+    },
     fieldLabels: {
-      dateOfBirth: 'Birthday',
-      gender: 'Gender',
-      state: 'State',
-      nicotineUse: 'Do you use tobacco products?',
+      dateOfBirth: "Birthday",
+      gender: "Gender",
+      state: "State",
+      nicotineUse: "Do you use tobacco products?",
     },
     membershipQuestion: {
-      primaryQuestion: 'Are you an active member of Demo Insurance?',
-      spouseQuestion: 'Is your spouse an active member of Demo Insurance?',
-      type: 'radio',
+      primaryQuestion: "Are you an active member of Demo Insurance?",
+      spouseQuestion: "Is your spouse an active member of Demo Insurance?",
+      type: "radio",
     },
     features: {
       showPartnerLogo: false,
@@ -484,46 +508,49 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       showCoverageDetails: true,
       showMembershipPage: false,
     },
-    productsFile: 'products-demo',
-    coverageCategories: ['LI', 'DI', 'SH'],
+    productsFile: "products-demo",
+    coverageCategories: ["LI", "DI", "SH"],
   },
-  
+
   nar: {
-    id: 'nar',
+    id: "nar",
     branding: {
-      name: 'National Association of REALTORS®',
-      acronym: 'NAR',
-      logo: '/brand/nar/logo.png',
-      logoAlt: 'NAR Logo',
-      partnerLogo: '/brand/nyl/logo.png',
-      partnerLogoAlt: 'New York Life Logo',
-      heroImage: '/brand/nar/hero.svg',
-      heroImageAlt: 'Real Estate Professionals',
-      heroTitle: 'Life & Disability Insurance for REALTORS®',
-      heroSubtitle: 'Group Life and Disability Insurance available exclusively to National Association of REALTORS® members. Start your application today.',
+      name: "National Association of REALTORS®",
+      acronym: "NAR",
+      logo: "/brand/nar/logo.png",
+      logoAlt: "NAR Logo",
+      partnerLogo: "/brand/nyl/logo.png",
+      partnerLogoAlt: "New York Life Logo",
+      heroImage: "/brand/nar/hero.svg",
+      heroImageAlt: "Real Estate Professionals",
+      heroTitle: "Life & Disability Insurance for REALTORS®",
+      heroSubtitle:
+        "Group Life and Disability Insurance available exclusively to National Association of REALTORS® members. Start your application today.",
       products: [
-        'REALTORS® Group Term Life Insurance',
-        'REALTORS® Mature Group Term Life Insurance',
-        'REALTORS® Group AD&D (Accidental Death and Dismemberment) Insurance',
-        'REALTORS® Group Short Term Disability'
+        "REALTORS® Group Term Life Insurance",
+        "REALTORS® Mature Group Term Life Insurance",
+        "REALTORS® Group AD&D (Accidental Death and Dismemberment) Insurance",
+        "REALTORS® Group Short Term Disability",
       ],
-      phone: '8449270527',
-      phoneDisplay: '(844) 927-0527',
+      phone: "8449270527",
+      phoneDisplay: "(844) 927-0527",
     },
     theme: {
-      colorName: 'blue',
-      heroImageType: 'none',
+      colorName: "blue",
+      heroImageType: "none",
     },
     fieldLabels: {
-      dateOfBirth: 'Birthday',
-      gender: 'Gender',
-      state: 'State',
-      nicotineUse: 'Do you use tobacco products?',
+      dateOfBirth: "Birthday",
+      gender: "Gender",
+      state: "State",
+      nicotineUse: "Do you use tobacco products?",
     },
     membershipQuestion: {
-      primaryQuestion: 'Are you a member of the National Association of REALTORS®?',
-      spouseQuestion: 'Is your spouse a member of the National Association of REALTORS®?',
-      type: 'radio',
+      primaryQuestion:
+        "Are you a member of the National Association of REALTORS®?",
+      spouseQuestion:
+        "Is your spouse a member of the National Association of REALTORS®?",
+      type: "radio",
     },
     features: {
       showPartnerLogo: true,
@@ -533,47 +560,48 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       showCoverageDetails: true,
       showMembershipPage: false,
     },
-    productsFile: 'products-nar',
-    coverageCategories: ['LI', 'DI'],
+    productsFile: "products-nar",
+    coverageCategories: ["LI", "DI"],
   },
-  
+
   default: {
-    id: 'default',
+    id: "default",
     branding: {
-      name: 'New York Life',
-      acronym: 'NYL',
-      logo: '/brand/nyl/logo.png',
-      logoAlt: 'New York Life Logo',
-      heroImage: '/brand/nyl/hero.png',
-      heroImageAlt: 'New York Life Insurance',
-      heroTitle: 'Help safeguard your financial future.',
-      heroSubtitle: 'Insurance available exclusively to members. Apply in minutes.',
+      name: "New York Life",
+      acronym: "NYL",
+      logo: "/brand/nyl/logo.png",
+      logoAlt: "New York Life Logo",
+      heroImage: "/brand/nyl/hero.png",
+      heroImageAlt: "New York Life Insurance",
+      heroTitle: "Help safeguard your financial future.",
+      heroSubtitle:
+        "Insurance available exclusively to members. Apply in minutes.",
       products: [
-        'Term Life Insurance',
-        '10-Year Level Term Life Insurance',
-        '20-Year Level Term Life Insurance',
-        'Accidental Death and Dismemberment Insurance',
-        'Disability Insurance',
-        'Critical Illness Insurance',
-        'Hospital Income Insurance'
+        "Term Life Insurance",
+        "10-Year Level Term Life Insurance",
+        "20-Year Level Term Life Insurance",
+        "Accidental Death and Dismemberment Insurance",
+        "Disability Insurance",
+        "Critical Illness Insurance",
+        "Hospital Income Insurance",
       ],
-      phone: '8006218981',
-      phoneDisplay: '(800) 621-8981',
+      phone: "8006218981",
+      phoneDisplay: "(800) 621-8981",
     },
     theme: {
-      colorName: 'blue',
-      heroImageType: 'none',
+      colorName: "blue",
+      heroImageType: "none",
     },
     fieldLabels: {
-      dateOfBirth: 'Birthday',
-      gender: 'Gender',
-      state: 'State',
-      nicotineUse: 'Do you use tobacco?',
+      dateOfBirth: "Birthday",
+      gender: "Gender",
+      state: "State",
+      nicotineUse: "Do you use tobacco?",
     },
     membershipQuestion: {
-      primaryQuestion: 'Are you an active member of a Demo Association?',
-      spouseQuestion: 'Is your spouse an active member of a Demo Association?',
-      type: 'radio',
+      primaryQuestion: "Are you an active member of a Demo Association?",
+      spouseQuestion: "Is your spouse an active member of a Demo Association?",
+      type: "radio",
     },
     features: {
       showPartnerLogo: false,
@@ -583,8 +611,8 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       showCoverageDetails: true,
       showMembershipPage: false,
     },
-    productsFile: 'products',
-    coverageCategories: ['LI', 'DI', 'OO', 'SH'],
+    productsFile: "products",
+    coverageCategories: ["LI", "DI", "OO", "SH"],
   },
 };
 
@@ -593,15 +621,15 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
  * Checks for ?client=abc or &client=abc in URL
  */
 function getClientIdFromUrl(): ClientId | null {
-  if (typeof window === 'undefined') return null;
-  
+  if (typeof window === "undefined") return null;
+
   const params = new URLSearchParams(window.location.search);
-  const clientParam = params.get('client');
-  
+  const clientParam = params.get("client");
+
   if (clientParam && clientParam in CLIENT_CONFIGS) {
     return clientParam as ClientId;
   }
-  
+
   return null;
 }
 
@@ -610,18 +638,18 @@ function getClientIdFromUrl(): ClientId | null {
  * Persists URL parameter selection across navigation
  */
 function getClientIdFromStorage(): ClientId | null {
-  if (typeof window === 'undefined') return null;
-  
+  if (typeof window === "undefined") return null;
+
   try {
-    const stored = sessionStorage.getItem('activeClientId');
+    const stored = sessionStorage.getItem("activeClientId");
     if (stored && stored in CLIENT_CONFIGS) {
       return stored as ClientId;
     }
   } catch (e) {
     // sessionStorage might not be available
-    console.warn('Could not access sessionStorage:', e);
+    console.warn("Could not access sessionStorage:", e);
   }
-  
+
   return null;
 }
 
@@ -629,12 +657,12 @@ function getClientIdFromStorage(): ClientId | null {
  * Save client ID to session storage
  */
 function saveClientIdToStorage(clientId: ClientId): void {
-  if (typeof window === 'undefined') return;
-  
+  if (typeof window === "undefined") return;
+
   try {
-    sessionStorage.setItem('activeClientId', clientId);
+    sessionStorage.setItem("activeClientId", clientId);
   } catch (e) {
-    console.warn('Could not save to sessionStorage:', e);
+    console.warn("Could not save to sessionStorage:", e);
   }
 }
 
@@ -649,26 +677,26 @@ function getActiveClientId(): ClientId {
     saveClientIdToStorage(urlClientId);
     return urlClientId;
   }
-  
+
   // 2. Check session storage (persists URL selection)
   const storedClientId = getClientIdFromStorage();
   if (storedClientId) {
     return storedClientId;
   }
-  
+
   // 3. Check environment variable
   const envClientId = import.meta.env.VITE_CLIENT_ID as ClientId;
   if (envClientId && envClientId in CLIENT_CONFIGS) {
     return envClientId;
   }
-  
+
   // 4. Default fallback
-  return 'abe';
+  return "abe";
 }
 
 /**
  * Active Client Configuration
- * 
+ *
  * Determined by (in order of priority):
  * 1. URL parameter: ?client=abe
  * 2. Session storage (persists URL selection)
@@ -699,7 +727,7 @@ export function getClientTheme() {
   const config = getClientConfig();
   const colorName = config.theme.colorName;
   const colors = THEME_COLORS[colorName];
-  
+
   return colors.primary;
 }
 
@@ -713,7 +741,9 @@ export function getClientFieldLabels(): ClientFieldLabels {
 /**
  * Get client membership question configuration
  */
-export function getClientMembershipQuestion(): ClientMembershipQuestion | undefined {
+export function getClientMembershipQuestion():
+  | ClientMembershipQuestion
+  | undefined {
   return getClientConfig().membershipQuestion;
 }
 
@@ -728,15 +758,19 @@ export function getClientFeatures(): ClientFeatures {
  * Get available coverage categories for the client
  * Returns all categories if not specified in config
  */
-export function getClientCoverageCategories(): Array<'LI' | 'DI' | 'OO' | 'SH'> {
+export function getClientCoverageCategories(): Array<
+  "LI" | "DI" | "OO" | "SH"
+> {
   const config = getClientConfig();
-  return config.coverageCategories || ['LI', 'DI', 'OO', 'SH'];
+  return config.coverageCategories || ["LI", "DI", "OO", "SH"];
 }
 
 /**
  * Check if a coverage category is available for the client
  */
-export function isCategoryCategoryAvailable(category: 'LI' | 'DI' | 'OO' | 'SH'): boolean {
+export function isCategoryCategoryAvailable(
+  category: "LI" | "DI" | "OO" | "SH",
+): boolean {
   const categories = getClientCoverageCategories();
   return categories.includes(category);
 }
@@ -754,10 +788,10 @@ export function isFeatureEnabled(feature: keyof ClientFeatures): boolean {
  * Preserves current path and other query parameters
  */
 export function getClientSwitchUrl(clientId: ClientId): string {
-  if (typeof window === 'undefined') return '';
-  
+  if (typeof window === "undefined") return "";
+
   const url = new URL(window.location.href);
-  url.searchParams.set('client', clientId);
+  url.searchParams.set("client", clientId);
   return url.toString();
 }
 
@@ -766,8 +800,8 @@ export function getClientSwitchUrl(clientId: ClientId): string {
  * Reloads the page with the new client parameter
  */
 export function switchClient(clientId: ClientId): void {
-  if (typeof window === 'undefined') return;
-  
+  if (typeof window === "undefined") return;
+
   const newUrl = getClientSwitchUrl(clientId);
   window.location.href = newUrl;
 }
@@ -777,17 +811,17 @@ export function switchClient(clientId: ClientId): void {
  * Removes URL parameter and clears session storage
  */
 export function clearClientOverride(): void {
-  if (typeof window === 'undefined') return;
-  
+  if (typeof window === "undefined") return;
+
   // Clear session storage
   try {
-    sessionStorage.removeItem('activeClientId');
+    sessionStorage.removeItem("activeClientId");
   } catch (e) {
-    console.warn('Could not clear sessionStorage:', e);
+    console.warn("Could not clear sessionStorage:", e);
   }
-  
+
   // Remove URL parameter
   const url = new URL(window.location.href);
-  url.searchParams.delete('client');
+  url.searchParams.delete("client");
   window.location.href = url.toString();
 }

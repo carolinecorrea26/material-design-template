@@ -1,18 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 export function usePageTransition() {
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
+  const previousPathRef = useRef<string | null>(null);
 
   useEffect(() => {
     // Start loading on location change
     setIsLoading(true);
 
-    // Simulate load time of ~500ms
+    const isLongLoad =
+      location.pathname === "/" || location.pathname === "/coverage";
+    const delay = isLongLoad ? 6000 : 3000;
+
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 500);
+    }, delay);
+
+    previousPathRef.current = location.pathname;
 
     return () => clearTimeout(timer);
   }, [location.pathname]);

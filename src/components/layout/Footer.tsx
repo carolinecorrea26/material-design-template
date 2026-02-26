@@ -15,7 +15,7 @@ export default function Footer() {
           display: 'grid', 
           gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
           gap: 4,
-          py: 4 
+          // py: 4 
         }}>
           {/* Left Column - Administered By */}
           <Box>

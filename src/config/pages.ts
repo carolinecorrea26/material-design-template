@@ -2,6 +2,7 @@ export type PageId =
   | "landing"
   | "membership"
   | "eligibility"
+  | "getStarted"
   | "coverage"
   | "contact"
   | "profile"
@@ -24,6 +25,7 @@ export interface AppPage {
 
 export const PAGES: AppPage[] = [
   { id: "landing",     path: "/",              title: "Landing",        section: "system" },
+  { id: "getStarted", path: "/get-started", title: "Get Started", section: "application" },
   { id: "membership",  path: "/membership",    title: "Membership",     section: "application" },
   { id: "eligibility", path: "/eligibility",   title: "Eligibility",    section: "application" },
   { id: "coverage",    path: "/coverage",      title: "Coverage",       section: "application" },

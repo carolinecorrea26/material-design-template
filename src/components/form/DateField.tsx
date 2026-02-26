@@ -1,5 +1,5 @@
-import { Controller, useFormContext } from 'react-hook-form';
-import { TextField } from '@mui/material';
+import { Controller, useFormContext } from "react-hook-form";
+import { TextField } from "@mui/material";
 
 interface DateFieldProps {
   name: string;
@@ -8,14 +8,19 @@ interface DateFieldProps {
   autoComplete?: string;
 }
 
-export default function DateField({ name, label, required = false, autoComplete }: DateFieldProps) {
+export default function DateField({
+  name,
+  label,
+  required = false,
+  autoComplete,
+}: DateFieldProps) {
   const { control } = useFormContext();
 
   // Convert YYYY-MM-DD to MM/DD/YYYY for display
   const convertToDisplay = (value: string): string => {
-    if (!value) return '';
+    if (!value) return "";
     // If already in MM/DD/YYYY format, return as is
-    if (value.includes('/')) return value;
+    if (value.includes("/")) return value;
     // If in YYYY-MM-DD format, convert to MM/DD/YYYY
     const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
     if (match) {
@@ -45,23 +50,23 @@ export default function DateField({ name, label, required = false, autoComplete 
           required={required}
           autoComplete={autoComplete}
           error={!!fieldState.error}
-          helperText={fieldState.error?.message || 'MM/DD/YYYY'}
+          helperText={fieldState.error?.message || "mm/dd/yyyy"}
           fullWidth
           onBlur={field.onBlur}
           onChange={(e) => {
-            let value = e.target.value.replace(/\D/g, '');
+            let value = e.target.value.replace(/\D/g, "");
             if (value.length >= 2) {
-              value = value.slice(0, 2) + '/' + value.slice(2);
+              value = value.slice(0, 2) + "/" + value.slice(2);
             }
             if (value.length >= 5) {
-              value = value.slice(0, 5) + '/' + value.slice(5, 9);
+              value = value.slice(0, 5) + "/" + value.slice(5, 9);
             }
             // Store in YYYY-MM-DD format
             field.onChange(convertToStorage(value));
           }}
-          inputProps={{ 
+          inputProps={{
             maxLength: 10,
-            inputMode: 'numeric'
+            inputMode: "numeric",
           }}
         />
       )}

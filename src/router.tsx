@@ -3,27 +3,28 @@ import { useRoutes, Navigate } from "react-router-dom";
 import { LinearProgress, Box } from "@mui/material";
 import RouteGuard from "./navigation/RouteGuard";
 import { getClientFeatures } from "./config/clients";
+import ApplicationLayout from "./layouts/ApplicationLayout";
 
-const Landing     = React.lazy(() => import("./pages/Landing"));
+const Landing = React.lazy(() => import("./pages/Landing"));
 const AdvisorLogin = React.lazy(() => import("./pages/AdvisorLogin"));
 const AdvisorSuccess = React.lazy(() => import("./pages/AdvisorSuccess"));
-const Membership  = React.lazy(() => import("./pages/Membership"));
+const Membership = React.lazy(() => import("./pages/Membership"));
 const Eligibility = React.lazy(() => import("./pages/Eligibility"));
-const Coverage    = React.lazy(() => import("./pages/Coverage"));
-const Contact     = React.lazy(() => import("./pages/Contact"));
-const Profile     = React.lazy(() => import("./pages/Profile"));
+const GetStarted = React.lazy(() => import("./pages/GetStarted"));
+const Coverage = React.lazy(() => import("./pages/Coverage"));
+const Contact = React.lazy(() => import("./pages/Contact"));
+const Profile = React.lazy(() => import("./pages/Profile"));
 const HealthHistory = React.lazy(() => import("./pages/HealthHistory"));
-const Preview     = React.lazy(() => import("./pages/Preview"));
-const Consent     = React.lazy(() => import("./pages/Consent"));
-const DocuSign    = React.lazy(() => import("./pages/DocuSign"));
-const Decision    = React.lazy(() => import("./pages/Decision"));
-const Receipt     = React.lazy(() => import("./pages/Receipt"));
-const Resume      = React.lazy(() => import("./pages/Resume"));
-const Styleguide  = React.lazy(() => import("./pages/Styleguide"));
+const Preview = React.lazy(() => import("./pages/Preview"));
+const Consent = React.lazy(() => import("./pages/ConsentNew"));
+const DocuSign = React.lazy(() => import("./pages/DocuSign"));
+const Decision = React.lazy(() => import("./pages/Decision"));
+const Receipt = React.lazy(() => import("./pages/Receipt"));
+const Resume = React.lazy(() => import("./pages/Resume"));
+const Styleguide = React.lazy(() => import("./pages/Styleguide"));
 const ProjectStructure = React.lazy(() => import("./pages/ProjectStructure"));
-const SiteSetup   = React.lazy(() => import("./pages/SiteSetup"));
+const SiteSetup = React.lazy(() => import("./pages/SiteSetup"));
 const SiteRequirements = React.lazy(() => import("./pages/SiteRequirements"));
-
 
 function SuspenseWrap({ children }: { children: React.ReactNode }) {
   return (
@@ -41,98 +42,213 @@ function SuspenseWrap({ children }: { children: React.ReactNode }) {
 
 export function AppRoutes() {
   const features = getClientFeatures();
-  
+
   const routes = [
-    { path: "/", element: <SuspenseWrap><Landing /></SuspenseWrap> },
-    { path: "/advisor", element: <SuspenseWrap><AdvisorLogin /></SuspenseWrap> },
-    { path: "/advisor-success", element: <SuspenseWrap><AdvisorSuccess /></SuspenseWrap> },
+    {
+      path: "/",
+      element: (
+        <SuspenseWrap>
+          <Landing />
+        </SuspenseWrap>
+      ),
+    },
+    {
+      path: "/advisor",
+      element: (
+        <SuspenseWrap>
+          <AdvisorLogin />
+        </SuspenseWrap>
+      ),
+    },
+    {
+      path: "/advisor-success",
+      element: (
+        <SuspenseWrap>
+          <AdvisorSuccess />
+        </SuspenseWrap>
+      ),
+    },
 
     // Conditionally include membership page based on client configuration
-    ...(features.showMembershipPage ? [{
-      path: "/membership", 
-      element: <SuspenseWrap><Membership /></SuspenseWrap>
-    }] : []),
+    ...(features.showMembershipPage
+      ? [
+          {
+            path: "/membership",
+            element: (
+              <SuspenseWrap>
+                <ApplicationLayout>
+                  <Membership />
+                </ApplicationLayout>
+              </SuspenseWrap>
+            ),
+          },
+        ]
+      : []),
 
-    { path: "/eligibility", element:
-      <SuspenseWrap><Eligibility /></SuspenseWrap>
+    {
+      path: "/eligibility",
+      element: (
+        <SuspenseWrap>
+          <ApplicationLayout>
+            <Eligibility />
+          </ApplicationLayout>
+        </SuspenseWrap>
+      ),
     },
 
-    { path: "/coverage", element:
-      <SuspenseWrap>
-        <RouteGuard require="coverage">
-          <Coverage />
-        </RouteGuard>
-      </SuspenseWrap>
+    {
+      path: "/get-started",
+      element: (
+        <SuspenseWrap>
+          <ApplicationLayout>
+            <GetStarted />
+          </ApplicationLayout>
+        </SuspenseWrap>
+      ),
     },
 
-    { path: "/contact", element:
-      <SuspenseWrap>
-        <RouteGuard require="contact">
-          <Contact />
-        </RouteGuard>
-      </SuspenseWrap>
+    {
+      path: "/coverage",
+      element: (
+        <SuspenseWrap>
+          <ApplicationLayout>
+            <RouteGuard require="coverage">
+              <Coverage />
+            </RouteGuard>
+          </ApplicationLayout>
+        </SuspenseWrap>
+      ),
     },
 
-    { path: "/profile", element:
-      <SuspenseWrap>
-        <RouteGuard require="profile">
-          <Profile />
-        </RouteGuard>
-      </SuspenseWrap>
+    {
+      path: "/contact",
+      element: (
+        <SuspenseWrap>
+          <ApplicationLayout>
+            <RouteGuard require="contact">
+              <Contact />
+            </RouteGuard>
+          </ApplicationLayout>
+        </SuspenseWrap>
+      ),
     },
 
-    { path: "/health-history", element:
-      <SuspenseWrap>
-        <RouteGuard require="profile">
-          <HealthHistory />
-        </RouteGuard>
-      </SuspenseWrap>
+    {
+      path: "/profile",
+      element: (
+        <SuspenseWrap>
+          <ApplicationLayout>
+            <RouteGuard require="profile">
+              <Profile />
+            </RouteGuard>
+          </ApplicationLayout>
+        </SuspenseWrap>
+      ),
     },
 
-    { path: "/preview", element:
-      <SuspenseWrap>
-        <RouteGuard require="preview">
-          <Preview />
-        </RouteGuard>
-      </SuspenseWrap>
+    {
+      path: "/health-history",
+      element: (
+        <SuspenseWrap>
+          <ApplicationLayout>
+            <RouteGuard require="profile">
+              <HealthHistory />
+            </RouteGuard>
+          </ApplicationLayout>
+        </SuspenseWrap>
+      ),
     },
 
-    { path: "/consent", element:
-      <SuspenseWrap>
-        <RouteGuard require="consent">
-          <Consent />
-        </RouteGuard>
-      </SuspenseWrap>
+    {
+      path: "/preview",
+      element: (
+        <SuspenseWrap>
+          <ApplicationLayout>
+            <RouteGuard require="preview">
+              <Preview />
+            </RouteGuard>
+          </ApplicationLayout>
+        </SuspenseWrap>
+      ),
     },
 
-    { path: "/docusign", element:
-      <SuspenseWrap>
-        <RouteGuard require="docusign">
-          <DocuSign />
-        </RouteGuard>
-      </SuspenseWrap>
+    {
+      path: "/consent",
+      element: (
+        <SuspenseWrap>
+          <ApplicationLayout>
+            <RouteGuard require="consent">
+              <Consent />
+            </RouteGuard>
+          </ApplicationLayout>
+        </SuspenseWrap>
+      ),
     },
 
-    { path: "/decision", element:
-      <SuspenseWrap>
-        <Decision />
-      </SuspenseWrap>
+    {
+      path: "/docusign",
+      element: (
+        <SuspenseWrap>
+          <RouteGuard require="docusign">
+            <DocuSign />
+          </RouteGuard>
+        </SuspenseWrap>
+      ),
     },
 
-    { path: "/receipt", element:
-      <SuspenseWrap>
-        {/* You can require consent here once that page captures a checked box */}
-        <Receipt />
-      </SuspenseWrap>
+    {
+      path: "/decision",
+      element: (
+        <SuspenseWrap>
+          <Decision />
+        </SuspenseWrap>
+      ),
     },
 
-    { path: "/resume", element: <SuspenseWrap><Resume /></SuspenseWrap> },
+    {
+      path: "/receipt",
+      element: (
+        <SuspenseWrap>
+          {/* You can require consent here once that page captures a checked box */}
+          <Receipt />
+        </SuspenseWrap>
+      ),
+    },
+
+    {
+      path: "/resume",
+      element: (
+        <SuspenseWrap>
+          <Resume />
+        </SuspenseWrap>
+      ),
+    },
     { path: "*", element: <Navigate to="/" replace /> },
 
-    { path: "/styleguide", element: <SuspenseWrap><Styleguide /></SuspenseWrap> },
-    { path: "/project-structure", element: <SuspenseWrap><ProjectStructure /></SuspenseWrap> },
-    { path: "/site-requirements", element: <SuspenseWrap><SiteRequirements /></SuspenseWrap> },
-
+    {
+      path: "/styleguide",
+      element: (
+        <SuspenseWrap>
+          <Styleguide />
+        </SuspenseWrap>
+      ),
+    },
+    {
+      path: "/project-structure",
+      element: (
+        <SuspenseWrap>
+          <ProjectStructure />
+        </SuspenseWrap>
+      ),
+    },
+    {
+      path: "/site-requirements",
+      element: (
+        <SuspenseWrap>
+          <SiteRequirements />
+        </SuspenseWrap>
+      ),
+    },
   ];
 
   return useRoutes(routes);

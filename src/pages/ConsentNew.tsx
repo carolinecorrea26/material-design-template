@@ -15,12 +15,13 @@ import { Print as PrintIcon } from "@mui/icons-material";
 import PageHeader from "../components/layout/PageHeader";
 import PageNavigation from "../components/layout/PageNavigation";
 import FormStepTransition from "../components/layout/FormStepTransition";
+import FormPageLayout from "../components/layout/FormPageLayout";
 import { useAppData } from "../state/AppDataContext";
 import { useStepper } from "../state/StepperContext";
 import { useNavigate } from "react-router-dom";
 import { commonStyles } from "../theme/commonStyles";
 
-export default function Consent() {
+export default function ConsentNew() {
   const { data, setConsent } = useAppData();
   const { markComplete } = useStepper();
   const navigate = useNavigate();
@@ -101,12 +102,17 @@ export default function Consent() {
       !dividendsConsent);
 
   return (
-    <Stack spacing={2}>
-      <PageHeader
-        title="Authorize Application"
-        notes="Please read carefully and provide your consent to continue."
-      />
-
+    <FormPageLayout
+      header={
+        <PageHeader
+          title="Authorize Application"
+          notes="Please read carefully and provide your consent to continue."
+        />
+      }
+      navigation={
+        <PageNavigation onContinue={handleContinue} continueText="Continue" />
+      }
+    >
       <FormStepTransition>
         {hasErrors && (
           <Alert severity="error">
@@ -161,10 +167,6 @@ export default function Consent() {
                     Life.
                   </Typography>
                   <Typography variant="body2" paragraph>
-                    I understand that New York Life has the right to require
-                    evidence of insurability if necessary.
-                  </Typography>
-                  <Typography variant="body2" paragraph>
                     <strong>AUTHORIZATION:</strong> I authorize any licensed
                     physician, practitioner, hospital, clinic, pharmacy,
                     pharmacy benefit manager or provider, medically related
@@ -185,14 +187,6 @@ export default function Consent() {
                     insurance, I request the insurance indicated and authorize
                     deduction from my earnings or direct billing for the
                     required contributions.
-                  </Typography>
-                  <Typography variant="body2" paragraph>
-                    <strong>
-                      For All Supplemental Health Products Applied For:
-                    </strong>
-                    <br />I HEREBY ATTEST THAT I AM PURCHASING THIS POLICY AS A
-                    SUPPLEMENT TO MY HEALTH COVERAGE, WHICH MEETS THE FEDERAL
-                    REQUIREMENT OF MINIMUM ESSENTIAL COVERAGE.
                   </Typography>
                 </Stack>
               </Box>
@@ -234,17 +228,6 @@ export default function Consent() {
                 }}
               >
                 <Stack spacing={3}>
-                  <Box sx={{ textAlign: "center" }}>
-                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                      NEW YORK LIFE INSURANCE COMPANY
-                    </Typography>
-                    <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                      Customer Electronic Consent and Disclosure (the "Consent")
-                    </Typography>
-                    <Typography variant="body1" sx={{ fontWeight: 600, mt: 1 }}>
-                      IMPORTANT NOTICE - PLEASE READ CAREFULLY
-                    </Typography>
-                  </Box>
                   <Typography variant="body2" paragraph>
                     By clicking "Continue" you consent to receive required
                     documents electronically and to execute the application
@@ -291,9 +274,8 @@ export default function Consent() {
                   }
                   label={
                     <Typography variant="body2" component="span">
-                      I confirm that I have reviewed and understand the above
-                      material. I consent to the use of electronic signature and
-                      delivery of electronic records.
+                      I consent to electronic delivery and signature for my
+                      spouse.
                       <Box component="span" sx={{ color: "error.main" }}>
                         *
                       </Box>
@@ -337,7 +319,7 @@ export default function Consent() {
 
         <Card sx={commonStyles.categoryCard}>
           <CardContent>
-            <Stack spacing={3}>
+            <Stack spacing={2}>
               <Typography variant="h5" sx={{ fontWeight: 600 }}>
                 Signature
               </Typography>
@@ -361,7 +343,7 @@ export default function Consent() {
                   label="Date of Birth"
                   value={dateOfBirth}
                   onChange={(e) => setDateOfBirth(e.target.value)}
-                  placeholder="MM/DD/YYYY"
+                  placeholder="YYYY-MM-DD"
                   fullWidth
                 />
               </Stack>
@@ -369,8 +351,6 @@ export default function Consent() {
           </CardContent>
         </Card>
       </FormStepTransition>
-
-      <PageNavigation onContinue={handleContinue} continueText="Continue" />
-    </Stack>
+    </FormPageLayout>
   );
 }

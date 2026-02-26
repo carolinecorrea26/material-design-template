@@ -1,23 +1,34 @@
 import * as React from "react";
-import { Backdrop, CircularProgress, Box } from "@mui/material";
+import { Backdrop } from "@mui/material";
+import { useLocation } from "react-router-dom";
+import { PAGES } from "../../config/pages";
 
 interface PageLoaderProps {
   open: boolean;
 }
 
 export function PageLoader({ open }: PageLoaderProps) {
+  const location = useLocation();
+  const isApplicationPage = React.useMemo(
+    () =>
+      PAGES.some(
+        (page) =>
+          page.section === "application" && page.path === location.pathname,
+      ),
+    [location.pathname],
+  );
+
+  if (!open || !isApplicationPage) {
+    return null;
+  }
+
   return (
     <Backdrop
       sx={{
-        color: '#fff',
         zIndex: (theme) => theme.zIndex.modal + 1,
-        bgcolor: 'rgba(255, 255, 255, 0.9)'
+        bgcolor: "transparent",
       }}
       open={open}
-    >
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-        <CircularProgress size={60} thickness={4} />
-      </Box>
-    </Backdrop>
+    ></Backdrop>
   );
 }

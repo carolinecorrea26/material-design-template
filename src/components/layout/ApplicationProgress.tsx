@@ -1,11 +1,34 @@
 import * as React from "react";
 import { Box, Button, Typography, LinearProgress, useMediaQuery, useTheme } from "@mui/material";
-import { ChevronLeft, ChevronRight, VerifiedUser, VerifiedUserOutlined, Shield, GppGood, PersonPin, MyLocation, Security } from "@mui/icons-material";
+import { ChevronLeft, ChevronRight, QueryBuilderRounded, AdjustRounded, CheckCircleRounded, PanoramaFishEyeRounded } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PAGES } from "../../config/pages";
 import { getClientFeatures } from "../../config/clients";
 import { useLayout } from "../../state/LayoutContext";
 
+const PAGE_TIME_ESTIMATES: Record<string, number> = {
+  "/membership": 2,
+  "/eligibility": 6,
+  "/get-started": 4,
+  "/coverage": 5,
+  "/contact": 3,
+  "/profile": 4,
+  "/health-history": 5,
+  "/preview": 4,
+  "/consent": 2
+};
+
+/**
+ * Legacy horizontal progress bar component
+ * 
+ * NOTE: This component is being phased out for application pages in favor of
+ * the new sidebar layout (ApplicationSidebar). It is still used for:
+ * - Single-page layout mode (returns null)
+ * - Non-application pages where the horizontal bar is still relevant
+ * 
+ * For application pages (eligibility, coverage, contact, etc.), the new
+ * ApplicationLayout with sidebar is used instead.
+ */
 export default function ApplicationProgress() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -182,14 +205,15 @@ export default function ApplicationProgress() {
                 const isActive = index === effectiveIndex;
                 const isCompleted = index < effectiveIndex;
                 const isUpcoming = index > effectiveIndex;
+                const estimatedMinutes = PAGE_TIME_ESTIMATES[page.path] ?? 3;
 
                 return (
                   <Box
                     key={page.path}
                     sx={{
                       display: 'flex',
-                      alignItems: 'center',
-                      gap: 0.75,
+                      flexDirection: 'column',
+                      gap: 0.25,
                       cursor: isCompleted ? 'pointer' : 'default',
                       '&:hover': isCompleted
                         ? {
@@ -205,38 +229,46 @@ export default function ApplicationProgress() {
                       }
                     }}
                   >
-                    {/* Reserve space for indicator/checkmark to prevent shifting */}
-                    <Box sx={{ width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                      {isCompleted && (
-                        <GppGood sx={{ fontSize: 18, color: 'success.main' }} />
-                      )}
-                      {isActive && (
-                        <Security 
-                          sx={{ 
-                            fontSize: 16, 
-                            color: 'primary.dark'
-                          }} 
-                        />
-                      )}
-                    </Box>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontWeight: isCompleted 
-                          ? 900
-                          : isActive
-                          ? 900
-                          : 500,
-                        color: isCompleted
-                          ? 'success.main'
-                          : isActive
-                          ? 'primary.dark'
-                          : 'text.secondary',
-                        transition: 'color 0.2s'
-                      }}
-                    >
-                      {page.title}
-                    </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                          {/* Status icon */}
+                          <Box sx={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {isCompleted && (
+                              <CheckCircleRounded sx={{ fontSize: 18, color: 'success.main' }} />
+                            )}
+                            {isActive && (
+                              <AdjustRounded sx={{ fontSize: 18, color: 'primary.main' }} />
+                            )}
+                            {isUpcoming && (
+                              <PanoramaFishEyeRounded sx={{ fontSize: 10, color: 'text.disabled' }} />
+                            )}
+                          </Box>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: isCompleted 
+                                ? 900
+                                : isActive
+                                ? 900
+                                : 500,
+                              color: isCompleted
+                                ? 'success.main'
+                                : isActive
+                                ? 'primary.main'
+                                : 'text.secondary',
+                              transition: 'color 0.2s'
+                            }}
+                          >
+                            {page.title}
+                          </Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.25 }}>
+                          <QueryBuilderRounded sx={{ fontSize: 14, color: 'text.disabled' }} />
+                          <Typography variant="caption" sx={{ color: 'text.disabled' }}>
+                            {estimatedMinutes} min
+                          </Typography>
+                        </Box>
+                      </Box>
                   </Box>
                 );
               })}
