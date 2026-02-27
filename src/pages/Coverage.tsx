@@ -550,7 +550,7 @@ export default function Coverage() {
     <FormPageLayout
       header={
         <PageHeader
-          title="Select Coverage"
+          title="Choose your coverage options"
           notes="Choose the coverage you want from the options below. The available options depend on your eligibility. If you already have coverage through this insurance program, select only the additional amount you need."
         />
       }

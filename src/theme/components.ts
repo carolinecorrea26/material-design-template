@@ -1,6 +1,21 @@
 import type { Components, Theme } from "@mui/material/styles";
 
 export const components: Components<Theme> = {
+  MuiTextField: {
+    defaultProps: {
+      size: "small",
+    },
+  },
+  MuiFormControl: {
+    defaultProps: {
+      size: "small",
+    },
+  },
+  MuiSelect: {
+    defaultProps: {
+      size: "small",
+    },
+  },
   MuiButton: {
     styleOverrides: {
       root: {
@@ -170,7 +185,7 @@ export const components: Components<Theme> = {
       root: ({ theme }) => ({
         backgroundColor: "white",
         border: `1px solid ${theme.palette.divider}`,
-        borderRadius: "16px !important",
+        borderRadius: "8px !important",
         transition: theme.transitions.create(
           ["background-color", "border-color"],
           {
@@ -208,7 +223,7 @@ export const components: Components<Theme> = {
         "& .MuiToggleButton-root": {
           backgroundColor: "white",
           border: `1px solid ${theme.palette.divider}`,
-          borderRadius: "16px !important",
+          borderRadius: "8px !important",
           "&:hover": {
             backgroundColor: theme.palette.action.hover,
           },
@@ -230,7 +245,7 @@ export const components: Components<Theme> = {
       root: ({ theme }) => ({
         "& .MuiOutlinedInput-root": {
           backgroundColor: "white",
-          borderRadius: "16px",
+          borderRadius: "8px",
         },
         "& .MuiOutlinedInput-input": {
           // color: theme.palette.primary.main,
@@ -244,7 +259,7 @@ export const components: Components<Theme> = {
       root: ({ theme }) => ({
         "& .MuiOutlinedInput-root": {
           backgroundColor: "white",
-          borderRadius: "16px",
+          borderRadius: "8px",
         },
         "& .MuiSelect-select": {
           // color: theme.palette.primary.main,
@@ -257,7 +272,7 @@ export const components: Components<Theme> = {
     styleOverrides: {
       root: {
         backgroundColor: "white",
-        borderRadius: "16px",
+        borderRadius: "8px",
       },
     },
   },
@@ -266,7 +281,7 @@ export const components: Components<Theme> = {
       root: ({ theme }) => ({
         "& .MuiOutlinedInput-root": {
           backgroundColor: "white",
-          borderRadius: "16px",
+          borderRadius: "8px",
         },
         "& .MuiOutlinedInput-input": {
           // color: theme.palette.primary.main,

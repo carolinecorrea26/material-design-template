@@ -10,8 +10,7 @@ export function usePageTransition() {
     // Start loading on location change
     setIsLoading(true);
 
-    const isLongLoad =
-      location.pathname === "/" || location.pathname === "/coverage";
+    const isLongLoad = location.pathname === "/coverage";
     const delay = isLongLoad ? 6000 : 3000;
 
     const timer = setTimeout(() => {

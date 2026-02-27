@@ -134,69 +134,77 @@ export default function PageHeader({
       <Stack spacing={2} alignItems={centered ? "center" : "flex-start"}>
         {!shouldHideTitle && (
           <Stack spacing={1} alignItems={centered ? "center" : "flex-start"}>
-            <Stack direction="row" spacing={1} alignItems="center">
-              {animatedIcon && icon ? (
-                !isPageLoading ? (
-                  <AnimatedIcon icon={icon} />
-                ) : null
-              ) : icon ? (
-                <Box
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems={{ xs: "flex-start", md: "center" }}
+            >
+              <Stack direction="row" spacing={1} alignItems="center">
+                {animatedIcon && icon ? (
+                  !isPageLoading ? (
+                    <AnimatedIcon icon={icon} />
+                  ) : null
+                ) : icon ? (
+                  <Box
+                    sx={{
+                      width: { xs: 32, md: 48 },
+                      height: { xs: 32, md: 48 },
+                      borderRadius: "50%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      position: "relative",
+                      pt: 0.5,
+                    }}
+                  >
+                    {icon}
+                  </Box>
+                ) : null}
+                <Typography
+                  ref={h1Ref}
+                  tabIndex={-1}
+                  component="h1"
+                  variant="h2"
                   sx={{
-                    width: { xs: 32, md: 48 },
-                    height: { xs: 32, md: 48 },
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                    position: "relative",
-                    pt: 0.5,
+                    ...commonStyles.noOutline,
+                    textAlign: centered ? "center" : "left",
+                    fontSize: { xs: "1.25rem", md: "1.5rem" },
+                    fontWeight: 900,
                   }}
                 >
-                  {icon}
-                </Box>
-              ) : null}
-              <Typography
-                ref={h1Ref}
-                tabIndex={-1}
-                component="h1"
-                variant="h2"
-                sx={{
-                  ...commonStyles.noOutline,
-                  textAlign: centered ? "center" : "left",
-                  fontSize: { xs: "1.5rem", md: "2rem" },
-                }}
-              >
-                {title}
-              </Typography>
+                  {title}
+                </Typography>
+              </Stack>
+              {effectiveTimeEstimate !== undefined && (
+                <Chip
+                  icon={
+                    <Schedule
+                    // sx={{ fontSize: "0.875rem", color: "primary.main" }}
+                    />
+                  }
+                  label={
+                    <Box
+                      component="span"
+                      // sx={{ color: "primary.main", fontWeight: 900 }}
+                    >
+                      {effectiveTimeEstimate} min
+                    </Box>
+                  }
+                  size="small"
+                  // variant="outlined"
+                  sx={{
+                    bgcolor: "rgb(0 0 0 / 4%)",
+                    fontWeight: 600,
+                    fontSize: "0.75rem",
+                    height: "auto",
+                    py: 0.5,
+                    "& .MuiChip-label": { px: 1 },
+                    // "& .MuiChip-icon": { ml: 0.5, color: "primary.main" },
+                  }}
+                />
+              )}
             </Stack>
-            {effectiveTimeEstimate !== undefined && (
-              <Chip
-                icon={
-                  <Schedule
-                  // sx={{ fontSize: "0.875rem", color: "primary.main" }}
-                  />
-                }
-                label={
-                  <Box
-                    component="span"
-                    // sx={{ color: "primary.main", fontWeight: 900 }}
-                  >
-                    {effectiveTimeEstimate} min
-                  </Box>
-                }
-                size="small"
-                // variant="outlined"
-                sx={{
-                  bgcolor: "rgb(0 0 0 / 4%)",
-                  fontWeight: 600,
-                  height: "auto",
-                  py: 0.5,
-                  "& .MuiChip-label": { px: 1 },
-                  // "& .MuiChip-icon": { ml: 0.5, color: "primary.main" },
-                }}
-              />
-            )}
           </Stack>
         )}
         {(beforeNotes || notes) && (

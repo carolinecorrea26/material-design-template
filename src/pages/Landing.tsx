@@ -11,6 +11,7 @@ import {
   MenuItem,
   Chip,
   Switch,
+  Skeleton,
 } from "@mui/material";
 import {
   Link as RouterLink,
@@ -33,6 +34,7 @@ import { FadeIn } from "../components/animations/FadeIn";
 import { commonStyles } from "../theme/commonStyles";
 import { getProducts } from "../api/client";
 import type { Product, CoverageCategory } from "../types/app";
+import { usePageLoading } from "../state/PageLoadingContext";
 
 const US_STATES = [
   "Alabama",
@@ -107,6 +109,60 @@ const CATEGORY_DESCRIPTIONS: Record<CoverageCategory, string> = {
 interface LandingProps {
   hideNonHero?: boolean;
 }
+
+const LandingSkeleton = () => (
+  <Box sx={{ width: "100%", py: { xs: 4, md: 6 } }}>
+    <Container maxWidth="lg" sx={{ maxWidth: "1400px !important" }}>
+      <Stack spacing={4}>
+        <Box>
+          <Skeleton variant="rounded" height={220} animation="wave" />
+        </Box>
+        <Stack spacing={2}>
+          <Skeleton variant="text" width="60%" height={36} animation="wave" />
+          <Skeleton variant="text" width="80%" height={24} animation="wave" />
+          <Skeleton variant="text" width="50%" height={24} animation="wave" />
+          <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+            <Skeleton
+              variant="rounded"
+              width={180}
+              height={48}
+              animation="wave"
+            />
+            <Skeleton
+              variant="rounded"
+              width={180}
+              height={48}
+              animation="wave"
+            />
+          </Box>
+        </Stack>
+        <Stack spacing={2}>
+          <Skeleton variant="text" width="40%" height={28} animation="wave" />
+          <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+            <Skeleton
+              variant="rounded"
+              height={140}
+              animation="wave"
+              sx={{ flex: 1 }}
+            />
+            <Skeleton
+              variant="rounded"
+              height={140}
+              animation="wave"
+              sx={{ flex: 1 }}
+            />
+            <Skeleton
+              variant="rounded"
+              height={140}
+              animation="wave"
+              sx={{ flex: 1 }}
+            />
+          </Stack>
+        </Stack>
+      </Stack>
+    </Container>
+  </Box>
+);
 
 const HeroSection: React.FC<{
   hideNonHero: boolean;
@@ -1005,6 +1061,7 @@ const RatesDisclosureSection: React.FC = () => (
 );
 
 export default function Landing({ hideNonHero = false }: LandingProps) {
+  const { isPageLoading } = usePageLoading();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const features = getClientFeatures();
@@ -1026,6 +1083,7 @@ export default function Landing({ hideNonHero = false }: LandingProps) {
     wholeLife: "100000",
   });
   const [products, setProducts] = React.useState<Product[]>([]);
+  const showSkeleton = isPageLoading;
 
   React.useEffect(() => {
     getProducts().then(setProducts);
@@ -1082,7 +1140,9 @@ export default function Landing({ hideNonHero = false }: LandingProps) {
     navigate(firstPage);
   };
 
-  return (
+  return showSkeleton ? (
+    <LandingSkeleton />
+  ) : (
     <Box>
       <HeroSection
         hideNonHero={hideNonHero}
