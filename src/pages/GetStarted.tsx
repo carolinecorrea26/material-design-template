@@ -32,7 +32,6 @@ import {
   ExpandMore,
   GppGoodRounded,
 } from "@mui/icons-material";
-import LocalPoliceRoundedIcon from "@mui/icons-material/LocalPoliceRounded";
 import { COVERAGE_CARDS } from "../constants/getStartedProducts";
 import PageHeader from "../components/layout/PageHeader";
 import FormStepTransition from "../components/layout/FormStepTransition";
@@ -548,7 +547,6 @@ export default function GetStarted() {
                   </Typography>
                   <Alert
                     severity="info"
-                    icon={<LocalPoliceRoundedIcon />}
                     sx={{ alignItems: "flex-start" }}
                   >
                     <Stack spacing={1.5}>
