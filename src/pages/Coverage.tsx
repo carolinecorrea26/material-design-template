@@ -11,8 +11,6 @@ import {
   Button,
   Box,
   Alert,
-  Checkbox,
-  FormControlLabel,
   Divider,
   Tooltip,
   Chip,
@@ -41,6 +39,7 @@ import { useStepper } from "../state/StepperContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getProducts, quoteRate } from "../api/client";
 import { getClientConfig } from "../config/clients";
+import CheckboxField from "../components/form/CheckboxField";
 import type {
   Applicant,
   Product,
@@ -49,7 +48,6 @@ import type {
 } from "../types/app";
 import { getCoverageLabel } from "../utils/coverageIcons";
 import { commonStyles } from "../theme/commonStyles";
-// import { useSnackbar } from "../components/feedback/SnackbarProvider";
 
 type SelKey = `${string}:${Applicant}`; // productId:applicant
 
@@ -60,8 +58,6 @@ export default function Coverage() {
   const navigate = useNavigate();
   const clientConfig = getClientConfig();
   const isAMA = clientConfig.id === "ama";
-
-  // const { notify } = useSnackbar();
 
   // Product ordering to match the coverage details dropdown
   const productOrder = [
@@ -103,24 +99,11 @@ export default function Coverage() {
   const [surgicalOptionAmountByKey, setSurgicalOptionAmountByKey] =
     React.useState<Record<SelKey, number | "">>({});
   const [showLearnMoreModal, setShowLearnMoreModal] = React.useState(false);
-  // const [expandedCategories, setExpandedCategories] = React.useState<Set<string>>(new Set());
   const [submitAttempted, setSubmitAttempted] = React.useState(false);
   const [activeCategoryIndex, setActiveCategoryIndex] = React.useState(0);
   const [expandedProducts, setExpandedProducts] = React.useState<Set<string>>(
     new Set(),
   );
-
-  // const toggleCategory = (category: string) => {
-  //   setExpandedCategories(prev => {
-  //     const newSet = new Set(prev);
-  //     if (newSet.has(category)) {
-  //       newSet.delete(category);
-  //     } else {
-  //       newSet.add(category);
-  //     }
-  //     return newSet;
-  //   });
-  // };
 
   const elig = data.eligibility;
   const selfCats = React.useMemo(
@@ -337,7 +320,6 @@ export default function Coverage() {
 
       const newSelectedByKey: Record<SelKey, boolean> = {};
       const newAmountByKey: Record<SelKey, number | ""> = {};
-      const categoriesToExpand = new Set<string>();
 
       // Select ALL eligible products for ALL applicants
       products.forEach((product) => {
@@ -368,15 +350,12 @@ export default function Coverage() {
                 ? amounts[Math.floor(amounts.length / 2)]
                 : amounts[0];
             newAmountByKey[key] = selectedAmount;
-
-            categoriesToExpand.add(product.category);
           }
         });
       });
 
       setSelectedByKey((prev) => ({ ...prev, ...newSelectedByKey }));
       setAmountByKey((prev) => ({ ...prev, ...newAmountByKey }));
-      // setExpandedCategories(categoriesToExpand);
     };
 
     window.addEventListener("devtools:fillform", handleFillForm);
@@ -432,13 +411,6 @@ export default function Coverage() {
     }
   };
 
-  // const canContinue = React.useMemo(() => {
-  //   // at least one key has a selection and amount and quoted rate
-  //   return Object.entries(selectedByKey).some(([k, selected]) =>
-  //     selected && amountByKey[k as SelKey] !== "" && typeof rateByKey[k as SelKey] === "number"
-  //   );
-  // }, [selectedByKey, amountByKey, rateByKey]);
-
   const handleContinue = () => {
     // Check if at least one product is selected
     const hasSelection = Object.values(selectedByKey).some(
@@ -475,7 +447,6 @@ export default function Coverage() {
     }
     // save locally for later pages
     setCoverage(selections);
-    // notify("Coverage selection saved.", "success");
     markComplete();
     next();
     navigate("/contact");
@@ -696,7 +667,6 @@ export default function Coverage() {
                               sx={{
                                 fontFamily:
                                   'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                                // color: "#1f5dd0",
                                 fontWeight: 600,
                                 textTransform: "uppercase",
                                 fontSize: "0.875rem",
@@ -1361,14 +1331,10 @@ export default function Coverage() {
                                             )}
 
                                           {/* Add Coverage Checkbox */}
-                                          <FormControlLabel
-                                            control={
-                                              <Checkbox
-                                                checked={!!selectedByKey[key]}
-                                                onChange={(_, v) =>
-                                                  onChangeSelection(key, v)
-                                                }
-                                              />
+                                          <CheckboxField
+                                            checked={!!selectedByKey[key]}
+                                            onChange={(value) =>
+                                              onChangeSelection(key, value)
                                             }
                                             label={`Add for ${app === "self" ? "yourself" : app === "spouse" ? "your spouse" : "your child(ren)"}`}
                                           />
@@ -1385,100 +1351,59 @@ export default function Coverage() {
                                                 >
                                                   Optional Benefit(s)
                                                 </Typography>
-                                                <FormControlLabel
-                                                  control={
-                                                    <Checkbox
-                                                      checked={
-                                                        optionalBenefitsByKey[
-                                                          key
-                                                        ]?.[
-                                                          "chronicIllnessRider"
-                                                        ] || false
-                                                      }
-                                                      onChange={(e) => {
-                                                        setOptionalBenefitsByKey(
-                                                          (prev) => ({
-                                                            ...prev,
-                                                            [key]: {
-                                                              ...prev[key],
-                                                              chronicIllnessRider:
-                                                                e.target
-                                                                  .checked,
-                                                            },
-                                                          }),
-                                                        );
-                                                      }}
-                                                    />
+                                                <CheckboxField
+                                                  checked={
+                                                    optionalBenefitsByKey[
+                                                      key
+                                                    ]?.[
+                                                      "chronicIllnessRider"
+                                                    ] || false
                                                   }
+                                                  onChange={(value) => {
+                                                    setOptionalBenefitsByKey(
+                                                      (prev) => ({
+                                                        ...prev,
+                                                        [key]: {
+                                                          ...prev[key],
+                                                          chronicIllnessRider:
+                                                            value,
+                                                        },
+                                                      }),
+                                                    );
+                                                  }}
                                                   label="Chronic Illness Rider (CIR)"
                                                 />
-                                                <Typography
-                                                  variant="body2"
-                                                  color="text.secondary"
-                                                  sx={{ mt: 1, ml: 4 }}
-                                                >
-                                                  Chronic Illness Rider (CIR):
-                                                  Accelerate up to 50% of the
-                                                  portion of your life insurance
-                                                  subject to the Chronic Illness
-                                                  Rider should you be
-                                                  permanently unable to perform
-                                                  2 out of 6 activities of daily
-                                                  living or require substantial
-                                                  care due to permanent
-                                                  cognitive impairment.
-                                                </Typography>
-                                              </Box>
-                                            )}
-
-                                          {/* Optional Benefits Section - Hospital Income Insurance Only (Self and Spouse) */}
-                                          {(p.name ===
-                                            "Hospital Income Insurance" ||
-                                            p.name ===
-                                              "Hospital Money Insurance") &&
-                                            selectedByKey[key] &&
-                                            (app === "self" ||
-                                              app === "spouse") && (
-                                              <Box sx={{ mt: 2, mb: 2 }}>
-                                                <Typography
-                                                  variant="h6"
-                                                  gutterBottom
-                                                >
-                                                  Optional Benefit(s)
-                                                </Typography>
-                                                <FormControlLabel
-                                                  control={
-                                                    <Checkbox
-                                                      checked={
-                                                        optionalBenefitsByKey[
-                                                          key
-                                                        ]?.["surgicalOption"] ||
-                                                        false
-                                                      }
-                                                      onChange={(e) => {
-                                                        setOptionalBenefitsByKey(
-                                                          (prev) => ({
-                                                            ...prev,
-                                                            [key]: {
-                                                              ...prev[key],
-                                                              surgicalOption:
-                                                                e.target
-                                                                  .checked,
-                                                            },
-                                                          }),
-                                                        );
-                                                        // Clear surgical option amount if unchecked
-                                                        if (!e.target.checked) {
-                                                          setSurgicalOptionAmountByKey(
-                                                            (prev) => ({
-                                                              ...prev,
-                                                              [key]: "",
-                                                            }),
-                                                          );
-                                                        }
-                                                      }}
-                                                    />
+                                                <CheckboxField
+                                                  checked={
+                                                    optionalBenefitsByKey[
+                                                      key
+                                                    ]?.["surgicalOption"] ||
+                                                    false
                                                   }
+                                                  onChange={(value) => {
+                                                    setOptionalBenefitsByKey(
+                                                      (prev) => ({
+                                                        ...prev,
+                                                        [key]: {
+                                                          ...prev[key],
+                                                          surgicalOption: value,
+                                                        },
+                                                      }),
+                                                    );
+                                                    // Clear surgical option amount if unchecked
+                                                    if (!value) {
+                                                      setSurgicalOptionAmountByKey(
+                                                        (prev) => ({
+                                                          ...prev,
+                                                          [key]: {
+                                                            ...prev[key],
+                                                            surgicalOptionAmount:
+                                                              undefined,
+                                                          },
+                                                        }),
+                                                      );
+                                                    }
+                                                  }}
                                                   label="Surgical Option"
                                                 />
                                                 <Typography

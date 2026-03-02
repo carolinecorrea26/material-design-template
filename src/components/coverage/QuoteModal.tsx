@@ -1,13 +1,27 @@
 import {
-  Dialog, DialogTitle, DialogContent, Button,
-  Card, CardContent, Stack, Typography, Box, FormControl,
-  InputLabel, Select, MenuItem, IconButton, Divider, TextField, Alert
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Button,
+  Card,
+  CardContent,
+  Stack,
+  Typography,
+  Box,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  IconButton,
+  Divider,
+  TextField,
+  Alert,
 } from "@mui/material";
-import { 
-  Close as CloseIcon, 
+import {
+  Close as CloseIcon,
   ArrowRightAlt as ArrowRightAltIcon,
   ShieldOutlined as ShieldIcon,
-  Send as SendIcon
+  Send as SendIcon,
 } from "@mui/icons-material";
 import * as React from "react";
 
@@ -32,14 +46,12 @@ export default function QuoteModal({
   onClose,
   onBeginApplication,
   selectedCoverages,
-  onCoverageChange
+  onCoverageChange,
 }: QuoteModalProps) {
-  const [email, setEmail] = React.useState('');
+  const [email, setEmail] = React.useState("");
   const [emailSent, setEmailSent] = React.useState(false);
 
   const handleSendEmail = () => {
-    // TODO: Implement email sending logic
-    console.log('Sending quote to:', email);
     setEmailSent(true);
     setTimeout(() => setEmailSent(false), 3000);
   };
@@ -52,16 +64,16 @@ export default function QuoteModal({
       fullWidth
       PaperProps={{
         sx: {
-          maxWidth: { xs: '100%', sm: '600px', md: '900px', lg: '1200px' }
-        }
+          maxWidth: { xs: "100%", sm: "600px", md: "900px", lg: "1200px" },
+        },
       }}
     >
       <DialogTitle
         sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          pb: 1
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          pb: 1,
         }}
       >
         <Typography variant="h5" component="div" sx={{ fontWeight: 600 }}>
@@ -81,165 +93,246 @@ export default function QuoteModal({
         <Stack spacing={4}>
           {/* Intro Section */}
           <Typography variant="body2" color="text.secondary">
-            Based on the information you provided, here are your estimated monthly premiums for each coverage option. Select your desired coverage amount and begin your application to lock in these rates.
+            Based on the information you provided, here are your estimated
+            monthly premiums for each coverage option. Select your desired
+            coverage amount and begin your application to lock in these rates.
           </Typography>
 
           {/* Coverage Cards - Horizontal on large screens */}
-          <Box 
-            sx={{ 
-              display: 'flex',
-              flexDirection: { xs: 'column', md: 'row' },
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
               gap: 2.5,
-              justifyContent: 'center',
-              '& > *': {
-                flex: { xs: '1', md: '1 1 0' },
-                maxWidth: { md: '400px' }
-              }
+              justifyContent: "center",
+              "& > *": {
+                flex: { xs: "1", md: "1 1 0" },
+                maxWidth: { md: "400px" },
+              },
             }}
           >
-              {/* 10-Year Term Life */}
-              <Card variant="outlined" sx={{ bgcolor: 'grey.50' }}>
-                <CardContent sx={{ p: 2 }}>
-              <Stack spacing={1.5}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
-                  <ShieldIcon sx={{ color: 'primary.main', fontSize: '1.25rem' }} />
-                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                    10-Year Term Life Insurance
-                  </Typography>
-                </Box>
-
-                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, justifyContent: 'center' }}>
-                  <Typography variant="h4" color="primary.main" sx={{ fontWeight: 700 }}>
-                    $24.50
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">/ month</Typography>
-                </Box>
-
-                <FormControl fullWidth size="small">
-                  <InputLabel>Coverage Amount</InputLabel>
-                  <Select
-                    value={selectedCoverages.term10}
-                    label="Coverage Amount"
-                    onChange={(e) => onCoverageChange({ ...selectedCoverages, term10: e.target.value })}
+            {/* 10-Year Term Life */}
+            <Card variant="outlined" sx={{ bgcolor: "grey.50" }}>
+              <CardContent sx={{ p: 2 }}>
+                <Stack spacing={1.5}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 1,
+                    }}
                   >
-                    <MenuItem value="100000">$100,000</MenuItem>
-                    <MenuItem value="250000">$250,000</MenuItem>
-                    <MenuItem value="500000">$500,000</MenuItem>
-                    <MenuItem value="750000">$750,000</MenuItem>
-                    <MenuItem value="1000000">$1,000,000</MenuItem>
-                  </Select>
-                </FormControl>
+                    <ShieldIcon
+                      sx={{ color: "primary.main", fontSize: "1.25rem" }}
+                    />
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                      10-Year Term Life Insurance
+                    </Typography>
+                  </Box>
 
-                <Button
-                  variant="contained"
-                  fullWidth
-                  endIcon={<ArrowRightAltIcon />}
-                  onClick={onBeginApplication}
-                  size="medium"
-                >
-                  Begin Application
-                </Button>
-              </Stack>
-            </CardContent>
-          </Card>
-
-          {/* 20-Year Term Life */}
-          <Card variant="outlined" sx={{ bgcolor: 'grey.50' }}>
-            <CardContent sx={{ p: 2 }}>
-              <Stack spacing={1.5}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
-                  <ShieldIcon sx={{ color: 'primary.main', fontSize: '1.25rem' }} />
-                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                    20-Year Term Life Insurance
-                  </Typography>
-                </Box>
-
-                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, justifyContent: 'center' }}>
-                  <Typography variant="h4" color="primary.main" sx={{ fontWeight: 700 }}>
-                    $38.75
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">/ month</Typography>
-                </Box>
-
-                <FormControl fullWidth size="small">
-                  <InputLabel>Coverage Amount</InputLabel>
-                  <Select
-                    value={selectedCoverages.term20}
-                    label="Coverage Amount"
-                    onChange={(e) => onCoverageChange({ ...selectedCoverages, term20: e.target.value })}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "baseline",
+                      gap: 1,
+                      justifyContent: "center",
+                    }}
                   >
-                    <MenuItem value="100000">$100,000</MenuItem>
-                    <MenuItem value="250000">$250,000</MenuItem>
-                    <MenuItem value="500000">$500,000</MenuItem>
-                    <MenuItem value="750000">$750,000</MenuItem>
-                    <MenuItem value="1000000">$1,000,000</MenuItem>
-                  </Select>
-                </FormControl>
+                    <Typography
+                      variant="h4"
+                      color="primary.main"
+                      sx={{ fontWeight: 700 }}
+                    >
+                      $24.50
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      / month
+                    </Typography>
+                  </Box>
 
-                <Button
-                  variant="contained"
-                  fullWidth
-                  endIcon={<ArrowRightAltIcon />}
-                  onClick={onBeginApplication}
-                  size="medium"
-                >
-                  Begin Application
-                </Button>
-              </Stack>
-            </CardContent>
-          </Card>
+                  <FormControl fullWidth size="small">
+                    <InputLabel>Coverage Amount</InputLabel>
+                    <Select
+                      value={selectedCoverages.term10}
+                      label="Coverage Amount"
+                      onChange={(e) =>
+                        onCoverageChange({
+                          ...selectedCoverages,
+                          term10: e.target.value,
+                        })
+                      }
+                    >
+                      <MenuItem value="100000">$100,000</MenuItem>
+                      <MenuItem value="250000">$250,000</MenuItem>
+                      <MenuItem value="500000">$500,000</MenuItem>
+                      <MenuItem value="750000">$750,000</MenuItem>
+                      <MenuItem value="1000000">$1,000,000</MenuItem>
+                    </Select>
+                  </FormControl>
 
-          {/* Whole Life */}
-          <Card variant="outlined" sx={{ bgcolor: 'grey.50' }}>
-            <CardContent sx={{ p: 2 }}>
-              <Stack spacing={1.5}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
-                  <ShieldIcon sx={{ color: 'primary.main', fontSize: '1.25rem' }} />
-                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                    Whole Life Insurance
-                  </Typography>
-                </Box>
-
-                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, justifyContent: 'center' }}>
-                  <Typography variant="h4" color="primary.main" sx={{ fontWeight: 700 }}>
-                    $89.99
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">/ month</Typography>
-                </Box>
-
-                <FormControl fullWidth size="small">
-                  <InputLabel>Coverage Amount</InputLabel>
-                  <Select
-                    value={selectedCoverages.wholeLife}
-                    label="Coverage Amount"
-                    onChange={(e) => onCoverageChange({ ...selectedCoverages, wholeLife: e.target.value })}
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    endIcon={<ArrowRightAltIcon />}
+                    onClick={onBeginApplication}
+                    size="medium"
                   >
-                    <MenuItem value="50000">$50,000</MenuItem>
-                    <MenuItem value="100000">$100,000</MenuItem>
-                    <MenuItem value="250000">$250,000</MenuItem>
-                    <MenuItem value="500000">$500,000</MenuItem>
-                  </Select>
-                </FormControl>
+                    Begin Application
+                  </Button>
+                </Stack>
+              </CardContent>
+            </Card>
 
-                <Button
-                  variant="contained"
-                  fullWidth
-                  endIcon={<ArrowRightAltIcon />}
-                  onClick={onBeginApplication}
-                  size="medium"
-                >
-                  Begin Application
-                </Button>
-              </Stack>
-            </CardContent>
-          </Card>
+            {/* 20-Year Term Life */}
+            <Card variant="outlined" sx={{ bgcolor: "grey.50" }}>
+              <CardContent sx={{ p: 2 }}>
+                <Stack spacing={1.5}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <ShieldIcon
+                      sx={{ color: "primary.main", fontSize: "1.25rem" }}
+                    />
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                      20-Year Term Life Insurance
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "baseline",
+                      gap: 1,
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Typography
+                      variant="h4"
+                      color="primary.main"
+                      sx={{ fontWeight: 700 }}
+                    >
+                      $38.75
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      / month
+                    </Typography>
+                  </Box>
+
+                  <FormControl fullWidth size="small">
+                    <InputLabel>Coverage Amount</InputLabel>
+                    <Select
+                      value={selectedCoverages.term20}
+                      label="Coverage Amount"
+                      onChange={(e) =>
+                        onCoverageChange({
+                          ...selectedCoverages,
+                          term20: e.target.value,
+                        })
+                      }
+                    >
+                      <MenuItem value="100000">$100,000</MenuItem>
+                      <MenuItem value="250000">$250,000</MenuItem>
+                      <MenuItem value="500000">$500,000</MenuItem>
+                      <MenuItem value="750000">$750,000</MenuItem>
+                      <MenuItem value="1000000">$1,000,000</MenuItem>
+                    </Select>
+                  </FormControl>
+
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    endIcon={<ArrowRightAltIcon />}
+                    onClick={onBeginApplication}
+                    size="medium"
+                  >
+                    Begin Application
+                  </Button>
+                </Stack>
+              </CardContent>
+            </Card>
+
+            {/* Whole Life */}
+            <Card variant="outlined" sx={{ bgcolor: "grey.50" }}>
+              <CardContent sx={{ p: 2 }}>
+                <Stack spacing={1.5}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <ShieldIcon
+                      sx={{ color: "primary.main", fontSize: "1.25rem" }}
+                    />
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                      Whole Life Insurance
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "baseline",
+                      gap: 1,
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Typography
+                      variant="h4"
+                      color="primary.main"
+                      sx={{ fontWeight: 700 }}
+                    >
+                      $89.99
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      / month
+                    </Typography>
+                  </Box>
+
+                  <FormControl fullWidth size="small">
+                    <InputLabel>Coverage Amount</InputLabel>
+                    <Select
+                      value={selectedCoverages.wholeLife}
+                      label="Coverage Amount"
+                      onChange={(e) =>
+                        onCoverageChange({
+                          ...selectedCoverages,
+                          wholeLife: e.target.value,
+                        })
+                      }
+                    >
+                      <MenuItem value="50000">$50,000</MenuItem>
+                      <MenuItem value="100000">$100,000</MenuItem>
+                      <MenuItem value="250000">$250,000</MenuItem>
+                      <MenuItem value="500000">$500,000</MenuItem>
+                    </Select>
+                  </FormControl>
+
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    endIcon={<ArrowRightAltIcon />}
+                    onClick={onBeginApplication}
+                    size="medium"
+                  >
+                    Begin Application
+                  </Button>
+                </Stack>
+              </CardContent>
+            </Card>
           </Box>
 
           {/* Email This Quote Section */}
           {emailSent && (
-            <Alert severity="success">
-              Quote sent successfully to {email}
-            </Alert>
+            <Alert severity="success">Quote sent successfully to {email}</Alert>
           )}
 
           <Card variant="outlined">
@@ -266,16 +359,23 @@ export default function QuoteModal({
                       >
                         <SendIcon />
                       </IconButton>
-                    )
+                    ),
                   }}
                 />
               </Stack>
             </CardContent>
           </Card>
-        
+
           {/* Disclosure */}
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center' }}>
-            <sup>1</sup>Quoted cost is the best rate available based on the information you provided. Final cost may be based upon factors such as gender, health status, and use of tobacco/nicotine. Rates current as of 2025.
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ display: "block", textAlign: "center" }}
+          >
+            <sup>1</sup>Quoted cost is the best rate available based on the
+            information you provided. Final cost may be based upon factors such
+            as gender, health status, and use of tobacco/nicotine. Rates current
+            as of 2025.
           </Typography>
         </Stack>
       </DialogContent>

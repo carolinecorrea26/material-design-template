@@ -1,8 +1,25 @@
 import * as React from "react";
 import {
-  Typography, Box, Stack, useTheme, Card, CardContent,
-  Button, TextField, FormControlLabel, Chip, Alert, Checkbox, Radio, RadioGroup, FormControl, FormLabel,
-  Select, MenuItem, InputLabel, Divider
+  Typography,
+  Box,
+  Stack,
+  useTheme,
+  Card,
+  CardContent,
+  Button,
+  TextField,
+  FormControlLabel,
+  Chip,
+  Alert,
+  Checkbox,
+  Radio,
+  RadioGroup,
+  FormControl,
+  FormLabel,
+  Select,
+  MenuItem,
+  InputLabel,
+  Divider,
 } from "@mui/material";
 import { VerifiedUserOutlined, ShieldOutlined } from "@mui/icons-material";
 import { FormProvider, useForm } from "react-hook-form";
@@ -19,32 +36,32 @@ import { THEME_COLORS, UI_COLORS } from "../config/themeColors";
 
 export default function Styleguide() {
   const theme = useTheme();
-  
+
   // Mock form for demo purposes
   const methods = useForm({
     defaultValues: {
-      textField: '',
-      longLabelField: '',
-      currencyField: '',
-      dateField: '',
-      selectField: '',
-      radioField: '',
+      textField: "",
+      longLabelField: "",
+      currencyField: "",
+      dateField: "",
+      selectField: "",
+      radioField: "",
       checkboxField: false,
-      textareaField: ''
-    }
+      textareaField: "",
+    },
   });
 
   const ColorSwatch = ({ color, name }: { color: string; name: string }) => (
-    <Box sx={{ textAlign: 'center' }}>
+    <Box sx={{ textAlign: "center" }}>
       <Box
         sx={{
           width: 100,
           height: 100,
           bgcolor: color,
           border: 1,
-          borderColor: 'divider',
+          borderColor: "divider",
           borderRadius: 1,
-          mb: 1
+          mb: 1,
         }}
       />
       <Typography variant="caption" display="block" fontWeight={600}>
@@ -58,7 +75,7 @@ export default function Styleguide() {
 
   return (
     <Stack spacing={6}>
-      <PageHeader 
+      <PageHeader
         title="Design System & Style Guide"
         notes="A comprehensive reference for theme colors, typography, and UI components."
       />
@@ -70,23 +87,28 @@ export default function Styleguide() {
             1. Theme Colors
           </Typography>
           <Typography variant="body2" color="text.secondary" paragraph>
-            Client-specific color palettes. Each client can choose a primary theme that defines the main and dark variants used throughout the application.
+            Client-specific color palettes. Each client can choose a primary
+            theme that defines the main and dark variants used throughout the
+            application.
           </Typography>
-          
+
           <Stack spacing={4} sx={{ mt: 4 }}>
             {Object.entries(THEME_COLORS).map(([themeName, colors]) => (
               <Box key={themeName}>
-                <Typography variant="h6" sx={{ mb: 2, textTransform: 'capitalize', fontWeight: 600 }}>
+                <Typography
+                  variant="h6"
+                  sx={{ mb: 2, textTransform: "capitalize", fontWeight: 600 }}
+                >
                   {themeName} Theme
                 </Typography>
                 <Stack direction="row" spacing={3} flexWrap="wrap" useFlexGap>
-                  <ColorSwatch 
-                    color={colors.primary.main} 
-                    name="Primary Main" 
+                  <ColorSwatch
+                    color={colors.primary.main}
+                    name="Primary Main"
                   />
-                  <ColorSwatch 
-                    color={colors.primary.dark} 
-                    name="Primary Dark" 
+                  <ColorSwatch
+                    color={colors.primary.dark}
+                    name="Primary Dark"
                   />
                 </Stack>
               </Box>
@@ -100,9 +122,16 @@ export default function Styleguide() {
               System Colors
             </Typography>
             <Typography variant="body2" color="text.secondary" paragraph>
-              Semantic colors used for feedback, status, and UI elements across all client themes.
+              Semantic colors used for feedback, status, and UI elements across
+              all client themes.
             </Typography>
-            <Stack direction="row" spacing={3} flexWrap="wrap" useFlexGap sx={{ mt: 3 }}>
+            <Stack
+              direction="row"
+              spacing={3}
+              flexWrap="wrap"
+              useFlexGap
+              sx={{ mt: 3 }}
+            >
               <ColorSwatch color={UI_COLORS.success.main} name="Success" />
               <ColorSwatch color={UI_COLORS.error.main} name="Error" />
               <ColorSwatch color={UI_COLORS.warning.main} name="Warning" />
@@ -119,7 +148,13 @@ export default function Styleguide() {
             <Typography variant="body2" color="text.secondary" paragraph>
               Grey scale used for backgrounds, borders, and text.
             </Typography>
-            <Stack direction="row" spacing={3} flexWrap="wrap" useFlexGap sx={{ mt: 3 }}>
+            <Stack
+              direction="row"
+              spacing={3}
+              flexWrap="wrap"
+              useFlexGap
+              sx={{ mt: 3 }}
+            >
               <ColorSwatch color="#FFFFFF" name="White" />
               <ColorSwatch color={UI_COLORS.grey[100]} name="Grey 100" />
               <ColorSwatch color={UI_COLORS.grey[300]} name="Grey 300" />
@@ -138,16 +173,26 @@ export default function Styleguide() {
             2. Typography
           </Typography>
           <Typography variant="body2" color="text.secondary" paragraph>
-            Font family: <strong>Inter</strong> (sans-serif). Consistent type scale and weights for hierarchy and readability.
+            Font family: <strong>Inter</strong> (sans-serif). Consistent type
+            scale and weights for hierarchy and readability.
           </Typography>
 
           <Stack spacing={3} sx={{ mt: 4 }}>
             <Box>
-              <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.5 }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                display="block"
+                sx={{ mb: 0.5 }}
+              >
                 H1 • 2.5rem (40px) • Weight 700
               </Typography>
               <Typography variant="h1">Main Page Title</Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
                 Used for primary page headings
               </Typography>
             </Box>
@@ -155,11 +200,20 @@ export default function Styleguide() {
             <Divider />
 
             <Box>
-              <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.5 }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                display="block"
+                sx={{ mb: 0.5 }}
+              >
                 H2 • 2rem (32px) • Weight 700
               </Typography>
               <Typography variant="h2">Section Header</Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
                 Used for major section headings
               </Typography>
             </Box>
@@ -167,11 +221,20 @@ export default function Styleguide() {
             <Divider />
 
             <Box>
-              <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.5 }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                display="block"
+                sx={{ mb: 0.5 }}
+              >
                 H3 • 1.75rem (28px) • Weight 600
               </Typography>
               <Typography variant="h3">Subsection Title</Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
                 Used for subsections and card titles
               </Typography>
             </Box>
@@ -179,11 +242,20 @@ export default function Styleguide() {
             <Divider />
 
             <Box>
-              <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.5 }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                display="block"
+                sx={{ mb: 0.5 }}
+              >
                 H4 • 1.5rem (24px) • Weight 600
               </Typography>
               <Typography variant="h4">Card Header</Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
                 Used for category card headers
               </Typography>
             </Box>
@@ -191,11 +263,20 @@ export default function Styleguide() {
             <Divider />
 
             <Box>
-              <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.5 }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                display="block"
+                sx={{ mb: 0.5 }}
+              >
                 H5 • 1.25rem (20px) • Weight 600
               </Typography>
               <Typography variant="h5">Nested Card Header</Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
                 Used for nested content sections
               </Typography>
             </Box>
@@ -203,33 +284,52 @@ export default function Styleguide() {
             <Divider />
 
             <Box>
-              <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.5 }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                display="block"
+                sx={{ mb: 0.5 }}
+              >
                 Body 1 • 1rem (16px) • Weight 400
               </Typography>
               <Typography variant="body1">
-                This is the primary body text used for most content throughout the application. It provides good readability and is the default for paragraphs and descriptions.
+                This is the primary body text used for most content throughout
+                the application. It provides good readability and is the default
+                for paragraphs and descriptions.
               </Typography>
             </Box>
 
             <Divider />
 
             <Box>
-              <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.5 }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                display="block"
+                sx={{ mb: 0.5 }}
+              >
                 Body 2 • 0.875rem (14px) • Weight 400
               </Typography>
               <Typography variant="body2">
-                This is secondary body text used for helper text, descriptions, and supplementary information.
+                This is secondary body text used for helper text, descriptions,
+                and supplementary information.
               </Typography>
             </Box>
 
             <Divider />
 
             <Box>
-              <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.5 }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                display="block"
+                sx={{ mb: 0.5 }}
+              >
                 Caption • 0.75rem (12px) • Weight 400
               </Typography>
               <Typography variant="caption">
-                This is caption text used for labels, footnotes, and helper text.
+                This is caption text used for labels, footnotes, and helper
+                text.
               </Typography>
             </Box>
           </Stack>
@@ -267,7 +367,8 @@ export default function Styleguide() {
                         Category Card Title
                       </Typography>
                       <Typography variant="body2">
-                        This is the main content container with a grey background. Used for major sections.
+                        This is the main content container with a grey
+                        background. Used for major sections.
                       </Typography>
                     </CardContent>
                   </Card>
@@ -283,7 +384,8 @@ export default function Styleguide() {
                         Nested Card Title
                       </Typography>
                       <Typography variant="body2">
-                        White cards are used for nested content within category cards.
+                        White cards are used for nested content within category
+                        cards.
                       </Typography>
                     </CardContent>
                   </Card>
@@ -318,10 +420,22 @@ export default function Styleguide() {
                   <Typography variant="body2" fontWeight={600} gutterBottom>
                     Button Sizes
                   </Typography>
-                  <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap>
-                    <Button variant="contained" size="small">Small</Button>
-                    <Button variant="contained" size="medium">Medium</Button>
-                    <Button variant="contained" size="large">Large</Button>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    alignItems="center"
+                    flexWrap="wrap"
+                    useFlexGap
+                  >
+                    <Button variant="contained" size="small">
+                      Small
+                    </Button>
+                    <Button variant="contained" size="medium">
+                      Medium
+                    </Button>
+                    <Button variant="contained" size="large">
+                      Large
+                    </Button>
                   </Stack>
                 </Box>
 
@@ -331,7 +445,9 @@ export default function Styleguide() {
                   </Typography>
                   <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
                     <Button variant="contained">Default</Button>
-                    <Button variant="contained" disabled>Disabled</Button>
+                    <Button variant="contained" disabled>
+                      Disabled
+                    </Button>
                   </Stack>
                 </Box>
               </Stack>
@@ -345,22 +461,15 @@ export default function Styleguide() {
                 Alerts
               </Typography>
               <Typography variant="body2" color="text.secondary" paragraph>
-                Feedback messages for success, errors, warnings, and information.
+                Feedback messages for success, errors, warnings, and
+                information.
               </Typography>
 
               <Stack spacing={2} sx={{ mt: 3 }}>
-                <Alert severity="info">
-                  This is an informational message
-                </Alert>
-                <Alert severity="success">
-                  This is a success message
-                </Alert>
-                <Alert severity="warning">
-                  This is a warning message
-                </Alert>
-                <Alert severity="error">
-                  This is an error message
-                </Alert>
+                <Alert severity="info">This is an informational message</Alert>
+                <Alert severity="success">This is a success message</Alert>
+                <Alert severity="warning">This is a warning message</Alert>
+                <Alert severity="error">This is an error message</Alert>
               </Stack>
             </Box>
 
@@ -375,7 +484,13 @@ export default function Styleguide() {
                 Compact elements for displaying tags, categories, or status.
               </Typography>
 
-              <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap sx={{ mt: 3 }}>
+              <Stack
+                direction="row"
+                spacing={2}
+                flexWrap="wrap"
+                useFlexGap
+                sx={{ mt: 3 }}
+              >
                 <Chip label="Default" />
                 <Chip label="Primary" color="primary" />
                 <Chip label="Success" color="success" />
@@ -400,22 +515,44 @@ export default function Styleguide() {
                   <Typography variant="body2" fontWeight={600} gutterBottom>
                     Form Progress Indicators
                   </Typography>
-                  <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 2 }}>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    display="block"
+                    sx={{ mb: 2 }}
+                  >
                     Step indicators show progress through multi-step forms
                   </Typography>
-                  
+
                   <Stack direction="row" spacing={2} alignItems="center">
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <VerifiedUserOutlined sx={{ fontSize: 18, color: 'success.main' }} />
-                      <Typography variant="body2" fontWeight={600} color="success.main">Completed</Typography>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <VerifiedUserOutlined
+                        sx={{ fontSize: 18, color: "success.main" }}
+                      />
+                      <Typography
+                        variant="body2"
+                        fontWeight={600}
+                        color="success.main"
+                      >
+                        Completed
+                      </Typography>
                     </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <ShieldOutlined sx={{ fontSize: 18, color: 'primary.main' }} />
-                      <Typography variant="body2" fontWeight={600} color="primary">Active</Typography>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <ShieldOutlined
+                        sx={{ fontSize: 18, color: "primary.main" }}
+                      />
+                      <Typography
+                        variant="body2"
+                        fontWeight={600}
+                        color="primary"
+                      >
+                        Active
+                      </Typography>
                     </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      {/* <VerifiedUserOutlined sx={{ fontSize: 18, color: 'text.secondary' }} /> */}
-                      <Typography variant="body2" color="text.secondary">Future</Typography>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Typography variant="body2" color="text.secondary">
+                        Future
+                      </Typography>
                     </Box>
                   </Stack>
                 </Box>
@@ -437,7 +574,8 @@ export default function Styleguide() {
                 Form Fields
               </Typography>
               <Typography variant="body2" color="text.secondary" paragraph>
-                Input components for collecting user data with validation support.
+                Input components for collecting user data with validation
+                support.
               </Typography>
 
               <FormProvider {...methods}>
@@ -448,24 +586,21 @@ export default function Styleguide() {
                       Text Fields
                     </Typography>
                     <Stack spacing={3}>
-                      <RHFTextField 
-                        name="textField" 
-                        label="Text Field with Floating Label" 
+                      <RHFTextField
+                        name="textField"
+                        label="Text Field with Floating Label"
                         placeholder="Enter text"
                       />
-                      
+
                       <Box>
                         <FormLabel>
                           Text field with standard label (for longer questions)
                         </FormLabel>
-                        <TextField 
-                          placeholder="Enter your answer"
-                          fullWidth
-                        />
+                        <TextField placeholder="Enter your answer" fullWidth />
                       </Box>
 
-                      <RHFTextField 
-                        name="textareaField" 
+                      <RHFTextField
+                        name="textareaField"
                         label="Textarea Field"
                         multiline
                         rows={4}
@@ -479,10 +614,7 @@ export default function Styleguide() {
                       Specialized Input Fields
                     </Typography>
                     <Stack spacing={3}>
-                      <DateField 
-                        name="dateField"
-                        label="Date Field"
-                      />
+                      <DateField name="dateField" label="Date Field" />
 
                       <RHFCurrencyField
                         name="currencyField"
@@ -497,13 +629,13 @@ export default function Styleguide() {
                       Dropdown Fields
                     </Typography>
                     <Stack spacing={3}>
-                      <RHFSelect 
-                        name="selectField" 
+                      <RHFSelect
+                        name="selectField"
                         label="Standard Dropdown"
                         options={[
                           { label: "Option 1", value: "option1" },
                           { label: "Option 2", value: "option2" },
-                          { label: "Option 3", value: "option3" }
+                          { label: "Option 3", value: "option3" },
                         ]}
                       />
 
@@ -513,7 +645,9 @@ export default function Styleguide() {
                           multiple
                           value={[]}
                           label="Multiselect Dropdown"
-                          renderValue={(selected) => (selected as string[]).join(', ')}
+                          renderValue={(selected) =>
+                            (selected as string[]).join(", ")
+                          }
                         >
                           <MenuItem value="option1">
                             <Checkbox checked={false} />
@@ -537,12 +671,12 @@ export default function Styleguide() {
                     <Typography variant="body2" fontWeight={600} gutterBottom>
                       Radio Buttons
                     </Typography>
-                    <RHFRadioGroup 
+                    <RHFRadioGroup
                       name="radioField"
                       label="Radio Group"
                       options={[
                         { label: "Yes", value: "yes" },
-                        { label: "No", value: "no" }
+                        { label: "No", value: "no" },
                       ]}
                     />
                   </Box>
@@ -553,9 +687,9 @@ export default function Styleguide() {
                       Checkboxes
                     </Typography>
                     <Stack spacing={1}>
-                      <RHFCheckbox 
-                        name="checkboxField" 
-                        label="Single Checkbox" 
+                      <RHFCheckbox
+                        name="checkboxField"
+                        label="Single Checkbox"
                       />
                       <FormControlLabel
                         control={<Checkbox />}
@@ -573,29 +707,34 @@ export default function Styleguide() {
                     <Typography variant="body2" fontWeight={600} gutterBottom>
                       Required Fields
                     </Typography>
-                    <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 2 }}>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                      sx={{ mb: 2 }}
+                    >
                       Required fields display a red asterisk (*)
                     </Typography>
                     <Stack spacing={3}>
-                      <RHFTextField 
-                        name="requiredTextField" 
-                        label="Required Text Field" 
+                      <RHFTextField
+                        name="requiredTextField"
+                        label="Required Text Field"
                         required
                       />
 
-                      <DateField 
+                      <DateField
                         name="requiredDateField"
                         label="Required Date Field"
                         required
                       />
 
-                      <RHFSelect 
-                        name="requiredSelectField" 
+                      <RHFSelect
+                        name="requiredSelectField"
                         label="Required Dropdown"
                         required
                         options={[
                           { label: "Option 1", value: "option1" },
-                          { label: "Option 2", value: "option2" }
+                          { label: "Option 2", value: "option2" },
                         ]}
                       />
                     </Stack>

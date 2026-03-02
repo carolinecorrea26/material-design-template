@@ -6,7 +6,6 @@ import {
   LinearProgress,
   Typography,
   Button,
-  Chip,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -95,7 +94,6 @@ export default function ApplicationLayout({
       : 1;
   const [displayProgress, setDisplayProgress] = React.useState(progressPercent);
   const lastProgressRef = React.useRef(progressPercent);
-  const isGetStartedPage = location.pathname === "/get-started";
 
   const handleBack = () => {
     sessionStorage.setItem("nyl-last-nav", "back");
@@ -138,17 +136,6 @@ export default function ApplicationLayout({
   const branding = getClientBranding();
   const hasPortfolio = (data.coverage ?? []).length > 0;
   const isCoveragePage = location.pathname === "/coverage";
-  const timeByPath: Record<string, number> = {
-    "/get-started": 1,
-    "/eligibility": 3,
-    "/coverage": 6,
-    "/contact": 3,
-    "/profile": 6,
-    "/health-history": 6,
-    "/preview": 3,
-    "/consent": 2,
-  };
-  // const timeRemainingMinutes = timeByPath[location.pathname] ?? 0;
   const progressLabel = `${Math.round(progressPercent)}%`;
 
   React.useEffect(() => {
@@ -180,17 +167,14 @@ export default function ApplicationLayout({
         flexDirection: "column",
         position: "relative",
         background: "linear-gradient(45deg, #f3fbfa, #f2f7ff)",
-        // background: "linear-gradient(160deg, #ffffff 0%, #fef8f3 100%)",
       }}
     >
-      {/* Left Sidebar - Progress/Toolbar Section */}
+      {/* Hidden sidebar placeholder (desktop layout parity) */}
       <Box
         sx={{
           width: 0,
           flexShrink: 0,
           display: "none",
-          //   borderRight: 1,
-          //   borderColor: 'divider',
           bgcolor: "#f4f5f9",
           position: "sticky",
           top: 0,
@@ -202,7 +186,7 @@ export default function ApplicationLayout({
         <ApplicationSidebar />
       </Box>
 
-      {/* Progress Section (header width) */}
+      {/* Progress header */}
       {isOnApplicationPage && (
         <Box sx={{ width: "100%", mt: "64px", px: { xs: 0, md: 2 } }}>
           <Box sx={{ maxWidth: "1400px", mx: "auto" }}>
@@ -211,7 +195,6 @@ export default function ApplicationLayout({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                // mt: "-0.5rem",
                 ml: "2.5rem",
                 mr: "2.5rem",
               }}
@@ -302,10 +285,9 @@ export default function ApplicationLayout({
           width: "100%",
           maxWidth: "750px",
           mx: "auto",
-          // mb: "20rem",
           px: { xs: 2, sm: 3 },
           py: { xs: 3 },
-          pt: { xs: "40px" },
+          pt: { xs: "32px" },
           minHeight: "100vh",
         }}
       >
@@ -317,7 +299,7 @@ export default function ApplicationLayout({
         onClose={() => setPortfolioOpen(false)}
       />
 
-      {/* Mobile Progress Bar - Will be implemented in Step 6 */}
+      {/* Mobile header and menu */}
       {isOnApplicationPage && (
         <>
           {/* Mobile Top Bar */}

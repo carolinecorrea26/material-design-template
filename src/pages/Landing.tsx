@@ -428,7 +428,6 @@ const QuoteForm: React.FC<{
                         }
                         setBirthday(value);
                       }}
-                      // helperText="MM/DD/YYYY"
                       fullWidth
                       inputProps={{
                         maxLength: 10,
@@ -441,7 +440,6 @@ const QuoteForm: React.FC<{
                       select
                       value={state}
                       onChange={(e) => setState(e.target.value)}
-                      // size="small"
                       fullWidth
                     >
                       {US_STATES.map((stateName) => (
@@ -480,7 +478,6 @@ const QuoteForm: React.FC<{
                           type="number"
                           value={hoursPerWeek}
                           onChange={(e) => setHoursPerWeek(e.target.value)}
-                          // size="small"
                           fullWidth
                         />
                         <TextField
@@ -493,7 +490,6 @@ const QuoteForm: React.FC<{
                               : "";
                             setMonthlyIncome(formatted);
                           }}
-                          // size="small"
                           fullWidth
                           helperText="Monthly income is asked to help determine the amount of disability coverage you may qualify for."
                         />

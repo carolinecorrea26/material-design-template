@@ -74,13 +74,11 @@ export default function RHFRadioGroup({
             aria-label={label}
             sx={{
               display: "flex",
-              flexDirection: { xs: "column", md: "row" },
-              flexWrap: "wrap",
-              columnGap: { xs: 0, sm: 1.5 },
-              rowGap: 1,
+              flexDirection: "column",
+              gap: 1,
               "& .MuiToggleButton-root": {
-                width: { xs: "100%", md: "auto" },
-                flex: { xs: "1 1 100%", md: "1 1 0" },
+                width: "100%",
+                flex: "1 1 100%",
                 borderColor: fieldState.error ? "error.main" : undefined,
                 "&:not(.Mui-selected)": fieldState.error
                   ? {

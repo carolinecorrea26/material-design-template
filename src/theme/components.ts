@@ -90,9 +90,12 @@ export const components: Components<Theme> = {
     styleOverrides: {
       root: ({ theme }) => ({
         color: theme.palette.primary.main,
+        fontWeight: 400,
         textDecoration: "none",
+        // transition: "font-weight 0.5s ease",
         "&:hover": {
-          textDecoration: "underline",
+          textDecoration: "none",
+          fontWeight: 500,
         },
       }),
     },
@@ -123,9 +126,18 @@ export const components: Components<Theme> = {
   },
   MuiAlert: {
     styleOverrides: {
-      root: {
+      root: ({ ownerState }) => ({
         borderRadius: 8,
-      },
+        ...(ownerState.severity === "info"
+          ? {
+              backgroundColor: "rgb(0 85 255 / 5%)",
+              color: "rgb(53 59 72)",
+              "& .MuiAlert-icon": {
+                color: "#0044ae",
+              },
+            }
+          : {}),
+      }),
     },
   },
   MuiInputLabel: {
@@ -146,7 +158,6 @@ export const components: Components<Theme> = {
     styleOverrides: {
       root: ({ theme }) => ({
         color: "#343b48",
-        // fontSize: '0.875rem',
         fontWeight: 500,
         marginBottom: "8px",
         display: "block",
@@ -162,7 +173,6 @@ export const components: Components<Theme> = {
   MuiTypography: {
     styleOverrides: {
       root: ({ theme, ownerState }) => ({
-        // Don't override color if a specific color prop is provided
         ...(!ownerState.color && { color: theme.palette.text.primary }),
       }),
       h6: ({ theme, ownerState }) => ({
@@ -175,8 +185,27 @@ export const components: Components<Theme> = {
   },
   MuiFormControlLabel: {
     styleOverrides: {
+      root: ({ theme }) => ({
+        marginLeft: 0,
+        marginRight: 0,
+        width: "100%",
+        alignItems: "flex-start",
+        gap: theme.spacing(1),
+      }),
       label: ({ theme }) => ({
         color: theme.palette.text.primary,
+      }),
+    },
+  },
+  MuiFormGroup: {
+    styleOverrides: {
+      root: ({ theme }) => ({
+        display: "flex",
+        flexDirection: "column",
+        gap: theme.spacing(1),
+        "&.MuiFormGroup-row": {
+          flexDirection: "column",
+        },
       }),
     },
   },
@@ -247,10 +276,7 @@ export const components: Components<Theme> = {
           backgroundColor: "white",
           borderRadius: "8px",
         },
-        "& .MuiOutlinedInput-input": {
-          // color: theme.palette.primary.main,
-          // fontWeight: 500
-        },
+        "& .MuiOutlinedInput-input": {},
       }),
     },
   },
@@ -261,10 +287,7 @@ export const components: Components<Theme> = {
           backgroundColor: "white",
           borderRadius: "8px",
         },
-        "& .MuiSelect-select": {
-          // color: theme.palette.primary.main,
-          // fontWeight: 500
-        },
+        "& .MuiSelect-select": {},
       }),
     },
   },
@@ -283,10 +306,7 @@ export const components: Components<Theme> = {
           backgroundColor: "white",
           borderRadius: "8px",
         },
-        "& .MuiOutlinedInput-input": {
-          // color: theme.palette.primary.main,
-          // fontWeight: 500
-        },
+        "& .MuiOutlinedInput-input": {},
       }),
     },
   },

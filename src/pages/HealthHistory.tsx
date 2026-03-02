@@ -191,7 +191,6 @@ export default function HealthHistory() {
   });
 
   const onSubmit = (formData: HealthHistoryForm) => {
-    console.log("Health history submitted:", formData);
     setHealthHistory(formData);
     navigate("/preview");
   };

@@ -32,6 +32,7 @@ import {
   ExpandMore,
   GppGoodRounded,
 } from "@mui/icons-material";
+import LocalPoliceRoundedIcon from "@mui/icons-material/LocalPoliceRounded";
 import { COVERAGE_CARDS } from "../constants/getStartedProducts";
 import PageHeader from "../components/layout/PageHeader";
 import FormStepTransition from "../components/layout/FormStepTransition";
@@ -48,12 +49,14 @@ import { formatUSPhone } from "../utils/formatting";
 import {
   ACTIVE_CLIENT_ID,
   getClientBranding,
+  getClientCoverageCategories,
   getClientMembershipQuestion,
 } from "../config/clients";
 import { getProducts } from "../api/client";
 import { COVERAGE_CATEGORY_LABELS } from "../constants/coverage";
 import { TITLE_OPTIONS } from "../constants/eligibility";
 import { useAppData } from "../state/AppDataContext";
+import { commonStyles } from "../theme/commonStyles";
 import type { Product, CoverageCategory, Applicant } from "../types/app";
 
 type CoverageCardView = {
@@ -98,6 +101,10 @@ export default function GetStarted() {
   >(data.eligibility?.isMember);
   const isWaepa = ACTIVE_CLIENT_ID === "waepa";
   const branding = getClientBranding();
+  const clientCoverageCategories = React.useMemo(
+    () => getClientCoverageCategories(),
+    [],
+  );
   const [productCatalog, setProductCatalog] = React.useState<Product[]>([]);
   const [quickQuoteOpen, setQuickQuoteOpen] = React.useState(false);
 
@@ -302,6 +309,30 @@ export default function GetStarted() {
     return cards.length ? cards : defaultCoverageCards;
   }, [productCatalog, defaultCoverageCards, getBrochureUrl]);
 
+  const coverageInfoCards = React.useMemo(
+    () =>
+      coverageCards.filter((card) =>
+        clientCoverageCategories.includes(card.id),
+      ),
+    [clientCoverageCategories, coverageCards],
+  );
+
+  const coverageCategoryLabels = React.useMemo(
+    () =>
+      clientCoverageCategories
+        .map((category) => COVERAGE_CATEGORY_LABELS[category])
+        .filter(Boolean),
+    [clientCoverageCategories],
+  );
+
+  const coverageCategoryText = React.useMemo(
+    () =>
+      coverageCategoryLabels.length > 0
+        ? coverageCategoryLabels.join(", ")
+        : "coverage options available to you",
+    [coverageCategoryLabels],
+  );
+
   const membershipQuestionElement = React.useMemo(() => {
     if (isWaepa) {
       return (
@@ -504,7 +535,96 @@ export default function GetStarted() {
           header={
             <PageHeader
               title="Start your insurance application"
-              notes="This application is for group insurance offered through your association, with coverage options available exclusively to its members."
+              notes={
+                <Stack spacing={2} sx={{ maxWidth: "80ch" }}>
+                  <Typography
+                    color="text.primary"
+                    sx={{ fontWeight: 400, lineHeight: 1.6 }}
+                  >
+                    This application is for
+                    {` ${branding.acronym ?? branding.name}`}-sponsored group
+                    insurance, with coverage options available exclusively to
+                    its members.
+                  </Typography>
+                  <Alert
+                    severity="info"
+                    icon={<LocalPoliceRoundedIcon />}
+                    sx={{ alignItems: "flex-start" }}
+                  >
+                    <Stack spacing={1.5}>
+                      <Typography variant="body2" color="text.primary">
+                        You can apply for the following group insurance:{" "}
+                        {coverageCategoryText}.
+                      </Typography>
+                      <Accordion
+                        disableGutters
+                        elevation={0}
+                        sx={{
+                          bgcolor: "transparent",
+                          boxShadow: "none",
+                          "&:before": { display: "none" },
+                        }}
+                      >
+                        <AccordionSummary
+                          expandIcon={<ExpandMore />}
+                          sx={{
+                            px: 0,
+                            minHeight: "auto",
+                            "& .MuiAccordionSummary-content": { my: 0.5 },
+                          }}
+                        >
+                          <Typography
+                            variant="body2"
+                            fontWeight={600}
+                            color="primary"
+                          >
+                            Learn more about coverage options
+                          </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails sx={{ px: 0, pt: 1.5 }}>
+                          {coverageInfoCards.length > 0 ? (
+                            <Stack spacing={1.5}>
+                              {coverageInfoCards.map((card) => (
+                                <Box key={card.id}>
+                                  <Typography
+                                    variant="caption"
+                                    sx={commonStyles.coverageCategoryLabel}
+                                  >
+                                    {COVERAGE_CATEGORY_LABELS[card.id]}
+                                  </Typography>
+                                  <Stack spacing={0.75}>
+                                    {card.products.map((product) => (
+                                      <MuiLink
+                                        key={product.id}
+                                        href={product.href}
+                                        target="_blank"
+                                        rel="noopener"
+                                        underline="hover"
+                                        color="primary"
+                                        sx={{
+                                          display: "block",
+                                          fontSize: "0.9rem",
+                                        }}
+                                      >
+                                        {product.name}
+                                      </MuiLink>
+                                    ))}
+                                  </Stack>
+                                </Box>
+                              ))}
+                            </Stack>
+                          ) : (
+                            <Typography variant="body2" color="text.secondary">
+                              Coverage details will appear here once products
+                              are available.
+                            </Typography>
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
+                    </Stack>
+                  </Alert>
+                </Stack>
+              }
             />
           }
           navigation={

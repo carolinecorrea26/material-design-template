@@ -29,6 +29,7 @@ import type { Product, CoverageCategory } from "../../types/app";
 import ResumeConfirmationDialog from "./ResumeConfirmationDialog";
 import { useLayout } from "../../state/LayoutContext";
 import { COVERAGE_CARDS } from "../../constants/getStartedProducts";
+import { commonStyles } from "../../theme/commonStyles";
 
 const PAGE_TIME_ESTIMATES: Record<string, number> = {
   "/membership": 2,
@@ -131,9 +132,6 @@ export default function ApplicationSidebar({
 
     return grouped;
   }, [products]);
-
-  console.log("Products:", products);
-  console.log("Products by category:", productsByCategory);
 
   // Filter to application pages only
   const applicationPages = PAGES.filter((p) => {
@@ -427,15 +425,7 @@ export default function ApplicationSidebar({
                     <Box key={category} sx={{ mb: 2 }}>
                       <Typography
                         variant="caption"
-                        sx={{
-                          display: "block",
-                          color: "grey.500",
-                          fontWeight: 600,
-                          mb: 0.5,
-                          textTransform: "uppercase",
-                          fontSize: "0.7rem",
-                          letterSpacing: 1,
-                        }}
+                        sx={commonStyles.coverageCategoryLabel}
                       >
                         {COVERAGE_CATEGORY_LABELS[category]}
                       </Typography>

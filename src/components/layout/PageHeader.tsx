@@ -3,7 +3,6 @@ import { Box, Stack, Typography, Chip } from "@mui/material";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { PAGES } from "../../config/pages";
-import { ParityBreadcrumb } from "../parity";
 import { commonStyles } from "../../theme/commonStyles";
 import { getClientFeatures } from "../../config/clients";
 import { useLayout } from "../../state/LayoutContext";
@@ -21,7 +20,6 @@ interface PageHeaderProps {
   timeEstimate?: number; // in minutes
 }
 
-// Animated icon component with expand and wiggle animation
 const AnimatedIcon: React.FC<{ icon: React.ReactNode }> = ({ icon }) => {
   return (
     <motion.div
@@ -38,15 +36,12 @@ const AnimatedIcon: React.FC<{ icon: React.ReactNode }> = ({ icon }) => {
     >
       <Box
         sx={{
-          // width: { xs: 32, md: 48 },
-          // height: { xs: 32, md: 48 },
           borderRadius: "50%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
           position: "relative",
-          // pt: 0.5
         }}
       >
         {icon}
@@ -71,18 +66,15 @@ export default function PageHeader({
   const h1Ref = React.useRef<HTMLHeadingElement>(null);
 
   React.useEffect(() => {
-    // Move focus to the H1 on route change
     const t = setTimeout(() => h1Ref.current?.focus(), 0);
     return () => clearTimeout(t);
   }, [location.pathname]);
 
-  // Filter pages based on client configuration (same logic as StepperContext)
   const applicationPages = React.useMemo(() => {
     const features = getClientFeatures();
     return PAGES.filter((p) => {
       if (p.section !== "application") return false;
 
-      // Filter out membership page if not enabled for this client
       if (p.path === "/membership" && !features.showMembershipPage) {
         return false;
       }
@@ -94,7 +86,6 @@ export default function PageHeader({
     (p) => p.path === location.pathname,
   );
 
-  // Special handling for sub-pages like health-history (child of profile)
   const effectiveIndex =
     currentIndex >= 0
       ? currentIndex
@@ -104,7 +95,6 @@ export default function PageHeader({
 
   const inAppFlow = effectiveIndex >= 0;
 
-  // In single-page mode, hide the title (it's shown in section header)
   const shouldHideTitle = hideTitle || layoutMode === "single-page";
 
   const timeByPath: Record<string, number> = {
@@ -130,7 +120,6 @@ export default function PageHeader({
       sx={commonStyles.marginBottom3}
       className="page-header"
     >
-      {/* ParityBreadcrumb stepper removed - replaced by ApplicationProgress component */}
       <Stack spacing={2} alignItems={centered ? "center" : "flex-start"}>
         {!shouldHideTitle && (
           <Stack spacing={1} alignItems={centered ? "center" : "flex-start"}>
@@ -178,21 +167,11 @@ export default function PageHeader({
               </Stack>
               {effectiveTimeEstimate !== undefined && (
                 <Chip
-                  icon={
-                    <Schedule
-                    // sx={{ fontSize: "0.875rem", color: "primary.main" }}
-                    />
-                  }
+                  icon={<Schedule />}
                   label={
-                    <Box
-                      component="span"
-                      // sx={{ color: "primary.main", fontWeight: 900 }}
-                    >
-                      {effectiveTimeEstimate} min
-                    </Box>
+                    <Box component="span">{effectiveTimeEstimate} min</Box>
                   }
                   size="small"
-                  // variant="outlined"
                   sx={{
                     bgcolor: "rgb(0 0 0 / 4%)",
                     fontWeight: 600,
@@ -200,7 +179,6 @@ export default function PageHeader({
                     height: "auto",
                     py: 0.5,
                     "& .MuiChip-label": { px: 1 },
-                    // "& .MuiChip-icon": { ml: 0.5, color: "primary.main" },
                   }}
                 />
               )}
@@ -210,19 +188,22 @@ export default function PageHeader({
         {(beforeNotes || notes) && (
           <Stack spacing={1}>
             {beforeNotes}
-            {notes && (
-              <Typography
-                color="text.primary"
-                sx={{
-                  ...commonStyles.maxWidthText,
-                  textAlign: centered ? "center" : "left",
-                  fontWeight: 400,
-                  lineHeight: 1.6,
-                }}
-              >
-                {notes}
-              </Typography>
-            )}
+            {notes &&
+              (typeof notes === "string" ? (
+                <Typography
+                  color="text.primary"
+                  sx={{
+                    ...commonStyles.maxWidthText,
+                    textAlign: centered ? "center" : "left",
+                    fontWeight: 400,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {notes}
+                </Typography>
+              ) : (
+                notes
+              ))}
           </Stack>
         )}
       </Stack>

@@ -13,18 +13,24 @@ import { useAppData } from "../state/AppDataContext";
 const AdvisorLoginSchema = z.discriminatedUnion("appType", [
   z.object({
     appType: z.literal("new"),
-    advisorEmail: z.string().min(1, "Advisor email is required").email("Please enter a valid email address"),
+    advisorEmail: z
+      .string()
+      .min(1, "Advisor email is required")
+      .email("Please enter a valid email address"),
     advisorPhone: z.string().min(1, "Advisor phone number is required"),
     advisorCode: z.string().min(1, "Advisor code is required"),
-    applicantEmail: z.string().optional()
+    applicantEmail: z.string().optional(),
   }),
   z.object({
     appType: z.literal("saved"),
     advisorEmail: z.string().optional(),
     advisorPhone: z.string().optional(),
     advisorCode: z.string().optional(),
-    applicantEmail: z.string().min(1, "Applicant's email is required").email("Please enter a valid email address")
-  })
+    applicantEmail: z
+      .string()
+      .min(1, "Applicant's email is required")
+      .email("Please enter a valid email address"),
+  }),
 ]);
 
 type AdvisorLoginForm = z.infer<typeof AdvisorLoginSchema>;
@@ -40,14 +46,13 @@ export default function AdvisorLogin() {
       advisorEmail: "",
       advisorPhone: "",
       advisorCode: "",
-      applicantEmail: ""
-    }
+      applicantEmail: "",
+    },
   });
 
   const appType = methods.watch("appType");
 
   const onSubmit = (data: AdvisorLoginForm) => {
-    console.log("Advisor login submitted:", data);
     // Set advisor flow flag
     setIsAdvisorFlow(true);
     navigate("/eligibility");
@@ -57,7 +62,7 @@ export default function AdvisorLogin() {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
         <Stack spacing={4} sx={{ maxWidth: 600, mx: "auto", mt: 4 }}>
-          <PageHeader 
+          <PageHeader
             title="Welcome!"
             notes="Start a new application or continue a saved application below."
           />
@@ -70,7 +75,7 @@ export default function AdvisorLogin() {
                   label=""
                   options={[
                     { label: "New App", value: "new" },
-                    { label: "Saved App", value: "saved" }
+                    { label: "Saved App", value: "saved" },
                   ]}
                   row
                 />

@@ -101,7 +101,6 @@ export default function Membership() {
   }, [methods]);
 
   const onSubmit = (formData: MembershipForm) => {
-    console.log("Membership submitted:", formData);
     setMembership(formData);
     markComplete();
     navigate("/eligibility");
@@ -158,7 +157,10 @@ export default function Membership() {
               <Card sx={commonStyles.categoryCard}>
                 <CardContent>
                   <Stack spacing={3}>
-                    <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                    <Typography
+                      variant="h5"
+                      sx={commonStyles.sectionHeadingText}
+                    >
                       Membership Form
                     </Typography>
 

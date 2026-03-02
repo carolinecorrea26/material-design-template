@@ -92,6 +92,10 @@ export const commonStyles = {
 
   sectionTitle: {} as SxProps<Theme>,
 
+  sectionHeadingText: {
+    fontWeight: 600,
+  } as SxProps<Theme>,
+
   // Step number circle for landing page
   stepNumberCircle: {
     width: 40,
@@ -161,6 +165,14 @@ export const commonStyles = {
     p: 2,
   } as SxProps<Theme>,
 
+  infoPanel: {
+    border: 1,
+    borderColor: "divider",
+    borderRadius: 1,
+    p: { xs: 2, sm: 3 },
+    bgcolor: "background.default",
+  } as SxProps<Theme>,
+
   coverageCard: {
     mb: 2,
   } as SxProps<Theme>,
@@ -217,9 +229,8 @@ export const commonStyles = {
   // ==========================================
 
   footer: {
-    // mt: 6,
     py: 4,
-    bgcolor: "#1a1a1a",
+    bgcolor: "#001432",
     color: "#ffffff",
     borderTop: 1,
     borderColor: "divider",
@@ -334,6 +345,16 @@ export const commonStyles = {
   formLabel: {
     mb: 1,
     display: "block",
+  } as SxProps<Theme>,
+
+  coverageCategoryLabel: {
+    display: "block",
+    color: "text.secondary",
+    fontWeight: 700,
+    letterSpacing: 1,
+    textTransform: "uppercase",
+    fontSize: "0.7rem",
+    mb: 0.5,
   } as SxProps<Theme>,
 
   // Field label style for non-floating labels

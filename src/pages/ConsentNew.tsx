@@ -5,8 +5,6 @@ import {
   Card,
   CardContent,
   Box,
-  FormControlLabel,
-  Checkbox,
   TextField,
   IconButton,
   Alert,
@@ -20,6 +18,7 @@ import { useAppData } from "../state/AppDataContext";
 import { useStepper } from "../state/StepperContext";
 import { useNavigate } from "react-router-dom";
 import { commonStyles } from "../theme/commonStyles";
+import CheckboxField from "../components/form/CheckboxField";
 
 export default function ConsentNew() {
   const { data, setConsent } = useAppData();
@@ -147,15 +146,7 @@ export default function ConsentNew() {
                 </IconButton>
               </Box>
 
-              <Box
-                sx={{
-                  border: 1,
-                  borderColor: "divider",
-                  borderRadius: 1,
-                  p: { xs: 2, sm: 3 },
-                  bgcolor: "background.default",
-                }}
-              >
+              <Box sx={commonStyles.infoPanel}>
                 <Stack spacing={2}>
                   <Typography variant="h6" paragraph>
                     Please read carefully the statements below.
@@ -204,7 +195,7 @@ export default function ConsentNew() {
                   justifyContent: "space-between",
                 }}
               >
-                <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                <Typography variant="h5" sx={commonStyles.sectionHeadingText}>
                   Electronic Consent
                 </Typography>
                 <IconButton
@@ -218,13 +209,9 @@ export default function ConsentNew() {
 
               <Box
                 sx={{
+                  ...commonStyles.infoPanel,
                   maxHeight: "400px",
                   overflowY: "auto",
-                  border: 1,
-                  borderColor: "divider",
-                  borderRadius: 1,
-                  p: { xs: 2, sm: 3 },
-                  bgcolor: "background.default",
                 }}
               >
                 <Stack spacing={3}>
@@ -236,13 +223,9 @@ export default function ConsentNew() {
                 </Stack>
               </Box>
 
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={electronicConsent}
-                    onChange={(e) => setElectronicConsent(e.target.checked)}
-                  />
-                }
+              <CheckboxField
+                checked={electronicConsent}
+                onChange={setElectronicConsent}
                 label={
                   <Typography variant="body2" component="span">
                     I consent to electronic delivery and signature.
@@ -260,18 +243,12 @@ export default function ConsentNew() {
           <Card sx={commonStyles.categoryCard}>
             <CardContent>
               <Stack spacing={2}>
-                <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                <Typography variant="h5" sx={commonStyles.sectionHeadingText}>
                   Spouse Authorization
                 </Typography>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={spouseElectronicConsent}
-                      onChange={(e) =>
-                        setSpouseElectronicConsent(e.target.checked)
-                      }
-                    />
-                  }
+                <CheckboxField
+                  checked={spouseElectronicConsent}
+                  onChange={setSpouseElectronicConsent}
                   label={
                     <Typography variant="body2" component="span">
                       I consent to electronic delivery and signature for my
@@ -290,20 +267,16 @@ export default function ConsentNew() {
         <Card sx={commonStyles.categoryCard}>
           <CardContent>
             <Stack spacing={2}>
-              <Typography variant="h5" sx={{ fontWeight: 600 }}>
+              <Typography variant="h5" sx={commonStyles.sectionHeadingText}>
                 Assignment of Dividends to ABE
               </Typography>
               <Typography variant="body2" paragraph>
                 I understand and agree to the Assignment of Dividends to ABE as
                 described above.
               </Typography>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={dividendsConsent}
-                    onChange={(e) => setDividendsConsent(e.target.checked)}
-                  />
-                }
+              <CheckboxField
+                checked={dividendsConsent}
+                onChange={setDividendsConsent}
                 label={
                   <Typography variant="body2" component="span">
                     I agree to the Assignment of Dividends.
@@ -320,7 +293,7 @@ export default function ConsentNew() {
         <Card sx={commonStyles.categoryCard}>
           <CardContent>
             <Stack spacing={2}>
-              <Typography variant="h5" sx={{ fontWeight: 600 }}>
+              <Typography variant="h5" sx={commonStyles.sectionHeadingText}>
                 Signature
               </Typography>
 

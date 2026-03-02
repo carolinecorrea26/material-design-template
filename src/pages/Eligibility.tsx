@@ -522,9 +522,9 @@ export default function Eligibility() {
                   />
                   <Stack spacing={1}>
                     <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                      Optional dependent coverage:
+                      Dependent coverage (optional):
                     </Typography>
-                    <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                    <Stack spacing={1}>
                       <RHFCheckbox
                         name="applicants.spouse"
                         label="Spouse Coverage"

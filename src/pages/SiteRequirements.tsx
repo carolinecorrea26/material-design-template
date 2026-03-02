@@ -13,7 +13,7 @@ import {
   MenuItem,
   Divider,
   Alert,
-  Chip
+  Chip,
 } from "@mui/material";
 import { FormProvider, useForm } from "react-hook-form";
 import RHFTextField from "../components/form/RHFTextField";
@@ -26,7 +26,7 @@ interface SiteRequirementsForm {
   clientName: string;
   clientAcronym: string;
   themeColor: string;
-  
+
   // Features
   showPartnerLogo: boolean;
   showRatingBadges: boolean;
@@ -34,24 +34,24 @@ interface SiteRequirementsForm {
   enableLifeInsurance: boolean;
   showCoverageDetails: boolean;
   showMembershipPage: boolean;
-  
+
   // Coverage Categories
   coverageLI: boolean;
   coverageDI: boolean;
   coverageOO: boolean;
   coverageSH: boolean;
-  
+
   // Products File
   productsFile: string;
-  
+
   // Contact Info
   phone: string;
   phoneDisplay: string;
-  
+
   // Branding
   heroTitle: string;
   heroSubtitle: string;
-  
+
   // Membership Questions
   membershipPrimaryQuestion: string;
   membershipSpouseQuestion: string;
@@ -81,8 +81,8 @@ export default function SiteRequirements() {
       heroSubtitle: "",
       membershipPrimaryQuestion: "",
       membershipSpouseQuestion: "",
-      membershipType: "radio"
-    }
+      membershipType: "radio",
+    },
   });
 
   const { watch } = methods;
@@ -123,11 +123,15 @@ export default function SiteRequirements() {
       state: 'State',
       nicotineUse: 'Do you use tobacco products?',
     },
-    ${showMembershipPage ? `membershipQuestion: {
+    ${
+      showMembershipPage
+        ? `membershipQuestion: {
       primaryQuestion: '${data.membershipPrimaryQuestion}',
       spouseQuestion: '${data.membershipSpouseQuestion}',
       type: '${data.membershipType}',
-    },` : ''}
+    },`
+        : ""
+    }
     features: {
       showPartnerLogo: ${data.showPartnerLogo},
       showRatingBadges: ${data.showRatingBadges},
@@ -137,17 +141,15 @@ export default function SiteRequirements() {
       showMembershipPage: ${data.showMembershipPage},
     },
     productsFile: '${data.productsFile}',
-    coverageCategories: [${coverageCategories.join(', ')}],
+    coverageCategories: [${coverageCategories.join(", ")}],
   },`;
 
-    console.log("Generated Client Configuration:");
-    console.log(config);
-    alert("Configuration generated! Check the console for the output.");
+    alert("Configuration generated.");
   };
 
-  const themeColorOptions = Object.keys(THEME_COLORS).map(color => ({
+  const themeColorOptions = Object.keys(THEME_COLORS).map((color) => ({
     label: color.charAt(0).toUpperCase() + color.slice(1),
-    value: color
+    value: color,
   }));
 
   return (
@@ -158,7 +160,8 @@ export default function SiteRequirements() {
             Site Requirements & Configuration
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Internal form to create a new client site configuration. Fill out all fields to generate the configuration code.
+            Internal form to create a new client site configuration. Fill out
+            all fields to generate the configuration code.
           </Typography>
         </Box>
 
@@ -168,7 +171,11 @@ export default function SiteRequirements() {
               {/* Basic Information */}
               <Card>
                 <CardContent>
-                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    sx={{ fontWeight: 600 }}
+                  >
                     Basic Information
                   </Typography>
                   <Stack spacing={3} sx={{ mt: 2 }}>
@@ -197,7 +204,11 @@ export default function SiteRequirements() {
               {/* Contact Information */}
               <Card>
                 <CardContent>
-                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    sx={{ fontWeight: 600 }}
+                  >
                     Contact Information
                   </Typography>
                   <Stack spacing={3} sx={{ mt: 2 }}>
@@ -220,7 +231,11 @@ export default function SiteRequirements() {
               {/* Branding */}
               <Card>
                 <CardContent>
-                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    sx={{ fontWeight: 600 }}
+                  >
                     Branding & Content
                   </Typography>
                   <Stack spacing={3} sx={{ mt: 2 }}>
@@ -247,7 +262,11 @@ export default function SiteRequirements() {
               {/* Features */}
               <Card>
                 <CardContent>
-                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    sx={{ fontWeight: 600 }}
+                  >
                     Features
                   </Typography>
                   <Stack spacing={2} sx={{ mt: 2 }}>
@@ -283,7 +302,11 @@ export default function SiteRequirements() {
               {showMembershipPage && (
                 <Card>
                   <CardContent>
-                    <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                    <Typography
+                      variant="h5"
+                      gutterBottom
+                      sx={{ fontWeight: 600 }}
+                    >
                       Membership Questions
                     </Typography>
                     <Stack spacing={3} sx={{ mt: 2 }}>
@@ -304,7 +327,7 @@ export default function SiteRequirements() {
                         label="Question Type"
                         options={[
                           { label: "Radio Buttons (Yes/No)", value: "radio" },
-                          { label: "Checkbox", value: "checkbox" }
+                          { label: "Checkbox", value: "checkbox" },
                         ]}
                         required
                       />
@@ -316,11 +339,20 @@ export default function SiteRequirements() {
               {/* Coverage Categories */}
               <Card>
                 <CardContent>
-                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    sx={{ fontWeight: 600 }}
+                  >
                     Coverage Categories
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    Select which coverage categories are available for this client
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 2 }}
+                  >
+                    Select which coverage categories are available for this
+                    client
                   </Typography>
                   <Stack spacing={2}>
                     <RHFCheckbox
@@ -346,7 +378,11 @@ export default function SiteRequirements() {
               {/* Products Configuration */}
               <Card>
                 <CardContent>
-                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    sx={{ fontWeight: 600 }}
+                  >
                     Products Configuration
                   </Typography>
                   <Stack spacing={3} sx={{ mt: 2 }}>
@@ -357,19 +393,23 @@ export default function SiteRequirements() {
                         { label: "Standard Products", value: "products" },
                         { label: "Demo Products", value: "products-demo" },
                         { label: "NAR Products", value: "products-nar" },
-                        { label: "Custom (create new file)", value: "products-custom" }
+                        {
+                          label: "Custom (create new file)",
+                          value: "products-custom",
+                        },
                       ]}
                       required
                     />
                     <Alert severity="info">
-                      If you select "Custom", you'll need to create a new products JSON file in the data/fixtures directory.
+                      If you select "Custom", you'll need to create a new
+                      products JSON file in the data/fixtures directory.
                     </Alert>
                   </Stack>
                 </CardContent>
               </Card>
 
               {/* Submit Button */}
-              <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+              <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
                 <Button
                   type="button"
                   variant="outlined"
@@ -378,17 +418,17 @@ export default function SiteRequirements() {
                 >
                   Reset Form
                 </Button>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  size="large"
-                >
+                <Button type="submit" variant="contained" size="large">
                   Generate Configuration
                 </Button>
               </Box>
 
               <Alert severity="warning">
-                <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
+                <Typography
+                  variant="body2"
+                  sx={{ fontWeight: 600 }}
+                  gutterBottom
+                >
                   Next Steps After Generation:
                 </Typography>
                 <Typography variant="body2" component="div">
@@ -396,7 +436,8 @@ export default function SiteRequirements() {
                   <br />
                   2. Add it to src/config/clients.ts in the CLIENTS object
                   <br />
-                  3. Create the required brand assets in public/brand/[acronym]/ directory
+                  3. Create the required brand assets in public/brand/[acronym]/
+                  directory
                   <br />
                   4. If using custom products, create the products JSON file
                   <br />

@@ -4,8 +4,6 @@ import {
   Typography,
   Alert,
   Box,
-  Checkbox,
-  FormControlLabel,
   Card,
   CardContent,
   TextField,
@@ -19,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import RHFTextField from "../components/form/RHFTextField";
 import RHFRadioGroup from "../components/form/RHFRadioGroup";
 import RHFSelect from "../components/form/RHFSelect";
+import CheckboxField from "../components/form/CheckboxField";
 import { ContactSchema, type ContactForm } from "../validation/contact";
 import { useAppData, enableAutosave } from "../state/AppDataContext";
 import { useStepper } from "../state/StepperContext";
@@ -363,19 +362,13 @@ export default function Contact() {
                                   required
                                 />
 
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox
-                                      checked={
-                                        businessAddressSameAsHome || false
-                                      }
-                                      onChange={(e) =>
-                                        methods.setValue(
-                                          "businessAddressSameAsHome",
-                                          e.target.checked,
-                                        )
-                                      }
-                                    />
+                                <CheckboxField
+                                  checked={businessAddressSameAsHome || false}
+                                  onChange={(value) =>
+                                    methods.setValue(
+                                      "businessAddressSameAsHome",
+                                      value,
+                                    )
                                   }
                                   label="Business address is the same as home address"
                                 />
