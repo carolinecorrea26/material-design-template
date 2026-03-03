@@ -147,6 +147,15 @@ export const commonStyles = {
     mb: 1,
   } as SxProps<Theme>,
 
+  overlineLabel: {
+    display: "block",
+    fontWeight: 700,
+    fontSize: "0.7rem",
+    color: "text.secondary",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+  } as SxProps<Theme>,
+
   // ==========================================
   // CARD & CONTAINER UTILITIES
   // ==========================================
@@ -163,6 +172,12 @@ export const commonStyles = {
     borderColor: "divider",
     borderRadius: 2,
     p: 2,
+  } as SxProps<Theme>,
+
+  mutedSectionPanel: {
+    p: 2,
+    borderRadius: 1,
+    bgcolor: "rgb(169 173 184 / 10%)",
   } as SxProps<Theme>,
 
   infoPanel: {

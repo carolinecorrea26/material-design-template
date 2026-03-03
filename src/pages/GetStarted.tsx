@@ -543,12 +543,9 @@ export default function GetStarted() {
                     This application is for
                     {` ${branding.acronym ?? branding.name}`}-sponsored group
                     insurance, with coverage options available exclusively to
-                    its members.
+                    its members. It typically takes ~20 minutes to complete.
                   </Typography>
-                  <Alert
-                    severity="info"
-                    sx={{ alignItems: "flex-start" }}
-                  >
+                  <Alert severity="info" sx={{ alignItems: "flex-start" }}>
                     <Stack spacing={1.5}>
                       <Typography variant="body2" color="text.primary">
                         You can apply for the following group insurance:{" "}
@@ -574,9 +571,9 @@ export default function GetStarted() {
                           <Typography
                             variant="body2"
                             fontWeight={600}
-                            color="primary"
+                            // color="primary"
                           >
-                            Learn more about coverage options
+                            Learn more about coverage
                           </Typography>
                         </AccordionSummary>
                         <AccordionDetails sx={{ px: 0, pt: 1.5 }}>

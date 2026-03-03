@@ -22,6 +22,7 @@ import {
   Add as AddIcon,
   InventoryOutlined,
   CheckCircle,
+  RemoveCircleRounded,
 } from "@mui/icons-material";
 import PageHeader from "../components/layout/PageHeader";
 import FormStepTransition from "../components/layout/FormStepTransition";
@@ -522,7 +523,7 @@ export default function Eligibility() {
                   />
                   <Stack spacing={1}>
                     <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                      Dependent coverage (optional):
+                      Would you like to add dependent coverage?
                     </Typography>
                     <Stack spacing={1}>
                       <RHFCheckbox
@@ -798,15 +799,7 @@ export default function Eligibility() {
 
                     <Stack spacing={3}>
                       {childrenValues.map((_, index) => (
-                        <Box
-                          key={index}
-                          sx={{
-                            p: 2,
-                            border: 1,
-                            borderColor: "divider",
-                            borderRadius: 1,
-                          }}
-                        >
+                        <Box key={index} sx={commonStyles.mutedSectionPanel}>
                           <Stack spacing={2}>
                             <Stack
                               direction="row"
@@ -814,15 +807,16 @@ export default function Eligibility() {
                               alignItems="center"
                             >
                               <Typography
-                                variant="subtitle1"
-                                sx={commonStyles.subsectionHeadingBold}
+                                variant="overline"
+                                sx={commonStyles.overlineLabel}
                               >
-                                Child Information
+                                About Child
                               </Typography>
                               {childrenValues.length > 1 && (
                                 <Button
                                   size="small"
                                   color="error"
+                                  startIcon={<RemoveCircleRounded />}
                                   onClick={() => {
                                     const currentChildren =
                                       methods.getValues("children") ?? [];

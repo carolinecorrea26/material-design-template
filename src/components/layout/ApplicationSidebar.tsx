@@ -337,14 +337,7 @@ export default function ApplicationSidebar({
       <Box>
         <Typography
           variant="overline"
-          sx={{
-            display: "block",
-            mb: 2,
-            fontWeight: 700,
-            fontSize: "0.7rem",
-            color: "text.secondary",
-            letterSpacing: 1,
-          }}
+          sx={{ ...commonStyles.overlineLabel, mb: 2 }}
         >
           GET HELP
         </Typography>
