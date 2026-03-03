@@ -1,20 +1,34 @@
 import * as React from "react";
 import {
-  Box, Container, Stack, Typography, Card, CardContent, TextField, Button,
-  FormControl, InputLabel, Select, MenuItem, FormControlLabel, Checkbox,
-  Divider, Alert, Chip
+  Box,
+  Container,
+  Stack,
+  Typography,
+  Card,
+  CardContent,
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControlLabel,
+  Checkbox,
+  Divider,
+  Alert,
+  Chip,
 } from "@mui/material";
-import { THEME_COLORS } from "../config/themeColors";
+import { THEME_COLORS } from "../../config/themeColors";
 
 interface ClientSetupForm {
   // Basic Info
   id: string;
   name: string;
   acronym: string;
-  
+
   // Theme
   colorName: keyof typeof THEME_COLORS;
-  
+
   // Branding
   logoPath: string;
   partnerLogoPath: string;
@@ -23,11 +37,11 @@ interface ClientSetupForm {
   heroSubtitle: string;
   phone: string;
   phoneDisplay: string;
-  
+
   // Products & Coverage
   productsFile: string;
-  coverageCategories: Array<'LI' | 'DI' | 'OO' | 'SH'>;
-  
+  coverageCategories: Array<"LI" | "AD" | "DI" | "OO" | "SH">;
+
   // Features
   showPartnerLogo: boolean;
   showRatingBadges: boolean;
@@ -35,42 +49,43 @@ interface ClientSetupForm {
   enableLifeInsurance: boolean;
   showCoverageDetails: boolean;
   showMembershipPage: boolean;
-  
+
   // Field Labels
   dateOfBirthLabel: string;
   genderLabel: string;
   stateLabel: string;
   nicotineUseLabel: string;
-  
+
   // Membership Question
   membershipPrimaryQuestion: string;
   membershipSpouseQuestion: string;
-  membershipType: 'radio' | 'checkbox';
+  membershipType: "radio" | "checkbox";
 }
 
 export default function ClientSetup() {
   const [formData, setFormData] = React.useState<ClientSetupForm>({
     // Basic Info
-    id: '',
-    name: '',
-    acronym: '',
-    
+    id: "",
+    name: "",
+    acronym: "",
+
     // Theme
-    colorName: 'blue',
-    
+    colorName: "blue",
+
     // Branding
-    logoPath: '/brand/default/logo.png',
-    partnerLogoPath: '/brand/nyl/logo.png',
-    heroImagePath: '/brand/default/hero.png',
-    heroTitle: 'Protect what matters most.',
-    heroSubtitle: 'Life and disability insurance coverage for you and your family.',
-    phone: '',
-    phoneDisplay: '',
-    
+    logoPath: "/brand/default/logo.png",
+    partnerLogoPath: "/brand/nyl/logo.png",
+    heroImagePath: "/brand/default/hero.png",
+    heroTitle: "Protect what matters most.",
+    heroSubtitle:
+      "Life and disability insurance coverage for you and your family.",
+    phone: "",
+    phoneDisplay: "",
+
     // Products & Coverage
-    productsFile: 'products',
-    coverageCategories: ['LI', 'DI', 'OO', 'SH'],
-    
+    productsFile: "products",
+    coverageCategories: ["LI", "AD", "DI", "OO", "SH"],
+
     // Features
     showPartnerLogo: true,
     showRatingBadges: true,
@@ -78,31 +93,31 @@ export default function ClientSetup() {
     enableLifeInsurance: true,
     showCoverageDetails: true,
     showMembershipPage: false,
-    
+
     // Field Labels
-    dateOfBirthLabel: 'Birthday',
-    genderLabel: 'Gender',
-    stateLabel: 'State',
-    nicotineUseLabel: 'Do you use tobacco products?',
-    
+    dateOfBirthLabel: "Birthday",
+    genderLabel: "Gender",
+    stateLabel: "State",
+    nicotineUseLabel: "Do you use tobacco products?",
+
     // Membership Question
-    membershipPrimaryQuestion: 'Are you an active member?',
-    membershipSpouseQuestion: 'Is your spouse an active member?',
-    membershipType: 'radio'
+    membershipPrimaryQuestion: "Are you an active member?",
+    membershipSpouseQuestion: "Is your spouse an active member?",
+    membershipType: "radio",
   });
 
-  const [generatedConfig, setGeneratedConfig] = React.useState<string>('');
+  const [generatedConfig, setGeneratedConfig] = React.useState<string>("");
 
   const handleInputChange = (field: keyof ClientSetupForm, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleCoverageToggle = (category: 'LI' | 'DI' | 'OO' | 'SH') => {
-    setFormData(prev => ({
+  const handleCoverageToggle = (category: "LI" | "AD" | "DI" | "OO" | "SH") => {
+    setFormData((prev) => ({
       ...prev,
       coverageCategories: prev.coverageCategories.includes(category)
-        ? prev.coverageCategories.filter(c => c !== category)
-        : [...prev.coverageCategories, category]
+        ? prev.coverageCategories.filter((c) => c !== category)
+        : [...prev.coverageCategories, category],
     }));
   };
 
@@ -147,9 +162,9 @@ export default function ClientSetup() {
     showMembershipPage: ${formData.showMembershipPage},
   },
   productsFile: '${formData.productsFile}',
-  coverageCategories: [${formData.coverageCategories.map(c => `'${c}'`).join(', ')}],
+  coverageCategories: [${formData.coverageCategories.map((c) => `'${c}'`).join(", ")}],
 }`;
-    
+
     setGeneratedConfig(config);
   };
 
@@ -166,35 +181,40 @@ export default function ClientSetup() {
             Client Site Setup
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Configure a new client site with custom branding, features, and coverage options.
+            Configure a new client site with custom branding, features, and
+            coverage options.
           </Typography>
         </Box>
 
         {/* Basic Information */}
         <Card>
           <CardContent>
-            <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+            <Typography
+              variant="h5"
+              gutterBottom
+              sx={{ fontWeight: 600, mb: 3 }}
+            >
               Basic Information
             </Typography>
             <Stack spacing={3}>
               <TextField
                 label="Client ID"
                 value={formData.id}
-                onChange={(e) => handleInputChange('id', e.target.value)}
+                onChange={(e) => handleInputChange("id", e.target.value)}
                 fullWidth
                 helperText="Lowercase, no spaces (e.g., 'nar', 'abe')"
               />
               <TextField
                 label="Client Name"
                 value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
+                onChange={(e) => handleInputChange("name", e.target.value)}
                 fullWidth
                 helperText="Full organization name"
               />
               <TextField
                 label="Acronym"
                 value={formData.acronym}
-                onChange={(e) => handleInputChange('acronym', e.target.value)}
+                onChange={(e) => handleInputChange("acronym", e.target.value)}
                 fullWidth
                 helperText="Short abbreviation"
               />
@@ -205,30 +225,38 @@ export default function ClientSetup() {
         {/* Theme */}
         <Card>
           <CardContent>
-            <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+            <Typography
+              variant="h5"
+              gutterBottom
+              sx={{ fontWeight: 600, mb: 3 }}
+            >
               Theme
             </Typography>
             <FormControl fullWidth>
               <InputLabel>Color Theme</InputLabel>
               <Select
                 value={formData.colorName}
-                onChange={(e) => handleInputChange('colorName', e.target.value)}
+                onChange={(e) => handleInputChange("colorName", e.target.value)}
                 label="Color Theme"
               >
                 {Object.keys(THEME_COLORS).map((color) => (
                   <MenuItem key={color} value={color}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                       <Box
                         sx={{
                           width: 24,
                           height: 24,
-                          borderRadius: '50%',
-                          bgcolor: THEME_COLORS[color as keyof typeof THEME_COLORS].primary.main,
+                          borderRadius: "50%",
+                          bgcolor:
+                            THEME_COLORS[color as keyof typeof THEME_COLORS]
+                              .primary.main,
                           border: 1,
-                          borderColor: 'divider'
+                          borderColor: "divider",
                         }}
                       />
-                      <Typography sx={{ textTransform: 'capitalize' }}>{color}</Typography>
+                      <Typography sx={{ textTransform: "capitalize" }}>
+                        {color}
+                      </Typography>
                     </Box>
                   </MenuItem>
                 ))}
@@ -240,32 +268,40 @@ export default function ClientSetup() {
         {/* Branding */}
         <Card>
           <CardContent>
-            <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+            <Typography
+              variant="h5"
+              gutterBottom
+              sx={{ fontWeight: 600, mb: 3 }}
+            >
               Branding
             </Typography>
             <Stack spacing={3}>
               <TextField
                 label="Logo Path"
                 value={formData.logoPath}
-                onChange={(e) => handleInputChange('logoPath', e.target.value)}
+                onChange={(e) => handleInputChange("logoPath", e.target.value)}
                 fullWidth
               />
               <TextField
                 label="Partner Logo Path"
                 value={formData.partnerLogoPath}
-                onChange={(e) => handleInputChange('partnerLogoPath', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("partnerLogoPath", e.target.value)
+                }
                 fullWidth
               />
               <TextField
                 label="Hero Image Path"
                 value={formData.heroImagePath}
-                onChange={(e) => handleInputChange('heroImagePath', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("heroImagePath", e.target.value)
+                }
                 fullWidth
               />
               <TextField
                 label="Hero Title"
                 value={formData.heroTitle}
-                onChange={(e) => handleInputChange('heroTitle', e.target.value)}
+                onChange={(e) => handleInputChange("heroTitle", e.target.value)}
                 fullWidth
                 multiline
                 rows={2}
@@ -273,7 +309,9 @@ export default function ClientSetup() {
               <TextField
                 label="Hero Subtitle"
                 value={formData.heroSubtitle}
-                onChange={(e) => handleInputChange('heroSubtitle', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("heroSubtitle", e.target.value)
+                }
                 fullWidth
                 multiline
                 rows={3}
@@ -281,14 +319,16 @@ export default function ClientSetup() {
               <TextField
                 label="Phone Number"
                 value={formData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
+                onChange={(e) => handleInputChange("phone", e.target.value)}
                 fullWidth
                 helperText="Numbers only, no formatting"
               />
               <TextField
                 label="Phone Display"
                 value={formData.phoneDisplay}
-                onChange={(e) => handleInputChange('phoneDisplay', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("phoneDisplay", e.target.value)
+                }
                 fullWidth
                 helperText="Formatted display (e.g., '(800) 555-1234')"
               />
@@ -299,7 +339,11 @@ export default function ClientSetup() {
         {/* Products & Coverage */}
         <Card>
           <CardContent>
-            <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+            <Typography
+              variant="h5"
+              gutterBottom
+              sx={{ fontWeight: 600, mb: 3 }}
+            >
               Products & Coverage
             </Typography>
             <Stack spacing={3}>
@@ -307,7 +351,9 @@ export default function ClientSetup() {
                 <InputLabel>Products File</InputLabel>
                 <Select
                   value={formData.productsFile}
-                  onChange={(e) => handleInputChange('productsFile', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("productsFile", e.target.value)
+                  }
                   label="Products File"
                 >
                   <MenuItem value="products">Standard Products</MenuItem>
@@ -315,19 +361,31 @@ export default function ClientSetup() {
                   <MenuItem value="products-nar">NAR Products</MenuItem>
                 </Select>
               </FormControl>
-              
+
               <Box>
-                <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 600 }}>
+                <Typography
+                  variant="subtitle1"
+                  gutterBottom
+                  sx={{ fontWeight: 600 }}
+                >
                   Coverage Categories
                 </Typography>
                 <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-                  {(['LI', 'DI', 'OO', 'SH'] as const).map((category) => (
+                  {(["LI", "AD", "DI", "OO", "SH"] as const).map((category) => (
                     <Chip
                       key={category}
                       label={category}
                       onClick={() => handleCoverageToggle(category)}
-                      color={formData.coverageCategories.includes(category) ? 'primary' : 'default'}
-                      variant={formData.coverageCategories.includes(category) ? 'filled' : 'outlined'}
+                      color={
+                        formData.coverageCategories.includes(category)
+                          ? "primary"
+                          : "default"
+                      }
+                      variant={
+                        formData.coverageCategories.includes(category)
+                          ? "filled"
+                          : "outlined"
+                      }
                     />
                   ))}
                 </Stack>
@@ -339,7 +397,11 @@ export default function ClientSetup() {
         {/* Features */}
         <Card>
           <CardContent>
-            <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+            <Typography
+              variant="h5"
+              gutterBottom
+              sx={{ fontWeight: 600, mb: 3 }}
+            >
               Features
             </Typography>
             <Stack spacing={2}>
@@ -347,7 +409,9 @@ export default function ClientSetup() {
                 control={
                   <Checkbox
                     checked={formData.showPartnerLogo}
-                    onChange={(e) => handleInputChange('showPartnerLogo', e.target.checked)}
+                    onChange={(e) =>
+                      handleInputChange("showPartnerLogo", e.target.checked)
+                    }
                   />
                 }
                 label="Show Partner Logo (New York Life)"
@@ -356,7 +420,9 @@ export default function ClientSetup() {
                 control={
                   <Checkbox
                     checked={formData.showRatingBadges}
-                    onChange={(e) => handleInputChange('showRatingBadges', e.target.checked)}
+                    onChange={(e) =>
+                      handleInputChange("showRatingBadges", e.target.checked)
+                    }
                   />
                 }
                 label="Show Rating Badges"
@@ -365,7 +431,12 @@ export default function ClientSetup() {
                 control={
                   <Checkbox
                     checked={formData.enableDisabilityInsurance}
-                    onChange={(e) => handleInputChange('enableDisabilityInsurance', e.target.checked)}
+                    onChange={(e) =>
+                      handleInputChange(
+                        "enableDisabilityInsurance",
+                        e.target.checked,
+                      )
+                    }
                   />
                 }
                 label="Enable Disability Insurance"
@@ -374,7 +445,9 @@ export default function ClientSetup() {
                 control={
                   <Checkbox
                     checked={formData.enableLifeInsurance}
-                    onChange={(e) => handleInputChange('enableLifeInsurance', e.target.checked)}
+                    onChange={(e) =>
+                      handleInputChange("enableLifeInsurance", e.target.checked)
+                    }
                   />
                 }
                 label="Enable Life Insurance"
@@ -383,7 +456,9 @@ export default function ClientSetup() {
                 control={
                   <Checkbox
                     checked={formData.showCoverageDetails}
-                    onChange={(e) => handleInputChange('showCoverageDetails', e.target.checked)}
+                    onChange={(e) =>
+                      handleInputChange("showCoverageDetails", e.target.checked)
+                    }
                   />
                 }
                 label="Show Coverage Details Dropdown"
@@ -392,7 +467,9 @@ export default function ClientSetup() {
                 control={
                   <Checkbox
                     checked={formData.showMembershipPage}
-                    onChange={(e) => handleInputChange('showMembershipPage', e.target.checked)}
+                    onChange={(e) =>
+                      handleInputChange("showMembershipPage", e.target.checked)
+                    }
                   />
                 }
                 label="Show Membership Page"
@@ -404,32 +481,44 @@ export default function ClientSetup() {
         {/* Field Labels */}
         <Card>
           <CardContent>
-            <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+            <Typography
+              variant="h5"
+              gutterBottom
+              sx={{ fontWeight: 600, mb: 3 }}
+            >
               Field Labels
             </Typography>
             <Stack spacing={3}>
               <TextField
                 label="Date of Birth Label"
                 value={formData.dateOfBirthLabel}
-                onChange={(e) => handleInputChange('dateOfBirthLabel', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("dateOfBirthLabel", e.target.value)
+                }
                 fullWidth
               />
               <TextField
                 label="Gender Label"
                 value={formData.genderLabel}
-                onChange={(e) => handleInputChange('genderLabel', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("genderLabel", e.target.value)
+                }
                 fullWidth
               />
               <TextField
                 label="State Label"
                 value={formData.stateLabel}
-                onChange={(e) => handleInputChange('stateLabel', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("stateLabel", e.target.value)
+                }
                 fullWidth
               />
               <TextField
                 label="Nicotine Use Label"
                 value={formData.nicotineUseLabel}
-                onChange={(e) => handleInputChange('nicotineUseLabel', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("nicotineUseLabel", e.target.value)
+                }
                 fullWidth
               />
             </Stack>
@@ -439,14 +528,20 @@ export default function ClientSetup() {
         {/* Membership Question */}
         <Card>
           <CardContent>
-            <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+            <Typography
+              variant="h5"
+              gutterBottom
+              sx={{ fontWeight: 600, mb: 3 }}
+            >
               Membership Question
             </Typography>
             <Stack spacing={3}>
               <TextField
                 label="Primary Question"
                 value={formData.membershipPrimaryQuestion}
-                onChange={(e) => handleInputChange('membershipPrimaryQuestion', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("membershipPrimaryQuestion", e.target.value)
+                }
                 fullWidth
                 multiline
                 rows={2}
@@ -454,7 +549,9 @@ export default function ClientSetup() {
               <TextField
                 label="Spouse Question"
                 value={formData.membershipSpouseQuestion}
-                onChange={(e) => handleInputChange('membershipSpouseQuestion', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("membershipSpouseQuestion", e.target.value)
+                }
                 fullWidth
                 multiline
                 rows={2}
@@ -463,7 +560,9 @@ export default function ClientSetup() {
                 <InputLabel>Question Type</InputLabel>
                 <Select
                   value={formData.membershipType}
-                  onChange={(e) => handleInputChange('membershipType', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("membershipType", e.target.value)
+                  }
                   label="Question Type"
                 >
                   <MenuItem value="radio">Radio (Yes/No)</MenuItem>
@@ -483,10 +582,11 @@ export default function ClientSetup() {
                   Generated Configuration
                 </Typography>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Click "Generate Config" to create the configuration object. Copy and paste this into your clients.ts file.
+                  Click "Generate Config" to create the configuration object.
+                  Copy and paste this into your clients.ts file.
                 </Typography>
               </Box>
-              
+
               <Button
                 variant="contained"
                 onClick={generateConfig}
@@ -499,36 +599,37 @@ export default function ClientSetup() {
               {generatedConfig && (
                 <>
                   <Alert severity="success">
-                    Configuration generated! Copy the code below and add it to src/config/clients.ts
+                    Configuration generated! Copy the code below and add it to
+                    src/config/clients.ts
                   </Alert>
-                  
+
                   <Box
                     sx={{
-                      bgcolor: 'grey.100',
+                      bgcolor: "grey.100",
                       p: 2,
                       borderRadius: 1,
-                      position: 'relative',
+                      position: "relative",
                       maxHeight: 400,
-                      overflow: 'auto'
+                      overflow: "auto",
                     }}
                   >
                     <Button
                       variant="outlined"
                       size="small"
                       onClick={copyToClipboard}
-                      sx={{ position: 'absolute', top: 8, right: 8 }}
+                      sx={{ position: "absolute", top: 8, right: 8 }}
                     >
                       Copy
                     </Button>
                     <Typography
                       component="pre"
                       sx={{
-                        fontFamily: 'monospace',
-                        fontSize: '0.875rem',
-                        whiteSpace: 'pre-wrap',
-                        wordBreak: 'break-word',
+                        fontFamily: "monospace",
+                        fontSize: "0.875rem",
+                        whiteSpace: "pre-wrap",
+                        wordBreak: "break-word",
                         m: 0,
-                        pr: 10
+                        pr: 10,
                       }}
                     >
                       {generatedConfig}

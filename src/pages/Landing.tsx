@@ -101,6 +101,7 @@ const RATINGS = [
 
 const CATEGORY_DESCRIPTIONS: Record<CoverageCategory, string> = {
   LI: "Think about what your family would need to maintain their current standard of living if you were no longer there to help provide for them. Your income is most likely critical to meeting monthly expenses. We have choices that will meet your budget today while still providing peace of mind for your family's future.",
+  AD: "Accidental Death & Dismemberment coverage provides additional protection if a covered accident results in serious injury or loss.",
   DI: "A disability could potentially destroy your way of life. If you were to become disabled, Disability Insurance is commensurate with your profession so that you can live your life with all things you've enjoyed at your income level.",
   OO: "In the event of a total disability or illness, this coverage can help protect your practice and assets by paying a monthly benefit for your office expenses.",
   SH: "Critical Illness provides added protection for yourself and your family from the financial impact of a specific, life-threatening illness. Hospital Income Insurance is guaranteed coverage that can help offset costs during a hospital stay.",
@@ -1096,6 +1097,7 @@ export default function Landing({ hideNonHero = false }: LandingProps) {
   const categoryCards = React.useMemo(() => {
     const grouped: Record<CoverageCategory, Product[]> = {
       LI: [],
+      AD: [],
       DI: [],
       OO: [],
       SH: [],

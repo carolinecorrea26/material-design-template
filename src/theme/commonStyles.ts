@@ -364,7 +364,7 @@ export const commonStyles = {
 
   coverageCategoryLabel: {
     display: "block",
-    color: "text.secondary",
+    color: "#353b48",
     fontWeight: 700,
     letterSpacing: 1,
     textTransform: "uppercase",

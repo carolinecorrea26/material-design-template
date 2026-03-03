@@ -38,22 +38,22 @@ import {
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import { useAppData } from "../state/AppDataContext";
-import { useStepper } from "../state/StepperContext";
-import { getClientFeatures } from "../config/clients";
-import { COVERAGE_CARDS } from "../constants/getStartedProducts";
-import { EligibilityForm, GetStartedFormValues } from "../types/app";
-import { EligibilitySchema } from "../validation/eligibility";
-import { buildSelectionSummary } from "../utils/coverage";
-import { getApplicantChipStyles } from "../utils/applicantChips";
-import { formatProductHighlight } from "../utils/previewFormatting";
+import { useAppData } from "../../state/AppDataContext";
+import { useStepper } from "../../state/StepperContext";
+import { getClientFeatures } from "../../config/clients";
+import { COVERAGE_CARDS } from "../../constants/getStartedProducts";
+import { EligibilityForm, GetStartedFormValues } from "../../types/app";
+import { EligibilitySchema } from "../../validation/eligibility";
+import { buildSelectionSummary } from "../../utils/coverage";
+import { getApplicantChipStyles } from "../../utils/applicantChips";
+import { formatProductHighlight } from "../../utils/previewFormatting";
 import {
   APPLICANT_OPTIONS,
   APPLICANT_ERROR_MESSAGE,
-} from "../constants/formOptions";
-import { ApplicantType, CoverageProductConfig } from "../types/app";
-import PageNavigation from "../components/common/PageNavigation";
-import PageHeader from "../components/layout/PageHeader";
+} from "../../constants/formOptions";
+import { ApplicantType, CoverageProductConfig } from "../../types/app";
+import PageNavigation from "../../components/common/PageNavigation";
+import PageHeader from "../../components/layout/PageHeader";
 
 const SECTION_LABEL_STYLES = {
   display: "block",

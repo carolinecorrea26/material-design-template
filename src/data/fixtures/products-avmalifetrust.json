@@ -34,7 +34,7 @@
   {
     "id": "li-large-add",
     "name": "Large Scale Accidental Death and Dismemberment Insurance",
-    "category": "LI",
+    "category": "AD",
     "eligibleApplicants": ["self", "spouse", "child"],
     "amounts": [50000, 100000, 250000, 500000],
     "quickDecision": false

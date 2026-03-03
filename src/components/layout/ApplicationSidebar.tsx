@@ -119,6 +119,7 @@ export default function ApplicationSidebar({
 
     const grouped: Record<CoverageCategory, Product[]> = {
       LI: [],
+      AD: [],
       DI: [],
       OO: [],
       SH: [],

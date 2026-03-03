@@ -38,7 +38,10 @@ import { useAppData } from "../state/AppDataContext";
 import { useStepper } from "../state/StepperContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getProducts, quoteRate } from "../api/client";
-import { getClientConfig } from "../config/clients";
+import {
+  getClientConfig,
+  getClientCoverageCategories,
+} from "../config/clients";
 import CheckboxField from "../components/form/CheckboxField";
 import type {
   Applicant,
@@ -57,6 +60,10 @@ export default function Coverage() {
   const location = useLocation();
   const navigate = useNavigate();
   const clientConfig = getClientConfig();
+  const clientCoverageCategories = React.useMemo(
+    () => getClientCoverageCategories(),
+    [],
+  );
   const isAMA = clientConfig.id === "ama";
 
   // Product ordering to match the coverage details dropdown
@@ -76,7 +83,7 @@ export default function Coverage() {
   ];
 
   // Category ordering: LI (Life), DI (Disability), OO (Overhead), SH (Supplemental Health)
-  const categoryOrder = ["LI", "DI", "OO", "SH"];
+  const categoryOrder = ["LI", "AD", "DI", "OO", "SH"];
 
   // Applicant ordering: self, spouse, child
   const applicantOrder = ["self", "spouse", "child"];
@@ -125,6 +132,7 @@ export default function Coverage() {
   const productsByCategory = React.useMemo(() => {
     const grouped: Record<CoverageCategory, Product[]> = {
       LI: [],
+      AD: [],
       DI: [],
       OO: [],
       SH: [],
@@ -139,9 +147,13 @@ export default function Coverage() {
     return grouped;
   }, [products]);
 
-  const visibleCategories = React.useMemo(() => {
-    return categoryOrder;
-  }, [categoryOrder]);
+  const visibleCategories = React.useMemo(
+    () =>
+      categoryOrder.filter((category) =>
+        clientCoverageCategories.includes(category),
+      ),
+    [categoryOrder, clientCoverageCategories],
+  );
 
   React.useEffect(() => {
     if (activeCategoryIndex >= visibleCategories.length) {

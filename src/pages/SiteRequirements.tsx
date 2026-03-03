@@ -37,6 +37,7 @@ interface SiteRequirementsForm {
 
   // Coverage Categories
   coverageLI: boolean;
+  coverageAD: boolean;
   coverageDI: boolean;
   coverageOO: boolean;
   coverageSH: boolean;
@@ -71,6 +72,7 @@ export default function SiteRequirements() {
       showCoverageDetails: true,
       showMembershipPage: false,
       coverageLI: true,
+      coverageAD: false,
       coverageDI: true,
       coverageOO: false,
       coverageSH: false,
@@ -92,6 +94,7 @@ export default function SiteRequirements() {
     // Generate the client configuration
     const coverageCategories = [];
     if (data.coverageLI) coverageCategories.push("'LI'");
+    if (data.coverageAD) coverageCategories.push("'AD'");
     if (data.coverageDI) coverageCategories.push("'DI'");
     if (data.coverageOO) coverageCategories.push("'OO'");
     if (data.coverageSH) coverageCategories.push("'SH'");
@@ -358,6 +361,10 @@ export default function SiteRequirements() {
                     <RHFCheckbox
                       name="coverageLI"
                       label="Life Insurance (LI)"
+                    />
+                    <RHFCheckbox
+                      name="coverageAD"
+                      label="Accidental Death & Dismemberment (AD)"
                     />
                     <RHFCheckbox
                       name="coverageDI"

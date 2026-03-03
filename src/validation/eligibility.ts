@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const CoverageCat = z.enum(["LI", "DI", "OO", "SH"]);
+export const CoverageCat = z.enum(["LI", "AD", "DI", "OO", "SH"]);
 export type CoverageCat = z.infer<typeof CoverageCat>;
 
 const optionalString = z.preprocess(

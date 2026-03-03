@@ -1,5 +1,6 @@
 import {
   VolunteerActivismRounded,
+  GppGoodRounded,
   AccessibleForwardRounded,
   ApartmentRounded,
   LocalHospitalRounded,
@@ -33,7 +34,7 @@ export const COVERAGE_CARDS: CoverageCardConfig[] = [
     id: "LI",
     title: "Group Life Insurance",
     description:
-      "Protect your family or business with level term and AD&D options tailored for attorneys.",
+      "Protect your family or business with level term options tailored for attorneys.",
     icon: VolunteerActivismRounded,
     products: [
       {
@@ -53,10 +54,19 @@ export const COVERAGE_CARDS: CoverageCardConfig[] = [
         monthlyEstimate: "$32–$60/mo",
         coverageHighlight: "$1M of protection",
       },
+    ],
+  },
+  {
+    id: "AD",
+    title: "Accidental Death & Dismemberment",
+    description:
+      "Extra protection that pays benefits for covered accidental injury or loss.",
+    icon: GppGoodRounded,
+    products: [
       {
         id: "li-adt",
         name: "Accidental Death & Dismemberment",
-        coverageCategory: "LI",
+        coverageCategory: "AD",
         applicants: ["Self", "Spouse", "Child"],
         monthlyEstimate: "$5–$12/mo",
         coverageHighlight: "$300K AD&D benefit",
@@ -152,7 +162,7 @@ export const COVERAGE_CARDS: CoverageCardConfig[] = [
 ];
 
 export const PRODUCT_LOOKUP = COVERAGE_CARDS.flatMap(
-  (card) => card.products
+  (card) => card.products,
 ).reduce<Record<string, CoverageProductConfig>>((acc, product) => {
   acc[product.id] = product;
   return acc;

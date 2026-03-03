@@ -1,23 +1,26 @@
 import {
-  Favorite as LifeIcon,
+  VolunteerActivismRounded as LifeIcon,
+  WarningRounded as AccidentIcon,
   Accessible as DisabilityIcon,
   Business as OfficeIcon,
-  LocalHospital as HealthIcon,
-} from '@mui/icons-material';
-import type { CoverageCategory } from '../types/app';
+  LocalHospitalRounded as HealthIcon,
+} from "@mui/icons-material";
+import type { CoverageCategory } from "../types/app";
 
 /**
  * Get the appropriate icon component for a coverage category
  */
 function getCoverageIcon(category: CoverageCategory) {
   switch (category) {
-    case 'LI':
+    case "LI":
       return LifeIcon;
-    case 'DI':
+    case "AD":
+      return AccidentIcon;
+    case "DI":
       return DisabilityIcon;
-    case 'OO':
+    case "OO":
       return OfficeIcon;
-    case 'SH':
+    case "SH":
       return HealthIcon;
     default:
       return LifeIcon;
@@ -29,14 +32,16 @@ function getCoverageIcon(category: CoverageCategory) {
  */
 function getCoverageLabel(category: CoverageCategory): string {
   switch (category) {
-    case 'LI':
-      return 'Group Life Insurance';
-    case 'DI':
-      return 'Group Disability Insurance';
-    case 'OO':
-      return 'Group Office Overhead Expense Insurance';
-    case 'SH':
-      return 'Group Supplemental Health Insurance';
+    case "LI":
+      return "Group Life Insurance";
+    case "AD":
+      return "Accidental Death & Dismemberment";
+    case "DI":
+      return "Group Disability Insurance";
+    case "OO":
+      return "Group Office Overhead Expense Insurance";
+    case "SH":
+      return "Group Supplemental Health Insurance";
     default:
       return category;
   }
@@ -48,12 +53,17 @@ function getCoverageLabel(category: CoverageCategory): string {
  */
 interface CoverageIconProps {
   category: CoverageCategory;
-  fontSize?: 'small' | 'medium' | 'large' | 'inherit';
+  fontSize?: "small" | "medium" | "large" | "inherit";
   color?: string;
   sx?: Record<string, unknown>;
 }
 
-export default function CoverageIcon({ category, fontSize = 'small', color, sx }: CoverageIconProps) {
+export default function CoverageIcon({
+  category,
+  fontSize = "small",
+  color,
+  sx,
+}: CoverageIconProps) {
   const IconComponent = getCoverageIcon(category);
   return <IconComponent fontSize={fontSize} sx={{ color, ...sx }} />;
 }

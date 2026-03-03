@@ -4,17 +4,17 @@ import {
   ToggleButton, ToggleButtonGroup, TextField, MenuItem, Chip, Radio, Switch, FormControlLabel
 } from "@mui/material";
 import { Link as RouterLink, useNavigate, useSearchParams } from "react-router-dom";
-import RadioGroup from "../components/form/RadioGroup";
+import RadioGroup from "../../components/form/RadioGroup";
 import { 
   ArrowRightAlt as ArrowRightAltIcon,
   VerifiedUserOutlined as VerifiedUserOutlinedIcon
 } from "@mui/icons-material";
-import { getClientBranding, getClientFeatures, getClientConfig } from "../config/clients";
-import CoverageCategoryCard from "../components/coverage/CoverageCategoryCard";
-import { commonStyles } from "../theme/commonStyles";
-import QuoteModal from "../components/coverage/QuoteModal";
-import { getProducts } from "../api/client";
-import type { Product, CoverageCategory } from "../types/app";
+import { getClientBranding, getClientFeatures, getClientConfig } from "../../config/clients";
+import CoverageCategoryCard from "../../components/coverage/CoverageCategoryCard";
+import { commonStyles } from "../../theme/commonStyles";
+import QuoteModal from "../../components/coverage/QuoteModal";
+import { getProducts } from "../../api/client";
+import type { Product, CoverageCategory } from "../../types/app";
 
 interface LandingProps {
   hideNonHero?: boolean;

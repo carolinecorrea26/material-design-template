@@ -90,12 +90,11 @@ export const components: Components<Theme> = {
     styleOverrides: {
       root: ({ theme }) => ({
         color: theme.palette.primary.main,
-        fontWeight: 400,
+        fontWeight: 600,
         textDecoration: "none",
-        // transition: "font-weight 0.5s ease",
         "&:hover": {
-          textDecoration: "none",
-          fontWeight: 500,
+          textDecoration: "underline",
+          fontWeight: 600,
         },
       }),
     },

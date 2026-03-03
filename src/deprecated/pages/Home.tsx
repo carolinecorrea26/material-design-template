@@ -7,7 +7,8 @@ export default function Home() {
     <Stack spacing={2}>
       <Typography variant="h3">Welcome</Typography>
       <Typography variant="body1">
-        This is the starting point. We’ll replace this with the first page defined in the
+        This is the starting point. Well replace this with the first page
+        defined in the
         <strong> Site Functionality Details </strong> document in Step 2.
       </Typography>
 
@@ -17,7 +18,7 @@ export default function Home() {
             Next Step
           </Typography>
           <Typography variant="body2" gutterBottom>
-            We’ll enumerate pages and routes from the doc, then wire them here.
+            Well enumerate pages and routes from the doc, then wire them here.
           </Typography>
           <Button component={Link} to="/" variant="contained">
             Placeholder CTA

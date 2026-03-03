@@ -16,7 +16,7 @@ const Contact = React.lazy(() => import("./pages/Contact"));
 const Profile = React.lazy(() => import("./pages/Profile"));
 const HealthHistory = React.lazy(() => import("./pages/HealthHistory"));
 const Preview = React.lazy(() => import("./pages/Preview"));
-const Consent = React.lazy(() => import("./pages/ConsentNew"));
+const Consent = React.lazy(() => import("./pages/Consent"));
 const DocuSign = React.lazy(() => import("./pages/DocuSign"));
 const Decision = React.lazy(() => import("./pages/Decision"));
 const Receipt = React.lazy(() => import("./pages/Receipt"));

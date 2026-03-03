@@ -1,14 +1,20 @@
 import type { CoverageCat } from "../validation/eligibility";
 
-export const SELF_COVERAGE_OPTIONS: CoverageCat[] = ["LI", "DI", "OO", "SH"];
-export const SPOUSE_COVERAGE_OPTIONS: CoverageCat[] = ["LI", "DI", "SH"];
+export const SELF_COVERAGE_OPTIONS: CoverageCat[] = [
+  "LI",
+  "AD",
+  "DI",
+  "OO",
+  "SH",
+];
+export const SPOUSE_COVERAGE_OPTIONS: CoverageCat[] = ["LI", "AD", "DI", "SH"];
 
 export const TITLE_OPTIONS = [
   { label: "Mr.", value: "Mr." },
   { label: "Mrs.", value: "Mrs." },
   { label: "Dr.", value: "Dr." },
   { label: "Ms.", value: "Ms." },
-  { label: "Prof.", value: "Prof." }
+  { label: "Prof.", value: "Prof." },
 ];
 
 export const TOBACCO_PRODUCTS = [
@@ -23,7 +29,7 @@ export const TOBACCO_PRODUCTS = [
   "Nicotine patch",
   "Nasal spray",
   "Pipe",
-  "Snuff"
+  "Snuff",
 ];
 
 export const STATE_OPTIONS = [
@@ -76,5 +82,5 @@ export const STATE_OPTIONS = [
   { label: "Washington", value: "Washington" },
   { label: "West Virginia", value: "West Virginia" },
   { label: "Wisconsin", value: "Wisconsin" },
-  { label: "Wyoming", value: "Wyoming" }
+  { label: "Wyoming", value: "Wyoming" },
 ];

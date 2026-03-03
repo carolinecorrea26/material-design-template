@@ -1,7 +1,19 @@
 import * as React from "react";
 import {
-  Box, Container, Stack, Typography, TextField, Button, Card, CardContent,
-  FormControlLabel, Switch, MenuItem, Divider, Alert, Paper
+  Box,
+  Container,
+  Stack,
+  Typography,
+  TextField,
+  Button,
+  Card,
+  CardContent,
+  FormControlLabel,
+  Switch,
+  MenuItem,
+  Divider,
+  Alert,
+  Paper,
 } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import RHFTextField from "../components/form/RHFTextField";
@@ -15,7 +27,7 @@ interface SiteSetupFormData {
   clientId: string;
   clientName: string;
   clientAcronym: string;
-  
+
   // Branding
   logoPath: string;
   partnerLogoPath: string;
@@ -24,21 +36,21 @@ interface SiteSetupFormData {
   heroSubtitle: string;
   phone: string;
   phoneDisplay: string;
-  
+
   // Theme
   themeColor: keyof typeof THEME_COLORS;
-  
+
   // Field Labels
   dateOfBirthLabel: string;
   genderLabel: string;
   stateLabel: string;
   nicotineUseLabel: string;
-  
+
   // Membership Question
   membershipPrimaryQuestion: string;
   membershipSpouseQuestion: string;
-  membershipType: 'radio' | 'checkbox';
-  
+  membershipType: "radio" | "checkbox";
+
   // Features
   showPartnerLogo: boolean;
   showRatingBadges: boolean;
@@ -46,7 +58,7 @@ interface SiteSetupFormData {
   enableLifeInsurance: boolean;
   showCoverageDetails: boolean;
   showMembershipPage: boolean;
-  
+
   // Products & Coverage
   productsFile: string;
   coverageCategories: string;
@@ -55,36 +67,36 @@ interface SiteSetupFormData {
 export default function SiteSetup() {
   const methods = useForm<SiteSetupFormData>({
     defaultValues: {
-      clientId: '',
-      clientName: '',
-      clientAcronym: '',
-      logoPath: '/brand/default/logo.png',
-      partnerLogoPath: '/brand/nyl/logo.png',
-      heroImagePath: '/brand/default/hero.png',
-      heroTitle: '',
-      heroSubtitle: '',
-      phone: '',
-      phoneDisplay: '',
-      themeColor: 'blue',
-      dateOfBirthLabel: 'Birthday',
-      genderLabel: 'Gender',
-      stateLabel: 'State',
-      nicotineUseLabel: 'Do you use tobacco products?',
-      membershipPrimaryQuestion: '',
-      membershipSpouseQuestion: '',
-      membershipType: 'radio',
+      clientId: "",
+      clientName: "",
+      clientAcronym: "",
+      logoPath: "/brand/default/logo.png",
+      partnerLogoPath: "/brand/nyl/logo.png",
+      heroImagePath: "/brand/default/hero.png",
+      heroTitle: "",
+      heroSubtitle: "",
+      phone: "",
+      phoneDisplay: "",
+      themeColor: "blue",
+      dateOfBirthLabel: "Birthday",
+      genderLabel: "Gender",
+      stateLabel: "State",
+      nicotineUseLabel: "Do you use tobacco products?",
+      membershipPrimaryQuestion: "",
+      membershipSpouseQuestion: "",
+      membershipType: "radio",
       showPartnerLogo: true,
       showRatingBadges: true,
       enableDisabilityInsurance: true,
       enableLifeInsurance: true,
       showCoverageDetails: true,
       showMembershipPage: false,
-      productsFile: 'products',
-      coverageCategories: 'LI,DI,OO,SH',
-    }
+      productsFile: "products",
+      coverageCategories: "LI,AD,DI,OO,SH",
+    },
   });
 
-  const [generatedConfig, setGeneratedConfig] = React.useState<string>('');
+  const [generatedConfig, setGeneratedConfig] = React.useState<string>("");
   const [showOutput, setShowOutput] = React.useState(false);
 
   const onSubmit = (data: SiteSetupFormData) => {
@@ -97,7 +109,7 @@ export default function SiteSetup() {
         logo: data.logoPath,
         logoAlt: `${data.clientAcronym} Logo`,
         partnerLogo: data.partnerLogoPath,
-        partnerLogoAlt: 'New York Life Logo',
+        partnerLogoAlt: "New York Life Logo",
         heroImage: data.heroImagePath,
         heroImageAlt: `${data.clientName} Insurance`,
         heroTitle: data.heroTitle,
@@ -115,11 +127,13 @@ export default function SiteSetup() {
         state: data.stateLabel,
         nicotineUse: data.nicotineUseLabel,
       },
-      membershipQuestion: data.membershipPrimaryQuestion ? {
-        primaryQuestion: data.membershipPrimaryQuestion,
-        spouseQuestion: data.membershipSpouseQuestion,
-        type: data.membershipType,
-      } : undefined,
+      membershipQuestion: data.membershipPrimaryQuestion
+        ? {
+            primaryQuestion: data.membershipPrimaryQuestion,
+            spouseQuestion: data.membershipSpouseQuestion,
+            type: data.membershipType,
+          }
+        : undefined,
       features: {
         showPartnerLogo: data.showPartnerLogo,
         showRatingBadges: data.showRatingBadges,
@@ -129,18 +143,20 @@ export default function SiteSetup() {
         showMembershipPage: data.showMembershipPage,
       },
       productsFile: data.productsFile,
-      coverageCategories: data.coverageCategories.split(',').map(c => c.trim()) as any,
+      coverageCategories: data.coverageCategories
+        .split(",")
+        .map((c) => c.trim()) as any,
     };
 
     // Format as TypeScript code
-    const configString = `  ${data.clientId}: ${JSON.stringify(config, null, 2).replace(/"([^"]+)":/g, '$1:')},`;
+    const configString = `  ${data.clientId}: ${JSON.stringify(config, null, 2).replace(/"([^"]+)":/g, "$1:")},`;
     setGeneratedConfig(configString);
     setShowOutput(true);
   };
 
-  const themeColorOptions = Object.keys(THEME_COLORS).map(key => ({
+  const themeColorOptions = Object.keys(THEME_COLORS).map((key) => ({
     label: key.charAt(0).toUpperCase() + key.slice(1),
-    value: key
+    value: key,
   }));
 
   return (
@@ -151,12 +167,15 @@ export default function SiteSetup() {
             Site Configuration Setup
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Internal tool for creating new client site configurations. Fill out the form below to generate the configuration code.
+            Internal tool for creating new client site configurations. Fill out
+            the form below to generate the configuration code.
           </Typography>
         </Box>
 
         <Alert severity="info">
-          This is an internal development tool. The generated configuration should be added to <code>src/config/clients.ts</code> in the <code>CLIENT_CONFIGS</code> object.
+          This is an internal development tool. The generated configuration
+          should be added to <code>src/config/clients.ts</code> in the{" "}
+          <code>CLIENT_CONFIGS</code> object.
         </Alert>
 
         <FormProvider {...methods}>
@@ -165,7 +184,11 @@ export default function SiteSetup() {
               {/* Basic Information */}
               <Card>
                 <CardContent>
-                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    sx={{ fontWeight: 600 }}
+                  >
                     Basic Information
                   </Typography>
                   <Stack spacing={3} sx={{ mt: 2 }}>
@@ -194,7 +217,11 @@ export default function SiteSetup() {
               {/* Branding */}
               <Card>
                 <CardContent>
-                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    sx={{ fontWeight: 600 }}
+                  >
                     Branding
                   </Typography>
                   <Stack spacing={3} sx={{ mt: 2 }}>
@@ -250,7 +277,11 @@ export default function SiteSetup() {
               {/* Theme */}
               <Card>
                 <CardContent>
-                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    sx={{ fontWeight: 600 }}
+                  >
                     Theme
                   </Typography>
                   <Stack spacing={3} sx={{ mt: 2 }}>
@@ -267,7 +298,11 @@ export default function SiteSetup() {
               {/* Field Labels */}
               <Card>
                 <CardContent>
-                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    sx={{ fontWeight: 600 }}
+                  >
                     Field Labels (Optional Customization)
                   </Typography>
                   <Stack spacing={3} sx={{ mt: 2 }}>
@@ -275,14 +310,8 @@ export default function SiteSetup() {
                       name="dateOfBirthLabel"
                       label="Date of Birth Label"
                     />
-                    <RHFTextField
-                      name="genderLabel"
-                      label="Gender Label"
-                    />
-                    <RHFTextField
-                      name="stateLabel"
-                      label="State Label"
-                    />
+                    <RHFTextField name="genderLabel" label="Gender Label" />
+                    <RHFTextField name="stateLabel" label="State Label" />
                     <RHFTextField
                       name="nicotineUseLabel"
                       label="Nicotine Use Label"
@@ -294,7 +323,11 @@ export default function SiteSetup() {
               {/* Membership Question */}
               <Card>
                 <CardContent>
-                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    sx={{ fontWeight: 600 }}
+                  >
                     Membership Question (Optional)
                   </Typography>
                   <Stack spacing={3} sx={{ mt: 2 }}>
@@ -315,8 +348,8 @@ export default function SiteSetup() {
                       name="membershipType"
                       label="Membership Question Type"
                       options={[
-                        { label: 'Radio (Yes/No)', value: 'radio' },
-                        { label: 'Checkbox', value: 'checkbox' }
+                        { label: "Radio (Yes/No)", value: "radio" },
+                        { label: "Checkbox", value: "checkbox" },
                       ]}
                     />
                   </Stack>
@@ -326,7 +359,11 @@ export default function SiteSetup() {
               {/* Features */}
               <Card>
                 <CardContent>
-                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    sx={{ fontWeight: 600 }}
+                  >
                     Features
                   </Typography>
                   <Stack spacing={2} sx={{ mt: 2 }}>
@@ -361,7 +398,11 @@ export default function SiteSetup() {
               {/* Products & Coverage */}
               <Card>
                 <CardContent>
-                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    sx={{ fontWeight: 600 }}
+                  >
                     Products & Coverage
                   </Typography>
                   <Stack spacing={3} sx={{ mt: 2 }}>
@@ -369,9 +410,9 @@ export default function SiteSetup() {
                       name="productsFile"
                       label="Products File"
                       options={[
-                        { label: 'Standard Products', value: 'products' },
-                        { label: 'Demo Products', value: 'products-demo' },
-                        { label: 'NAR Products', value: 'products-nar' },
+                        { label: "Standard Products", value: "products" },
+                        { label: "Demo Products", value: "products-demo" },
+                        { label: "NAR Products", value: "products-nar" },
                       ]}
                       required
                       helperText="Select existing products file or create a new one"
@@ -403,10 +444,16 @@ export default function SiteSetup() {
 
         {/* Generated Output */}
         {showOutput && (
-          <Card sx={{ bgcolor: 'grey.50' }}>
+          <Card sx={{ bgcolor: "grey.50" }}>
             <CardContent>
               <Stack spacing={2}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
                   <Typography variant="h5" sx={{ fontWeight: 600 }}>
                     Generated Configuration
                   </Typography>
@@ -421,16 +468,18 @@ export default function SiteSetup() {
                   </Button>
                 </Box>
                 <Alert severity="success">
-                  Configuration generated successfully! Copy the code below and add it to the <code>CLIENT_CONFIGS</code> object in <code>src/config/clients.ts</code>.
+                  Configuration generated successfully! Copy the code below and
+                  add it to the <code>CLIENT_CONFIGS</code> object in{" "}
+                  <code>src/config/clients.ts</code>.
                 </Alert>
                 <Paper
                   sx={{
                     p: 2,
-                    bgcolor: 'background.paper',
-                    fontFamily: 'monospace',
-                    fontSize: '0.875rem',
-                    overflow: 'auto',
-                    maxHeight: 500
+                    bgcolor: "background.paper",
+                    fontFamily: "monospace",
+                    fontSize: "0.875rem",
+                    overflow: "auto",
+                    maxHeight: 500,
                   }}
                 >
                   <pre style={{ margin: 0 }}>{generatedConfig}</pre>
@@ -441,12 +490,27 @@ export default function SiteSetup() {
                   </Typography>
                   <ol style={{ margin: 0, paddingLeft: 20 }}>
                     <li>Copy the configuration above</li>
-                    <li>Open <code>src/config/clients.ts</code></li>
-                    <li>Add the configuration to the <code>CLIENT_CONFIGS</code> object</li>
-                    <li>Add the client ID to the <code>ClientId</code> type</li>
-                    <li>If using a new products file, create it in <code>src/data/fixtures/</code></li>
-                    <li>Add brand assets to <code>public/brand/[client-id]/</code></li>
-                    <li>Update <code>ACTIVE_CLIENT_ID</code> in <code>clients.ts</code> to test</li>
+                    <li>
+                      Open <code>src/config/clients.ts</code>
+                    </li>
+                    <li>
+                      Add the configuration to the <code>CLIENT_CONFIGS</code>{" "}
+                      object
+                    </li>
+                    <li>
+                      Add the client ID to the <code>ClientId</code> type
+                    </li>
+                    <li>
+                      If using a new products file, create it in{" "}
+                      <code>src/data/fixtures/</code>
+                    </li>
+                    <li>
+                      Add brand assets to <code>public/brand/[client-id]/</code>
+                    </li>
+                    <li>
+                      Update <code>ACTIVE_CLIENT_ID</code> in{" "}
+                      <code>clients.ts</code> to test
+                    </li>
                   </ol>
                 </Alert>
               </Stack>

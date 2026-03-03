@@ -100,6 +100,8 @@ export interface ClientFeatures {
   showCoverageDetails?: boolean;
   /** Whether to show membership page */
   showMembershipPage?: boolean;
+  /** Whether to show the Get Started intro note */
+  showGetStartedIntro?: boolean;
 }
 
 export interface ClientConfig {
@@ -112,7 +114,7 @@ export interface ClientConfig {
   /** Product fixture file to use (e.g., 'products', 'products-nar') */
   productsFile?: string;
   /** Available coverage categories for this client */
-  coverageCategories?: Array<"LI" | "DI" | "OO" | "SH">;
+  coverageCategories?: Array<"LI" | "AD" | "DI" | "OO" | "SH">;
   /** Optional pages configuration */
   pages?: {
     /** List of page paths to exclude from this client */
@@ -180,7 +182,7 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       showMembershipPage: false,
     },
     productsFile: "products",
-    coverageCategories: ["LI", "DI", "OO", "SH"],
+    coverageCategories: ["LI", "AD", "DI", "OO", "SH"],
   },
 
   calbar: {
@@ -230,7 +232,7 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       showMembershipPage: false,
     },
     productsFile: "products-calbar",
-    coverageCategories: ["LI"],
+    coverageCategories: ["LI", "AD"],
   },
 
   ama: {
@@ -297,7 +299,7 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       showMembershipPage: false,
     },
     productsFile: "products-ama",
-    coverageCategories: ["LI", "DI", "OO", "SH"],
+    coverageCategories: ["LI", "AD", "DI", "OO", "SH"],
   },
 
   avmalifetrust: {
@@ -357,7 +359,7 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       showMembershipPage: false,
     },
     productsFile: "products-avmalifetrust",
-    coverageCategories: ["LI", "DI", "OO"],
+    coverageCategories: ["LI", "AD", "DI", "OO"],
   },
 
   waepa: {
@@ -459,7 +461,7 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       showMembershipPage: false,
     },
     productsFile: "products-ieee",
-    coverageCategories: ["LI", "DI", "SH"],
+    coverageCategories: ["LI", "AD", "DI", "SH"],
   },
 
   demo: {
@@ -561,7 +563,7 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       showMembershipPage: false,
     },
     productsFile: "products-nar",
-    coverageCategories: ["LI", "DI"],
+    coverageCategories: ["LI", "AD", "DI"],
   },
 
   default: {
@@ -612,7 +614,7 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       showMembershipPage: false,
     },
     productsFile: "products",
-    coverageCategories: ["LI", "DI", "OO", "SH"],
+    coverageCategories: ["LI", "AD", "DI", "OO", "SH"],
   },
 };
 
@@ -759,17 +761,17 @@ export function getClientFeatures(): ClientFeatures {
  * Returns all categories if not specified in config
  */
 export function getClientCoverageCategories(): Array<
-  "LI" | "DI" | "OO" | "SH"
+  "LI" | "AD" | "DI" | "OO" | "SH"
 > {
   const config = getClientConfig();
-  return config.coverageCategories || ["LI", "DI", "OO", "SH"];
+  return config.coverageCategories || ["LI", "AD", "DI", "OO", "SH"];
 }
 
 /**
  * Check if a coverage category is available for the client
  */
 export function isCategoryCategoryAvailable(
-  category: "LI" | "DI" | "OO" | "SH",
+  category: "LI" | "AD" | "DI" | "OO" | "SH",
 ): boolean {
   const categories = getClientCoverageCategories();
   return categories.includes(category);

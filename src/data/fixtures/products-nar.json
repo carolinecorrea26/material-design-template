@@ -18,7 +18,7 @@
   {
     "id": "nar-add",
     "name": "REALTORS® Group AD&D (Accidental Death and Dismemberment) Insurance",
-    "category": "LI",
+    "category": "AD",
     "eligibleApplicants": ["self", "spouse"],
     "amounts": [50000, 100000, 250000, 500000],
     "quickDecision": false

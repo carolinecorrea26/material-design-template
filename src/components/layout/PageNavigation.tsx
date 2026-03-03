@@ -14,7 +14,7 @@ import * as React from "react";
 import { PAGES } from "../../config/pages";
 import { commonStyles } from "../../theme/commonStyles";
 import { useLayout } from "../../state/LayoutContext";
-import { useSinglePageLayout } from "../../layouts/SinglePageLayout";
+import { useSinglePageLayout } from "../../deprecated/layouts/SinglePageLayout";
 import { getClientFeatures } from "../../config/clients";
 import { usePageLoading } from "../../state/PageLoadingContext";
 

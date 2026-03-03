@@ -258,7 +258,7 @@ export default function Eligibility() {
         state: "California",
 
         applicants: { self: true, spouse: true, child: true },
-        selfCoverages: ["LI", "DI", "OO", "SH"],
+        selfCoverages: ["LI", "AD", "DI", "OO", "SH"],
         selfAvgIncome: "5000",
         selfHoursPerWeek: "40",
         selfMonthlyExpenses: "$5,000",
@@ -287,7 +287,7 @@ export default function Eligibility() {
         spouseBirthday: "1987-03-22",
         spouseGender: "female",
         spouseEmail: "jane.doe@example.com",
-        spouseCoverages: ["LI", "DI", "SH"],
+        spouseCoverages: ["LI", "AD", "DI", "SH"],
         spouseAvgIncome: "$4,500",
         spouseHoursPerWeek: "35",
         smokerSpouse: "yes",

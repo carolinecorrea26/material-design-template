@@ -1,15 +1,21 @@
-import type { CoverageCat } from '../validation/eligibility';
+import type { CoverageCat } from "../validation/eligibility";
 
-export const SELF_COVERAGE_OPTIONS: CoverageCat[] = ["LI", "DI", "OO", "SH"];
+export const SELF_COVERAGE_OPTIONS: CoverageCat[] = [
+  "LI",
+  "AD",
+  "DI",
+  "OO",
+  "SH",
+];
 
-export const SPOUSE_COVERAGE_OPTIONS: CoverageCat[] = ["LI", "DI", "SH"];
+export const SPOUSE_COVERAGE_OPTIONS: CoverageCat[] = ["LI", "AD", "DI", "SH"];
 
 export const TITLE_OPTIONS = [
   { label: "Mr.", value: "Mr." },
   { label: "Mrs.", value: "Mrs." },
   { label: "Ms.", value: "Ms." },
   { label: "Dr.", value: "Dr." },
-  { label: "Prof.", value: "Prof." }
+  { label: "Prof.", value: "Prof." },
 ];
 
 export const STATE_OPTIONS = [
@@ -66,7 +72,7 @@ export const STATE_OPTIONS = [
   { label: "District of Columbia", value: "DC" },
   { label: "Puerto Rico", value: "PR" },
   { label: "Virgin Islands", value: "VI" },
-  { label: "Guam", value: "GU" }
+  { label: "Guam", value: "GU" },
 ];
 
 export const TOBACCO_PRODUCTS = [
@@ -81,15 +87,15 @@ export const TOBACCO_PRODUCTS = [
   "Nicotine Lozenges",
   "Hookah",
   "Smokeless Tobacco",
-  "Other"
+  "Other",
 ];
 
 export const GENDER_OPTIONS = [
   { label: "Male", value: "male" },
-  { label: "Female", value: "female" }
+  { label: "Female", value: "female" },
 ];
 
 export const YES_NO_OPTIONS = [
   { label: "Yes", value: "yes" },
-  { label: "No", value: "no" }
+  { label: "No", value: "no" },
 ];
