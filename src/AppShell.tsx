@@ -14,6 +14,7 @@ import {
   CalendarMonth as CalendarIcon,
   LocalOffer as LocalOfferIcon,
   Close as CloseIcon,
+  CookieRounded,
 } from "@mui/icons-material";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
@@ -72,6 +73,7 @@ export function AppShell({ children }: AppShellProps) {
             location.pathname === "/" || layoutMode === "single-page"
               ? "#faf9f6"
               : "white",
+          background: "linear-gradient(45deg, #eefffd, #edf7ff)",
           display: "flex",
           flexDirection: "column",
           pb: showCookieBanner ? "80px" : 0, // padding only for cookie banner (fixed)
@@ -283,13 +285,8 @@ export function AppShell({ children }: AppShellProps) {
               alignItems: "flex-start",
               "& .MuiAlert-message": {
                 width: "100%",
-                textAlign: "center",
                 fontSize: "0.875rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 1,
-                flexWrap: "wrap",
+                display: "block",
               },
               "& .MuiAlert-action": {
                 color: "common.white",
@@ -301,35 +298,89 @@ export function AppShell({ children }: AppShellProps) {
                 },
               },
             }}
-            onClose={handleAcceptCookies}
           >
             <Box
-              component="img"
-              src="/brand/nyl/logo-cookie.svg"
-              alt="New York Life Logo"
-              sx={{ height: "50px", width: "auto" }}
-            />
-            <span>
-              New York Life uses cookies to enhance your experience and analyze
-              site performance and traffic. By continuing to use this site, you
-              agree to our use of cookies.{" "}
-            </span>
-            <Link
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                setShowPrivacyNotice(true);
-              }}
               sx={{
-                color: "common.white",
-                textDecoration: "underline",
-                "&:hover": {
-                  color: "grey.300",
-                },
+                display: "flex",
+                flexDirection: { xs: "column", md: "row" },
+                alignItems: { xs: "stretch", md: "center" },
+                gap: { xs: 3, md: 3 },
+                width: "100%",
+                maxWidth: 1400,
+                mx: "auto",
               }}
             >
-              See our Privacy Notice
-            </Link>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 2,
+                  flex: 1,
+                }}
+              >
+                <Box
+                  component="img"
+                  src="/brand/nyl/logo-cookie.svg"
+                  alt="New York Life Logo"
+                  sx={{ height: "50px", width: "auto" }}
+                />
+                <Typography
+                  variant="body2"
+                  sx={{
+                    textAlign: "justify",
+                    color: "common.white",
+                    // maxWidth: 720,
+                  }}
+                >
+                  New York Life uses cookies to enhance your experience and
+                  analyze site performance and traffic. By continuing to use
+                  this site, you agree to our use of cookies.
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: { xs: "flex-end", sm: "flex-end" },
+                  alignItems: "center",
+                  gap: 1,
+                  flexWrap: "wrap",
+                }}
+              >
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={() => setShowPrivacyNotice(true)}
+                  sx={{
+                    color: "common.white",
+                    borderColor: "rgba(255, 255, 255, 0.7)",
+                    fontWeight: 600,
+                    "&:hover": {
+                      borderColor: "common.white",
+                      bgcolor: "rgba(255, 255, 255, 0.1)",
+                    },
+                  }}
+                >
+                  Privacy Notice
+                </Button>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="primary"
+                  onClick={handleAcceptCookies}
+                  endIcon={
+                    <CookieRounded
+                      sx={{ fontSize: 18, color: "primary.contrastText" }}
+                    />
+                  }
+                  sx={{
+                    fontWeight: 600,
+                  }}
+                >
+                  Accept
+                </Button>
+              </Box>
+            </Box>
           </Alert>
         )}
 

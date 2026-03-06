@@ -166,7 +166,8 @@ export default function ApplicationLayout({
         display: "flex",
         flexDirection: "column",
         position: "relative",
-        background: "linear-gradient(45deg, #f3fbfa, #f2f7ff)",
+        // background: "linear-gradient(45deg, #f3fbfa, #f2f7ff)",
+        background: "linear-gradient(45deg, #eefffd, #fbfffc)",
       }}
     >
       {/* Hidden sidebar placeholder (desktop layout parity) */}
@@ -203,7 +204,7 @@ export default function ApplicationLayout({
                 variant="caption"
                 sx={{
                   fontWeight: 600,
-                  fontSize: { xs: "0.75rem", md: "0.875rem" },
+                  fontSize: "0.75rem",
                 }}
               >
                 Progress:{" "}
@@ -239,11 +240,11 @@ export default function ApplicationLayout({
                       variant="caption"
                       sx={{
                         fontWeight: 600,
-                        fontSize: { xs: "0.75rem", md: "0.875rem" },
+                        fontSize: { xs: "0.75rem", md: "0.75rem" },
                         color: isPageLoading ? "text.primary" : "success.main",
                       }}
                     >
-                      {isPageLoading ? "Saving" : "Saved!"}
+                      {isPageLoading ? "Saving" : "Saved"}
                     </Typography>
                   </Box>
                 )}

@@ -362,9 +362,15 @@ export default function GetStarted() {
             <AccordionDetails sx={{ px: 0, pt: 1.5 }}>
               <Typography variant="body2" color="text.primary" sx={{ mb: 2 }}>
                 You may apply for the following{" "}
-                <Tooltip title="Group insurance provides coverage to eligible individuals through an organization or association.">
+                <Tooltip
+                  title="Group insurance provides coverage to eligible individuals through an organization or association."
+                  enterTouchDelay={0}
+                  leaveTouchDelay={3000}
+                >
                   <Box
                     component="span"
+                    role="button"
+                    tabIndex={0}
                     sx={{
                       fontWeight: 700,
                       color: "primary.main",

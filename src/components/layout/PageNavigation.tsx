@@ -212,14 +212,27 @@ export default function PageNavigation({
             progress on this page. Are you sure you would like to continue?
           </Typography>
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={handleCancelBack} variant="outlined">
+        <DialogActions
+          sx={{
+            px: 3,
+            pb: 2,
+            gap: 1,
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: { xs: "stretch", sm: "center" },
+          }}
+        >
+          <Button
+            onClick={handleCancelBack}
+            variant="outlined"
+            sx={{ width: { xs: "100%", sm: "auto" } }}
+          >
             Stay on This Page
           </Button>
           <Button
             onClick={handleConfirmBack}
             variant="contained"
             color="primary"
+            sx={{ width: { xs: "100%", sm: "auto" } }}
           >
             Go to Previous Page
           </Button>
