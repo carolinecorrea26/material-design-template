@@ -245,10 +245,10 @@ export const commonStyles = {
 
   footer: {
     py: 4,
-    bgcolor: "#001432",
-    color: "#ffffff",
+    bgcolor: "#f2f5fb",
+    color: "text.primary",
     borderTop: 1,
-    borderColor: "divider",
+    borderColor: "#e7eaf4",
   } as SxProps<Theme>,
 
   sectionHeader: {

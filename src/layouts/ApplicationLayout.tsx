@@ -286,7 +286,7 @@ export default function ApplicationLayout({
           width: "100%",
           maxWidth: "750px",
           mx: "auto",
-          px: { xs: 2, sm: 3 },
+          px: { xs: 3, sm: 3 },
           py: { xs: 3 },
           pt: { xs: "32px" },
           minHeight: "100vh",
