@@ -19,7 +19,7 @@ declare module "@mui/material/styles" {
 
 // Override default MUI palette with brand colors
 const PRIMARY_MAIN = "#0768ff";
-const SUCCESS_MAIN = "#009f6f";
+const SUCCESS_MAIN = "#009465";
 
 const primaryColor = {
   main: PRIMARY_MAIN,
@@ -30,8 +30,8 @@ const primaryColor = {
 
 const successColor = {
   main: SUCCESS_MAIN,
-  light: "#33cdb9",
-  dark: "#007664",
+  light: "#3ec097",
+  dark: "#00724e",
   contrastText: "#ffffff",
 };
 

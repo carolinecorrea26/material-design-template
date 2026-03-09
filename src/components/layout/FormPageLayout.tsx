@@ -143,7 +143,14 @@ export default function FormPageLayout({
   return (
     <Stack spacing={2} className="form-page" sx={{ position: "relative" }}>
       {!isPageLoading && <Box className="form-header">{header}</Box>}
-      <Box className="form-body">
+      <Box
+        className="form-body"
+        sx={{
+          background: "#f3f6fb",
+          padding: { xs: "1.5rem 1rem", sm: "1.5rem 1.5rem" },
+          borderRadius: "12px",
+        }}
+      >
         {isPageLoading ? (
           <Stack spacing={2}>
             <Typography
@@ -158,11 +165,7 @@ export default function FormPageLayout({
           children
         )}
       </Box>
-      {navigation && (
-        <Box className="form-nav" sx={{ mt: 3 }}>
-          {navigation}
-        </Box>
-      )}
+      {navigation && <Box className="form-nav">{navigation}</Box>}
       {isPageLoading && (
         <Box
           sx={{

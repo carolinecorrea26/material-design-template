@@ -120,7 +120,7 @@ export default function PageHeader({
       sx={commonStyles.marginBottom3}
       className="page-header"
     >
-      <Stack spacing={2} alignItems={centered ? "center" : "flex-start"}>
+      <Stack spacing={1} alignItems={centered ? "center" : "flex-start"}>
         {!shouldHideTitle && (
           <Stack spacing={1} alignItems={centered ? "center" : "flex-start"}>
             <Stack

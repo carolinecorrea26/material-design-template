@@ -6,14 +6,14 @@ import {
   LinearProgress,
   Typography,
   Button,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
   ChevronLeft,
   ChevronRight,
   Close,
-  Cached,
-  CheckCircleRounded,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PAGES } from "../config/pages";
@@ -51,26 +51,6 @@ export default function ApplicationLayout({
   const [showSaved, setShowSaved] = React.useState(false);
   const wasLoadingRef = React.useRef(false);
   const previousPathRef = React.useRef<string | null>(null);
-  const [isBackNav, setIsBackNav] = React.useState(false);
-
-  React.useEffect(() => {
-    if (isPageLoading) {
-      wasLoadingRef.current = true;
-      setShowSaved(false);
-      return;
-    }
-
-    if (wasLoadingRef.current) {
-      if (isBackNav) {
-        wasLoadingRef.current = false;
-        return;
-      }
-      setShowSaved(true);
-      wasLoadingRef.current = false;
-      const timer = setTimeout(() => setShowSaved(false), 2500);
-      return () => clearTimeout(timer);
-    }
-  }, [isBackNav, isPageLoading]);
 
   // Filter to application pages only
   const applicationPages = PAGES.filter((p) => {
@@ -94,6 +74,29 @@ export default function ApplicationLayout({
       : 1;
   const [displayProgress, setDisplayProgress] = React.useState(progressPercent);
   const lastProgressRef = React.useRef(progressPercent);
+
+  React.useEffect(() => {
+    if (isPageLoading) {
+      wasLoadingRef.current = true;
+      setShowSaved(false);
+      return;
+    }
+
+    if (wasLoadingRef.current) {
+      const isBackNav = sessionStorage.getItem("nyl-last-nav") === "back";
+      if (isBackNav || effectiveIndex === 0) {
+        wasLoadingRef.current = false;
+        if (isBackNav) {
+          sessionStorage.removeItem("nyl-last-nav");
+        }
+        return;
+      }
+      setShowSaved(true);
+      wasLoadingRef.current = false;
+      const timer = setTimeout(() => setShowSaved(false), 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [effectiveIndex, isPageLoading]);
 
   const handleBack = () => {
     sessionStorage.setItem("nyl-last-nav", "back");
@@ -139,17 +142,8 @@ export default function ApplicationLayout({
   const progressLabel = `${Math.round(progressPercent)}%`;
 
   React.useEffect(() => {
-    const previousPath = previousPathRef.current;
-    const previousIndex = previousPath
-      ? applicationPages.findIndex((p) => p.path === previousPath)
-      : -1;
-    const backNav =
-      previousIndex !== -1 && currentIndex !== -1
-        ? currentIndex < previousIndex
-        : false;
-    setIsBackNav(backNav);
     previousPathRef.current = location.pathname;
-  }, [applicationPages, currentIndex, location.pathname]);
+  }, [location.pathname]);
 
   React.useEffect(() => {
     if (isPageLoading) {
@@ -166,8 +160,7 @@ export default function ApplicationLayout({
         display: "flex",
         flexDirection: "column",
         position: "relative",
-        // background: "linear-gradient(45deg, #f3fbfa, #f2f7ff)",
-        background: "linear-gradient(45deg, #eefffd, #fbfffc)",
+        background: "white",
       }}
     >
       {/* Hidden sidebar placeholder (desktop layout parity) */}
@@ -189,7 +182,7 @@ export default function ApplicationLayout({
 
       {/* Progress header */}
       {isOnApplicationPage && (
-        <Box sx={{ width: "100%", mt: "64px", px: { xs: 0, md: 2 } }}>
+        <Box sx={{ width: "100%", mt: "56px", px: { xs: 0, md: 2 } }}>
           <Box sx={{ maxWidth: "1400px", mx: "auto" }}>
             <Box
               sx={{
@@ -215,39 +208,16 @@ export default function ApplicationLayout({
                   {progressLabel}
                 </Box>
               </Typography>
-              {effectiveIndex > 0 &&
-                !isBackNav &&
-                (isPageLoading || showSaved) && (
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                    {isPageLoading ? (
-                      <Cached
-                        sx={{
-                          color: "primary.main",
-                          fontSize: "1rem",
-                          animation: "spin 1.2s linear infinite",
-                          "@keyframes spin": {
-                            from: { transform: "rotate(0deg)" },
-                            to: { transform: "rotate(360deg)" },
-                          },
-                        }}
-                      />
-                    ) : (
-                      <CheckCircleRounded
-                        sx={{ color: "success.main", fontSize: "1rem" }}
-                      />
-                    )}
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        fontWeight: 600,
-                        fontSize: { xs: "0.75rem", md: "0.75rem" },
-                        color: isPageLoading ? "text.primary" : "success.main",
-                      }}
-                    >
-                      {isPageLoading ? "Saving" : "Saved"}
-                    </Typography>
-                  </Box>
-                )}
+              <Snackbar
+                open={showSaved}
+                onClose={() => setShowSaved(false)}
+                autoHideDuration={2500}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+              >
+                <Alert severity="success" variant="filled">
+                  Progress saved
+                </Alert>
+              </Snackbar>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <IconButton
@@ -288,8 +258,8 @@ export default function ApplicationLayout({
           mx: "auto",
           px: { xs: 3, sm: 3 },
           py: { xs: 3 },
-          pt: { xs: "32px" },
-          minHeight: "100vh",
+          pt: { xs: "16px" },
+          minHeight: { xs: "56vh", sm: "64vh" },
         }}
       >
         {children}

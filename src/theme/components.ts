@@ -129,7 +129,7 @@ export const components: Components<Theme> = {
         borderRadius: 8,
         ...(ownerState.severity === "info"
           ? {
-              backgroundColor: "rgb(0 85 255 / 5%)",
+              backgroundColor: "#e8f1ff",
               color: "rgb(53 59 72)",
               "& .MuiAlert-icon": {
                 color: "#0044ae",

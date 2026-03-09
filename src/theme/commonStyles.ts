@@ -244,11 +244,11 @@ export const commonStyles = {
   // ==========================================
 
   footer: {
-    py: 4,
-    bgcolor: "#f2f5fb",
+    py: { xs: 0, sm: 4 },
+    mt: 4,
+    bgcolor: "#edeef0",
+    borderTop: "1px solid #e7eaf4",
     color: "text.primary",
-    borderTop: 1,
-    borderColor: "#e7eaf4",
   } as SxProps<Theme>,
 
   sectionHeader: {
@@ -492,8 +492,8 @@ export const commonStyles = {
   // ==========================================
 
   pageNavigation: {
-    mt: 4,
-    pt: 3,
+    mt: 2,
+    // pt: 3,
   } as SxProps<Theme>,
 
   // ==========================================

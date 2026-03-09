@@ -73,7 +73,7 @@ export function AppShell({ children }: AppShellProps) {
             location.pathname === "/" || layoutMode === "single-page"
               ? "#faf9f6"
               : "white",
-          background: "linear-gradient(45deg, #eefffd, #edf7ff)",
+          background: "white",
           display: "flex",
           flexDirection: "column",
           pb: showCookieBanner ? "80px" : 0, // padding only for cookie banner (fixed)

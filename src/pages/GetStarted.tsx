@@ -30,8 +30,8 @@ import {
   PublishedWithChangesRounded,
   AccessTimeRounded,
   AccessTimeFilledRounded,
-  ExpandMore,
   GppGoodRounded,
+  ExpandMore,
   LocalLibraryRounded,
 } from "@mui/icons-material";
 import { COVERAGE_CARDS } from "../constants/getStartedProducts";
@@ -112,6 +112,8 @@ export default function GetStarted() {
   );
   const [productCatalog, setProductCatalog] = React.useState<Product[]>([]);
   const [quickQuoteOpen, setQuickQuoteOpen] = React.useState(false);
+  const [coverageCatalogOpen, setCoverageCatalogOpen] = React.useState(false);
+  const [processOpen, setProcessOpen] = React.useState(false);
 
   const defaultValues = React.useMemo<MembershipFormValues>(
     () => ({
@@ -333,7 +335,11 @@ export default function GetStarted() {
 
   const IntroNote = React.useCallback(
     () => (
-      <Alert severity="info" icon={false}>
+      <Alert
+        severity="info"
+        icon={false}
+        sx={{ "& .MuiAlert-message": { width: "100%" } }}
+      >
         <Stack spacing={1.5}>
           <Accordion
             disableGutters
@@ -360,151 +366,110 @@ export default function GetStarted() {
               </Box>
             </AccordionSummary>
             <AccordionDetails sx={{ px: 0, pt: 1.5 }}>
-              <Typography variant="body2" color="text.primary" sx={{ mb: 2 }}>
-                You may apply for the following{" "}
-                <Tooltip
-                  title="Group insurance provides coverage to eligible individuals through an organization or association."
-                  enterTouchDelay={0}
-                  leaveTouchDelay={3000}
+              <Stack spacing={1} direction={{ xs: "column", md: "row" }}>
+                <Button
+                  variant="outlined"
+                  onClick={() => setCoverageCatalogOpen(true)}
+                  sx={{
+                    justifyContent: "flex-start",
+                    textAlign: "left",
+                    gap: 1.5,
+                    py: 1.25,
+                    px: 1.5,
+                    borderRadius: 2,
+                    borderColor: "divider",
+                    bgcolor: "#f3fbfb",
+                    flex: 1,
+                  }}
                 >
-                  <Box
-                    component="span"
-                    role="button"
-                    tabIndex={0}
-                    sx={{
-                      fontWeight: 700,
-                      color: "primary.main",
-                      cursor: "pointer",
-                    }}
-                  >
-                    group coverage
-                  </Box>
-                </Tooltip>{" "}
-                available through this site. Your eligibility and any applicable
-                coverage options will be confirmed as part of the application.
-              </Typography>
-              {coverageInfoCards.length > 0 ? (
-                <TableContainer component={Paper} variant="outlined">
-                  <Table size="small" aria-label="Coverage categories">
-                    <TableHead
-                      sx={{ display: { xs: "none", sm: "table-header-group" } }}
+                  <Box>
+                    <Typography
+                      variant="body2"
+                      color="primary"
+                      fontWeight={600}
                     >
-                      <TableRow sx={{ bgcolor: "grey.50" }}>
-                        <TableCell sx={{ fontWeight: 700, width: "35%" }}>
-                          Category
-                        </TableCell>
-                        <TableCell sx={{ fontWeight: 700 }}>Coverage</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {coverageInfoCards.map((card) => (
-                        <TableRow
-                          key={card.id}
-                          sx={{
-                            display: { xs: "block", sm: "table-row" },
-                            px: { xs: 1.5, sm: 0 },
-                            py: { xs: 1.5, sm: 0 },
-                            "&:last-child td, &:last-child th": {
-                              borderBottom: 0,
-                            },
-                          }}
-                        >
-                          <TableCell
-                            sx={{
-                              verticalAlign: "top",
-                              py: 1.5,
-                              display: { xs: "block", sm: "table-cell" },
-                              borderBottom: { xs: 0, sm: "1px solid" },
-                              borderColor: { xs: "transparent", sm: "divider" },
-                            }}
-                          >
-                            <Box
-                              sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                gap: 1,
-                                textAlign: "center",
-                              }}
-                            >
-                              <Box
-                                sx={{
-                                  width: 32,
-                                  height: 32,
-                                  borderRadius: "50%",
-                                  bgcolor: "rgba(0, 73, 187, 0.1)",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  flexShrink: 0,
-                                }}
-                              >
-                                <CoverageIcon
-                                  category={card.id}
-                                  fontSize="small"
-                                  sx={{ color: "#0049bb" }}
-                                />
-                              </Box>
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  ...commonStyles.coverageCategoryLabel,
-                                  textAlign: "center",
-                                }}
-                              >
-                                {COVERAGE_CATEGORY_LABELS[card.id]}
-                              </Typography>
-                            </Box>
-                          </TableCell>
-                          <TableCell sx={{ py: 1.5 }}>
-                            <Box
-                              component="ul"
-                              sx={{
-                                m: 0,
-                                pl: 2,
-                                display: "grid",
-                                gap: 0.5,
-                              }}
-                            >
-                              {card.products.map((product) => (
-                                <Box
-                                  component="li"
-                                  key={product.id}
-                                  sx={{ lineHeight: 1.4 }}
-                                >
-                                  <MuiLink
-                                    href={product.href}
-                                    target="_blank"
-                                    rel="noopener"
-                                    underline="none"
-                                    color="primary"
-                                    sx={{
-                                      fontSize: "0.9rem",
-                                      fontWeight: 600,
-                                    }}
-                                  >
-                                    {product.name}
-                                  </MuiLink>
-                                </Box>
-                              ))}
-                            </Box>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              ) : (
-                <Typography variant="body2" color="text.secondary">
-                  Coverage details will appear here once products are available.
-                </Typography>
-              )}
+                      Coverage Details
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ fontSize: "0.75rem" }}
+                    >
+                      See available products, eligibility, and key features
+                    </Typography>
+                  </Box>
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => setQuickQuoteOpen(true)}
+                  sx={{
+                    justifyContent: "flex-start",
+                    textAlign: "left",
+                    gap: 1.5,
+                    py: 1.25,
+                    px: 1.5,
+                    borderRadius: 2,
+                    borderColor: "divider",
+                    bgcolor: "#f3fbfb",
+                    flex: 1,
+                  }}
+                >
+                  <Box>
+                    <Typography
+                      variant="body2"
+                      color="primary"
+                      fontWeight={600}
+                    >
+                      Instant Quote
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ fontSize: "0.75rem" }}
+                    >
+                      Estimate monthly cost in under a minute
+                    </Typography>
+                  </Box>
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => setProcessOpen(true)}
+                  sx={{
+                    justifyContent: "flex-start",
+                    textAlign: "left",
+                    gap: 1.5,
+                    py: 1.25,
+                    px: 1.5,
+                    borderRadius: 2,
+                    borderColor: "divider",
+                    bgcolor: "#f3fbfb",
+                    flex: 1,
+                  }}
+                >
+                  <Box>
+                    <Typography
+                      variant="body2"
+                      color="primary"
+                      fontWeight={600}
+                    >
+                      Application Process
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ fontSize: "0.75rem" }}
+                    >
+                      How long it takes, what you'll need, and next steps
+                    </Typography>
+                  </Box>
+                </Button>
+              </Stack>
             </AccordionDetails>
           </Accordion>
         </Stack>
       </Alert>
     ),
-    [coverageInfoCards],
+    [setCoverageCatalogOpen, setProcessOpen, setQuickQuoteOpen],
   );
 
   const membershipQuestionElement = React.useMemo(() => {
@@ -708,7 +673,7 @@ export default function GetStarted() {
         <FormPageLayout
           header={
             <PageHeader
-              title="Start your insurance application"
+              title="Start your application"
               notes={
                 <Stack spacing={2} sx={{ maxWidth: "80ch" }}>
                   <Typography
@@ -920,6 +885,175 @@ export default function GetStarted() {
           </FormStepTransition>
 
           <Dialog
+            open={coverageCatalogOpen}
+            onClose={() => setCoverageCatalogOpen(false)}
+            aria-labelledby="coverage-catalog-title"
+            maxWidth="md"
+            fullWidth
+          >
+            <DialogTitle id="coverage-catalog-title">
+              Explore coverage options
+            </DialogTitle>
+            <DialogContent dividers>
+              <Stack spacing={2}>
+                <Typography variant="body2" color="text.primary">
+                  You may apply for the following{" "}
+                  <Tooltip
+                    title="Group insurance provides coverage to eligible individuals through an organization or association."
+                    enterTouchDelay={0}
+                    leaveTouchDelay={3000}
+                  >
+                    <Box
+                      component="span"
+                      role="button"
+                      tabIndex={0}
+                      sx={{
+                        fontWeight: 700,
+                        color: "primary.main",
+                        cursor: "pointer",
+                      }}
+                    >
+                      group coverage
+                    </Box>
+                  </Tooltip>{" "}
+                  available through this site. Your eligibility and any
+                  applicable coverage options will be confirmed as part of the
+                  application.
+                </Typography>
+                {coverageInfoCards.length > 0 ? (
+                  <TableContainer component={Paper} variant="outlined">
+                    <Table size="small" aria-label="Coverage categories">
+                      <TableHead
+                        sx={{
+                          display: { xs: "none", sm: "table-header-group" },
+                        }}
+                      >
+                        <TableRow sx={{ bgcolor: "grey.50" }}>
+                          <TableCell sx={{ fontWeight: 700, width: "35%" }}>
+                            Category
+                          </TableCell>
+                          <TableCell sx={{ fontWeight: 700 }}>
+                            Coverage
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {coverageInfoCards.map((card) => (
+                          <TableRow
+                            key={card.id}
+                            sx={{
+                              display: { xs: "block", sm: "table-row" },
+                              px: { xs: 1.5, sm: 0 },
+                              py: { xs: 1.5, sm: 0 },
+                              "&:last-child td, &:last-child th": {
+                                borderBottom: 0,
+                              },
+                            }}
+                          >
+                            <TableCell
+                              sx={{
+                                verticalAlign: "top",
+                                py: 1.5,
+                                display: { xs: "block", sm: "table-cell" },
+                                borderBottom: { xs: 0, sm: "1px solid" },
+                                borderColor: {
+                                  xs: "transparent",
+                                  sm: "divider",
+                                },
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                  gap: 1,
+                                  textAlign: "center",
+                                }}
+                              >
+                                <Box
+                                  sx={{
+                                    width: 32,
+                                    height: 32,
+                                    borderRadius: "50%",
+                                    bgcolor: "rgba(0, 73, 187, 0.1)",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    flexShrink: 0,
+                                  }}
+                                >
+                                  <CoverageIcon
+                                    category={card.id}
+                                    fontSize="small"
+                                    sx={{ color: "#0049bb" }}
+                                  />
+                                </Box>
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    ...commonStyles.coverageCategoryLabel,
+                                    textAlign: "center",
+                                  }}
+                                >
+                                  {COVERAGE_CATEGORY_LABELS[card.id]}
+                                </Typography>
+                              </Box>
+                            </TableCell>
+                            <TableCell sx={{ py: 1.5 }}>
+                              <Box
+                                component="ul"
+                                sx={{
+                                  m: 0,
+                                  pl: 2,
+                                  display: "grid",
+                                  gap: 0.5,
+                                }}
+                              >
+                                {card.products.map((product) => (
+                                  <Box
+                                    component="li"
+                                    key={product.id}
+                                    sx={{ lineHeight: 1.4 }}
+                                  >
+                                    <MuiLink
+                                      href={product.href}
+                                      target="_blank"
+                                      rel="noopener"
+                                      underline="none"
+                                      color="primary"
+                                      sx={{
+                                        fontSize: "0.9rem",
+                                        fontWeight: 600,
+                                      }}
+                                    >
+                                      {product.name}
+                                    </MuiLink>
+                                  </Box>
+                                ))}
+                              </Box>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    Coverage details will appear here once products are
+                    available.
+                  </Typography>
+                )}
+              </Stack>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setCoverageCatalogOpen(false)}>
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <Dialog
             open={quickQuoteOpen}
             onClose={() => setQuickQuoteOpen(false)}
             aria-labelledby="quick-quote-title"
@@ -930,6 +1064,22 @@ export default function GetStarted() {
             </DialogContent>
             <DialogActions>
               <Button onClick={() => setQuickQuoteOpen(false)}>Close</Button>
+            </DialogActions>
+          </Dialog>
+
+          <Dialog
+            open={processOpen}
+            onClose={() => setProcessOpen(false)}
+            aria-labelledby="process-title"
+          >
+            <DialogTitle id="process-title">
+              About the application process
+            </DialogTitle>
+            <DialogContent>
+              <Typography>Process modal coming soon.</Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setProcessOpen(false)}>Close</Button>
             </DialogActions>
           </Dialog>
         </FormPageLayout>
