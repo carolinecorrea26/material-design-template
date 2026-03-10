@@ -340,7 +340,7 @@ export default function Eligibility() {
       setEligibility(values);
       markComplete();
       next();
-      navigate("/coverage");
+      navigate("/coverage-builder");
     }
   };
 

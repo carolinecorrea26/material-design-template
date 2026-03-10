@@ -182,7 +182,13 @@ export default function ApplicationLayout({
 
       {/* Progress header */}
       {isOnApplicationPage && (
-        <Box sx={{ width: "100%", mt: "56px", px: { xs: 0, md: 2 } }}>
+        <Box
+          sx={{
+            width: "100%",
+            mt: { xs: "56px", sm: "64px" },
+            px: { xs: 0, md: 2 },
+          }}
+        >
           <Box sx={{ maxWidth: "1400px", mx: "auto" }}>
             <Box
               sx={{
@@ -193,21 +199,6 @@ export default function ApplicationLayout({
                 mr: "2.5rem",
               }}
             >
-              <Typography
-                variant="caption"
-                sx={{
-                  fontWeight: 600,
-                  fontSize: "0.75rem",
-                }}
-              >
-                Progress:{" "}
-                <Box
-                  component="span"
-                  sx={{ color: "primary.main", fontWeight: 900 }}
-                >
-                  {progressLabel}
-                </Box>
-              </Typography>
               <Snackbar
                 open={showSaved}
                 onClose={() => setShowSaved(false)}
@@ -245,6 +236,24 @@ export default function ApplicationLayout({
                 <ChevronRight />
               </IconButton>
             </Box>
+            <Box
+              component="div"
+              sx={{
+                fontWeight: 600,
+                fontSize: "0.75rem",
+                mt: 0,
+                ml: "2.5rem",
+                color: "text.secondary",
+              }}
+            >
+              <Box
+                component="span"
+                sx={{ color: "primary.main", fontWeight: 900 }}
+              >
+                {progressLabel}
+              </Box>{" "}
+              complete
+            </Box>
           </Box>
         </Box>
       )}
@@ -256,10 +265,10 @@ export default function ApplicationLayout({
           width: "100%",
           maxWidth: "750px",
           mx: "auto",
-          px: { xs: 3, sm: 3 },
+          px: { xs: 2, sm: 3 },
           py: { xs: 3 },
           pt: { xs: "16px" },
-          minHeight: { xs: "56vh", sm: "64vh" },
+          minHeight: { xs: "64vh", sm: "64vh" },
         }}
       >
         {children}

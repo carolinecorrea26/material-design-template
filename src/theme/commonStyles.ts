@@ -244,11 +244,11 @@ export const commonStyles = {
   // ==========================================
 
   footer: {
-    py: { xs: 0, sm: 4 },
+    py: { xs: 4, sm: 4 },
     mt: 4,
-    bgcolor: "#edeef0",
-    borderTop: "1px solid #e7eaf4",
-    color: "text.primary",
+    bgcolor: "#f2f4f8",
+    borderTop: "none",
+    color: "#798293",
   } as SxProps<Theme>,
 
   sectionHeader: {

@@ -117,7 +117,7 @@ export default function PageHeader({
   return (
     <Stack
       spacing={{ xs: 4, md: 6 }}
-      sx={commonStyles.marginBottom3}
+      // sx={commonStyles.marginBottom3}
       className="page-header"
     >
       <Stack spacing={1} alignItems={centered ? "center" : "flex-start"}>

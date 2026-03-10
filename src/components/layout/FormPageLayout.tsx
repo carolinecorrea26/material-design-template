@@ -146,7 +146,7 @@ export default function FormPageLayout({
       <Box
         className="form-body"
         sx={{
-          background: "#f3f6fb",
+          background: "#f0f3f8",
           padding: { xs: "1.5rem 1rem", sm: "1.5rem 1.5rem" },
           borderRadius: "12px",
         }}

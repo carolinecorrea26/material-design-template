@@ -10,6 +10,7 @@ const AdvisorLogin = React.lazy(() => import("./pages/AdvisorLogin"));
 const AdvisorSuccess = React.lazy(() => import("./pages/AdvisorSuccess"));
 const Membership = React.lazy(() => import("./pages/Membership"));
 const Eligibility = React.lazy(() => import("./pages/Eligibility"));
+const CoverageBuilder = React.lazy(() => import("./pages/CoverageBuilder"));
 const GetStarted = React.lazy(() => import("./pages/GetStarted"));
 const Coverage = React.lazy(() => import("./pages/Coverage"));
 const Contact = React.lazy(() => import("./pages/Contact"));
@@ -91,6 +92,19 @@ export function AppRoutes() {
         <SuspenseWrap>
           <ApplicationLayout>
             <Eligibility />
+          </ApplicationLayout>
+        </SuspenseWrap>
+      ),
+    },
+
+    {
+      path: "/coverage-builder",
+      element: (
+        <SuspenseWrap>
+          <ApplicationLayout>
+            <RouteGuard require="coverage">
+              <CoverageBuilder />
+            </RouteGuard>
           </ApplicationLayout>
         </SuspenseWrap>
       ),

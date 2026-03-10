@@ -29,7 +29,7 @@ export default function Footer() {
                 sx={{
                   fontWeight: 600,
                   mb: 1,
-                  color: "text.primary",
+                  color: "#798293",
                   fontSize: "0.875rem",
                 }}
               >
@@ -37,7 +37,7 @@ export default function Footer() {
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ color: "text.primary", fontSize: "0.75rem" }}
+                sx={{ color: "#798293", fontSize: "0.75rem" }}
               >
                 American Bar Endowment
                 <br />
@@ -50,7 +50,7 @@ export default function Footer() {
               <Box sx={{ mt: 2 }}>
                 <Typography
                   variant="body2"
-                  sx={{ color: "text.primary", fontSize: "0.75rem" }}
+                  sx={{ color: "#798293", fontSize: "0.75rem" }}
                 >
                   <strong>Website:</strong>{" "}
                   <Link
@@ -64,7 +64,7 @@ export default function Footer() {
                 </Typography>
                 <Typography
                   variant="body2"
-                  sx={{ color: "text.primary", fontSize: "0.75rem" }}
+                  sx={{ color: "#798293", fontSize: "0.75rem" }}
                 >
                   <strong>Phone:</strong>{" "}
                   <Link
@@ -76,7 +76,7 @@ export default function Footer() {
                 </Typography>
                 <Typography
                   variant="body2"
-                  sx={{ color: "text.primary", fontSize: "0.75rem" }}
+                  sx={{ color: "#798293", fontSize: "0.75rem" }}
                 >
                   <strong>Email:</strong>{" "}
                   <Link
@@ -106,7 +106,7 @@ export default function Footer() {
                 sx={{
                   fontWeight: 600,
                   mb: 1,
-                  color: "text.primary",
+                  color: "#798293",
                   fontSize: "0.875rem",
                 }}
               >
@@ -114,7 +114,7 @@ export default function Footer() {
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ color: "text.primary", fontSize: "0.75rem" }}
+                sx={{ color: "#798293", fontSize: "0.75rem" }}
               >
                 New York Life Insurance Company
                 <br />
@@ -127,7 +127,7 @@ export default function Footer() {
               <Box sx={{ mt: 2 }}>
                 <Typography
                   variant="body2"
-                  sx={{ color: "text.primary", fontSize: "0.75rem" }}
+                  sx={{ color: "#798293", fontSize: "0.75rem" }}
                 >
                   <Link
                     href="#"
@@ -187,7 +187,7 @@ export default function Footer() {
                   <Typography
                     variant="body2"
                     sx={{
-                      color: "text.primary",
+                      color: "#798293",
                       fontSize: "0.75rem",
                       lineHeight: 1.6,
                     }}
@@ -227,7 +227,7 @@ export default function Footer() {
                   <Typography
                     variant="caption"
                     sx={{
-                      color: "text.secondary",
+                      color: "#798293",
                       display: "block",
                       mt: 1,
                       fontSize: "0.625rem",
@@ -245,7 +245,7 @@ export default function Footer() {
             <Stack spacing={2}>
               <Typography
                 variant="body2"
-                sx={{ fontSize: "0.75rem", color: "text.primary" }}
+                sx={{ fontSize: "0.75rem", color: "#798293" }}
               >
                 New York Life Insurance Company is licensed/authorized to
                 transact business in all of the 50 United States, the District
@@ -257,7 +257,7 @@ export default function Footer() {
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ fontSize: "0.75rem", color: "text.primary" }}
+                sx={{ fontSize: "0.75rem", color: "#798293" }}
               >
                 NEW YORK LIFE and the NEW YORK LIFE Box Logo are trademarks of
                 New York Life Insurance Company.

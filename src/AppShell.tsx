@@ -368,16 +368,11 @@ export function AppShell({ children }: AppShellProps) {
                   variant="contained"
                   color="primary"
                   onClick={handleAcceptCookies}
-                  endIcon={
-                    <CookieRounded
-                      sx={{ fontSize: 18, color: "primary.contrastText" }}
-                    />
-                  }
                   sx={{
                     fontWeight: 600,
                   }}
                 >
-                  Accept
+                  Close
                 </Button>
               </Box>
             </Box>

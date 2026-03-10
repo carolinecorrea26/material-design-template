@@ -115,12 +115,27 @@ export interface ClientConfig {
   productsFile?: string;
   /** Available coverage categories for this client */
   coverageCategories?: Array<"LI" | "AD" | "DI" | "OO" | "SH">;
+  /** Optional product amount labels by product id */
+  productAmounts?: Record<string, string>;
   /** Optional pages configuration */
   pages?: {
     /** List of page paths to exclude from this client */
     exclude?: string[];
   };
 }
+
+const DEFAULT_PRODUCT_AMOUNTS: Record<string, string> = {
+  "li-term10": "$100K–$1M",
+  "li-term20": "$100K–$1M",
+  "li-adt": "$25K–$500K",
+  "di-basic": "$2K–$15K/mo",
+  "di-student": "$1K–$7.5K/mo",
+  "di-premium": "$5K–$20K/mo",
+  "oo-10k": "$2K–$10K/mo",
+  "oo-20k": "$5K–$20K/mo",
+  "sh-hospital": "$100–$500/day",
+  "sh-critical": "$10K–$50K",
+};
 
 /**
  * Client Configurations
@@ -765,6 +780,14 @@ export function getClientCoverageCategories(): Array<
 > {
   const config = getClientConfig();
   return config.coverageCategories || ["LI", "AD", "DI", "OO", "SH"];
+}
+
+/**
+ * Get product amount labels for the client
+ */
+export function getClientProductAmounts(): Record<string, string> {
+  const config = getClientConfig();
+  return config.productAmounts || DEFAULT_PRODUCT_AMOUNTS;
 }
 
 /**
