@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, Stack, Typography, Chip } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { PAGES } from "../../config/pages";
@@ -7,8 +7,6 @@ import { commonStyles } from "../../theme/commonStyles";
 import { getClientFeatures } from "../../config/clients";
 import { useLayout } from "../../state/LayoutContext";
 import { usePageLoading } from "../../state/PageLoadingContext";
-import { Schedule } from "@mui/icons-material";
-
 interface PageHeaderProps {
   title: string;
   notes?: string | React.ReactNode;
@@ -18,6 +16,7 @@ interface PageHeaderProps {
   icon?: React.ReactNode;
   animatedIcon?: boolean;
   timeEstimate?: number; // in minutes
+  titleWeight?: number;
 }
 
 const AnimatedIcon: React.FC<{ icon: React.ReactNode }> = ({ icon }) => {
@@ -59,6 +58,7 @@ export default function PageHeader({
   icon,
   animatedIcon = false,
   timeEstimate,
+  titleWeight = 900,
 }: PageHeaderProps) {
   const location = useLocation();
   const { layoutMode } = useLayout();
@@ -96,23 +96,6 @@ export default function PageHeader({
   const inAppFlow = effectiveIndex >= 0;
 
   const shouldHideTitle = hideTitle || layoutMode === "single-page";
-
-  const timeByPath: Record<string, number> = {
-    "/get-started": 1,
-    "/eligibility": 3,
-    "/coverage": 6,
-    "/contact": 3,
-    "/profile": 6,
-    "/health-history": 6,
-    "/preview": 3,
-    "/consent": 2,
-  };
-  const effectiveTimeEstimate =
-    typeof timeEstimate === "number"
-      ? timeEstimate
-      : inAppFlow
-        ? (timeByPath[location.pathname] ?? undefined)
-        : undefined;
 
   return (
     <Stack
@@ -159,29 +142,12 @@ export default function PageHeader({
                     ...commonStyles.noOutline,
                     textAlign: centered ? "center" : "left",
                     fontSize: { xs: "1.25rem", md: "1.5rem" },
-                    fontWeight: 900,
+                    fontWeight: titleWeight,
                   }}
                 >
                   {title}
                 </Typography>
               </Stack>
-              {effectiveTimeEstimate !== undefined && (
-                <Chip
-                  icon={<Schedule />}
-                  label={
-                    <Box component="span">{effectiveTimeEstimate} min</Box>
-                  }
-                  size="small"
-                  sx={{
-                    bgcolor: "rgb(0 0 0 / 4%)",
-                    fontWeight: 600,
-                    fontSize: "0.75rem",
-                    height: "auto",
-                    py: 0.5,
-                    "& .MuiChip-label": { px: 1 },
-                  }}
-                />
-              )}
             </Stack>
           </Stack>
         )}

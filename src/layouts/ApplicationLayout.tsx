@@ -210,6 +210,24 @@ export default function ApplicationLayout({
                 </Alert>
               </Snackbar>
             </Box>
+            <Box
+              component="div"
+              sx={{
+                fontWeight: 600,
+                fontSize: "0.75rem",
+                mb: "-8px",
+                ml: "2.5rem",
+                color: "text.secondary",
+              }}
+            >
+              <Box
+                component="span"
+                sx={{ color: "primary.main", fontWeight: 900 }}
+              >
+                {progressLabel}
+              </Box>{" "}
+              complete
+            </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <IconButton
                 onClick={handleBack}
@@ -235,24 +253,6 @@ export default function ApplicationLayout({
               <IconButton onClick={handleNext} size="small">
                 <ChevronRight />
               </IconButton>
-            </Box>
-            <Box
-              component="div"
-              sx={{
-                fontWeight: 600,
-                fontSize: "0.75rem",
-                mt: 0,
-                ml: "2.5rem",
-                color: "text.secondary",
-              }}
-            >
-              <Box
-                component="span"
-                sx={{ color: "primary.main", fontWeight: 900 }}
-              >
-                {progressLabel}
-              </Box>{" "}
-              complete
             </Box>
           </Box>
         </Box>

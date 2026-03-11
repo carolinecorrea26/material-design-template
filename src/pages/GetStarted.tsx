@@ -522,17 +522,10 @@ export default function GetStarted() {
         <FormPageLayout
           header={
             <PageHeader
-              title="Start your insurance application"
+              title="Start your insurance application below. It takes around 30 minutes to complete."
+              titleWeight={500}
               notes={
                 <Stack spacing={2} sx={{ maxWidth: "80ch" }}>
-                  <Typography
-                    color="text.primary"
-                    sx={{ fontWeight: 400, lineHeight: 1.6 }}
-                  >
-                    This is an online application for
-                    {` ${branding.acronym ?? branding.name}`}-sponsored group
-                    insurance. It takes about 30 minutes to complete.
-                  </Typography>
                   <Stack spacing={1} direction={{ xs: "row", md: "row" }}>
                     <Button
                       variant="outlined"
