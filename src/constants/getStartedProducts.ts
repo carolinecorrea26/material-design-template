@@ -15,6 +15,7 @@ export type CoverageProductConfig = {
   coverageCategory: CoverageCat;
   applicants: ApplicantType[];
   monthlyEstimate?: string;
+  coverageDescription?: string;
   coverageHighlight?: string;
   quickDecision?: boolean;
 };
@@ -43,6 +44,8 @@ export const COVERAGE_CARDS: CoverageCardConfig[] = [
         coverageCategory: "LI",
         applicants: ["Self", "Spouse"],
         monthlyEstimate: "$20–$45/mo",
+        coverageDescription:
+          "Budget-friendly term coverage with predictable premiums.",
         coverageHighlight: "$500K of protection",
         quickDecision: true,
       },
@@ -52,6 +55,7 @@ export const COVERAGE_CARDS: CoverageCardConfig[] = [
         coverageCategory: "LI",
         applicants: ["Self", "Spouse"],
         monthlyEstimate: "$32–$60/mo",
+        coverageDescription: "Longer term protection for growing families.",
         coverageHighlight: "$1M of protection",
       },
     ],
@@ -69,6 +73,7 @@ export const COVERAGE_CARDS: CoverageCardConfig[] = [
         coverageCategory: "AD",
         applicants: ["Self", "Spouse", "Child"],
         monthlyEstimate: "$5–$12/mo",
+        coverageDescription: "Benefit for covered accidental injury or loss.",
         coverageHighlight: "$300K AD&D benefit",
       },
     ],
@@ -86,6 +91,8 @@ export const COVERAGE_CARDS: CoverageCardConfig[] = [
         coverageCategory: "DI",
         applicants: ["Self", "Spouse"],
         monthlyEstimate: "$55–$110/mo",
+        coverageDescription:
+          "Core income protection for full-time professionals.",
         coverageHighlight: "70% income replacement",
         quickDecision: true,
       },
@@ -95,6 +102,7 @@ export const COVERAGE_CARDS: CoverageCardConfig[] = [
         coverageCategory: "DI",
         applicants: ["Self"],
         monthlyEstimate: "$28–$65/mo",
+        coverageDescription: "Designed for residents and fellows in training.",
         coverageHighlight: "$5K/mo benefit",
       },
       {
@@ -103,6 +111,7 @@ export const COVERAGE_CARDS: CoverageCardConfig[] = [
         coverageCategory: "DI",
         applicants: ["Self", "Spouse"],
         monthlyEstimate: "$80–$150/mo",
+        coverageDescription: "Own-occupation coverage for specialized roles.",
         coverageHighlight: "$12K/mo own-occ benefit",
       },
     ],
@@ -120,6 +129,7 @@ export const COVERAGE_CARDS: CoverageCardConfig[] = [
         coverageCategory: "OO",
         applicants: ["Self"],
         monthlyEstimate: "$65–$95/mo",
+        coverageDescription: "Helps cover rent and payroll during recovery.",
         coverageHighlight: "$10K office overhead",
         quickDecision: true,
       },
@@ -129,6 +139,8 @@ export const COVERAGE_CARDS: CoverageCardConfig[] = [
         coverageCategory: "OO",
         applicants: ["Self"],
         monthlyEstimate: "$110–$160/mo",
+        coverageDescription:
+          "Higher overhead support for established practices.",
         coverageHighlight: "$20K office overhead",
       },
     ],
@@ -146,6 +158,7 @@ export const COVERAGE_CARDS: CoverageCardConfig[] = [
         coverageCategory: "SH",
         applicants: ["Self", "Spouse", "Child"],
         monthlyEstimate: "$18–$35/mo",
+        coverageDescription: "Daily cash payments for covered hospital stays.",
         coverageHighlight: "$300/day hospital cash",
         quickDecision: true,
       },
@@ -155,6 +168,7 @@ export const COVERAGE_CARDS: CoverageCardConfig[] = [
         coverageCategory: "SH",
         applicants: ["Self", "Spouse"],
         monthlyEstimate: "$22–$48/mo",
+        coverageDescription: "Lump-sum support after a covered diagnosis.",
         coverageHighlight: "$50K lump sum",
       },
     ],

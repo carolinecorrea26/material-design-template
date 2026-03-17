@@ -117,6 +117,10 @@ export interface ClientConfig {
   coverageCategories?: Array<"LI" | "AD" | "DI" | "OO" | "SH">;
   /** Optional product amount labels by product id */
   productAmounts?: Record<string, string>;
+  /** Optional product descriptions by product id */
+  productDescriptions?: Record<string, string>;
+  /** Optional product coverage ranges by product id */
+  productCoverageRanges?: Record<string, { min: number; max: number }>;
   /** Optional pages configuration */
   pages?: {
     /** List of page paths to exclude from this client */
@@ -135,6 +139,89 @@ const DEFAULT_PRODUCT_AMOUNTS: Record<string, string> = {
   "oo-20k": "$5K–$20K/mo",
   "sh-hospital": "$100–$500/day",
   "sh-critical": "$10K–$50K",
+};
+
+const DEFAULT_PRODUCT_DESCRIPTIONS: Record<string, string> = {
+  "li-term": "Straightforward term coverage for everyday protection.",
+  "li-10yr": "Short-term coverage with stable premiums for a decade.",
+  "li-20yr": "Longer term protection for extended peace of mind.",
+  "li-50plus": "Simplified coverage designed for members 50 and over.",
+  "li-add": "Extra protection for covered accidental loss or injury.",
+  "di-ltd-plus": "Enhanced long-term disability with added flexibility.",
+  "di-ltd": "Core long-term disability income protection.",
+  "di-mtd": "Mid-term disability support during recovery periods.",
+  "oo-professional": "Helps cover business overhead while you recover.",
+  "sh-critical-illness": "Lump-sum support after a covered diagnosis.",
+  "sh-hospital-money": "Daily cash benefits for covered hospital stays.",
+  "di-ltdi-plus": "Expanded disability protection for extended leave.",
+  "di-std": "Short-term disability coverage for brief absences.",
+  "nar-term-life": "Group term protection for REALTORS® members.",
+  "nar-mature-term": "Lower-cost term coverage for mature members.",
+  "nar-add": "Accidental death and dismemberment protection for REALTORS®.",
+  "nar-std": "Short-term disability coverage for REALTORS®.",
+  "li-15yr": "Mid-length term coverage for evolving needs.",
+  "li-preferred": "Preferred rates for qualifying applicants.",
+  "li-premier-accident": "Accident-focused protection with added benefits.",
+  "di-step-rated": "Disability coverage with step-rated premiums.",
+  "di-level-rated": "Disability coverage with level, predictable rates.",
+  "oo-office-overhead": "Keeps office expenses covered during disability.",
+  "sh-hospital-income": "Hospital income coverage for qualifying stays.",
+  "li-family-group": "Family group life coverage with flexible options.",
+  "li-45plus": "Term coverage tailored for members 45 and up.",
+  "li-large-add": "Higher-limit accidental death protection.",
+  "di-basic-package": "Foundational disability protection package.",
+  "di-student-loan": "Helps cover student loan payments if disabled.",
+  "sh-hospital-indemnity": "Hospital indemnity cash benefits for families.",
+  "li-group-term": "Group term life coverage for eligible members.",
+  "di-short-term": "Short-term disability income protection.",
+  "di-group": "Group disability income coverage for working members.",
+};
+
+const DEFAULT_PRODUCT_COVERAGE_RANGES: Record<
+  string,
+  { min: number; max: number }
+> = {
+  "li-term": { min: 50000, max: 500000 },
+  "li-10yr": { min: 50000, max: 500000 },
+  "li-15yr": { min: 50000, max: 500000 },
+  "li-20yr": { min: 50000, max: 1000000 },
+  "li-50plus": { min: 50000, max: 500000 },
+  "li-add": { min: 25000, max: 500000 },
+  "li-preferred": { min: 50000, max: 750000 },
+  "li-premier-accident": { min: 25000, max: 500000 },
+  "li-family-group": { min: 50000, max: 500000 },
+  "li-45plus": { min: 50000, max: 500000 },
+  "li-large-add": { min: 50000, max: 750000 },
+  "li-group-term": { min: 50000, max: 500000 },
+  "nar-term-life": { min: 50000, max: 1000000 },
+  "nar-mature-term": { min: 25000, max: 100000 },
+  "nar-add": { min: 50000, max: 500000 },
+  "li-adt": { min: 25000, max: 500000 },
+  "di-ltd-plus": { min: 1000, max: 5000 },
+  "di-ltd": { min: 1000, max: 5000 },
+  "di-ltdi-plus": { min: 1000, max: 12000 },
+  "di-mtd": { min: 1000, max: 4000 },
+  "di-basic": { min: 2000, max: 15000 },
+  "di-student": { min: 1000, max: 7500 },
+  "di-premium": { min: 5000, max: 20000 },
+  "di-step-rated": { min: 1000, max: 5000 },
+  "di-level-rated": { min: 1000, max: 5000 },
+  "di-std": { min: 500, max: 4000 },
+  "di-short-term": { min: 1000, max: 4000 },
+  "di-group": { min: 1000, max: 5000 },
+  "nar-std": { min: 1000, max: 5000 },
+  "di-basic-package": { min: 1000, max: 5000 },
+  "di-student-loan": { min: 1000, max: 4000 },
+  "oo-professional": { min: 500, max: 3000 },
+  "oo-office-overhead": { min: 500, max: 3000 },
+  "oo-10k": { min: 2000, max: 10000 },
+  "oo-20k": { min: 5000, max: 20000 },
+  "sh-critical-illness": { min: 10000, max: 50000 },
+  "sh-hospital-money": { min: 100, max: 500 },
+  "sh-hospital-indemnity": { min: 100, max: 300 },
+  "sh-hospital": { min: 100, max: 500 },
+  "sh-critical": { min: 10000, max: 50000 },
+  "sh-hospital-income": { min: 100, max: 300 },
 };
 
 /**
@@ -788,6 +875,25 @@ export function getClientCoverageCategories(): Array<
 export function getClientProductAmounts(): Record<string, string> {
   const config = getClientConfig();
   return config.productAmounts || DEFAULT_PRODUCT_AMOUNTS;
+}
+
+/**
+ * Get product descriptions for the client
+ */
+export function getClientProductDescriptions(): Record<string, string> {
+  const config = getClientConfig();
+  return config.productDescriptions || DEFAULT_PRODUCT_DESCRIPTIONS;
+}
+
+/**
+ * Get product coverage ranges for the client
+ */
+export function getClientProductCoverageRanges(): Record<
+  string,
+  { min: number; max: number }
+> {
+  const config = getClientConfig();
+  return config.productCoverageRanges || DEFAULT_PRODUCT_COVERAGE_RANGES;
 }
 
 /**

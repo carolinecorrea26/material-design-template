@@ -8,6 +8,10 @@ const optionalString = z.preprocess(
   z.string().optional(),
 );
 
+const US_ZIP_REGEX = /^\d{5}$/;
+const CA_POSTAL_REGEX =
+  /^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z]\s?\d[ABCEGHJ-NPRSTV-Z]\d$/i;
+
 export const EligibilitySchema = z
   .object({
     isMember: optionalString,
@@ -29,14 +33,20 @@ export const EligibilitySchema = z
       .min(1, "Birthday is required")
       .regex(/^\d{4}-\d{2}-\d{2}$/, "Please select a valid date"),
     gender: z.enum(["male", "female"], { message: "Please select an option" }),
-    email: z.preprocess(
-      (val) => (val === "" ? undefined : val),
-      z.string().email("Please enter a valid email address").optional(),
-    ),
+    email: z.preprocess((val) => {
+      if (typeof val === "string") {
+        const trimmed = val.trim();
+        return trimmed === "" ? undefined : trimmed;
+      }
+      return val;
+    }, z.string().email("Please enter a valid email address").optional()),
     zipCode: z
       .string()
-      .min(5, "Valid zip code is required")
-      .regex(/^\d{5}$/, "Valid zip code is required"),
+      .min(3, "Valid postal code is required")
+      .refine(
+        (val) => US_ZIP_REGEX.test(val) || CA_POSTAL_REGEX.test(val),
+        "Valid postal code is required",
+      ),
     state: z.string().min(1, "State is required"),
 
     applicants: z
@@ -113,22 +123,6 @@ export const EligibilitySchema = z
     spouseHoursPerWeek: z.string().optional(), // DI
   })
   .superRefine((val, ctx) => {
-    const hasCoverageSelections =
-      (val.coverageProductSelections ?? []).length > 0;
-
-    // Require at least one coverage for self if self is applying and coverage selections exist
-    if (
-      hasCoverageSelections &&
-      val.applicants.self &&
-      val.selfCoverages.length === 0
-    ) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["selfCoverages"],
-        message: "Please select a coverage option.",
-      });
-    }
-
     // Spouse personal information required if spouse applies
     if (val.applicants.spouse) {
       if (!val.spouseFirstName || val.spouseFirstName.trim().length === 0) {
@@ -165,32 +159,20 @@ export const EligibilitySchema = z
           message: "Please select an option",
         });
       }
-      if (!val.spouseEmail || val.spouseEmail.trim().length === 0) {
+      const spouseEmail = val.spouseEmail?.trim() ?? "";
+      if (!spouseEmail) {
         ctx.addIssue({
           code: "custom",
           path: ["spouseEmail"],
           message: "Email is required",
         });
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.spouseEmail)) {
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(spouseEmail)) {
         ctx.addIssue({
           code: "custom",
           path: ["spouseEmail"],
           message: "Please enter a valid email address",
         });
       }
-    }
-
-    // Spouse coverages required if spouse applies and coverage selections exist
-    if (
-      hasCoverageSelections &&
-      val.applicants.spouse &&
-      val.spouseCoverages.length === 0
-    ) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["spouseCoverages"],
-        message: "Please select a coverage option.",
-      });
     }
 
     // Children validation

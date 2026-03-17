@@ -4,6 +4,53 @@ type ZipRange = {
   state: string;
 };
 
+const CA_POSTAL_REGEX =
+  /^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z]\s?\d[ABCEGHJ-NPRSTV-Z]\d$/i;
+
+const CA_PROVINCE_BY_PREFIX: Record<string, string> = {
+  A: "Newfoundland and Labrador",
+  B: "Nova Scotia",
+  C: "Prince Edward Island",
+  E: "New Brunswick",
+  G: "Quebec",
+  H: "Quebec",
+  J: "Quebec",
+  K: "Ontario",
+  L: "Ontario",
+  M: "Ontario",
+  N: "Ontario",
+  P: "Ontario",
+  R: "Manitoba",
+  S: "Saskatchewan",
+  T: "Alberta",
+  V: "British Columbia",
+  X: "Northwest Territories",
+  Y: "Yukon Territory",
+};
+
+const US_PREFIX_EXACT: Record<string, string> = {
+  "006": "Puerto Rico",
+  "007": "Puerto Rico",
+  "008": "U.S. Virgin Islands",
+  "009": "Puerto Rico",
+  "093": "Guantanamo Bay",
+  "090": "U.S. Armed Forces Europe",
+  "091": "U.S. Armed Forces Europe",
+  "092": "U.S. Armed Forces Europe",
+  "094": "U.S. Armed Forces Europe",
+  "095": "U.S. Armed Forces Europe",
+  "096": "U.S. Armed Forces Europe",
+  "097": "U.S. Armed Forces Europe",
+  "098": "U.S. Armed Forces Europe",
+  "340": "U.S. Armed Forces Americas",
+  "962": "U.S. Armed Forces Pacific",
+  "963": "U.S. Armed Forces Pacific",
+  "964": "U.S. Armed Forces Pacific",
+  "965": "U.S. Armed Forces Pacific",
+  "966": "U.S. Armed Forces Pacific",
+  "969": "Guam",
+};
+
 const ZIP_RANGES: ZipRange[] = [
   { start: 350, end: 369, state: "Alabama" },
   { start: 995, end: 999, state: "Alaska" },
@@ -61,9 +108,22 @@ const ZIP_RANGES: ZipRange[] = [
 
 export const getStateFromZip = (zipCode?: string): string | undefined => {
   if (!zipCode) return undefined;
-  const digits = zipCode.replace(/\D/g, "");
+  const trimmed = zipCode.trim().toUpperCase();
+
+  if (CA_POSTAL_REGEX.test(trimmed)) {
+    const prefix = trimmed[0];
+    return CA_PROVINCE_BY_PREFIX[prefix];
+  }
+
+  const digits = trimmed.replace(/\D/g, "");
   if (digits.length < 3) return undefined;
-  const prefix = parseInt(digits.slice(0, 3), 10);
+  const prefixStr = digits.slice(0, 3).padStart(3, "0");
+
+  if (US_PREFIX_EXACT[prefixStr]) {
+    return US_PREFIX_EXACT[prefixStr];
+  }
+
+  const prefix = parseInt(prefixStr, 10);
   if (Number.isNaN(prefix)) return undefined;
 
   const match = ZIP_RANGES.find(

@@ -185,7 +185,7 @@ export default function ApplicationLayout({
         <Box
           sx={{
             width: "100%",
-            mt: { xs: "56px", sm: "64px" },
+            mt: { xs: "56px", sm: "56px" },
             px: { xs: 0, md: 2 },
           }}
         >

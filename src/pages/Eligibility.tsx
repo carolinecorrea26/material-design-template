@@ -9,6 +9,7 @@ import {
   IconButton,
   Box,
   Alert,
+  SwipeableDrawer,
   FormControl,
   InputLabel,
   Select,
@@ -25,6 +26,7 @@ import {
   RemoveCircleRounded,
 } from "@mui/icons-material";
 import PageHeader from "../components/layout/PageHeader";
+import ScrollChipRow from "../components/layout/ScrollChipRow";
 import FormStepTransition from "../components/layout/FormStepTransition";
 import PageNavigation from "../components/layout/PageNavigation";
 import FormPageLayout from "../components/layout/FormPageLayout";
@@ -49,19 +51,157 @@ import { commonStyles } from "../theme/commonStyles";
 import {
   getClientMembershipQuestion,
   ACTIVE_CLIENT_ID,
+  getClientBranding,
+  getClientCoverageCategories,
+  getClientProductAmounts,
 } from "../config/clients";
+import { getProducts } from "../api/client";
+import { COVERAGE_CARDS } from "../constants/getStartedProducts";
 import { TOBACCO_PRODUCTS, STATE_OPTIONS } from "../constants/eligibility";
 import { PRODUCT_LOOKUP } from "../constants/getStartedProducts";
 import { getStateFromZip } from "../utils/zipToState";
+import { CoverageDetailsContent } from "../components/modals/CoverageDetailsModal";
+import type { Product, CoverageCategory, Applicant } from "../types/app";
+
+type CoverageDetailsProduct = {
+  id: string;
+  name: string;
+  applicants: string[];
+  href: string;
+};
+
+type CoverageDetailsCategory = {
+  id: CoverageCategory;
+  description: string;
+  products: CoverageDetailsProduct[];
+};
+
+const APPLICANT_LABELS: Record<Applicant, string> = {
+  self: "Self",
+  spouse: "Spouse",
+  child: "Child",
+};
 
 export default function Eligibility() {
   const { data, setEligibility } = useAppData();
   const { next, markComplete } = useStepper();
   const navigate = useNavigate();
   const [showIneligibleDialog, setShowIneligibleDialog] = React.useState(false);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [drawerContent, setDrawerContent] = React.useState("");
+  const branding = getClientBranding();
+  const clientCoverageCategories = React.useMemo(
+    () => getClientCoverageCategories(),
+    [],
+  );
+  const [productCatalog, setProductCatalog] = React.useState<Product[]>([]);
+  const productAmounts = React.useMemo(() => getClientProductAmounts(), []);
+  const categoryAmounts = React.useMemo(
+    () => ({
+      LI: "$100K–$1M",
+      AD: "$25K–$500K",
+      DI: "$2K–$20K/mo",
+      OO: "$2K–$20K/mo",
+      SH: "$10K–$50K",
+    }),
+    [],
+  );
 
   const getStartedSummary = data.getStarted;
   const savedGetStarted = getStartedSummary?.productSelections ?? [];
+
+  React.useEffect(() => {
+    let mounted = true;
+    getProducts()
+      .then((fetched) => {
+        if (!mounted) return;
+        if (Array.isArray(fetched) && fetched.length > 0) {
+          setProductCatalog(fetched);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to load products", error);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const brochurePrefix = React.useMemo(
+    () => branding.acronym?.toLowerCase() ?? "abe",
+    [branding.acronym],
+  );
+
+  const getBrochureUrl = React.useCallback(
+    (category: CoverageCategory) =>
+      `https://d160mojjx9yhiu.cloudfront.net/pdfs/4591/${brochurePrefix}-${category.toLowerCase()}-overview.pdf`,
+    [brochurePrefix],
+  );
+
+  const defaultCoverageCards = React.useMemo<CoverageDetailsCategory[]>(
+    () =>
+      COVERAGE_CARDS.map((card) => ({
+        id: card.id as CoverageCategory,
+        description: card.description,
+        products: card.products.map((product) => ({
+          id: product.id,
+          name: product.name,
+          applicants: product.applicants,
+          href: getBrochureUrl(card.id as CoverageCategory),
+        })),
+      })),
+    [getBrochureUrl],
+  );
+
+  const coverageCards = React.useMemo<CoverageDetailsCategory[]>(() => {
+    if (productCatalog.length === 0) {
+      return defaultCoverageCards;
+    }
+
+    const grouped: Record<CoverageCategory, Product[]> = {
+      LI: [],
+      AD: [],
+      DI: [],
+      OO: [],
+      SH: [],
+    };
+
+    productCatalog.forEach((product) => {
+      if (grouped[product.category]) {
+        grouped[product.category].push(product);
+      }
+    });
+
+    const cards = (Object.keys(grouped) as CoverageCategory[])
+      .map((category) => {
+        const categoryProducts = grouped[category];
+        if (categoryProducts.length === 0) return null;
+        const meta = COVERAGE_CARDS.find((card) => card.id === category);
+        return {
+          id: category,
+          description: meta?.description ?? "",
+          products: categoryProducts.map((product) => ({
+            id: product.id,
+            name: product.name,
+            applicants: product.eligibleApplicants.map(
+              (applicant) => APPLICANT_LABELS[applicant] ?? applicant,
+            ),
+            href: getBrochureUrl(category),
+          })),
+        } satisfies CoverageDetailsCategory;
+      })
+      .filter((card): card is CoverageDetailsCategory => Boolean(card));
+
+    return cards.length ? cards : defaultCoverageCards;
+  }, [productCatalog, defaultCoverageCards, getBrochureUrl]);
+
+  const coverageInfoCards = React.useMemo(
+    () =>
+      coverageCards.filter((card) =>
+        clientCoverageCategories.includes(card.id),
+      ),
+    [clientCoverageCategories, coverageCards],
+  );
 
   React.useEffect(() => {
     if (getStartedSummary && (savedGetStarted ?? []).length === 0) {
@@ -172,7 +312,16 @@ export default function Eligibility() {
   // Get client-specific membership question configuration
   const membershipQuestion = getClientMembershipQuestion();
 
-  const selfCov = derivedSelfCoverages;
+  const selfCoveragesValue = useWatch({
+    control: methods.control,
+    name: "selfCoverages",
+  });
+  const spouseCoveragesValue = useWatch({
+    control: methods.control,
+    name: "spouseCoverages",
+  });
+  const selfCov = selfCoveragesValue ?? derivedSelfCoverages;
+  const spouseCov = spouseCoveragesValue ?? derivedSpouseCoverages;
   const applicantsValue = useWatch({
     control: methods.control,
     name: "applicants",
@@ -189,6 +338,10 @@ export default function Eligibility() {
     name: "zipCode",
   });
   const selfSmoker = useWatch({ control: methods.control, name: "smokerSelf" });
+  const spouseSmoker = useWatch({
+    control: methods.control,
+    name: "smokerSpouse",
+  });
   const [stateAutoFilled, setStateAutoFilled] = React.useState(false);
   const childrenValues = methods.watch("children") ?? [];
   // Check if there are any spouse-related errors
@@ -225,9 +378,7 @@ export default function Eligibility() {
   }, [membershipValue]);
 
   React.useEffect(() => {
-    const digits = (zipCodeValue ?? "").replace(/\D/g, "");
-    if (digits.length !== 5) return;
-    const stateFromZip = getStateFromZip(digits);
+    const stateFromZip = getStateFromZip(zipCodeValue);
     if (!stateFromZip) return;
     if (stateFromZip === methods.getValues("state")) return;
 
@@ -410,15 +561,37 @@ export default function Eligibility() {
     );
   };
 
+  const handleOpenDrawer = (content: string) => {
+    setDrawerContent(content);
+    setDrawerOpen(true);
+  };
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
         <FormPageLayout
           header={
-            <PageHeader
-              title="Check eligibility for coverage"
-              notes="Please provide the following information to determine your eligibility for coverage. You will see eligible coverage options on the next page."
-            />
+            <Stack spacing={2}>
+              <PageHeader
+                title="Check your eligibility for coverage by answering a few questions."
+                notes=""
+              />
+              <ScrollChipRow
+                items={[
+                  {
+                    label: "What coverage options are available?",
+                    onClick: () =>
+                      handleOpenDrawer("What coverage options are available?"),
+                  },
+                ]}
+              />
+              {Object.keys(methods.formState.errors).length > 0 && (
+                <Alert severity="error">
+                  Help us determine your eligibility for coverage by completing
+                  all required fields.
+                </Alert>
+              )}
+            </Stack>
           }
           navigation={
             <PageNavigation
@@ -435,14 +608,6 @@ export default function Eligibility() {
           }
         >
           <FormStepTransition>
-            {/* Page-level Error Alert */}
-            {Object.keys(methods.formState.errors).length > 0 && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                Help us determine your eligibility for coverage by completing
-                all required fields.
-              </Alert>
-            )}
-
             <Stack spacing={4}>
               {/* Your Eligibility Section - Always visible */}
               <Stack spacing={0}>
@@ -453,13 +618,28 @@ export default function Eligibility() {
                     render={({ field, fieldState }) => (
                       <RHFTextField
                         {...field}
-                        label="Zip Code"
+                        label="ZIP / Postal Code"
                         required
-                        inputProps={{ maxLength: 5, inputMode: "numeric" }}
+                        inputProps={{ maxLength: 7 }}
                         value={field.value ?? ""}
                         onChange={(e) => {
-                          const value = e.target.value.replace(/\D/g, "");
-                          field.onChange(value);
+                          const raw = e.target.value
+                            .toUpperCase()
+                            .replace(/[^A-Z0-9]/g, "");
+                          if (!raw) {
+                            field.onChange("");
+                            return;
+                          }
+                          const looksCanadian = /^[A-Z]/.test(raw);
+                          if (looksCanadian) {
+                            const formatted = raw
+                              .slice(0, 6)
+                              .replace(/(.{3})/, "$1 ")
+                              .trim();
+                            field.onChange(formatted);
+                            return;
+                          }
+                          field.onChange(raw.slice(0, 5));
                         }}
                         onBlur={() => {
                           field.onBlur();
@@ -475,7 +655,7 @@ export default function Eligibility() {
                   <Box sx={{ display: "flex", flexDirection: "column" }}>
                     <RHFSelect
                       name="state"
-                      label="State"
+                      label="State / Province"
                       options={STATE_OPTIONS}
                       required
                     />
@@ -502,7 +682,7 @@ export default function Eligibility() {
                         variant="caption"
                         sx={{ color: "success.main", fontWeight: 500 }}
                       >
-                        Based on your ZIP code
+                        Based on your ZIP / postal code
                       </Typography>
                     </Box>
                   </Box>
@@ -777,7 +957,121 @@ export default function Eligibility() {
                         ]}
                         required
                       />
+                      <RHFTextField
+                        name="spouseEmail"
+                        label="Email"
+                        type="email"
+                        required
+                        autoComplete="email"
+                      />
                     </Stack>
+
+                    {/* Spouse coverage follow-ups */}
+                    {spouseCov &&
+                      (spouseCov.includes("LI") ||
+                        spouseCov.includes("SH")) && (
+                        <Stack spacing={2}>
+                          <RHFRadioGroup
+                            name="smokerSpouse"
+                            label="Have you used tobacco or any nicotine substitute in any form (including nicotine patches and nicotine chewing gum)?"
+                            options={[
+                              { label: "Yes", value: "yes" },
+                              { label: "No", value: "no" },
+                            ]}
+                            required
+                          />
+
+                          {spouseSmoker === "yes" && (
+                            <>
+                              <DateField
+                                name="spouseTobaccoLastUsed"
+                                label="Last Used"
+                                required
+                              />
+
+                              <Controller
+                                name="spouseTobaccoProducts"
+                                control={methods.control}
+                                render={({ field, fieldState }) => (
+                                  <FormControl
+                                    fullWidth
+                                    error={!!fieldState.error}
+                                    required
+                                  >
+                                    <InputLabel id="spouse-tobacco-products-label">
+                                      Product(s) Used
+                                    </InputLabel>
+                                    <Select
+                                      {...field}
+                                      labelId="spouse-tobacco-products-label"
+                                      label="Product(s) Used"
+                                      multiple
+                                      value={field.value || []}
+                                      renderValue={(selected) =>
+                                        (selected as string[]).join(", ")
+                                      }
+                                    >
+                                      {TOBACCO_PRODUCTS.map((product) => (
+                                        <MenuItem key={product} value={product}>
+                                          <Checkbox
+                                            checked={
+                                              field.value?.includes(product) ||
+                                              false
+                                            }
+                                          />
+                                          {product}
+                                        </MenuItem>
+                                      ))}
+                                    </Select>
+                                    {fieldState.error && (
+                                      <FormHelperText>
+                                        {fieldState.error.message}
+                                      </FormHelperText>
+                                    )}
+                                  </FormControl>
+                                )}
+                              />
+                            </>
+                          )}
+                        </Stack>
+                      )}
+
+                    {spouseCov && spouseCov.includes("DI") && (
+                      <Stack spacing={2}>
+                        <Controller
+                          name="spouseAvgIncome"
+                          control={methods.control}
+                          render={({ field, fieldState }) => (
+                            <RHFTextField
+                              name={field.name}
+                              label="Average Monthly Income"
+                              required
+                              value={field.value}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(
+                                  /[^0-9]/g,
+                                  "",
+                                );
+                                const formatted = value
+                                  ? `$${parseInt(value).toLocaleString()}`
+                                  : "";
+                                field.onChange(formatted);
+                              }}
+                              error={!!fieldState.error}
+                              helperText={
+                                fieldState.error?.message ||
+                                "Monthly income is asked to help determine the amount of disability coverage you may qualify for."
+                              }
+                            />
+                          )}
+                        />
+                        <RHFTextField
+                          name="spouseHoursPerWeek"
+                          label="# Hours You Work/Week"
+                          required
+                        />
+                      </Stack>
+                    )}
                   </Stack>
                 </Stack>
               </Box>
@@ -906,6 +1200,28 @@ export default function Eligibility() {
           </FormStepTransition>
         </FormPageLayout>
       </form>
+
+      <SwipeableDrawer
+        anchor="bottom"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onOpen={() => setDrawerOpen(true)}
+      >
+        <Box sx={{ p: 3 }}>
+          <Typography variant="h6" sx={{ mb: 1 }}>
+            {drawerContent}
+          </Typography>
+          {drawerContent === "What coverage options are available?" ? (
+            <CoverageDetailsContent
+              coverageInfoCards={coverageInfoCards}
+              productAmounts={productAmounts}
+              categoryAmounts={categoryAmounts}
+            />
+          ) : (
+            <Typography color="text.secondary">Content coming soon.</Typography>
+          )}
+        </Box>
+      </SwipeableDrawer>
 
       <Dialog
         open={showIneligibleDialog}

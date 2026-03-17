@@ -58,7 +58,7 @@ export default function PageHeader({
   icon,
   animatedIcon = false,
   timeEstimate,
-  titleWeight = 900,
+  titleWeight = 600,
 }: PageHeaderProps) {
   const location = useLocation();
   const { layoutMode } = useLayout();
@@ -103,7 +103,7 @@ export default function PageHeader({
       // sx={commonStyles.marginBottom3}
       className="page-header"
     >
-      <Stack spacing={1} alignItems={centered ? "center" : "flex-start"}>
+      <Stack spacing={2} alignItems={centered ? "center" : "flex-start"}>
         {!shouldHideTitle && (
           <Stack spacing={1} alignItems={centered ? "center" : "flex-start"}>
             <Stack
@@ -152,7 +152,7 @@ export default function PageHeader({
           </Stack>
         )}
         {(beforeNotes || notes) && (
-          <Stack spacing={1}>
+          <Stack spacing={1} sx={{ width: "100%" }}>
             {beforeNotes}
             {notes &&
               (typeof notes === "string" ? (

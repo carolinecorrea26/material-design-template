@@ -10,16 +10,13 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  SwipeableDrawer,
   Autocomplete,
   TextField,
 } from "@mui/material";
-import {
-  BoltRounded,
-  PrivacyTipOutlined,
-  SavingsRounded,
-} from "@mui/icons-material";
 import { COVERAGE_CARDS } from "../constants/getStartedProducts";
 import PageHeader from "../components/layout/PageHeader";
+import ScrollChipRow from "../components/layout/ScrollChipRow";
 import FormStepTransition from "../components/layout/FormStepTransition";
 import FormPageLayout from "../components/layout/FormPageLayout";
 import PageNavigation from "../components/layout/PageNavigation";
@@ -99,6 +96,8 @@ export default function GetStarted() {
   const [quickQuoteOpen, setQuickQuoteOpen] = React.useState(false);
   const [coverageCatalogOpen, setCoverageCatalogOpen] = React.useState(false);
   const [processOpen, setProcessOpen] = React.useState(false);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [drawerContent, setDrawerContent] = React.useState("");
   const productAmounts = React.useMemo(() => getClientProductAmounts(), []);
   const categoryAmounts = React.useMemo(
     () => ({
@@ -516,97 +515,33 @@ export default function GetStarted() {
     [],
   );
 
+  const handleOpenDrawer = (content: string) => {
+    setDrawerContent(content);
+    setDrawerOpen(true);
+  };
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleConfirmMembership} noValidate>
         <FormPageLayout
           header={
             <PageHeader
-              title="Start your insurance application below. It takes around 30 minutes to complete."
-              titleWeight={500}
+              title="Start your insurance application below."
+              titleWeight={600}
               notes={
-                <Stack spacing={2} sx={{ maxWidth: "80ch" }}>
-                  <Stack spacing={1} direction={{ xs: "row", md: "row" }}>
-                    <Button
-                      variant="outlined"
-                      onClick={() => setCoverageCatalogOpen(true)}
-                      sx={{
-                        justifyContent: "flex-start",
-                        alignItems: "flex-start",
-                        textAlign: "left",
-                        gap: 1.5,
-                        py: 1.25,
-                        px: 1.5,
-                        borderRadius: 2,
-                        flex: 1,
-                      }}
-                    >
-                      <Box>
-                        <Typography
-                          variant="body2"
-                          color="primary"
-                          fontWeight={600}
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 0.75,
-                          }}
-                        >
-                          <PrivacyTipOutlined
-                            sx={{ color: "primary.main", fontSize: 18 }}
-                          />
-                          Coverage Details
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          sx={{ fontSize: "0.75rem" }}
-                        >
-                          See available products, eligibility, and key features
-                        </Typography>
-                      </Box>
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      onClick={() => setQuickQuoteOpen(true)}
-                      sx={{
-                        justifyContent: "flex-start",
-                        alignItems: "flex-start",
-                        textAlign: "left",
-                        gap: 1.5,
-                        py: 1.25,
-                        px: 1.5,
-                        borderRadius: 2,
-                        flex: 1,
-                      }}
-                    >
-                      <Box>
-                        <Typography
-                          variant="body2"
-                          color="primary"
-                          fontWeight={600}
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 0.75,
-                          }}
-                        >
-                          <BoltRounded
-                            sx={{ color: "primary.main", fontSize: 18 }}
-                          />
-                          Instant Quote
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          sx={{ fontSize: "0.75rem" }}
-                        >
-                          Estimate monthly cost in under a minute
-                        </Typography>
-                      </Box>
-                    </Button>
-                  </Stack>
-                </Stack>
+                <ScrollChipRow
+                  items={[
+                    {
+                      label: "How does applying work?",
+                      onClick: () =>
+                        handleOpenDrawer("How does applying work?"),
+                    },
+                    {
+                      label: "How much does it cost?",
+                      onClick: () => handleOpenDrawer("How much does it cost?"),
+                    },
+                  ]}
+                />
               }
             />
           }
@@ -816,6 +751,22 @@ export default function GetStarted() {
             open={quickQuoteOpen}
             onClose={() => setQuickQuoteOpen(false)}
           />
+
+          <SwipeableDrawer
+            anchor="bottom"
+            open={drawerOpen}
+            onClose={() => setDrawerOpen(false)}
+            onOpen={() => setDrawerOpen(true)}
+          >
+            <Box sx={{ p: 3 }}>
+              <Typography variant="h6" sx={{ mb: 1 }}>
+                {drawerContent}
+              </Typography>
+              <Typography color="text.secondary">
+                Content coming soon.
+              </Typography>
+            </Box>
+          </SwipeableDrawer>
 
           <Dialog
             open={processOpen}
