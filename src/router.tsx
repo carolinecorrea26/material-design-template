@@ -10,7 +10,8 @@ const AdvisorLogin = React.lazy(() => import("./pages/AdvisorLogin"));
 const AdvisorSuccess = React.lazy(() => import("./pages/AdvisorSuccess"));
 const Membership = React.lazy(() => import("./pages/Membership"));
 const Eligibility = React.lazy(() => import("./pages/Eligibility"));
-const CoverageBuilder = React.lazy(() => import("./pages/CoverageBuilder"));
+const AddCoverage = React.lazy(() => import("./pages/AddCoverage"));
+const CoverageQuestions = React.lazy(() => import("./pages/CoverageQuestions"));
 const GetStarted = React.lazy(() => import("./pages/GetStarted"));
 const Coverage = React.lazy(() => import("./pages/Coverage"));
 const Contact = React.lazy(() => import("./pages/Contact"));
@@ -98,12 +99,25 @@ export function AppRoutes() {
     },
 
     {
-      path: "/coverage-builder",
+      path: "/add-coverage",
       element: (
         <SuspenseWrap>
           <ApplicationLayout>
             <RouteGuard require="coverage">
-              <CoverageBuilder />
+              <AddCoverage />
+            </RouteGuard>
+          </ApplicationLayout>
+        </SuspenseWrap>
+      ),
+    },
+
+    {
+      path: "/coverage-questions",
+      element: (
+        <SuspenseWrap>
+          <ApplicationLayout>
+            <RouteGuard require="coverage">
+              <CoverageQuestions />
             </RouteGuard>
           </ApplicationLayout>
         </SuspenseWrap>

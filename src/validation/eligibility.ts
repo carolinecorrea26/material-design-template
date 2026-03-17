@@ -32,7 +32,9 @@ export const EligibilitySchema = z
       .string()
       .min(1, "Birthday is required")
       .regex(/^\d{4}-\d{2}-\d{2}$/, "Please select a valid date"),
-    gender: z.enum(["male", "female"], { message: "Please select an option" }),
+    gender: z
+      .enum(["male", "female"], { message: "Please select an option" })
+      .optional(),
     email: z.preprocess((val) => {
       if (typeof val === "string") {
         const trimmed = val.trim();
@@ -152,13 +154,6 @@ export const EligibilitySchema = z
           message: "Please select a valid date",
         });
       }
-      if (!val.spouseGender) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["spouseGender"],
-          message: "Please select an option",
-        });
-      }
       const spouseEmail = val.spouseEmail?.trim() ?? "";
       if (!spouseEmail) {
         ctx.addIssue({
@@ -226,128 +221,6 @@ export const EligibilitySchema = z
               message: "Please select an option",
             });
           }
-        });
-      }
-    }
-
-    // Nicotine required if LI or SH chosen
-    const needsSelfSmoker = val.selfCoverages.some(
-      (c) => c === "LI" || c === "SH",
-    );
-    if (val.applicants.self && needsSelfSmoker && !val.smokerSelf) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["smokerSelf"],
-        message: "Please select an option",
-      });
-    }
-    const needsSpouseSmoker = val.spouseCoverages.some(
-      (c) => c === "LI" || c === "SH",
-    );
-    if (val.applicants.spouse && needsSpouseSmoker && !val.smokerSpouse) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["smokerSpouse"],
-        message: "Please select an option",
-      });
-    }
-
-    // Tobacco use details required if smoker = "yes"
-    if (val.smokerSelf === "yes") {
-      if (!val.selfTobaccoLastUsed) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["selfTobaccoLastUsed"],
-          message: "Last Used date is required",
-        });
-      } else if (!/^\d{4}-\d{2}-\d{2}$/.test(val.selfTobaccoLastUsed)) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["selfTobaccoLastUsed"],
-          message: "Please select a valid date",
-        });
-      }
-      if (!val.selfTobaccoProducts || val.selfTobaccoProducts.length === 0) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["selfTobaccoProducts"],
-          message: "Select at least one product",
-        });
-      }
-    }
-    if (val.smokerSpouse === "yes") {
-      if (!val.spouseTobaccoLastUsed) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["spouseTobaccoLastUsed"],
-          message: "Last Used date is required",
-        });
-      } else if (!/^\d{4}-\d{2}-\d{2}$/.test(val.spouseTobaccoLastUsed)) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["spouseTobaccoLastUsed"],
-          message: "Please select a valid date",
-        });
-      }
-      if (
-        !val.spouseTobaccoProducts ||
-        val.spouseTobaccoProducts.length === 0
-      ) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["spouseTobaccoProducts"],
-          message: "Select at least one product",
-        });
-      }
-    }
-
-    // DI requires income + hours
-    if (val.selfCoverages.includes("DI")) {
-      if (!val.selfAvgIncome) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["selfAvgIncome"],
-          message: "Average Monthly Income is required",
-        });
-      }
-      if (!val.selfHoursPerWeek) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["selfHoursPerWeek"],
-          message: "Hours per week is required",
-        });
-      }
-    }
-    if (val.spouseCoverages.includes("DI")) {
-      if (!val.spouseAvgIncome) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["spouseAvgIncome"],
-          message: "Average Monthly Income is required",
-        });
-      }
-      if (!val.spouseHoursPerWeek) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["spouseHoursPerWeek"],
-          message: "Hours per week is required",
-        });
-      }
-    }
-    // OO requires expenses + responsibility %
-    if (val.selfCoverages.includes("OO")) {
-      if (!val.selfMonthlyExpenses) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["selfMonthlyExpenses"],
-          message: "Monthly Business Expenses is required",
-        });
-      }
-      if (!val.selfRespPct) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["selfRespPct"],
-          message: "Percentage is required",
         });
       }
     }

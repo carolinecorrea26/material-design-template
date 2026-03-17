@@ -10,18 +10,12 @@ import {
   Box,
   Alert,
   SwipeableDrawer,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  FormHelperText,
   Button,
 } from "@mui/material";
 import {
   BlockOutlined,
   Close as CloseIcon,
   Add as AddIcon,
-  InventoryOutlined,
   CheckCircle,
   RemoveCircleRounded,
 } from "@mui/icons-material";
@@ -57,7 +51,7 @@ import {
 } from "../config/clients";
 import { getProducts } from "../api/client";
 import { COVERAGE_CARDS } from "../constants/getStartedProducts";
-import { TOBACCO_PRODUCTS, STATE_OPTIONS } from "../constants/eligibility";
+import { STATE_OPTIONS } from "../constants/eligibility";
 import { PRODUCT_LOOKUP } from "../constants/getStartedProducts";
 import { getStateFromZip } from "../utils/zipToState";
 import { CoverageDetailsContent } from "../components/modals/CoverageDetailsModal";
@@ -312,21 +306,10 @@ export default function Eligibility() {
   // Get client-specific membership question configuration
   const membershipQuestion = getClientMembershipQuestion();
 
-  const selfCoveragesValue = useWatch({
-    control: methods.control,
-    name: "selfCoverages",
-  });
-  const spouseCoveragesValue = useWatch({
-    control: methods.control,
-    name: "spouseCoverages",
-  });
-  const selfCov = selfCoveragesValue ?? derivedSelfCoverages;
-  const spouseCov = spouseCoveragesValue ?? derivedSpouseCoverages;
   const applicantsValue = useWatch({
     control: methods.control,
     name: "applicants",
   });
-  const applyingSelf = true;
   const applyingSpouse = applicantsValue?.spouse ?? derivedApplicants.spouse;
   const applyingChild = applicantsValue?.child ?? derivedApplicants.child;
   const membershipValue = useWatch({
@@ -336,11 +319,6 @@ export default function Eligibility() {
   const zipCodeValue = useWatch({
     control: methods.control,
     name: "zipCode",
-  });
-  const selfSmoker = useWatch({ control: methods.control, name: "smokerSelf" });
-  const spouseSmoker = useWatch({
-    control: methods.control,
-    name: "smokerSpouse",
   });
   const [stateAutoFilled, setStateAutoFilled] = React.useState(false);
   const childrenValues = methods.watch("children") ?? [];
@@ -488,10 +466,38 @@ export default function Eligibility() {
       "spouse",
     ];
     if (validMembershipValues.includes(values.isMember || "")) {
-      setEligibility(values);
+      const preservedFields: Array<keyof EligibilityForm> = [
+        "gender",
+        "spouseGender",
+        "smokerSelf",
+        "smokerSpouse",
+        "selfTobaccoLastUsed",
+        "selfTobaccoProducts",
+        "spouseTobaccoLastUsed",
+        "spouseTobaccoProducts",
+        "selfAvgIncome",
+        "selfHoursPerWeek",
+        "selfMonthlyExpenses",
+        "selfRespPct",
+        "spouseAvgIncome",
+        "spouseHoursPerWeek",
+      ];
+      const merged = {
+        ...data.eligibility,
+        ...values,
+      };
+      preservedFields.forEach((field) => {
+        if (
+          values[field] === undefined &&
+          data.eligibility?.[field] !== undefined
+        ) {
+          merged[field] = data.eligibility[field];
+        }
+      });
+      setEligibility(merged);
       markComplete();
       next();
-      navigate("/coverage-builder");
+      navigate("/add-coverage");
     }
   };
 
@@ -573,7 +579,7 @@ export default function Eligibility() {
           header={
             <Stack spacing={2}>
               <PageHeader
-                title="Check your eligibility for coverage by answering a few questions."
+                title="Check your eligibility for coverage."
                 notes=""
               />
               <ScrollChipRow
@@ -692,15 +698,6 @@ export default function Eligibility() {
                     required
                     autoComplete="bday"
                   />
-                  <RHFRadioGroup
-                    name="gender"
-                    label="Gender"
-                    options={[
-                      { label: "Male", value: "male" },
-                      { label: "Female", value: "female" },
-                    ]}
-                    required
-                  />
                   <Stack spacing={1}>
                     <Typography variant="body1" sx={{ fontWeight: 500 }}>
                       Would you like to add dependent coverage?
@@ -716,185 +713,6 @@ export default function Eligibility() {
                       />
                     </Stack>
                   </Stack>
-                  {/* Coverage follow-ups */}
-                  {applyingSelf && (
-                    <Stack spacing={2}>
-                      {/* Nicotine for LI/SH */}
-                      {selfCov &&
-                        (selfCov.includes("LI") || selfCov.includes("SH")) && (
-                          <Stack spacing={2}>
-                            <RHFRadioGroup
-                              name="smokerSelf"
-                              label="Have you used tobacco or any nicotine substitute in any form (including nicotine patches and nicotine chewing gum)?"
-                              options={[
-                                { label: "Yes", value: "yes" },
-                                { label: "No", value: "no" },
-                              ]}
-                              required
-                            />
-
-                            {/* Tobacco use details - show if yes */}
-                            {selfSmoker === "yes" && (
-                              <>
-                                <DateField
-                                  name="selfTobaccoLastUsed"
-                                  label="Last Used"
-                                  required
-                                />
-
-                                <Controller
-                                  name="selfTobaccoProducts"
-                                  control={methods.control}
-                                  render={({ field, fieldState }) => (
-                                    <FormControl
-                                      fullWidth
-                                      error={!!fieldState.error}
-                                      required
-                                    >
-                                      <InputLabel id="self-tobacco-products-label">
-                                        Product(s) Used
-                                      </InputLabel>
-                                      <Select
-                                        {...field}
-                                        labelId="self-tobacco-products-label"
-                                        label="Product(s) Used"
-                                        multiple
-                                        value={field.value || []}
-                                        renderValue={(selected) =>
-                                          (selected as string[]).join(", ")
-                                        }
-                                      >
-                                        {TOBACCO_PRODUCTS.map((product) => (
-                                          <MenuItem
-                                            key={product}
-                                            value={product}
-                                          >
-                                            <Checkbox
-                                              checked={
-                                                field.value?.includes(
-                                                  product,
-                                                ) || false
-                                              }
-                                            />
-                                            {product}
-                                          </MenuItem>
-                                        ))}
-                                      </Select>
-                                      {fieldState.error && (
-                                        <FormHelperText>
-                                          {fieldState.error.message}
-                                        </FormHelperText>
-                                      )}
-                                    </FormControl>
-                                  )}
-                                />
-                              </>
-                            )}
-                          </Stack>
-                        )}
-
-                      {/* DI extras */}
-                      {selfCov && selfCov.includes("DI") && (
-                        <Stack spacing={2}>
-                          <Controller
-                            name="selfAvgIncome"
-                            control={methods.control}
-                            render={({ field, fieldState }) => (
-                              <RHFTextField
-                                name={field.name}
-                                label="Average Monthly Income"
-                                required
-                                value={field.value}
-                                onChange={(e) => {
-                                  const value = e.target.value.replace(
-                                    /[^0-9]/g,
-                                    "",
-                                  );
-                                  const formatted = value
-                                    ? `$${parseInt(value).toLocaleString()}`
-                                    : "";
-                                  field.onChange(formatted);
-                                }}
-                                error={!!fieldState.error}
-                                helperText={
-                                  fieldState.error?.message ||
-                                  "Monthly income is asked to help determine the amount of disability coverage you may qualify for."
-                                }
-                              />
-                            )}
-                          />
-                          <RHFTextField
-                            name="selfHoursPerWeek"
-                            label="# Hours You Work/Week"
-                            required
-                          />
-                        </Stack>
-                      )}
-
-                      {/* OO extras */}
-                      {selfCov && selfCov.includes("OO") && (
-                        <Stack spacing={2}>
-                          <Controller
-                            name="selfMonthlyExpenses"
-                            control={methods.control}
-                            render={({ field, fieldState }) => (
-                              <RHFTextField
-                                name={field.name}
-                                label="Monthly Business Expenses"
-                                required
-                                value={field.value}
-                                onChange={(e) => {
-                                  const value = e.target.value.replace(
-                                    /[^0-9]/g,
-                                    "",
-                                  );
-                                  const formatted = value
-                                    ? `$${parseInt(value).toLocaleString()}`
-                                    : "";
-                                  field.onChange(formatted);
-                                }}
-                                error={!!fieldState.error}
-                                helperText={
-                                  fieldState.error?.message ||
-                                  "Please refer to the brochure for definition"
-                                }
-                              />
-                            )}
-                          />
-                          <Controller
-                            name="selfRespPct"
-                            control={methods.control}
-                            render={({ field, fieldState }) => (
-                              <RHFTextField
-                                name={field.name}
-                                label="% You Are Responsible For"
-                                required
-                                value={field.value}
-                                onChange={(e) => {
-                                  const value = e.target.value.replace(
-                                    /[^0-9]/g,
-                                    "",
-                                  );
-                                  if (value) {
-                                    let numValue = parseInt(value);
-                                    if (numValue > 100) numValue = 100;
-                                    field.onChange(numValue.toString());
-                                  } else {
-                                    field.onChange("");
-                                  }
-                                }}
-                                error={!!fieldState.error}
-                                helperText={
-                                  fieldState.error?.message ||
-                                  'If you are incorporated, a partner or a joint tenant, include only your personal share of covered overhead. "Personal share" is defined as (a) your percentage of ownership of the business, or (b) your share of the office space if a joint tenant'
-                                }
-                              />
-                            )}
-                          />
-                        </Stack>
-                      )}
-                    </Stack>
-                  )}
                 </Stack>
               </Stack>
 
@@ -948,15 +766,6 @@ export default function Eligibility() {
                         label="Birthday"
                         required
                       />{" "}
-                      <RHFRadioGroup
-                        name="spouseGender"
-                        label="Gender"
-                        options={[
-                          { label: "Male", value: "male" },
-                          { label: "Female", value: "female" },
-                        ]}
-                        required
-                      />
                       <RHFTextField
                         name="spouseEmail"
                         label="Email"
@@ -965,113 +774,6 @@ export default function Eligibility() {
                         autoComplete="email"
                       />
                     </Stack>
-
-                    {/* Spouse coverage follow-ups */}
-                    {spouseCov &&
-                      (spouseCov.includes("LI") ||
-                        spouseCov.includes("SH")) && (
-                        <Stack spacing={2}>
-                          <RHFRadioGroup
-                            name="smokerSpouse"
-                            label="Have you used tobacco or any nicotine substitute in any form (including nicotine patches and nicotine chewing gum)?"
-                            options={[
-                              { label: "Yes", value: "yes" },
-                              { label: "No", value: "no" },
-                            ]}
-                            required
-                          />
-
-                          {spouseSmoker === "yes" && (
-                            <>
-                              <DateField
-                                name="spouseTobaccoLastUsed"
-                                label="Last Used"
-                                required
-                              />
-
-                              <Controller
-                                name="spouseTobaccoProducts"
-                                control={methods.control}
-                                render={({ field, fieldState }) => (
-                                  <FormControl
-                                    fullWidth
-                                    error={!!fieldState.error}
-                                    required
-                                  >
-                                    <InputLabel id="spouse-tobacco-products-label">
-                                      Product(s) Used
-                                    </InputLabel>
-                                    <Select
-                                      {...field}
-                                      labelId="spouse-tobacco-products-label"
-                                      label="Product(s) Used"
-                                      multiple
-                                      value={field.value || []}
-                                      renderValue={(selected) =>
-                                        (selected as string[]).join(", ")
-                                      }
-                                    >
-                                      {TOBACCO_PRODUCTS.map((product) => (
-                                        <MenuItem key={product} value={product}>
-                                          <Checkbox
-                                            checked={
-                                              field.value?.includes(product) ||
-                                              false
-                                            }
-                                          />
-                                          {product}
-                                        </MenuItem>
-                                      ))}
-                                    </Select>
-                                    {fieldState.error && (
-                                      <FormHelperText>
-                                        {fieldState.error.message}
-                                      </FormHelperText>
-                                    )}
-                                  </FormControl>
-                                )}
-                              />
-                            </>
-                          )}
-                        </Stack>
-                      )}
-
-                    {spouseCov && spouseCov.includes("DI") && (
-                      <Stack spacing={2}>
-                        <Controller
-                          name="spouseAvgIncome"
-                          control={methods.control}
-                          render={({ field, fieldState }) => (
-                            <RHFTextField
-                              name={field.name}
-                              label="Average Monthly Income"
-                              required
-                              value={field.value}
-                              onChange={(e) => {
-                                const value = e.target.value.replace(
-                                  /[^0-9]/g,
-                                  "",
-                                );
-                                const formatted = value
-                                  ? `$${parseInt(value).toLocaleString()}`
-                                  : "";
-                                field.onChange(formatted);
-                              }}
-                              error={!!fieldState.error}
-                              helperText={
-                                fieldState.error?.message ||
-                                "Monthly income is asked to help determine the amount of disability coverage you may qualify for."
-                              }
-                            />
-                          )}
-                        />
-                        <RHFTextField
-                          name="spouseHoursPerWeek"
-                          label="# Hours You Work/Week"
-                          required
-                        />
-                      </Stack>
-                    )}
                   </Stack>
                 </Stack>
               </Box>

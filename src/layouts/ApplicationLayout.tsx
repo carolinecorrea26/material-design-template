@@ -8,12 +8,17 @@ import {
   Button,
   Snackbar,
   Alert,
+  Badge,
+  Popover,
+  Stack,
+  Divider,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
   ChevronLeft,
   ChevronRight,
   Close,
+  ShoppingCartOutlined,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PAGES } from "../config/pages";
@@ -22,6 +27,8 @@ import ApplicationSidebar from "../components/layout/ApplicationSidebar";
 import CoveragePortfolioDrawer from "../components/coverage/CoveragePortfolioDrawer";
 import { useAppData } from "../state/AppDataContext";
 import { usePageLoading } from "../state/PageLoadingContext";
+import { getProducts } from "../api/client";
+import type { Product, SelectedItem } from "../types/app";
 
 interface ApplicationLayoutProps {
   children: React.ReactNode;
@@ -49,6 +56,10 @@ export default function ApplicationLayout({
   const { data } = useAppData();
   const { isPageLoading } = usePageLoading();
   const [showSaved, setShowSaved] = React.useState(false);
+  const [cartAnchorEl, setCartAnchorEl] = React.useState<null | HTMLElement>(
+    null,
+  );
+  const [products, setProducts] = React.useState<Product[]>([]);
   const wasLoadingRef = React.useRef(false);
   const previousPathRef = React.useRef<string | null>(null);
 
@@ -142,6 +153,97 @@ export default function ApplicationLayout({
   const progressLabel = `${Math.round(progressPercent)}%`;
 
   React.useEffect(() => {
+    let mounted = true;
+    getProducts()
+      .then((fetched) => {
+        if (!mounted) return;
+        if (Array.isArray(fetched)) {
+          setProducts(fetched);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to load products", error);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const productNameById = React.useMemo(() => {
+    const map = new Map<string, string>();
+    products.forEach((product) => {
+      map.set(product.id, product.name);
+    });
+    return map;
+  }, [products]);
+
+  const selectedProductIds = data.eligibility?.coverageProductSelections ?? [];
+  const selectedCoverage = data.coverage ?? [];
+  const hasCartSelections =
+    location.pathname === "/add-coverage"
+      ? selectedProductIds.length > 0
+      : selectedCoverage.length > 0;
+  const isCartOpen = Boolean(cartAnchorEl);
+
+  const formatCurrency = (value: number) =>
+    value.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 0,
+    });
+  const formatMonthly = (value: number) =>
+    value.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 2,
+    });
+
+  const renderCartSummary = () => {
+    if (location.pathname === "/add-coverage") {
+      if (selectedProductIds.length === 0) {
+        return (
+          <Typography variant="body2" color="text.secondary">
+            No products selected yet.
+          </Typography>
+        );
+      }
+      return (
+        <Stack spacing={1}>
+          {selectedProductIds.map((productId) => (
+            <Typography key={productId} variant="body2">
+              {productNameById.get(productId) ?? productId}
+            </Typography>
+          ))}
+        </Stack>
+      );
+    }
+
+    if (selectedCoverage.length === 0) {
+      return (
+        <Typography variant="body2" color="text.secondary">
+          No coverage selections yet.
+        </Typography>
+      );
+    }
+
+    return (
+      <Stack spacing={1}>
+        {selectedCoverage.map((item: SelectedItem) => (
+          <Box key={`${item.productId}-${item.applicant}`}>
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              {productNameById.get(item.productId) ?? item.productId}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {item.applicant} · {formatCurrency(item.amount)} ·{" "}
+              {formatMonthly(item.estMonthly)}/mo
+            </Typography>
+          </Box>
+        ))}
+      </Stack>
+    );
+  };
+
+  React.useEffect(() => {
     previousPathRef.current = location.pathname;
   }, [location.pathname]);
 
@@ -226,7 +328,7 @@ export default function ApplicationLayout({
               >
                 {progressLabel}
               </Box>{" "}
-              complete
+              done
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <IconButton
@@ -331,17 +433,52 @@ export default function ApplicationLayout({
                     Coverage Portfolio
                   </Button>
                 )}
-                <Button
+                <IconButton
+                  aria-label="coverage summary"
+                  onClick={(event) => setCartAnchorEl(event.currentTarget)}
+                  size="small"
+                >
+                  <Badge
+                    color="error"
+                    variant="dot"
+                    invisible={!hasCartSelections}
+                  >
+                    <ShoppingCartOutlined />
+                  </Badge>
+                </IconButton>
+                <IconButton
+                  aria-label="menu"
                   onClick={() => setMobileMenuOpen(true)}
                   size="small"
-                  startIcon={<MenuIcon />}
-                  sx={{ fontWeight: 600 }}
                 >
-                  Menu
-                </Button>
+                  <MenuIcon />
+                </IconButton>
               </Box>
             </Box>
           </Box>
+
+          <Popover
+            open={isCartOpen}
+            anchorEl={cartAnchorEl}
+            onClose={() => setCartAnchorEl(null)}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+            PaperProps={{
+              sx: {
+                width: "min(320px, 90vw)",
+                p: 2,
+                borderRadius: 2,
+              },
+            }}
+          >
+            <Stack spacing={1}>
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                Coverage Summary
+              </Typography>
+              <Divider />
+              {renderCartSummary()}
+            </Stack>
+          </Popover>
 
           {/* Mobile Menu Drawer */}
           <Drawer

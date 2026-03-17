@@ -2,7 +2,8 @@ export type PageId =
   | "landing"
   | "membership"
   | "eligibility"
-  | "coverageBuilder"
+  | "addCoverage"
+  | "coverageQuestions"
   | "getStarted"
   | "coverage"
   | "contact"
@@ -45,9 +46,15 @@ export const PAGES: AppPage[] = [
     section: "application",
   },
   {
-    id: "coverageBuilder",
-    path: "/coverage-builder",
-    title: "Build Coverage",
+    id: "addCoverage",
+    path: "/add-coverage",
+    title: "Add Coverage",
+    section: "application",
+  },
+  {
+    id: "coverageQuestions",
+    path: "/coverage-questions",
+    title: "Coverage Questions",
     section: "application",
   },
   {

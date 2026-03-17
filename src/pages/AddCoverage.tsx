@@ -23,6 +23,7 @@ import FormPageLayout from "../components/layout/FormPageLayout";
 import FormStepTransition from "../components/layout/FormStepTransition";
 import PageNavigation from "../components/layout/PageNavigation";
 import { useAppData } from "../state/AppDataContext";
+import { useStepper } from "../state/StepperContext";
 import { getProducts } from "../api/client";
 import {
   getClientCoverageCategories,
@@ -187,8 +188,10 @@ function ProductSelectionCard({
   );
 }
 
-export default function CoverageBuilder() {
+export default function AddCoverage() {
   const { data, setEligibility } = useAppData();
+  const { next, markComplete } = useStepper();
+  const hasHydratedSelections = React.useRef(false);
   const [products, setProducts] = React.useState<Product[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [selectedById, setSelectedById] = React.useState<
@@ -254,24 +257,56 @@ export default function CoverageBuilder() {
     [data.eligibility?.applicants],
   );
 
+  const selectedProductIds = React.useMemo(() => {
+    const selected = Object.entries(selectedById)
+      .filter(([, isSelected]) => isSelected)
+      .map(([productId]) => productId);
+    return selected.sort();
+  }, [selectedById]);
+
+  React.useEffect(() => {
+    const saved = data.eligibility?.coverageProductSelections ?? [];
+    if (saved.length === 0 || hasHydratedSelections.current) return;
+    setSelectedById((prev) => {
+      const next = { ...prev };
+      saved.forEach((productId) => {
+        next[productId] = true;
+      });
+      return next;
+    });
+    hasHydratedSelections.current = true;
+  }, [data.eligibility?.coverageProductSelections]);
+
+  React.useEffect(() => {
+    const saved = data.eligibility?.coverageProductSelections ?? [];
+    if (saved.length > 0 && !hasHydratedSelections.current) return;
+    const savedSorted = [...saved].sort();
+    const isSameSelection =
+      savedSorted.length === selectedProductIds.length &&
+      savedSorted.every((id, index) => id === selectedProductIds[index]);
+    if (isSameSelection) return;
+    setEligibility({
+      ...data.eligibility,
+      coverageProductSelections: selectedProductIds,
+    });
+  }, [data.eligibility, selectedProductIds, setEligibility]);
+
   const handleToggle = (productId: string) => {
     setSelectedById((prev) => ({ ...prev, [productId]: !prev[productId] }));
   };
 
   const handleContinue = () => {
-    const selectedProductIds = Object.entries(selectedById)
-      .filter(([, selected]) => selected)
-      .map(([productId]) => productId);
-
     setEligibility({
       ...data.eligibility,
       coverageProductSelections: selectedProductIds,
     });
+    markComplete();
+    next();
   };
 
   return (
     <FormPageLayout
-      header={<PageHeader title="Select the coverage you want to apply for." />}
+      header={<PageHeader title="Add the coverage you want to apply for." />}
       navigation={<PageNavigation onContinue={handleContinue} />}
     >
       <FormStepTransition>
