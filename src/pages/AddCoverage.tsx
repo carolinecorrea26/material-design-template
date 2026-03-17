@@ -12,7 +12,6 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import {
-  BoltRounded,
   ExpandMore,
   PersonOutline,
   FavoriteBorder,
@@ -25,12 +24,14 @@ import PageNavigation from "../components/layout/PageNavigation";
 import { useAppData } from "../state/AppDataContext";
 import { useStepper } from "../state/StepperContext";
 import { getProducts } from "../api/client";
+import { commonStyles } from "../theme/commonStyles";
 import {
   getClientCoverageCategories,
   getClientProductCoverageRanges,
   getClientProductDescriptions,
 } from "../config/clients";
 import { COVERAGE_CATEGORY_LABELS } from "../constants/coverage";
+import CoverageIcon from "../utils/coverageIcons";
 import type { Product, CoverageCategory, Applicant } from "../types/app";
 
 const applicantLabels: Record<Applicant, string> = {
@@ -46,6 +47,35 @@ const applicantIcons: Record<Applicant, React.ElementType> = {
 };
 
 type GroupedProducts = Record<CoverageCategory, Product[]>;
+
+function CategoryLabel({ category }: { category: CoverageCategory }) {
+  return (
+    <Stack direction="row" spacing={1} alignItems="center">
+      <Box
+        sx={{
+          width: 32,
+          height: 32,
+          borderRadius: "50%",
+          bgcolor: "#dbe4f3",
+          color: "primary.main",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          "& svg": {
+            width: "0.875em",
+            height: "0.875em",
+          },
+        }}
+      >
+        <CoverageIcon category={category} color="currentColor" />
+      </Box>
+      <Typography sx={commonStyles.sidebarText}>
+        {COVERAGE_CATEGORY_LABELS[category]}
+      </Typography>
+    </Stack>
+  );
+}
 
 type ProductSelectionCardProps = {
   checked: boolean;
@@ -278,6 +308,8 @@ export default function AddCoverage() {
   }, [data.eligibility?.coverageProductSelections]);
 
   React.useEffect(() => {
+    if (!data.eligibility) return;
+
     const saved = data.eligibility?.coverageProductSelections ?? [];
     if (saved.length > 0 && !hasHydratedSelections.current) return;
     const savedSorted = [...saved].sort();
@@ -291,11 +323,33 @@ export default function AddCoverage() {
     });
   }, [data.eligibility, selectedProductIds, setEligibility]);
 
+  React.useEffect(() => {
+    const handleFillForm = () => {
+      if (products.length === 0) return;
+      const nextSelected: Record<string, boolean> = {};
+      products.forEach((product) => {
+        const hasEligibleApplicant = product.eligibleApplicants.some(
+          (applicant) => selectedApplicants[applicant],
+        );
+        if (hasEligibleApplicant) {
+          nextSelected[product.id] = true;
+        }
+      });
+      setSelectedById(nextSelected);
+    };
+
+    window.addEventListener("devtools:fillform", handleFillForm);
+    return () =>
+      window.removeEventListener("devtools:fillform", handleFillForm);
+  }, [products, selectedApplicants]);
+
   const handleToggle = (productId: string) => {
     setSelectedById((prev) => ({ ...prev, [productId]: !prev[productId] }));
   };
 
   const handleContinue = () => {
+    if (!data.eligibility) return;
+
     setEligibility({
       ...data.eligibility,
       coverageProductSelections: selectedProductIds,
@@ -324,8 +378,6 @@ export default function AddCoverage() {
                 const categoryProducts = groupedProducts[category] || [];
                 const isLastCategory = index === visibleCategories.length - 1;
 
-                const showQuickDecisionBadge =
-                  category === "LI" || category === "DI";
                 const popularProductId = categoryProducts.find(
                   (product) => product.quickDecision,
                 )?.id;
@@ -347,33 +399,7 @@ export default function AddCoverage() {
                         expandIcon={<ExpandMore />}
                         sx={{ px: 0, minHeight: "auto" }}
                       >
-                        <Stack direction="row" alignItems="center" spacing={1}>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              fontWeight: 700,
-                              color: "#5c6a7f",
-                              fontSize: "1rem",
-                            }}
-                          >
-                            {COVERAGE_CATEGORY_LABELS[category]}
-                          </Typography>
-                          {showQuickDecisionBadge ? (
-                            <Chip
-                              label="QuickDecisionTM"
-                              size="small"
-                              variant="outlined"
-                              icon={<BoltRounded />}
-                              sx={{
-                                color: "success.main",
-                                borderColor: "success.main",
-                                "& .MuiChip-icon": {
-                                  color: "success.main",
-                                },
-                              }}
-                            />
-                          ) : null}
-                        </Stack>
+                        <CategoryLabel category={category} />
                       </AccordionSummary>
                       <AccordionDetails sx={{ px: 0, pt: 0 }}>
                         <Stack spacing={2}>

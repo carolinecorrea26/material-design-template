@@ -29,12 +29,10 @@ import { getProducts } from "../../api/client";
 import { COVERAGE_CATEGORY_LABELS } from "../../constants/coverage";
 import type { Product, CoverageCategory } from "../../types/app";
 import ResumeConfirmationDialog from "./ResumeConfirmationDialog";
-import { useLayout } from "../../state/LayoutContext";
 
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { layoutMode } = useLayout();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const branding = getClientBranding();
@@ -76,9 +74,7 @@ export default function Header() {
     // Determine if we should show the modal
     const isOnLandingPage =
       location.pathname === "/" || location.pathname === "/landing";
-    const shouldShowModal =
-      layoutMode === "single-page" ||
-      (layoutMode === "multi-page" && !isOnLandingPage);
+    const shouldShowModal = !isOnLandingPage;
 
     if (shouldShowModal) {
       setShowResumeDialog(true);
@@ -193,9 +189,7 @@ export default function Header() {
                         const isOnLandingPage =
                           location.pathname === "/" ||
                           location.pathname === "/landing";
-                        const shouldShowModal =
-                          layoutMode === "single-page" ||
-                          (layoutMode === "multi-page" && !isOnLandingPage);
+                        const shouldShowModal = !isOnLandingPage;
 
                         if (shouldShowModal) {
                           setShowResumeDialog(true);

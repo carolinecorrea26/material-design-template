@@ -11,12 +11,10 @@ import {
 import { Cached } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import * as React from "react";
-import { PAGES } from "../../config/pages";
 import { commonStyles } from "../../theme/commonStyles";
-import { useLayout } from "../../state/LayoutContext";
-import { useSinglePageLayout } from "../../deprecated/layouts/SinglePageLayout";
 import { getClientFeatures } from "../../config/clients";
 import { usePageLoading } from "../../state/PageLoadingContext";
+import { getApplicationPages, findPageIndex } from "../../utils/navigation";
 
 interface PageNavigationProps {
   /**
@@ -71,41 +69,20 @@ export default function PageNavigation({
 }: PageNavigationProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { layoutMode } = useLayout();
-  const singlePageContext = useSinglePageLayout();
   const features = getClientFeatures();
   const { isPageLoading } = usePageLoading();
   const [showBackConfirmDialog, setShowBackConfirmDialog] =
     React.useState(false);
 
-  // Filter application pages based on client configuration
-  const applicationPages = PAGES.filter((p) => {
-    if (p.section !== "application") return false;
-
-    // Filter out membership page if not enabled for this client
-    if (p.path === "/membership" && !features.showMembershipPage) {
-      return false;
-    }
-
-    return true;
-  });
+  const applicationPages = getApplicationPages(features);
 
   // Find the current page in the flow
   const currentPath = location.pathname;
-  const currentIndex = applicationPages.findIndex(
-    (p) => p.path === currentPath,
-  );
+  const currentIndex = findPageIndex(applicationPages, currentPath);
 
   // In single-page mode, use the context pageIndex; otherwise use currentIndex
-  const effectiveIndex =
-    singlePageContext.isSinglePage && singlePageContext.pageIndex !== undefined
-      ? singlePageContext.pageIndex
-      : currentIndex;
-
-  // In single-page mode, hide back button on first page (index 0)
-  const isFirstPage = effectiveIndex === 0;
-  const shouldShowBack =
-    showBack && !(layoutMode === "single-page" && isFirstPage);
+  const effectiveIndex = currentIndex >= 0 ? currentIndex : 0;
+  const shouldShowBack = showBack && effectiveIndex !== 0;
 
   // Determine back path if not explicitly provided
   const defaultBackPath =

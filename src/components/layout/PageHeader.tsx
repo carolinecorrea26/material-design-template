@@ -5,7 +5,6 @@ import { useLocation } from "react-router-dom";
 import { PAGES } from "../../config/pages";
 import { commonStyles } from "../../theme/commonStyles";
 import { getClientFeatures } from "../../config/clients";
-import { useLayout } from "../../state/LayoutContext";
 import { usePageLoading } from "../../state/PageLoadingContext";
 interface PageHeaderProps {
   title: string;
@@ -61,7 +60,6 @@ export default function PageHeader({
   titleWeight = 600,
 }: PageHeaderProps) {
   const location = useLocation();
-  const { layoutMode } = useLayout();
   const { isPageLoading } = usePageLoading();
   const h1Ref = React.useRef<HTMLHeadingElement>(null);
 
@@ -95,7 +93,7 @@ export default function PageHeader({
 
   const inAppFlow = effectiveIndex >= 0;
 
-  const shouldHideTitle = hideTitle || layoutMode === "single-page";
+  const shouldHideTitle = hideTitle;
 
   return (
     <Stack

@@ -21,7 +21,6 @@ import {
   ShoppingCartOutlined,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
-import { PAGES } from "../config/pages";
 import { getClientFeatures, getClientBranding } from "../config/clients";
 import ApplicationSidebar from "../components/layout/ApplicationSidebar";
 import CoveragePortfolioDrawer from "../components/coverage/CoveragePortfolioDrawer";
@@ -29,6 +28,7 @@ import { useAppData } from "../state/AppDataContext";
 import { usePageLoading } from "../state/PageLoadingContext";
 import { getProducts } from "../api/client";
 import type { Product, SelectedItem } from "../types/app";
+import { getApplicationPages, findPageIndex } from "../utils/navigation";
 
 interface ApplicationLayoutProps {
   children: React.ReactNode;
@@ -62,20 +62,13 @@ export default function ApplicationLayout({
   const [products, setProducts] = React.useState<Product[]>([]);
   const wasLoadingRef = React.useRef(false);
   const previousPathRef = React.useRef<string | null>(null);
+  const previousIndexRef = React.useRef<number | null>(null);
 
   // Filter to application pages only
-  const applicationPages = PAGES.filter((p) => {
-    if (p.section !== "application") return false;
-    if (p.path === "/membership" && !features.showMembershipPage) {
-      return false;
-    }
-    return true;
-  });
+  const applicationPages = getApplicationPages(features);
 
   // Find current page index
-  const currentIndex = applicationPages.findIndex(
-    (p) => p.path === location.pathname,
-  );
+  const currentIndex = findPageIndex(applicationPages, location.pathname);
   const effectiveIndex = currentIndex === -1 ? 0 : currentIndex;
   const currentStep = effectiveIndex + 1;
   const totalSteps = applicationPages.length;
@@ -95,18 +88,25 @@ export default function ApplicationLayout({
 
     if (wasLoadingRef.current) {
       const isBackNav = sessionStorage.getItem("nyl-last-nav") === "back";
-      if (isBackNav || effectiveIndex === 0) {
+      const movedBackward =
+        previousIndexRef.current !== null &&
+        effectiveIndex < previousIndexRef.current;
+      if (isBackNav || movedBackward || effectiveIndex === 0) {
         wasLoadingRef.current = false;
         if (isBackNav) {
           sessionStorage.removeItem("nyl-last-nav");
         }
+        previousIndexRef.current = effectiveIndex;
         return;
       }
       setShowSaved(true);
       wasLoadingRef.current = false;
       const timer = setTimeout(() => setShowSaved(false), 2500);
+      previousIndexRef.current = effectiveIndex;
       return () => clearTimeout(timer);
     }
+
+    previousIndexRef.current = effectiveIndex;
   }, [effectiveIndex, isPageLoading]);
 
   const handleBack = () => {
@@ -149,7 +149,7 @@ export default function ApplicationLayout({
   const isOnApplicationPage = currentIndex !== -1;
   const branding = getClientBranding();
   const hasPortfolio = (data.coverage ?? []).length > 0;
-  const isCoveragePage = location.pathname === "/coverage";
+  const isCoveragePage = location.pathname === "/coverage-options";
   const progressLabel = `${Math.round(progressPercent)}%`;
 
   React.useEffect(() => {
@@ -176,13 +176,15 @@ export default function ApplicationLayout({
     });
     return map;
   }, [products]);
+  const applicantLabelById = React.useMemo(
+    () => ({ self: "Self", spouse: "Spouse", child: "Child" }),
+    [],
+  );
 
   const selectedProductIds = data.eligibility?.coverageProductSelections ?? [];
   const selectedCoverage = data.coverage ?? [];
   const hasCartSelections =
-    location.pathname === "/add-coverage"
-      ? selectedProductIds.length > 0
-      : selectedCoverage.length > 0;
+    selectedProductIds.length > 0 || selectedCoverage.length > 0;
   const isCartOpen = Boolean(cartAnchorEl);
 
   const formatCurrency = (value: number) =>
@@ -199,14 +201,26 @@ export default function ApplicationLayout({
     });
 
   const renderCartSummary = () => {
-    if (location.pathname === "/add-coverage") {
-      if (selectedProductIds.length === 0) {
-        return (
-          <Typography variant="body2" color="text.secondary">
-            No products selected yet.
-          </Typography>
-        );
-      }
+    if (selectedCoverage.length > 0) {
+      return (
+        <Stack spacing={1}>
+          {selectedCoverage.map((item: SelectedItem) => (
+            <Box key={`${item.productId}-${item.applicant}`}>
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                {productNameById.get(item.productId) ?? item.productId}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {applicantLabelById[item.applicant]} ·{" "}
+                {formatCurrency(item.amount)} · {formatMonthly(item.estMonthly)}
+                /mo
+              </Typography>
+            </Box>
+          ))}
+        </Stack>
+      );
+    }
+
+    if (selectedProductIds.length > 0) {
       return (
         <Stack spacing={1}>
           {selectedProductIds.map((productId) => (
@@ -218,28 +232,10 @@ export default function ApplicationLayout({
       );
     }
 
-    if (selectedCoverage.length === 0) {
-      return (
-        <Typography variant="body2" color="text.secondary">
-          No coverage selections yet.
-        </Typography>
-      );
-    }
-
     return (
-      <Stack spacing={1}>
-        {selectedCoverage.map((item: SelectedItem) => (
-          <Box key={`${item.productId}-${item.applicant}`}>
-            <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              {productNameById.get(item.productId) ?? item.productId}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {item.applicant} · {formatCurrency(item.amount)} ·{" "}
-              {formatMonthly(item.estMonthly)}/mo
-            </Typography>
-          </Box>
-        ))}
-      </Stack>
+      <Typography variant="body2" color="text.secondary">
+        No products selected yet.
+      </Typography>
     );
   };
 
@@ -258,6 +254,7 @@ export default function ApplicationLayout({
 
   return (
     <Box
+      key={location.pathname}
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -370,7 +367,7 @@ export default function ApplicationLayout({
           px: { xs: 2, sm: 3 },
           py: { xs: 3 },
           pt: { xs: "16px" },
-          minHeight: { xs: "64vh", sm: "64vh" },
+          minHeight: { xs: "80vh", sm: "64vh" },
         }}
       >
         {children}
@@ -424,7 +421,7 @@ export default function ApplicationLayout({
                 }}
               />
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                {isCoveragePage && hasPortfolio && (
+                {isCoveragePage && hasPortfolio && false && (
                   <Button
                     variant="outlined"
                     onClick={() => setPortfolioOpen(true)}

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { PAGES } from "../config/pages";
 import { getClientFeatures } from "../config/clients";
+import { getApplicationPages, findPageIndex } from "../utils/navigation";
 
 type StepperState = {
   activeIndex: number;
@@ -22,20 +22,11 @@ export function StepperProvider({ children }: { children: React.ReactNode }) {
   // Filter based on client configuration
   const appPages = React.useMemo(() => {
     const features = getClientFeatures();
-    return PAGES.filter(p => {
-      if (p.section !== "application") return false;
-      
-      // Filter out membership page if not enabled for this client
-      if (p.path === "/membership" && !features.showMembershipPage) {
-        return false;
-      }
-      
-      return true;
-    });
+    return getApplicationPages(features);
   }, []);
 
   const indexFromPath = React.useMemo(() => {
-    const idx = appPages.findIndex(p => p.path === location.pathname);
+    const idx = findPageIndex(appPages, location.pathname);
     return idx >= 0 ? idx : 0;
   }, [location.pathname, appPages]);
 
@@ -55,11 +46,20 @@ export function StepperProvider({ children }: { children: React.ReactNode }) {
   const prev = () => goTo(Math.max(activeIndex - 1, 0));
 
   const markComplete = (index = activeIndex) => {
-    setCompleted(prev => new Set(prev).add(index));
+    setCompleted((prev) => new Set(prev).add(index));
   };
 
-  const value: StepperState = { activeIndex, completed, next, prev, goTo, markComplete };
-  return <StepperContext.Provider value={value}>{children}</StepperContext.Provider>;
+  const value: StepperState = {
+    activeIndex,
+    completed,
+    next,
+    prev,
+    goTo,
+    markComplete,
+  };
+  return (
+    <StepperContext.Provider value={value}>{children}</StepperContext.Provider>
+  );
 }
 
 export function useStepper() {

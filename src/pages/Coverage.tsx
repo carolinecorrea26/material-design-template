@@ -1173,7 +1173,7 @@ export default function Coverage() {
 
                                           {/* Estimated Cost */}
                                           <Typography
-                                            variant="body2"
+                                            variant="body1"
                                             color="text.secondary"
                                             gutterBottom
                                           >

@@ -1,11 +1,23 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Stack,
   Typography,
   Box,
   Button,
   Alert,
+  FormControl,
+  InputLabel,
+  Select as MuiSelect,
+  MenuItem,
+  FormHelperText,
+  Checkbox,
+  FormLabel,
+  ToggleButtonGroup,
+  ToggleButton,
+  Radio,
+  Skeleton,
+  CircularProgress,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -13,7 +25,15 @@ import {
   SwipeableDrawer,
   Autocomplete,
   TextField,
+  IconButton,
+  Link as MuiLink,
 } from "@mui/material";
+import {
+  EditNoteRounded,
+  ContentPasteSearchRounded,
+  VerifiedUserRounded,
+  Close as CloseIcon,
+} from "@mui/icons-material";
 import { COVERAGE_CARDS } from "../constants/getStartedProducts";
 import PageHeader from "../components/layout/PageHeader";
 import ScrollChipRow from "../components/layout/ScrollChipRow";
@@ -32,13 +52,13 @@ import {
   ACTIVE_CLIENT_ID,
   getClientBranding,
   getClientCoverageCategories,
-  getClientFeatures,
+  getClientFieldLabels,
   getClientMembershipQuestion,
   getClientProductAmounts,
 } from "../config/clients";
-import { getProducts } from "../api/client";
+import { getProducts, quoteRate } from "../api/client";
 import { COVERAGE_CATEGORY_LABELS } from "../constants/coverage";
-import { TITLE_OPTIONS } from "../constants/eligibility";
+import { STATE_OPTIONS, TITLE_OPTIONS, TOBACCO_PRODUCTS } from "../constants/eligibility";
 import { useAppData } from "../state/AppDataContext";
 import CoverageDetailsModal from "../components/modals/CoverageDetailsModal";
 import QuickQuoteModal from "../components/modals/QuickQuoteModal";
@@ -80,14 +100,12 @@ const BROCHURE_BASE_URL = "https://d160mojjx9yhiu.cloudfront.net/pdfs/4591";
 export default function GetStarted() {
   const { data, setEligibility, setContact } = useAppData();
   const navigate = useNavigate();
-  const location = useLocation();
   const membershipQuestion = getClientMembershipQuestion();
   const [membershipValue, setMembershipValue] = React.useState<
     string | undefined
   >(data.eligibility?.isMember);
   const isWaepa = ACTIVE_CLIENT_ID === "waepa";
   const branding = getClientBranding();
-  const clientFeatures = React.useMemo(() => getClientFeatures(), []);
   const clientCoverageCategories = React.useMemo(
     () => getClientCoverageCategories(),
     [],
@@ -97,8 +115,37 @@ export default function GetStarted() {
   const [coverageCatalogOpen, setCoverageCatalogOpen] = React.useState(false);
   const [processOpen, setProcessOpen] = React.useState(false);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [drawerContent, setDrawerContent] = React.useState("");
+  const [drawerTitle, setDrawerTitle] = React.useState("");
+  const [aboutApplicationReviewOpen, setAboutApplicationReviewOpen] =
+    React.useState(false);
+  const [estimateBirthday, setEstimateBirthday] = React.useState("");
+  const [estimateState, setEstimateState] = React.useState("");
+  const [estimateCategory, setEstimateCategory] = React.useState<
+    CoverageCategory | ""
+  >("");
+  const [estimateGender, setEstimateGender] = React.useState<"male" | "female" | "">("");
+  const [estimateSmoker, setEstimateSmoker] = React.useState<"yes" | "no" | "">("");
+  const [estimateTobaccoLastUsed, setEstimateTobaccoLastUsed] =
+    React.useState("");
+  const [estimateTobaccoProducts, setEstimateTobaccoProducts] = React.useState<
+    string[]
+  >([]);
+  const [estimateAvgIncome, setEstimateAvgIncome] = React.useState("");
+  const [estimateHoursPerWeek, setEstimateHoursPerWeek] = React.useState("");
+  const [estimateMonthlyExpenses, setEstimateMonthlyExpenses] = React.useState("");
+  const [estimateResponsibilityPct, setEstimateResponsibilityPct] =
+    React.useState("");
+  const [estimateAttempted, setEstimateAttempted] = React.useState(false);
+  const [showEstimateProducts, setShowEstimateProducts] = React.useState(false);
+  const [estimateAmountsByProductId, setEstimateAmountsByProductId] =
+    React.useState<Record<string, number>>({});
+  const [estimateRatesByProductId, setEstimateRatesByProductId] =
+    React.useState<Record<string, number>>({});
+  const [estimatingQuotes, setEstimatingQuotes] = React.useState(false);
+  const drawerScrollRef = React.useRef<HTMLDivElement | null>(null);
+  const getEstimateButtonRef = React.useRef<HTMLButtonElement | null>(null);
   const productAmounts = React.useMemo(() => getClientProductAmounts(), []);
+  const fieldLabels = React.useMemo(() => getClientFieldLabels(), []);
   const categoryAmounts = React.useMemo(
     () => ({
       LI: "$100K–$1M",
@@ -515,9 +562,792 @@ export default function GetStarted() {
     [],
   );
 
-  const handleOpenDrawer = (content: string) => {
-    setDrawerContent(content);
+  const estimateCategoryNeedsGender =
+    estimateCategory === "LI" || estimateCategory === "DI";
+  const estimateCategoryNeedsSmoker =
+    estimateCategory === "LI" || estimateCategory === "SH";
+  const estimateCategoryNeedsDi = estimateCategory === "DI";
+  const estimateCategoryNeedsOo = estimateCategory === "OO";
+  const estimateCategoryNeedsHours =
+    estimateCategoryNeedsDi || estimateCategoryNeedsOo;
+
+  const estimateCategoryProducts = React.useMemo(
+    () =>
+      estimateCategory
+        ? productCatalog.filter(
+            (product) =>
+              product.category === estimateCategory &&
+              clientCoverageCategories.includes(product.category),
+          )
+        : [],
+    [estimateCategory, productCatalog, clientCoverageCategories],
+  );
+
+  const handleCurrencyInput = React.useCallback((value: string) => {
+    const digits = value.replace(/[^0-9]/g, "");
+    return digits ? `$${parseInt(digits, 10).toLocaleString()}` : "";
+  }, []);
+
+  const formatMonthly = React.useCallback(
+    (value: number) =>
+      value.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 2,
+      }),
+    [],
+  );
+
+  const estimateValidationErrors = React.useMemo(() => {
+    const errors: Record<string, string> = {};
+
+    if (!estimateBirthday) errors.birthday = "Birthday is required";
+    if (!estimateState) errors.state = `${fieldLabels.state ?? "State"} is required`;
+    if (!estimateCategory) errors.category = "Coverage category is required";
+
+    if (estimateCategoryNeedsGender && !estimateGender) {
+      errors.gender = `${fieldLabels.gender ?? "Gender"} is required`;
+    }
+
+    if (estimateCategoryNeedsSmoker && !estimateSmoker) {
+      errors.smoker = "Please select an option";
+    }
+
+    if (estimateCategoryNeedsSmoker && estimateSmoker === "yes") {
+      if (!estimateTobaccoLastUsed) {
+        errors.tobaccoLastUsed = "Last Used date is required";
+      }
+      if (estimateTobaccoProducts.length === 0) {
+        errors.tobaccoProducts = "Select at least one product";
+      }
+    }
+
+    if (estimateCategoryNeedsDi && !estimateAvgIncome) {
+      errors.avgIncome = "Average Monthly Income is required";
+    }
+
+    if (estimateCategoryNeedsHours && !estimateHoursPerWeek) {
+      errors.hours = "Hours per week is required";
+    }
+
+    if (estimateCategoryNeedsOo && !estimateMonthlyExpenses) {
+      errors.monthlyExpenses = "Monthly Business Expenses is required";
+    }
+
+    if (estimateCategoryNeedsOo && !estimateResponsibilityPct) {
+      errors.responsibilityPct = "Percentage is required";
+    }
+
+    return errors;
+  }, [
+    estimateBirthday,
+    estimateState,
+    estimateCategory,
+    estimateCategoryNeedsGender,
+    estimateCategoryNeedsSmoker,
+    estimateCategoryNeedsDi,
+    estimateCategoryNeedsHours,
+    estimateCategoryNeedsOo,
+    estimateGender,
+    estimateSmoker,
+    estimateTobaccoLastUsed,
+    estimateTobaccoProducts,
+    estimateAvgIncome,
+    estimateHoursPerWeek,
+    estimateMonthlyExpenses,
+    estimateResponsibilityPct,
+    fieldLabels.state,
+    fieldLabels.gender,
+  ]);
+
+  const handleGetEstimate = React.useCallback(async () => {
+    setEstimateAttempted(true);
+    if (Object.keys(estimateValidationErrors).length > 0) {
+      setShowEstimateProducts(false);
+      return;
+    }
+
+    const startedAt = Date.now();
+    const initialAmounts = estimateCategoryProducts.reduce<Record<string, number>>(
+      (acc, product) => {
+        if (!product.amounts || product.amounts.length === 0) {
+          acc[product.id] = 0;
+          return acc;
+        }
+        acc[product.id] = Math.min(...product.amounts);
+        return acc;
+      },
+      {},
+    );
+
+    setEstimateAmountsByProductId(initialAmounts);
+  setShowEstimateProducts(false);
+    setEstimatingQuotes(true);
+
+    const smoker = estimateSmoker === "yes";
+    const quoteEntries = await Promise.all(
+      estimateCategoryProducts.map(async (product) => {
+        const amount = initialAmounts[product.id] ?? 0;
+        if (!amount || amount <= 0) {
+          return [product.id, 0] as const;
+        }
+        try {
+          const quote = await quoteRate({
+            productId: product.id,
+            applicant: "self",
+            amount,
+            smoker,
+            age: undefined,
+          });
+          return [product.id, quote.monthly] as const;
+        } catch (error) {
+          console.error("Failed to quote estimate", error);
+          return [product.id, 0] as const;
+        }
+      }),
+    );
+
+    const elapsed = Date.now() - startedAt;
+    const remainingDelay = Math.max(0, 2000 - elapsed);
+    if (remainingDelay > 0) {
+      await new Promise((resolve) => setTimeout(resolve, remainingDelay));
+    }
+
+    setEstimateRatesByProductId(Object.fromEntries(quoteEntries));
+    setEstimatingQuotes(false);
+    setShowEstimateProducts(true);
+  }, [
+    estimateValidationErrors,
+    estimateCategoryProducts,
+    estimateSmoker,
+  ]);
+
+  const handleEstimateAmountChange = React.useCallback(
+    async (product: Product, amount: number) => {
+      setEstimateAmountsByProductId((prev) => ({
+        ...prev,
+        [product.id]: amount,
+      }));
+
+      if (!amount || amount <= 0) {
+        setEstimateRatesByProductId((prev) => ({
+          ...prev,
+          [product.id]: 0,
+        }));
+        return;
+      }
+
+      try {
+        const quote = await quoteRate({
+          productId: product.id,
+          applicant: "self",
+          amount,
+          smoker: estimateSmoker === "yes",
+          age: undefined,
+        });
+        setEstimateRatesByProductId((prev) => ({
+          ...prev,
+          [product.id]: quote.monthly,
+        }));
+      } catch (error) {
+        console.error("Failed to quote estimate", error);
+      }
+    },
+    [estimateSmoker],
+  );
+
+  React.useEffect(() => {
+    if (!showEstimateProducts || drawerTitle !== "How much does it cost?") {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      const scrollContainer = drawerScrollRef.current;
+      const estimateButton = getEstimateButtonRef.current;
+      if (!scrollContainer || !estimateButton) return;
+
+      const containerRect = scrollContainer.getBoundingClientRect();
+      const buttonRect = estimateButton.getBoundingClientRect();
+      const nextTop =
+        scrollContainer.scrollTop + (buttonRect.top - containerRect.top);
+      scrollContainer.scrollTo({ top: nextTop, behavior: "smooth" });
+    });
+  }, [showEstimateProducts, drawerTitle]);
+
+  const handleEstimateCategoryChange = React.useCallback(
+    (category: CoverageCategory | "") => {
+      setEstimateCategory(category);
+      setEstimateGender("");
+      setEstimateSmoker("");
+      setEstimateTobaccoLastUsed("");
+      setEstimateTobaccoProducts([]);
+      setEstimateAvgIncome("");
+      setEstimateHoursPerWeek("");
+      setEstimateMonthlyExpenses("");
+      setEstimateResponsibilityPct("");
+      setShowEstimateProducts(false);
+      setEstimateAmountsByProductId({});
+      setEstimateRatesByProductId({});
+    },
+    [],
+  );
+
+  const handleOpenDrawer = (title: string) => {
+    setDrawerTitle(title);
+    if (title === "How much does it cost?") {
+      setEstimateAttempted(false);
+      setShowEstimateProducts(false);
+      setEstimateAmountsByProductId({});
+      setEstimateRatesByProductId({});
+    }
     setDrawerOpen(true);
+  };
+
+  const renderDrawerContent = () => {
+    if (drawerTitle === "How does applying work?") {
+      return (
+        <Stack spacing={3}>
+          {/* Step 1: Apply Online */}
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <EditNoteRounded
+              sx={{ color: "primary.main", fontSize: "2.5rem", flexShrink: 0 }}
+            />
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
+                Apply online in about 20 minutes.
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Answer a few questions and submit your application securely.
+              </Typography>
+            </Box>
+          </Box>
+
+          {/* Step 2: Provide Health Information */}
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <ContentPasteSearchRounded
+              sx={{ color: "primary.main", fontSize: "2.5rem", flexShrink: 0 }}
+            />
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
+                Your application will be reviewed.
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                Once your application is submitted, it will be reviewed. This
+                may be real-time or take a few days depending on the coverage
+                applied for. Sometimes the coverage applied for requires health
+                information to provide a decision on your application.{" "}
+                <MuiLink
+                  component="button"
+                  variant="body2"
+                  onClick={() => setAboutApplicationReviewOpen(true)}
+                  sx={{ cursor: "pointer" }}
+                >
+                  Learn more
+                </MuiLink>{" "}
+                about the application review process.
+              </Typography>
+            </Box>
+          </Box>
+
+          {/* Step 3: Get Your Decision */}
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <VerifiedUserRounded
+              sx={{ color: "primary.main", fontSize: "2.5rem", flexShrink: 0 }}
+            />
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
+                Receive your application decision.
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Once all information is reviewed, you'll be notified of your
+                decision. If approved, you will receive a certificate of
+                insurance and have a 30-day no-obligation free look. Plus, when
+                QuickDecision<sup>SM</sup> is available, you can get a faster
+                decision on your application, typically with no medical exam.
+              </Typography>
+            </Box>
+          </Box>
+        </Stack>
+      );
+    }
+
+    if (drawerTitle === "How much does it cost?") {
+      return (
+        <Stack spacing={2.5}>
+          <Typography variant="body2" color="text.secondary">
+            Enter a few details to view available products and coverage amounts.
+          </Typography>
+
+          <TextField
+            label={fieldLabels.dateOfBirth ?? "Birthday"}
+            type="date"
+            fullWidth
+            required
+            value={estimateBirthday}
+            onChange={(event) => {
+              setEstimateBirthday(event.target.value);
+              setShowEstimateProducts(false);
+              setEstimateRatesByProductId({});
+              setEstimateAmountsByProductId({});
+            }}
+            InputLabelProps={{ shrink: true }}
+            error={estimateAttempted && !!estimateValidationErrors.birthday}
+            helperText={estimateAttempted ? estimateValidationErrors.birthday : undefined}
+          />
+
+          <FormControl
+            fullWidth
+            required
+            error={estimateAttempted && !!estimateValidationErrors.state}
+          >
+            <InputLabel id="estimate-state-label">{fieldLabels.state ?? "State"}</InputLabel>
+            <MuiSelect
+              labelId="estimate-state-label"
+              label={fieldLabels.state ?? "State"}
+              value={estimateState}
+              onChange={(event) => {
+                setEstimateState(event.target.value);
+                setShowEstimateProducts(false);
+                setEstimateRatesByProductId({});
+                setEstimateAmountsByProductId({});
+              }}
+            >
+              <MenuItem value="">
+                <em>Select a state</em>
+              </MenuItem>
+              {STATE_OPTIONS.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </MuiSelect>
+            {estimateAttempted && estimateValidationErrors.state && (
+              <FormHelperText>{estimateValidationErrors.state}</FormHelperText>
+            )}
+          </FormControl>
+
+          <FormControl
+            fullWidth
+            required
+            error={estimateAttempted && !!estimateValidationErrors.category}
+          >
+            <InputLabel id="estimate-category-label">Coverage Category</InputLabel>
+            <MuiSelect
+              labelId="estimate-category-label"
+              label="Coverage Category"
+              value={estimateCategory}
+              onChange={(event) =>
+                handleEstimateCategoryChange(event.target.value as CoverageCategory)
+              }
+            >
+              <MenuItem value="">
+                <em>Select a category</em>
+              </MenuItem>
+              {clientCoverageCategories.map((category) => (
+                <MenuItem key={category} value={category}>
+                  {COVERAGE_CATEGORY_LABELS[category]}
+                </MenuItem>
+              ))}
+            </MuiSelect>
+            {estimateAttempted && estimateValidationErrors.category && (
+              <FormHelperText>{estimateValidationErrors.category}</FormHelperText>
+            )}
+          </FormControl>
+
+          {estimateCategoryNeedsGender && (
+            <Box>
+              <FormLabel
+                required
+                error={estimateAttempted && !!estimateValidationErrors.gender}
+              >
+                {fieldLabels.gender ?? "Gender"}
+              </FormLabel>
+              <ToggleButtonGroup
+                value={estimateGender}
+                exclusive
+                onChange={(_, value) => {
+                  if (value === null) return;
+                  setEstimateGender(value as "male" | "female");
+                  setShowEstimateProducts(false);
+                  setEstimateRatesByProductId({});
+                  setEstimateAmountsByProductId({});
+                }}
+                fullWidth
+                sx={{
+                  mt: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1,
+                  "& .MuiToggleButton-root": {
+                    width: "100%",
+                    justifyContent: "flex-start",
+                    gap: 1.5,
+                    textTransform: "none",
+                    borderColor:
+                      estimateAttempted && estimateValidationErrors.gender
+                        ? "error.main"
+                        : undefined,
+                  },
+                  "& .MuiToggleButton-root.Mui-selected": {
+                    bgcolor: "white",
+                    color: "text.primary",
+                    "&:hover": {
+                      bgcolor: "white",
+                    },
+                  },
+                }}
+              >
+                <ToggleButton value="male" aria-label="Male">
+                  <Radio checked={estimateGender === "male"} size="small" sx={{ p: 0 }} />
+                  Male
+                </ToggleButton>
+                <ToggleButton value="female" aria-label="Female">
+                  <Radio
+                    checked={estimateGender === "female"}
+                    size="small"
+                    sx={{ p: 0 }}
+                  />
+                  Female
+                </ToggleButton>
+              </ToggleButtonGroup>
+              {estimateAttempted && estimateValidationErrors.gender && (
+                <FormHelperText error>{estimateValidationErrors.gender}</FormHelperText>
+              )}
+            </Box>
+          )}
+
+          {estimateCategoryNeedsSmoker && (
+            <>
+              <Box>
+                <FormLabel
+                  required
+                  error={estimateAttempted && !!estimateValidationErrors.smoker}
+                >
+                  Have you used tobacco or nicotine substitutes?
+                </FormLabel>
+                <ToggleButtonGroup
+                  value={estimateSmoker}
+                  exclusive
+                  onChange={(_, value) => {
+                    if (value === null) return;
+                    const nextSmoker = value as "yes" | "no";
+                    setEstimateSmoker(nextSmoker);
+                    if (nextSmoker === "no") {
+                      setEstimateTobaccoLastUsed("");
+                      setEstimateTobaccoProducts([]);
+                    }
+                    setShowEstimateProducts(false);
+                    setEstimateRatesByProductId({});
+                    setEstimateAmountsByProductId({});
+                  }}
+                  fullWidth
+                  sx={{
+                    mt: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                    "& .MuiToggleButton-root": {
+                      width: "100%",
+                      justifyContent: "flex-start",
+                      gap: 1.5,
+                      textTransform: "none",
+                      borderColor:
+                        estimateAttempted && estimateValidationErrors.smoker
+                          ? "error.main"
+                          : undefined,
+                    },
+                    "& .MuiToggleButton-root.Mui-selected": {
+                      bgcolor: "white",
+                      color: "text.primary",
+                      "&:hover": {
+                        bgcolor: "white",
+                      },
+                    },
+                  }}
+                >
+                  <ToggleButton value="yes" aria-label="Yes">
+                    <Radio checked={estimateSmoker === "yes"} size="small" sx={{ p: 0 }} />
+                    Yes
+                  </ToggleButton>
+                  <ToggleButton value="no" aria-label="No">
+                    <Radio checked={estimateSmoker === "no"} size="small" sx={{ p: 0 }} />
+                    No
+                  </ToggleButton>
+                </ToggleButtonGroup>
+                {estimateAttempted && estimateValidationErrors.smoker && (
+                  <FormHelperText error>{estimateValidationErrors.smoker}</FormHelperText>
+                )}
+              </Box>
+
+              {estimateSmoker === "yes" && (
+                <>
+                  <TextField
+                    label="Last Used"
+                    type="date"
+                    fullWidth
+                    required
+                    value={estimateTobaccoLastUsed}
+                    onChange={(event) => {
+                      setEstimateTobaccoLastUsed(event.target.value);
+                      setShowEstimateProducts(false);
+                      setEstimateRatesByProductId({});
+                      setEstimateAmountsByProductId({});
+                    }}
+                    InputLabelProps={{ shrink: true }}
+                    error={estimateAttempted && !!estimateValidationErrors.tobaccoLastUsed}
+                    helperText={
+                      estimateAttempted
+                        ? estimateValidationErrors.tobaccoLastUsed
+                        : undefined
+                    }
+                  />
+
+                  <FormControl
+                    fullWidth
+                    required
+                    error={estimateAttempted && !!estimateValidationErrors.tobaccoProducts}
+                  >
+                    <InputLabel id="estimate-tobacco-products-label">
+                      Product(s) Used
+                    </InputLabel>
+                    <MuiSelect
+                      multiple
+                      labelId="estimate-tobacco-products-label"
+                      label="Product(s) Used"
+                      value={estimateTobaccoProducts}
+                      onChange={(event) => {
+                        setEstimateTobaccoProducts(event.target.value as string[]);
+                        setShowEstimateProducts(false);
+                        setEstimateRatesByProductId({});
+                        setEstimateAmountsByProductId({});
+                      }}
+                      renderValue={(selected) => (selected as string[]).join(", ")}
+                    >
+                      {TOBACCO_PRODUCTS.map((product) => (
+                        <MenuItem key={product} value={product}>
+                          <Checkbox checked={estimateTobaccoProducts.includes(product)} />
+                          {product}
+                        </MenuItem>
+                      ))}
+                    </MuiSelect>
+                    {estimateAttempted && estimateValidationErrors.tobaccoProducts && (
+                      <FormHelperText>
+                        {estimateValidationErrors.tobaccoProducts}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </>
+              )}
+            </>
+          )}
+
+          {estimateCategoryNeedsDi && (
+            <TextField
+              label="Average Monthly Income"
+              required
+              fullWidth
+              value={estimateAvgIncome}
+              onChange={(event) => {
+                setEstimateAvgIncome(handleCurrencyInput(event.target.value));
+                setShowEstimateProducts(false);
+                setEstimateRatesByProductId({});
+                setEstimateAmountsByProductId({});
+              }}
+              error={estimateAttempted && !!estimateValidationErrors.avgIncome}
+              helperText={
+                (estimateAttempted && estimateValidationErrors.avgIncome) ||
+                "Monthly income helps determine disability coverage ranges."
+              }
+            />
+          )}
+
+          {estimateCategoryNeedsHours && (
+            <TextField
+              label="# Hours You Work/Week"
+              required
+              fullWidth
+              value={estimateHoursPerWeek}
+              onChange={(event) => {
+                const numeric = event.target.value.replace(/[^0-9]/g, "");
+                setEstimateHoursPerWeek(numeric);
+                setShowEstimateProducts(false);
+                setEstimateRatesByProductId({});
+                setEstimateAmountsByProductId({});
+              }}
+              error={estimateAttempted && !!estimateValidationErrors.hours}
+              helperText={estimateAttempted ? estimateValidationErrors.hours : undefined}
+            />
+          )}
+
+          {estimateCategoryNeedsOo && (
+            <>
+              <TextField
+                label="Monthly Business Expenses"
+                required
+                fullWidth
+                value={estimateMonthlyExpenses}
+                onChange={(event) => {
+                  setEstimateMonthlyExpenses(handleCurrencyInput(event.target.value));
+                  setShowEstimateProducts(false);
+                  setEstimateRatesByProductId({});
+                  setEstimateAmountsByProductId({});
+                }}
+                error={estimateAttempted && !!estimateValidationErrors.monthlyExpenses}
+                helperText={estimateAttempted ? estimateValidationErrors.monthlyExpenses : undefined}
+              />
+
+              <TextField
+                label="% You Are Responsible For"
+                required
+                fullWidth
+                value={estimateResponsibilityPct}
+                onChange={(event) => {
+                  const digits = event.target.value.replace(/[^0-9]/g, "");
+                  if (!digits) {
+                    setEstimateResponsibilityPct("");
+                  } else {
+                    const normalized = Math.min(parseInt(digits, 10), 100);
+                    setEstimateResponsibilityPct(normalized.toString());
+                  }
+                  setShowEstimateProducts(false);
+                  setEstimateRatesByProductId({});
+                  setEstimateAmountsByProductId({});
+                }}
+                error={estimateAttempted && !!estimateValidationErrors.responsibilityPct}
+                helperText={estimateAttempted ? estimateValidationErrors.responsibilityPct : undefined}
+              />
+            </>
+          )}
+
+          <Button
+            ref={getEstimateButtonRef}
+            variant="contained"
+            onClick={() => {
+              void handleGetEstimate();
+            }}
+            disabled={estimatingQuotes}
+          >
+            {estimatingQuotes ? (
+              <Stack direction="row" spacing={1} alignItems="center">
+                <CircularProgress size={16} color="inherit" />
+                <span>Getting estimate...</span>
+              </Stack>
+            ) : (
+              "Get estimate"
+            )}
+          </Button>
+
+          {(estimatingQuotes || showEstimateProducts) && (
+            <Stack spacing={2}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                Available products in {COVERAGE_CATEGORY_LABELS[estimateCategory as CoverageCategory]}
+              </Typography>
+
+              {estimatingQuotes ? (
+                <Stack spacing={2}>
+                  {Array.from({ length: Math.max(estimateCategoryProducts.length, 2) }).map((_, index) => (
+                    <Box
+                      key={`estimate-skeleton-${index}`}
+                      sx={{
+                        bgcolor: "#f0f3f8",
+                        borderRadius: 2,
+                        p: 2,
+                      }}
+                    >
+                      <Skeleton variant="text" width="60%" height={28} />
+                      <Skeleton variant="text" width="40%" height={20} />
+                      <Skeleton variant="rounded" height={56} sx={{ mt: 1.5 }} />
+                      <Skeleton variant="text" width="50%" height={24} sx={{ mt: 1 }} />
+                    </Box>
+                  ))}
+                </Stack>
+              ) : (
+                estimateCategoryProducts.length === 0 ? (
+                  <Alert severity="info">
+                    No products are currently available for this category.
+                  </Alert>
+                ) : (
+                  estimateCategoryProducts.map((product) => (
+                    <Box
+                      key={product.id}
+                      sx={{
+                        bgcolor: "#f0f3f8",
+                        borderRadius: 2,
+                        p: 2,
+                      }}
+                    >
+                      <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                        {product.name}
+                      </Typography>
+                      {productAmounts[product.id] && (
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                          Typical range: {productAmounts[product.id]}
+                        </Typography>
+                      )}
+                      <FormControl fullWidth sx={{ mt: 1.5 }}>
+                        <InputLabel id={`${product.id}-estimate-amount-label`}>
+                          Coverage Amount
+                        </InputLabel>
+                        <MuiSelect
+                          labelId={`${product.id}-estimate-amount-label`}
+                          label="Coverage Amount"
+                          value={estimateAmountsByProductId[product.id] ?? 0}
+                          onChange={(event) => {
+                            void handleEstimateAmountChange(
+                              product,
+                              Number(event.target.value),
+                            );
+                          }}
+                        >
+                          <MenuItem value={0}>$0</MenuItem>
+                          {product.amounts
+                            .slice()
+                            .sort((a, b) => a - b)
+                            .map((amount) => (
+                              <MenuItem key={amount} value={amount}>
+                                {amount.toLocaleString("en-US", {
+                                  style: "currency",
+                                  currency: "USD",
+                                  maximumFractionDigits: 0,
+                                })}
+                              </MenuItem>
+                            ))}
+                        </MuiSelect>
+                      </FormControl>
+                      {(estimateRatesByProductId[product.id] ?? 0) > 0 && (
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          alignItems="baseline"
+                          sx={{ mt: 1 }}
+                        >
+                          <Typography variant="body1" color="text.secondary">
+                            Estimated cost
+                            <Box component="sup">1</Box>:
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: "success.main",
+                              fontWeight: 600,
+                              fontSize: "1rem",
+                            }}
+                          >
+                            {formatMonthly(estimateRatesByProductId[product.id])}/mo
+                          </Typography>
+                        </Stack>
+                      )}
+                    </Box>
+                  ))
+                )
+              )}
+            </Stack>
+          )}
+        </Stack>
+      );
+    }
+
+    return <Typography color="text.secondary">Content coming soon.</Typography>;
   };
 
   return (
@@ -758,13 +1588,27 @@ export default function GetStarted() {
             onClose={() => setDrawerOpen(false)}
             onOpen={() => setDrawerOpen(true)}
           >
-            <Box sx={{ p: 3 }}>
-              <Typography variant="h6" sx={{ mb: 1 }}>
-                {drawerContent}
-              </Typography>
-              <Typography color="text.secondary">
-                Content coming soon.
-              </Typography>
+            <Box ref={drawerScrollRef} sx={{ p: 3, maxHeight: "90vh", overflowY: "auto" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mb: 2,
+                }}
+              >
+                <Typography variant="h6" sx={{ fontSize: "1.25rem" }}>
+                  {drawerTitle}
+                </Typography>
+                <IconButton
+                  onClick={() => setDrawerOpen(false)}
+                  size="small"
+                  sx={{ color: "text.secondary" }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </Box>
+              {renderDrawerContent()}
             </Box>
           </SwipeableDrawer>
 
@@ -781,6 +1625,42 @@ export default function GetStarted() {
             </DialogContent>
             <DialogActions>
               <Button onClick={() => setProcessOpen(false)}>Close</Button>
+            </DialogActions>
+          </Dialog>
+
+          <Dialog
+            open={aboutApplicationReviewOpen}
+            onClose={() => setAboutApplicationReviewOpen(false)}
+            aria-labelledby="about-application-review-title"
+            maxWidth="sm"
+            fullWidth
+          >
+            <DialogTitle id="about-application-review-title">
+              About the Application Review Process
+            </DialogTitle>
+            <DialogContent>
+              <Stack spacing={2}>
+                <Typography>
+                  When you apply for coverage, our underwriting team reviews
+                  your application to make a decision.
+                </Typography>
+                <Typography>
+                  Depending on the coverage you're applying for and the
+                  information you provide, you may be asked to answer some
+                  health-related questions. This helps us evaluate your
+                  eligibility and determine the best rate for you.
+                </Typography>
+                <Typography>
+                  The review process typically takes a few business days, but
+                  with our QuickDecision<sup>SM</sup> program, many applications
+                  can be approved faster without requiring a medical exam.
+                </Typography>
+              </Stack>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setAboutApplicationReviewOpen(false)}>
+                Close
+              </Button>
             </DialogActions>
           </Dialog>
         </FormPageLayout>

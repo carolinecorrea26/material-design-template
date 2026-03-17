@@ -65,7 +65,7 @@ export default function FormPageLayout({
         "Saving association details...",
         "Preparing eligibility section...",
       ],
-      "/coverage": [
+      "/coverage-options": [
         "Saving eligibility information...",
         "Getting available coverage options...",
       ],

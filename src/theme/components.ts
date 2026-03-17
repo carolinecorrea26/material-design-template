@@ -286,8 +286,22 @@ export const components: Components<Theme> = {
           backgroundColor: "white",
           borderRadius: "8px",
         },
-        "& .MuiSelect-select": {},
+        "& .MuiSelect-select": {
+          whiteSpace: "normal",
+          textOverflow: "clip",
+          overflow: "visible",
+          height: "auto",
+        },
       }),
+    },
+  },
+  MuiMenuItem: {
+    styleOverrides: {
+      root: {
+        whiteSpace: "normal",
+        overflowWrap: "anywhere",
+        lineHeight: 1.3,
+      },
     },
   },
   MuiOutlinedInput: {

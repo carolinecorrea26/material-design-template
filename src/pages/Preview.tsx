@@ -360,7 +360,7 @@ export default function Preview() {
               <CardContent>
                 <Stack spacing={2}>
                   {/* Category Header */}
-                  {renderCategoryHeader("Coverage", "/coverage")}
+                  {renderCategoryHeader("Coverage", "/coverage-options")}
 
                   {/* Your Coverage Sub-card */}
                   <Card variant="outlined">

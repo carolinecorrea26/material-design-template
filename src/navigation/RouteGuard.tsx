@@ -13,7 +13,7 @@ type Gate =
 
 export default function RouteGuard({
   require,
-  children
+  children,
 }: {
   require: Gate;
   children: React.ReactNode;
@@ -21,29 +21,41 @@ export default function RouteGuard({
   const { data } = useAppData();
 
   const hasEligibility = !!data.eligibility && !!data.eligibility.state;
-  const hasCoverage = Array.isArray(data.coverage) && data.coverage.length > 0;
+  const hasCoverageSelections =
+    Array.isArray(data.eligibility?.coverageProductSelections) &&
+    data.eligibility.coverageProductSelections.length > 0;
+  const hasCoverageQuotes =
+    Array.isArray(data.coverage) && data.coverage.length > 0;
+  const hasCoverage = hasCoverageSelections || hasCoverageQuotes;
   const hasContact = !!data.contact;
   const hasProfile = !!data.profile;
   const hasConsent = !!data.consent;
 
   // Until Preview/Consent pages are implemented, treat them as requiring the prior step
   const ok =
-    require === "eligibility" ? true :
-    require === "coverage"    ? hasEligibility :
-    require === "contact"     ? hasCoverage :
-    require === "profile"     ? hasContact :
-    require === "preview"     ? hasProfile :
-    require === "consent"     ? hasProfile :
-    require === "docusign"    ? hasConsent :
-    false;
+    require === "eligibility"
+      ? true
+      : require === "coverage"
+        ? hasEligibility
+        : require === "contact"
+          ? hasCoverage
+          : require === "profile"
+            ? hasContact
+            : require === "preview"
+              ? hasProfile
+              : require === "consent"
+                ? hasProfile
+                : require === "docusign"
+                  ? hasConsent
+                  : false;
 
   if (!ok) {
     // Redirect to the earliest unmet step
     if (!hasEligibility) return <Navigate to="/eligibility" replace />;
-    if (!hasCoverage)    return <Navigate to="/coverage" replace />;
-    if (!hasContact)     return <Navigate to="/contact" replace />;
-    if (!hasProfile)     return <Navigate to="/profile" replace />;
-    if (!hasConsent)     return <Navigate to="/consent" replace />;
+    if (!hasCoverage) return <Navigate to="/coverage-options" replace />;
+    if (!hasContact) return <Navigate to="/contact" replace />;
+    if (!hasProfile) return <Navigate to="/profile" replace />;
+    if (!hasConsent) return <Navigate to="/consent" replace />;
     return <Navigate to="/preview" replace />;
   }
 

@@ -18,7 +18,7 @@ import { useAppData } from "../../state/AppDataContext";
 import Landing from "../../pages/Landing";
 import Membership from "../../pages/Membership";
 import Eligibility from "../../pages/Eligibility";
-import Coverage from "../../pages/Coverage";
+import CoverageOptions from "../../pages/CoverageOptions";
 import Contact from "../../pages/Contact";
 import Profile from "../../pages/Profile";
 import HealthHistory from "../../pages/HealthHistory";
@@ -41,7 +41,7 @@ export const useSinglePageLayout = () =>
 const PAGE_COMPONENTS: Record<string, React.ComponentType> = {
   "/membership": Membership,
   "/eligibility": Eligibility,
-  "/coverage": Coverage,
+  "/coverage-options": CoverageOptions,
   "/contact": Contact,
   "/profile": Profile,
   "/health-history": HealthHistory,

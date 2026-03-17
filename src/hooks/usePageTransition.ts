@@ -7,10 +7,9 @@ export function usePageTransition() {
   const previousPathRef = useRef<string | null>(null);
 
   useEffect(() => {
-    // Start loading on location change
+    // Restore intentionally slower transitions between form pages.
     setIsLoading(true);
-
-    const isLongLoad = location.pathname === "/coverage";
+    const isLongLoad = location.pathname === "/coverage-options";
     const delay = isLongLoad ? 6000 : 3000;
 
     const timer = setTimeout(() => {

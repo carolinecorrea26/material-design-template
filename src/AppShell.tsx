@@ -25,7 +25,6 @@ import { ScheduleCallModal } from "./components/common/ScheduleCallModal";
 import { usePageTransition } from "./hooks/usePageTransition";
 import { getClientBranding, getClientConfig } from "./config/clients";
 import { commonStyles } from "./theme/commonStyles";
-import { useLayout } from "./state/LayoutContext";
 import { PageLoadingProvider } from "./state/PageLoadingContext";
 import { PAGES } from "./config/pages";
 
@@ -33,7 +32,6 @@ type AppShellProps = { children: React.ReactNode };
 
 export function AppShell({ children }: AppShellProps) {
   const location = useLocation();
-  const { layoutMode } = useLayout();
   const [showPrivacyNotice, setShowPrivacyNotice] = React.useState(false);
   const [showScheduleCall, setShowScheduleCall] = React.useState(false);
   const [showCookieBanner, setShowCookieBanner] = React.useState(() => {
@@ -69,10 +67,7 @@ export function AppShell({ children }: AppShellProps) {
       <Box
         sx={{
           minHeight: "100vh",
-          bgcolor:
-            location.pathname === "/" || layoutMode === "single-page"
-              ? "#faf9f6"
-              : "white",
+          bgcolor: location.pathname === "/" ? "#faf9f6" : "white",
           background: "white",
           display: "flex",
           flexDirection: "column",
@@ -83,6 +78,8 @@ export function AppShell({ children }: AppShellProps) {
         {isCalbar && showCalbarBanner && (
           <Box
             sx={{
+              position: "relative",
+              zIndex: (theme) => theme.zIndex.appBar + 1,
               bgcolor: "#fffbea",
               borderBottom: 1,
               borderColor: "divider",
@@ -249,7 +246,7 @@ export function AppShell({ children }: AppShellProps) {
           sx={{
             flex: 1,
             maxWidth:
-              location.pathname === "/" || layoutMode === "single-page"
+              location.pathname === "/"
                 ? "1600px !important"
                 : isApplicationPage
                   ? "none !important"

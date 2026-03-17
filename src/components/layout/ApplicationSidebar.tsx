@@ -20,22 +20,21 @@ import {
   ReplayRounded,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
-import { PAGES } from "../../config/pages";
 import { getClientFeatures, getClientBranding } from "../../config/clients";
 import { ScheduleCallModal } from "../common/ScheduleCallModal";
 import { getProducts } from "../../api/client";
 import { COVERAGE_CATEGORY_LABELS } from "../../constants/coverage";
 import type { Product, CoverageCategory } from "../../types/app";
 import ResumeConfirmationDialog from "./ResumeConfirmationDialog";
-import { useLayout } from "../../state/LayoutContext";
 import { COVERAGE_CARDS } from "../../constants/getStartedProducts";
 import { commonStyles } from "../../theme/commonStyles";
+import { getApplicationPages, findPageIndex } from "../../utils/navigation";
 
 const PAGE_TIME_ESTIMATES: Record<string, number> = {
   "/membership": 2,
   "/eligibility": 3,
   "/get-started": 1,
-  "/coverage": 5,
+  "/coverage-options": 5,
   "/contact": 3,
   "/profile": 4,
   "/health-history": 5,
@@ -64,7 +63,6 @@ export default function ApplicationSidebar({
   const features = getClientFeatures();
   const branding = getClientBranding();
   const logoMaxWidth = branding.logoMaxWidth ?? 250;
-  const { layoutMode } = useLayout();
   const [showScheduleCall, setShowScheduleCall] = React.useState(false);
   const [coverageExpanded, setCoverageExpanded] = React.useState(false);
   const [showResumeDialog, setShowResumeDialog] = React.useState(false);
@@ -79,9 +77,7 @@ export default function ApplicationSidebar({
     // Determine if we should show the modal
     const isOnLandingPage =
       location.pathname === "/" || location.pathname === "/landing";
-    const shouldShowModal =
-      layoutMode === "single-page" ||
-      (layoutMode === "multi-page" && !isOnLandingPage);
+    const shouldShowModal = !isOnLandingPage;
 
     if (shouldShowModal) {
       setShowResumeDialog(true);
@@ -135,21 +131,10 @@ export default function ApplicationSidebar({
   }, [products]);
 
   // Filter to application pages only
-  const applicationPages = PAGES.filter((p) => {
-    if (p.section !== "application") return false;
-
-    // Filter out membership page if not enabled
-    if (p.path === "/membership" && !features.showMembershipPage) {
-      return false;
-    }
-
-    return true;
-  });
+  const applicationPages = getApplicationPages(features);
 
   // Find current page index
-  const currentIndex = applicationPages.findIndex(
-    (p) => p.path === location.pathname,
-  );
+  const currentIndex = findPageIndex(applicationPages, location.pathname);
 
   // Don't show if not on an application page
   if (currentIndex === -1) {

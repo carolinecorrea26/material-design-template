@@ -9,7 +9,9 @@ import {
   MenuItem,
   FormHelperText,
   Checkbox,
+  Box,
 } from "@mui/material";
+import { PersonOutline, FavoriteBorder } from "@mui/icons-material";
 import PageHeader from "../components/layout/PageHeader";
 import FormPageLayout from "../components/layout/FormPageLayout";
 import FormStepTransition from "../components/layout/FormStepTransition";
@@ -21,6 +23,7 @@ import RHFTextField from "../components/form/RHFTextField";
 import DateField from "../components/form/DateField";
 import { useAppData } from "../state/AppDataContext";
 import { useStepper } from "../state/StepperContext";
+import { useNavigate } from "react-router-dom";
 import { useScrollToFirstError } from "../hooks/useScrollToFirstError";
 import { getProducts } from "../api/client";
 import { TOBACCO_PRODUCTS } from "../constants/eligibility";
@@ -36,9 +39,43 @@ const CATEGORY_DI: CoverageCategory = "DI";
 const CATEGORY_OO: CoverageCategory = "OO";
 const CATEGORY_SH: CoverageCategory = "SH";
 
+function SectionLabel({
+  icon,
+  label,
+}: {
+  icon: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+      <Box
+        sx={{
+          width: 32,
+          height: 32,
+          borderRadius: "50%",
+          bgcolor: "#dbe4f3",
+          color: "primary.main",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          "& svg": {
+            width: "0.875em",
+            height: "0.875em",
+          },
+        }}
+      >
+        {icon}
+      </Box>
+      <Typography sx={commonStyles.sidebarText}>{label}</Typography>
+    </Stack>
+  );
+}
+
 export default function CoverageQuestions() {
   const { data, setEligibility } = useAppData();
-  const { next, markComplete } = useStepper();
+  const { markComplete } = useStepper();
+  const navigate = useNavigate();
   const [products, setProducts] = React.useState<Product[]>([]);
   const [loading, setLoading] = React.useState(true);
 
@@ -164,13 +201,59 @@ export default function CoverageQuestions() {
   });
 
   const onSubmit = (values: CoverageQuestionsForm) => {
+    if (!data.eligibility) return;
+
     setEligibility({
       ...data.eligibility,
       ...values,
     });
     markComplete();
-    next();
+    navigate("/coverage-options");
   };
+
+  React.useEffect(() => {
+    const handleFillForm = () => {
+      const nextValues: CoverageQuestionsForm = {};
+
+      if (needsSelfGender) nextValues.gender = "male";
+      if (needsSelfSmoker) nextValues.smokerSelf = "no";
+      if (needsSelfDi) {
+        nextValues.selfAvgIncome = "$5,000";
+      }
+      if (needsSelfHours) nextValues.selfHoursPerWeek = "40";
+      if (needsSelfOo) {
+        nextValues.selfMonthlyExpenses = "$4,000";
+        nextValues.selfRespPct = "100";
+      }
+
+      if (needsSpouseGender) nextValues.spouseGender = "female";
+      if (needsSpouseSmoker) nextValues.smokerSpouse = "no";
+      if (needsSpouseDi) {
+        nextValues.spouseAvgIncome = "$4,500";
+      }
+      if (needsSpouseHours) nextValues.spouseHoursPerWeek = "35";
+
+      methods.reset({
+        ...methods.getValues(),
+        ...nextValues,
+      });
+    };
+
+    window.addEventListener("devtools:fillform", handleFillForm);
+    return () =>
+      window.removeEventListener("devtools:fillform", handleFillForm);
+  }, [
+    methods,
+    needsSelfGender,
+    needsSelfSmoker,
+    needsSelfDi,
+    needsSelfHours,
+    needsSelfOo,
+    needsSpouseGender,
+    needsSpouseSmoker,
+    needsSpouseDi,
+    needsSpouseHours,
+  ]);
 
   const showEmptyState = !showSelfSection && !showSpouseSection;
 
@@ -180,7 +263,7 @@ export default function CoverageQuestions() {
         <FormPageLayout
           header={
             <Stack spacing={2}>
-              <PageHeader title="We need some more information based on your selections." />
+              <PageHeader title="We need some more information to calculate coverage options." />
               {Object.keys(methods.formState.errors).length > 0 && (
                 <Alert severity="error">
                   Please complete the required fields below.
@@ -205,9 +288,7 @@ export default function CoverageQuestions() {
                 <>
                   {showSelfSection && (
                     <Stack spacing={0}>
-                      <Typography sx={{ ...commonStyles.sidebarText, mb: 2 }}>
-                        Coverage Questions
-                      </Typography>
+                      <SectionLabel icon={<PersonOutline />} label="Self" />
                       <Stack spacing={3}>
                         {needsSelfGender && (
                           <RHFRadioGroup
@@ -403,9 +484,7 @@ export default function CoverageQuestions() {
 
                   {showSpouseSection && (
                     <Stack spacing={0}>
-                      <Typography sx={{ ...commonStyles.sidebarText, mb: 2 }}>
-                        Spouse Coverage Questions
-                      </Typography>
+                      <SectionLabel icon={<FavoriteBorder />} label="Spouse" />
                       <Stack spacing={3}>
                         {needsSpouseGender && (
                           <RHFRadioGroup

@@ -18,6 +18,9 @@ import {
   Add as AddIcon,
   CheckCircle,
   RemoveCircleRounded,
+  PersonOutline,
+  FavoriteBorder,
+  ChildCare,
 } from "@mui/icons-material";
 import PageHeader from "../components/layout/PageHeader";
 import ScrollChipRow from "../components/layout/ScrollChipRow";
@@ -75,6 +78,39 @@ const APPLICANT_LABELS: Record<Applicant, string> = {
   spouse: "Spouse",
   child: "Child",
 };
+
+function SectionLabel({
+  icon,
+  label,
+}: {
+  icon: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+      <Box
+        sx={{
+          width: 32,
+          height: 32,
+          borderRadius: "50%",
+          bgcolor: "#dbe4f3",
+          color: "primary.main",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          "& svg": {
+            width: "0.875em",
+            height: "0.875em",
+          },
+        }}
+      >
+        {icon}
+      </Box>
+      <Typography sx={commonStyles.sidebarText}>{label}</Typography>
+    </Stack>
+  );
+}
 
 export default function Eligibility() {
   const { data, setEligibility } = useAppData();
@@ -283,12 +319,6 @@ export default function Eligibility() {
       spouseTobaccoProducts: [],
       coverageProductSelections: savedGetStarted,
       ...data.eligibility,
-      applicants: data.eligibility?.applicants ?? derivedApplicants,
-      selfCoverages: data.eligibility?.selfCoverages ?? derivedSelfCoverages,
-      spouseCoverages:
-        data.eligibility?.spouseCoverages ?? derivedSpouseCoverages,
-      coverageProductSelections:
-        data.eligibility?.coverageProductSelections ?? savedGetStarted,
     },
   });
   useScrollToFirstError(methods);
@@ -445,6 +475,7 @@ export default function Eligibility() {
             militaryDischarge: "no",
           },
         ],
+        coverageProductSelections: savedGetStarted,
       };
 
       methods.reset(filledData);
@@ -456,6 +487,8 @@ export default function Eligibility() {
   }, [methods]);
 
   const onSubmit: SubmitHandler<EligibilityForm> = (values) => {
+    if (!data.eligibility) return;
+
     // Allow submission for valid membership values
     const validMembershipValues = [
       "yes",
@@ -482,7 +515,7 @@ export default function Eligibility() {
         "spouseAvgIncome",
         "spouseHoursPerWeek",
       ];
-      const merged = {
+      const merged: EligibilityForm = {
         ...data.eligibility,
         ...values,
       };
@@ -491,7 +524,9 @@ export default function Eligibility() {
           values[field] === undefined &&
           data.eligibility?.[field] !== undefined
         ) {
-          merged[field] = data.eligibility[field];
+          Object.assign(merged, {
+            [field]: data.eligibility[field],
+          });
         }
       });
       setEligibility(merged);
@@ -617,6 +652,7 @@ export default function Eligibility() {
             <Stack spacing={4}>
               {/* Your Eligibility Section - Always visible */}
               <Stack spacing={0}>
+                <SectionLabel icon={<PersonOutline />} label="Self" />
                 <Stack spacing={3}>
                   <Controller
                     name="zipCode"
@@ -723,9 +759,7 @@ export default function Eligibility() {
                 }}
               >
                 <Stack spacing={0}>
-                  <Typography sx={{ ...commonStyles.sidebarText, mb: 2 }}>
-                    Spouse Eligibility
-                  </Typography>
+                  <SectionLabel icon={<FavoriteBorder />} label="Spouse" />
                   <Stack spacing={3}>
                     <Alert severity="info">
                       Domestic Partnership/Civil Union is determined by State
@@ -785,9 +819,7 @@ export default function Eligibility() {
                 }}
               >
                 <Stack spacing={0}>
-                  <Typography sx={{ ...commonStyles.sidebarText, mb: 2 }}>
-                    Child Eligibility
-                  </Typography>
+                  <SectionLabel icon={<ChildCare />} label="Child(ren)" />
                   <Stack spacing={3}>
                     <Alert severity="info">
                       Only unmarried children are eligible for coverage.

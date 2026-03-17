@@ -67,6 +67,7 @@ type Ctx = {
   setProfile: (v: ProfileForm) => void;
   setHealthHistory: (v: HealthHistoryForm) => void;
   setConsent: (v: ConsentForm) => void;
+  resetAppData: () => void;
 };
 
 const Ctx = React.createContext<Ctx | undefined>(undefined);
@@ -98,6 +99,11 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
   const setHealthHistory = (v: HealthHistoryForm) =>
     setData((d) => ({ ...d, healthHistory: v }));
   const setConsent = (v: ConsentForm) => setData((d) => ({ ...d, consent: v }));
+  const resetAppData = () => {
+    setData({});
+    sessionStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(AUTOSAVE_FLAG);
+  };
 
   React.useEffect(() => {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -116,6 +122,7 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
         setProfile,
         setHealthHistory,
         setConsent,
+        resetAppData,
       }}
     >
       {children}

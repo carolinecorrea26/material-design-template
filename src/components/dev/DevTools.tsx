@@ -7,26 +7,25 @@ import {
   Drawer,
   Typography,
   Divider,
-  ToggleButtonGroup,
-  ToggleButton,
 } from "@mui/material";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { Settings } from "@mui/icons-material";
 import ClientSwitcher from "./ClientSwitcher";
-import { useLayout } from "../../state/LayoutContext";
+import { useAppData } from "../../state/AppDataContext";
 
 export default function DevTools() {
   const location = useLocation();
+  const { resetAppData } = useAppData();
   const [open, setOpen] = React.useState(false);
-  const { layoutMode, setLayoutMode } = useLayout();
 
   const handleResetApp = () => {
+    resetAppData();
     // Clear all localStorage data
     localStorage.clear();
     // Clear all sessionStorage data (including form data)
     sessionStorage.clear();
-    // Reload the page to reset all states
-    window.location.reload();
+    // Reload to the get started page to fully reset all provider state.
+    window.location.replace(`/get-started?reset=${Date.now()}`);
   };
 
   const handleFillOutPage = () => {
@@ -35,20 +34,19 @@ export default function DevTools() {
   };
 
   // Only show Fill Out Page button on form pages
-  // In single-page layout, always show it since form pages are on the same page
-  const isFormPage =
-    layoutMode === "single-page" ||
-    [
-      "/get-started",
-      "/membership",
-      "/eligibility",
-      "/coverage",
-      "/contact",
-      "/profile",
-      "/payment",
-      "/health-history",
-      "/consent",
-    ].includes(location.pathname);
+  const isFormPage = [
+    "/get-started",
+    "/membership",
+    "/eligibility",
+    "/add-coverage",
+    "/coverage-questions",
+    "/coverage-options",
+    "/contact",
+    "/profile",
+    "/payment",
+    "/health-history",
+    "/consent",
+  ].includes(location.pathname);
 
   return (
     <>
@@ -122,27 +120,6 @@ export default function DevTools() {
                 CLIENT
               </Typography>
               <ClientSwitcher />
-            </Box>
-
-            <Divider sx={{ borderColor: "divider" }} />
-
-            <Box>
-              <Typography
-                variant="caption"
-                sx={{ color: "text.secondary", mb: 1, display: "block" }}
-              >
-                LAYOUT MODE
-              </Typography>
-              <ToggleButtonGroup
-                value={layoutMode}
-                exclusive
-                onChange={(_e, value) => value && setLayoutMode(value)}
-                fullWidth
-                size="small"
-              >
-                <ToggleButton value="multi-page">Multi-Page</ToggleButton>
-                <ToggleButton value="single-page">Single-Page</ToggleButton>
-              </ToggleButtonGroup>
             </Box>
 
             <Divider sx={{ borderColor: "divider" }} />
