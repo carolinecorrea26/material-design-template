@@ -46,6 +46,8 @@ export interface ClientBranding {
   scheduleCallUrl?: string;
   /** Support email address */
   email?: string;
+  /** Website URL for footer */
+  website?: string;
   /** Physical mailing address */
   address?: {
     street?: string;
@@ -257,6 +259,14 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       ],
       phone: "8006218981",
       phoneDisplay: "(800) 621-8981",
+      email: "information@abendowment.org",
+      website: "abendowment.org",
+      address: {
+        street: "321 North Clark Street, 14th Floor",
+        city: "Chicago",
+        state: "Illinois",
+        zip: "60654-7648",
+      },
     },
     theme: {
       colorName: "green",
@@ -309,6 +319,14 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       ],
       phone: "8006218981",
       phoneDisplay: "(800) 621-8981",
+      email: "support@calbar.org",
+      website: "calbar.org",
+      address: {
+        street: "180 Howard Street",
+        city: "San Francisco",
+        state: "California",
+        zip: "94105",
+      },
     },
     theme: {
       colorName: "blue",
@@ -368,6 +386,14 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       phoneHours: "M-F 8:00am-5:00pm CT",
       scheduleCallUrl:
         "https://calendly.com/insurance-specialists-1/ama-insurance-website-inquiry?month=2025-10",
+      email: "insurance@ama-assn.org",
+      website: "ama-assn.org",
+      address: {
+        street: "330 North Wabash Avenue",
+        city: "Chicago",
+        state: "Illinois",
+        zip: "60611",
+      },
     },
     theme: {
       colorName: "blue",
@@ -434,6 +460,14 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       ],
       phone: "8006218981",
       phoneDisplay: "(800) 621-8981",
+      email: "insurance@avma.org",
+      website: "avma.org",
+      address: {
+        street: "1931 North Meacham Road, Suite 100",
+        city: "Schaumburg",
+        state: "Illinois",
+        zip: "60173",
+      },
     },
     theme: {
       colorName: "green",
@@ -486,6 +520,14 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       phone: "8003683484",
       phoneDisplay: "800-368-3484",
       phoneHours: "M-Th 8:30am - 6:30pm, F 8:30am - 5:00pm, ET",
+      email: "support@waepa.org",
+      website: "waepa.org",
+      address: {
+        street: "2806 N. Parham Road, Suite 200",
+        city: "Richmond",
+        state: "Virginia",
+        zip: "23294",
+      },
     },
     theme: {
       colorName: "blue",
@@ -538,6 +580,14 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       phone: "8006784333",
       phoneDisplay: "800-678-IEEE (4333)",
       phoneHours: "M-F 8:00am-5:00pm ET",
+      email: "insurance@ieee.org",
+      website: "ieee.org",
+      address: {
+        street: "445 Hoes Lane",
+        city: "Piscataway",
+        state: "New Jersey",
+        zip: "08854",
+      },
     },
     theme: {
       colorName: "blue",
@@ -588,6 +638,14 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       ],
       phone: "8006218981",
       phoneDisplay: "(800) 621-8981",
+      email: "support@demo-insurance.com",
+      website: "demo-insurance.com",
+      address: {
+        street: "123 Demo Street",
+        city: "Demo City",
+        state: "Demo State",
+        zip: "00000",
+      },
     },
     theme: {
       colorName: "purple",
@@ -638,6 +696,14 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       ],
       phone: "8449270527",
       phoneDisplay: "(844) 927-0527",
+      email: "insurance@nar.realtor",
+      website: "nar.realtor",
+      address: {
+        street: "430 North Michigan Avenue",
+        city: "Chicago",
+        state: "Illinois",
+        zip: "60611",
+      },
     },
     theme: {
       colorName: "blue",
@@ -691,6 +757,14 @@ export const CLIENT_CONFIGS: Record<ClientId, ClientConfig> = {
       ],
       phone: "8006218981",
       phoneDisplay: "(800) 621-8981",
+      email: "insurance@newyorklife.com",
+      website: "newyorklife.com",
+      address: {
+        street: "51 Madison Avenue",
+        city: "New York",
+        state: "New York",
+        zip: "10010",
+      },
     },
     theme: {
       colorName: "blue",

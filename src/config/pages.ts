@@ -42,7 +42,7 @@ export const PAGES: AppPage[] = [
   {
     id: "eligibility",
     path: "/eligibility",
-    title: "Eligibility",
+    title: "Check Eligibility",
     section: "application",
   },
   {

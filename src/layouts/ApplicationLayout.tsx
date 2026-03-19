@@ -88,17 +88,20 @@ export default function ApplicationLayout({
 
     if (wasLoadingRef.current) {
       const isBackNav = sessionStorage.getItem("nyl-last-nav") === "back";
-      const movedBackward =
+      const movedForward =
         previousIndexRef.current !== null &&
-        effectiveIndex < previousIndexRef.current;
-      if (isBackNav || movedBackward || effectiveIndex === 0) {
+        effectiveIndex > previousIndexRef.current;
+
+      if (isBackNav) {
+        sessionStorage.removeItem("nyl-last-nav");
+      }
+
+      if (!movedForward) {
         wasLoadingRef.current = false;
-        if (isBackNav) {
-          sessionStorage.removeItem("nyl-last-nav");
-        }
         previousIndexRef.current = effectiveIndex;
         return;
       }
+
       setShowSaved(true);
       wasLoadingRef.current = false;
       const timer = setTimeout(() => setShowSaved(false), 2500);

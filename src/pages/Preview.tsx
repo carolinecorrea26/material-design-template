@@ -299,7 +299,6 @@ export default function Preview() {
                             data.eligibility.spouseBirthday,
                           )}
                           {renderField("Gender", data.eligibility.spouseGender)}
-                          {renderField("Email", data.eligibility.spouseEmail)}
                           {renderField(
                             "Tobacco User",
                             data.eligibility.smokerSpouse,

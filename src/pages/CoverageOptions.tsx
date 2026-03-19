@@ -59,7 +59,7 @@ function ApplicantLabel({ applicant }: { applicant: Applicant }) {
           width: 32,
           height: 32,
           borderRadius: "50%",
-          bgcolor: "#dbe4f3",
+          bgcolor: "#d6e6ff",
           color: "primary.main",
           display: "flex",
           alignItems: "center",
@@ -88,7 +88,7 @@ function CategoryLabel({ category }: { category: CoverageCategory }) {
           width: 32,
           height: 32,
           borderRadius: "50%",
-          bgcolor: "#dbe4f3",
+          bgcolor: "#d6e6ff",
           color: "primary.main",
           display: "flex",
           alignItems: "center",
@@ -138,6 +138,23 @@ export default function CoverageOptions() {
     });
     return selections;
   }, [amountByKey, rateByKey]);
+
+  const hasSameSelections = React.useCallback(
+    (left: SelectedItem[], right: SelectedItem[]) => {
+      if (left.length !== right.length) return false;
+      return left.every((item, index) => {
+        const compare = right[index];
+        if (!compare) return false;
+        return (
+          item.productId === compare.productId &&
+          item.applicant === compare.applicant &&
+          item.amount === compare.amount &&
+          item.estMonthly === compare.estMonthly
+        );
+      });
+    },
+    [],
+  );
 
   React.useEffect(() => {
     let mounted = true;
@@ -239,6 +256,13 @@ export default function CoverageOptions() {
     initializedRef.current = true;
   }, [selectedProducts, selectedApplicants, data.coverage]);
 
+  React.useEffect(() => {
+    const nextSelections = buildSelections();
+    const currentSelections = data.coverage ?? [];
+    if (hasSameSelections(nextSelections, currentSelections)) return;
+    setCoverage(nextSelections);
+  }, [buildSelections, data.coverage, hasSameSelections, setCoverage]);
+
   const handleAmountChange = async (
     product: Product,
     applicant: Applicant,
@@ -324,11 +348,19 @@ export default function CoverageOptions() {
           <PageHeader title="Choose from your available coverage options below." />
         }
         navigation={
-          <PageNavigation
-            hasUnsavedChanges={() =>
-              Object.values(amountByKey).some((amount) => amount > 0)
-            }
-          />
+          <Stack spacing={1}>
+            <Typography variant="caption" color="text.secondary" component="p">
+              <Box component="sup">1</Box> Quoted cost is the best rate
+              available based on the information you provided. Final cost may be
+              based upon factors such as gender, health status, and use of
+              tobacco/nicotine. Rates current as of 2026.
+            </Typography>
+            <PageNavigation
+              hasUnsavedChanges={() =>
+                Object.values(amountByKey).some((amount) => amount > 0)
+              }
+            />
+          </Stack>
         }
       >
         <FormStepTransition>
@@ -371,57 +403,56 @@ export default function CoverageOptions() {
                     </AccordionSummary>
                     <AccordionDetails sx={{ px: 0, pt: 0 }}>
                       <Stack spacing={2}>
-                        {categoryProducts.map((product) => (
-                          <Box
-                            key={product.id}
+                        {category === "LI" && (
+                          <Alert
+                            severity="info"
                             sx={{
-                              border: "1px solid",
-                              borderColor: "divider",
-                              borderRadius: 2,
-                              p: 2,
-                              bgcolor: "background.paper",
+                              py: 0.5,
+                              "& .MuiAlert-message": {
+                                fontSize: "0.75rem",
+                              },
                             }}
                           >
-                            <Typography
-                              variant="body1"
-                              sx={{ fontWeight: 600 }}
+                            The maximum available through New York Life
+                            Insurance Company for any individual is $2,000,000,
+                            whether coverage is in one or divided among several
+                            group policies.
+                          </Alert>
+                        )}
+                        {categoryProducts.map((product) => {
+                          const visibleApplicants =
+                            product.eligibleApplicants.filter(
+                              (applicant) => selectedApplicants[applicant],
+                            );
+
+                          return (
+                            <Box
+                              key={product.id}
+                              sx={{
+                                border: "1px solid",
+                                borderColor: "divider",
+                                borderRadius: 2,
+                                p: 2,
+                                bgcolor: "background.paper",
+                              }}
                             >
-                              {product.name}
-                            </Typography>
-                            <Stack spacing={2} sx={{ mt: 2 }}>
-                              {product.eligibleApplicants
-                                .filter(
-                                  (applicant) => selectedApplicants[applicant],
-                                )
-                                .map((applicant) => {
+                              <Typography
+                                variant="body1"
+                                sx={{ fontWeight: 600 }}
+                              >
+                                {product.name}
+                              </Typography>
+                              <Stack spacing={2} sx={{ mt: 2 }}>
+                                {visibleApplicants.map((applicant, index) => {
                                   const key: AmountKey = `${product.id}:${applicant}`;
                                   const amount = amountByKey[key] ?? 0;
                                   const rate = rateByKey[key];
-                                  const showLifeNotice =
-                                    product.category === "LI" &&
-                                    (applicant === "self" ||
-                                      applicant === "spouse");
+                                  const showDivider =
+                                    visibleApplicants.length > 1 &&
+                                    index < visibleApplicants.length - 1;
                                   return (
                                     <Box key={key}>
                                       <ApplicantLabel applicant={applicant} />
-                                      {showLifeNotice && (
-                                        <Alert
-                                          severity="info"
-                                          sx={{
-                                            mb: 2,
-                                            py: 0.5,
-                                            "& .MuiAlert-message": {
-                                              fontSize: "0.75rem",
-                                            },
-                                          }}
-                                        >
-                                          The maximum available through New York
-                                          Life Insurance Company for any
-                                          individual is $2,000,000, whether
-                                          coverage is in one or divided among
-                                          several group policies.
-                                        </Alert>
-                                      )}
                                       <FormControl fullWidth>
                                         <InputLabel id={`${key}-amount-label`}>
                                           Coverage Amount
@@ -476,12 +507,23 @@ export default function CoverageOptions() {
                                             </Typography>
                                           </Stack>
                                         )}
+                                      {showDivider && (
+                                        <Box
+                                          aria-hidden
+                                          sx={{
+                                            borderBottom: "1px solid",
+                                            borderColor: "grey.300",
+                                            mt: 3,
+                                          }}
+                                        />
+                                      )}
                                     </Box>
                                   );
                                 })}
-                            </Stack>
-                          </Box>
-                        ))}
+                              </Stack>
+                            </Box>
+                          );
+                        })}
                       </Stack>
                     </AccordionDetails>
                   </Accordion>
@@ -490,14 +532,6 @@ export default function CoverageOptions() {
             )}
           </Stack>
         </FormStepTransition>
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="caption" color="text.secondary" component="p">
-            <Box component="sup">1</Box> Quoted cost is the best rate available
-            based on the information you provided. Final cost may be based upon
-            factors such as gender, health status, and use of tobacco/nicotine.
-            Rates current as of 2026.
-          </Typography>
-        </Box>
       </FormPageLayout>
     </form>
   );

@@ -9,7 +9,6 @@ import {
   IconButton,
   Box,
   Alert,
-  SwipeableDrawer,
   Button,
 } from "@mui/material";
 import {
@@ -48,35 +47,19 @@ import { commonStyles } from "../theme/commonStyles";
 import {
   getClientMembershipQuestion,
   ACTIVE_CLIENT_ID,
-  getClientBranding,
-  getClientCoverageCategories,
-  getClientProductAmounts,
 } from "../config/clients";
-import { getProducts } from "../api/client";
-import { COVERAGE_CARDS } from "../constants/getStartedProducts";
 import { STATE_OPTIONS } from "../constants/eligibility";
 import { PRODUCT_LOOKUP } from "../constants/getStartedProducts";
 import { getStateFromZip } from "../utils/zipToState";
-import { CoverageDetailsContent } from "../components/modals/CoverageDetailsModal";
-import type { Product, CoverageCategory, Applicant } from "../types/app";
 
-type CoverageDetailsProduct = {
-  id: string;
-  name: string;
-  applicants: string[];
-  href: string;
+const normalizeGender = (value: unknown): "male" | "female" | undefined => {
+  if (value === "male" || value === "female") return value;
+  return undefined;
 };
 
-type CoverageDetailsCategory = {
-  id: CoverageCategory;
-  description: string;
-  products: CoverageDetailsProduct[];
-};
-
-const APPLICANT_LABELS: Record<Applicant, string> = {
-  self: "Self",
-  spouse: "Spouse",
-  child: "Child",
+const normalizeYesNo = (value: unknown): "yes" | "no" | undefined => {
+  if (value === "yes" || value === "no") return value;
+  return undefined;
 };
 
 function SectionLabel({
@@ -93,7 +76,7 @@ function SectionLabel({
           width: 32,
           height: 32,
           borderRadius: "50%",
-          bgcolor: "#dbe4f3",
+          bgcolor: "#d6e6ff",
           color: "primary.main",
           display: "flex",
           alignItems: "center",
@@ -117,121 +100,9 @@ export default function Eligibility() {
   const { next, markComplete } = useStepper();
   const navigate = useNavigate();
   const [showIneligibleDialog, setShowIneligibleDialog] = React.useState(false);
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [drawerContent, setDrawerContent] = React.useState("");
-  const branding = getClientBranding();
-  const clientCoverageCategories = React.useMemo(
-    () => getClientCoverageCategories(),
-    [],
-  );
-  const [productCatalog, setProductCatalog] = React.useState<Product[]>([]);
-  const productAmounts = React.useMemo(() => getClientProductAmounts(), []);
-  const categoryAmounts = React.useMemo(
-    () => ({
-      LI: "$100K–$1M",
-      AD: "$25K–$500K",
-      DI: "$2K–$20K/mo",
-      OO: "$2K–$20K/mo",
-      SH: "$10K–$50K",
-    }),
-    [],
-  );
 
   const getStartedSummary = data.getStarted;
   const savedGetStarted = getStartedSummary?.productSelections ?? [];
-
-  React.useEffect(() => {
-    let mounted = true;
-    getProducts()
-      .then((fetched) => {
-        if (!mounted) return;
-        if (Array.isArray(fetched) && fetched.length > 0) {
-          setProductCatalog(fetched);
-        }
-      })
-      .catch((error) => {
-        console.error("Failed to load products", error);
-      });
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  const brochurePrefix = React.useMemo(
-    () => branding.acronym?.toLowerCase() ?? "abe",
-    [branding.acronym],
-  );
-
-  const getBrochureUrl = React.useCallback(
-    (category: CoverageCategory) =>
-      `https://d160mojjx9yhiu.cloudfront.net/pdfs/4591/${brochurePrefix}-${category.toLowerCase()}-overview.pdf`,
-    [brochurePrefix],
-  );
-
-  const defaultCoverageCards = React.useMemo<CoverageDetailsCategory[]>(
-    () =>
-      COVERAGE_CARDS.map((card) => ({
-        id: card.id as CoverageCategory,
-        description: card.description,
-        products: card.products.map((product) => ({
-          id: product.id,
-          name: product.name,
-          applicants: product.applicants,
-          href: getBrochureUrl(card.id as CoverageCategory),
-        })),
-      })),
-    [getBrochureUrl],
-  );
-
-  const coverageCards = React.useMemo<CoverageDetailsCategory[]>(() => {
-    if (productCatalog.length === 0) {
-      return defaultCoverageCards;
-    }
-
-    const grouped: Record<CoverageCategory, Product[]> = {
-      LI: [],
-      AD: [],
-      DI: [],
-      OO: [],
-      SH: [],
-    };
-
-    productCatalog.forEach((product) => {
-      if (grouped[product.category]) {
-        grouped[product.category].push(product);
-      }
-    });
-
-    const cards = (Object.keys(grouped) as CoverageCategory[])
-      .map((category) => {
-        const categoryProducts = grouped[category];
-        if (categoryProducts.length === 0) return null;
-        const meta = COVERAGE_CARDS.find((card) => card.id === category);
-        return {
-          id: category,
-          description: meta?.description ?? "",
-          products: categoryProducts.map((product) => ({
-            id: product.id,
-            name: product.name,
-            applicants: product.eligibleApplicants.map(
-              (applicant) => APPLICANT_LABELS[applicant] ?? applicant,
-            ),
-            href: getBrochureUrl(category),
-          })),
-        } satisfies CoverageDetailsCategory;
-      })
-      .filter((card): card is CoverageDetailsCategory => Boolean(card));
-
-    return cards.length ? cards : defaultCoverageCards;
-  }, [productCatalog, defaultCoverageCards, getBrochureUrl]);
-
-  const coverageInfoCards = React.useMemo(
-    () =>
-      coverageCards.filter((card) =>
-        clientCoverageCategories.includes(card.id),
-      ),
-    [clientCoverageCategories, coverageCards],
-  );
 
   React.useEffect(() => {
     if (getStartedSummary && (savedGetStarted ?? []).length === 0) {
@@ -284,41 +155,75 @@ export default function Eligibility() {
     return Array.from(set);
   }, [getStartedSummary?.coverageByApplicant?.spouse, savedGetStarted]);
 
+  const normalizedApplicants = React.useMemo(
+    () => ({
+      self: true,
+      spouse:
+        data.eligibility?.applicants?.spouse ??
+        getStartedSummary?.applicants?.spouse ??
+        derivedApplicants.spouse,
+      child:
+        data.eligibility?.applicants?.child ??
+        getStartedSummary?.applicants?.child ??
+        derivedApplicants.child,
+    }),
+    [
+      data.eligibility?.applicants?.spouse,
+      data.eligibility?.applicants?.child,
+      getStartedSummary?.applicants?.spouse,
+      getStartedSummary?.applicants?.child,
+      derivedApplicants.spouse,
+      derivedApplicants.child,
+    ],
+  );
+
+  const normalizedChildren = React.useMemo(
+    () =>
+      (data.eligibility?.children ?? []).map((child) => ({
+        firstName: child.firstName ?? "",
+        lastName: child.lastName ?? "",
+        birthday: child.birthday ?? "",
+        gender: normalizeGender(child.gender),
+        militaryDischarge: normalizeYesNo(child.militaryDischarge),
+      })),
+    [data.eligibility?.children],
+  );
+
   const methods = useForm<EligibilityForm>({
     resolver: zodResolver(EligibilitySchema) as any,
     mode: "onSubmit",
     reValidateMode: "onChange",
     defaultValues: {
-      isMember: undefined,
-      title: "",
-      firstName: "",
-      middleInitial: "",
-      lastName: "",
-      suffix: "",
-      birthday: "",
-      gender: undefined,
-      email: "",
-      applicants: derivedApplicants,
+      isMember: data.eligibility?.isMember,
+      title: data.eligibility?.title ?? "",
+      firstName: data.eligibility?.firstName ?? "",
+      middleInitial: data.eligibility?.middleInitial ?? "",
+      lastName: data.eligibility?.lastName ?? "",
+      suffix: data.eligibility?.suffix ?? "",
+      birthday: data.eligibility?.birthday ?? "",
+      gender: normalizeGender(data.eligibility?.gender),
+      email: data.eligibility?.email ?? "",
       selfCoverages: derivedSelfCoverages,
-      spouseIsMember: undefined,
-      spouseTitle: "",
-      spouseFirstName: "",
-      spouseMiddleInitial: "",
-      spouseLastName: "",
-      spouseSuffix: "",
-      spouseBirthday: "",
-      spouseGender: undefined,
-      spouseEmail: "",
+      spouseIsMember: data.eligibility?.spouseIsMember,
+      spouseTitle: data.eligibility?.spouseTitle ?? "",
+      spouseFirstName: data.eligibility?.spouseFirstName ?? "",
+      spouseMiddleInitial: data.eligibility?.spouseMiddleInitial ?? "",
+      spouseLastName: data.eligibility?.spouseLastName ?? "",
+      spouseSuffix: data.eligibility?.spouseSuffix ?? "",
+      spouseBirthday: data.eligibility?.spouseBirthday ?? "",
+      spouseGender: normalizeGender(data.eligibility?.spouseGender),
       spouseCoverages: derivedSpouseCoverages,
-      children: [],
+      children: normalizedApplicants.child ? normalizedChildren : [],
       zipCode: data.eligibility?.zipCode ?? "",
       state: data.eligibility?.state ?? "",
-      selfTobaccoLastUsed: "",
-      selfTobaccoProducts: [],
-      spouseTobaccoLastUsed: "",
-      spouseTobaccoProducts: [],
+      smokerSelf: normalizeYesNo(data.eligibility?.smokerSelf),
+      smokerSpouse: normalizeYesNo(data.eligibility?.smokerSpouse),
+      selfTobaccoLastUsed: data.eligibility?.selfTobaccoLastUsed ?? "",
+      selfTobaccoProducts: data.eligibility?.selfTobaccoProducts ?? [],
+      spouseTobaccoLastUsed: data.eligibility?.spouseTobaccoLastUsed ?? "",
+      spouseTobaccoProducts: data.eligibility?.spouseTobaccoProducts ?? [],
       coverageProductSelections: savedGetStarted,
-      ...data.eligibility,
+      applicants: normalizedApplicants,
     },
   });
   useScrollToFirstError(methods);
@@ -363,6 +268,12 @@ export default function Eligibility() {
   // Ensure at least one child exists when child is selected
   React.useEffect(() => {
     if (!applyingChild) {
+      if ((methods.getValues("children") ?? []).length > 0) {
+        methods.setValue("children", [], {
+          shouldDirty: true,
+          shouldValidate: false,
+        });
+      }
       return;
     }
     const currentChildren = methods.getValues("children");
@@ -378,6 +289,20 @@ export default function Eligibility() {
       ]);
     }
   }, [applyingChild, methods]);
+
+  React.useEffect(() => {
+    if (applyingSpouse) {
+      return;
+    }
+    methods.setValue("spouseIsMember", undefined, { shouldValidate: false });
+    methods.setValue("spouseTitle", "", { shouldValidate: false });
+    methods.setValue("spouseFirstName", "", { shouldValidate: false });
+    methods.setValue("spouseMiddleInitial", "", { shouldValidate: false });
+    methods.setValue("spouseLastName", "", { shouldValidate: false });
+    methods.setValue("spouseSuffix", "", { shouldValidate: false });
+    methods.setValue("spouseBirthday", "", { shouldValidate: false });
+    methods.setValue("spouseGender", undefined, { shouldValidate: false });
+  }, [applyingSpouse, methods]);
 
   React.useEffect(() => {
     if (membershipValue === "no") {
@@ -445,7 +370,6 @@ export default function Eligibility() {
         spouseLastName: "Doe",
         spouseBirthday: "1987-03-22",
         spouseGender: "female",
-        spouseEmail: "jane.doe@example.com",
         spouseCoverages: ["LI", "AD", "DI", "SH"],
         spouseAvgIncome: "$4,500",
         spouseHoursPerWeek: "35",
@@ -499,6 +423,15 @@ export default function Eligibility() {
       "spouse",
     ];
     if (validMembershipValues.includes(values.isMember || "")) {
+      const normalizedValues: EligibilityForm = {
+        ...values,
+        applicants: {
+          self: true,
+          spouse: values.applicants?.spouse ?? false,
+          child: values.applicants?.child ?? false,
+        },
+      };
+
       const preservedFields: Array<keyof EligibilityForm> = [
         "gender",
         "spouseGender",
@@ -517,11 +450,11 @@ export default function Eligibility() {
       ];
       const merged: EligibilityForm = {
         ...data.eligibility,
-        ...values,
+        ...normalizedValues,
       };
       preservedFields.forEach((field) => {
         if (
-          values[field] === undefined &&
+          normalizedValues[field] === undefined &&
           data.eligibility?.[field] !== undefined
         ) {
           Object.assign(merged, {
@@ -602,11 +535,6 @@ export default function Eligibility() {
     );
   };
 
-  const handleOpenDrawer = (content: string) => {
-    setDrawerContent(content);
-    setDrawerOpen(true);
-  };
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
@@ -615,16 +543,15 @@ export default function Eligibility() {
             <Stack spacing={2}>
               <PageHeader
                 title="Check your eligibility for coverage."
-                notes=""
-              />
-              <ScrollChipRow
-                items={[
-                  {
-                    label: "What coverage options are available?",
-                    onClick: () =>
-                      handleOpenDrawer("What coverage options are available?"),
-                  },
-                ]}
+                notes={
+                  <ScrollChipRow
+                    items={[
+                      {
+                        label: "What does it mean to be eligible for coverage?",
+                      },
+                    ]}
+                  />
+                }
               />
               {Object.keys(methods.formState.errors).length > 0 && (
                 <Alert severity="error">
@@ -799,13 +726,6 @@ export default function Eligibility() {
                         name="spouseBirthday"
                         label="Birthday"
                         required
-                      />{" "}
-                      <RHFTextField
-                        name="spouseEmail"
-                        label="Email"
-                        type="email"
-                        required
-                        autoComplete="email"
                       />
                     </Stack>
                   </Stack>
@@ -934,28 +854,6 @@ export default function Eligibility() {
           </FormStepTransition>
         </FormPageLayout>
       </form>
-
-      <SwipeableDrawer
-        anchor="bottom"
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        onOpen={() => setDrawerOpen(true)}
-      >
-        <Box sx={{ p: 3 }}>
-          <Typography variant="h6" sx={{ mb: 1 }}>
-            {drawerContent}
-          </Typography>
-          {drawerContent === "What coverage options are available?" ? (
-            <CoverageDetailsContent
-              coverageInfoCards={coverageInfoCards}
-              productAmounts={productAmounts}
-              categoryAmounts={categoryAmounts}
-            />
-          ) : (
-            <Typography color="text.secondary">Content coming soon.</Typography>
-          )}
-        </Box>
-      </SwipeableDrawer>
 
       <Dialog
         open={showIneligibleDialog}

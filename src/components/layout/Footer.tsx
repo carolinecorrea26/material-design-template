@@ -39,53 +39,67 @@ export default function Footer() {
                 variant="body2"
                 sx={{ color: "#798293", fontSize: "0.75rem" }}
               >
-                American Bar Endowment
-                <br />
-                321 North Clark Street
-                <br />
-                14th Floor
-                <br />
-                Chicago, Illinois 60654-7648
+                {branding.name}
+                {branding.address?.street && (
+                  <>
+                    <br />
+                    {branding.address.street}
+                  </>
+                )}
+                {branding.address?.city && (
+                  <>
+                    <br />
+                    {branding.address.city}
+                    {branding.address.state && `, ${branding.address.state}`}
+                    {branding.address.zip && ` ${branding.address.zip}`}
+                  </>
+                )}
               </Typography>
               <Box sx={{ mt: 2 }}>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "#798293", fontSize: "0.75rem" }}
-                >
-                  <strong>Website:</strong>{" "}
-                  <Link
-                    href="http://abendowment.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    sx={{ color: "primary.main", fontSize: "0.75rem" }}
+                {branding.website && (
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "#798293", fontSize: "0.75rem" }}
                   >
-                    abendowment.org
-                  </Link>
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "#798293", fontSize: "0.75rem" }}
-                >
-                  <strong>Phone:</strong>{" "}
-                  <Link
-                    href="tel:8006218981"
-                    sx={{ color: "primary.main", fontSize: "0.75rem" }}
+                    <strong>Website:</strong>{" "}
+                    <Link
+                      href={`http://${branding.website}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{ color: "primary.main", fontSize: "0.75rem" }}
+                    >
+                      {branding.website}
+                    </Link>
+                  </Typography>
+                )}
+                {branding.phone && (
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "#798293", fontSize: "0.75rem" }}
                   >
-                    (800) 621-8981
-                  </Link>
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "#798293", fontSize: "0.75rem" }}
-                >
-                  <strong>Email:</strong>{" "}
-                  <Link
-                    href="mailto:information@abendowment.org"
-                    sx={{ color: "primary.main", fontSize: "0.75rem" }}
+                    <strong>Phone:</strong>{" "}
+                    <Link
+                      href={`tel:${branding.phone}`}
+                      sx={{ color: "primary.main", fontSize: "0.75rem" }}
+                    >
+                      {branding.phoneDisplay || branding.phone}
+                    </Link>
+                  </Typography>
+                )}
+                {branding.email && (
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "#798293", fontSize: "0.75rem" }}
                   >
-                    information@abendowment.org
-                  </Link>
-                </Typography>
+                    <strong>Email:</strong>{" "}
+                    <Link
+                      href={`mailto:${branding.email}`}
+                      sx={{ color: "primary.main", fontSize: "0.75rem" }}
+                    >
+                      {branding.email}
+                    </Link>
+                  </Typography>
+                )}
               </Box>
               <Box sx={{ mt: 2 }}>
                 <Box

@@ -16,22 +16,29 @@ import {
   PersonOutline,
   FavoriteBorder,
   ChildCare,
+  AutoAwesomeRounded,
 } from "@mui/icons-material";
 import PageHeader from "../components/layout/PageHeader";
+import ScrollChipRow from "../components/layout/ScrollChipRow";
 import FormPageLayout from "../components/layout/FormPageLayout";
 import FormStepTransition from "../components/layout/FormStepTransition";
 import PageNavigation from "../components/layout/PageNavigation";
+import FormBottomDrawer from "../components/common/FormBottomDrawer";
 import { useAppData } from "../state/AppDataContext";
 import { useStepper } from "../state/StepperContext";
 import { getProducts } from "../api/client";
 import { commonStyles } from "../theme/commonStyles";
 import {
+  getClientBranding,
   getClientCoverageCategories,
+  getClientProductAmounts,
   getClientProductCoverageRanges,
   getClientProductDescriptions,
 } from "../config/clients";
 import { COVERAGE_CATEGORY_LABELS } from "../constants/coverage";
+import { COVERAGE_CARDS } from "../constants/getStartedProducts";
 import CoverageIcon from "../utils/coverageIcons";
+import { CoverageDetailsContent } from "../components/modals/CoverageDetailsModal";
 import type { Product, CoverageCategory, Applicant } from "../types/app";
 
 const applicantLabels: Record<Applicant, string> = {
@@ -48,6 +55,19 @@ const applicantIcons: Record<Applicant, React.ElementType> = {
 
 type GroupedProducts = Record<CoverageCategory, Product[]>;
 
+type CoverageDetailsProduct = {
+  id: string;
+  name: string;
+  applicants: string[];
+  href: string;
+};
+
+type CoverageDetailsCategory = {
+  id: CoverageCategory;
+  description: string;
+  products: CoverageDetailsProduct[];
+};
+
 function CategoryLabel({ category }: { category: CoverageCategory }) {
   return (
     <Stack direction="row" spacing={1} alignItems="center">
@@ -56,7 +76,7 @@ function CategoryLabel({ category }: { category: CoverageCategory }) {
           width: 32,
           height: 32,
           borderRadius: "50%",
-          bgcolor: "#dbe4f3",
+          bgcolor: "#d6e6ff",
           color: "primary.main",
           display: "flex",
           alignItems: "center",
@@ -167,7 +187,12 @@ function ProductSelectionCard({
                 {name}
               </Typography>
               {badge ? (
-                <Chip label={badge} size="small" color="primary" />
+                <Chip
+                  label={badge}
+                  size="small"
+                  color="primary"
+                  icon={<AutoAwesomeRounded />}
+                />
               ) : null}
             </Stack>
             <Typography variant="body2" color="text.secondary">
@@ -175,41 +200,63 @@ function ProductSelectionCard({
             </Typography>
             <Stack
               direction="row"
-              alignItems="center"
-              flexWrap="wrap"
-              spacing={1}
+              alignItems="flex-start"
+              sx={{
+                columnGap: "32px",
+                rowGap: 1,
+                flexWrap: "wrap",
+                justifyContent: { xs: "space-between", md: "flex-start" },
+              }}
             >
-              <Typography
-                variant="body2"
-                sx={{ color: "success.main", fontWeight: 600 }}
-              >
-                {coverageText}
-              </Typography>
-              <Stack
-                direction="row"
-                spacing={0.5}
-                flexWrap="wrap"
-                justifyContent="flex-end"
-                sx={{ ml: "auto" }}
-              >
-                {applicants?.map((applicant) => {
-                  const Icon = applicantIcons[applicant];
-                  return (
-                    <Chip
-                      key={applicant}
-                      size="small"
-                      variant="outlined"
-                      icon={<Icon sx={{ color: "primary.main" }} />}
-                      label={applicantLabels[applicant]}
-                      sx={{
-                        "& .MuiChip-icon": {
-                          color: "primary.main",
-                        },
-                      }}
-                    />
-                  );
-                })}
+              <Stack spacing={0.5}>
+                <Typography
+                  component="p"
+                  sx={{ fontSize: "0.75rem", m: 0, color: "text.secondary" }}
+                >
+                  Coverage:
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ color: "success.main", fontWeight: 600 }}
+                >
+                  {coverageText}
+                </Typography>
               </Stack>
+              {applicants?.length ? (
+                <Stack spacing={0.5}>
+                  <Typography
+                    component="p"
+                    sx={{ fontSize: "0.75rem", m: 0, color: "text.secondary" }}
+                  >
+                    Available for:
+                  </Typography>
+                  <Stack direction="row" spacing={1.5} flexWrap="wrap">
+                    {applicants?.map((applicant) => {
+                      const Icon = applicantIcons[applicant];
+                      return (
+                        <Stack
+                          key={applicant}
+                          direction="row"
+                          spacing={0.5}
+                          alignItems="center"
+                          sx={{
+                            fontWeight: 500,
+                            color: "primary.main",
+                          }}
+                        >
+                          <Icon sx={{ fontSize: 16, color: "primary.main" }} />
+                          <Typography
+                            variant="caption"
+                            sx={{ color: "inherit" }}
+                          >
+                            {applicantLabels[applicant]}
+                          </Typography>
+                        </Stack>
+                      );
+                    })}
+                  </Stack>
+                </Stack>
+              ) : null}
             </Stack>
           </Stack>
         </Stack>
@@ -222,11 +269,24 @@ export default function AddCoverage() {
   const { data, setEligibility } = useAppData();
   const { next, markComplete } = useStepper();
   const hasHydratedSelections = React.useRef(false);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [products, setProducts] = React.useState<Product[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [selectedById, setSelectedById] = React.useState<
     Record<string, boolean>
   >({});
+  const branding = getClientBranding();
+  const productAmounts = React.useMemo(() => getClientProductAmounts(), []);
+  const categoryAmounts = React.useMemo(
+    () => ({
+      LI: "$100K–$1M",
+      AD: "$25K–$500K",
+      DI: "$2K–$20K/mo",
+      OO: "$2K–$20K/mo",
+      SH: "$10K–$50K",
+    }),
+    [],
+  );
 
   const clientCoverageCategories = React.useMemo(
     () => getClientCoverageCategories(),
@@ -286,6 +346,66 @@ export default function AddCoverage() {
     }),
     [data.eligibility?.applicants],
   );
+
+  const brochurePrefix = React.useMemo(
+    () => branding.acronym?.toLowerCase() ?? "abe",
+    [branding.acronym],
+  );
+  const getBrochureUrl = React.useCallback(
+    (category: CoverageCategory) =>
+      `https://d160mojjx9yhiu.cloudfront.net/pdfs/4591/${brochurePrefix}-${category.toLowerCase()}-overview.pdf`,
+    [brochurePrefix],
+  );
+  const coverageCards = React.useMemo<CoverageDetailsCategory[]>(() => {
+    const grouped: GroupedProducts = {
+      LI: [],
+      AD: [],
+      DI: [],
+      OO: [],
+      SH: [],
+    };
+
+    products.forEach((product) => {
+      if (grouped[product.category]) {
+        grouped[product.category].push(product);
+      }
+    });
+
+    const cards = (Object.keys(grouped) as CoverageCategory[])
+      .map((category) => {
+        const categoryProducts = grouped[category];
+        if (categoryProducts.length === 0) return null;
+        const meta = COVERAGE_CARDS.find((card) => card.id === category);
+        return {
+          id: category,
+          description: meta?.description ?? "",
+          products: categoryProducts.map((product) => ({
+            id: product.id,
+            name: product.name,
+            applicants: product.eligibleApplicants.map(
+              (applicant) => applicantLabels[applicant],
+            ),
+            href: getBrochureUrl(category),
+          })),
+        };
+      })
+      .filter((card): card is CoverageDetailsCategory => card !== null);
+
+    if (cards.length > 0) {
+      return cards;
+    }
+
+    return COVERAGE_CARDS.map((card) => ({
+      id: card.id as CoverageCategory,
+      description: card.description,
+      products: card.products.map((product) => ({
+        id: product.id,
+        name: product.name,
+        applicants: product.applicants,
+        href: getBrochureUrl(card.id as CoverageCategory),
+      })),
+    }));
+  }, [getBrochureUrl, products]);
 
   const selectedProductIds = React.useMemo(() => {
     const selected = Object.entries(selectedById)
@@ -360,7 +480,21 @@ export default function AddCoverage() {
 
   return (
     <FormPageLayout
-      header={<PageHeader title="Add the coverage you want to apply for." />}
+      header={
+        <PageHeader
+          title="Add the coverage you want to apply for."
+          notes={
+            <ScrollChipRow
+              items={[
+                {
+                  label: "What coverage options are available?",
+                  onClick: () => setDrawerOpen(true),
+                },
+              ]}
+            />
+          }
+        />
+      }
       navigation={<PageNavigation onContinue={handleContinue} />}
     >
       <FormStepTransition>
@@ -410,7 +544,7 @@ export default function AddCoverage() {
                             const badge =
                               popularProductId &&
                               product.id === popularProductId
-                                ? "Popular"
+                                ? "Featured"
                                 : undefined;
                             const coverageRange =
                               productCoverageRanges[product.id] ??
@@ -457,6 +591,19 @@ export default function AddCoverage() {
           )}
         </Stack>
       </FormStepTransition>
+
+      <FormBottomDrawer
+        open={drawerOpen}
+        title="What coverage options are available?"
+        onClose={() => setDrawerOpen(false)}
+        onOpen={() => setDrawerOpen(true)}
+      >
+        <CoverageDetailsContent
+          coverageInfoCards={coverageCards}
+          productAmounts={productAmounts}
+          categoryAmounts={categoryAmounts}
+        />
+      </FormBottomDrawer>
     </FormPageLayout>
   );
 }

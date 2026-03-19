@@ -53,7 +53,7 @@ function SectionLabel({
           width: 32,
           height: 32,
           borderRadius: "50%",
-          bgcolor: "#dbe4f3",
+          bgcolor: "#d6e6ff",
           color: "primary.main",
           display: "flex",
           alignItems: "center",

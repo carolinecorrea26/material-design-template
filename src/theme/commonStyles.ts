@@ -323,6 +323,7 @@ export const commonStyles = {
 
   infoAlert: {
     mb: 1,
+    bgcolor: "#d6e7ff",
   } as SxProps<Theme>,
 
   neutralAlert: {
@@ -413,7 +414,7 @@ export const commonStyles = {
   sidebarText: {
     lineHeight: 2.66,
     textTransform: "uppercase",
-    color: "rgba(0, 0, 0, 0.6)",
+    color: "#4a6081",
     display: "block",
     fontWeight: 700,
     fontSize: "0.75rem",
