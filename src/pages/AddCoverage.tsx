@@ -205,7 +205,7 @@ function ProductSelectionCard({
                 columnGap: "32px",
                 rowGap: 1,
                 flexWrap: "wrap",
-                justifyContent: { xs: "space-between", md: "flex-start" },
+                justifyContent: { xs: "space-between", sm: "flex-start" },
               }}
             >
               <Stack spacing={0.5}>
@@ -247,7 +247,12 @@ function ProductSelectionCard({
                           <Icon sx={{ fontSize: 16, color: "primary.main" }} />
                           <Typography
                             variant="caption"
-                            sx={{ color: "inherit" }}
+                            sx={{
+                              color: "#4b6181",
+                              fontWeight: 600,
+                              fontSize: "0.675rem",
+                              textTransform: "uppercase",
+                            }}
                           >
                             {applicantLabels[applicant]}
                           </Typography>

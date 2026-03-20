@@ -123,22 +123,22 @@ export const components: Components<Theme> = {
       },
     },
   },
-  MuiAlert: {
-    styleOverrides: {
-      root: ({ ownerState }) => ({
-        borderRadius: 8,
-        ...(ownerState.severity === "info"
-          ? {
-              backgroundColor: "#eef5ff",
-              color: "rgb(53 59 72)",
-              "& .MuiAlert-icon": {
-                color: "#0044ae",
-              },
-            }
-          : {}),
-      }),
-    },
-  },
+  // MuiAlert: {
+  //   styleOverrides: {
+  //     root: ({ ownerState }) => ({
+  //       borderRadius: 8,
+  //       ...(ownerState.severity === "info"
+  //         ? {
+  //             backgroundColor: "#eef5ff",
+  //             color: "rgb(53 59 72)",
+  //             "& .MuiAlert-icon": {
+  //               color: "#0044ae",
+  //             },
+  //           }
+  //         : {}),
+  //     }),
+  //   },
+  // },
   MuiInputLabel: {
     styleOverrides: {
       root: ({ theme }) => ({

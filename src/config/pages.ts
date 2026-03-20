@@ -5,6 +5,7 @@ export type PageId =
   | "addCoverage"
   | "coverageQuestions"
   | "coverageOptions"
+  | "beneficiary"
   | "getStarted"
   | "contact"
   | "profile"
@@ -61,6 +62,12 @@ export const PAGES: AppPage[] = [
     id: "coverageOptions",
     path: "/coverage-options",
     title: "Coverage Options",
+    section: "application",
+  },
+  {
+    id: "beneficiary",
+    path: "/beneficiary",
+    title: "Beneficiary",
     section: "application",
   },
   { id: "contact", path: "/contact", title: "Contact", section: "application" },

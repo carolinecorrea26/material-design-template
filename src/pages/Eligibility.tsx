@@ -73,10 +73,10 @@ function SectionLabel({
     <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
       <Box
         sx={{
-          width: 32,
-          height: 32,
-          borderRadius: "50%",
-          bgcolor: "#d6e6ff",
+          // width: 32,
+          // height: 32,
+          // borderRadius: "50%",
+          // bgcolor: "#d6e6ff",
           color: "primary.main",
           display: "flex",
           alignItems: "center",

@@ -18,7 +18,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Close,
-  ShoppingCartOutlined,
+  AssignmentIndOutlined,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getClientFeatures, getClientBranding } from "../config/clients";
@@ -443,7 +443,7 @@ export default function ApplicationLayout({
                     variant="dot"
                     invisible={!hasCartSelections}
                   >
-                    <ShoppingCartOutlined />
+                    <AssignmentIndOutlined />
                   </Badge>
                 </IconButton>
                 <IconButton

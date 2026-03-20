@@ -14,6 +14,7 @@ const AddCoverage = React.lazy(() => import("./pages/AddCoverage"));
 const CoverageQuestions = React.lazy(() => import("./pages/CoverageQuestions"));
 const GetStarted = React.lazy(() => import("./pages/GetStarted"));
 const CoverageOptions = React.lazy(() => import("./pages/CoverageOptions"));
+const Beneficiary = React.lazy(() => import("./pages/Beneficiary"));
 const Contact = React.lazy(() => import("./pages/Contact"));
 const Profile = React.lazy(() => import("./pages/Profile"));
 const HealthHistory = React.lazy(() => import("./pages/HealthHistory"));
@@ -142,6 +143,19 @@ export function AppRoutes() {
           <ApplicationLayout>
             <RouteGuard require="coverage">
               <CoverageOptions />
+            </RouteGuard>
+          </ApplicationLayout>
+        </SuspenseWrap>
+      ),
+    },
+
+    {
+      path: "/beneficiary",
+      element: (
+        <SuspenseWrap>
+          <ApplicationLayout>
+            <RouteGuard require="contact">
+              <Beneficiary />
             </RouteGuard>
           </ApplicationLayout>
         </SuspenseWrap>
