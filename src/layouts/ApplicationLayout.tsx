@@ -19,6 +19,9 @@ import {
   ChevronRight,
   Close,
   AssignmentIndOutlined,
+  ChildCare,
+  FavoriteBorder,
+  PersonOutline,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getClientFeatures, getClientBranding } from "../config/clients";
@@ -183,6 +186,14 @@ export default function ApplicationLayout({
     () => ({ self: "Self", spouse: "Spouse", child: "Child" }),
     [],
   );
+  const applicantIconById = React.useMemo(
+    () => ({
+      self: PersonOutline,
+      spouse: FavoriteBorder,
+      child: ChildCare,
+    }),
+    [],
+  );
 
   const selectedProductIds = data.eligibility?.coverageProductSelections ?? [];
   const selectedCoverage = data.coverage ?? [];
@@ -205,18 +216,49 @@ export default function ApplicationLayout({
 
   const renderCartSummary = () => {
     if (selectedCoverage.length > 0) {
+      const groupedCoverage = selectedCoverage.reduce((map, item) => {
+        const existing = map.get(item.productId) ?? [];
+        existing.push(item);
+        map.set(item.productId, existing);
+        return map;
+      }, new Map<string, SelectedItem[]>());
+
       return (
-        <Stack spacing={1}>
-          {selectedCoverage.map((item: SelectedItem) => (
-            <Box key={`${item.productId}-${item.applicant}`}>
+        <Stack spacing={1.5}>
+          {Array.from(groupedCoverage.entries()).map(([productId, items]) => (
+            <Box key={productId}>
               <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                {productNameById.get(item.productId) ?? item.productId}
+                {productNameById.get(productId) ?? productId}
               </Typography>
-              <Typography variant="caption" color="text.secondary">
-                {applicantLabelById[item.applicant]} ·{" "}
-                {formatCurrency(item.amount)} · {formatMonthly(item.estMonthly)}
-                /mo
-              </Typography>
+              <Stack spacing={0.5} sx={{ mt: 0.5 }}>
+                {items.map((item) => {
+                  const ApplicantIcon = applicantIconById[item.applicant];
+                  return (
+                    <Stack
+                      key={`${item.productId}-${item.applicant}`}
+                      direction="row"
+                      spacing={0.75}
+                      alignItems="center"
+                    >
+                      <ApplicantIcon
+                        sx={{ fontSize: "0.9rem", color: "primary.main" }}
+                      />
+                      <Typography
+                        variant="caption"
+                        color="primary.main"
+                        sx={{ fontWeight: 600 }}
+                      >
+                        {applicantLabelById[item.applicant]}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {formatCurrency(item.amount)} ·{" "}
+                        {formatMonthly(item.estMonthly)}
+                        /mo
+                      </Typography>
+                    </Stack>
+                  );
+                })}
+              </Stack>
             </Box>
           ))}
         </Stack>

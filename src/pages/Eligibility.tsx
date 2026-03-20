@@ -762,6 +762,7 @@ export default function Eligibility() {
                               </Typography>
                               {childrenValues.length > 1 && (
                                 <Button
+                                  variant="outlined"
                                   size="small"
                                   color="error"
                                   startIcon={<RemoveCircleRounded />}

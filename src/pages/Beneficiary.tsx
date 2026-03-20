@@ -7,7 +7,11 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
+  FormControl,
+  InputLabel,
+  ListSubheader,
+  MenuItem,
+  Select,
   Stack,
   Tab,
   Tabs,
@@ -17,6 +21,7 @@ import {
 } from "@mui/material";
 import {
   Add as AddIcon,
+  EditOutlined,
   FavoriteBorder,
   People,
   PersonOutline,
@@ -54,12 +59,28 @@ type BeneficiaryTarget = {
   productNames: string[];
 };
 
+type ApplicantCoverageEntry = {
+  productName: string;
+  category: CoverageCategory;
+};
+
 type BeneficiarySummary = {
   type: "individual" | "trust";
   designation: "primary" | "contingent";
   name: string;
+  firstName?: string;
+  lastName?: string;
+  trustName?: string;
+  trustDate?: string;
   relationship?: string;
   share: number;
+};
+
+type ExistingBeneficiaryOption = {
+  id: string;
+  type: "individual" | "trust";
+  label: string;
+  summary: BeneficiarySummary;
 };
 
 const APPLICANT_LABELS: Record<Applicant, string> = {
@@ -72,14 +93,6 @@ const APPLICANT_ICONS: Record<Applicant, React.ElementType> = {
   self: PersonOutline,
   spouse: FavoriteBorder,
   child: People,
-};
-
-const COVERAGE_LABELS: Record<CoverageCategory, string> = {
-  LI: "Life Insurance",
-  AD: "Accidental Death and Dismemberment Insurance",
-  DI: "Disability Insurance",
-  OO: "Office Overhead Insurance",
-  SH: "Supplemental Health Insurance",
 };
 
 type ProductInfo = {
@@ -138,6 +151,8 @@ function SectionLabel({
 
 function BeneficiaryFields({
   prefix,
+  existingBeneficiaryOptions,
+  onExistingBeneficiaryChange,
   customShare,
   sharePreset,
   onCustomShareChange,
@@ -146,6 +161,8 @@ function BeneficiaryFields({
   unassignedRemaining,
 }: {
   prefix: BeneficiaryFieldPrefix;
+  existingBeneficiaryOptions: ExistingBeneficiaryOption[];
+  onExistingBeneficiaryChange: (id: string) => void;
   customShare: string;
   sharePreset: string | null;
   onCustomShareChange: (value: string) => void;
@@ -153,12 +170,61 @@ function BeneficiaryFields({
   onPresetChange: (value: string | null) => void;
   unassignedRemaining: number;
 }) {
+  const [existingSelection, setExistingSelection] = React.useState("");
   const beneficiaryType = useWatch({
     name: `${prefix}BeneficiaryType` as keyof ProfileForm,
   }) as ProfileForm["termLifeBeneficiaryType"];
 
+  React.useEffect(() => {
+    setExistingSelection("");
+  }, [prefix]);
+
+  const individualOptions = existingBeneficiaryOptions.filter(
+    (option) => option.type === "individual",
+  );
+  const trustOptions = existingBeneficiaryOptions.filter(
+    (option) => option.type === "trust",
+  );
+
   return (
     <Stack spacing={2}>
+      {existingBeneficiaryOptions.length > 0 ? (
+        <FormControl fullWidth>
+          <InputLabel id={`${prefix}-existing-beneficiary-label`}>
+            Add Existing Beneficiary
+          </InputLabel>
+          <Select
+            labelId={`${prefix}-existing-beneficiary-label`}
+            label="Add Existing Beneficiary"
+            value={existingSelection}
+            onChange={(event) => {
+              const selectedId = event.target.value;
+              setExistingSelection(selectedId);
+              if (selectedId) {
+                onExistingBeneficiaryChange(selectedId);
+              }
+            }}
+          >
+            {individualOptions.length > 0 ? (
+              <ListSubheader>Individual</ListSubheader>
+            ) : null}
+            {individualOptions.map((option) => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.label}
+              </MenuItem>
+            ))}
+            {trustOptions.length > 0 ? (
+              <ListSubheader>Trust</ListSubheader>
+            ) : null}
+            {trustOptions.map((option) => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      ) : null}
+
       <RHFRadioGroup
         name={`${prefix}BeneficiaryType` as keyof ProfileForm}
         label="Choose Beneficiary"
@@ -183,7 +249,7 @@ function BeneficiaryFields({
               required
             />
           </Stack>
-          <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+          <Stack spacing={2}>
             <RHFSelect
               name={`${prefix}BeneficiaryRelationship` as keyof ProfileForm}
               label="Relationship"
@@ -214,6 +280,7 @@ function BeneficiaryFields({
                 <ToggleButton value="25">25%</ToggleButton>
                 <ToggleButton value="50">50%</ToggleButton>
                 <ToggleButton value="75">75%</ToggleButton>
+                <ToggleButton value="100">100%</ToggleButton>
               </ToggleButtonGroup>
 
               <Typography variant="caption" color="text.secondary">
@@ -261,7 +328,13 @@ export default function Beneficiary() {
   >(null);
   const [activePrefix, setActivePrefix] =
     React.useState<BeneficiaryFieldPrefix | null>(null);
+  const [activeScopeKey, setActiveScopeKey] = React.useState<string | null>(
+    null,
+  );
   const [activeTargetLabel, setActiveTargetLabel] = React.useState("");
+  const [activeEditIndex, setActiveEditIndex] = React.useState<number | null>(
+    null,
+  );
   const [activeDesignation, setActiveDesignation] = React.useState<
     "primary" | "contingent"
   >("primary");
@@ -269,13 +342,17 @@ export default function Beneficiary() {
   const [customShare, setCustomShare] = React.useState("");
   const [pendingShareValue, setPendingShareValue] = React.useState<number>(0);
   const [beneficiarySummaries, setBeneficiarySummaries] = React.useState<
-    Record<BeneficiaryFieldPrefix, BeneficiarySummary[]>
-  >({
-    termLife: [],
-    add: [],
-    spouseTermLife: [],
-    spouseAdd: [],
-  });
+    Record<string, BeneficiarySummary[]>
+  >({});
+  const [assignSeparatelyByApplicant, setAssignSeparatelyByApplicant] =
+    React.useState<Record<Applicant, boolean>>({
+      self: false,
+      spouse: false,
+      child: false,
+    });
+
+  const getScopeKey = (prefix: BeneficiaryFieldPrefix, productName?: string) =>
+    `${prefix}::${productName ?? "__all__"}`;
 
   const methods = useForm<ProfileForm>({
     defaultValues: {
@@ -314,7 +391,7 @@ export default function Beneficiary() {
         const productName = productInfo?.name ?? item.productId;
         const category = productInfo?.category;
 
-        if (!category) return;
+        if (!category || (category !== "LI" && category !== "AD")) return;
 
         const groupedKey = `${item.applicant}:${category}`;
         const existing = grouped.get(groupedKey);
@@ -358,12 +435,16 @@ export default function Beneficiary() {
 
   const openBeneficiaryModal = (
     prefix: BeneficiaryFieldPrefix,
+    scopeKey: string,
     targetLabel: string,
+    editIndex: number | null = null,
   ) => {
-    const existingShare = (
-      methods.getValues(`${prefix}BeneficiaryShare` as keyof ProfileForm) ?? ""
-    ).toString();
-    if (["25", "50", "75"].includes(existingShare)) {
+    const scopeSummaries = beneficiarySummaries[scopeKey] ?? [];
+    const existingItem =
+      editIndex !== null ? scopeSummaries[editIndex] : undefined;
+
+    const existingShare = (existingItem?.share ?? "").toString();
+    if (["25", "50", "75", "100"].includes(existingShare)) {
       setSharePreset(existingShare);
       setCustomShare("");
       setPendingShareValue(Number(existingShare));
@@ -372,18 +453,52 @@ export default function Beneficiary() {
       setCustomShare(existingShare);
       setPendingShareValue(Number.parseFloat(existingShare || "0") || 0);
     }
-    const existingForPrefix = beneficiarySummaries[prefix];
-    const primaryCount = existingForPrefix.filter(
+
+    const primaryCount = scopeSummaries.filter(
       (item) => item.designation === "primary",
     ).length;
-    setActiveDesignation(primaryCount >= 10 ? "contingent" : "primary");
+    setActiveDesignation(
+      existingItem?.designation ??
+        (primaryCount >= 10 ? "contingent" : "primary"),
+    );
+
+    const typeField = `${prefix}BeneficiaryType` as keyof ProfileForm;
+    const designationField =
+      `${prefix}BeneficiaryDesignation` as keyof ProfileForm;
+    const firstNameField = `${prefix}BeneficiaryFirstName` as keyof ProfileForm;
+    const lastNameField = `${prefix}BeneficiaryLastName` as keyof ProfileForm;
+    const relationshipField =
+      `${prefix}BeneficiaryRelationship` as keyof ProfileForm;
+    const shareField = `${prefix}BeneficiaryShare` as keyof ProfileForm;
+    const trustNameField = `${prefix}TrustName` as keyof ProfileForm;
+    const trustDateField = `${prefix}TrustDate` as keyof ProfileForm;
+
+    methods.setValue(typeField, (existingItem?.type ?? "individual") as never);
+    methods.setValue(
+      designationField,
+      (existingItem?.designation ?? undefined) as never,
+    );
+    methods.setValue(firstNameField, (existingItem?.firstName ?? "") as never);
+    methods.setValue(lastNameField, (existingItem?.lastName ?? "") as never);
+    methods.setValue(
+      relationshipField,
+      (existingItem?.relationship ?? "") as never,
+    );
+    methods.setValue(shareField, (existingShare || "") as never);
+    methods.setValue(trustNameField, (existingItem?.trustName ?? "") as never);
+    methods.setValue(trustDateField, (existingItem?.trustDate ?? "") as never);
+
+    setActiveEditIndex(editIndex);
     setActivePrefix(prefix);
+    setActiveScopeKey(scopeKey);
     setActiveTargetLabel(targetLabel);
   };
 
   const closeBeneficiaryModal = () => {
     setActivePrefix(null);
+    setActiveScopeKey(null);
     setActiveTargetLabel("");
+    setActiveEditIndex(null);
     setActiveDesignation("primary");
     setSharePreset(null);
     setCustomShare("");
@@ -419,15 +534,17 @@ export default function Beneficiary() {
     setPendingShareValue(Number.isFinite(parsed) ? parsed : 0);
   };
 
-  const removeBeneficiary = (prefix: BeneficiaryFieldPrefix, index: number) => {
+  const removeBeneficiaryByScope = (scopeKey: string, index: number) => {
     setBeneficiarySummaries((prev) => ({
       ...prev,
-      [prefix]: prev[prefix].filter((_, itemIndex) => itemIndex !== index),
+      [scopeKey]: (prev[scopeKey] ?? []).filter(
+        (_, itemIndex) => itemIndex !== index,
+      ),
     }));
   };
 
   const handleSaveBeneficiary = async () => {
-    if (!activePrefix) return;
+    if (!activePrefix || !activeScopeKey) return;
 
     const typeField = `${activePrefix}BeneficiaryType` as keyof ProfileForm;
     const designationField =
@@ -464,12 +581,16 @@ export default function Beneficiary() {
     const isValid = await methods.trigger(fieldsToValidate);
     if (!isValid || !type) return;
 
-    const designationCount = beneficiarySummaries[activePrefix].filter(
+    const scopeSummaries = beneficiarySummaries[activeScopeKey] ?? [];
+    const itemsExcludingEdit = scopeSummaries.filter(
+      (_, index) => index !== activeEditIndex,
+    );
+    const designationCount = itemsExcludingEdit.filter(
       (item) => item.designation === designation,
     ).length;
     if (designationCount >= 10) return;
 
-    const existingTotal = beneficiarySummaries[activePrefix].reduce(
+    const existingTotal = itemsExcludingEdit.reduce(
       (total, item) => total + item.share,
       0,
     );
@@ -515,11 +636,20 @@ export default function Beneficiary() {
         type === "trust"
           ? trustName
           : `${firstName} ${lastName}`.replace(/\s+/g, " ").trim(),
+      firstName,
+      lastName,
+      trustName,
+      trustDate: methods.getValues(trustDateField)?.toString().trim() ?? "",
     };
 
     setBeneficiarySummaries((prev) => ({
       ...prev,
-      [activePrefix]: [...prev[activePrefix], summary],
+      [activeScopeKey]:
+        activeEditIndex === null
+          ? [...(prev[activeScopeKey] ?? []), summary]
+          : (prev[activeScopeKey] ?? []).map((item, index) =>
+              index === activeEditIndex ? summary : item,
+            ),
     }));
 
     methods.setValue(typeField, undefined as never);
@@ -535,106 +665,265 @@ export default function Beneficiary() {
   };
 
   const activeUnassignedRemaining = React.useMemo(() => {
-    if (!activePrefix) return 100;
-    const total = beneficiarySummaries[activePrefix].reduce(
-      (sum, item) => sum + item.share,
-      0,
-    );
+    if (!activePrefix || !activeScopeKey) return 100;
+    const total = (beneficiarySummaries[activeScopeKey] ?? [])
+      .filter((_, index) => index !== activeEditIndex)
+      .reduce((sum, item) => sum + item.share, 0);
     return Math.max(0, 100 - total - pendingShareValue);
-  }, [activePrefix, beneficiarySummaries, pendingShareValue]);
+  }, [
+    activePrefix,
+    activeScopeKey,
+    activeEditIndex,
+    beneficiarySummaries,
+    pendingShareValue,
+  ]);
 
   const activeDesignationCounts = React.useMemo(() => {
-    if (!activePrefix) return { primary: 0, contingent: 0 };
-    const summaries = beneficiarySummaries[activePrefix];
+    if (!activePrefix || !activeScopeKey) return { primary: 0, contingent: 0 };
+    const summaries = beneficiarySummaries[activeScopeKey] ?? [];
     return {
       primary: summaries.filter((item) => item.designation === "primary")
         .length,
       contingent: summaries.filter((item) => item.designation === "contingent")
         .length,
     };
+  }, [activePrefix, activeScopeKey, beneficiarySummaries]);
+
+  const activeExistingBeneficiaries = React.useMemo(() => {
+    if (!activePrefix) return [] as ExistingBeneficiaryOption[];
+
+    const keysForPrefix = Object.keys(beneficiarySummaries).filter((key) =>
+      key.startsWith(`${activePrefix}::`),
+    );
+    const allItems = keysForPrefix.flatMap(
+      (key) => beneficiarySummaries[key] ?? [],
+    );
+    const unique = new Map<string, BeneficiarySummary>();
+
+    allItems.forEach((item) => {
+      const identity = `${item.type}:${item.name}:${item.relationship ?? ""}`;
+      if (!unique.has(identity)) {
+        unique.set(identity, item);
+      }
+    });
+
+    return Array.from(unique.entries()).map(([id, summary]) => ({
+      id,
+      type: summary.type,
+      label: summary.name.toUpperCase(),
+      summary,
+    }));
   }, [activePrefix, beneficiarySummaries]);
 
+  const handleAddExistingBeneficiary = (id: string) => {
+    if (!activePrefix) return;
+    const selected = activeExistingBeneficiaries.find(
+      (option) => option.id === id,
+    );
+    if (!selected) return;
+
+    const existingItem = selected.summary;
+    const typeField = `${activePrefix}BeneficiaryType` as keyof ProfileForm;
+    const firstNameField =
+      `${activePrefix}BeneficiaryFirstName` as keyof ProfileForm;
+    const lastNameField =
+      `${activePrefix}BeneficiaryLastName` as keyof ProfileForm;
+    const relationshipField =
+      `${activePrefix}BeneficiaryRelationship` as keyof ProfileForm;
+    const shareField = `${activePrefix}BeneficiaryShare` as keyof ProfileForm;
+    const trustNameField = `${activePrefix}TrustName` as keyof ProfileForm;
+    const trustDateField = `${activePrefix}TrustDate` as keyof ProfileForm;
+
+    methods.setValue(typeField, existingItem.type as never);
+    methods.setValue(firstNameField, (existingItem.firstName ?? "") as never);
+    methods.setValue(lastNameField, (existingItem.lastName ?? "") as never);
+    methods.setValue(
+      relationshipField,
+      (existingItem.relationship ?? "") as never,
+    );
+    methods.setValue(trustNameField, (existingItem.trustName ?? "") as never);
+    methods.setValue(trustDateField, (existingItem.trustDate ?? "") as never);
+
+    const existingShare = existingItem.share.toString();
+    methods.setValue(shareField, existingShare as never);
+    if (["25", "50", "75", "100"].includes(existingShare)) {
+      setSharePreset(existingShare);
+      setCustomShare("");
+      setPendingShareValue(Number(existingShare));
+    } else {
+      setSharePreset(null);
+      setCustomShare(existingShare);
+      setPendingShareValue(Number.parseFloat(existingShare || "0") || 0);
+    }
+  };
+
   const helperTitle =
-    helpTopic === "share"
-      ? "How does assigning % share work?"
-      : "What is a beneficiary?";
+    helpTopic === "share" ? "What is the % share?" : "What is a beneficiary?";
 
   const helperBody =
     helpTopic === "share"
       ? "The % share for a beneficiary determines how much of the policy payout each person will receive. You assign a percentage to each beneficiary, and all percentages must add up to 100%. For example, if one person is assigned 60% and another 40%, they will receive those portions of the total benefit when it’s paid out. If naming a trust as beneficiary, 100% of proceeds will be paid to the trust."
-      : `A beneficiary can be a person or a trust. If naming more than one person as beneficiary, the percentage of death proceeds to be distributed to each must total 100%. If naming a trust as beneficiary, 100% of proceeds will be paid to the trust. A primary beneficiary is a designated individual who would receive the proceeds of the policy first. A contingent beneficiary is a designated individual who would receive the proceeds of the policy if the primary beneficiary is unable to receive them. You may add up to ten primary and ten contingent beneficiaries online. If no beneficiary is named, proceeds will be paid in accord with policy provisions. If you wish to add beneficiary information at a later time, or need to add more, please contact the plan administrator at ${phoneNumber}. Note: The beneficiary for dependent Child(ren) coverage is the Member.`;
+      : `A beneficiary is the person, people, or trust you choose to receive the money from your policy when you pass away. This can be a family member, friend, or trust, and you can update your beneficiary choices if your situation changes. A primary beneficiary is a designated individual who would receive the proceeds of the policy first. A contingent beneficiary is a designated individual who would receive the proceeds of the policy if the primary beneficiary is unable to receive them. You may add up to ten primary and ten contingent beneficiaries online. If no beneficiary is named, proceeds will be paid in accord with policy provisions. If you wish to add beneficiary information at a later time, or need to add more, please contact the plan administrator at ${phoneNumber}. Note: The beneficiary for dependent Child(ren) coverage is the Member.`;
 
-  const renderTargetRow = (target: BeneficiaryTarget) => {
-    const prefix = getPrefix(target.applicant, target.category);
-    const targetLabel = `${APPLICANT_LABELS[target.applicant]} · ${COVERAGE_LABELS[target.category]}`;
-    const summaries = prefix ? beneficiarySummaries[prefix] : [];
+  const renderApplicantCoverage = (
+    applicant: Applicant,
+    applicantTargets: BeneficiaryTarget[],
+  ) => {
+    const coverageEntries: ApplicantCoverageEntry[] = applicantTargets.flatMap(
+      (target) =>
+        target.productNames.map((productName) => ({
+          productName,
+          category: target.category,
+        })),
+    );
 
-    return (
-      <Stack key={`${target.applicant}-${target.category}`} spacing={2}>
-        <Typography sx={commonStyles.sidebarText}>{targetLabel}</Typography>
-        <Typography variant="body2" color="text.secondary">
-          Selected products: {target.productNames.join(", ")}
-        </Typography>
+    const combinedCoverageLabel = `Coverage: ${coverageEntries
+      .map((entry) => entry.productName)
+      .join(", ")}`;
 
-        {target.applicant === "child" ? (
-          <Alert severity="info">
-            The beneficiary for dependent Child(ren) coverage is the Member.
-          </Alert>
-        ) : prefix ? (
-          <Stack spacing={2}>
-            {summaries.map((summary, index) => (
-              <Box
-                key={`${prefix}-${index}`}
-                sx={commonStyles.mutedSectionPanel}
-              >
-                <Stack spacing={1.5}>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
+    const defaultPrefix =
+      applicant === "self"
+        ? "termLife"
+        : applicant === "spouse"
+          ? "spouseTermLife"
+          : null;
+    const allScopeKey = defaultPrefix ? getScopeKey(defaultPrefix) : "";
+    const assignSeparately = assignSeparatelyByApplicant[applicant];
+
+    const renderSummaryAndAdd = (scopeKey: string, modalLabel: string) => {
+      const scopeSummaries = beneficiarySummaries[scopeKey] ?? [];
+      return (
+        <Stack spacing={2}>
+          {scopeSummaries.map((summary, index) => (
+            <Box
+              key={`${scopeKey}-${index}`}
+              sx={commonStyles.mutedSectionPanel}
+            >
+              <Stack spacing={1.5}>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography
+                    variant="overline"
+                    sx={commonStyles.overlineLabel}
                   >
-                    <Typography
-                      variant="overline"
-                      sx={commonStyles.overlineLabel}
-                    >
-                      Beneficiary {index + 1}
-                    </Typography>
+                    Beneficiary {index + 1}
+                  </Typography>
+                  <Stack direction="row" spacing={1} alignItems="center">
                     <Button
+                      variant="outlined"
+                      size="small"
+                      startIcon={<EditOutlined fontSize="small" />}
+                      onClick={() => {
+                        const scopePrefix = scopeKey.split(
+                          "::",
+                        )[0] as BeneficiaryFieldPrefix;
+                        openBeneficiaryModal(
+                          scopePrefix,
+                          scopeKey,
+                          modalLabel,
+                          index,
+                        );
+                      }}
+                      sx={{ minWidth: 0, px: 1, py: 0.25, fontSize: "0.75rem" }}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outlined"
                       size="small"
                       color="error"
-                      startIcon={<RemoveCircleRounded />}
-                      onClick={() => removeBeneficiary(prefix, index)}
+                      startIcon={<RemoveCircleRounded fontSize="small" />}
+                      onClick={() => removeBeneficiaryByScope(scopeKey, index)}
+                      sx={{ minWidth: 0, px: 1, py: 0.25, fontSize: "0.75rem" }}
                     >
                       Remove
                     </Button>
                   </Stack>
-                  <Typography variant="body2" color="text.secondary">
-                    {summary.designation === "primary"
-                      ? "Primary"
-                      : "Contingent"}{" "}
-                    · {summary.type === "trust" ? "Trust" : "Individual"}
-                  </Typography>
-                  <Typography variant="body2">{summary.name}</Typography>
-                  {summary.type === "individual" && summary.relationship ? (
-                    <Typography variant="body2" color="text.secondary">
-                      Relationship: {summary.relationship}
-                    </Typography>
-                  ) : null}
-                  <Typography variant="body2" color="text.secondary">
-                    Share: {summary.share}%
-                  </Typography>
                 </Stack>
-              </Box>
-            ))}
+                <Typography variant="body2" color="text.secondary">
+                  {summary.designation === "primary" ? "Primary" : "Contingent"}{" "}
+                  · {summary.type === "trust" ? "Trust" : "Individual"}
+                </Typography>
+                <Typography variant="body2" textTransform="uppercase">
+                  {summary.name}
+                </Typography>
+                {summary.type === "individual" && summary.relationship ? (
+                  <Typography variant="body2" color="text.secondary">
+                    Relationship: {summary.relationship}
+                  </Typography>
+                ) : null}
+                <Typography variant="body2" color="text.secondary">
+                  Share: {summary.share}%
+                </Typography>
+              </Stack>
+            </Box>
+          ))}
 
-            <Button
-              variant="outlined"
-              startIcon={<AddIcon />}
-              fullWidth
-              onClick={() => openBeneficiaryModal(prefix, targetLabel)}
-            >
-              Add Beneficiary
-            </Button>
+          <Button
+            variant="outlined"
+            startIcon={<AddIcon />}
+            fullWidth
+            onClick={() => {
+              const scopePrefix = scopeKey.split(
+                "::",
+              )[0] as BeneficiaryFieldPrefix;
+              openBeneficiaryModal(scopePrefix, scopeKey, modalLabel);
+            }}
+          >
+            Add Beneficiary
+          </Button>
+        </Stack>
+      );
+    };
+
+    return (
+      <Stack key={`${applicant}-coverage`} spacing={2}>
+        <Typography variant="body2" color="text.secondary">
+          {combinedCoverageLabel}
+        </Typography>
+
+        {applicant === "child" ? (
+          <Alert severity="info">
+            The beneficiary for dependent Child(ren) coverage is the Member.
+          </Alert>
+        ) : defaultPrefix ? (
+          <Stack spacing={2}>
+            {coverageEntries.length > 1 ? (
+              <Button
+                variant="text"
+                size="small"
+                sx={{ minWidth: 0, p: 0, alignSelf: "flex-start" }}
+                onClick={() =>
+                  setAssignSeparatelyByApplicant((prev) => ({
+                    ...prev,
+                    [applicant]: !prev[applicant],
+                  }))
+                }
+              >
+                {assignSeparately
+                  ? "Use same beneficiary(ies) for all coverages"
+                  : "Customize beneficiary(ies) per coverage"}
+              </Button>
+            ) : null}
+            {assignSeparately
+              ? coverageEntries.map((entry) => {
+                  const scopePrefix = getPrefix(applicant, entry.category);
+                  if (!scopePrefix) return null;
+                  const scopeKey = getScopeKey(scopePrefix, entry.productName);
+                  const modalLabel = `Coverage: ${entry.productName}`;
+                  return (
+                    <Stack key={scopeKey} spacing={1.5}>
+                      <Typography variant="body2" color="text.secondary">
+                        Coverage: {entry.productName}
+                      </Typography>
+                      {renderSummaryAndAdd(scopeKey, modalLabel)}
+                    </Stack>
+                  );
+                })
+              : renderSummaryAndAdd(allScopeKey, combinedCoverageLabel)}
           </Stack>
         ) : (
           <Alert severity="info">
@@ -660,7 +949,7 @@ export default function Beneficiary() {
                       onClick: () => setHelpTopic("beneficiary"),
                     },
                     {
-                      label: "How does assigning % share work?",
+                      label: "What is the % share?",
                       onClick: () => setHelpTopic("share"),
                     },
                   ]}
@@ -694,18 +983,7 @@ export default function Beneficiary() {
                       icon={<ApplicantIcon />}
                       label={APPLICANT_LABELS[applicant]}
                     />
-                    <Stack spacing={3}>
-                      {applicantTargets.map((target, index) => (
-                        <React.Fragment
-                          key={`${target.applicant}-${target.category}-fragment`}
-                        >
-                          {renderTargetRow(target)}
-                          {index < applicantTargets.length - 1 ? (
-                            <Divider />
-                          ) : null}
-                        </React.Fragment>
-                      ))}
-                    </Stack>
+                    {renderApplicantCoverage(applicant, applicantTargets)}
                   </Stack>
                 );
               })}
@@ -722,7 +1000,7 @@ export default function Beneficiary() {
       >
         <DialogTitle>Add Beneficiary</DialogTitle>
         <DialogContent>
-          <Stack spacing={2.5} sx={{ mt: 1 }}>
+          <Stack spacing={2}>
             <Typography variant="body2" color="text.secondary">
               {activeTargetLabel}
             </Typography>
@@ -744,6 +1022,8 @@ export default function Beneficiary() {
             {activePrefix ? (
               <BeneficiaryFields
                 prefix={activePrefix}
+                existingBeneficiaryOptions={activeExistingBeneficiaries}
+                onExistingBeneficiaryChange={handleAddExistingBeneficiary}
                 sharePreset={sharePreset}
                 customShare={customShare}
                 onPresetChange={handlePresetChange}
@@ -757,7 +1037,9 @@ export default function Beneficiary() {
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={closeBeneficiaryModal}>Cancel</Button>
           <Button variant="contained" onClick={handleSaveBeneficiary}>
-            Save Beneficiary
+            {activeEditIndex === null
+              ? "Save Beneficiary"
+              : "Update Beneficiary"}
           </Button>
         </DialogActions>
       </Dialog>
