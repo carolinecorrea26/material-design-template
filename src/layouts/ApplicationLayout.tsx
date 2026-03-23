@@ -243,13 +243,13 @@ export default function ApplicationLayout({
                       <ApplicantIcon
                         sx={{ fontSize: "0.9rem", color: "primary.main" }}
                       />
-                      <Typography
+                      {/* <Typography
                         variant="caption"
                         color="primary.main"
                         sx={{ fontWeight: 600 }}
                       >
                         {applicantLabelById[item.applicant]}
-                      </Typography>
+                      </Typography> */}
                       <Typography variant="caption" color="text.secondary">
                         {formatCurrency(item.amount)} ·{" "}
                         {formatMonthly(item.estMonthly)}

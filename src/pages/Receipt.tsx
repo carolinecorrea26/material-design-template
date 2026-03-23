@@ -78,6 +78,10 @@ const AnimatedCheckmark = () => {
 export default function Receipt() {
   const confirmationNumber = `133333485148`;
 
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+  }, []);
+
   const handleDownloadApplication = () => {};
 
   const handleDownloadPayment = () => {};

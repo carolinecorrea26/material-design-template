@@ -20,7 +20,7 @@ import Membership from "../../pages/Membership";
 import Eligibility from "../../pages/Eligibility";
 import CoverageOptions from "../../pages/CoverageOptions";
 import Contact from "../../pages/Contact";
-import Profile from "../../pages/Profile";
+import Profile from "../pages/Profile";
 import HealthHistory from "../../pages/HealthHistory";
 import Preview from "../../pages/Preview";
 import Consent from "../../pages/Consent";

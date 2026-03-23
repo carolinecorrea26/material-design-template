@@ -1,4 +1,14 @@
 import { THEME_COLORS, type ThemeColorName } from "./themeColors";
+import type { UnderwritingType } from "../types/app";
+
+export const UNDERWRITING_TYPES: ReadonlyArray<UnderwritingType> = [
+  "QD",
+  "FUW",
+  "SI",
+  "CIR",
+  "GI",
+  "NA",
+];
 
 export type ClientId =
   | "abe"

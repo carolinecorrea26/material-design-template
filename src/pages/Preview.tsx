@@ -6,12 +6,15 @@ import {
   Alert,
   Card,
   CardContent,
-  IconButton,
   Button,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  IconButton,
 } from "@mui/material";
 import {
   Edit,
@@ -26,6 +29,9 @@ import {
   Payment,
   HealthAndSafety,
   AttachMoney,
+  InfoOutlined,
+  ExpandMore,
+  Print,
 } from "@mui/icons-material";
 import { formatAnswer, shouldExcludeField } from "../utils/previewFormatting";
 
@@ -52,14 +58,17 @@ import PageNavigation from "../components/layout/PageNavigation";
 import FormStepTransition from "../components/layout/FormStepTransition";
 import FormPageLayout from "../components/layout/FormPageLayout";
 import EditConfirmationModal from "../components/modals/EditConfirmationModal";
+import CheckboxField from "../components/form/CheckboxField";
 import { useAppData } from "../state/AppDataContext";
 import { useNavigate } from "react-router-dom";
 import { commonStyles } from "../theme/commonStyles";
 import type { Product } from "../types/app";
 import { useStepper } from "../state/StepperContext";
+import { getProducts } from "../api/client";
+import { getHealthFlow } from "../utils/healthFlow";
 
 export default function Preview() {
-  const { data } = useAppData();
+  const { data, setConsent } = useAppData();
   const navigate = useNavigate();
   const { next, markComplete } = useStepper();
   const [products, setProducts] = React.useState<Product[]>([]);
@@ -67,13 +76,35 @@ export default function Preview() {
   const [pendingEditPath, setPendingEditPath] = React.useState<string>("");
   const [showAdvisorConfirmDialog, setShowAdvisorConfirmDialog] =
     React.useState(false);
+  const [readAndSign, setReadAndSign] = React.useState(
+    data.consent?.readAndSign || false,
+  );
+  const [electronicConsent, setElectronicConsent] = React.useState(
+    data.consent?.electronicConsent || false,
+  );
+  const [authorizationConsent, setAuthorizationConsent] = React.useState(
+    data.consent?.authorizationConsent || false,
+  );
+  const [dividendsConsent, setDividendsConsent] = React.useState(
+    data.consent?.dividendsConsent || false,
+  );
+  const [submitAttempted, setSubmitAttempted] = React.useState(false);
   const isAdvisorFlow = data.isAdvisorFlow;
+  const { hasQD, hasHealthQuestions } = React.useMemo(
+    () => getHealthFlow(data.coverage, products),
+    [data.coverage, products],
+  );
+  const hasConsentErrors =
+    submitAttempted &&
+    (!readAndSign ||
+      !electronicConsent ||
+      !authorizationConsent ||
+      !dividendsConsent);
 
   // Fetch products to get names
   React.useEffect(() => {
-    fetch("/api/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data))
+    getProducts()
+      .then(setProducts)
       .catch((err) => console.error("Failed to load products", err));
   }, []);
 
@@ -99,14 +130,37 @@ export default function Preview() {
   };
 
   const handleContinue = () => {
+    setSubmitAttempted(true);
+
+    if (
+      !readAndSign ||
+      !electronicConsent ||
+      !authorizationConsent ||
+      !dividendsConsent
+    ) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    setConsent({
+      readAndSign,
+      electronicConsent,
+      authorizationConsent,
+      dividendsConsent,
+      firstName: data.consent?.firstName || data.eligibility?.firstName || "",
+      lastName: data.consent?.lastName || data.eligibility?.lastName || "",
+      dateOfBirth:
+        data.consent?.dateOfBirth || data.eligibility?.birthday || "",
+    });
+
     // If advisor flow, show confirmation dialog
     if (isAdvisorFlow) {
       setShowAdvisorConfirmDialog(true);
     } else {
-      // Regular flow - proceed to consent
+      // Regular flow - proceed to signature
       markComplete();
       next();
-      navigate("/consent");
+      navigate("/docusign");
     }
   };
 
@@ -161,10 +215,22 @@ export default function Preview() {
     }
 
     return (
-      <Box sx={{ display: "flex", gap: 2, py: 0.5, alignItems: "flex-start" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          gap: { xs: 0.5, sm: 2 },
+          py: 0.5,
+          alignItems: "flex-start",
+        }}
+      >
         <Typography
           variant="body2"
-          sx={{ width: "250px", flexShrink: 0, fontWeight: 500 }}
+          sx={{
+            width: { xs: "100%", sm: "250px" },
+            flexShrink: 0,
+            fontWeight: 500,
+          }}
         >
           {label}:
         </Typography>
@@ -204,7 +270,11 @@ export default function Preview() {
   // Helper to render subsection header without edit button
   const renderSectionHeader = (title: string, icon: React.ReactNode) => (
     <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
-      <Box sx={commonStyles.iconCircle}>{icon}</Box>
+      <Box
+        sx={{ display: "flex", alignItems: "center", color: "primary.main" }}
+      >
+        {icon}
+      </Box>
       <Typography variant="h6">{title}</Typography>
     </Stack>
   );
@@ -213,1934 +283,2234 @@ export default function Preview() {
     <FormPageLayout
       header={
         <PageHeader
-          title="Review Application"
-          notes="Please review your application and if needed, click the Edit ✎ button to make changes. Once you proceed to the next page, you will not be able to make any changes. Please review your information carefully before continuing."
+          title="Review your application and complete your authorizations before signing."
+          notes="Review your submitted application details and complete the required authorizations to continue."
         />
       }
       navigation={<PageNavigation onContinue={handleContinue} />}
     >
       <FormStepTransition>
-        <Alert severity="warning" sx={{ mb: 2 }}>
-          <strong>Important:</strong> Once you proceed to the next page, you
-          will not be able to make any changes to your application.
-        </Alert>
+        {hasConsentErrors && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            Please complete all authorization checkboxes to continue.
+          </Alert>
+        )}
 
-        <Stack spacing={4}>
-          {/* Eligibility Card */}
-          {data.eligibility && (
-            <Card sx={commonStyles.categoryCard}>
-              <CardContent>
-                <Stack spacing={2}>
-                  {/* Category Header */}
-                  {renderCategoryHeader("Eligibility", "/eligibility")}
+        {(hasHealthQuestions || hasQD) && (
+          <Box
+            sx={{
+              mb: 3,
+              p: 2,
+              borderRadius: 1,
+              border: 1,
+              borderColor: "primary.light",
+              bgcolor: "background.paper",
+            }}
+          >
+            <Stack direction="row" spacing={1.5} alignItems="flex-start">
+              <InfoOutlined color="primary" sx={{ mt: 0.2 }} />
+              <Stack spacing={0.75}>
+                {hasHealthQuestions && (
+                  <Typography variant="body2" color="text.secondary">
+                    After signature, you will answer health questions online.
+                  </Typography>
+                )}
+                {hasQD && (
+                  <Typography variant="body2" color="text.secondary">
+                    If your selected products are eligible, you may receive a
+                    decision in real-time.
+                  </Typography>
+                )}
+              </Stack>
+            </Stack>
+          </Box>
+        )}
 
-                  {/* Your Eligibility Sub-card */}
-                  <Card variant="outlined">
-                    <CardContent>
-                      {renderSectionHeader(
-                        "Your Eligibility",
-                        <Person color="primary" />,
-                      )}
-                      <Stack spacing={1}>
-                        {renderField(
-                          "Member Status",
-                          data.eligibility.isMember,
-                        )}
-                        {renderField("Title", data.eligibility.title)}
-                        {renderField("First Name", data.eligibility.firstName)}
-                        {renderField(
-                          "Middle Initial",
-                          data.eligibility.middleInitial,
-                        )}
-                        {renderField("Last Name", data.eligibility.lastName)}
-                        {renderField("Suffix", data.eligibility.suffix)}
-                        {renderField("Birthday", data.eligibility.birthday)}
-                        {renderField("Gender", data.eligibility.gender)}
-                        {renderField("State", data.eligibility.state)}
-                        {renderField("Email", data.eligibility.email)}
-                        {renderField(
-                          "Tobacco User",
-                          data.eligibility.smokerSelf,
-                        )}
-                        {/* Note: selfCoverages (which coverage categories) is excluded from preview */}
-                      </Stack>
-                    </CardContent>
-                  </Card>
+        <Accordion
+          defaultExpanded={false}
+          disableGutters
+          elevation={0}
+          sx={{
+            border: 1,
+            borderColor: "divider",
+            borderRadius: 1,
+            mb: 3,
+            "& .MuiCard-root.MuiCard-outlined": {
+              bgcolor: "rgb(169 173 184 / 10%)",
+              borderColor: "divider",
+            },
+            "&::before": { display: "none" },
+          }}
+        >
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              Review your application
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Stack spacing={4}>
+              {/* Eligibility Card */}
+              {data.eligibility && (
+                <Card sx={commonStyles.categoryCard}>
+                  <CardContent>
+                    <Stack spacing={2}>
+                      {/* Category Header */}
+                      {renderCategoryHeader("Eligibility", "/eligibility")}
 
-                  {/* Spouse Eligibility Sub-card */}
-                  {data.eligibility?.applicants?.spouse && (
-                    <Card variant="outlined">
-                      <CardContent>
-                        {renderSectionHeader(
-                          "Spouse Eligibility",
-                          <People color="primary" />,
-                        )}
-                        <Stack spacing={1}>
-                          {renderField(
-                            "Member Status",
-                            data.eligibility.spouseIsMember,
-                          )}
-                          {renderField("Title", data.eligibility.spouseTitle)}
-                          {renderField(
-                            "First Name",
-                            data.eligibility.spouseFirstName,
-                          )}
-                          {renderField(
-                            "Middle Initial",
-                            data.eligibility.spouseMiddleInitial,
-                          )}
-                          {renderField(
-                            "Last Name",
-                            data.eligibility.spouseLastName,
-                          )}
-                          {renderField("Suffix", data.eligibility.spouseSuffix)}
-                          {renderField(
-                            "Birthday",
-                            data.eligibility.spouseBirthday,
-                          )}
-                          {renderField("Gender", data.eligibility.spouseGender)}
-                          {renderField(
-                            "Tobacco User",
-                            data.eligibility.smokerSpouse,
-                          )}
-                          {/* Note: spouseCoverages (which coverage categories) is excluded from preview */}
-                        </Stack>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {/* Child(ren) Eligibility Sub-card */}
-                  {data.eligibility?.applicants?.child &&
-                    data.eligibility.children &&
-                    data.eligibility.children.length > 0 && (
+                      {/* Your Eligibility Sub-card */}
                       <Card variant="outlined">
                         <CardContent>
                           {renderSectionHeader(
-                            "Child(ren) Eligibility",
-                            <ChildFriendly color="primary" />,
+                            "Your Eligibility",
+                            <Person color="primary" />,
                           )}
-                          <Stack spacing={2}>
-                            {data.eligibility.children.map((child, index) => (
-                              <Box
-                                key={index}
-                                sx={{
-                                  pl: 2,
-                                  borderLeft: 2,
-                                  borderColor: "divider",
-                                }}
-                              >
-                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                  Child {index + 1}
-                                </Typography>
-                                <Stack spacing={1}>
-                                  {renderField("First Name", child.firstName)}
-                                  {renderField("Last Name", child.lastName)}
-                                  {renderField("Birthday", child.birthday)}
-                                  {renderField("Gender", child.gender)}
-                                  {renderField(
-                                    "Military Discharge",
-                                    child.militaryDischarge,
-                                  )}
-                                </Stack>
-                              </Box>
-                            ))}
+                          <Stack spacing={1}>
+                            {renderField(
+                              "Member Status",
+                              data.eligibility.isMember,
+                            )}
+                            {renderField("Title", data.eligibility.title)}
+                            {renderField(
+                              "First Name",
+                              data.eligibility.firstName,
+                            )}
+                            {renderField(
+                              "Middle Initial",
+                              data.eligibility.middleInitial,
+                            )}
+                            {renderField(
+                              "Last Name",
+                              data.eligibility.lastName,
+                            )}
+                            {renderField("Suffix", data.eligibility.suffix)}
+                            {renderField("Birthday", data.eligibility.birthday)}
+                            {renderField("Gender", data.eligibility.gender)}
+                            {renderField("State", data.eligibility.state)}
+                            {renderField("Email", data.eligibility.email)}
+                            {renderField(
+                              "Tobacco User",
+                              data.eligibility.smokerSelf,
+                            )}
+                            {/* Note: selfCoverages (which coverage categories) is excluded from preview */}
                           </Stack>
                         </CardContent>
                       </Card>
-                    )}
-                </Stack>
-              </CardContent>
-            </Card>
-          )}
 
-          {/* Coverage Card */}
-          {data.coverage && (
-            <Card sx={commonStyles.categoryCard}>
-              <CardContent>
-                <Stack spacing={2}>
-                  {/* Category Header */}
-                  {renderCategoryHeader("Coverage", "/coverage-options")}
-
-                  {/* Your Coverage Sub-card */}
-                  <Card variant="outlined">
-                    <CardContent>
-                      {renderSectionHeader(
-                        "Your Coverage",
-                        <Person color="primary" />,
+                      {/* Spouse Eligibility Sub-card */}
+                      {data.eligibility?.applicants?.spouse && (
+                        <Card variant="outlined">
+                          <CardContent>
+                            {renderSectionHeader(
+                              "Spouse Eligibility",
+                              <People color="primary" />,
+                            )}
+                            <Stack spacing={1}>
+                              {renderField(
+                                "Member Status",
+                                data.eligibility.spouseIsMember,
+                              )}
+                              {renderField(
+                                "Title",
+                                data.eligibility.spouseTitle,
+                              )}
+                              {renderField(
+                                "First Name",
+                                data.eligibility.spouseFirstName,
+                              )}
+                              {renderField(
+                                "Middle Initial",
+                                data.eligibility.spouseMiddleInitial,
+                              )}
+                              {renderField(
+                                "Last Name",
+                                data.eligibility.spouseLastName,
+                              )}
+                              {renderField(
+                                "Suffix",
+                                data.eligibility.spouseSuffix,
+                              )}
+                              {renderField(
+                                "Birthday",
+                                data.eligibility.spouseBirthday,
+                              )}
+                              {renderField(
+                                "Gender",
+                                data.eligibility.spouseGender,
+                              )}
+                              {renderField(
+                                "Tobacco User",
+                                data.eligibility.smokerSpouse,
+                              )}
+                              {/* Note: spouseCoverages (which coverage categories) is excluded from preview */}
+                            </Stack>
+                          </CardContent>
+                        </Card>
                       )}
-                      <Stack spacing={1}>
-                        {data.coverage &&
-                        data.coverage.filter(
-                          (item) => item.applicant === "self",
-                        ).length > 0 ? (
-                          data.coverage
-                            .filter((item) => item.applicant === "self")
-                            .map((item, idx) => {
-                              const product = products.find(
-                                (p) => p.id === item.productId,
-                              );
-                              return (
-                                <Box key={idx} sx={{ py: 0.5 }}>
-                                  <Box
-                                    sx={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: 1,
-                                    }}
-                                  >
-                                    <Typography
-                                      variant="body2"
-                                      sx={{ fontWeight: 500 }}
+
+                      {/* Child(ren) Eligibility Sub-card */}
+                      {data.eligibility?.applicants?.child &&
+                        data.eligibility.children &&
+                        data.eligibility.children.length > 0 && (
+                          <Card variant="outlined">
+                            <CardContent>
+                              {renderSectionHeader(
+                                "Child(ren) Eligibility",
+                                <ChildFriendly color="primary" />,
+                              )}
+                              <Stack spacing={2}>
+                                {data.eligibility.children.map(
+                                  (child, index) => (
+                                    <Box
+                                      key={index}
+                                      sx={{
+                                        pl: 2,
+                                        borderLeft: 2,
+                                        borderColor: "primary.main",
+                                      }}
                                     >
-                                      {getProductName(item.productId)}
-                                    </Typography>
-                                    {product?.quickDecision && (
                                       <Typography
-                                        variant="caption"
+                                        variant="subtitle2"
+                                        sx={{ mb: 1 }}
+                                      >
+                                        Child {index + 1}
+                                      </Typography>
+                                      <Stack spacing={1}>
+                                        {renderField(
+                                          "First Name",
+                                          child.firstName,
+                                        )}
+                                        {renderField(
+                                          "Last Name",
+                                          child.lastName,
+                                        )}
+                                        {renderField(
+                                          "Birthday",
+                                          child.birthday,
+                                        )}
+                                        {renderField("Gender", child.gender)}
+                                        {renderField(
+                                          "Military Discharge",
+                                          child.militaryDischarge,
+                                        )}
+                                      </Stack>
+                                    </Box>
+                                  ),
+                                )}
+                              </Stack>
+                            </CardContent>
+                          </Card>
+                        )}
+                    </Stack>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Coverage Card */}
+              {data.coverage && (
+                <Card sx={commonStyles.categoryCard}>
+                  <CardContent>
+                    <Stack spacing={2}>
+                      {/* Category Header */}
+                      {renderCategoryHeader("Coverage", "/coverage-options")}
+
+                      {/* Your Coverage Sub-card */}
+                      <Card variant="outlined">
+                        <CardContent>
+                          {renderSectionHeader(
+                            "Your Coverage",
+                            <Person color="primary" />,
+                          )}
+                          <Stack spacing={1}>
+                            {data.coverage &&
+                            data.coverage.filter(
+                              (item) => item.applicant === "self",
+                            ).length > 0 ? (
+                              data.coverage
+                                .filter((item) => item.applicant === "self")
+                                .map((item, idx) => {
+                                  const product = products.find(
+                                    (p) => p.id === item.productId,
+                                  );
+                                  return (
+                                    <Box key={idx} sx={{ py: 0.5 }}>
+                                      <Box
                                         sx={{
-                                          bgcolor: "success.light",
-                                          color: "success.dark",
-                                          px: 1,
-                                          py: 0.25,
-                                          borderRadius: 0.5,
-                                          fontWeight: 600,
+                                          display: "flex",
+                                          alignItems: "center",
+                                          gap: 1,
                                         }}
                                       >
-                                        QuickDecision℠
+                                        <Typography
+                                          variant="body2"
+                                          sx={{ fontWeight: 500 }}
+                                        >
+                                          {getProductName(item.productId)}
+                                        </Typography>
+                                        {product?.quickDecision && (
+                                          <Typography
+                                            variant="caption"
+                                            sx={{
+                                              bgcolor: "success.light",
+                                              color: "success.dark",
+                                              px: 1,
+                                              py: 0.25,
+                                              borderRadius: 0.5,
+                                              fontWeight: 600,
+                                            }}
+                                          >
+                                            QuickDecision℠
+                                          </Typography>
+                                        )}
+                                      </Box>
+                                      <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                        sx={{ pl: 2 }}
+                                      >
+                                        Coverage Amount: $
+                                        {item.amount.toLocaleString()}
                                       </Typography>
-                                    )}
-                                  </Box>
-                                  <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                    sx={{ pl: 2 }}
-                                  >
-                                    Coverage Amount: $
-                                    {item.amount.toLocaleString()}
-                                  </Typography>
-                                  {item.riders &&
-                                    Object.keys(item.riders).length > 0 && (
-                                      <Box sx={{ pl: 2, mt: 0.5 }}>
+                                      {item.riders &&
+                                        Object.keys(item.riders).length > 0 && (
+                                          <Box sx={{ pl: 2, mt: 0.5 }}>
+                                            <Typography
+                                              variant="body2"
+                                              color="text.secondary"
+                                              sx={{ fontWeight: 500 }}
+                                            >
+                                              Riders:
+                                            </Typography>
+                                            {Object.entries(item.riders).map(
+                                              ([riderKey, riderValue]) => {
+                                                if (!riderValue) return null;
+                                                return (
+                                                  <Typography
+                                                    key={riderKey}
+                                                    variant="body2"
+                                                    color="text.secondary"
+                                                    sx={{ pl: 2 }}
+                                                  >
+                                                    •{" "}
+                                                    {formatRiderName(riderKey)}
+                                                    {typeof riderValue ===
+                                                      "number" &&
+                                                      `: $${riderValue.toLocaleString()}`}
+                                                  </Typography>
+                                                );
+                                              },
+                                            )}
+                                          </Box>
+                                        )}
+                                    </Box>
+                                  );
+                                })
+                            ) : (
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                No coverage selected
+                              </Typography>
+                            )}
+                          </Stack>
+                        </CardContent>
+                      </Card>
+
+                      {/* Spouse Coverage Sub-card */}
+                      {data.eligibility?.applicants?.spouse && (
+                        <Card variant="outlined">
+                          <CardContent>
+                            {renderSectionHeader(
+                              "Spouse Coverage",
+                              <People color="primary" />,
+                            )}
+                            <Stack spacing={1}>
+                              {data.coverage &&
+                              data.coverage.filter(
+                                (item) => item.applicant === "spouse",
+                              ).length > 0 ? (
+                                data.coverage
+                                  .filter((item) => item.applicant === "spouse")
+                                  .map((item, idx) => {
+                                    const product = products.find(
+                                      (p) => p.id === item.productId,
+                                    );
+                                    return (
+                                      <Box key={idx} sx={{ py: 0.5 }}>
+                                        <Box
+                                          sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 1,
+                                          }}
+                                        >
+                                          <Typography
+                                            variant="body2"
+                                            sx={{ fontWeight: 500 }}
+                                          >
+                                            {getProductName(item.productId)}
+                                          </Typography>
+                                          {product?.quickDecision && (
+                                            <Typography
+                                              variant="caption"
+                                              sx={{
+                                                bgcolor: "success.light",
+                                                color: "success.dark",
+                                                px: 1,
+                                                py: 0.25,
+                                                borderRadius: 0.5,
+                                                fontWeight: 600,
+                                              }}
+                                            >
+                                              QuickDecision℠
+                                            </Typography>
+                                          )}
+                                        </Box>
                                         <Typography
                                           variant="body2"
                                           color="text.secondary"
-                                          sx={{ fontWeight: 500 }}
+                                          sx={{ pl: 2 }}
                                         >
-                                          Riders:
+                                          Coverage Amount: $
+                                          {item.amount.toLocaleString()}
                                         </Typography>
-                                        {Object.entries(item.riders).map(
-                                          ([riderKey, riderValue]) => {
-                                            if (!riderValue) return null;
-                                            return (
+                                        {item.riders &&
+                                          Object.keys(item.riders).length >
+                                            0 && (
+                                            <Box sx={{ pl: 2, mt: 0.5 }}>
                                               <Typography
-                                                key={riderKey}
                                                 variant="body2"
                                                 color="text.secondary"
-                                                sx={{ pl: 2 }}
+                                                sx={{ fontWeight: 500 }}
                                               >
-                                                • {formatRiderName(riderKey)}
-                                                {typeof riderValue ===
-                                                  "number" &&
-                                                  `: $${riderValue.toLocaleString()}`}
+                                                Riders:
                                               </Typography>
-                                            );
-                                          },
-                                        )}
+                                              {Object.entries(item.riders).map(
+                                                ([riderKey, riderValue]) => {
+                                                  if (!riderValue) return null;
+                                                  return (
+                                                    <Typography
+                                                      key={riderKey}
+                                                      variant="body2"
+                                                      color="text.secondary"
+                                                      sx={{ pl: 2 }}
+                                                    >
+                                                      •{" "}
+                                                      {formatRiderName(
+                                                        riderKey,
+                                                      )}
+                                                      {typeof riderValue ===
+                                                        "number" &&
+                                                        `: $${riderValue.toLocaleString()}`}
+                                                    </Typography>
+                                                  );
+                                                },
+                                              )}
+                                            </Box>
+                                          )}
                                       </Box>
-                                    )}
-                                </Box>
-                              );
-                            })
-                        ) : (
-                          <Typography variant="body2" color="text.secondary">
-                            No coverage selected
-                          </Typography>
-                        )}
-                      </Stack>
-                    </CardContent>
-                  </Card>
+                                    );
+                                  })
+                              ) : (
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  No coverage selected
+                                </Typography>
+                              )}
+                            </Stack>
+                          </CardContent>
+                        </Card>
+                      )}
 
-                  {/* Spouse Coverage Sub-card */}
-                  {data.eligibility?.applicants?.spouse && (
-                    <Card variant="outlined">
-                      <CardContent>
-                        {renderSectionHeader(
-                          "Spouse Coverage",
-                          <People color="primary" />,
-                        )}
-                        <Stack spacing={1}>
-                          {data.coverage &&
-                          data.coverage.filter(
-                            (item) => item.applicant === "spouse",
-                          ).length > 0 ? (
-                            data.coverage
-                              .filter((item) => item.applicant === "spouse")
-                              .map((item, idx) => {
-                                const product = products.find(
-                                  (p) => p.id === item.productId,
-                                );
-                                return (
-                                  <Box key={idx} sx={{ py: 0.5 }}>
-                                    <Box
-                                      sx={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: 1,
-                                      }}
-                                    >
+                      {/* Child Coverage Sub-card */}
+                      {data.eligibility?.applicants?.child && (
+                        <Card variant="outlined">
+                          <CardContent>
+                            {renderSectionHeader(
+                              "Child Coverage",
+                              <ChildFriendly color="primary" />,
+                            )}
+                            <Stack spacing={1}>
+                              {data.coverage &&
+                              data.coverage.filter(
+                                (item) => item.applicant === "child",
+                              ).length > 0 ? (
+                                data.coverage
+                                  .filter((item) => item.applicant === "child")
+                                  .map((item, idx) => (
+                                    <Box key={idx} sx={{ py: 0.5 }}>
                                       <Typography
                                         variant="body2"
                                         sx={{ fontWeight: 500 }}
                                       >
                                         {getProductName(item.productId)}
                                       </Typography>
-                                      {product?.quickDecision && (
-                                        <Typography
-                                          variant="caption"
-                                          sx={{
-                                            bgcolor: "success.light",
-                                            color: "success.dark",
-                                            px: 1,
-                                            py: 0.25,
-                                            borderRadius: 0.5,
-                                            fontWeight: 600,
-                                          }}
-                                        >
-                                          QuickDecision℠
-                                        </Typography>
-                                      )}
-                                    </Box>
-                                    <Typography
-                                      variant="body2"
-                                      color="text.secondary"
-                                      sx={{ pl: 2 }}
-                                    >
-                                      Coverage Amount: $
-                                      {item.amount.toLocaleString()}
-                                    </Typography>
-                                    {item.riders &&
-                                      Object.keys(item.riders).length > 0 && (
-                                        <Box sx={{ pl: 2, mt: 0.5 }}>
-                                          <Typography
-                                            variant="body2"
-                                            color="text.secondary"
-                                            sx={{ fontWeight: 500 }}
-                                          >
-                                            Riders:
-                                          </Typography>
-                                          {Object.entries(item.riders).map(
-                                            ([riderKey, riderValue]) => {
-                                              if (!riderValue) return null;
-                                              return (
-                                                <Typography
-                                                  key={riderKey}
-                                                  variant="body2"
-                                                  color="text.secondary"
-                                                  sx={{ pl: 2 }}
-                                                >
-                                                  • {formatRiderName(riderKey)}
-                                                  {typeof riderValue ===
-                                                    "number" &&
-                                                    `: $${riderValue.toLocaleString()}`}
-                                                </Typography>
-                                              );
-                                            },
-                                          )}
-                                        </Box>
-                                      )}
-                                  </Box>
-                                );
-                              })
-                          ) : (
-                            <Typography variant="body2" color="text.secondary">
-                              No coverage selected
-                            </Typography>
-                          )}
-                        </Stack>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {/* Child Coverage Sub-card */}
-                  {data.eligibility?.applicants?.child && (
-                    <Card variant="outlined">
-                      <CardContent>
-                        {renderSectionHeader(
-                          "Child Coverage",
-                          <ChildFriendly color="primary" />,
-                        )}
-                        <Stack spacing={1}>
-                          {data.coverage &&
-                          data.coverage.filter(
-                            (item) => item.applicant === "child",
-                          ).length > 0 ? (
-                            data.coverage
-                              .filter((item) => item.applicant === "child")
-                              .map((item, idx) => (
-                                <Box key={idx} sx={{ py: 0.5 }}>
-                                  <Typography
-                                    variant="body2"
-                                    sx={{ fontWeight: 500 }}
-                                  >
-                                    {getProductName(item.productId)}
-                                  </Typography>
-                                  <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                    sx={{ pl: 2 }}
-                                  >
-                                    Coverage Amount: $
-                                    {item.amount.toLocaleString()}
-                                  </Typography>
-                                  {item.riders &&
-                                    Object.keys(item.riders).length > 0 && (
-                                      <Box sx={{ pl: 2, mt: 0.5 }}>
-                                        <Typography
-                                          variant="body2"
-                                          color="text.secondary"
-                                          sx={{ fontWeight: 500 }}
-                                        >
-                                          Riders:
-                                        </Typography>
-                                        {Object.entries(item.riders).map(
-                                          ([riderKey, riderValue]) => {
-                                            if (!riderValue) return null;
-                                            return (
-                                              <Typography
-                                                key={riderKey}
-                                                variant="body2"
-                                                color="text.secondary"
-                                                sx={{ pl: 2 }}
-                                              >
-                                                • {formatRiderName(riderKey)}
-                                                {typeof riderValue ===
-                                                  "number" &&
-                                                  `: $${riderValue.toLocaleString()}`}
-                                              </Typography>
-                                            );
-                                          },
+                                      <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                        sx={{ pl: 2 }}
+                                      >
+                                        Coverage Amount: $
+                                        {item.amount.toLocaleString()}
+                                      </Typography>
+                                      {item.riders &&
+                                        Object.keys(item.riders).length > 0 && (
+                                          <Box sx={{ pl: 2, mt: 0.5 }}>
+                                            <Typography
+                                              variant="body2"
+                                              color="text.secondary"
+                                              sx={{ fontWeight: 500 }}
+                                            >
+                                              Riders:
+                                            </Typography>
+                                            {Object.entries(item.riders).map(
+                                              ([riderKey, riderValue]) => {
+                                                if (!riderValue) return null;
+                                                return (
+                                                  <Typography
+                                                    key={riderKey}
+                                                    variant="body2"
+                                                    color="text.secondary"
+                                                    sx={{ pl: 2 }}
+                                                  >
+                                                    •{" "}
+                                                    {formatRiderName(riderKey)}
+                                                    {typeof riderValue ===
+                                                      "number" &&
+                                                      `: $${riderValue.toLocaleString()}`}
+                                                  </Typography>
+                                                );
+                                              },
+                                            )}
+                                          </Box>
                                         )}
-                                      </Box>
+                                    </Box>
+                                  ))
+                              ) : (
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  No coverage selected
+                                </Typography>
+                              )}
+                            </Stack>
+                          </CardContent>
+                        </Card>
+                      )}
+                    </Stack>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Contact Card */}
+              {data.contact && (
+                <Card sx={commonStyles.categoryCard}>
+                  <CardContent>
+                    <Stack spacing={2}>
+                      {/* Category Header */}
+                      {renderCategoryHeader("Contact", "/contact")}
+
+                      {/* Your Contact Sub-card */}
+                      <Card variant="outlined">
+                        <CardContent>
+                          {renderSectionHeader(
+                            "Your Contact",
+                            <Person color="primary" />,
+                          )}
+                          <Stack spacing={1}>
+                            {renderField(
+                              "Street Address",
+                              data.contact.streetAddress,
+                            )}
+                            {renderField("Apt/Suite", data.contact.aptSuite)}
+                            {renderField("City", data.contact.city)}
+                            {renderField("State", data.contact.state)}
+                            {renderField("ZIP Code", data.contact.zipCode)}
+                            {renderField(
+                              "Phone Number",
+                              data.contact.phoneNumber,
+                            )}
+                            {renderField("Phone Type", data.contact.phoneType)}
+                            {renderField(
+                              "Correspondence To",
+                              data.contact.correspondenceTo,
+                            )}
+
+                            {data.contact.businessName && (
+                              <>
+                                <Typography
+                                  variant="subtitle2"
+                                  sx={{ mt: 2, mb: 1, fontWeight: 600 }}
+                                >
+                                  Business Information
+                                </Typography>
+                                {renderField(
+                                  "Business Name",
+                                  data.contact.businessName,
+                                )}
+                                {renderField(
+                                  "Business Type",
+                                  data.contact.businessType,
+                                )}
+                                {renderField(
+                                  "Business Address Same as Home",
+                                  data.contact.businessAddressSameAsHome,
+                                )}
+                                {!data.contact.businessAddressSameAsHome && (
+                                  <>
+                                    {renderField(
+                                      "Business Street Address",
+                                      data.contact.businessStreetAddress,
                                     )}
-                                </Box>
-                              ))
-                          ) : (
-                            <Typography variant="body2" color="text.secondary">
-                              No coverage selected
-                            </Typography>
-                          )}
-                        </Stack>
-                      </CardContent>
-                    </Card>
-                  )}
-                </Stack>
-              </CardContent>
-            </Card>
-          )}
+                                    {renderField(
+                                      "Business Apt/Suite",
+                                      data.contact.businessAptSuite,
+                                    )}
+                                    {renderField(
+                                      "Business City",
+                                      data.contact.businessCity,
+                                    )}
+                                    {renderField(
+                                      "Business State",
+                                      data.contact.businessState,
+                                    )}
+                                    {renderField(
+                                      "Business ZIP Code",
+                                      data.contact.businessZipCode,
+                                    )}
+                                  </>
+                                )}
+                                {renderField(
+                                  "Business Phone Number",
+                                  data.contact.businessPhoneNumber,
+                                )}
+                              </>
+                            )}
+                          </Stack>
+                        </CardContent>
+                      </Card>
 
-          {/* Contact Card */}
-          {data.contact && (
-            <Card sx={commonStyles.categoryCard}>
-              <CardContent>
-                <Stack spacing={2}>
-                  {/* Category Header */}
-                  {renderCategoryHeader("Contact", "/contact")}
-
-                  {/* Your Contact Sub-card */}
-                  <Card variant="outlined">
-                    <CardContent>
-                      {renderSectionHeader(
-                        "Your Contact",
-                        <Person color="primary" />,
+                      {/* Spouse Contact Sub-card */}
+                      {data.eligibility?.applicants?.spouse && (
+                        <Card variant="outlined">
+                          <CardContent>
+                            {renderSectionHeader(
+                              "Spouse Contact",
+                              <People color="primary" />,
+                            )}
+                            <Stack spacing={1}>
+                              {renderField(
+                                "Phone Number",
+                                data.contact.spousePhoneNumber,
+                              )}
+                              {renderField(
+                                "Phone Type",
+                                data.contact.spousePhoneType,
+                              )}
+                              {renderField("Email", data.contact.spouseEmail)}
+                            </Stack>
+                          </CardContent>
+                        </Card>
                       )}
-                      <Stack spacing={1}>
-                        {renderField(
-                          "Street Address",
-                          data.contact.streetAddress,
-                        )}
-                        {renderField("Apt/Suite", data.contact.aptSuite)}
-                        {renderField("City", data.contact.city)}
-                        {renderField("State", data.contact.state)}
-                        {renderField("ZIP Code", data.contact.zipCode)}
-                        {renderField("Phone Number", data.contact.phoneNumber)}
-                        {renderField("Phone Type", data.contact.phoneType)}
-                        {renderField(
-                          "Correspondence To",
-                          data.contact.correspondenceTo,
-                        )}
+                    </Stack>
+                  </CardContent>
+                </Card>
+              )}
 
-                        {data.contact.businessName && (
-                          <>
+              {/* Personal Information Card */}
+              {data.profile && (
+                <Card sx={commonStyles.categoryCard}>
+                  <CardContent>
+                    <Stack spacing={2}>
+                      {/* Category Header */}
+                      {renderCategoryHeader(
+                        "Personal Information",
+                        "/personal-information",
+                      )}
+
+                      {/* Your Personal Information Sub-card */}
+                      <Card variant="outlined">
+                        <CardContent>
+                          {renderSectionHeader(
+                            "Your Personal Information",
+                            <Person color="primary" />,
+                          )}
+                          <Stack spacing={1}>
+                            {renderField("Height", data.profile.heightFt)}
+                            {renderField("Weight", data.profile.weight)}
+                            {renderField(
+                              "Weight 12 Months Ago",
+                              data.profile.weight12MonthsAgo,
+                            )}
+                            {renderField(
+                              "SSN",
+                              data.profile.ssn
+                                ? "***-**-" + data.profile.ssn.slice(-4)
+                                : "—",
+                            )}
+                            {renderField(
+                              "Membership ID",
+                              data.profile.membershipId,
+                            )}
+                            {renderField(
+                              "Marital Status",
+                              data.profile.maritalStatus,
+                            )}
+
                             <Typography
                               variant="subtitle2"
                               sx={{ mt: 2, mb: 1, fontWeight: 600 }}
                             >
-                              Business Information
+                              Driver's License
                             </Typography>
                             {renderField(
-                              "Business Name",
-                              data.contact.businessName,
+                              "Has Driver's License",
+                              data.profile.hasDriversLicense,
                             )}
-                            {renderField(
-                              "Business Type",
-                              data.contact.businessType,
-                            )}
-                            {renderField(
-                              "Business Address Same as Home",
-                              data.contact.businessAddressSameAsHome,
-                            )}
-                            {!data.contact.businessAddressSameAsHome && (
+                            {data.profile.hasDriversLicense === "yes" && (
                               <>
                                 {renderField(
-                                  "Business Street Address",
-                                  data.contact.businessStreetAddress,
+                                  "License Number",
+                                  data.profile.driversLicenseNumber,
                                 )}
                                 {renderField(
-                                  "Business Apt/Suite",
-                                  data.contact.businessAptSuite,
-                                )}
-                                {renderField(
-                                  "Business City",
-                                  data.contact.businessCity,
-                                )}
-                                {renderField(
-                                  "Business State",
-                                  data.contact.businessState,
-                                )}
-                                {renderField(
-                                  "Business ZIP Code",
-                                  data.contact.businessZipCode,
+                                  "License State",
+                                  data.profile.driversLicenseState,
                                 )}
                               </>
                             )}
-                            {renderField(
-                              "Business Phone Number",
-                              data.contact.businessPhoneNumber,
-                            )}
-                          </>
-                        )}
-                      </Stack>
-                    </CardContent>
-                  </Card>
 
-                  {/* Spouse Contact Sub-card */}
-                  {data.eligibility?.applicants?.spouse && (
-                    <Card variant="outlined">
-                      <CardContent>
-                        {renderSectionHeader(
-                          "Spouse Contact",
-                          <People color="primary" />,
-                        )}
-                        <Stack spacing={1}>
-                          {renderField(
-                            "Phone Number",
-                            data.contact.spousePhoneNumber,
-                          )}
-                          {renderField(
-                            "Phone Type",
-                            data.contact.spousePhoneType,
-                          )}
-                          {renderField("Email", data.contact.spouseEmail)}
-                        </Stack>
-                      </CardContent>
-                    </Card>
-                  )}
-                </Stack>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Personal Information Card */}
-          {data.profile && (
-            <Card sx={commonStyles.categoryCard}>
-              <CardContent>
-                <Stack spacing={2}>
-                  {/* Category Header */}
-                  {renderCategoryHeader("Personal Information", "/profile")}
-
-                  {/* Your Personal Information Sub-card */}
-                  <Card variant="outlined">
-                    <CardContent>
-                      {renderSectionHeader(
-                        "Your Personal Information",
-                        <Person color="primary" />,
-                      )}
-                      <Stack spacing={1}>
-                        {renderField("Height", data.profile.heightFt)}
-                        {renderField("Weight", data.profile.weight)}
-                        {renderField(
-                          "Weight 12 Months Ago",
-                          data.profile.weight12MonthsAgo,
-                        )}
-                        {renderField(
-                          "SSN",
-                          data.profile.ssn
-                            ? "***-**-" + data.profile.ssn.slice(-4)
-                            : "—",
-                        )}
-                        {renderField(
-                          "Membership ID",
-                          data.profile.membershipId,
-                        )}
-                        {renderField(
-                          "Marital Status",
-                          data.profile.maritalStatus,
-                        )}
-
-                        <Typography
-                          variant="subtitle2"
-                          sx={{ mt: 2, mb: 1, fontWeight: 600 }}
-                        >
-                          Driver's License
-                        </Typography>
-                        {renderField(
-                          "Has Driver's License",
-                          data.profile.hasDriversLicense,
-                        )}
-                        {data.profile.hasDriversLicense === "yes" && (
-                          <>
-                            {renderField(
-                              "License Number",
-                              data.profile.driversLicenseNumber,
-                            )}
-                            {renderField(
-                              "License State",
-                              data.profile.driversLicenseState,
-                            )}
-                          </>
-                        )}
-
-                        <Typography
-                          variant="subtitle2"
-                          sx={{ mt: 2, mb: 1, fontWeight: 600 }}
-                        >
-                          Residency
-                        </Typography>
-                        {renderField(
-                          "Intent to Reside Outside US/Canada",
-                          data.profile.residencyIntentOutsideUS,
-                        )}
-                        {data.profile.residencyIntentOutsideUS === "yes" && (
-                          <>
-                            {renderField(
-                              "Duration (months)",
-                              data.profile.residencyDurationMonths,
-                            )}
-                            {renderField(
-                              "Country",
-                              data.profile.residencyCountry,
-                            )}
-                          </>
-                        )}
-                        {renderField(
-                          "Intent for 6+ Months Outside US/Canada",
-                          data.profile.residencyIntentSixMonths,
-                        )}
-                        {data.profile.residencyIntentSixMonths === "yes" &&
-                          renderField(
-                            "Country",
-                            data.profile.residencySixMonthsCountry,
-                          )}
-
-                        {(data.profile.physicianFirstName ||
-                          data.profile.physicianLastName) && (
-                          <>
                             <Typography
                               variant="subtitle2"
                               sx={{ mt: 2, mb: 1, fontWeight: 600 }}
                             >
-                              Health Care Information
+                              Residency
                             </Typography>
                             {renderField(
-                              "Physician Name",
-                              `${data.profile.physicianFirstName || ""} ${data.profile.physicianLastName || ""}`.trim(),
+                              "Intent to Reside Outside US/Canada",
+                              data.profile.residencyIntentOutsideUS,
                             )}
-                            {renderField(
-                              "Physician Phone",
-                              data.profile.physicianPhoneNumber,
-                            )}
-                            {renderField(
-                              "Medical Facility",
-                              data.profile.medicalFacilityName,
-                            )}
-                            {data.profile.medicalStreetAddress && (
+                            {data.profile.residencyIntentOutsideUS ===
+                              "yes" && (
                               <>
                                 {renderField(
-                                  "Street Address",
-                                  data.profile.medicalStreetAddress,
+                                  "Duration (months)",
+                                  data.profile.residencyDurationMonths,
                                 )}
                                 {renderField(
-                                  "Apt/Suite",
-                                  data.profile.medicalAptSuite,
-                                )}
-                                {renderField("City", data.profile.medicalCity)}
-                                {renderField(
-                                  "State",
-                                  data.profile.medicalState,
-                                )}
-                                {renderField(
-                                  "ZIP Code",
-                                  data.profile.medicalZipCode,
+                                  "Country",
+                                  data.profile.residencyCountry,
                                 )}
                               </>
                             )}
-                          </>
-                        )}
-                      </Stack>
-                    </CardContent>
-                  </Card>
-
-                  {/* Spouse Personal Information Sub-card */}
-                  {data.eligibility?.applicants?.spouse && (
-                    <Card variant="outlined">
-                      <CardContent>
-                        {renderSectionHeader(
-                          "Spouse Personal Information",
-                          <People color="primary" />,
-                        )}
-                        <Stack spacing={1}>
-                          {renderField("Height", data.profile.spouseHeightFt)}
-                          {renderField("Weight", data.profile.spouseWeight)}
-                          {renderField(
-                            "Weight 12 Months Ago",
-                            data.profile.spouseWeight12MonthsAgo,
-                          )}
-                          {renderField(
-                            "SSN",
-                            data.profile.spouseSsn
-                              ? "***-**-" + data.profile.spouseSsn.slice(-4)
-                              : "—",
-                          )}
-
-                          <Typography
-                            variant="subtitle2"
-                            sx={{ mt: 2, mb: 1, fontWeight: 600 }}
-                          >
-                            Driver's License
-                          </Typography>
-                          {renderField(
-                            "Has Driver's License",
-                            data.profile.spouseHasDriversLicense,
-                          )}
-                          {data.profile.spouseHasDriversLicense === "yes" && (
-                            <>
-                              {renderField(
-                                "License Number",
-                                data.profile.spouseDriversLicenseNumber,
-                              )}
-                              {renderField(
-                                "License State",
-                                data.profile.spouseDriversLicenseState,
-                              )}
-                            </>
-                          )}
-
-                          <Typography
-                            variant="subtitle2"
-                            sx={{ mt: 2, mb: 1, fontWeight: 600 }}
-                          >
-                            Residency
-                          </Typography>
-                          {renderField(
-                            "Intent to Reside Outside US/Canada",
-                            data.profile.spouseResidencyIntentOutsideUS,
-                          )}
-                          {data.profile.spouseResidencyIntentOutsideUS ===
-                            "yes" && (
-                            <>
-                              {renderField(
-                                "Duration (months)",
-                                data.profile.spouseResidencyDurationMonths,
-                              )}
-                              {renderField(
+                            {renderField(
+                              "Intent for 6+ Months Outside US/Canada",
+                              data.profile.residencyIntentSixMonths,
+                            )}
+                            {data.profile.residencyIntentSixMonths === "yes" &&
+                              renderField(
                                 "Country",
-                                data.profile.spouseResidencyCountry,
+                                data.profile.residencySixMonthsCountry,
                               )}
-                            </>
-                          )}
-                          {renderField(
-                            "Intent for 6+ Months Outside US/Canada",
-                            data.profile.spouseResidencyIntentSixMonths,
-                          )}
-                          {data.profile.spouseResidencyIntentSixMonths ===
-                            "yes" &&
-                            renderField(
-                              "Country",
-                              data.profile.spouseResidencySixMonthsCountry,
-                            )}
 
-                          {(data.profile.spousePhysicianFirstName ||
-                            data.profile.spousePhysicianLastName) && (
-                            <>
+                            {(data.profile.physicianFirstName ||
+                              data.profile.physicianLastName) && (
+                              <>
+                                <Typography
+                                  variant="subtitle2"
+                                  sx={{ mt: 2, mb: 1, fontWeight: 600 }}
+                                >
+                                  Health Care Information
+                                </Typography>
+                                {renderField(
+                                  "Physician Name",
+                                  `${data.profile.physicianFirstName || ""} ${data.profile.physicianLastName || ""}`.trim(),
+                                )}
+                                {renderField(
+                                  "Physician Phone",
+                                  data.profile.physicianPhoneNumber,
+                                )}
+                                {renderField(
+                                  "Medical Facility",
+                                  data.profile.medicalFacilityName,
+                                )}
+                                {data.profile.medicalStreetAddress && (
+                                  <>
+                                    {renderField(
+                                      "Street Address",
+                                      data.profile.medicalStreetAddress,
+                                    )}
+                                    {renderField(
+                                      "Apt/Suite",
+                                      data.profile.medicalAptSuite,
+                                    )}
+                                    {renderField(
+                                      "City",
+                                      data.profile.medicalCity,
+                                    )}
+                                    {renderField(
+                                      "State",
+                                      data.profile.medicalState,
+                                    )}
+                                    {renderField(
+                                      "ZIP Code",
+                                      data.profile.medicalZipCode,
+                                    )}
+                                  </>
+                                )}
+                              </>
+                            )}
+                          </Stack>
+                        </CardContent>
+                      </Card>
+
+                      {/* Spouse Personal Information Sub-card */}
+                      {data.eligibility?.applicants?.spouse && (
+                        <Card variant="outlined">
+                          <CardContent>
+                            {renderSectionHeader(
+                              "Spouse Personal Information",
+                              <People color="primary" />,
+                            )}
+                            <Stack spacing={1}>
+                              {renderField(
+                                "Height",
+                                data.profile.spouseHeightFt,
+                              )}
+                              {renderField("Weight", data.profile.spouseWeight)}
+                              {renderField(
+                                "Weight 12 Months Ago",
+                                data.profile.spouseWeight12MonthsAgo,
+                              )}
+                              {renderField(
+                                "SSN",
+                                data.profile.spouseSsn
+                                  ? "***-**-" + data.profile.spouseSsn.slice(-4)
+                                  : "—",
+                              )}
+
                               <Typography
                                 variant="subtitle2"
                                 sx={{ mt: 2, mb: 1, fontWeight: 600 }}
                               >
-                                Health Care Information
+                                Driver's License
                               </Typography>
                               {renderField(
-                                "Physician Name",
-                                `${data.profile.spousePhysicianFirstName || ""} ${data.profile.spousePhysicianLastName || ""}`.trim(),
+                                "Has Driver's License",
+                                data.profile.spouseHasDriversLicense,
                               )}
-                              {renderField(
-                                "Physician Phone",
-                                data.profile.spousePhysicianPhoneNumber,
-                              )}
-                              {renderField(
-                                "Medical Facility",
-                                data.profile.spouseMedicalFacilityName,
-                              )}
-                              {data.profile.spouseMedicalStreetAddress && (
+                              {data.profile.spouseHasDriversLicense ===
+                                "yes" && (
                                 <>
                                   {renderField(
-                                    "Street Address",
-                                    data.profile.spouseMedicalStreetAddress,
+                                    "License Number",
+                                    data.profile.spouseDriversLicenseNumber,
                                   )}
                                   {renderField(
-                                    "Apt/Suite",
-                                    data.profile.spouseMedicalAptSuite,
-                                  )}
-                                  {renderField(
-                                    "City",
-                                    data.profile.spouseMedicalCity,
-                                  )}
-                                  {renderField(
-                                    "State",
-                                    data.profile.spouseMedicalState,
-                                  )}
-                                  {renderField(
-                                    "ZIP Code",
-                                    data.profile.spouseMedicalZipCode,
+                                    "License State",
+                                    data.profile.spouseDriversLicenseState,
                                   )}
                                 </>
                               )}
-                            </>
-                          )}
-                        </Stack>
-                      </CardContent>
-                    </Card>
-                  )}
-                </Stack>
-              </CardContent>
-            </Card>
-          )}
 
-          {/* Other Coverage Card */}
-          <Card sx={commonStyles.categoryCard}>
-            <CardContent>
-              <Stack spacing={2}>
-                {/* Category Header */}
-                {renderCategoryHeader("Other Coverage", "/profile")}
-
-                {/* Your Other Coverage Sub-card */}
-                <Card variant="outlined">
-                  <CardContent>
-                    {renderSectionHeader(
-                      "Your Other Coverage",
-                      <Person color="primary" />,
-                    )}
-                    <Stack spacing={1}>
-                      <Typography
-                        variant="subtitle2"
-                        sx={{ fontWeight: 600, mb: 1 }}
-                      >
-                        Life Insurance
-                      </Typography>
-                      {renderField(
-                        "Has Other Life Insurance",
-                        data.profile.hasOtherLifeInsurance,
-                      )}
-                      {data.profile.hasOtherLifeInsurance === "yes" && (
-                        <>
-                          {renderField(
-                            "Amount",
-                            data.profile.otherLifeInsuranceAmount,
-                          )}
-                          {renderField(
-                            "Is Replacement",
-                            data.profile.lifeInsuranceReplacement,
-                          )}
-                        </>
-                      )}
-                      {renderField(
-                        "Has Pending Life Insurance",
-                        data.profile.hasLifeInsurancePending,
-                      )}
-                      {data.profile.hasLifeInsurancePending === "yes" && (
-                        <>
-                          {renderField(
-                            "Pending Amount",
-                            data.profile.pendingLifeInsuranceAmount,
-                          )}
-                          {renderField(
-                            "Pending Company",
-                            data.profile.pendingLifeInsuranceCompany,
-                          )}
-                        </>
-                      )}
-
-                      <Typography
-                        variant="subtitle2"
-                        sx={{ mt: 2, fontWeight: 600, mb: 1 }}
-                      >
-                        Disability Insurance
-                      </Typography>
-                      {renderField(
-                        "Has Disability Insurance",
-                        data.profile.hasDisabilityInsurance,
-                      )}
-                      {data.profile.hasDisabilityInsurance === "yes" &&
-                        data.profile.disabilityCompanies && (
-                          <>
-                            {data.profile.disabilityCompanies.map(
-                              (company, idx) => (
-                                <Box
-                                  key={idx}
-                                  sx={{
-                                    pl: 2,
-                                    borderLeft: 2,
-                                    borderColor: "divider",
-                                    my: 1,
-                                  }}
-                                >
-                                  <Typography
-                                    variant="caption"
-                                    sx={{ fontWeight: 600 }}
-                                  >
-                                    Policy {idx + 1}
-                                  </Typography>
-                                  {renderField("Company", company.company)}
-                                  {renderField(
-                                    "Monthly Benefit",
-                                    company.monthlyBenefit,
-                                  )}
-                                  {renderField(
-                                    "Benefit Period",
-                                    company.benefitPeriod,
-                                  )}
-                                  {renderField(
-                                    "Waiting Period",
-                                    company.waitingPeriod,
-                                  )}
-                                </Box>
-                              ),
-                            )}
-                            {renderField(
-                              "Is Replacement",
-                              data.profile.disabilityReplacement,
-                            )}
-                            {data.profile.disabilityReplacement === "yes" &&
-                              renderField(
-                                "Replacement Amount",
-                                data.profile.disabilityReplacementAmount,
+                              <Typography
+                                variant="subtitle2"
+                                sx={{ mt: 2, mb: 1, fontWeight: 600 }}
+                              >
+                                Residency
+                              </Typography>
+                              {renderField(
+                                "Intent to Reside Outside US/Canada",
+                                data.profile.spouseResidencyIntentOutsideUS,
                               )}
-                          </>
-                        )}
-                    </Stack>
-                  </CardContent>
-                </Card>
-
-                {/* Spouse Other Coverage Sub-card */}
-                {data.eligibility?.applicants?.spouse && (
-                  <Card variant="outlined">
-                    <CardContent>
-                      {renderSectionHeader(
-                        "Spouse Other Coverage",
-                        <People color="primary" />,
-                      )}
-                      <Stack spacing={1}>
-                        <Typography
-                          variant="subtitle2"
-                          sx={{ fontWeight: 600, mb: 1 }}
-                        >
-                          Life Insurance
-                        </Typography>
-                        {renderField(
-                          "Has Other Life Insurance",
-                          data.profile.spouseHasOtherLifeInsurance,
-                        )}
-                        {data.profile.spouseHasOtherLifeInsurance === "yes" && (
-                          <>
-                            {renderField(
-                              "Amount",
-                              data.profile.spouseOtherLifeInsuranceAmount,
-                            )}
-                            {renderField(
-                              "Is Replacement",
-                              data.profile.spouseLifeInsuranceReplacement,
-                            )}
-                          </>
-                        )}
-                        {renderField(
-                          "Has Pending Life Insurance",
-                          data.profile.spouseHasLifeInsurancePending,
-                        )}
-                        {data.profile.spouseHasLifeInsurancePending ===
-                          "yes" && (
-                          <>
-                            {renderField(
-                              "Pending Amount",
-                              data.profile.spousePendingLifeInsuranceAmount,
-                            )}
-                            {renderField(
-                              "Pending Company",
-                              data.profile.spousePendingLifeInsuranceCompany,
-                            )}
-                          </>
-                        )}
-
-                        <Typography
-                          variant="subtitle2"
-                          sx={{ mt: 2, fontWeight: 600, mb: 1 }}
-                        >
-                          Disability Insurance
-                        </Typography>
-                        {renderField(
-                          "Has Disability Insurance",
-                          data.profile.spouseHasDisabilityInsurance,
-                        )}
-                        {data.profile.spouseHasDisabilityInsurance === "yes" &&
-                          data.profile.spouseDisabilityCompanies && (
-                            <>
-                              {data.profile.spouseDisabilityCompanies.map(
-                                (company, idx) => (
-                                  <Box
-                                    key={idx}
-                                    sx={{
-                                      pl: 2,
-                                      borderLeft: 2,
-                                      borderColor: "divider",
-                                      my: 1,
-                                    }}
-                                  >
-                                    <Typography
-                                      variant="caption"
-                                      sx={{ fontWeight: 600 }}
-                                    >
-                                      Policy {idx + 1}
-                                    </Typography>
-                                    {renderField("Company", company.company)}
-                                    {renderField(
-                                      "Monthly Benefit",
-                                      company.monthlyBenefit,
-                                    )}
-                                    {renderField(
-                                      "Benefit Period",
-                                      company.benefitPeriod,
-                                    )}
-                                    {renderField(
-                                      "Waiting Period",
-                                      company.waitingPeriod,
-                                    )}
-                                  </Box>
-                                ),
+                              {data.profile.spouseResidencyIntentOutsideUS ===
+                                "yes" && (
+                                <>
+                                  {renderField(
+                                    "Duration (months)",
+                                    data.profile.spouseResidencyDurationMonths,
+                                  )}
+                                  {renderField(
+                                    "Country",
+                                    data.profile.spouseResidencyCountry,
+                                  )}
+                                </>
                               )}
                               {renderField(
-                                "Is Replacement",
-                                data.profile.spouseDisabilityReplacement,
+                                "Intent for 6+ Months Outside US/Canada",
+                                data.profile.spouseResidencyIntentSixMonths,
                               )}
-                              {data.profile.spouseDisabilityReplacement ===
+                              {data.profile.spouseResidencyIntentSixMonths ===
                                 "yes" &&
                                 renderField(
-                                  "Replacement Amount",
-                                  data.profile
-                                    .spouseDisabilityReplacementAmount,
+                                  "Country",
+                                  data.profile.spouseResidencySixMonthsCountry,
                                 )}
-                            </>
-                          )}
-                      </Stack>
-                    </CardContent>
-                  </Card>
-                )}
-              </Stack>
-            </CardContent>
-          </Card>
 
-          {/* Beneficiary Card */}
-          <Card sx={commonStyles.categoryCard}>
-            <CardContent>
-              <Stack spacing={2}>
-                {/* Category Header */}
-                {renderCategoryHeader("Beneficiary", "/profile")}
-
-                {/* Your Beneficiary Sub-card */}
-                <Card variant="outlined">
-                  <CardContent>
-                    {renderSectionHeader(
-                      "Your Beneficiary",
-                      <Person color="primary" />,
-                    )}
-                    <Stack spacing={2}>
-                      {data.profile.wantsToBeneficiaries === "no" ? (
-                        <Typography variant="body2" color="text.secondary">
-                          No beneficiary information provided
-                        </Typography>
-                      ) : (
-                        <>
-                          {/* Term Life Beneficiary */}
-                          {data.profile.termLifeBeneficiaryType && (
-                            <Box>
-                              <Typography
-                                variant="subtitle2"
-                                sx={{ fontWeight: 600, mb: 1 }}
-                              >
-                                Term Life Insurance Beneficiary
-                              </Typography>
-                              {renderField(
-                                "Type",
-                                data.profile.termLifeBeneficiaryType,
-                              )}
-                              {data.profile.termLifeBeneficiaryType ===
-                              "individual" ? (
+                              {(data.profile.spousePhysicianFirstName ||
+                                data.profile.spousePhysicianLastName) && (
                                 <>
+                                  <Typography
+                                    variant="subtitle2"
+                                    sx={{ mt: 2, mb: 1, fontWeight: 600 }}
+                                  >
+                                    Health Care Information
+                                  </Typography>
                                   {renderField(
-                                    "Designation",
-                                    data.profile.termLifeBeneficiaryDesignation,
+                                    "Physician Name",
+                                    `${data.profile.spousePhysicianFirstName || ""} ${data.profile.spousePhysicianLastName || ""}`.trim(),
                                   )}
                                   {renderField(
-                                    "First Name",
-                                    data.profile.termLifeBeneficiaryFirstName,
+                                    "Physician Phone",
+                                    data.profile.spousePhysicianPhoneNumber,
                                   )}
                                   {renderField(
-                                    "Last Name",
-                                    data.profile.termLifeBeneficiaryLastName,
+                                    "Medical Facility",
+                                    data.profile.spouseMedicalFacilityName,
                                   )}
-                                  {renderField(
-                                    "Relationship",
-                                    data.profile
-                                      .termLifeBeneficiaryRelationship,
-                                  )}
-                                  {renderField(
-                                    "Share %",
-                                    data.profile.termLifeBeneficiaryShare,
-                                  )}
-                                </>
-                              ) : (
-                                <>
-                                  {renderField(
-                                    "Trust Name",
-                                    data.profile.termLifeTrustName,
-                                  )}
-                                  {renderField(
-                                    "Trust Date",
-                                    data.profile.termLifeTrustDate,
+                                  {data.profile.spouseMedicalStreetAddress && (
+                                    <>
+                                      {renderField(
+                                        "Street Address",
+                                        data.profile.spouseMedicalStreetAddress,
+                                      )}
+                                      {renderField(
+                                        "Apt/Suite",
+                                        data.profile.spouseMedicalAptSuite,
+                                      )}
+                                      {renderField(
+                                        "City",
+                                        data.profile.spouseMedicalCity,
+                                      )}
+                                      {renderField(
+                                        "State",
+                                        data.profile.spouseMedicalState,
+                                      )}
+                                      {renderField(
+                                        "ZIP Code",
+                                        data.profile.spouseMedicalZipCode,
+                                      )}
+                                    </>
                                   )}
                                 </>
                               )}
-                            </Box>
-                          )}
-
-                          {/* 10-Year Term Beneficiary */}
-                          {data.profile.tenYearTermBeneficiaryType && (
-                            <Box>
-                              <Typography
-                                variant="subtitle2"
-                                sx={{ fontWeight: 600, mb: 1 }}
-                              >
-                                10-Year Level Term Life Insurance Beneficiary
-                              </Typography>
-                              {renderField(
-                                "Type",
-                                data.profile.tenYearTermBeneficiaryType,
-                              )}
-                              {data.profile.tenYearTermBeneficiaryType ===
-                              "individual" ? (
-                                <>
-                                  {renderField(
-                                    "Designation",
-                                    data.profile
-                                      .tenYearTermBeneficiaryDesignation,
-                                  )}
-                                  {renderField(
-                                    "First Name",
-                                    data.profile
-                                      .tenYearTermBeneficiaryFirstName,
-                                  )}
-                                  {renderField(
-                                    "Last Name",
-                                    data.profile.tenYearTermBeneficiaryLastName,
-                                  )}
-                                  {renderField(
-                                    "Relationship",
-                                    data.profile
-                                      .tenYearTermBeneficiaryRelationship,
-                                  )}
-                                  {renderField(
-                                    "Share %",
-                                    data.profile.tenYearTermBeneficiaryShare,
-                                  )}
-                                </>
-                              ) : (
-                                <>
-                                  {renderField(
-                                    "Trust Name",
-                                    data.profile.tenYearTermTrustName,
-                                  )}
-                                  {renderField(
-                                    "Trust Date",
-                                    data.profile.tenYearTermTrustDate,
-                                  )}
-                                </>
-                              )}
-                            </Box>
-                          )}
-
-                          {/* 20-Year Term Beneficiary */}
-                          {data.profile.twentyYearTermBeneficiaryType && (
-                            <Box>
-                              <Typography
-                                variant="subtitle2"
-                                sx={{ fontWeight: 600, mb: 1 }}
-                              >
-                                20-Year Level Term Life Insurance Beneficiary
-                              </Typography>
-                              {renderField(
-                                "Type",
-                                data.profile.twentyYearTermBeneficiaryType,
-                              )}
-                              {data.profile.twentyYearTermBeneficiaryType ===
-                              "individual" ? (
-                                <>
-                                  {renderField(
-                                    "Designation",
-                                    data.profile
-                                      .twentyYearTermBeneficiaryDesignation,
-                                  )}
-                                  {renderField(
-                                    "First Name",
-                                    data.profile
-                                      .twentyYearTermBeneficiaryFirstName,
-                                  )}
-                                  {renderField(
-                                    "Last Name",
-                                    data.profile
-                                      .twentyYearTermBeneficiaryLastName,
-                                  )}
-                                  {renderField(
-                                    "Relationship",
-                                    data.profile
-                                      .twentyYearTermBeneficiaryRelationship,
-                                  )}
-                                  {renderField(
-                                    "Share %",
-                                    data.profile.twentyYearTermBeneficiaryShare,
-                                  )}
-                                </>
-                              ) : (
-                                <>
-                                  {renderField(
-                                    "Trust Name",
-                                    data.profile.twentyYearTermTrustName,
-                                  )}
-                                  {renderField(
-                                    "Trust Date",
-                                    data.profile.twentyYearTermTrustDate,
-                                  )}
-                                </>
-                              )}
-                            </Box>
-                          )}
-
-                          {/* ADD Beneficiary */}
-                          {data.profile.addBeneficiaryType && (
-                            <Box>
-                              <Typography
-                                variant="subtitle2"
-                                sx={{ fontWeight: 600, mb: 1 }}
-                              >
-                                Accidental Death & Dismemberment Beneficiary
-                              </Typography>
-                              {renderField(
-                                "Type",
-                                data.profile.addBeneficiaryType,
-                              )}
-                              {data.profile.addBeneficiaryType ===
-                              "individual" ? (
-                                <>
-                                  {renderField(
-                                    "Designation",
-                                    data.profile.addBeneficiaryDesignation,
-                                  )}
-                                  {renderField(
-                                    "First Name",
-                                    data.profile.addBeneficiaryFirstName,
-                                  )}
-                                  {renderField(
-                                    "Last Name",
-                                    data.profile.addBeneficiaryLastName,
-                                  )}
-                                  {renderField(
-                                    "Relationship",
-                                    data.profile.addBeneficiaryRelationship,
-                                  )}
-                                  {renderField(
-                                    "Share %",
-                                    data.profile.addBeneficiaryShare,
-                                  )}
-                                </>
-                              ) : (
-                                <>
-                                  {renderField(
-                                    "Trust Name",
-                                    data.profile.addTrustName,
-                                  )}
-                                  {renderField(
-                                    "Trust Date",
-                                    data.profile.addTrustDate,
-                                  )}
-                                </>
-                              )}
-                            </Box>
-                          )}
-                        </>
+                            </Stack>
+                          </CardContent>
+                        </Card>
                       )}
                     </Stack>
                   </CardContent>
                 </Card>
+              )}
 
-                {/* Spouse Beneficiary Sub-card */}
-                {data.eligibility?.applicants?.spouse && (
-                  <Card variant="outlined">
-                    <CardContent>
-                      {renderSectionHeader(
-                        "Spouse Beneficiary",
-                        <People color="primary" />,
-                      )}
-                      <Stack spacing={2}>
-                        {/* Similar structure for spouse beneficiaries */}
-                        {data.profile.spouseTermLifeBeneficiaryType ||
-                        data.profile.spouseTenYearTermBeneficiaryType ||
-                        data.profile.spouseTwentyYearTermBeneficiaryType ||
-                        data.profile.spouseAddBeneficiaryType ? (
-                          <>
-                            {/* Spouse Term Life Beneficiary */}
-                            {data.profile.spouseTermLifeBeneficiaryType && (
-                              <Box>
-                                <Typography
-                                  variant="subtitle2"
-                                  sx={{ fontWeight: 600, mb: 1 }}
-                                >
-                                  Term Life Insurance Beneficiary
-                                </Typography>
-                                {renderField(
-                                  "Type",
-                                  data.profile.spouseTermLifeBeneficiaryType,
-                                )}
-                                {data.profile.spouseTermLifeBeneficiaryType ===
-                                "individual" ? (
-                                  <>
-                                    {renderField(
-                                      "Designation",
-                                      data.profile
-                                        .spouseTermLifeBeneficiaryDesignation,
-                                    )}
-                                    {renderField(
-                                      "First Name",
-                                      data.profile
-                                        .spouseTermLifeBeneficiaryFirstName,
-                                    )}
-                                    {renderField(
-                                      "Last Name",
-                                      data.profile
-                                        .spouseTermLifeBeneficiaryLastName,
-                                    )}
-                                    {renderField(
-                                      "Relationship",
-                                      data.profile
-                                        .spouseTermLifeBeneficiaryRelationship,
-                                    )}
-                                    {renderField(
-                                      "Share %",
-                                      data.profile
-                                        .spouseTermLifeBeneficiaryShare,
-                                    )}
-                                  </>
-                                ) : (
-                                  <>
-                                    {renderField(
-                                      "Trust Name",
-                                      data.profile.spouseTermLifeTrustName,
-                                    )}
-                                    {renderField(
-                                      "Trust Date",
-                                      data.profile.spouseTermLifeTrustDate,
-                                    )}
-                                  </>
-                                )}
-                              </Box>
-                            )}
-
-                            {/* Spouse 10-Year Term */}
-                            {data.profile.spouseTenYearTermBeneficiaryType && (
-                              <Box>
-                                <Typography
-                                  variant="subtitle2"
-                                  sx={{ fontWeight: 600, mb: 1 }}
-                                >
-                                  10-Year Level Term Life Insurance Beneficiary
-                                </Typography>
-                                {renderField(
-                                  "Type",
-                                  data.profile.spouseTenYearTermBeneficiaryType,
-                                )}
-                                {data.profile
-                                  .spouseTenYearTermBeneficiaryType ===
-                                "individual" ? (
-                                  <>
-                                    {renderField(
-                                      "Designation",
-                                      data.profile
-                                        .spouseTenYearTermBeneficiaryDesignation,
-                                    )}
-                                    {renderField(
-                                      "First Name",
-                                      data.profile
-                                        .spouseTenYearTermBeneficiaryFirstName,
-                                    )}
-                                    {renderField(
-                                      "Last Name",
-                                      data.profile
-                                        .spouseTenYearTermBeneficiaryLastName,
-                                    )}
-                                    {renderField(
-                                      "Relationship",
-                                      data.profile
-                                        .spouseTenYearTermBeneficiaryRelationship,
-                                    )}
-                                    {renderField(
-                                      "Share %",
-                                      data.profile
-                                        .spouseTenYearTermBeneficiaryShare,
-                                    )}
-                                  </>
-                                ) : (
-                                  <>
-                                    {renderField(
-                                      "Trust Name",
-                                      data.profile.spouseTenYearTermTrustName,
-                                    )}
-                                    {renderField(
-                                      "Trust Date",
-                                      data.profile.spouseTenYearTermTrustDate,
-                                    )}
-                                  </>
-                                )}
-                              </Box>
-                            )}
-
-                            {/* Spouse 20-Year Term */}
-                            {data.profile
-                              .spouseTwentyYearTermBeneficiaryType && (
-                              <Box>
-                                <Typography
-                                  variant="subtitle2"
-                                  sx={{ fontWeight: 600, mb: 1 }}
-                                >
-                                  20-Year Level Term Life Insurance Beneficiary
-                                </Typography>
-                                {renderField(
-                                  "Type",
-                                  data.profile
-                                    .spouseTwentyYearTermBeneficiaryType,
-                                )}
-                                {data.profile
-                                  .spouseTwentyYearTermBeneficiaryType ===
-                                "individual" ? (
-                                  <>
-                                    {renderField(
-                                      "Designation",
-                                      data.profile
-                                        .spouseTwentyYearTermBeneficiaryDesignation,
-                                    )}
-                                    {renderField(
-                                      "First Name",
-                                      data.profile
-                                        .spouseTwentyYearTermBeneficiaryFirstName,
-                                    )}
-                                    {renderField(
-                                      "Last Name",
-                                      data.profile
-                                        .spouseTwentyYearTermBeneficiaryLastName,
-                                    )}
-                                    {renderField(
-                                      "Relationship",
-                                      data.profile
-                                        .spouseTwentyYearTermBeneficiaryRelationship,
-                                    )}
-                                    {renderField(
-                                      "Share %",
-                                      data.profile
-                                        .spouseTwentyYearTermBeneficiaryShare,
-                                    )}
-                                  </>
-                                ) : (
-                                  <>
-                                    {renderField(
-                                      "Trust Name",
-                                      data.profile
-                                        .spouseTwentyYearTermTrustName,
-                                    )}
-                                    {renderField(
-                                      "Trust Date",
-                                      data.profile
-                                        .spouseTwentyYearTermTrustDate,
-                                    )}
-                                  </>
-                                )}
-                              </Box>
-                            )}
-
-                            {/* Spouse ADD */}
-                            {data.profile.spouseAddBeneficiaryType && (
-                              <Box>
-                                <Typography
-                                  variant="subtitle2"
-                                  sx={{ fontWeight: 600, mb: 1 }}
-                                >
-                                  Accidental Death & Dismemberment Beneficiary
-                                </Typography>
-                                {renderField(
-                                  "Type",
-                                  data.profile.spouseAddBeneficiaryType,
-                                )}
-                                {data.profile.spouseAddBeneficiaryType ===
-                                "individual" ? (
-                                  <>
-                                    {renderField(
-                                      "Designation",
-                                      data.profile
-                                        .spouseAddBeneficiaryDesignation,
-                                    )}
-                                    {renderField(
-                                      "First Name",
-                                      data.profile
-                                        .spouseAddBeneficiaryFirstName,
-                                    )}
-                                    {renderField(
-                                      "Last Name",
-                                      data.profile.spouseAddBeneficiaryLastName,
-                                    )}
-                                    {renderField(
-                                      "Relationship",
-                                      data.profile
-                                        .spouseAddBeneficiaryRelationship,
-                                    )}
-                                    {renderField(
-                                      "Share %",
-                                      data.profile.spouseAddBeneficiaryShare,
-                                    )}
-                                  </>
-                                ) : (
-                                  <>
-                                    {renderField(
-                                      "Trust Name",
-                                      data.profile.spouseAddTrustName,
-                                    )}
-                                    {renderField(
-                                      "Trust Date",
-                                      data.profile.spouseAddTrustDate,
-                                    )}
-                                  </>
-                                )}
-                              </Box>
-                            )}
-                          </>
-                        ) : (
-                          <Typography variant="body2" color="text.secondary">
-                            No beneficiary information provided
-                          </Typography>
-                        )}
-                      </Stack>
-                    </CardContent>
-                  </Card>
-                )}
-              </Stack>
-            </CardContent>
-          </Card>
-
-          {/* Payment Card */}
-          {data.payment && (
-            <Card sx={commonStyles.categoryCard}>
-              <CardContent>
-                <Stack spacing={2}>
-                  {/* Category Header */}
-                  {renderCategoryHeader("Payment", "/profile")}
-
-                  {/* Payment Sub-card */}
-                  <Card variant="outlined">
-                    <CardContent>
-                      {renderSectionHeader(
-                        "Your Payment",
-                        <Payment color="primary" />,
-                      )}
-                      <Stack spacing={2}>
-                        {data.profile.wantsToAddPayment === "no" ? (
-                          <Typography variant="body2" color="text.secondary">
-                            No payment information provided
-                          </Typography>
-                        ) : (
-                          <>
-                            {/* Payment methods for each product */}
-                            {data.profile.termLifePaymentMethod && (
-                              <Box>
-                                <Typography
-                                  variant="subtitle2"
-                                  sx={{ fontWeight: 600, mb: 1 }}
-                                >
-                                  Term Life Insurance
-                                </Typography>
-                                {renderField(
-                                  "Payment Method",
-                                  data.profile.termLifePaymentMethod,
-                                )}
-                                {renderField(
-                                  "Payment Frequency",
-                                  data.profile.termLifePaymentFrequency,
-                                )}
-                              </Box>
-                            )}
-
-                            {data.profile.tenYearTermPaymentMethod && (
-                              <Box>
-                                <Typography
-                                  variant="subtitle2"
-                                  sx={{ fontWeight: 600, mb: 1 }}
-                                >
-                                  10-Year Level Term Life Insurance
-                                </Typography>
-                                {renderField(
-                                  "Payment Method",
-                                  data.profile.tenYearTermPaymentMethod,
-                                )}
-                                {renderField(
-                                  "Payment Frequency",
-                                  data.profile.tenYearTermPaymentFrequency,
-                                )}
-                              </Box>
-                            )}
-
-                            {data.profile.twentyYearTermPaymentMethod && (
-                              <Box>
-                                <Typography
-                                  variant="subtitle2"
-                                  sx={{ fontWeight: 600, mb: 1 }}
-                                >
-                                  20-Year Level Term Life Insurance
-                                </Typography>
-                                {renderField(
-                                  "Payment Method",
-                                  data.profile.twentyYearTermPaymentMethod,
-                                )}
-                                {renderField(
-                                  "Payment Frequency",
-                                  data.profile.twentyYearTermPaymentFrequency,
-                                )}
-                              </Box>
-                            )}
-
-                            {data.profile.addPaymentMethod && (
-                              <Box>
-                                <Typography
-                                  variant="subtitle2"
-                                  sx={{ fontWeight: 600, mb: 1 }}
-                                >
-                                  Accidental Death & Dismemberment
-                                </Typography>
-                                {renderField(
-                                  "Payment Method",
-                                  data.profile.addPaymentMethod,
-                                )}
-                                {renderField(
-                                  "Payment Frequency",
-                                  data.profile.addPaymentFrequency,
-                                )}
-                              </Box>
-                            )}
-
-                            {data.profile.longTermDisabilityPaymentMethod && (
-                              <Box>
-                                <Typography
-                                  variant="subtitle2"
-                                  sx={{ fontWeight: 600, mb: 1 }}
-                                >
-                                  Long-Term Disability Plus
-                                </Typography>
-                                {renderField(
-                                  "Payment Method",
-                                  data.profile.longTermDisabilityPaymentMethod,
-                                )}
-                                {renderField(
-                                  "Payment Frequency",
-                                  data.profile
-                                    .longTermDisabilityPaymentFrequency,
-                                )}
-                              </Box>
-                            )}
-
-                            {data.profile.midTermDisabilityPaymentMethod && (
-                              <Box>
-                                <Typography
-                                  variant="subtitle2"
-                                  sx={{ fontWeight: 600, mb: 1 }}
-                                >
-                                  Mid-Term Disability
-                                </Typography>
-                                {renderField(
-                                  "Payment Method",
-                                  data.profile.midTermDisabilityPaymentMethod,
-                                )}
-                                {renderField(
-                                  "Payment Frequency",
-                                  data.profile
-                                    .midTermDisabilityPaymentFrequency,
-                                )}
-                              </Box>
-                            )}
-
-                            {data.profile.professionalOverheadPaymentMethod && (
-                              <Box>
-                                <Typography
-                                  variant="subtitle2"
-                                  sx={{ fontWeight: 600, mb: 1 }}
-                                >
-                                  Professional Overhead Expense
-                                </Typography>
-                                {renderField(
-                                  "Payment Method",
-                                  data.profile
-                                    .professionalOverheadPaymentMethod,
-                                )}
-                                {renderField(
-                                  "Payment Frequency",
-                                  data.profile
-                                    .professionalOverheadPaymentFrequency,
-                                )}
-                              </Box>
-                            )}
-
-                            {data.profile.criticalIllnessPaymentMethod && (
-                              <Box>
-                                <Typography
-                                  variant="subtitle2"
-                                  sx={{ fontWeight: 600, mb: 1 }}
-                                >
-                                  Critical Illness
-                                </Typography>
-                                {renderField(
-                                  "Payment Method",
-                                  data.profile.criticalIllnessPaymentMethod,
-                                )}
-                                {renderField(
-                                  "Payment Frequency",
-                                  data.profile.criticalIllnessPaymentFrequency,
-                                )}
-                              </Box>
-                            )}
-
-                            {data.profile.hospitalMoneyPaymentMethod && (
-                              <Box>
-                                <Typography
-                                  variant="subtitle2"
-                                  sx={{ fontWeight: 600, mb: 1 }}
-                                >
-                                  Hospital Money
-                                </Typography>
-                                {renderField(
-                                  "Payment Method",
-                                  data.profile.hospitalMoneyPaymentMethod,
-                                )}
-                                {renderField(
-                                  "Payment Frequency",
-                                  data.profile.hospitalMoneyPaymentFrequency,
-                                )}
-                              </Box>
-                            )}
-
-                            {/* Bank Account Details if applicable */}
-                            {(data.profile.routingNumber ||
-                              data.profile.accountNumber) && (
-                              <Box sx={{ mt: 2 }}>
-                                <Typography
-                                  variant="subtitle2"
-                                  sx={{ fontWeight: 600, mb: 1 }}
-                                >
-                                  Bank Account Details
-                                </Typography>
-                                {renderField(
-                                  "Routing Number",
-                                  data.profile.routingNumber
-                                    ? "****" +
-                                        data.profile.routingNumber.slice(-4)
-                                    : "—",
-                                )}
-                                {renderField(
-                                  "Account Number",
-                                  data.profile.accountNumber
-                                    ? "****" +
-                                        data.profile.accountNumber.slice(-4)
-                                    : "—",
-                                )}
-                                {renderField(
-                                  "Name on Account",
-                                  data.profile.nameOnAccount,
-                                )}
-                                {renderField(
-                                  "Bank Institution",
-                                  data.profile.bankInstitution,
-                                )}
-                                {renderField(
-                                  "Account Consent",
-                                  data.profile.bankAccountConsent,
-                                )}
-                              </Box>
-                            )}
-                          </>
-                        )}
-                      </Stack>
-                    </CardContent>
-                  </Card>
-                </Stack>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Financial Information Card */}
-          {data.profile &&
-            (data.profile.totalAnnualUnearnedIncome ||
-              data.profile.soleProprietorGrossIncome ||
-              data.profile.partnershipGrossIncome ||
-              data.profile.employerName) && (
+              {/* Other Coverage Card */}
               <Card sx={commonStyles.categoryCard}>
                 <CardContent>
                   <Stack spacing={2}>
-                    {renderCategoryHeader("Financial Information", "/profile")}
+                    {/* Category Header */}
+                    {renderCategoryHeader(
+                      "Other Coverage",
+                      "/financial-information",
+                    )}
 
+                    {/* Your Other Coverage Sub-card */}
                     <Card variant="outlined">
                       <CardContent>
                         {renderSectionHeader(
-                          "Your Financial Details",
-                          <AttachMoney color="primary" />,
+                          "Your Other Coverage",
+                          <Person color="primary" />,
                         )}
                         <Stack spacing={1}>
-                          {data.profile.totalAnnualUnearnedIncome &&
-                            renderField(
-                              "Total Annual Unearned Income",
-                              data.profile.totalAnnualUnearnedIncome,
+                          <Typography
+                            variant="subtitle2"
+                            sx={{ fontWeight: 600, mb: 1 }}
+                          >
+                            Life Insurance
+                          </Typography>
+                          {renderField(
+                            "Has Other Life Insurance",
+                            data.profile.hasOtherLifeInsurance,
+                          )}
+                          {data.profile.hasOtherLifeInsurance === "yes" && (
+                            <>
+                              {renderField(
+                                "Amount",
+                                data.profile.otherLifeInsuranceAmount,
+                              )}
+                              {renderField(
+                                "Is Replacement",
+                                data.profile.lifeInsuranceReplacement,
+                              )}
+                            </>
+                          )}
+                          {renderField(
+                            "Has Pending Life Insurance",
+                            data.profile.hasLifeInsurancePending,
+                          )}
+                          {data.profile.hasLifeInsurancePending === "yes" && (
+                            <>
+                              {renderField(
+                                "Pending Amount",
+                                data.profile.pendingLifeInsuranceAmount,
+                              )}
+                              {renderField(
+                                "Pending Company",
+                                data.profile.pendingLifeInsuranceCompany,
+                              )}
+                            </>
+                          )}
+
+                          <Typography
+                            variant="subtitle2"
+                            sx={{ mt: 2, fontWeight: 600, mb: 1 }}
+                          >
+                            Disability Insurance
+                          </Typography>
+                          {renderField(
+                            "Has Disability Insurance",
+                            data.profile.hasDisabilityInsurance,
+                          )}
+                          {data.profile.hasDisabilityInsurance === "yes" &&
+                            data.profile.disabilityCompanies && (
+                              <>
+                                {data.profile.disabilityCompanies.map(
+                                  (company, idx) => (
+                                    <Box
+                                      key={idx}
+                                      sx={{
+                                        pl: 2,
+                                        borderLeft: 2,
+                                        borderColor: "primary.main",
+                                        my: 1,
+                                      }}
+                                    >
+                                      <Typography
+                                        variant="caption"
+                                        sx={{ fontWeight: 600 }}
+                                      >
+                                        Policy {idx + 1}
+                                      </Typography>
+                                      {renderField("Company", company.company)}
+                                      {renderField(
+                                        "Monthly Benefit",
+                                        company.monthlyBenefit,
+                                      )}
+                                      {renderField(
+                                        "Benefit Period",
+                                        company.benefitPeriod,
+                                      )}
+                                      {renderField(
+                                        "Waiting Period",
+                                        company.waitingPeriod,
+                                      )}
+                                    </Box>
+                                  ),
+                                )}
+                                {renderField(
+                                  "Is Replacement",
+                                  data.profile.disabilityReplacement,
+                                )}
+                                {data.profile.disabilityReplacement === "yes" &&
+                                  renderField(
+                                    "Replacement Amount",
+                                    data.profile.disabilityReplacementAmount,
+                                  )}
+                              </>
                             )}
-                          {data.profile.soleProprietorGrossIncome &&
-                            renderField(
-                              "Sole Proprietor Gross Income",
-                              data.profile.soleProprietorGrossIncome,
-                            )}
-                          {data.profile.partnershipGrossIncome &&
-                            renderField(
-                              "Partnership Gross Income",
-                              data.profile.partnershipGrossIncome,
-                            )}
-                          {data.profile.employerName &&
-                            renderField(
-                              "Employer Name",
-                              data.profile.employerName,
-                            )}
-                          {data.profile.employerAddress &&
-                            renderField(
-                              "Employer Address",
-                              data.profile.employerAddress,
-                            )}
-                          {data.profile.occupation &&
-                            renderField("Occupation", data.profile.occupation)}
-                          {data.profile.duties &&
-                            renderField("Duties", data.profile.duties)}
                         </Stack>
                       </CardContent>
                     </Card>
+
+                    {/* Spouse Other Coverage Sub-card */}
+                    {data.eligibility?.applicants?.spouse && (
+                      <Card variant="outlined">
+                        <CardContent>
+                          {renderSectionHeader(
+                            "Spouse Other Coverage",
+                            <People color="primary" />,
+                          )}
+                          <Stack spacing={1}>
+                            <Typography
+                              variant="subtitle2"
+                              sx={{ fontWeight: 600, mb: 1 }}
+                            >
+                              Life Insurance
+                            </Typography>
+                            {renderField(
+                              "Has Other Life Insurance",
+                              data.profile.spouseHasOtherLifeInsurance,
+                            )}
+                            {data.profile.spouseHasOtherLifeInsurance ===
+                              "yes" && (
+                              <>
+                                {renderField(
+                                  "Amount",
+                                  data.profile.spouseOtherLifeInsuranceAmount,
+                                )}
+                                {renderField(
+                                  "Is Replacement",
+                                  data.profile.spouseLifeInsuranceReplacement,
+                                )}
+                              </>
+                            )}
+                            {renderField(
+                              "Has Pending Life Insurance",
+                              data.profile.spouseHasLifeInsurancePending,
+                            )}
+                            {data.profile.spouseHasLifeInsurancePending ===
+                              "yes" && (
+                              <>
+                                {renderField(
+                                  "Pending Amount",
+                                  data.profile.spousePendingLifeInsuranceAmount,
+                                )}
+                                {renderField(
+                                  "Pending Company",
+                                  data.profile
+                                    .spousePendingLifeInsuranceCompany,
+                                )}
+                              </>
+                            )}
+
+                            <Typography
+                              variant="subtitle2"
+                              sx={{ mt: 2, fontWeight: 600, mb: 1 }}
+                            >
+                              Disability Insurance
+                            </Typography>
+                            {renderField(
+                              "Has Disability Insurance",
+                              data.profile.spouseHasDisabilityInsurance,
+                            )}
+                            {data.profile.spouseHasDisabilityInsurance ===
+                              "yes" &&
+                              data.profile.spouseDisabilityCompanies && (
+                                <>
+                                  {data.profile.spouseDisabilityCompanies.map(
+                                    (company, idx) => (
+                                      <Box
+                                        key={idx}
+                                        sx={{
+                                          pl: 2,
+                                          borderLeft: 2,
+                                          borderColor: "primary.main",
+                                          my: 1,
+                                        }}
+                                      >
+                                        <Typography
+                                          variant="caption"
+                                          sx={{ fontWeight: 600 }}
+                                        >
+                                          Policy {idx + 1}
+                                        </Typography>
+                                        {renderField(
+                                          "Company",
+                                          company.company,
+                                        )}
+                                        {renderField(
+                                          "Monthly Benefit",
+                                          company.monthlyBenefit,
+                                        )}
+                                        {renderField(
+                                          "Benefit Period",
+                                          company.benefitPeriod,
+                                        )}
+                                        {renderField(
+                                          "Waiting Period",
+                                          company.waitingPeriod,
+                                        )}
+                                      </Box>
+                                    ),
+                                  )}
+                                  {renderField(
+                                    "Is Replacement",
+                                    data.profile.spouseDisabilityReplacement,
+                                  )}
+                                  {data.profile.spouseDisabilityReplacement ===
+                                    "yes" &&
+                                    renderField(
+                                      "Replacement Amount",
+                                      data.profile
+                                        .spouseDisabilityReplacementAmount,
+                                    )}
+                                </>
+                              )}
+                          </Stack>
+                        </CardContent>
+                      </Card>
+                    )}
                   </Stack>
                 </CardContent>
               </Card>
-            )}
 
-          {/* Health History Card */}
-          {data.healthHistory && (
-            <Card sx={commonStyles.categoryCard}>
-              <CardContent>
-                <Stack spacing={2}>
-                  {renderCategoryHeader("Health History", "/health-history")}
+              {/* Beneficiary Card */}
+              <Card sx={commonStyles.categoryCard}>
+                <CardContent>
+                  <Stack spacing={2}>
+                    {/* Category Header */}
+                    {renderCategoryHeader("Beneficiary", "/beneficiary")}
 
-                  <Card variant="outlined">
-                    <CardContent>
-                      {renderSectionHeader(
-                        "Your Health Information",
-                        <HealthAndSafety color="primary" />,
-                      )}
-                      <Stack spacing={2}>
-                        {Object.entries(data.healthHistory).map(
-                          ([key, value], index) => {
-                            // Only show questions (not detail fields)
-                            if (key.includes("Details")) return null;
-
-                            const questionNum = parseInt(
-                              key.replace("question", ""),
-                            );
-                            const detailsKey = `question${questionNum}Details`;
-                            const details =
-                              data.healthHistory[
-                                detailsKey as keyof typeof data.healthHistory
-                              ];
-                            const questionText =
-                              healthQuestions[questionNum] ||
-                              `Question ${questionNum}`;
-
-                            return (
-                              <Box
-                                key={key}
-                                sx={{
-                                  pl: 2,
-                                  borderLeft: 2,
-                                  borderColor:
-                                    value === "yes"
-                                      ? "warning.main"
-                                      : "divider",
-                                }}
-                              >
-                                {renderField(
-                                  questionText,
-                                  value,
-                                  undefined,
-                                  true,
-                                )}
-                                {value === "yes" &&
-                                  details &&
-                                  typeof details === "object" && (
-                                    <Box sx={{ pl: 2, mt: 1 }}>
-                                      {(details as any).onsetDate &&
-                                        renderField(
-                                          "Onset Date",
-                                          (details as any).onsetDate,
-                                        )}
-                                      {(details as any).conditionDetails &&
-                                        renderField(
-                                          "Condition Details",
-                                          (details as any).conditionDetails,
-                                        )}
-                                      {(details as any).physicianInfo &&
-                                        renderField(
-                                          "Physician Info",
-                                          (details as any).physicianInfo,
-                                        )}
-                                    </Box>
-                                  )}
-                              </Box>
-                            );
-                          },
+                    {/* Your Beneficiary Sub-card */}
+                    <Card variant="outlined">
+                      <CardContent>
+                        {renderSectionHeader(
+                          "Your Beneficiary",
+                          <Person color="primary" />,
                         )}
+                        <Stack spacing={2}>
+                          {data.profile.wantsToBeneficiaries === "no" ? (
+                            <Typography variant="body2" color="text.secondary">
+                              No beneficiary information provided
+                            </Typography>
+                          ) : (
+                            <>
+                              {/* Term Life Beneficiary */}
+                              {data.profile.termLifeBeneficiaryType && (
+                                <Box>
+                                  <Typography
+                                    variant="subtitle2"
+                                    sx={{ fontWeight: 600, mb: 1 }}
+                                  >
+                                    Term Life Insurance Beneficiary
+                                  </Typography>
+                                  {renderField(
+                                    "Type",
+                                    data.profile.termLifeBeneficiaryType,
+                                  )}
+                                  {data.profile.termLifeBeneficiaryType ===
+                                  "individual" ? (
+                                    <>
+                                      {renderField(
+                                        "Designation",
+                                        data.profile
+                                          .termLifeBeneficiaryDesignation,
+                                      )}
+                                      {renderField(
+                                        "First Name",
+                                        data.profile
+                                          .termLifeBeneficiaryFirstName,
+                                      )}
+                                      {renderField(
+                                        "Last Name",
+                                        data.profile
+                                          .termLifeBeneficiaryLastName,
+                                      )}
+                                      {renderField(
+                                        "Relationship",
+                                        data.profile
+                                          .termLifeBeneficiaryRelationship,
+                                      )}
+                                      {renderField(
+                                        "Share %",
+                                        data.profile.termLifeBeneficiaryShare,
+                                      )}
+                                    </>
+                                  ) : (
+                                    <>
+                                      {renderField(
+                                        "Trust Name",
+                                        data.profile.termLifeTrustName,
+                                      )}
+                                      {renderField(
+                                        "Trust Date",
+                                        data.profile.termLifeTrustDate,
+                                      )}
+                                    </>
+                                  )}
+                                </Box>
+                              )}
+
+                              {/* 10-Year Term Beneficiary */}
+                              {data.profile.tenYearTermBeneficiaryType && (
+                                <Box>
+                                  <Typography
+                                    variant="subtitle2"
+                                    sx={{ fontWeight: 600, mb: 1 }}
+                                  >
+                                    10-Year Level Term Life Insurance
+                                    Beneficiary
+                                  </Typography>
+                                  {renderField(
+                                    "Type",
+                                    data.profile.tenYearTermBeneficiaryType,
+                                  )}
+                                  {data.profile.tenYearTermBeneficiaryType ===
+                                  "individual" ? (
+                                    <>
+                                      {renderField(
+                                        "Designation",
+                                        data.profile
+                                          .tenYearTermBeneficiaryDesignation,
+                                      )}
+                                      {renderField(
+                                        "First Name",
+                                        data.profile
+                                          .tenYearTermBeneficiaryFirstName,
+                                      )}
+                                      {renderField(
+                                        "Last Name",
+                                        data.profile
+                                          .tenYearTermBeneficiaryLastName,
+                                      )}
+                                      {renderField(
+                                        "Relationship",
+                                        data.profile
+                                          .tenYearTermBeneficiaryRelationship,
+                                      )}
+                                      {renderField(
+                                        "Share %",
+                                        data.profile
+                                          .tenYearTermBeneficiaryShare,
+                                      )}
+                                    </>
+                                  ) : (
+                                    <>
+                                      {renderField(
+                                        "Trust Name",
+                                        data.profile.tenYearTermTrustName,
+                                      )}
+                                      {renderField(
+                                        "Trust Date",
+                                        data.profile.tenYearTermTrustDate,
+                                      )}
+                                    </>
+                                  )}
+                                </Box>
+                              )}
+
+                              {/* 20-Year Term Beneficiary */}
+                              {data.profile.twentyYearTermBeneficiaryType && (
+                                <Box>
+                                  <Typography
+                                    variant="subtitle2"
+                                    sx={{ fontWeight: 600, mb: 1 }}
+                                  >
+                                    20-Year Level Term Life Insurance
+                                    Beneficiary
+                                  </Typography>
+                                  {renderField(
+                                    "Type",
+                                    data.profile.twentyYearTermBeneficiaryType,
+                                  )}
+                                  {data.profile
+                                    .twentyYearTermBeneficiaryType ===
+                                  "individual" ? (
+                                    <>
+                                      {renderField(
+                                        "Designation",
+                                        data.profile
+                                          .twentyYearTermBeneficiaryDesignation,
+                                      )}
+                                      {renderField(
+                                        "First Name",
+                                        data.profile
+                                          .twentyYearTermBeneficiaryFirstName,
+                                      )}
+                                      {renderField(
+                                        "Last Name",
+                                        data.profile
+                                          .twentyYearTermBeneficiaryLastName,
+                                      )}
+                                      {renderField(
+                                        "Relationship",
+                                        data.profile
+                                          .twentyYearTermBeneficiaryRelationship,
+                                      )}
+                                      {renderField(
+                                        "Share %",
+                                        data.profile
+                                          .twentyYearTermBeneficiaryShare,
+                                      )}
+                                    </>
+                                  ) : (
+                                    <>
+                                      {renderField(
+                                        "Trust Name",
+                                        data.profile.twentyYearTermTrustName,
+                                      )}
+                                      {renderField(
+                                        "Trust Date",
+                                        data.profile.twentyYearTermTrustDate,
+                                      )}
+                                    </>
+                                  )}
+                                </Box>
+                              )}
+
+                              {/* ADD Beneficiary */}
+                              {data.profile.addBeneficiaryType && (
+                                <Box>
+                                  <Typography
+                                    variant="subtitle2"
+                                    sx={{ fontWeight: 600, mb: 1 }}
+                                  >
+                                    Accidental Death & Dismemberment Beneficiary
+                                  </Typography>
+                                  {renderField(
+                                    "Type",
+                                    data.profile.addBeneficiaryType,
+                                  )}
+                                  {data.profile.addBeneficiaryType ===
+                                  "individual" ? (
+                                    <>
+                                      {renderField(
+                                        "Designation",
+                                        data.profile.addBeneficiaryDesignation,
+                                      )}
+                                      {renderField(
+                                        "First Name",
+                                        data.profile.addBeneficiaryFirstName,
+                                      )}
+                                      {renderField(
+                                        "Last Name",
+                                        data.profile.addBeneficiaryLastName,
+                                      )}
+                                      {renderField(
+                                        "Relationship",
+                                        data.profile.addBeneficiaryRelationship,
+                                      )}
+                                      {renderField(
+                                        "Share %",
+                                        data.profile.addBeneficiaryShare,
+                                      )}
+                                    </>
+                                  ) : (
+                                    <>
+                                      {renderField(
+                                        "Trust Name",
+                                        data.profile.addTrustName,
+                                      )}
+                                      {renderField(
+                                        "Trust Date",
+                                        data.profile.addTrustDate,
+                                      )}
+                                    </>
+                                  )}
+                                </Box>
+                              )}
+                            </>
+                          )}
+                        </Stack>
+                      </CardContent>
+                    </Card>
+
+                    {/* Spouse Beneficiary Sub-card */}
+                    {data.eligibility?.applicants?.spouse && (
+                      <Card variant="outlined">
+                        <CardContent>
+                          {renderSectionHeader(
+                            "Spouse Beneficiary",
+                            <People color="primary" />,
+                          )}
+                          <Stack spacing={2}>
+                            {/* Similar structure for spouse beneficiaries */}
+                            {data.profile.spouseTermLifeBeneficiaryType ||
+                            data.profile.spouseTenYearTermBeneficiaryType ||
+                            data.profile.spouseTwentyYearTermBeneficiaryType ||
+                            data.profile.spouseAddBeneficiaryType ? (
+                              <>
+                                {/* Spouse Term Life Beneficiary */}
+                                {data.profile.spouseTermLifeBeneficiaryType && (
+                                  <Box>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{ fontWeight: 600, mb: 1 }}
+                                    >
+                                      Term Life Insurance Beneficiary
+                                    </Typography>
+                                    {renderField(
+                                      "Type",
+                                      data.profile
+                                        .spouseTermLifeBeneficiaryType,
+                                    )}
+                                    {data.profile
+                                      .spouseTermLifeBeneficiaryType ===
+                                    "individual" ? (
+                                      <>
+                                        {renderField(
+                                          "Designation",
+                                          data.profile
+                                            .spouseTermLifeBeneficiaryDesignation,
+                                        )}
+                                        {renderField(
+                                          "First Name",
+                                          data.profile
+                                            .spouseTermLifeBeneficiaryFirstName,
+                                        )}
+                                        {renderField(
+                                          "Last Name",
+                                          data.profile
+                                            .spouseTermLifeBeneficiaryLastName,
+                                        )}
+                                        {renderField(
+                                          "Relationship",
+                                          data.profile
+                                            .spouseTermLifeBeneficiaryRelationship,
+                                        )}
+                                        {renderField(
+                                          "Share %",
+                                          data.profile
+                                            .spouseTermLifeBeneficiaryShare,
+                                        )}
+                                      </>
+                                    ) : (
+                                      <>
+                                        {renderField(
+                                          "Trust Name",
+                                          data.profile.spouseTermLifeTrustName,
+                                        )}
+                                        {renderField(
+                                          "Trust Date",
+                                          data.profile.spouseTermLifeTrustDate,
+                                        )}
+                                      </>
+                                    )}
+                                  </Box>
+                                )}
+
+                                {/* Spouse 10-Year Term */}
+                                {data.profile
+                                  .spouseTenYearTermBeneficiaryType && (
+                                  <Box>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{ fontWeight: 600, mb: 1 }}
+                                    >
+                                      10-Year Level Term Life Insurance
+                                      Beneficiary
+                                    </Typography>
+                                    {renderField(
+                                      "Type",
+                                      data.profile
+                                        .spouseTenYearTermBeneficiaryType,
+                                    )}
+                                    {data.profile
+                                      .spouseTenYearTermBeneficiaryType ===
+                                    "individual" ? (
+                                      <>
+                                        {renderField(
+                                          "Designation",
+                                          data.profile
+                                            .spouseTenYearTermBeneficiaryDesignation,
+                                        )}
+                                        {renderField(
+                                          "First Name",
+                                          data.profile
+                                            .spouseTenYearTermBeneficiaryFirstName,
+                                        )}
+                                        {renderField(
+                                          "Last Name",
+                                          data.profile
+                                            .spouseTenYearTermBeneficiaryLastName,
+                                        )}
+                                        {renderField(
+                                          "Relationship",
+                                          data.profile
+                                            .spouseTenYearTermBeneficiaryRelationship,
+                                        )}
+                                        {renderField(
+                                          "Share %",
+                                          data.profile
+                                            .spouseTenYearTermBeneficiaryShare,
+                                        )}
+                                      </>
+                                    ) : (
+                                      <>
+                                        {renderField(
+                                          "Trust Name",
+                                          data.profile
+                                            .spouseTenYearTermTrustName,
+                                        )}
+                                        {renderField(
+                                          "Trust Date",
+                                          data.profile
+                                            .spouseTenYearTermTrustDate,
+                                        )}
+                                      </>
+                                    )}
+                                  </Box>
+                                )}
+
+                                {/* Spouse 20-Year Term */}
+                                {data.profile
+                                  .spouseTwentyYearTermBeneficiaryType && (
+                                  <Box>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{ fontWeight: 600, mb: 1 }}
+                                    >
+                                      20-Year Level Term Life Insurance
+                                      Beneficiary
+                                    </Typography>
+                                    {renderField(
+                                      "Type",
+                                      data.profile
+                                        .spouseTwentyYearTermBeneficiaryType,
+                                    )}
+                                    {data.profile
+                                      .spouseTwentyYearTermBeneficiaryType ===
+                                    "individual" ? (
+                                      <>
+                                        {renderField(
+                                          "Designation",
+                                          data.profile
+                                            .spouseTwentyYearTermBeneficiaryDesignation,
+                                        )}
+                                        {renderField(
+                                          "First Name",
+                                          data.profile
+                                            .spouseTwentyYearTermBeneficiaryFirstName,
+                                        )}
+                                        {renderField(
+                                          "Last Name",
+                                          data.profile
+                                            .spouseTwentyYearTermBeneficiaryLastName,
+                                        )}
+                                        {renderField(
+                                          "Relationship",
+                                          data.profile
+                                            .spouseTwentyYearTermBeneficiaryRelationship,
+                                        )}
+                                        {renderField(
+                                          "Share %",
+                                          data.profile
+                                            .spouseTwentyYearTermBeneficiaryShare,
+                                        )}
+                                      </>
+                                    ) : (
+                                      <>
+                                        {renderField(
+                                          "Trust Name",
+                                          data.profile
+                                            .spouseTwentyYearTermTrustName,
+                                        )}
+                                        {renderField(
+                                          "Trust Date",
+                                          data.profile
+                                            .spouseTwentyYearTermTrustDate,
+                                        )}
+                                      </>
+                                    )}
+                                  </Box>
+                                )}
+
+                                {/* Spouse ADD */}
+                                {data.profile.spouseAddBeneficiaryType && (
+                                  <Box>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{ fontWeight: 600, mb: 1 }}
+                                    >
+                                      Accidental Death & Dismemberment
+                                      Beneficiary
+                                    </Typography>
+                                    {renderField(
+                                      "Type",
+                                      data.profile.spouseAddBeneficiaryType,
+                                    )}
+                                    {data.profile.spouseAddBeneficiaryType ===
+                                    "individual" ? (
+                                      <>
+                                        {renderField(
+                                          "Designation",
+                                          data.profile
+                                            .spouseAddBeneficiaryDesignation,
+                                        )}
+                                        {renderField(
+                                          "First Name",
+                                          data.profile
+                                            .spouseAddBeneficiaryFirstName,
+                                        )}
+                                        {renderField(
+                                          "Last Name",
+                                          data.profile
+                                            .spouseAddBeneficiaryLastName,
+                                        )}
+                                        {renderField(
+                                          "Relationship",
+                                          data.profile
+                                            .spouseAddBeneficiaryRelationship,
+                                        )}
+                                        {renderField(
+                                          "Share %",
+                                          data.profile
+                                            .spouseAddBeneficiaryShare,
+                                        )}
+                                      </>
+                                    ) : (
+                                      <>
+                                        {renderField(
+                                          "Trust Name",
+                                          data.profile.spouseAddTrustName,
+                                        )}
+                                        {renderField(
+                                          "Trust Date",
+                                          data.profile.spouseAddTrustDate,
+                                        )}
+                                      </>
+                                    )}
+                                  </Box>
+                                )}
+                              </>
+                            ) : (
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                No beneficiary information provided
+                              </Typography>
+                            )}
+                          </Stack>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </Stack>
+                </CardContent>
+              </Card>
+
+              {/* Payment Card */}
+              {data.profile && data.profile.wantsToAddPayment === "yes" && (
+                <Card sx={commonStyles.categoryCard}>
+                  <CardContent>
+                    <Stack spacing={2}>
+                      {/* Category Header */}
+                      {renderCategoryHeader("Payment", "/payment-information")}
+
+                      {/* Payment Sub-card */}
+                      <Card variant="outlined">
+                        <CardContent>
+                          {renderSectionHeader(
+                            "Your Payment",
+                            <Payment color="primary" />,
+                          )}
+                          <Stack spacing={2}>
+                            {data.profile.wantsToAddPayment === "no" ? (
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                No payment information provided
+                              </Typography>
+                            ) : (
+                              <>
+                                {/* Payment methods for each product */}
+                                {data.profile.termLifePaymentMethod && (
+                                  <Box>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{ fontWeight: 600, mb: 1 }}
+                                    >
+                                      Term Life Insurance
+                                    </Typography>
+                                    {renderField(
+                                      "Payment Method",
+                                      data.profile.termLifePaymentMethod,
+                                    )}
+                                    {renderField(
+                                      "Payment Frequency",
+                                      data.profile.termLifePaymentFrequency,
+                                    )}
+                                  </Box>
+                                )}
+
+                                {data.profile.tenYearTermPaymentMethod && (
+                                  <Box>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{ fontWeight: 600, mb: 1 }}
+                                    >
+                                      10-Year Level Term Life Insurance
+                                    </Typography>
+                                    {renderField(
+                                      "Payment Method",
+                                      data.profile.tenYearTermPaymentMethod,
+                                    )}
+                                    {renderField(
+                                      "Payment Frequency",
+                                      data.profile.tenYearTermPaymentFrequency,
+                                    )}
+                                  </Box>
+                                )}
+
+                                {data.profile.twentyYearTermPaymentMethod && (
+                                  <Box>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{ fontWeight: 600, mb: 1 }}
+                                    >
+                                      20-Year Level Term Life Insurance
+                                    </Typography>
+                                    {renderField(
+                                      "Payment Method",
+                                      data.profile.twentyYearTermPaymentMethod,
+                                    )}
+                                    {renderField(
+                                      "Payment Frequency",
+                                      data.profile
+                                        .twentyYearTermPaymentFrequency,
+                                    )}
+                                  </Box>
+                                )}
+
+                                {data.profile.addPaymentMethod && (
+                                  <Box>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{ fontWeight: 600, mb: 1 }}
+                                    >
+                                      Accidental Death & Dismemberment
+                                    </Typography>
+                                    {renderField(
+                                      "Payment Method",
+                                      data.profile.addPaymentMethod,
+                                    )}
+                                    {renderField(
+                                      "Payment Frequency",
+                                      data.profile.addPaymentFrequency,
+                                    )}
+                                  </Box>
+                                )}
+
+                                {data.profile
+                                  .longTermDisabilityPaymentMethod && (
+                                  <Box>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{ fontWeight: 600, mb: 1 }}
+                                    >
+                                      Long-Term Disability Plus
+                                    </Typography>
+                                    {renderField(
+                                      "Payment Method",
+                                      data.profile
+                                        .longTermDisabilityPaymentMethod,
+                                    )}
+                                    {renderField(
+                                      "Payment Frequency",
+                                      data.profile
+                                        .longTermDisabilityPaymentFrequency,
+                                    )}
+                                  </Box>
+                                )}
+
+                                {data.profile
+                                  .midTermDisabilityPaymentMethod && (
+                                  <Box>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{ fontWeight: 600, mb: 1 }}
+                                    >
+                                      Mid-Term Disability
+                                    </Typography>
+                                    {renderField(
+                                      "Payment Method",
+                                      data.profile
+                                        .midTermDisabilityPaymentMethod,
+                                    )}
+                                    {renderField(
+                                      "Payment Frequency",
+                                      data.profile
+                                        .midTermDisabilityPaymentFrequency,
+                                    )}
+                                  </Box>
+                                )}
+
+                                {data.profile
+                                  .professionalOverheadPaymentMethod && (
+                                  <Box>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{ fontWeight: 600, mb: 1 }}
+                                    >
+                                      Professional Overhead Expense
+                                    </Typography>
+                                    {renderField(
+                                      "Payment Method",
+                                      data.profile
+                                        .professionalOverheadPaymentMethod,
+                                    )}
+                                    {renderField(
+                                      "Payment Frequency",
+                                      data.profile
+                                        .professionalOverheadPaymentFrequency,
+                                    )}
+                                  </Box>
+                                )}
+
+                                {data.profile.criticalIllnessPaymentMethod && (
+                                  <Box>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{ fontWeight: 600, mb: 1 }}
+                                    >
+                                      Critical Illness
+                                    </Typography>
+                                    {renderField(
+                                      "Payment Method",
+                                      data.profile.criticalIllnessPaymentMethod,
+                                    )}
+                                    {renderField(
+                                      "Payment Frequency",
+                                      data.profile
+                                        .criticalIllnessPaymentFrequency,
+                                    )}
+                                  </Box>
+                                )}
+
+                                {data.profile.hospitalMoneyPaymentMethod && (
+                                  <Box>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{ fontWeight: 600, mb: 1 }}
+                                    >
+                                      Hospital Money
+                                    </Typography>
+                                    {renderField(
+                                      "Payment Method",
+                                      data.profile.hospitalMoneyPaymentMethod,
+                                    )}
+                                    {renderField(
+                                      "Payment Frequency",
+                                      data.profile
+                                        .hospitalMoneyPaymentFrequency,
+                                    )}
+                                  </Box>
+                                )}
+
+                                {/* Bank Account Details if applicable */}
+                                {(data.profile.routingNumber ||
+                                  data.profile.accountNumber) && (
+                                  <Box sx={{ mt: 2 }}>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{ fontWeight: 600, mb: 1 }}
+                                    >
+                                      Bank Account Details
+                                    </Typography>
+                                    {renderField(
+                                      "Routing Number",
+                                      data.profile.routingNumber
+                                        ? "****" +
+                                            data.profile.routingNumber.slice(-4)
+                                        : "—",
+                                    )}
+                                    {renderField(
+                                      "Account Number",
+                                      data.profile.accountNumber
+                                        ? "****" +
+                                            data.profile.accountNumber.slice(-4)
+                                        : "—",
+                                    )}
+                                    {renderField(
+                                      "Name on Account",
+                                      data.profile.nameOnAccount,
+                                    )}
+                                    {renderField(
+                                      "Bank Institution",
+                                      data.profile.bankInstitution,
+                                    )}
+                                    {renderField(
+                                      "Account Consent",
+                                      data.profile.bankAccountConsent,
+                                    )}
+                                  </Box>
+                                )}
+                              </>
+                            )}
+                          </Stack>
+                        </CardContent>
+                      </Card>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Financial Information Card */}
+              {data.profile &&
+                (data.profile.totalAnnualUnearnedIncome ||
+                  data.profile.soleProprietorGrossIncome ||
+                  data.profile.partnershipGrossIncome ||
+                  data.profile.employerName) && (
+                  <Card sx={commonStyles.categoryCard}>
+                    <CardContent>
+                      <Stack spacing={2}>
+                        {renderCategoryHeader(
+                          "Financial Information",
+                          "/financial-information",
+                        )}
+
+                        <Card variant="outlined">
+                          <CardContent>
+                            {renderSectionHeader(
+                              "Your Financial Details",
+                              <AttachMoney color="primary" />,
+                            )}
+                            <Stack spacing={1}>
+                              {data.profile.totalAnnualUnearnedIncome &&
+                                renderField(
+                                  "Total Annual Unearned Income",
+                                  data.profile.totalAnnualUnearnedIncome,
+                                )}
+                              {data.profile.soleProprietorGrossIncome &&
+                                renderField(
+                                  "Sole Proprietor Gross Income",
+                                  data.profile.soleProprietorGrossIncome,
+                                )}
+                              {data.profile.partnershipGrossIncome &&
+                                renderField(
+                                  "Partnership Gross Income",
+                                  data.profile.partnershipGrossIncome,
+                                )}
+                              {data.profile.employerName &&
+                                renderField(
+                                  "Employer Name",
+                                  data.profile.employerName,
+                                )}
+                              {data.profile.employerAddress &&
+                                renderField(
+                                  "Employer Address",
+                                  data.profile.employerAddress,
+                                )}
+                              {data.profile.occupation &&
+                                renderField(
+                                  "Occupation",
+                                  data.profile.occupation,
+                                )}
+                              {data.profile.duties &&
+                                renderField("Duties", data.profile.duties)}
+                            </Stack>
+                          </CardContent>
+                        </Card>
                       </Stack>
                     </CardContent>
                   </Card>
-                </Stack>
-              </CardContent>
-            </Card>
-          )}
-        </Stack>
+                )}
+
+              {/* Health History Card */}
+              {data.healthHistory && (
+                <Card sx={commonStyles.categoryCard}>
+                  <CardContent>
+                    <Stack spacing={2}>
+                      {renderCategoryHeader(
+                        "Health History",
+                        "/health-information",
+                      )}
+
+                      <Card variant="outlined">
+                        <CardContent>
+                          {renderSectionHeader(
+                            "Your Health Information",
+                            <HealthAndSafety color="primary" />,
+                          )}
+                          <Stack spacing={2}>
+                            {Object.entries(data.healthHistory).map(
+                              ([key, value], index) => {
+                                // Only show questions (not detail fields)
+                                if (key.includes("Details")) return null;
+
+                                const questionNum = parseInt(
+                                  key.replace("question", ""),
+                                );
+                                const detailsKey = `question${questionNum}Details`;
+                                const details =
+                                  data.healthHistory[
+                                    detailsKey as keyof typeof data.healthHistory
+                                  ];
+                                const questionText =
+                                  healthQuestions[questionNum] ||
+                                  `Question ${questionNum}`;
+
+                                return (
+                                  <Box
+                                    key={key}
+                                    sx={{
+                                      pl: 2,
+                                      borderLeft: 2,
+                                      borderColor:
+                                        value === "yes"
+                                          ? "warning.main"
+                                          : "divider",
+                                    }}
+                                  >
+                                    {renderField(
+                                      questionText,
+                                      value,
+                                      undefined,
+                                      true,
+                                    )}
+                                    {value === "yes" &&
+                                      details &&
+                                      typeof details === "object" && (
+                                        <Box sx={{ pl: 2, mt: 1 }}>
+                                          {(details as any).onsetDate &&
+                                            renderField(
+                                              "Onset Date",
+                                              (details as any).onsetDate,
+                                            )}
+                                          {(details as any).conditionDetails &&
+                                            renderField(
+                                              "Condition Details",
+                                              (details as any).conditionDetails,
+                                            )}
+                                          {(details as any).physicianInfo &&
+                                            renderField(
+                                              "Physician Info",
+                                              (details as any).physicianInfo,
+                                            )}
+                                        </Box>
+                                      )}
+                                  </Box>
+                                );
+                              },
+                            )}
+                          </Stack>
+                        </CardContent>
+                      </Card>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              )}
+            </Stack>
+          </AccordionDetails>
+        </Accordion>
+
+        <Card sx={commonStyles.categoryCard}>
+          <CardContent>
+            <Stack spacing={3}>
+              <Stack spacing={1.5}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Read & Sign
+                  </Typography>
+                  <IconButton size="small" aria-label="Print Read & Sign">
+                    <Print fontSize="small" />
+                  </IconButton>
+                </Box>
+
+                <Box
+                  sx={{
+                    border: 1,
+                    borderColor: "divider",
+                    borderRadius: 1,
+                    p: { xs: 2, sm: 3 },
+                    bgcolor: "background.default",
+                  }}
+                >
+                  <Stack spacing={1.5}>
+                    <Typography variant="body2">
+                      I understand that payment for premium collected or
+                      submitted before the insurance does not mean my coverage
+                      is in force before the effective date specified by New
+                      York Life.
+                    </Typography>
+                    <Typography variant="body2">
+                      I understand that New York Life has the right to require
+                      evidence of insurability if necessary.
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>AUTHORIZATION:</strong> I authorize licensed
+                      physicians, health care facilities, insurers, consumer
+                      reporting agencies, MIB, and other entities with records
+                      about me to provide that information to New York Life and
+                      its reinsurers for underwriting and administration.
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>FRAUD NOTICE:</strong> Any person who knowingly
+                      presents false information in an application for insurance
+                      is guilty of a crime and may be subject to fines and
+                      confinement in prison.
+                    </Typography>
+                  </Stack>
+                </Box>
+              </Stack>
+
+              <Stack spacing={1.5}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Electronic Consent
+                  </Typography>
+                  <IconButton
+                    size="small"
+                    aria-label="Print Electronic Consent"
+                  >
+                    <Print fontSize="small" />
+                  </IconButton>
+                </Box>
+
+                <Box
+                  sx={{
+                    maxHeight: 240,
+                    overflowY: "auto",
+                    border: 1,
+                    borderColor: "divider",
+                    borderRadius: 1,
+                    p: { xs: 2, sm: 3 },
+                    bgcolor: "background.default",
+                  }}
+                >
+                  <Stack spacing={1.5}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                      NEW YORK LIFE INSURANCE COMPANY
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                      Customer Electronic Consent and Disclosure
+                    </Typography>
+                    <Typography variant="body2">
+                      By continuing, you consent to receive required documents
+                      electronically and to execute application forms through
+                      electronic means.
+                    </Typography>
+                    <Typography variant="body2">
+                      You confirm you can access and retain electronic records,
+                      and that your electronic signature has the same legal
+                      effect as a handwritten signature.
+                    </Typography>
+                  </Stack>
+                </Box>
+              </Stack>
+
+              <Typography variant="h5" sx={commonStyles.sectionHeadingText}>
+                Confirm Your Authorizations
+              </Typography>
+
+              <CheckboxField
+                checked={readAndSign}
+                onChange={setReadAndSign}
+                label="Read & Sign"
+              />
+              <CheckboxField
+                checked={electronicConsent}
+                onChange={setElectronicConsent}
+                label="Electronic Consent"
+              />
+              <CheckboxField
+                checked={authorizationConsent}
+                onChange={setAuthorizationConsent}
+                label="Authorization"
+              />
+              <CheckboxField
+                checked={dividendsConsent}
+                onChange={setDividendsConsent}
+                label="Dividends"
+              />
+            </Stack>
+          </CardContent>
+        </Card>
       </FormStepTransition>
 
       {/* Edit Confirmation Modal */}

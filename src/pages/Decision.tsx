@@ -1,19 +1,66 @@
 import * as React from "react";
-import { Stack, Typography, Box, Alert } from "@mui/material";
+import { Stack, Typography, Box, Card, CardContent } from "@mui/material";
 import PageHeader from "../components/layout/PageHeader";
 import PageNavigation from "../components/layout/PageNavigation";
 import FormStepTransition from "../components/layout/FormStepTransition";
-import { CollapsibleSection } from "../components/common";
-import { Person, People } from "@mui/icons-material";
+import { PersonOutline, FavoriteBorder } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useAppData } from "../state/AppDataContext";
+import { getProducts } from "../api/client";
+import type { Product } from "../types/app";
+import { getHealthFlow } from "../utils/healthFlow";
+import { commonStyles } from "../theme/commonStyles";
+
+function SectionLabel({
+  icon,
+  label,
+}: {
+  icon: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+      <Box
+        sx={{
+          color: "primary.main",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          "& svg": {
+            width: "0.875em",
+            height: "0.875em",
+          },
+        }}
+      >
+        {icon}
+      </Box>
+      <Typography sx={commonStyles.sidebarText}>{label}</Typography>
+    </Stack>
+  );
+}
 
 export default function Decision() {
   const navigate = useNavigate();
   const { data } = useAppData();
+  const [products, setProducts] = React.useState<Product[]>([]);
+
+  React.useEffect(() => {
+    getProducts()
+      .then(setProducts)
+      .catch((err) => {
+        console.error("Failed to load products", err);
+      });
+  }, []);
+
+  const { routes } = React.useMemo(
+    () => getHealthFlow(data.coverage, products),
+    [data.coverage, products],
+  );
+  const backPath = routes.length > 0 ? routes[routes.length - 1] : "/docusign";
 
   const handleContinue = () => {
-    navigate("/receipt");
+    navigate("/payment-information");
   };
 
   // Mock decisions - in a real app, this would come from API
@@ -43,54 +90,55 @@ export default function Decision() {
   return (
     <Stack spacing={4}>
       <PageHeader
-        title="Decision"
+        title="Review the decision details for your requested coverage."
         notes="We have already started work on the next steps for your requested coverage. Here is the status and what to expect next."
       />
 
       <FormStepTransition>
-        {/* Your Insurance Decision */}
-        <CollapsibleSection
-          title="Your Insurance Decision"
-          icon={<Person color="primary" />}
-        >
-          <Stack spacing={3}>
-            {yourDecisions.map((item, index) => (
-              <Box key={index}>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                  {item.product}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {item.decision}
-                </Typography>
-              </Box>
-            ))}
-          </Stack>
-        </CollapsibleSection>
+        <Box sx={commonStyles.mutedSectionPanel}>
+          <Card variant="outlined" sx={commonStyles.coverageCard}>
+            <CardContent>
+              <Stack spacing={3}>
+                <SectionLabel icon={<PersonOutline />} label="Self" />
+                {yourDecisions.map((item, index) => (
+                  <Box key={index}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                      {item.product}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {item.decision}
+                    </Typography>
+                  </Box>
+                ))}
+              </Stack>
+            </CardContent>
+          </Card>
 
-        {/* Spouse Insurance Decision - only show if spouse applied */}
-        {hasSpouse && (
-          <CollapsibleSection
-            title="Spouse Insurance Decision"
-            icon={<People color="primary" />}
-          >
-            <Stack spacing={3}>
-              {spouseDecisions.map((item, index) => (
-                <Box key={index}>
-                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                    {item.product}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {item.decision}
-                  </Typography>
-                </Box>
-              ))}
-            </Stack>
-          </CollapsibleSection>
-        )}
+          {/* Spouse Insurance Decision - only show if spouse applied */}
+          {hasSpouse && (
+            <Card variant="outlined" sx={commonStyles.coverageCard}>
+              <CardContent>
+                <Stack spacing={3}>
+                  <SectionLabel icon={<FavoriteBorder />} label="Spouse" />
+                  {spouseDecisions.map((item, index) => (
+                    <Box key={index}>
+                      <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                        {item.product}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {item.decision}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Stack>
+              </CardContent>
+            </Card>
+          )}
+        </Box>
       </FormStepTransition>
 
       <PageNavigation
-        backPath="/docusign"
+        backPath={backPath}
         onContinue={handleContinue}
         continueText="Next"
       />

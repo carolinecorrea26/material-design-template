@@ -8,10 +8,15 @@ export type PageId =
   | "beneficiary"
   | "getStarted"
   | "contact"
-  | "profile"
-  | "healthHistory"
-  | "preview"
-  | "consent"
+  | "personalInformation"
+  | "financialInformation"
+  | "applicationReview"
+  | "healthInformationSI"
+  | "healthInformationQD"
+  | "healthInformationDisability"
+  | "healthInformationCIR"
+  | "paymentInformation"
+  | "decision"
   | "docusign"
   | "receipt"
   | "resume";
@@ -67,25 +72,70 @@ export const PAGES: AppPage[] = [
   {
     id: "beneficiary",
     path: "/beneficiary",
-    title: "Beneficiary",
+    title: "Add Beneficiary",
     section: "application",
   },
-  { id: "contact", path: "/contact", title: "Contact", section: "application" },
-  { id: "profile", path: "/profile", title: "Profile", section: "application" },
   {
-    id: "healthHistory",
-    path: "/health-history",
-    title: "Health",
+    id: "contact",
+    path: "/contact",
+    title: "Contact Information",
     section: "application",
   },
-  { id: "preview", path: "/preview", title: "Review", section: "application" },
   {
-    id: "consent",
-    path: "/consent",
-    title: "Authorize",
+    id: "personalInformation",
+    path: "/personal-information",
+    title: "Personal Information",
     section: "application",
   },
-  { id: "docusign", path: "/docusign", title: "Sign", section: "post-submit" },
+  {
+    id: "financialInformation",
+    path: "/financial-information",
+    title: "Financial Information",
+    section: "application",
+  },
+  {
+    id: "applicationReview",
+    path: "/application-review",
+    title: "Application Review",
+    section: "application",
+  },
+  { id: "docusign", path: "/docusign", title: "Sign", section: "application" },
+  {
+    id: "healthInformationSI",
+    path: "/health-information",
+    title: "Health Information (Simplified Issue)",
+    section: "application",
+  },
+  {
+    id: "healthInformationQD",
+    path: "/health-information-quickdecision",
+    title: "Health Information (quickdecisionSM)",
+    section: "application",
+  },
+  {
+    id: "healthInformationDisability",
+    path: "/health-information-disability",
+    title: "Health Information (Disability)",
+    section: "application",
+  },
+  {
+    id: "healthInformationCIR",
+    path: "/health-information-chronic-illness-rider",
+    title: "Health Information (Chronic Illness Rider)",
+    section: "application",
+  },
+  {
+    id: "decision",
+    path: "/decision",
+    title: "Application Decision",
+    section: "application",
+  },
+  {
+    id: "paymentInformation",
+    path: "/payment-information",
+    title: "Payment Information",
+    section: "application",
+  },
   { id: "receipt", path: "/receipt", title: "Receipt", section: "post-submit" },
   { id: "resume", path: "/resume", title: "Resume", section: "system" },
 ];

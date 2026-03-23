@@ -22,9 +22,12 @@ import {
 } from "../validation/healthHistory";
 import { useAppData } from "../state/AppDataContext";
 import { useStepper } from "../state/StepperContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useScrollToFirstError } from "../hooks/useScrollToFirstError";
 import { commonStyles } from "../theme/commonStyles";
+import { getProducts } from "../api/client";
+import type { Product } from "../types/app";
+import { getHealthFlow } from "../utils/healthFlow";
 
 const healthQuestions = [
   {
@@ -108,6 +111,43 @@ export default function HealthHistory() {
   const { data, setHealthHistory } = useAppData();
   const { markComplete } = useStepper();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [products, setProducts] = React.useState<Product[]>([]);
+
+  React.useEffect(() => {
+    getProducts()
+      .then(setProducts)
+      .catch((err) => {
+        console.error("Failed to load products", err);
+      });
+  }, []);
+
+  const { routes } = React.useMemo(
+    () => getHealthFlow(data.coverage, products),
+    [data.coverage, products],
+  );
+  const currentIndex = routes.indexOf(location.pathname);
+  const previousPath =
+    currentIndex > 0 ? routes[currentIndex - 1] : "/docusign";
+  const nextPath =
+    currentIndex >= 0 && currentIndex < routes.length - 1
+      ? routes[currentIndex + 1]
+      : "/decision";
+
+  React.useEffect(() => {
+    if (products.length === 0) return;
+    if (routes.includes(location.pathname)) return;
+    navigate(nextPath, { replace: true });
+  }, [location.pathname, navigate, nextPath, products.length, routes]);
+
+  const pageTitleByPath: Record<string, string> = {
+    "/health-information": "Health Information (Simplified Issue)",
+    "/health-information-quickdecision": "Health Information (quickdecisionSM)",
+    "/health-information-disability": "Health Information (Disability)",
+    "/health-information-chronic-illness-rider":
+      "Health Information (Chronic Illness Rider)",
+  };
+  const pageTitle = pageTitleByPath[location.pathname] ?? "Health Information";
 
   const methods = useForm<HealthHistoryForm>({
     resolver: zodResolver(HealthHistorySchema),
@@ -192,7 +232,8 @@ export default function HealthHistory() {
 
   const onSubmit = (formData: HealthHistoryForm) => {
     setHealthHistory(formData);
-    navigate("/preview");
+    markComplete();
+    navigate(nextPath);
   };
 
   // Auto-save form data when navigating away (on unmount only)
@@ -253,13 +294,13 @@ export default function HealthHistory() {
         <FormPageLayout
           header={
             <PageHeader
-              title="Health History"
+              title={pageTitle}
               notes="Providing complete details will help speed up the processing of your application."
             />
           }
           navigation={
             <PageNavigation
-              backPath="/profile"
+              backPath={previousPath}
               hasUnsavedChanges={() => methods.formState.isDirty}
             />
           }

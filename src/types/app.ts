@@ -1,5 +1,6 @@
 export type Applicant = "self" | "spouse" | "child";
 export type CoverageCategory = "LI" | "AD" | "DI" | "OO" | "SH"; // Life, Accidental Death & Dismemberment, Disability, Office Overhead, Supplemental Health
+export type UnderwritingType = "QD" | "FUW" | "SI" | "CIR" | "GI" | "NA";
 
 export interface Product {
   id: string;
@@ -8,6 +9,7 @@ export interface Product {
   eligibleApplicants: Applicant[]; // who may apply
   amounts: number[]; // allowed coverage amounts
   quickDecision?: boolean; // doc-flagged items (display only)
+  underwritingType?: UnderwritingType;
 }
 
 export interface SelectedItem {

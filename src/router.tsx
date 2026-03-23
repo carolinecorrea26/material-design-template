@@ -16,10 +16,17 @@ const GetStarted = React.lazy(() => import("./pages/GetStarted"));
 const CoverageOptions = React.lazy(() => import("./pages/CoverageOptions"));
 const Beneficiary = React.lazy(() => import("./pages/Beneficiary"));
 const Contact = React.lazy(() => import("./pages/Contact"));
-const Profile = React.lazy(() => import("./pages/Profile"));
+const PersonalInformation = React.lazy(
+  () => import("./pages/PersonalInformation"),
+);
+const FinancialInformation = React.lazy(
+  () => import("./pages/FinancialInformation"),
+);
+const PaymentInformation = React.lazy(
+  () => import("./pages/PaymentInformation"),
+);
 const HealthHistory = React.lazy(() => import("./pages/HealthHistory"));
 const Preview = React.lazy(() => import("./pages/Preview"));
-const Consent = React.lazy(() => import("./pages/Consent"));
 const DocuSign = React.lazy(() => import("./pages/DocuSign"));
 const Decision = React.lazy(() => import("./pages/Decision"));
 const Receipt = React.lazy(() => import("./pages/Receipt"));
@@ -176,12 +183,12 @@ export function AppRoutes() {
     },
 
     {
-      path: "/profile",
+      path: "/personal-information",
       element: (
         <SuspenseWrap>
           <ApplicationLayout>
-            <RouteGuard require="profile">
-              <Profile />
+            <RouteGuard require="personal">
+              <PersonalInformation />
             </RouteGuard>
           </ApplicationLayout>
         </SuspenseWrap>
@@ -189,12 +196,12 @@ export function AppRoutes() {
     },
 
     {
-      path: "/health-history",
+      path: "/financial-information",
       element: (
         <SuspenseWrap>
           <ApplicationLayout>
-            <RouteGuard require="profile">
-              <HealthHistory />
+            <RouteGuard require="financial">
+              <FinancialInformation />
             </RouteGuard>
           </ApplicationLayout>
         </SuspenseWrap>
@@ -202,11 +209,11 @@ export function AppRoutes() {
     },
 
     {
-      path: "/preview",
+      path: "/application-review",
       element: (
         <SuspenseWrap>
           <ApplicationLayout>
-            <RouteGuard require="preview">
+            <RouteGuard require="review">
               <Preview />
             </RouteGuard>
           </ApplicationLayout>
@@ -215,12 +222,64 @@ export function AppRoutes() {
     },
 
     {
-      path: "/consent",
+      path: "/health-information",
       element: (
         <SuspenseWrap>
           <ApplicationLayout>
-            <RouteGuard require="consent">
-              <Consent />
+            <RouteGuard require="health">
+              <HealthHistory />
+            </RouteGuard>
+          </ApplicationLayout>
+        </SuspenseWrap>
+      ),
+    },
+
+    {
+      path: "/health-information-quickdecision",
+      element: (
+        <SuspenseWrap>
+          <ApplicationLayout>
+            <RouteGuard require="health">
+              <HealthHistory />
+            </RouteGuard>
+          </ApplicationLayout>
+        </SuspenseWrap>
+      ),
+    },
+
+    {
+      path: "/health-information-disability",
+      element: (
+        <SuspenseWrap>
+          <ApplicationLayout>
+            <RouteGuard require="health">
+              <HealthHistory />
+            </RouteGuard>
+          </ApplicationLayout>
+        </SuspenseWrap>
+      ),
+    },
+
+    {
+      path: "/health-information-chronic-illness-rider",
+      element: (
+        <SuspenseWrap>
+          <ApplicationLayout>
+            <RouteGuard require="health">
+              <HealthHistory />
+            </RouteGuard>
+          </ApplicationLayout>
+        </SuspenseWrap>
+      ),
+    },
+
+    {
+      path: "/payment-information",
+      element: (
+        <SuspenseWrap>
+          <ApplicationLayout>
+            <RouteGuard require="payment">
+              <PaymentInformation />
             </RouteGuard>
           </ApplicationLayout>
         </SuspenseWrap>
@@ -231,9 +290,11 @@ export function AppRoutes() {
       path: "/docusign",
       element: (
         <SuspenseWrap>
-          <RouteGuard require="docusign">
-            <DocuSign />
-          </RouteGuard>
+          <ApplicationLayout>
+            <RouteGuard require="docusign">
+              <DocuSign />
+            </RouteGuard>
+          </ApplicationLayout>
         </SuspenseWrap>
       ),
     },
@@ -242,9 +303,25 @@ export function AppRoutes() {
       path: "/decision",
       element: (
         <SuspenseWrap>
-          <Decision />
+          <ApplicationLayout>
+            <Decision />
+          </ApplicationLayout>
         </SuspenseWrap>
       ),
+    },
+
+    // Backward-compatible redirects for deprecated paths
+    {
+      path: "/preview",
+      element: <Navigate to="/application-review" replace />,
+    },
+    {
+      path: "/consent",
+      element: <Navigate to="/application-review" replace />,
+    },
+    {
+      path: "/health-history",
+      element: <Navigate to="/health-information" replace />,
     },
 
     {

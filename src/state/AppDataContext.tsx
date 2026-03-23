@@ -27,8 +27,10 @@ type GetStartedData = {
 };
 
 type ConsentForm = {
+  readAndSign?: boolean;
   electronicConsent: boolean;
   spouseElectronicConsent?: boolean;
+  authorizationConsent?: boolean;
   dividendsConsent: boolean;
   firstName: string;
   lastName: string;
