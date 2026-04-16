@@ -1,3 +1,290 @@
+import { useState, type FormEvent } from "react";
+import {
+  Alert,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { getActiveClient } from "../client/getActiveClient";
+import { getPagePath } from "../config/pages";
+import FormPage from "../components/form/FormPage";
+import {
+  useApplicationForm,
+  type ApplicationFormValues,
+} from "../state/ApplicationFormContext";
+import type { ClientId } from "../types/client";
+
+type ResumeStep = 1 | 2 | 3;
+type DeliveryMethod = "text-message" | "phone-call";
+
+const RESUME_LINK_URL =
+  "http://redesign--material-design-template.netlify.app/resume";
+
+const MOCK_SAVED_APPLICATIONS: Record<string, ApplicationFormValues> = {
+  "returning.user@example.com": {
+    membership: "yes",
+    "first-name": "Taylor",
+    "last-name": "Morgan",
+    "email-address": "returning.user@example.com",
+    "phone-number": "(555) 555-0133",
+  },
+};
+
+function getMembershipPrefill(clientId: ClientId): string {
+  if (clientId === "ama") return "physician";
+  if (clientId === "waepa") return "current";
+  return "yes";
+}
+
+function getSavedApplicationForEmail(
+  emailAddress: string,
+  clientId: ClientId,
+): ApplicationFormValues {
+  const normalizedEmail = emailAddress.trim().toLowerCase();
+  const savedValues = MOCK_SAVED_APPLICATIONS[normalizedEmail] ?? {
+    "first-name": "Taylor",
+    "last-name": "Morgan",
+    "email-address": normalizedEmail,
+    "phone-number": "(555) 555-0133",
+  };
+
+  return {
+    ...savedValues,
+    membership: getMembershipPrefill(clientId),
+  };
+}
+
+function sendResumeLinkEmail(emailAddress: string) {
+  const subject = encodeURIComponent("Resume your application");
+  const body = encodeURIComponent(
+    `Resume your application here: ${RESUME_LINK_URL}`,
+  );
+
+  window.location.href = `mailto:${encodeURIComponent(emailAddress)}?subject=${subject}&body=${body}`;
+}
+
 export default function Resume() {
-  return <div>Resume</div>;
+  const navigate = useNavigate();
+  const client = getActiveClient();
+  const { setPageValues } = useApplicationForm();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [step, setStep] = useState<ResumeStep>(2);
+
+  const [emailAddress, setEmailAddress] = useState("");
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [showEmailSentMessage, setShowEmailSentMessage] = useState(false);
+
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod | "">("");
+  const [deliveryMethodError, setDeliveryMethodError] = useState<string | null>(
+    null,
+  );
+
+  const [phoneCode, setPhoneCode] = useState("");
+  const [phoneCodeError, setPhoneCodeError] = useState<string | null>(null);
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  function handleEmailSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!emailAddress.trim()) {
+      setEmailError("Enter your email address.");
+      return;
+    }
+
+    setEmailError(null);
+    sendResumeLinkEmail(emailAddress.trim());
+    setShowEmailSentMessage(true);
+
+    window.setTimeout(() => {
+      setStep(2);
+      setIsModalOpen(true);
+    }, 900);
+  }
+
+  function handleBackToEmailStep() {
+    setIsModalOpen(false);
+    setStep(2);
+    setDeliveryMethodError(null);
+  }
+
+  function handleBackToDeliveryMethod() {
+    setStep(2);
+    setPhoneCodeError(null);
+  }
+
+  function handleDeliveryContinue() {
+    if (!deliveryMethod) {
+      setDeliveryMethodError("Select how to receive your phone code.");
+      return;
+    }
+
+    setDeliveryMethodError(null);
+    setStep(3);
+  }
+
+  function handleVerifySubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!phoneCode.trim()) {
+      setPhoneCodeError("Enter your phone code.");
+      return;
+    }
+
+    setPhoneCodeError(null);
+    setIsVerifying(true);
+
+    window.setTimeout(() => {
+      const savedApplication = getSavedApplicationForEmail(
+        emailAddress,
+        client.id,
+      );
+
+      setPageValues(savedApplication);
+      setIsVerifying(false);
+      setIsModalOpen(false);
+
+      navigate(getPagePath("eligibility"), {
+        state: { resumeLoaded: true },
+      });
+    }, 700);
+  }
+
+  return (
+    <>
+      <FormPage title="Resume your application.">
+        <Box component="form" onSubmit={handleEmailSubmit} noValidate>
+          <Typography variant="body1" sx={{ color: "text.secondary", mb: 2 }}>
+            Enter the email address tied to your saved application to continue.
+          </Typography>
+          <TextField
+            fullWidth
+            label="Email address"
+            type="email"
+            value={emailAddress}
+            onChange={(event) => {
+              setEmailAddress(event.target.value);
+              if (showEmailSentMessage) {
+                setShowEmailSentMessage(false);
+              }
+            }}
+            error={Boolean(emailError)}
+            helperText={emailError ?? " "}
+          />
+          {showEmailSentMessage ? (
+            <Alert severity="success" sx={{ mt: 1.5 }}>
+              A secure link has been sent to your email.
+            </Alert>
+          ) : null}
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+            <Button type="submit" variant="contained">
+              Next
+            </Button>
+          </Box>
+        </Box>
+      </FormPage>
+
+      <Dialog
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        {step === 2 ? (
+          <>
+            <DialogTitle>Choose phone code delivery</DialogTitle>
+            <DialogContent>
+              <FormControl
+                component="fieldset"
+                error={Boolean(deliveryMethodError)}
+                fullWidth
+              >
+                <FormLabel>Phone code delivery method</FormLabel>
+                <RadioGroup
+                  value={deliveryMethod}
+                  onChange={(event) => {
+                    setDeliveryMethod(event.target.value as DeliveryMethod);
+                  }}
+                >
+                  <FormControlLabel
+                    value="text-message"
+                    control={<Radio />}
+                    label="Text message"
+                  />
+                  <FormControlLabel
+                    value="phone-call"
+                    control={<Radio />}
+                    label="Phone call"
+                  />
+                </RadioGroup>
+              </FormControl>
+
+              {deliveryMethodError ? (
+                <Typography
+                  variant="caption"
+                  color="error"
+                  sx={{ mt: 1, display: "block" }}
+                >
+                  {deliveryMethodError}
+                </Typography>
+              ) : null}
+
+              <DialogActions sx={{ px: 0, pb: 0, pt: 3 }}>
+                <Button variant="text" onClick={handleBackToEmailStep}>
+                  Back
+                </Button>
+                <Button variant="contained" onClick={handleDeliveryContinue}>
+                  Next
+                </Button>
+              </DialogActions>
+            </DialogContent>
+          </>
+        ) : null}
+
+        {step === 3 ? (
+          <>
+            <DialogTitle>Enter phone code</DialogTitle>
+            <DialogContent>
+              <Box component="form" onSubmit={handleVerifySubmit} noValidate>
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  label="Phone code"
+                  type="number"
+                  value={phoneCode}
+                  onChange={(event) => setPhoneCode(event.target.value)}
+                  error={Boolean(phoneCodeError)}
+                  helperText={phoneCodeError ?? " "}
+                />
+
+                <DialogActions sx={{ px: 0, pb: 0, pt: 3 }}>
+                  <Button variant="text" onClick={handleBackToDeliveryMethod}>
+                    Back
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disabled={isVerifying}
+                  >
+                    {isVerifying ? "Verifying..." : "Next"}
+                  </Button>
+                </DialogActions>
+              </Box>
+            </DialogContent>
+          </>
+        ) : null}
+      </Dialog>
+    </>
+  );
 }

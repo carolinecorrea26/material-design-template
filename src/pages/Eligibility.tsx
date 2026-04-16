@@ -1,7 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { Box, Collapse, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Collapse,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Controller } from "react-hook-form";
+import { useLocation, useNavigate } from "react-router-dom";
 import FormRoutePage, {
   type FormRouteRenderProps,
   isSectionVisible,
@@ -32,10 +40,50 @@ const childMapping = {
 };
 
 export default function Eligibility() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const resumeLoadedFromRouteState = Boolean(
+    (
+      location.state as {
+        resumeLoaded?: boolean;
+      } | null
+    )?.resumeLoaded,
+  );
+
+  const [showResumeLoadedSnackbar, setShowResumeLoadedSnackbar] = useState(
+    resumeLoadedFromRouteState,
+  );
+
+  useEffect(() => {
+    if (!resumeLoadedFromRouteState) {
+      return;
+    }
+
+    // Clear one-time location state so refresh/back doesn't keep re-triggering.
+    navigate(location.pathname, { replace: true, state: {} });
+  }, [location.pathname, navigate, resumeLoadedFromRouteState]);
+
   return (
-    <FormRoutePage pageId="eligibility">
-      {(props) => <EligibilityFields {...props} />}
-    </FormRoutePage>
+    <>
+      <FormRoutePage pageId="eligibility">
+        {(props) => <EligibilityFields {...props} />}
+      </FormRoutePage>
+      <Snackbar
+        open={showResumeLoadedSnackbar}
+        autoHideDuration={4000}
+        onClose={() => setShowResumeLoadedSnackbar(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setShowResumeLoadedSnackbar(false)}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          Saved application loaded successfully.
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
 
