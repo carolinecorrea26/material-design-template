@@ -155,7 +155,7 @@ export default function FormProgress() {
                   <Box
                     sx={{
                       position: "absolute",
-                      top: { xs: 16, sm: 24 },
+                      top: { xs: 16, sm: 20 },
                       left: "calc(50% + 16px)",
                       right: { xs: "-30%", sm: "-43%" },
                       height: 3,
@@ -179,8 +179,8 @@ export default function FormProgress() {
                 {/* Icon */}
                 <Box
                   sx={{
-                    width: { xs: 36, sm: 48 },
-                    height: { xs: 36, sm: 48 },
+                    width: { xs: 36, sm: 40 },
+                    height: { xs: 36, sm: 40 },
                     borderRadius: "50%",
                     display: "flex",
                     alignItems: "center",
@@ -203,7 +203,7 @@ export default function FormProgress() {
                       "border-color 260ms ease, background-color 260ms ease, color 260ms ease",
                   }}
                 >
-                  <Icon sx={{ fontSize: { xs: "0.875rem", sm: 24 } }} />
+                  <Icon sx={{ fontSize: { xs: "0.875rem", sm: 20 } }} />
                 </Box>
 
                 {/* Label underneath */}
