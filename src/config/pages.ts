@@ -1,141 +1,157 @@
-export type PageId =
-  | "landing"
-  | "membership"
-  | "eligibility"
-  | "addCoverage"
-  | "coverageQuestions"
-  | "coverageOptions"
-  | "beneficiary"
-  | "getStarted"
-  | "contact"
-  | "personalInformation"
-  | "financialInformation"
-  | "applicationReview"
-  | "healthInformationSI"
-  | "healthInformationQD"
-  | "healthInformationDisability"
-  | "healthInformationCIR"
-  | "paymentInformation"
-  | "decision"
-  | "docusign"
-  | "receipt"
-  | "resume";
+// keep your existing page objects / ids / paths / groupIds exactly as they are
+// only replace title values
 
-export interface AppPage {
-  id: PageId;
-  path: string;
-  title: string;
-  // optional: feature flags, guards, or section tags
-  section?: "application" | "system" | "post-submit";
-  /** Feature flag key to check if page should be shown */
-  requiresFeature?: keyof import("./clients").ClientFeatures;
-}
-
-export const PAGES: AppPage[] = [
-  { id: "landing", path: "/", title: "Landing", section: "system" },
-  {
-    id: "getStarted",
-    path: "/get-started",
-    title: "Get Started",
-    section: "application",
-  },
+export const pages = [
+  { id: "home", path: "/", type: "home", title: "Home" },
   {
     id: "membership",
     path: "/membership",
-    title: "Membership",
-    section: "application",
+    type: "form",
+    title: "Start your insurance application below.",
+    groupId: "get-started",
   },
   {
     id: "eligibility",
     path: "/eligibility",
-    title: "Check Eligibility",
-    section: "application",
+    type: "form",
+    title: "Check your eligibility for coverage.",
+    groupId: "get-started",
   },
   {
-    id: "addCoverage",
-    path: "/add-coverage",
-    title: "Add Coverage",
-    section: "application",
+    id: "coverage",
+    path: "/coverage",
+    type: "form",
+    title: "Add the coverage you want to apply for.",
+    groupId: "coverage",
   },
   {
-    id: "coverageQuestions",
+    id: "coverage-questions",
     path: "/coverage-questions",
-    title: "Coverage Questions",
-    section: "application",
+    type: "form",
+    title: "We need some more information to continue.",
+    groupId: "coverage",
   },
   {
-    id: "coverageOptions",
+    id: "coverage-options",
     path: "/coverage-options",
-    title: "Coverage Options",
-    section: "application",
+    type: "form",
+    title: "Choose your coverage options below.",
+    groupId: "coverage",
   },
   {
     id: "beneficiary",
     path: "/beneficiary",
-    title: "Add Beneficiary",
-    section: "application",
+    type: "form",
+    title: "Add beneficiaries for each product you selected.",
+    groupId: "coverage",
   },
   {
     id: "contact",
     path: "/contact",
-    title: "Contact Information",
-    section: "application",
+    type: "form",
+    title:
+      "Enter your contact details so we can reach you about your application.",
+    groupId: "profile",
   },
   {
-    id: "personalInformation",
-    path: "/personal-information",
-    title: "Personal Information",
-    section: "application",
+    id: "personal",
+    path: "/personal",
+    type: "form",
+    title: "Tell us about yourself so we can continue your application.",
+    groupId: "profile",
   },
   {
-    id: "financialInformation",
-    path: "/financial-information",
-    title: "Financial Information",
-    section: "application",
+    id: "financial",
+    path: "/financial",
+    type: "form",
+    title: "Tell us about your finances and any existing coverage.",
+    groupId: "profile",
   },
   {
-    id: "applicationReview",
-    path: "/application-review",
-    title: "Application Review",
-    section: "application",
-  },
-  { id: "docusign", path: "/docusign", title: "Sign", section: "application" },
-  {
-    id: "healthInformationSI",
-    path: "/health-information",
-    title: "Health Information (Simplified Issue)",
-    section: "application",
+    id: "review",
+    path: "/review",
+    type: "form",
+    title:
+      "Review your application and provide your consent and authorization to continue.",
+    groupId: "review",
   },
   {
-    id: "healthInformationQD",
-    path: "/health-information-quickdecision",
-    title: "Health Information (quickdecisionSM)",
-    section: "application",
+    id: "docusign",
+    path: "/docusign",
+    type: "form",
+    title: "Sign your application.",
+    groupId: "review",
+  },
+
+  // THESE MUST STAY if they already exist in your app
+  {
+    id: "health-si",
+    path: "/health-si",
+    type: "form",
+    title: "Complete your health information.",
+    groupId: "health",
   },
   {
-    id: "healthInformationDisability",
-    path: "/health-information-disability",
-    title: "Health Information (Disability)",
-    section: "application",
+    id: "health-qd",
+    path: "/health-qd",
+    type: "form",
+    title: "Complete your health information.",
+    groupId: "health",
   },
   {
-    id: "healthInformationCIR",
-    path: "/health-information-chronic-illness-rider",
-    title: "Health Information (Chronic Illness Rider)",
-    section: "application",
+    id: "health-di",
+    path: "/health-di",
+    type: "form",
+    title: "Complete your health information.",
+    groupId: "health",
   },
   {
-    id: "decision",
-    path: "/decision",
-    title: "Application Decision",
-    section: "application",
+    id: "health-cir",
+    path: "/health-cir",
+    type: "form",
+    title: "Complete your health information.",
+    groupId: "health",
+  },
+
+  {
+    id: "payment",
+    path: "/payment",
+    type: "form",
+    title: "Choose how you would like to pay for your coverage.",
+    groupId: "payment",
   },
   {
-    id: "paymentInformation",
-    path: "/payment-information",
-    title: "Payment Information",
-    section: "application",
+    id: "receipt",
+    path: "/receipt",
+    type: "receipt",
+    title: "Your application has been submitted.",
   },
-  { id: "receipt", path: "/receipt", title: "Receipt", section: "post-submit" },
-  { id: "resume", path: "/resume", title: "Resume", section: "system" },
-];
+  {
+    id: "resume",
+    path: "/resume",
+    type: "resume",
+    title: "Resume your application.",
+  },
+] as const;
+
+export type PageType = "home" | "form" | "receipt" | "resume";
+
+export function getPagePath(id: (typeof pages)[number]["id"]) {
+  const page = pages.find((page) => page.id === id);
+
+  if (!page) {
+    throw new Error(`Missing page path for page id: ${id}`);
+  }
+
+  return page.path;
+}
+
+export function getPageTitle(id: (typeof pages)[number]["id"]) {
+  const page = pages.find((page) => page.id === id);
+
+  if (!page) {
+    throw new Error(`Missing page title for page id: ${id}`);
+  }
+
+  return page.title;
+}

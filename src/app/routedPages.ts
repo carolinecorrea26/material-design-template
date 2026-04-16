@@ -1,0 +1,23 @@
+import type { PageId } from "../types/page";
+
+export const routedPages = [
+  "home",
+  "membership",
+  "eligibility",
+  "coverage",
+  "coverage-questions",
+  "coverage-options",
+  "beneficiary",
+  "contact",
+  "personal",
+  "financial",
+  "review",
+  "docusign",
+  "health-si",
+  "health-qd",
+  "health-di",
+  "health-cir",
+  "payment",
+  "receipt",
+  "resume",
+] satisfies PageId[];

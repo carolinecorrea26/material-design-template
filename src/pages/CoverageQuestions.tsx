@@ -1,619 +1,216 @@
-import React from "react";
+import { Box, Typography } from "@mui/material";
+import FormRoutePage, {
+  isSectionVisible,
+} from "../components/form/FormRoutePage";
+import FieldRenderer from "../components/form/FieldRenderer";
+import ApplicantSection from "../components/form/ApplicantSection";
+import { shouldShowApplicantLabel } from "../components/form/applicantVisibility";
+import SubQuestionContainer from "../components/form/SubQuestionContainer";
+import { useApplicationForm } from "../state/ApplicationFormContext";
 import {
-  Stack,
-  Typography,
-  Alert,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  FormHelperText,
-  Checkbox,
-  Box,
-} from "@mui/material";
-import { PersonOutline, FavoriteBorder } from "@mui/icons-material";
-import PageHeader from "../components/layout/PageHeader";
-import FormPageLayout from "../components/layout/FormPageLayout";
-import FormStepTransition from "../components/layout/FormStepTransition";
-import PageNavigation from "../components/layout/PageNavigation";
-import { FormProvider, useForm, Controller, useWatch } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import RHFRadioGroup from "../components/form/RHFRadioGroup";
-import RHFTextField from "../components/form/RHFTextField";
-import DateField from "../components/form/DateField";
-import { useAppData } from "../state/AppDataContext";
-import { useStepper } from "../state/StepperContext";
-import { useNavigate } from "react-router-dom";
-import { useScrollToFirstError } from "../hooks/useScrollToFirstError";
-import { getProducts } from "../api/client";
-import { TOBACCO_PRODUCTS } from "../constants/eligibility";
-import { commonStyles } from "../theme/commonStyles";
-import {
-  buildCoverageQuestionsSchema,
-  type CoverageQuestionsForm,
-} from "../validation/coverageQuestions";
-import type { Applicant, CoverageCategory, Product } from "../types/app";
-
-const CATEGORY_LIFE: CoverageCategory = "LI";
-const CATEGORY_DI: CoverageCategory = "DI";
-const CATEGORY_OO: CoverageCategory = "OO";
-const CATEGORY_SH: CoverageCategory = "SH";
-
-function SectionLabel({
-  icon,
-  label,
-}: {
-  icon: React.ReactNode;
-  label: string;
-}) {
-  return (
-    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-      <Box
-        sx={{
-          //   width: 32,
-          //   height: 32,
-          //   borderRadius: "50%",
-          //   bgcolor: "#d6e6ff",
-          color: "primary.main",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-          "& svg": {
-            width: "0.875em",
-            height: "0.875em",
-          },
-        }}
-      >
-        {icon}
-      </Box>
-      <Typography sx={commonStyles.sidebarText}>{label}</Typography>
-    </Stack>
-  );
-}
+  categoryQuestionFields,
+  categoryQuestionFieldsSpouse,
+  getSelectedCategoryIds,
+} from "../config/formFlow";
+import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
+import type { CoverageApplicantId } from "../config/coverages/types";
 
 export default function CoverageQuestions() {
-  const { data, setEligibility } = useAppData();
-  const { markComplete } = useStepper();
-  const navigate = useNavigate();
-  const [products, setProducts] = React.useState<Product[]>([]);
-  const [loading, setLoading] = React.useState(true);
+  const { values } = useApplicationForm();
+  const selectedCategories = getSelectedCategoryIds(values);
+  const coverages = getActiveClientCoverages();
 
-  React.useEffect(() => {
-    let mounted = true;
-    getProducts()
-      .then((fetched) => {
-        if (!mounted) return;
-        if (Array.isArray(fetched)) {
-          setProducts(fetched);
+  const selectedCoverageIds = Array.isArray(values.coverageSelections)
+    ? values.coverageSelections
+    : [];
+
+  const selectedDependents = Array.isArray(values.dependents)
+    ? values.dependents
+    : [];
+
+  const productApplicants =
+    values.productApplicants != null &&
+    typeof values.productApplicants === "object" &&
+    !Array.isArray(values.productApplicants)
+      ? (values.productApplicants as Record<string, CoverageApplicantId[]>)
+      : {};
+
+  // Determine which applicants are "active" for each category
+  // An applicant is active if they were selected for at least one product in that category
+  function isApplicantActiveForCategory(
+    applicant: CoverageApplicantId | "self",
+    categoryId: string,
+  ): boolean {
+    const normalizedApplicant = applicant === "self" ? "member" : applicant;
+
+    // If no productApplicants or empty, fall back to selectedDependents
+    if (!productApplicants || Object.keys(productApplicants).length === 0) {
+      // Fall back: member always active, else check selectedDependents
+      if (normalizedApplicant === "member") return true;
+      if (normalizedApplicant === "spouse")
+        return (
+          Array.isArray(selectedDependents) &&
+          selectedDependents.includes("spouse")
+        );
+      if (normalizedApplicant === "child")
+        return (
+          Array.isArray(selectedDependents) &&
+          selectedDependents.includes("child")
+        );
+      return false;
+    }
+
+    // Check if this applicant was selected for any product in this category
+    for (const coverage of coverages) {
+      if (
+        coverage.categoryId === categoryId &&
+        selectedCoverageIds.includes(coverage.id)
+      ) {
+        const applicantsForProduct = productApplicants[coverage.id] ?? [];
+        if (applicantsForProduct.includes(normalizedApplicant)) {
+          return true;
         }
-      })
-      .finally(() => {
-        if (mounted) setLoading(false);
-      });
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  const selectedProductIds = React.useMemo(
-    () => data.eligibility?.coverageProductSelections ?? [],
-    [data.eligibility?.coverageProductSelections],
-  );
-  const selectedProducts = React.useMemo(
-    () => products.filter((product) => selectedProductIds.includes(product.id)),
-    [products, selectedProductIds],
-  );
-
-  const hasCategoryForApplicant = React.useCallback(
-    (category: CoverageCategory, applicant: Applicant) =>
-      selectedProducts.some(
-        (product) =>
-          product.category === category &&
-          product.eligibleApplicants.includes(applicant),
-      ),
-    [selectedProducts],
-  );
-
-  const applyingSpouse = data.eligibility?.applicants?.spouse ?? false;
-
-  const hasSelfLife = hasCategoryForApplicant(CATEGORY_LIFE, "self");
-  const hasSelfDi = hasCategoryForApplicant(CATEGORY_DI, "self");
-  const hasSelfOo = hasCategoryForApplicant(CATEGORY_OO, "self");
-  const hasSelfSh = hasCategoryForApplicant(CATEGORY_SH, "self");
-
-  const hasSpouseLife =
-    applyingSpouse && hasCategoryForApplicant(CATEGORY_LIFE, "spouse");
-  const hasSpouseDi =
-    applyingSpouse && hasCategoryForApplicant(CATEGORY_DI, "spouse");
-  const hasSpouseSh =
-    applyingSpouse && hasCategoryForApplicant(CATEGORY_SH, "spouse");
-
-  const needsSelfGender = hasSelfLife || hasSelfDi;
-  const needsSelfSmoker = hasSelfLife || hasSelfSh;
-  const needsSelfDi = hasSelfDi;
-  const needsSelfOo = hasSelfOo;
-  const needsSelfHours = needsSelfDi || needsSelfOo;
-
-  const needsSpouseGender = hasSpouseLife || hasSpouseDi;
-  const needsSpouseSmoker = hasSpouseLife || hasSpouseSh;
-  const needsSpouseDi = hasSpouseDi;
-  const needsSpouseHours = needsSpouseDi;
-
-  const showSelfSection =
-    needsSelfGender || needsSelfSmoker || needsSelfDi || needsSelfOo;
-  const showSpouseSection =
-    applyingSpouse && (needsSpouseGender || needsSpouseSmoker || needsSpouseDi);
-
-  const schema = React.useMemo(
-    () =>
-      buildCoverageQuestionsSchema({
-        needsSelfGender,
-        needsSpouseGender,
-        needsSelfSmoker,
-        needsSpouseSmoker,
-        needsSelfDI: needsSelfDi,
-        needsSpouseDI: needsSpouseDi,
-        needsSelfOO: needsSelfOo,
-        needsSelfHours,
-        needsSpouseHours,
-      }),
-    [
-      needsSelfGender,
-      needsSpouseGender,
-      needsSelfSmoker,
-      needsSpouseSmoker,
-      needsSelfDi,
-      needsSpouseDi,
-      needsSelfOo,
-      needsSelfHours,
-      needsSpouseHours,
-    ],
-  );
-
-  const methods = useForm<CoverageQuestionsForm>({
-    resolver: zodResolver(schema),
-    mode: "onSubmit",
-    reValidateMode: "onChange",
-    defaultValues: {
-      gender: data.eligibility?.gender,
-      spouseGender: data.eligibility?.spouseGender,
-      smokerSelf: data.eligibility?.smokerSelf,
-      smokerSpouse: data.eligibility?.smokerSpouse,
-      selfTobaccoLastUsed: data.eligibility?.selfTobaccoLastUsed ?? "",
-      selfTobaccoProducts: data.eligibility?.selfTobaccoProducts ?? [],
-      spouseTobaccoLastUsed: data.eligibility?.spouseTobaccoLastUsed ?? "",
-      spouseTobaccoProducts: data.eligibility?.spouseTobaccoProducts ?? [],
-      selfAvgIncome: data.eligibility?.selfAvgIncome ?? "",
-      selfHoursPerWeek: data.eligibility?.selfHoursPerWeek ?? "",
-      selfMonthlyExpenses: data.eligibility?.selfMonthlyExpenses ?? "",
-      selfRespPct: data.eligibility?.selfRespPct ?? "",
-      spouseAvgIncome: data.eligibility?.spouseAvgIncome ?? "",
-      spouseHoursPerWeek: data.eligibility?.spouseHoursPerWeek ?? "",
-    },
-  });
-  useScrollToFirstError(methods);
-
-  const selfSmoker = useWatch({ control: methods.control, name: "smokerSelf" });
-  const spouseSmoker = useWatch({
-    control: methods.control,
-    name: "smokerSpouse",
-  });
-
-  const onSubmit = (values: CoverageQuestionsForm) => {
-    if (!data.eligibility) return;
-
-    setEligibility({
-      ...data.eligibility,
-      ...values,
-    });
-    markComplete();
-    navigate("/coverage-options");
-  };
-
-  React.useEffect(() => {
-    const handleFillForm = () => {
-      const nextValues: CoverageQuestionsForm = {};
-
-      if (needsSelfGender) nextValues.gender = "male";
-      if (needsSelfSmoker) nextValues.smokerSelf = "no";
-      if (needsSelfDi) {
-        nextValues.selfAvgIncome = "$5,000";
       }
-      if (needsSelfHours) nextValues.selfHoursPerWeek = "40";
-      if (needsSelfOo) {
-        nextValues.selfMonthlyExpenses = "$4,000";
-        nextValues.selfRespPct = "100";
-      }
+    }
 
-      if (needsSpouseGender) nextValues.spouseGender = "female";
-      if (needsSpouseSmoker) nextValues.smokerSpouse = "no";
-      if (needsSpouseDi) {
-        nextValues.spouseAvgIncome = "$4,500";
-      }
-      if (needsSpouseHours) nextValues.spouseHoursPerWeek = "35";
+    return false;
+  }
 
-      methods.reset({
-        ...methods.getValues(),
-        ...nextValues,
-      });
-    };
+  const selfFieldIds = new Set(
+    selectedCategories.flatMap((cat) => categoryQuestionFields[cat] ?? []),
+  );
 
-    window.addEventListener("devtools:fillform", handleFillForm);
-    return () =>
-      window.removeEventListener("devtools:fillform", handleFillForm);
-  }, [
-    methods,
-    needsSelfGender,
-    needsSelfSmoker,
-    needsSelfDi,
-    needsSelfHours,
-    needsSelfOo,
-    needsSpouseGender,
-    needsSpouseSmoker,
-    needsSpouseDi,
-    needsSpouseHours,
+  const spouseFieldIds = new Set(
+    selectedCategories.flatMap(
+      (cat) => categoryQuestionFieldsSpouse[cat] ?? [],
+    ),
+  );
+
+  const tobaccoConditionalFieldIds = new Set([
+    "tobacco-last-used",
+    "tobacco-products",
+  ]);
+  const spouseTobaccoConditionalFieldIds = new Set([
+    "spouse-tobacco-last-used",
+    "spouse-tobacco-products",
   ]);
 
-  const showEmptyState = !showSelfSection && !showSpouseSection;
-
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
-        <FormPageLayout
-          header={
-            <Stack spacing={2}>
-              <PageHeader title="We need some more information to calculate coverage options." />
-              {Object.keys(methods.formState.errors).length > 0 && (
-                <Alert severity="error">
-                  Please complete the required fields below.
-                </Alert>
-              )}
-            </Stack>
+    <FormRoutePage pageId="coverage-questions">
+      {({ control, errors, watchedValues, allFields, pageSections }) =>
+        pageSections.map((section) => {
+          if (!isSectionVisible(section, watchedValues)) return null;
+
+          // Skip applicant sections if the applicant is not active for any category
+          if (section.applicant) {
+            const applicantActive = selectedCategories.some((cat) =>
+              isApplicantActiveForCategory(
+                section.applicant as CoverageApplicantId | "self",
+                cat,
+              ),
+            );
+            if (!applicantActive) return null;
           }
-          navigation={<PageNavigation />}
-        >
-          <FormStepTransition>
-            <Stack spacing={4}>
-              {loading ? (
-                <Typography variant="body2" color="text.secondary">
-                  Loading coverage questions...
-                </Typography>
-              ) : showEmptyState ? (
-                <Alert severity="info">
-                  No additional questions are required based on your current
-                  selections.
-                </Alert>
+
+          const activeFieldIds =
+            section.applicant === "spouse" ? spouseFieldIds : selfFieldIds;
+
+          const smokerFieldId =
+            section.applicant === "spouse" ? "spouse-smoker" : "smoker";
+          const isSmokerYes = watchedValues[smokerFieldId] === "yes";
+
+          const conditionalFieldIds =
+            section.applicant === "spouse"
+              ? spouseTobaccoConditionalFieldIds
+              : tobaccoConditionalFieldIds;
+
+          const visibleFieldIds = section.fieldIds.filter(
+            (id) =>
+              activeFieldIds.has(id) &&
+              (!conditionalFieldIds.has(id) || isSmokerYes),
+          );
+
+          if (visibleFieldIds.length === 0) return null;
+
+          // Fields to render in the main loop (excluding conditional fields)
+          const mainFieldIds = visibleFieldIds.filter(
+            (id) => !conditionalFieldIds.has(id) || id === smokerFieldId,
+          );
+
+          // Conditional fields to render in the container
+          const conditionalFields = visibleFieldIds.filter((id) =>
+            conditionalFieldIds.has(id),
+          );
+
+          const content = (
+            <>
+              {mainFieldIds.map((fieldId) => {
+                const field = allFields.find((f) => f.id === fieldId);
+                if (!field) return null;
+
+                return (
+                  <Box key={field.id}>
+                    <FieldRenderer
+                      field={field}
+                      control={control}
+                      errors={errors}
+                    />
+
+                    {fieldId === smokerFieldId &&
+                      isSmokerYes &&
+                      conditionalFields.length > 0 && (
+                        <SubQuestionContainer>
+                          {conditionalFields.map((conditionalFieldId) => {
+                            const conditionalField = allFields.find(
+                              (f) => f.id === conditionalFieldId,
+                            );
+                            if (!conditionalField) return null;
+
+                            return (
+                              <Box key={conditionalField.id} sx={{ mb: 2 }}>
+                                <FieldRenderer
+                                  field={conditionalField}
+                                  control={control}
+                                  errors={errors}
+                                />
+                              </Box>
+                            );
+                          })}
+                        </SubQuestionContainer>
+                      )}
+                  </Box>
+                );
+              })}
+            </>
+          );
+
+          return (
+            <div key={section.id}>
+              {section.applicant ? (
+                <ApplicantSection
+                  applicant={section.applicant}
+                  showLabel={shouldShowApplicantLabel(
+                    section.applicant,
+                    watchedValues,
+                    "coverage-questions",
+                  )}
+                >
+                  {content}
+                </ApplicantSection>
               ) : (
                 <>
-                  {showSelfSection && (
-                    <Stack spacing={0}>
-                      <SectionLabel icon={<PersonOutline />} label="Self" />
-                      <Stack spacing={3}>
-                        {needsSelfGender && (
-                          <RHFRadioGroup
-                            name="gender"
-                            label="Gender"
-                            options={[
-                              { label: "Male", value: "male" },
-                              { label: "Female", value: "female" },
-                            ]}
-                            required
-                          />
-                        )}
-
-                        {needsSelfSmoker && (
-                          <Stack spacing={2}>
-                            <RHFRadioGroup
-                              name="smokerSelf"
-                              label="Have you used tobacco or any nicotine substitute in any form (including nicotine patches and nicotine chewing gum)?"
-                              options={[
-                                { label: "Yes", value: "yes" },
-                                { label: "No", value: "no" },
-                              ]}
-                              required
-                            />
-
-                            {selfSmoker === "yes" && (
-                              <>
-                                <DateField
-                                  name="selfTobaccoLastUsed"
-                                  label="Last Used"
-                                  required
-                                />
-
-                                <Controller
-                                  name="selfTobaccoProducts"
-                                  control={methods.control}
-                                  render={({ field, fieldState }) => (
-                                    <FormControl
-                                      fullWidth
-                                      error={!!fieldState.error}
-                                      required
-                                    >
-                                      <InputLabel id="self-tobacco-products-label">
-                                        Product(s) Used
-                                      </InputLabel>
-                                      <Select
-                                        {...field}
-                                        labelId="self-tobacco-products-label"
-                                        label="Product(s) Used"
-                                        multiple
-                                        value={field.value || []}
-                                        renderValue={(selected) =>
-                                          (selected as string[]).join(", ")
-                                        }
-                                      >
-                                        {TOBACCO_PRODUCTS.map((product) => (
-                                          <MenuItem
-                                            key={product}
-                                            value={product}
-                                          >
-                                            <Checkbox
-                                              checked={
-                                                field.value?.includes(
-                                                  product,
-                                                ) || false
-                                              }
-                                            />
-                                            {product}
-                                          </MenuItem>
-                                        ))}
-                                      </Select>
-                                      {fieldState.error && (
-                                        <FormHelperText>
-                                          {fieldState.error.message}
-                                        </FormHelperText>
-                                      )}
-                                    </FormControl>
-                                  )}
-                                />
-                              </>
-                            )}
-                          </Stack>
-                        )}
-
-                        {needsSelfDi && (
-                          <Stack spacing={2}>
-                            <Controller
-                              name="selfAvgIncome"
-                              control={methods.control}
-                              render={({ field, fieldState }) => (
-                                <RHFTextField
-                                  name={field.name}
-                                  label="Average Monthly Income"
-                                  required
-                                  value={field.value}
-                                  onChange={(e) => {
-                                    const value = e.target.value.replace(
-                                      /[^0-9]/g,
-                                      "",
-                                    );
-                                    const formatted = value
-                                      ? `$${parseInt(value).toLocaleString()}`
-                                      : "";
-                                    field.onChange(formatted);
-                                  }}
-                                  error={!!fieldState.error}
-                                  helperText={
-                                    fieldState.error?.message ||
-                                    "Monthly income is asked to help determine the amount of disability coverage you may qualify for."
-                                  }
-                                />
-                              )}
-                            />
-                            <RHFTextField
-                              name="selfHoursPerWeek"
-                              label="# Hours You Work/Week"
-                              required
-                            />
-                          </Stack>
-                        )}
-
-                        {needsSelfOo && (
-                          <Stack spacing={2}>
-                            {!needsSelfDi && (
-                              <RHFTextField
-                                name="selfHoursPerWeek"
-                                label="# Hours You Work/Week"
-                                required
-                              />
-                            )}
-                            <Controller
-                              name="selfMonthlyExpenses"
-                              control={methods.control}
-                              render={({ field, fieldState }) => (
-                                <RHFTextField
-                                  name={field.name}
-                                  label="Monthly Business Expenses"
-                                  required
-                                  value={field.value}
-                                  onChange={(e) => {
-                                    const value = e.target.value.replace(
-                                      /[^0-9]/g,
-                                      "",
-                                    );
-                                    const formatted = value
-                                      ? `$${parseInt(value).toLocaleString()}`
-                                      : "";
-                                    field.onChange(formatted);
-                                  }}
-                                  error={!!fieldState.error}
-                                  helperText={
-                                    fieldState.error?.message ||
-                                    "Please refer to the brochure for definition"
-                                  }
-                                />
-                              )}
-                            />
-                            <Controller
-                              name="selfRespPct"
-                              control={methods.control}
-                              render={({ field, fieldState }) => (
-                                <RHFTextField
-                                  name={field.name}
-                                  label="% You Are Responsible For"
-                                  required
-                                  value={field.value}
-                                  onChange={(e) => {
-                                    const value = e.target.value.replace(
-                                      /[^0-9]/g,
-                                      "",
-                                    );
-                                    if (value) {
-                                      let numValue = parseInt(value);
-                                      if (numValue > 100) numValue = 100;
-                                      field.onChange(numValue.toString());
-                                    } else {
-                                      field.onChange("");
-                                    }
-                                  }}
-                                  error={!!fieldState.error}
-                                  helperText={
-                                    fieldState.error?.message ||
-                                    'If you are incorporated, a partner or a joint tenant, include only your personal share of covered overhead. "Personal share" is defined as (a) your percentage of ownership of the business, or (b) your share of the office space if a joint tenant'
-                                  }
-                                />
-                              )}
-                            />
-                          </Stack>
-                        )}
-                      </Stack>
-                    </Stack>
+                  {section.title && (
+                    <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+                      {section.title}
+                    </Typography>
                   )}
-
-                  {showSpouseSection && (
-                    <Stack spacing={0}>
-                      <SectionLabel icon={<FavoriteBorder />} label="Spouse" />
-                      <Stack spacing={3}>
-                        {needsSpouseGender && (
-                          <RHFRadioGroup
-                            name="spouseGender"
-                            label="Gender"
-                            options={[
-                              { label: "Male", value: "male" },
-                              { label: "Female", value: "female" },
-                            ]}
-                            required
-                          />
-                        )}
-
-                        {needsSpouseSmoker && (
-                          <Stack spacing={2}>
-                            <RHFRadioGroup
-                              name="smokerSpouse"
-                              label="Have you used tobacco or any nicotine substitute in any form (including nicotine patches and nicotine chewing gum)?"
-                              options={[
-                                { label: "Yes", value: "yes" },
-                                { label: "No", value: "no" },
-                              ]}
-                              required
-                            />
-
-                            {spouseSmoker === "yes" && (
-                              <>
-                                <DateField
-                                  name="spouseTobaccoLastUsed"
-                                  label="Last Used"
-                                  required
-                                />
-
-                                <Controller
-                                  name="spouseTobaccoProducts"
-                                  control={methods.control}
-                                  render={({ field, fieldState }) => (
-                                    <FormControl
-                                      fullWidth
-                                      error={!!fieldState.error}
-                                      required
-                                    >
-                                      <InputLabel id="spouse-tobacco-products-label">
-                                        Product(s) Used
-                                      </InputLabel>
-                                      <Select
-                                        {...field}
-                                        labelId="spouse-tobacco-products-label"
-                                        label="Product(s) Used"
-                                        multiple
-                                        value={field.value || []}
-                                        renderValue={(selected) =>
-                                          (selected as string[]).join(", ")
-                                        }
-                                      >
-                                        {TOBACCO_PRODUCTS.map((product) => (
-                                          <MenuItem
-                                            key={product}
-                                            value={product}
-                                          >
-                                            <Checkbox
-                                              checked={
-                                                field.value?.includes(
-                                                  product,
-                                                ) || false
-                                              }
-                                            />
-                                            {product}
-                                          </MenuItem>
-                                        ))}
-                                      </Select>
-                                      {fieldState.error && (
-                                        <FormHelperText>
-                                          {fieldState.error.message}
-                                        </FormHelperText>
-                                      )}
-                                    </FormControl>
-                                  )}
-                                />
-                              </>
-                            )}
-                          </Stack>
-                        )}
-
-                        {needsSpouseDi && (
-                          <Stack spacing={2}>
-                            <Controller
-                              name="spouseAvgIncome"
-                              control={methods.control}
-                              render={({ field, fieldState }) => (
-                                <RHFTextField
-                                  name={field.name}
-                                  label="Average Monthly Income"
-                                  required
-                                  value={field.value}
-                                  onChange={(e) => {
-                                    const value = e.target.value.replace(
-                                      /[^0-9]/g,
-                                      "",
-                                    );
-                                    const formatted = value
-                                      ? `$${parseInt(value).toLocaleString()}`
-                                      : "";
-                                    field.onChange(formatted);
-                                  }}
-                                  error={!!fieldState.error}
-                                  helperText={
-                                    fieldState.error?.message ||
-                                    "Monthly income is asked to help determine the amount of disability coverage you may qualify for."
-                                  }
-                                />
-                              )}
-                            />
-                            <RHFTextField
-                              name="spouseHoursPerWeek"
-                              label="# Hours You Work/Week"
-                              required
-                            />
-                          </Stack>
-                        )}
-                      </Stack>
-                    </Stack>
-                  )}
+                  {content}
                 </>
               )}
-            </Stack>
-          </FormStepTransition>
-        </FormPageLayout>
-      </form>
-    </FormProvider>
+            </div>
+          );
+        })
+      }
+    </FormRoutePage>
   );
 }

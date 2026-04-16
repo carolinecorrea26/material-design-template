@@ -1,468 +1,439 @@
-import * as React from "react";
-import { Stack, Typography, Alert, Box, TextField } from "@mui/material";
-import PageHeader from "../components/layout/PageHeader";
-import PageNavigation from "../components/layout/PageNavigation";
-import ScrollChipRow from "../components/layout/ScrollChipRow";
-import FormStepTransition from "../components/layout/FormStepTransition";
-import FormPageLayout from "../components/layout/FormPageLayout";
-import { FormProvider, useForm, useWatch, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import RHFTextField from "../components/form/RHFTextField";
-import RHFRadioGroup from "../components/form/RHFRadioGroup";
-import RHFSelect from "../components/form/RHFSelect";
-import CheckboxField from "../components/form/CheckboxField";
-import { ContactSchema, type ContactForm } from "../validation/contact";
-import { useAppData, enableAutosave } from "../state/AppDataContext";
-import { useStepper } from "../state/StepperContext";
-import { useNavigate } from "react-router-dom";
-import { useSnackbar } from "../components/feedback/SnackbarProvider";
-import { useScrollToFirstError } from "../hooks/useScrollToFirstError";
-import { STATE_OPTIONS } from "../constants/eligibility";
-import { FavoriteBorder, PersonOutline } from "@mui/icons-material";
-import { commonStyles } from "../theme/commonStyles";
-import { formatUSPhone } from "../utils/formatting";
+import { useEffect } from "react";
+import { Box, Typography } from "@mui/material";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import BusinessCenterOutlinedIcon from "@mui/icons-material/BusinessCenterOutlined";
+import FormRoutePage, {
+  isSectionVisible,
+} from "../components/form/FormRoutePage";
+import FieldRenderer from "../components/form/FieldRenderer";
+import ApplicantSection from "../components/form/ApplicantSection";
+import { shouldShowApplicantLabel } from "../components/form/applicantVisibility";
+import FormSectionTitle from "../components/form/FormSectionTitle";
+import { useApplicationForm } from "../state/ApplicationFormContext";
+import { getSelectedCategoryIds } from "../config/formFlow";
 
-function SectionLabel({
-  icon,
-  label,
-}: {
-  icon: React.ReactNode;
-  label: string;
-}) {
+const streetRow = new Set(["street-address", "apt-suite"]);
+const cityStateZipRow = new Set(["city", "state", "zip-code"]);
+
+const businessStreetRow = new Set([
+  "business-street-address",
+  "business-apt-suite",
+]);
+const businessCityStateZipRow = new Set([
+  "business-city",
+  "business-state",
+  "business-zip-code",
+]);
+
+export default function Contact() {
+  const { values } = useApplicationForm();
+  const selectedCategories = getSelectedCategoryIds(values);
+  const hasDiOrOo = selectedCategories.some(
+    (cat) => cat === "DI" || cat === "OO",
+  );
+
+  const defaultValueOverrides: Record<string, string> = {};
+  if (!values["state"] && values["state-province"]) {
+    defaultValueOverrides["state"] = values["state-province"] as string;
+  }
+  if (!values["zip-code"] && values["zip-postal-code"]) {
+    defaultValueOverrides["zip-code"] = values["zip-postal-code"] as string;
+  }
+
   return (
-    <Stack direction="row" spacing={1} alignItems="center">
-      <Box
-        sx={{
-          color: "primary.main",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-          "& svg": {
-            width: "0.875em",
-            height: "0.875em",
-          },
-        }}
-      >
-        {icon}
-      </Box>
-      <Typography sx={commonStyles.sidebarText}>{label}</Typography>
-    </Stack>
+    <FormRoutePage
+      pageId="contact"
+      defaultValueOverrides={defaultValueOverrides}
+    >
+      {({
+        control,
+        errors,
+        watchedValues,
+        allFields,
+        pageSections,
+        setValue,
+      }) => {
+        const correspondenceTo = watchedValues["correspondence-to"];
+        const showBusinessSection =
+          correspondenceTo === "business" || hasDiOrOo;
+        const sameAsHome = Boolean(
+          watchedValues["business-address-same-as-home"],
+        );
+
+        return (
+          <ContactFields
+            control={control}
+            errors={errors}
+            watchedValues={watchedValues}
+            allFields={allFields}
+            pageSections={pageSections}
+            setValue={setValue}
+            showBusinessSection={showBusinessSection}
+            sameAsHome={sameAsHome}
+          />
+        );
+      }}
+    </FormRoutePage>
   );
 }
 
-export default function Contact() {
-  const { data, setContact } = useAppData();
-  const { next, markComplete } = useStepper();
-  const navigate = useNavigate();
-  const { notify } = useSnackbar();
+function ContactFields({
+  control,
+  errors,
+  watchedValues,
+  allFields,
+  pageSections,
+  setValue,
+  showBusinessSection,
+  sameAsHome,
+}: {
+  control: any;
+  errors: any;
+  watchedValues: any;
+  allFields: any[];
+  pageSections: any[];
+  setValue: any;
+  showBusinessSection: boolean;
+  sameAsHome: boolean;
+}) {
+  const homeStreetAddress = watchedValues["street-address"];
+  const homeAptSuite = watchedValues["apt-suite"];
+  const homeCity = watchedValues["city"];
+  const homeState = watchedValues["state"];
+  const homeZipCode = watchedValues["zip-code"];
 
-  // Check if spouse was selected in eligibility
-  const spouseSelected = data.eligibility?.applicants?.spouse || false;
-  const userState = data.eligibility?.state || "";
-
-  // Business type options
-  const businessTypeOptions = [
-    { label: "Sole Proprietor", value: "sole_proprietor" },
-    { label: "Corporation", value: "corporation" },
-    { label: "Partnership", value: "partnership" },
-  ];
-
-  // Check if user applied for DI or OO products
-  const hasDisabilityOrOfficeOverheadProducts =
-    data.coverage?.some((item) => {
-      // Look for products with DI or OO category
-      return (
-        item.productId.startsWith("di-") || item.productId.startsWith("oo-")
-      );
-    }) || false;
-
-  const methods = useForm<ContactForm>({
-    resolver: zodResolver(ContactSchema),
-    mode: "onSubmit",
-    reValidateMode: "onChange",
-    defaultValues: data.contact ?? {
-      streetAddress: "",
-      aptSuite: "",
-      city: "",
-      state: userState,
-      zipCode: "",
-      phoneNumber: "",
-      phoneType: undefined,
-      correspondenceTo: undefined,
-      businessName: "",
-      businessType: undefined,
-      businessAddressSameAsHome: false,
-      businessStreetAddress: "",
-      businessAptSuite: "",
-      businessCity: "",
-      businessState: "",
-      businessZipCode: "",
-      businessPhoneNumber: "",
-      spousePhoneNumber: "",
-      spousePhoneType: undefined,
-      spouseEmail: "",
-    },
-  });
-
-  useScrollToFirstError(methods);
-
-  const correspondenceTo = useWatch({
-    control: methods.control,
-    name: "correspondenceTo",
-  });
-  const businessAddressSameAsHome = useWatch({
-    control: methods.control,
-    name: "businessAddressSameAsHome",
-  });
-
-  // Show business information if correspondence is to business OR user applied for DI/OO products
-  const shouldShowBusinessInfo =
-    correspondenceTo === "business" || hasDisabilityOrOfficeOverheadProducts;
+  const businessStreetAddress = watchedValues["business-street-address"];
+  const businessAptSuite = watchedValues["business-apt-suite"];
+  const businessCity = watchedValues["business-city"];
+  const businessState = watchedValues["business-state"];
+  const businessZipCode = watchedValues["business-zip-code"];
 
   // Copy home address to business address when checkbox is checked
-  React.useEffect(() => {
-    if (businessAddressSameAsHome) {
-      const homeAddress = methods.getValues();
-      methods.setValue("businessStreetAddress", homeAddress.streetAddress);
-      methods.setValue("businessAptSuite", homeAddress.aptSuite || "");
-      methods.setValue("businessCity", homeAddress.city);
-      methods.setValue("businessState", homeAddress.state);
-      methods.setValue("businessZipCode", homeAddress.zipCode);
+  useEffect(() => {
+    if (!sameAsHome) {
+      return;
     }
-  }, [businessAddressSameAsHome, methods]);
 
-  // DevTools: Fill form with test data
-  React.useEffect(() => {
-    const handleFillForm = () => {
-      const filledData: ContactForm = {
-        streetAddress: "123 Main St",
-        aptSuite: "Apt 4B",
-        city: "New York",
-        state: userState,
-        zipCode: "10001",
-        phoneNumber: "555-123-4567",
-        phoneType: "mobile",
-        correspondenceTo: "business",
-        businessName: "Acme Corporation",
-        businessType: "corporation",
-        businessAddressSameAsHome: false,
-        businessStreetAddress: "456 Business Ave",
-        businessAptSuite: "Suite 200",
-        businessCity: "New York",
-        businessState: "NY",
-        businessZipCode: "10002",
-        businessPhoneNumber: "555-234-5678",
-        spousePhoneNumber: spouseSelected ? "555-987-6543" : "",
-        spousePhoneType: spouseSelected ? "home" : undefined,
-        spouseEmail: spouseSelected ? "spouse@example.com" : "",
-      };
-
-      methods.reset(filledData);
+    const homeToBusinessValues: Record<string, string | undefined> = {
+      "business-street-address": homeStreetAddress,
+      "business-apt-suite": homeAptSuite,
+      "business-city": homeCity,
+      "business-state": homeState,
+      "business-zip-code": homeZipCode,
     };
 
-    window.addEventListener("devtools:fillform", handleFillForm);
-    return () =>
-      window.removeEventListener("devtools:fillform", handleFillForm);
-  }, [methods, userState, spouseSelected]);
+    const businessAddressValues: Record<string, string | undefined> = {
+      "business-street-address": businessStreetAddress,
+      "business-apt-suite": businessAptSuite,
+      "business-city": businessCity,
+      "business-state": businessState,
+      "business-zip-code": businessZipCode,
+    };
 
-  const onSubmit = (values: ContactForm) => {
-    // Custom validation for business information
-    if (shouldShowBusinessInfo) {
-      const errors: string[] = [];
+    for (const [businessField, homeVal] of Object.entries(
+      homeToBusinessValues,
+    )) {
+      const businessVal = businessAddressValues[businessField];
 
-      if (!values.businessName) errors.push("Business name is required");
-      if (!values.businessType) errors.push("Business type is required");
-
-      if (!values.businessAddressSameAsHome) {
-        if (!values.businessStreetAddress)
-          errors.push("Business street address is required");
-        if (!values.businessCity) errors.push("Business city is required");
-        if (!values.businessState) errors.push("Business state is required");
-        if (!values.businessZipCode)
-          errors.push("Business zip code is required");
-      }
-
-      if (errors.length > 0) {
-        notify(errors.join(", "), "error");
-        return;
+      if (homeVal !== undefined && homeVal !== businessVal) {
+        setValue(businessField, homeVal, {
+          shouldDirty: false,
+          shouldTouch: false,
+          shouldValidate: false,
+        });
       }
     }
-
-    setContact(values);
-    enableAutosave();
-    markComplete();
-    next();
-    navigate("/personal-information");
-  };
+  }, [
+    sameAsHome,
+    homeStreetAddress,
+    homeAptSuite,
+    homeCity,
+    homeState,
+    homeZipCode,
+    businessStreetAddress,
+    businessAptSuite,
+    businessCity,
+    businessState,
+    businessZipCode,
+    setValue,
+  ]);
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
-        <FormPageLayout
-          header={
-            <PageHeader
-              title="Enter your contact details so we can reach you about your application."
-              notes={
-                <ScrollChipRow
-                  items={[
-                    {
-                      label: "Why do we need your contact details?",
-                    },
-                  ]}
-                />
-              }
-            />
-          }
-          navigation={
-            <PageNavigation
-              hasUnsavedChanges={() => methods.formState.isDirty}
-            />
-          }
-        >
-          {/* Page-level Error Alert */}
-          {Object.keys(methods.formState.errors).length > 0 && (
-            <Alert severity="error">
-              Please complete all required fields to continue.
-            </Alert>
-          )}
+    <>
+      {pageSections.map((section) => {
+        // Business section uses custom OR visibility
+        if (section.id === "contactBusinessInfo") {
+          if (!showBusinessSection) return null;
+        } else {
+          if (!isSectionVisible(section, watchedValues)) return null;
+        }
 
-          <FormStepTransition>
-            <Stack spacing={3}>
-              <Alert severity="info">
-                We use this information to contact you about your application
-                and any required next steps.
-              </Alert>
+        if (section.id === "contactResidentialAddress") {
+          // Find the business section for rendering inside Self container
+          const businessSection = pageSections.find(
+            (s) => s.id === "contactBusinessInfo",
+          );
 
-              <Stack spacing={2}>
-                <SectionLabel icon={<PersonOutline />} label="Your Contact" />
+          const content = (
+            <>
+              {/* Residential Address sub-section label */}
+              <FormSectionTitle
+                icon={HomeOutlinedIcon}
+                label="Residential Address"
+              />
 
-                <Stack spacing={2}>
-                  <RHFTextField
-                    name="streetAddress"
-                    label="Street Address"
-                    required
-                  />
-                  <RHFTextField name="aptSuite" label="Apt/Suite" />
-
-                  <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-                    <Box sx={{ flex: 1 }}>
-                      <RHFTextField name="city" label="City" required />
-                    </Box>
-                    <Box sx={{ width: { md: "150px" } }}>
-                      <RHFTextField
-                        name="state"
-                        label="State"
-                        required
-                        disabled
+              {/* Street address + Apt/Suite row */}
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: { xs: "1fr", sm: "2fr 1fr" },
+                  gap: { xs: 0, sm: 2 },
+                }}
+              >
+                {section.fieldIds
+                  .filter((id: string) => streetRow.has(id))
+                  .map((fieldId: string) => {
+                    const field = allFields.find((f: any) => f.id === fieldId);
+                    if (!field) return null;
+                    return (
+                      <FieldRenderer
+                        key={field.id}
+                        field={field}
+                        control={control}
+                        errors={errors}
                       />
-                    </Box>
-                    <Box sx={{ width: { md: "120px" } }}>
-                      <RHFTextField name="zipCode" label="Zip Code" required />
-                    </Box>
-                  </Stack>
+                    );
+                  })}
+              </Box>
 
-                  <Stack direction="column" spacing={2}>
-                    <Controller
-                      name="phoneNumber"
-                      control={methods.control}
-                      render={({ field, fieldState }) => (
-                        <TextField
-                          {...field}
-                          label="Phone Number"
-                          required
-                          fullWidth
-                          autoComplete="tel"
-                          inputProps={{ inputMode: "tel" }}
-                          value={field.value ?? ""}
-                          onChange={(e) =>
-                            field.onChange(formatUSPhone(e.target.value))
-                          }
-                          error={!!fieldState.error}
-                          helperText={fieldState.error?.message}
-                        />
-                      )}
-                    />
-                    <RHFRadioGroup
-                      name="phoneType"
-                      label="Phone Type"
-                      options={[
-                        { label: "Home", value: "home" },
-                        { label: "Business", value: "business" },
-                        { label: "Mobile", value: "mobile" },
-                      ]}
-                      required
-                    />
-                  </Stack>
+              {/* City / State / Zip row */}
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: { xs: "1fr", sm: "2fr 1fr 1fr" },
+                  gap: { xs: 0, sm: 2 },
+                }}
+              >
+                {section.fieldIds
+                  .filter((id: string) => cityStateZipRow.has(id))
+                  .map((fieldId: string) => {
+                    const field = allFields.find((f: any) => f.id === fieldId);
+                    if (!field) return null;
+                    return (
+                      <FieldRenderer
+                        key={field.id}
+                        field={field}
+                        control={control}
+                        errors={errors}
+                      />
+                    );
+                  })}
+              </Box>
 
-                  <RHFRadioGroup
-                    name="correspondenceTo"
-                    label="Send Correspondence To"
-                    options={[
-                      { label: "Residential Address", value: "residential" },
-                      { label: "Business Address", value: "business" },
-                    ]}
-                    required
+              {/* Other fields (correspondence-to) */}
+              {section.fieldIds
+                .filter(
+                  (id: string) =>
+                    !streetRow.has(id) && !cityStateZipRow.has(id),
+                )
+                .map((fieldId: string) => {
+                  const field = allFields.find((f: any) => f.id === fieldId);
+                  if (!field) return null;
+                  return (
+                    <FieldRenderer
+                      key={field.id}
+                      field={field}
+                      control={control}
+                      errors={errors}
+                    />
+                  );
+                })}
+
+              {/* Business / Employer Info inside Self container */}
+              {showBusinessSection && businessSection && (
+                <Box sx={{ mt: 2 }}>
+                  <FormSectionTitle
+                    icon={BusinessCenterOutlinedIcon}
+                    label="Business / Employer Information"
                   />
 
-                  {/* Business Information Section - Conditional */}
-                  {shouldShowBusinessInfo && (
-                    <Box sx={commonStyles.mutedSectionPanel}>
-                      <Stack spacing={2}>
-                        <Typography
-                          variant="overline"
-                          sx={commonStyles.overlineLabel}
-                        >
-                          Business / Employer Information
-                        </Typography>
-
-                        <Alert severity="info">
-                          Include the details of your business or employer.
-                        </Alert>
-
-                        <RHFTextField
-                          name="businessName"
-                          label="Name of Business or Employer"
-                          required
-                        />
-                        <RHFSelect
-                          name="businessType"
-                          label="Type of Business"
-                          options={businessTypeOptions}
-                          required
-                        />
-
-                        <CheckboxField
-                          checked={businessAddressSameAsHome || false}
-                          onChange={(value) =>
-                            methods.setValue("businessAddressSameAsHome", value)
-                          }
-                          label="Business address is the same as home address"
-                        />
-
-                        {!businessAddressSameAsHome && (
-                          <>
-                            <RHFTextField
-                              name="businessStreetAddress"
-                              label="Business Street Address"
-                              required
-                            />
-                            <RHFTextField
-                              name="businessAptSuite"
-                              label="Apt/Suite"
-                            />
-
-                            <Stack
-                              direction={{ xs: "column", md: "row" }}
-                              spacing={2}
-                            >
-                              <Box sx={{ flex: 1 }}>
-                                <RHFTextField
-                                  name="businessCity"
-                                  label="City"
-                                  required
-                                />
-                              </Box>
-                              <Box sx={{ width: { md: "150px" } }}>
-                                <RHFSelect
-                                  name="businessState"
-                                  label="State"
-                                  options={STATE_OPTIONS}
-                                  required
-                                />
-                              </Box>
-                              <Box sx={{ width: { md: "120px" } }}>
-                                <RHFTextField
-                                  name="businessZipCode"
-                                  label="Zip Code"
-                                  required
-                                />
-                              </Box>
-                            </Stack>
-
-                            <Controller
-                              name="businessPhoneNumber"
-                              control={methods.control}
-                              render={({ field, fieldState }) => (
-                                <TextField
-                                  {...field}
-                                  label="Business Phone Number"
-                                  fullWidth
-                                  autoComplete="tel"
-                                  inputProps={{ inputMode: "tel" }}
-                                  value={field.value ?? ""}
-                                  onChange={(e) =>
-                                    field.onChange(
-                                      formatUSPhone(e.target.value),
-                                    )
-                                  }
-                                  error={!!fieldState.error}
-                                  helperText={fieldState.error?.message}
-                                />
-                              )}
-                            />
-                          </>
-                        )}
-                      </Stack>
-                    </Box>
+                  {renderBusinessFields(
+                    businessSection,
+                    allFields,
+                    control,
+                    errors,
+                    sameAsHome,
                   )}
-                </Stack>
-              </Stack>
-
-              {/* Spouse Contact Card - Conditional */}
-              {spouseSelected && (
-                <Stack spacing={2}>
-                  <SectionLabel
-                    icon={<FavoriteBorder />}
-                    label="Spouse Contact"
-                  />
-
-                  <Stack spacing={2}>
-                    <Stack direction="column" spacing={2}>
-                      <Controller
-                        name="spousePhoneNumber"
-                        control={methods.control}
-                        render={({ field, fieldState }) => (
-                          <TextField
-                            {...field}
-                            label="Phone Number"
-                            required
-                            fullWidth
-                            autoComplete="tel"
-                            inputProps={{ inputMode: "tel" }}
-                            value={field.value ?? ""}
-                            onChange={(e) =>
-                              field.onChange(formatUSPhone(e.target.value))
-                            }
-                            error={!!fieldState.error}
-                            helperText={fieldState.error?.message}
-                          />
-                        )}
-                      />
-                      <RHFRadioGroup
-                        name="spousePhoneType"
-                        label="Phone Type"
-                        options={[
-                          { label: "Home", value: "home" },
-                          { label: "Business", value: "business" },
-                          { label: "Mobile", value: "mobile" },
-                        ]}
-                        required
-                      />
-                      <RHFTextField
-                        name="spouseEmail"
-                        label="Email"
-                        type="email"
-                        helperText="We'll use this email to send important information about the policy."
-                      />
-                    </Stack>
-                  </Stack>
-                </Stack>
+                </Box>
               )}
-            </Stack>
-          </FormStepTransition>
-        </FormPageLayout>
-      </form>
-    </FormProvider>
+            </>
+          );
+
+          return (
+            <div key={section.id}>
+              <ApplicantSection
+                applicant="self"
+                showLabel={shouldShowApplicantLabel(
+                  "self",
+                  watchedValues,
+                  "contact",
+                )}
+              >
+                {content}
+              </ApplicantSection>
+            </div>
+          );
+        }
+
+        // Skip standalone business section rendering — it's inside Self now
+        if (section.id === "contactBusinessInfo") {
+          return null;
+        }
+
+        // Spouse section and default rendering
+        const content = (
+          <>
+            {section.fieldIds.map((fieldId: string) => {
+              const field = allFields.find((f: any) => f.id === fieldId);
+              if (!field) return null;
+              return (
+                <FieldRenderer
+                  key={field.id}
+                  field={field}
+                  control={control}
+                  errors={errors}
+                />
+              );
+            })}
+          </>
+        );
+
+        return (
+          <div key={section.id}>
+            {section.applicant ? (
+              <ApplicantSection
+                applicant={section.applicant}
+                showLabel={shouldShowApplicantLabel(
+                  section.applicant,
+                  watchedValues,
+                  "contact",
+                )}
+              >
+                {content}
+              </ApplicantSection>
+            ) : (
+              <>
+                {section.title && (
+                  <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+                    {section.title}
+                  </Typography>
+                )}
+                {content}
+              </>
+            )}
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
+function renderBusinessFields(
+  section: any,
+  allFields: any[],
+  control: any,
+  errors: any,
+  sameAsHome: boolean,
+) {
+  const nonAddressNonPhone = section.fieldIds.filter(
+    (id: string) =>
+      !businessStreetRow.has(id) &&
+      !businessCityStateZipRow.has(id) &&
+      id !== "business-phone",
+  );
+
+  return (
+    <>
+      {nonAddressNonPhone.map((fieldId: string) => {
+        const field = allFields.find((f: any) => f.id === fieldId);
+        if (!field) return null;
+        return (
+          <FieldRenderer
+            key={field.id}
+            field={field}
+            control={control}
+            errors={errors}
+          />
+        );
+      })}
+
+      {!sameAsHome && (
+        <>
+          {/* Business street + apt row */}
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", sm: "2fr 1fr" },
+              gap: { xs: 0, sm: 2 },
+            }}
+          >
+            {section.fieldIds
+              .filter((id: string) => businessStreetRow.has(id))
+              .map((fieldId: string) => {
+                const field = allFields.find((f: any) => f.id === fieldId);
+                if (!field) return null;
+                return (
+                  <FieldRenderer
+                    key={field.id}
+                    field={field}
+                    control={control}
+                    errors={errors}
+                  />
+                );
+              })}
+          </Box>
+
+          {/* Business city / state / zip row */}
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", sm: "2fr 1fr 1fr" },
+              gap: { xs: 0, sm: 2 },
+            }}
+          >
+            {section.fieldIds
+              .filter((id: string) => businessCityStateZipRow.has(id))
+              .map((fieldId: string) => {
+                const field = allFields.find((f: any) => f.id === fieldId);
+                if (!field) return null;
+                return (
+                  <FieldRenderer
+                    key={field.id}
+                    field={field}
+                    control={control}
+                    errors={errors}
+                  />
+                );
+              })}
+          </Box>
+        </>
+      )}
+
+      {/* Business phone */}
+      {section.fieldIds
+        .filter((id: string) => id === "business-phone")
+        .map((fieldId: string) => {
+          const field = allFields.find((f: any) => f.id === fieldId);
+          if (!field) return null;
+          return (
+            <FieldRenderer
+              key={field.id}
+              field={field}
+              control={control}
+              errors={errors}
+            />
+          );
+        })}
+    </>
   );
 }
