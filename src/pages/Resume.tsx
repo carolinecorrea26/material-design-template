@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   Alert,
   Box,
@@ -15,9 +15,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getActiveClient } from "../client/getActiveClient";
-import { getPagePath } from "../config/pages";
+import { getPagePath, getPageTitle } from "../config/pages";
 import FormPage from "../components/form/FormPage";
 import {
   useApplicationForm,
@@ -29,7 +29,7 @@ type ResumeStep = 1 | 2 | 3;
 type DeliveryMethod = "text-message" | "phone-call";
 
 const RESUME_LINK_URL =
-  "http://redesign--material-design-template.netlify.app/resume";
+  "http://redesignv2--material-design-template.netlify.app/resume?resumeFlow=code-preference";
 
 const MOCK_SAVED_APPLICATIONS: Record<string, ApplicationFormValues> = {
   "returning.user@example.com": {
@@ -75,11 +75,16 @@ function sendResumeLinkEmail(emailAddress: string) {
 }
 
 export default function Resume() {
+  const location = useLocation();
   const navigate = useNavigate();
   const client = getActiveClient();
   const { setPageValues } = useApplicationForm();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const shouldOpenCodePreferenceModal =
+    new URLSearchParams(location.search).get("resumeFlow") ===
+    "code-preference";
+
+  const [isModalOpen, setIsModalOpen] = useState(shouldOpenCodePreferenceModal);
   const [step, setStep] = useState<ResumeStep>(2);
 
   const [emailAddress, setEmailAddress] = useState("");
@@ -94,6 +99,23 @@ export default function Resume() {
   const [phoneCode, setPhoneCode] = useState("");
   const [phoneCodeError, setPhoneCodeError] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
+  const mailtoTimeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (mailtoTimeoutRef.current !== null) {
+        window.clearTimeout(mailtoTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  function closeModalToResumePage() {
+    setIsModalOpen(false);
+    setStep(2);
+    setDeliveryMethodError(null);
+    setPhoneCodeError(null);
+    navigate(getPagePath("resume"), { replace: true });
+  }
 
   function handleEmailSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -104,19 +126,18 @@ export default function Resume() {
     }
 
     setEmailError(null);
-    sendResumeLinkEmail(emailAddress.trim());
-    setShowEmailSentMessage(true);
+    if (mailtoTimeoutRef.current !== null) {
+      window.clearTimeout(mailtoTimeoutRef.current);
+    }
 
-    window.setTimeout(() => {
-      setStep(2);
-      setIsModalOpen(true);
-    }, 900);
+    mailtoTimeoutRef.current = window.setTimeout(() => {
+      sendResumeLinkEmail(emailAddress.trim());
+    }, 10000);
+    setShowEmailSentMessage(true);
   }
 
   function handleBackToEmailStep() {
-    setIsModalOpen(false);
-    setStep(2);
-    setDeliveryMethodError(null);
+    closeModalToResumePage();
   }
 
   function handleBackToDeliveryMethod() {
@@ -163,7 +184,7 @@ export default function Resume() {
 
   return (
     <>
-      <FormPage title="Resume your application.">
+      <FormPage title={getPageTitle("resume")}>
         <Box component="form" onSubmit={handleEmailSubmit} noValidate>
           <Typography variant="body1" sx={{ color: "text.secondary", mb: 2 }}>
             Enter the email address tied to your saved application to continue.
@@ -183,7 +204,7 @@ export default function Resume() {
             helperText={emailError ?? " "}
           />
           {showEmailSentMessage ? (
-            <Alert severity="success" sx={{ mt: 1.5 }}>
+            <Alert severity="success" sx={{ mt: 0, mb: 2 }}>
               A secure link has been sent to your email.
             </Alert>
           ) : null}
@@ -197,7 +218,7 @@ export default function Resume() {
 
       <Dialog
         open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={closeModalToResumePage}
         fullWidth
         maxWidth="sm"
       >
