@@ -205,7 +205,7 @@ export default function Resume() {
             helperText={emailError ?? undefined}
           />
           {showEmailSentMessage ? (
-            <Alert severity="success" sx={{ mt: 0, mb: 2 }}>
+            <Alert severity="success" sx={{ mt: 1.5, mb: 2 }}>
               A secure link has been sent to your email. Please click the link
               in the email to resume your application.
             </Alert>
@@ -226,14 +226,16 @@ export default function Resume() {
       >
         {step === 2 ? (
           <>
-            <DialogTitle>Choose phone code delivery</DialogTitle>
+            <DialogTitle>
+              How would you like to receive your phone verification code?
+            </DialogTitle>
             <DialogContent>
               <FormControl
                 component="fieldset"
                 error={Boolean(deliveryMethodError)}
                 fullWidth
               >
-                <FormLabel>Phone code delivery method</FormLabel>
+                <FormLabel>Send code by:</FormLabel>
                 <RadioGroup
                   value={deliveryMethod}
                   onChange={(event) => {
@@ -277,7 +279,7 @@ export default function Resume() {
 
         {step === 3 ? (
           <>
-            <DialogTitle>Enter phone code</DialogTitle>
+            <DialogTitle>Please enter the code sent to your phone.</DialogTitle>
             <DialogContent>
               <Box component="form" onSubmit={handleVerifySubmit} noValidate>
                 <TextField
