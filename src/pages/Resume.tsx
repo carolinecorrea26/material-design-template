@@ -186,6 +186,10 @@ export default function Resume() {
     <>
       <FormPage title={getPageTitle("resume")}>
         <Box component="form" onSubmit={handleEmailSubmit} noValidate>
+          {/* <Typography variant="body1" sx={{ color: "text.secondary", mb: 2 }}>
+            A secure link will be sent to your email to allow you to resume your
+            application.
+          </Typography> */}
           <TextField
             fullWidth
             label="Email address"
@@ -198,11 +202,12 @@ export default function Resume() {
               }
             }}
             error={Boolean(emailError)}
-            helperText={emailError ?? " "}
+            helperText={emailError ?? undefined}
           />
           {showEmailSentMessage ? (
             <Alert severity="success" sx={{ mt: 0, mb: 2 }}>
-              A secure link has been sent to your email.
+              A secure link has been sent to your email. Please click the link
+              in the email to resume your application.
             </Alert>
           ) : null}
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
