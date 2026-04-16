@@ -303,7 +303,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
                       <PhoneOutlinedIcon
                         sx={{ fontSize: 18, color: "primary.main" }}
                       />
-                      Call Us
+                      {/* Call Us */}
                     </Link>
 
                     <IconButton
