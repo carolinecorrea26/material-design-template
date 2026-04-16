@@ -186,9 +186,6 @@ export default function Resume() {
     <>
       <FormPage title={getPageTitle("resume")}>
         <Box component="form" onSubmit={handleEmailSubmit} noValidate>
-          <Typography variant="body1" sx={{ color: "text.secondary", mb: 2 }}>
-            Enter the email address tied to your saved application to continue.
-          </Typography>
           <TextField
             fullWidth
             label="Email address"
