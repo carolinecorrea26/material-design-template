@@ -219,8 +219,8 @@ export default function AppHeader({ client }: AppHeaderProps) {
   }
 
   return (
-    <Slide appear={false} direction="down" in={!trigger}>
-      <>
+    <>
+      <Slide appear={false} direction="down" in={!trigger}>
         <AppBar
           position="sticky"
           color="default"
@@ -325,310 +325,305 @@ export default function AppHeader({ client }: AppHeaderProps) {
             )}
           </Toolbar>
         </AppBar>
+      </Slide>
 
-        <Drawer
-          anchor="right"
-          open={isMenuOpen}
-          onClose={() => setIsMenuOpen(false)}
-          sx={{
-            "& .MuiDrawer-paper": {
-              width: { xs: "100%", sm: 420 },
-              maxWidth: "100%",
+      <Drawer
+        anchor="right"
+        open={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: { xs: "100%", sm: 420 },
+            maxWidth: "100%",
+            p: 2,
+          },
+        }}
+      >
+        <Stack spacing={2} sx={{ height: "100%" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 1,
+            }}
+          >
+            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              Application Menu
+            </Typography>
+
+            <IconButton
+              aria-label="Close application navigation menu"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+
+          <Divider />
+
+          <Box
+            sx={{
               p: 2,
-            },
-          }}
-        >
-          <Stack spacing={2} sx={{ height: "100%" }}>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 1,
-              }}
-            >
-              <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                Application Menu
-              </Typography>
+              borderRadius: 2,
+              bgcolor: "grey.100",
+            }}
+          >
+            <Stack spacing={2}>
+              <Box>
+                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                  Your Application
+                </Typography>
+                <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                  <Box
+                    component="span"
+                    sx={{ color: "primary.main", fontWeight: 700 }}
+                  >
+                    {completionPercent}%
+                  </Box>{" "}
+                  complete
+                </Typography>
+              </Box>
 
-              <IconButton
-                aria-label="Close application navigation menu"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <CloseIcon />
-              </IconButton>
-            </Box>
-
-            <Divider />
-
-            <Box
-              sx={{
-                p: 2,
-                borderRadius: 2,
-                bgcolor: "grey.100",
-              }}
-            >
-              <Stack spacing={2}>
-                <Box>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                    Your Application
-                  </Typography>
+              {groupedApplicationMenuItems.map((step) => (
+                <Stack key={step.id} spacing={0.5}>
                   <Typography
                     variant="caption"
-                    sx={{ color: "text.secondary" }}
+                    sx={{
+                      fontWeight: 700,
+                      color: "text.secondary",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.04em",
+                    }}
                   >
-                    <Box
-                      component="span"
-                      sx={{ color: "primary.main", fontWeight: 700 }}
-                    >
-                      {completionPercent}%
-                    </Box>{" "}
-                    complete
+                    {step.label}
                   </Typography>
-                </Box>
 
-                {groupedApplicationMenuItems.map((step) => (
-                  <Stack key={step.id} spacing={0.5}>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        fontWeight: 700,
-                        color: "text.secondary",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.04em",
-                      }}
-                    >
-                      {step.label}
-                    </Typography>
+                  <Stack spacing={0.4}>
+                    {step.pageIds.map((pageId) => {
+                      const page = pageById.get(pageId);
 
-                    <Stack spacing={0.4}>
-                      {step.pageIds.map((pageId) => {
-                        const page = pageById.get(pageId);
+                      if (!page) return null;
 
-                        if (!page) return null;
+                      const pageIndex = activeFlow.indexOf(pageId);
+                      const isDisabled =
+                        pageIndex === -1 || pageIndex > maxReachedPageIndex;
+                      const isActive = currentPageId === pageId;
 
-                        const pageIndex = activeFlow.indexOf(pageId);
-                        const isDisabled =
-                          pageIndex === -1 || pageIndex > maxReachedPageIndex;
-                        const isActive = currentPageId === pageId;
-
-                        if (isDisabled) {
-                          return (
-                            <Typography
-                              key={pageId}
-                              variant="body2"
-                              sx={{
-                                color: "text.disabled",
-                                fontWeight: 500,
-                                pl: 0.25,
-                              }}
-                            >
-                              {toPageLabel(pageId)}
-                            </Typography>
-                          );
-                        }
-
+                      if (isDisabled) {
                         return (
-                          <Link
+                          <Typography
                             key={pageId}
-                            component="button"
-                            type="button"
-                            underline={isActive ? "always" : "hover"}
-                            color={isActive ? "primary" : "inherit"}
-                            onClick={() => handleNavigate(page.path)}
+                            variant="body2"
                             sx={{
-                              textAlign: "left",
-                              fontSize: "0.9rem",
-                              fontWeight: isActive ? 700 : 500,
-                              lineHeight: 1.35,
+                              color: "text.disabled",
+                              fontWeight: 500,
+                              pl: 0.25,
                             }}
                           >
                             {toPageLabel(pageId)}
-                          </Link>
+                          </Typography>
                         );
-                      })}
-                    </Stack>
-                  </Stack>
-                ))}
-              </Stack>
-            </Box>
+                      }
 
-            <Box
+                      return (
+                        <Link
+                          key={pageId}
+                          component="button"
+                          type="button"
+                          underline={isActive ? "always" : "hover"}
+                          color={isActive ? "primary" : "inherit"}
+                          onClick={() => handleNavigate(page.path)}
+                          sx={{
+                            textAlign: "left",
+                            fontSize: "0.9rem",
+                            fontWeight: isActive ? 700 : 500,
+                            lineHeight: 1.35,
+                          }}
+                        >
+                          {toPageLabel(pageId)}
+                        </Link>
+                      );
+                    })}
+                  </Stack>
+                </Stack>
+              ))}
+            </Stack>
+          </Box>
+
+          <Box
+            sx={{
+              p: 2,
+              borderRadius: 2,
+              bgcolor: "grey.100",
+            }}
+          >
+            <Stack spacing={2}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                About Coverage
+              </Typography>
+
+              {groupedCoverageItems.map(({ category, coverages }) => (
+                <Stack key={category.id} spacing={0.5}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontWeight: 700,
+                      color: "text.secondary",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    {category.label}
+                  </Typography>
+
+                  <Stack spacing={0.25}>
+                    {coverages.map((coverage) => (
+                      <Link
+                        key={coverage.id}
+                        component="button"
+                        type="button"
+                        underline="hover"
+                        color="primary"
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          setActiveCoverage(coverage);
+                        }}
+                        sx={{
+                          textAlign: "left",
+                          fontSize: "0.9rem",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {coverage.name}
+                      </Link>
+                    ))}
+                  </Stack>
+                </Stack>
+              ))}
+            </Stack>
+          </Box>
+
+          <Box sx={{ mt: "auto", pt: 1 }}>
+            <Stack
+              spacing={1.25}
               sx={{
                 p: 2,
                 borderRadius: 2,
                 bgcolor: "grey.100",
               }}
             >
-              <Stack spacing={2}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                  About Coverage
-                </Typography>
-
-                {groupedCoverageItems.map(({ category, coverages }) => (
-                  <Stack key={category.id} spacing={0.5}>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        fontWeight: 700,
-                        color: "text.secondary",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.04em",
-                      }}
-                    >
-                      {category.label}
-                    </Typography>
-
-                    <Stack spacing={0.25}>
-                      {coverages.map((coverage) => (
-                        <Link
-                          key={coverage.id}
-                          component="button"
-                          type="button"
-                          underline="hover"
-                          color="primary"
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setActiveCoverage(coverage);
-                          }}
-                          sx={{
-                            textAlign: "left",
-                            fontSize: "0.9rem",
-                            fontWeight: 600,
-                          }}
-                        >
-                          {coverage.name}
-                        </Link>
-                      ))}
-                    </Stack>
-                  </Stack>
-                ))}
-              </Stack>
-            </Box>
-
-            <Box sx={{ mt: "auto", pt: 1 }}>
-              <Stack
-                spacing={1.25}
-                sx={{
-                  p: 2,
-                  borderRadius: 2,
-                  bgcolor: "grey.100",
-                }}
-              >
-                <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                  Started an earlier application? Resume it below.
-                </Typography>
-
-                <Button
-                  variant="contained"
-                  fullWidth
-                  onClick={() => handleNavigate("/resume")}
-                >
-                  Resume Application
-                </Button>
-              </Stack>
-            </Box>
-          </Stack>
-        </Drawer>
-
-        <Dialog
-          open={Boolean(activeCoverage)}
-          onClose={() => setActiveCoverage(null)}
-          maxWidth="sm"
-          fullWidth
-        >
-          <DialogTitle>
-            {activeCoverage?.name ?? "Coverage Details"}
-          </DialogTitle>
-
-          <DialogContent dividers>
-            <Stack spacing={1.5}>
-              <Typography variant="body2" color="text.secondary">
-                {activeCoverage?.description ?? activeCoverage?.definition}
+              <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                Started an earlier application? Resume it below.
               </Typography>
 
+              <Button
+                variant="contained"
+                fullWidth
+                onClick={() => handleNavigate("/resume")}
+              >
+                Resume Application
+              </Button>
+            </Stack>
+          </Box>
+        </Stack>
+      </Drawer>
+
+      <Dialog
+        open={Boolean(activeCoverage)}
+        onClose={() => setActiveCoverage(null)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>{activeCoverage?.name ?? "Coverage Details"}</DialogTitle>
+
+        <DialogContent dividers>
+          <Stack spacing={1.5}>
+            <Typography variant="body2" color="text.secondary">
+              {activeCoverage?.description ?? activeCoverage?.definition}
+            </Typography>
+
+            <Typography variant="body2">
+              <Box component="span" sx={{ fontWeight: 700 }}>
+                Coverage amount:
+              </Box>
+              {activeCoverage ? formatCoverageRange(activeCoverage) : "-"}
+            </Typography>
+
+            {activeCoverage?.coverageNote ? (
               <Typography variant="body2">
                 <Box component="span" sx={{ fontWeight: 700 }}>
-                  Coverage amount:
+                  Coverage note:
                 </Box>
-                {activeCoverage ? formatCoverageRange(activeCoverage) : "-"}
+                {activeCoverage.coverageNote}
               </Typography>
+            ) : null}
 
-              {activeCoverage?.coverageNote ? (
-                <Typography variant="body2">
-                  <Box component="span" sx={{ fontWeight: 700 }}>
-                    Coverage note:
-                  </Box>
-                  {activeCoverage.coverageNote}
+            {activeCoverage ? (
+              <Typography variant="body2">
+                <Box component="span" sx={{ fontWeight: 700 }}>
+                  Eligible applicants:
+                </Box>
+                {formatApplicants(activeCoverage.applicants)}
+              </Typography>
+            ) : null}
+
+            {activeCoverage?.waitingPeriodOptions?.length ? (
+              <Typography variant="body2">
+                <Box component="span" sx={{ fontWeight: 700 }}>
+                  Waiting periods:
+                </Box>
+                {activeCoverage.waitingPeriodOptions
+                  .map((option) => option.label)
+                  .join(", ")}
+              </Typography>
+            ) : null}
+
+            {activeCoverage?.maxBenefitPeriodOptions?.length ? (
+              <Typography variant="body2">
+                <Box component="span" sx={{ fontWeight: 700 }}>
+                  Max benefit periods:
+                </Box>
+                {activeCoverage.maxBenefitPeriodOptions
+                  .map((option) => option.label)
+                  .join(", ")}
+              </Typography>
+            ) : null}
+
+            {activeCoverage?.riders?.length ? (
+              <Stack spacing={0.75}>
+                <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                  Available riders
                 </Typography>
-              ) : null}
 
-              {activeCoverage ? (
-                <Typography variant="body2">
-                  <Box component="span" sx={{ fontWeight: 700 }}>
-                    Eligible applicants:
-                  </Box>
-                  {formatApplicants(activeCoverage.applicants)}
-                </Typography>
-              ) : null}
-
-              {activeCoverage?.waitingPeriodOptions?.length ? (
-                <Typography variant="body2">
-                  <Box component="span" sx={{ fontWeight: 700 }}>
-                    Waiting periods:
-                  </Box>
-                  {activeCoverage.waitingPeriodOptions
-                    .map((option) => option.label)
-                    .join(", ")}
-                </Typography>
-              ) : null}
-
-              {activeCoverage?.maxBenefitPeriodOptions?.length ? (
-                <Typography variant="body2">
-                  <Box component="span" sx={{ fontWeight: 700 }}>
-                    Max benefit periods:
-                  </Box>
-                  {activeCoverage.maxBenefitPeriodOptions
-                    .map((option) => option.label)
-                    .join(", ")}
-                </Typography>
-              ) : null}
-
-              {activeCoverage?.riders?.length ? (
-                <Stack spacing={0.75}>
-                  <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                    Available riders
+                {activeCoverage.riders.map((rider) => (
+                  <Typography
+                    key={rider.id}
+                    variant="body2"
+                    color="text.secondary"
+                  >
+                    {rider.name}: {rider.description}
                   </Typography>
+                ))}
+              </Stack>
+            ) : null}
 
-                  {activeCoverage.riders.map((rider) => (
-                    <Typography
-                      key={rider.id}
-                      variant="body2"
-                      color="text.secondary"
-                    >
-                      {rider.name}: {rider.description}
-                    </Typography>
-                  ))}
-                </Stack>
-              ) : null}
+            <Link
+              component="button"
+              type="button"
+              underline="hover"
+              color="primary"
+              sx={{ alignSelf: "flex-start", fontWeight: 700 }}
+            >
+              View full coverage details
+            </Link>
+          </Stack>
+        </DialogContent>
 
-              <Link
-                component="button"
-                type="button"
-                underline="hover"
-                color="primary"
-                sx={{ alignSelf: "flex-start", fontWeight: 700 }}
-              >
-                View full coverage details
-              </Link>
-            </Stack>
-          </DialogContent>
-
-          <DialogActions>
-            <Button onClick={() => setActiveCoverage(null)}>Close</Button>
-          </DialogActions>
-        </Dialog>
-      </>
-    </Slide>
+        <DialogActions>
+          <Button onClick={() => setActiveCoverage(null)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }

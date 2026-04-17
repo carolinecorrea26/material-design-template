@@ -101,13 +101,13 @@ export default function FormProgress() {
 
   const content =
     progressVariant === "stepper" ? (
-      <Stack spacing={3} sx={{ alignItems: "center" }}>
+      <Stack spacing={3} sx={{ alignItems: "center", mt: 1, mb: 1 }}>
         <Box
           sx={{
             display: "flex",
             alignItems: "flex-start",
             width: "100%",
-            maxWidth: 1400,
+            maxWidth: "1600px",
             mx: "auto",
             justifyContent: "space-between",
             // px: 2,

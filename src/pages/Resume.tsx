@@ -186,10 +186,10 @@ export default function Resume() {
     <>
       <FormPage title={getPageTitle("resume")}>
         <Box component="form" onSubmit={handleEmailSubmit} noValidate>
-          {/* <Typography variant="body1" sx={{ color: "text.secondary", mb: 2 }}>
+          <Typography variant="body1" sx={{ color: "text.secondary", mb: 2 }}>
             A secure link will be sent to your email to allow you to resume your
             application.
-          </Typography> */}
+          </Typography>
           <TextField
             fullWidth
             label="Email address"
