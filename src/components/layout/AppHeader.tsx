@@ -3,11 +3,11 @@ import {
   AppBar,
   Box,
   Button,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
   Drawer,
   IconButton,
   Link,
@@ -20,6 +20,8 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
 import { pages } from "../../config/pages";
 import { coverageCategories } from "../../config/coverageCategories";
 import { getActiveClientCoverages } from "../../client/getActiveClientCoverages";
@@ -31,6 +33,7 @@ import type { PageId } from "../../types/page";
 import { useApplicationForm } from "../../state/ApplicationFormContext";
 import { router } from "../../app/router";
 import FormProgress from "../form/FormProgress";
+import { APP_MENU_SECTION_TITLE_SX } from "../form/sectionStyles";
 
 type AppHeaderProps = {
   client: ClientConfig;
@@ -348,7 +351,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
               gap: 1,
             }}
           >
-            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
               Application Menu
             </Typography>
 
@@ -360,8 +363,6 @@ export default function AppHeader({ client }: AppHeaderProps) {
             </IconButton>
           </Box>
 
-          <Divider />
-
           <Box
             sx={{
               p: 2,
@@ -370,11 +371,17 @@ export default function AppHeader({ client }: AppHeaderProps) {
             }}
           >
             <Stack spacing={2}>
-              <Box>
-                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography variant="subtitle1" sx={APP_MENU_SECTION_TITLE_SX}>
                   Your Application
                 </Typography>
-                <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                <Typography variant="caption" sx={{ color: "text.primary" }}>
                   <Box
                     component="span"
                     sx={{ color: "primary.main", fontWeight: 700 }}
@@ -387,17 +394,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
 
               {groupedApplicationMenuItems.map((step) => (
                 <Stack key={step.id} spacing={0.5}>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      fontWeight: 700,
-                      color: "text.secondary",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.04em",
-                    }}
-                  >
-                    {step.label}
-                  </Typography>
+                  <Typography variant="sectionLabel">{step.label}</Typography>
 
                   <Stack spacing={0.4}>
                     {step.pageIds.map((pageId) => {
@@ -409,45 +406,94 @@ export default function AppHeader({ client }: AppHeaderProps) {
                       const isDisabled =
                         pageIndex === -1 || pageIndex > maxReachedPageIndex;
                       const isActive = currentPageId === pageId;
+                      const isComplete = !isDisabled && !isActive;
+
+                      const StepIcon = isComplete
+                        ? CheckCircleRoundedIcon
+                        : CircleRoundedIcon;
+                      const iconColor = isComplete ? "success.main" : "#b4b4b4";
 
                       if (isDisabled) {
                         return (
-                          <Typography
+                          <Stack
                             key={pageId}
-                            variant="body2"
-                            sx={{
-                              color: "text.disabled",
-                              fontWeight: 500,
-                              pl: 0.25,
-                            }}
+                            direction="row"
+                            alignItems="center"
+                            justifyContent="space-between"
                           >
-                            {toPageLabel(pageId)}
-                          </Typography>
+                            <Typography
+                              sx={{
+                                color: "#b4b4b4",
+                                fontWeight: 500,
+                                fontSize: "0.875rem",
+                                lineHeight: 1.35,
+                              }}
+                            >
+                              {toPageLabel(pageId)}
+                            </Typography>
+                            <CircleRoundedIcon
+                              sx={{ fontSize: 14, color: "#b4b4b4" }}
+                            />
+                          </Stack>
                         );
                       }
 
                       return (
-                        <Link
+                        <Stack
                           key={pageId}
-                          component="button"
-                          type="button"
-                          underline={isActive ? "always" : "hover"}
-                          color={isActive ? "primary" : "inherit"}
-                          onClick={() => handleNavigate(page.path)}
-                          sx={{
-                            textAlign: "left",
-                            fontSize: "0.9rem",
-                            fontWeight: isActive ? 700 : 500,
-                            lineHeight: 1.35,
-                          }}
+                          direction="row"
+                          alignItems="center"
+                          justifyContent="space-between"
                         >
-                          {toPageLabel(pageId)}
-                        </Link>
+                          <Link
+                            component="button"
+                            type="button"
+                            underline={isActive ? "always" : "hover"}
+                            onClick={() => handleNavigate(page.path)}
+                            sx={{
+                              textAlign: "left",
+                              fontSize: "0.875rem",
+                              fontWeight: isActive || isComplete ? 600 : 500,
+                              lineHeight: 1.35,
+                              color:
+                                isActive || isComplete
+                                  ? "primary.main"
+                                  : "#b4b4b4",
+                            }}
+                          >
+                            {toPageLabel(pageId)}
+                          </Link>
+                          <StepIcon sx={{ fontSize: 14, color: iconColor }} />
+                        </Stack>
                       );
                     })}
                   </Stack>
                 </Stack>
               ))}
+
+              <Box
+                sx={{
+                  pt: 1.5,
+                  borderTop: "1px solid",
+                  borderColor: "divider",
+                }}
+              >
+                <Stack spacing={1.25}>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: "text.secondary" }}
+                  >
+                    Started an earlier application? Resume it below.
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    onClick={() => handleNavigate("/resume")}
+                  >
+                    Resume Application
+                  </Button>
+                </Stack>
+              </Box>
             </Stack>
           </Box>
 
@@ -459,44 +505,35 @@ export default function AppHeader({ client }: AppHeaderProps) {
             }}
           >
             <Stack spacing={2}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+              <Typography variant="subtitle1" sx={APP_MENU_SECTION_TITLE_SX}>
                 About Coverage
               </Typography>
 
               {groupedCoverageItems.map(({ category, coverages }) => (
                 <Stack key={category.id} spacing={0.5}>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      fontWeight: 700,
-                      color: "text.secondary",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.04em",
-                    }}
-                  >
+                  <Typography variant="sectionLabel">
                     {category.label}
                   </Typography>
 
-                  <Stack spacing={0.25}>
+                  <Stack
+                    direction="row"
+                    spacing={0.75}
+                    useFlexGap
+                    flexWrap="wrap"
+                  >
                     {coverages.map((coverage) => (
-                      <Link
+                      <Chip
                         key={coverage.id}
-                        component="button"
-                        type="button"
-                        underline="hover"
+                        clickable
+                        variant="outlined"
                         color="primary"
+                        size="small"
+                        label={coverage.name}
                         onClick={() => {
                           setIsMenuOpen(false);
                           setActiveCoverage(coverage);
                         }}
-                        sx={{
-                          textAlign: "left",
-                          fontSize: "0.9rem",
-                          fontWeight: 600,
-                        }}
-                      >
-                        {coverage.name}
-                      </Link>
+                      />
                     ))}
                   </Stack>
                 </Stack>
@@ -504,28 +541,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
             </Stack>
           </Box>
 
-          <Box sx={{ mt: "auto", pt: 1 }}>
-            <Stack
-              spacing={1.25}
-              sx={{
-                p: 2,
-                borderRadius: 2,
-                bgcolor: "grey.100",
-              }}
-            >
-              <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                Started an earlier application? Resume it below.
-              </Typography>
-
-              <Button
-                variant="contained"
-                fullWidth
-                onClick={() => handleNavigate("/resume")}
-              >
-                Resume Application
-              </Button>
-            </Stack>
-          </Box>
+          <Box sx={{ mt: "auto" }} />
         </Stack>
       </Drawer>
 

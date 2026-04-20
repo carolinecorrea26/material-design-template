@@ -200,32 +200,22 @@ export default function CoverageCatalog({
                           }}
                         >
                           <Stack
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="baseline"
-                            sx={{ mb: 0.5 }}
-                          >
-                            <Typography
-                              variant="caption"
-                              sx={{ color: "text.secondary" }}
-                            >
-                              Available coverage:
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              sx={{ color: "text.secondary" }}
-                            >
-                              Select coverage for:
-                            </Typography>
-                          </Stack>
-
-                          <Stack
-                            direction="row"
+                            direction={{ xs: "column", sm: "row" }}
                             justifyContent="space-between"
                             alignItems="flex-start"
-                            sx={{ columnGap: 2, rowGap: 1, flexWrap: "wrap" }}
+                            sx={{ columnGap: 2, rowGap: 1 }}
                           >
                             <Stack spacing={0.25} sx={{ minWidth: 0 }}>
+                              <Typography
+                                variant="caption"
+                                sx={{
+                                  color: "#353b48",
+                                  fontWeight: 600,
+                                  mb: 0.25,
+                                }}
+                              >
+                                Available coverage
+                              </Typography>
                               {visibleApplicants.length > 0 ? (
                                 visibleApplicants.map((applicant) => (
                                   <Typography
@@ -256,7 +246,17 @@ export default function CoverageCatalog({
                               )}
                             </Stack>
 
-                            <Stack sx={{ alignItems: "flex-end" }}>
+                            <Stack sx={{ alignItems: "flex-start" }}>
+                              <Typography
+                                variant="caption"
+                                sx={{
+                                  color: "#353b48",
+                                  fontWeight: 600,
+                                  mb: 0.25,
+                                }}
+                              >
+                                Select coverage for
+                              </Typography>
                               <DependentChipSelector
                                 applicantIds={visibleApplicants}
                                 selectedApplicants={

@@ -1,5 +1,11 @@
 import { createTheme } from "@mui/material/styles";
 
+declare module "@mui/material/Typography" {
+  interface TypographyPropsVariantOverrides {
+    sectionLabel: true;
+  }
+}
+
 const theme = createTheme({
   spacing: 8,
   shape: {
@@ -309,6 +315,22 @@ const theme = createTheme({
           },
         }),
       },
+    },
+    MuiTypography: {
+      variants: [
+        {
+          props: { variant: "sectionLabel" as const },
+          style: {
+            fontWeight: 700,
+            fontSize: "0.75rem",
+            lineHeight: 1,
+            textTransform: "uppercase" as const,
+            letterSpacing: "1px",
+            color: "#828793",
+            display: "block",
+          },
+        },
+      ],
     },
     MuiFormControlLabel: {
       styleOverrides: {

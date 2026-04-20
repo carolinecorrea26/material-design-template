@@ -40,19 +40,7 @@ export default function FormSectionTitle(props: FormSectionTitleProps) {
         </Box>
       ) : null}
 
-      <Typography
-        sx={{
-          lineHeight: 2.66,
-          textTransform: "uppercase",
-          color: "#4a6081",
-          display: "block",
-          fontWeight: 700,
-          fontSize: "0.75rem",
-          letterSpacing: "1px",
-        }}
-      >
-        {title}
-      </Typography>
+      <Typography variant="sectionLabel">{title}</Typography>
     </Stack>
   );
 }
