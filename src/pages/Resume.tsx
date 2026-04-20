@@ -15,6 +15,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import DialogContentText from "@mui/material/DialogContentText";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import { getActiveClient } from "../client/getActiveClient";
 import { getPagePath, getPageTitle } from "../config/pages";
@@ -188,7 +190,8 @@ export default function Resume() {
         <Box component="form" onSubmit={handleEmailSubmit} noValidate>
           <Typography variant="body1" sx={{ color: "text.secondary", mb: 2 }}>
             A secure link will be sent to your email to allow you to resume your
-            application.
+            application. Please enter the email used to start your application
+            below.
           </Typography>
           <TextField
             fullWidth
@@ -226,16 +229,19 @@ export default function Resume() {
       >
         {step === 2 ? (
           <>
-            <DialogTitle>
-              How would you like to receive your phone verification code?
-            </DialogTitle>
+            <DialogTitle>Security Code</DialogTitle>
             <DialogContent>
+              <DialogContentText sx={{ mb: 2 }}>
+                A security code will be sent to the phone number ending in 1111.
+              </DialogContentText>
               <FormControl
                 component="fieldset"
                 error={Boolean(deliveryMethodError)}
                 fullWidth
               >
-                <FormLabel>Send code by:</FormLabel>
+                <FormLabel>
+                  How would you like to receive your security code?
+                </FormLabel>
                 <RadioGroup
                   value={deliveryMethod}
                   onChange={(event) => {
@@ -279,13 +285,17 @@ export default function Resume() {
 
         {step === 3 ? (
           <>
-            <DialogTitle>Please enter the code sent to your phone.</DialogTitle>
+            <DialogTitle>Security Code</DialogTitle>
             <DialogContent>
               <Box component="form" onSubmit={handleVerifySubmit} noValidate>
+                <FormLabel sx={{ mb: 1 }}>
+                  Enter the security code you received
+                </FormLabel>
                 <TextField
                   margin="normal"
                   fullWidth
-                  label="Phone code"
+                  // label="Enter the security code you received"
+                  // labelVariant="standard"
                   type="number"
                   value={phoneCode}
                   onChange={(event) => setPhoneCode(event.target.value)}
