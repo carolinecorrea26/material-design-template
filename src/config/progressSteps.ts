@@ -18,25 +18,25 @@ export type ProgressStep = {
 export const progressSteps: ProgressStep[] = [
   {
     id: "getting-started",
-    label: "Getting Started",
+    label: "Start",
     icon: HowToReg,
     pageIds: ["membership", "eligibility"],
   },
   {
     id: "coverage-options",
-    label: "Coverage Options",
+    label: "Coverage",
     icon: HealthAndSafety,
     pageIds: ["coverage", "coverage-questions", "coverage-options"],
   },
   {
     id: "about-applicant",
-    label: "About Applicant",
+    label: "Profile",
     icon: Badge,
     pageIds: ["beneficiary", "contact", "personal", "financial"],
   },
   {
     id: "application-review",
-    label: "Application Review",
+    label: "Review",
     icon: FactCheck,
     pageIds: [
       "review",
@@ -49,7 +49,7 @@ export const progressSteps: ProgressStep[] = [
   },
   {
     id: "esign-submit",
-    label: "E-sign and Submit",
+    label: "E-sign",
     icon: Draw,
     pageIds: ["docusign"],
   },
