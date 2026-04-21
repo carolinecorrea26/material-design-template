@@ -366,7 +366,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
           <Box
             sx={{
               p: 2,
-              borderRadius: 2,
+              borderRadius: 1,
               bgcolor: "grey.100",
             }}
           >
@@ -379,7 +379,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
                 }}
               >
                 <Typography variant="subtitle1" sx={APP_MENU_SECTION_TITLE_SX}>
-                  Your Application
+                  Application Progress
                 </Typography>
                 <Typography variant="caption" sx={{ color: "text.primary" }}>
                   <Box
@@ -411,7 +411,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
                       const StepIcon = isComplete
                         ? CheckCircleRoundedIcon
                         : CircleRoundedIcon;
-                      const iconColor = isComplete ? "success.main" : "#b4b4b4";
+                      const iconColor = isComplete ? "success.main" : "#dcdcdc";
 
                       if (isDisabled) {
                         return (
@@ -432,7 +432,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
                               {toPageLabel(pageId)}
                             </Typography>
                             <CircleRoundedIcon
-                              sx={{ fontSize: 14, color: "#b4b4b4" }}
+                              sx={{ fontSize: 14, color: "#dcdcdc" }}
                             />
                           </Stack>
                         );
@@ -500,7 +500,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
           <Box
             sx={{
               p: 2,
-              borderRadius: 2,
+              borderRadius: 1,
               bgcolor: "grey.100",
             }}
           >
