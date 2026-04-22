@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
@@ -20,6 +19,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getActiveClient } from "../client/getActiveClient";
 import { getPagePath, getPageTitle } from "../config/pages";
+import FormPageActions from "../components/form/FormPageActions";
+import FormPageContent from "../components/form/FormPageContent";
 import FormPage from "../components/form/FormPage";
 import {
   useApplicationForm,
@@ -186,8 +187,20 @@ export default function Resume() {
 
   return (
     <>
-      <FormPage title={getPageTitle("resume")}>
-        <Box component="form" onSubmit={handleEmailSubmit} noValidate>
+      <FormPage
+        title={getPageTitle("resume")}
+        actions={
+          <Button type="submit" form="resume-email-form" variant="contained">
+            Next
+          </Button>
+        }
+      >
+        <Box
+          id="resume-email-form"
+          component="form"
+          onSubmit={handleEmailSubmit}
+          noValidate
+        >
           <Typography variant="body1" sx={{ color: "text.secondary", mb: 2 }}>
             Enter your email below to receive a secure link so you can continue.
           </Typography>
@@ -211,11 +224,6 @@ export default function Resume() {
               in the email to resume your application.
             </Alert>
           ) : null}
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
-            <Button type="submit" variant="contained">
-              Next
-            </Button>
-          </Box>
         </Box>
       </FormPage>
 
@@ -229,90 +237,96 @@ export default function Resume() {
           <>
             <DialogTitle>Phone Verification</DialogTitle>
             <DialogContent>
-              <DialogContentText sx={{ mb: 2 }}>
-                A security code will be sent to the phone number ending in 1111.
-              </DialogContentText>
-              <FormControl
-                component="fieldset"
-                error={Boolean(deliveryMethodError)}
-                fullWidth
-              >
-                <FormLabel>How should we send the code?</FormLabel>
-                <ToggleButtonGroup
-                  exclusive
-                  value={deliveryMethod}
-                  onChange={(_, value) => {
-                    if (value !== null) {
-                      setDeliveryMethod(value as DeliveryMethod);
-                    }
-                  }}
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    width: "100%",
-                    gap: 1,
-                    mt: 1,
-                  }}
+              <FormPageContent>
+                <DialogContentText sx={{ mb: 2 }}>
+                  A security code will be sent to the phone number ending in{" "}
+                  <Box component="span" sx={{ fontWeight: 700 }}>
+                    1111
+                  </Box>
+                  .
+                </DialogContentText>
+                <FormControl
+                  component="fieldset"
+                  error={Boolean(deliveryMethodError)}
+                  fullWidth
                 >
-                  <ToggleButton
-                    value="text-message"
+                  <FormLabel>How should we send the code?</FormLabel>
+                  <ToggleButtonGroup
+                    exclusive
+                    value={deliveryMethod}
+                    onChange={(_, value) => {
+                      if (value !== null) {
+                        setDeliveryMethod(value as DeliveryMethod);
+                      }
+                    }}
                     sx={{
-                      width: "100%",
                       display: "flex",
-                      alignItems: "center",
-                      justifyContent: "flex-start",
-                      gap: 1.5,
-                      py: 1.5,
-                      textTransform: "none",
+                      flexDirection: "column",
+                      width: "100%",
+                      gap: 1,
+                      mt: 1,
                     }}
                   >
-                    <Radio
-                      checked={deliveryMethod === "text-message"}
-                      size="small"
-                      sx={{ p: 0 }}
-                    />
-                    Text message
-                  </ToggleButton>
-                  <ToggleButton
-                    value="phone-call"
-                    sx={{
-                      width: "100%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "flex-start",
-                      gap: 1.5,
-                      py: 1.5,
-                      textTransform: "none",
-                    }}
+                    <ToggleButton
+                      value="text-message"
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        gap: 1.5,
+                        py: 1.5,
+                        textTransform: "none",
+                      }}
+                    >
+                      <Radio
+                        checked={deliveryMethod === "text-message"}
+                        size="small"
+                        sx={{ p: 0 }}
+                      />
+                      Text message
+                    </ToggleButton>
+                    <ToggleButton
+                      value="phone-call"
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        gap: 1.5,
+                        py: 1.5,
+                        textTransform: "none",
+                      }}
+                    >
+                      <Radio
+                        checked={deliveryMethod === "phone-call"}
+                        size="small"
+                        sx={{ p: 0 }}
+                      />
+                      Phone call
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                </FormControl>
+
+                {deliveryMethodError ? (
+                  <Typography
+                    variant="caption"
+                    color="error"
+                    sx={{ mt: 1, display: "block" }}
                   >
-                    <Radio
-                      checked={deliveryMethod === "phone-call"}
-                      size="small"
-                      sx={{ p: 0 }}
-                    />
-                    Phone call
-                  </ToggleButton>
-                </ToggleButtonGroup>
-              </FormControl>
+                    {deliveryMethodError}
+                  </Typography>
+                ) : null}
+              </FormPageContent>
 
-              {deliveryMethodError ? (
-                <Typography
-                  variant="caption"
-                  color="error"
-                  sx={{ mt: 1, display: "block" }}
-                >
-                  {deliveryMethodError}
-                </Typography>
-              ) : null}
-
-              <DialogActions sx={{ px: 0, pb: 0, pt: 3 }}>
+              <FormPageActions>
                 <Button variant="text" onClick={handleBackToEmailStep}>
                   Back
                 </Button>
                 <Button variant="contained" onClick={handleDeliveryContinue}>
                   Next
                 </Button>
-              </DialogActions>
+              </FormPageActions>
             </DialogContent>
           </>
         ) : null}
@@ -321,27 +335,32 @@ export default function Resume() {
           <>
             <DialogTitle>Phone Verification</DialogTitle>
             <DialogContent>
-              <Box component="form" onSubmit={handleVerifySubmit} noValidate>
-                <FormLabel sx={{ mb: 1 }}>
-                  Enter the security code you received
-                </FormLabel>
-                <TextField
-                  margin="normal"
-                  fullWidth
-                  // label="Enter the security code you received"
-                  // labelVariant="standard"
-                  type="text"
-                  value={phoneCode}
-                  onChange={(event) => setPhoneCode(event.target.value)}
-                  inputProps={{
-                    inputMode: "numeric",
-                    pattern: "[0-9]*",
-                  }}
-                  error={Boolean(phoneCodeError)}
-                  helperText={phoneCodeError ?? " "}
-                />
+              <Box
+                id="resume-phone-code-form"
+                component="form"
+                onSubmit={handleVerifySubmit}
+                noValidate
+              >
+                <FormPageContent>
+                  <FormLabel sx={{ mb: 1 }}>
+                    Enter the security code you received
+                  </FormLabel>
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    type="text"
+                    value={phoneCode}
+                    onChange={(event) => setPhoneCode(event.target.value)}
+                    inputProps={{
+                      inputMode: "numeric",
+                      pattern: "[0-9]*",
+                    }}
+                    error={Boolean(phoneCodeError)}
+                    helperText={phoneCodeError ?? undefined}
+                  />
+                </FormPageContent>
 
-                <DialogActions sx={{ px: 0, pb: 0, pt: 3 }}>
+                <FormPageActions>
                   <Button variant="text" onClick={handleBackToDeliveryMethod}>
                     Back
                   </Button>
@@ -352,7 +371,7 @@ export default function Resume() {
                   >
                     {isVerifying ? "Verifying..." : "Next"}
                   </Button>
-                </DialogActions>
+                </FormPageActions>
               </Box>
             </DialogContent>
           </>
