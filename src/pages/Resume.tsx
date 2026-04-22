@@ -8,11 +8,11 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  FormControlLabel,
   FormLabel,
   Radio,
-  RadioGroup,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from "@mui/material";
 import DialogContentText from "@mui/material/DialogContentText";
@@ -189,9 +189,7 @@ export default function Resume() {
       <FormPage title={getPageTitle("resume")}>
         <Box component="form" onSubmit={handleEmailSubmit} noValidate>
           <Typography variant="body1" sx={{ color: "text.secondary", mb: 2 }}>
-            A secure link will be sent to your email to allow you to resume your
-            application. Please enter the email used to start your application
-            below.
+            Enter your email below to receive a secure link so you can continue.
           </Typography>
           <TextField
             fullWidth
@@ -229,7 +227,7 @@ export default function Resume() {
       >
         {step === 2 ? (
           <>
-            <DialogTitle>Security Code</DialogTitle>
+            <DialogTitle>Phone Verification</DialogTitle>
             <DialogContent>
               <DialogContentText sx={{ mb: 2 }}>
                 A security code will be sent to the phone number ending in 1111.
@@ -239,26 +237,62 @@ export default function Resume() {
                 error={Boolean(deliveryMethodError)}
                 fullWidth
               >
-                <FormLabel>
-                  How would you like to receive your security code?
-                </FormLabel>
-                <RadioGroup
+                <FormLabel>How should we send the code?</FormLabel>
+                <ToggleButtonGroup
+                  exclusive
                   value={deliveryMethod}
-                  onChange={(event) => {
-                    setDeliveryMethod(event.target.value as DeliveryMethod);
+                  onChange={(_, value) => {
+                    if (value !== null) {
+                      setDeliveryMethod(value as DeliveryMethod);
+                    }
+                  }}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "100%",
+                    gap: 1,
+                    mt: 1,
                   }}
                 >
-                  <FormControlLabel
+                  <ToggleButton
                     value="text-message"
-                    control={<Radio />}
-                    label="Text message"
-                  />
-                  <FormControlLabel
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                      gap: 1.5,
+                      py: 1.5,
+                      textTransform: "none",
+                    }}
+                  >
+                    <Radio
+                      checked={deliveryMethod === "text-message"}
+                      size="small"
+                      sx={{ p: 0 }}
+                    />
+                    Text message
+                  </ToggleButton>
+                  <ToggleButton
                     value="phone-call"
-                    control={<Radio />}
-                    label="Phone call"
-                  />
-                </RadioGroup>
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                      gap: 1.5,
+                      py: 1.5,
+                      textTransform: "none",
+                    }}
+                  >
+                    <Radio
+                      checked={deliveryMethod === "phone-call"}
+                      size="small"
+                      sx={{ p: 0 }}
+                    />
+                    Phone call
+                  </ToggleButton>
+                </ToggleButtonGroup>
               </FormControl>
 
               {deliveryMethodError ? (
@@ -285,7 +319,7 @@ export default function Resume() {
 
         {step === 3 ? (
           <>
-            <DialogTitle>Security Code</DialogTitle>
+            <DialogTitle>Phone Verification</DialogTitle>
             <DialogContent>
               <Box component="form" onSubmit={handleVerifySubmit} noValidate>
                 <FormLabel sx={{ mb: 1 }}>
@@ -296,9 +330,13 @@ export default function Resume() {
                   fullWidth
                   // label="Enter the security code you received"
                   // labelVariant="standard"
-                  type="number"
+                  type="text"
                   value={phoneCode}
                   onChange={(event) => setPhoneCode(event.target.value)}
+                  inputProps={{
+                    inputMode: "numeric",
+                    pattern: "[0-9]*",
+                  }}
                   error={Boolean(phoneCodeError)}
                   helperText={phoneCodeError ?? " "}
                 />

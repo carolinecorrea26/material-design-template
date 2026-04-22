@@ -130,7 +130,7 @@ export const pages = [
     id: "resume",
     path: "/resume",
     type: "resume",
-    title: "Enter your email to resume your application.",
+    title: "Already started an application?",
   },
 ] as const;
 

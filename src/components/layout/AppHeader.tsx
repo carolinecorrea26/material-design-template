@@ -233,7 +233,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
             borderBottom: "none",
             boxShadow: "none",
             pt: 2,
-            pb: 1,
+            pb: 2,
           }}
         >
           <Toolbar
@@ -352,7 +352,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
             }}
           >
             <Typography variant="h6" sx={{ fontWeight: 600 }}>
-              Application Menu
+              Menu
             </Typography>
 
             <IconButton
