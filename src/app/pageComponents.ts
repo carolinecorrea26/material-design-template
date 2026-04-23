@@ -19,6 +19,8 @@ import HealthCir from "../pages/HealthCir";
 import Payment from "../pages/Payment";
 import Receipt from "../pages/Receipt";
 import Resume from "../pages/Resume";
+import AdvisorLogin from "../pages/AdvisorLogin";
+import AdvisorSendConfirmation from "../pages/AdvisorSendConfirmation";
 
 type RoutedPageId = (typeof routedPages)[number];
 
@@ -42,4 +44,6 @@ export const pageComponents: Record<RoutedPageId, ComponentType> = {
   payment: Payment,
   receipt: Receipt,
   resume: Resume,
+  "advisor-login": AdvisorLogin,
+  "advisor-send-confirmation": AdvisorSendConfirmation,
 };

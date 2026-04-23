@@ -20,4 +20,6 @@ export const routedPages = [
   "payment",
   "receipt",
   "resume",
+  "advisor-login",
+  "advisor-send-confirmation",
 ] satisfies PageId[];

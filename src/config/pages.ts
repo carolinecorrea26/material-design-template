@@ -132,6 +132,19 @@ export const pages = [
     type: "resume",
     title: "Already started an application?",
   },
+
+  {
+    id: "advisor-login",
+    path: "/advisor-login",
+    type: "form",
+    title: "Advisor Login",
+  },
+  {
+    id: "advisor-send-confirmation",
+    path: "/advisor-send-confirmation",
+    type: "form",
+    title: "Application Sent Successfully!",
+  },
 ] as const;
 
 export type PageType = "home" | "form" | "receipt" | "resume";

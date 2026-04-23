@@ -145,7 +145,12 @@ export type FieldId =
   | "spouse-benefit-period"
   | "spouse-waiting-period"
   | "spouse-is-replacing-disability-insurance"
-  | "spouse-disability-replacement-amount";
+  | "spouse-disability-replacement-amount"
+  | "advisor-flow-type"
+  | "advisor-email"
+  | "advisor-phone"
+  | "advisor-code"
+  | "applicant-email";
 
 export type FieldDefinition = {
   id: string;
@@ -154,6 +159,7 @@ export type FieldDefinition = {
   inputType: FieldInputType;
   required?: boolean;
   placeholder?: string;
+  helperText?: string;
   options?: FieldOption[];
   autoComplete?: string;
   inputMode?: "text" | "email" | "tel" | "numeric";

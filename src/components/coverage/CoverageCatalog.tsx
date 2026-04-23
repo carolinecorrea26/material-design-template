@@ -214,7 +214,7 @@ export default function CoverageCatalog({
                                   mb: 0.25,
                                 }}
                               >
-                                Available coverage
+                                Available coverage:
                               </Typography>
                               {visibleApplicants.length > 0 ? (
                                 visibleApplicants.map((applicant) => (
@@ -255,7 +255,7 @@ export default function CoverageCatalog({
                                   mb: 0.25,
                                 }}
                               >
-                                Select coverage for
+                                Select coverage for:
                               </Typography>
                               <DependentChipSelector
                                 applicantIds={visibleApplicants}

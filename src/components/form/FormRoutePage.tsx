@@ -61,6 +61,7 @@ type FormRoutePageProps = {
   defaultValueOverrides?: FormRoutePageFormValues;
   devFillFields?: (currentValues: FormRoutePageValues) => FieldDefinition[];
   onDevFill?: (context: DevFillContext) => void;
+  resolveNextPageId?: (values: FormRoutePageValues) => PageId | null;
 };
 
 function getDefaultValueForField(field: FieldDefinition): FormRouteFieldValue {
@@ -194,6 +195,7 @@ export default function FormRoutePage({
   defaultValueOverrides,
   devFillFields,
   onDevFill,
+  resolveNextPageId,
 }: FormRoutePageProps) {
   const navigate = useNavigate();
   const { values, setPageValues } = useApplicationForm();
@@ -345,7 +347,9 @@ export default function FormRoutePage({
       ...formValues,
     };
     emitProgressSnapshot(nextNavigationValues);
-    const nextPageId = getNextFormPageId(pageId, nextNavigationValues);
+    const nextPageId =
+      resolveNextPageId?.(nextNavigationValues) ??
+      getNextFormPageId(pageId, nextNavigationValues);
 
     if (nextPageId) {
       navigate(`/${nextPageId}`);

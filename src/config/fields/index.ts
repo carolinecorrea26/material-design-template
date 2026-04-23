@@ -1264,4 +1264,49 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     inputMode: "numeric",
     labelVariant: "floating",
   },
+
+  "advisor-flow-type": {
+    id: "advisor-flow-type",
+    label: "Application Type",
+    inputType: "text",
+  },
+
+  "advisor-email": {
+    id: "advisor-email",
+    label: "Advisor Email",
+    inputType: "text",
+    required: true,
+    format: "email",
+    autoComplete: "email",
+    inputMode: "email",
+  },
+
+  "advisor-phone": {
+    id: "advisor-phone",
+    label: "Advisor Phone Number",
+    inputType: "text",
+    required: true,
+    format: "phone",
+    autoComplete: "tel",
+    inputMode: "tel",
+    showPhoneTypeSelector: false,
+  },
+
+  "advisor-code": {
+    id: "advisor-code",
+    label: "Advisor Code",
+    inputType: "text",
+    required: true,
+  },
+
+  "applicant-email": {
+    id: "applicant-email",
+    label: "Applicant Email",
+    inputType: "text",
+    required: true,
+    format: "email",
+    autoComplete: "email",
+    inputMode: "email",
+    helperText: "Enter the applicant email used to start the application.",
+  },
 };

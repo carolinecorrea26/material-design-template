@@ -25,7 +25,9 @@ export type PageSectionId =
   | "financialSelfOtherCoverage"
   | "financialSelfFinancialProfile"
   | "financialSelfEmploymentDetails"
-  | "financialSpouseOtherCoverage";
+  | "financialSpouseOtherCoverage"
+  | "advisorLoginNew"
+  | "advisorLoginSaved";
 
 export type SectionVisibilityRule =
   | {

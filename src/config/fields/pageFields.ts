@@ -140,4 +140,12 @@ export const pageFields: Partial<Record<PageId, FieldId[]>> = {
     "spouse-is-replacing-disability-insurance",
     "spouse-disability-replacement-amount",
   ],
+
+  "advisor-login": [
+    "advisor-flow-type",
+    "advisor-email",
+    "advisor-phone",
+    "advisor-code",
+    "applicant-email",
+  ],
 };

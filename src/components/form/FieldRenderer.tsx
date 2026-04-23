@@ -246,6 +246,7 @@ export default function FieldRenderer({
 }: FieldRendererProps) {
   const validationRules = getValidationRules(field);
   const fieldError = errors[field.id]?.message as string | undefined;
+  const resolvedHelperText = fieldError ?? field.helperText;
 
   function renderTextLikeField(
     controllerField: {
@@ -289,7 +290,9 @@ export default function FieldRenderer({
         onBlur={controllerField.onBlur}
         disabled={field.disabled}
         error={Boolean(errors[field.id])}
-        helperText={labelVariant === "floating" ? fieldError : undefined}
+        helperText={
+          labelVariant === "floating" ? resolvedHelperText : undefined
+        }
         multiline={field.multiline}
         minRows={field.multiline ? (field.minRows ?? 3) : undefined}
         InputProps={options.inputAdornmentProps}
@@ -308,7 +311,7 @@ export default function FieldRenderer({
           </FormLabel>
         ) : null}
         {textField}
-        <FormHelperText>{fieldError}</FormHelperText>
+        <FormHelperText>{resolvedHelperText}</FormHelperText>
       </FormControl>
     );
   }
@@ -375,9 +378,7 @@ export default function FieldRenderer({
               ))}
             </ToggleButtonGroup>
 
-            <FormHelperText>
-              {errors[field.id]?.message as string}
-            </FormHelperText>
+            <FormHelperText>{resolvedHelperText}</FormHelperText>
           </FormControl>
         )}
       />
@@ -451,9 +452,7 @@ export default function FieldRenderer({
               </>
             )}
 
-            <FormHelperText>
-              {errors[field.id]?.message as string}
-            </FormHelperText>
+            <FormHelperText>{resolvedHelperText}</FormHelperText>
           </FormControl>
         )}
       />
@@ -506,9 +505,7 @@ export default function FieldRenderer({
                 ))}
               </Select>
 
-              <FormHelperText>
-                {errors[field.id]?.message as string}
-              </FormHelperText>
+              <FormHelperText>{resolvedHelperText}</FormHelperText>
             </FormControl>
           );
         }}
@@ -550,9 +547,7 @@ export default function FieldRenderer({
               </Typography>
             </SelectableOptionRow>
 
-            <FormHelperText>
-              {errors[field.id]?.message as string}
-            </FormHelperText>
+            <FormHelperText>{resolvedHelperText}</FormHelperText>
           </FormControl>
         )}
       />
@@ -609,9 +604,7 @@ export default function FieldRenderer({
                 })}
               </Stack>
 
-              <FormHelperText>
-                {errors[field.id]?.message as string}
-              </FormHelperText>
+              <FormHelperText>{resolvedHelperText}</FormHelperText>
             </FormControl>
           );
         }}

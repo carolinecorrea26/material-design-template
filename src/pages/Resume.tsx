@@ -15,7 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import DialogContentText from "@mui/material/DialogContentText";
-
+import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getActiveClient } from "../client/getActiveClient";
 import { getPagePath, getPageTitle } from "../config/pages";
@@ -76,6 +76,10 @@ function sendResumeLinkEmail(emailAddress: string) {
 
   window.location.href = `mailto:${encodeURIComponent(emailAddress)}?subject=${subject}&body=${body}`;
 }
+
+const handleResendCode = () => {
+  // resend logic here
+};
 
 export default function Resume() {
   const location = useLocation();
@@ -202,7 +206,8 @@ export default function Resume() {
           noValidate
         >
           <Typography variant="body1" sx={{ color: "text.secondary", mb: 2 }}>
-            Enter your email below to receive a secure link so you can continue.
+            Enter your email below to receive a secure link to your saved
+            application.
           </Typography>
           <TextField
             fullWidth
@@ -221,7 +226,7 @@ export default function Resume() {
           {showEmailSentMessage ? (
             <Alert severity="success" sx={{ mt: 1.5, mb: 2 }}>
               A secure link has been sent to your email. Please click the link
-              in the email to resume your application.
+              in the email to continue to your saved application.
             </Alert>
           ) : null}
         </Box>
@@ -303,7 +308,7 @@ export default function Resume() {
                         size="small"
                         sx={{ p: 0 }}
                       />
-                      Phone call
+                      Voice call
                     </ToggleButton>
                   </ToggleButtonGroup>
                 </FormControl>
@@ -320,12 +325,14 @@ export default function Resume() {
               </FormPageContent>
 
               <FormPageActions>
-                <Button variant="text" onClick={handleBackToEmailStep}>
-                  Back
-                </Button>
-                <Button variant="contained" onClick={handleDeliveryContinue}>
-                  Next
-                </Button>
+                <Box marginTop={"1rem !important"}>
+                  {/* <Button variant="text" onClick={handleBackToEmailStep}>
+                    Back
+                  </Button> */}
+                  <Button variant="contained" onClick={handleDeliveryContinue}>
+                    Next
+                  </Button>
+                </Box>
               </FormPageActions>
             </DialogContent>
           </>
@@ -342,14 +349,19 @@ export default function Resume() {
                 noValidate
               >
                 <FormPageContent>
-                  <FormLabel sx={{ mb: 1 }}>
-                    Enter the security code you received
-                  </FormLabel>
+                  <DialogContentText sx={{ mb: 2 }}>
+                    Enter the security code sent to the phone number ending in{" "}
+                    <Box component="span" sx={{ fontWeight: 700 }}>
+                      1111
+                    </Box>
+                    .
+                  </DialogContentText>
                   <TextField
                     margin="normal"
                     fullWidth
                     type="text"
                     value={phoneCode}
+                    label="Security Code"
                     onChange={(event) => setPhoneCode(event.target.value)}
                     inputProps={{
                       inputMode: "numeric",
@@ -358,19 +370,37 @@ export default function Resume() {
                     error={Boolean(phoneCodeError)}
                     helperText={phoneCodeError ?? undefined}
                   />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      mt: 0.5,
+                    }}
+                  >
+                    <Button
+                      variant="text"
+                      size="small"
+                      startIcon={<RefreshRoundedIcon />}
+                      onClick={handleResendCode}
+                    >
+                      Resend code
+                    </Button>
+                  </Box>
                 </FormPageContent>
 
                 <FormPageActions>
-                  <Button variant="text" onClick={handleBackToDeliveryMethod}>
-                    Back
-                  </Button>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    disabled={isVerifying}
-                  >
-                    {isVerifying ? "Verifying..." : "Next"}
-                  </Button>
+                  <Box marginTop={"1rem !important"}>
+                    <Button variant="text" onClick={handleBackToDeliveryMethod}>
+                      Back
+                    </Button>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      disabled={isVerifying}
+                    >
+                      {isVerifying ? "Verifying..." : "Next"}
+                    </Button>
+                  </Box>
                 </FormPageActions>
               </Box>
             </DialogContent>

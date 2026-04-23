@@ -313,4 +313,19 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
     },
   ],
+
+  "advisor-login": [
+    {
+      id: "advisorLoginNew",
+      pageId: "advisor-login",
+      fieldIds: ["advisor-email", "advisor-phone", "advisor-code"],
+      visibleWhen: [{ fieldId: "advisor-flow-type", equals: "new" }],
+    },
+    {
+      id: "advisorLoginSaved",
+      pageId: "advisor-login",
+      fieldIds: ["applicant-email"],
+      visibleWhen: [{ fieldId: "advisor-flow-type", equals: "saved" }],
+    },
+  ],
 };
