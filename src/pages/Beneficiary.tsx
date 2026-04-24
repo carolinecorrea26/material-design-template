@@ -585,10 +585,7 @@ export default function Beneficiary() {
   }, [applicantProducts, beneficiariesByProduct, setPageValues]);
 
   return (
-    <FormRoutePage
-      pageId="beneficiary"
-      title="Add beneficiaries for each product you selected."
-    >
+    <FormRoutePage pageId="beneficiary">
       {!hasAnyApplicantProducts ? (
         <Alert severity="info">
           No self or spouse Life/AD product selections were found.

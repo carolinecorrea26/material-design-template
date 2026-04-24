@@ -1265,6 +1265,59 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     labelVariant: "floating",
   },
 
+  "bank-name-on-account": {
+    id: "bank-name-on-account",
+    label: "Name on Account",
+    inputType: "text",
+    required: true,
+  },
+
+  "bank-institution": {
+    id: "bank-institution",
+    label: "Bank Institution",
+    inputType: "text",
+    required: true,
+  },
+
+  "bank-routing-number": {
+    id: "bank-routing-number",
+    label: "Routing Number",
+    inputType: "number",
+    required: true,
+    inputMode: "numeric",
+  },
+
+  "bank-account-number": {
+    id: "bank-account-number",
+    label: "Account Number",
+    inputType: "number",
+    required: true,
+    inputMode: "numeric",
+  },
+
+  "bank-authorization": {
+    id: "bank-authorization",
+    label: "I authorize recurring payments from this bank account.",
+    inputType: "checkbox",
+    required: true,
+  },
+
+  "review-self-consent": {
+    id: "review-self-consent",
+    label:
+      "I confirm that I have reviewed and understand the above material. I consent to the use of electronic signature and delivery of electronic records.",
+    inputType: "checkbox",
+    required: true,
+  },
+
+  "review-spouse-consent": {
+    id: "review-spouse-consent",
+    label:
+      "I confirm that I have reviewed and understand the above material. I consent to the use of electronic signature and delivery of electronic records.",
+    inputType: "checkbox",
+    required: true,
+  },
+
   "advisor-flow-type": {
     id: "advisor-flow-type",
     label: "Application Type",

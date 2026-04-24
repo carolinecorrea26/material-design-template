@@ -30,7 +30,7 @@ export default function ApplicantSection({
   }
 
   return (
-    <Box sx={{ mt: 2 }}>
+    <Box sx={{ mb: 2 }}>
       <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1.5 }}>
         {iconVisible ? (
           <Box sx={sectionTitleIconSx}>

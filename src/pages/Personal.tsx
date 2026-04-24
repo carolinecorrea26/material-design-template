@@ -5,7 +5,10 @@ import FormRoutePage, {
 } from "../components/form/FormRoutePage";
 import FieldRenderer from "../components/form/FieldRenderer";
 import ApplicantSection from "../components/form/ApplicantSection";
-import { shouldShowApplicantLabel } from "../components/form/applicantVisibility";
+import {
+  isApplicantApplying,
+  shouldShowApplicantLabel,
+} from "../components/form/applicantVisibility";
 import { SECTION_SURFACE_BG } from "../components/form/sectionStyles";
 import SubQuestionContainer from "../components/form/SubQuestionContainer";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
@@ -150,196 +153,218 @@ export default function Personal() {
               (id) => hasQdUwProduct || !qdOnlyFieldIds.has(id),
             );
 
+          const hasSelf = isApplicantApplying("self", watchedValues);
+          const hasSpouse = isApplicantApplying("spouse", watchedValues);
           return (
             <>
-              <ApplicantSection
-                applicant="self"
-                showLabel={shouldShowApplicantLabel(
-                  "self",
-                  watchedValues,
-                  "personal",
-                )}
-              >
-                <Box
-                  sx={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: 2,
-                  }}
+              {hasSelf && (
+                <ApplicantSection
+                  applicant="self"
+                  showLabel={shouldShowApplicantLabel(
+                    "self",
+                    watchedValues,
+                    "personal",
+                  )}
                 >
+                  <Box
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: 2,
+                    }}
+                  >
+                    {selfPrimaryFieldIds
+                      .filter((fieldId) => selfHeightFieldIds.has(fieldId))
+                      .map((fieldId) => {
+                        const field = allFields.find((f) => f.id === fieldId);
+                        if (!field) return null;
+
+                        return (
+                          <FieldRenderer
+                            key={field.id}
+                            field={field}
+                            control={control}
+                            errors={errors}
+                          />
+                        );
+                      })}
+                  </Box>
+
                   {selfPrimaryFieldIds
-                    .filter((fieldId) => selfHeightFieldIds.has(fieldId))
+                    .filter((fieldId) => !selfHeightFieldIds.has(fieldId))
                     .map((fieldId) => {
                       const field = allFields.find((f) => f.id === fieldId);
                       if (!field) return null;
 
                       return (
-                        <FieldRenderer
-                          key={field.id}
-                          field={field}
-                          control={control}
-                          errors={errors}
-                        />
+                        <Box key={field.id}>
+                          <FieldRenderer
+                            field={field}
+                            control={control}
+                            errors={errors}
+                          />
+
+                          {fieldId === "has-drivers-license" &&
+                            selfConditionalFieldIds.filter((id) =>
+                              selfDriversLicenseFollowupFieldIds.has(id),
+                            ).length > 0 &&
+                            watchedValues[fieldId] === "yes" && (
+                              <SubQuestionContainer>
+                                {selfConditionalFieldIds
+                                  .filter((id) =>
+                                    selfDriversLicenseFollowupFieldIds.has(id),
+                                  )
+                                  .map((conditionalFieldId) => {
+                                    const conditionalField = allFields.find(
+                                      (f) => f.id === conditionalFieldId,
+                                    );
+                                    if (!conditionalField) return null;
+
+                                    return (
+                                      <Box
+                                        key={conditionalField.id}
+                                        sx={{ mb: 2 }}
+                                      >
+                                        <FieldRenderer
+                                          field={conditionalField}
+                                          control={control}
+                                          errors={errors}
+                                        />
+                                      </Box>
+                                    );
+                                  })}
+                              </SubQuestionContainer>
+                            )}
+
+                          {fieldId === "intend-live-outside-us" &&
+                            selfConditionalFieldIds.filter((id) =>
+                              selfOutsideUsFollowupFieldIds.has(id),
+                            ).length > 0 &&
+                            watchedValues[fieldId] === "yes" && (
+                              <SubQuestionContainer>
+                                {selfConditionalFieldIds
+                                  .filter((id) =>
+                                    selfOutsideUsFollowupFieldIds.has(id),
+                                  )
+                                  .map((conditionalFieldId) => {
+                                    const conditionalField = allFields.find(
+                                      (f) => f.id === conditionalFieldId,
+                                    );
+                                    if (!conditionalField) return null;
+
+                                    return (
+                                      <Box
+                                        key={conditionalField.id}
+                                        sx={{ mb: 2 }}
+                                      >
+                                        <FieldRenderer
+                                          key={conditionalField.id}
+                                          field={conditionalField}
+                                          control={control}
+                                          errors={errors}
+                                        />
+                                      </Box>
+                                    );
+                                  })}
+                              </SubQuestionContainer>
+                            )}
+
+                          {fieldId === "travel-outside-us-six-months" &&
+                            selfConditionalFieldIds.filter((id) =>
+                              selfTravelOutsideUsFollowupFieldIds.has(id),
+                            ).length > 0 &&
+                            watchedValues[fieldId] === "yes" && (
+                              <SubQuestionContainer>
+                                {selfConditionalFieldIds
+                                  .filter((id) =>
+                                    selfTravelOutsideUsFollowupFieldIds.has(id),
+                                  )
+                                  .map((conditionalFieldId) => {
+                                    const conditionalField = allFields.find(
+                                      (f) => f.id === conditionalFieldId,
+                                    );
+                                    if (!conditionalField) return null;
+
+                                    return (
+                                      <Box
+                                        key={conditionalField.id}
+                                        sx={{ mb: 2 }}
+                                      >
+                                        <FieldRenderer
+                                          key={conditionalField.id}
+                                          field={conditionalField}
+                                          control={control}
+                                          errors={errors}
+                                        />
+                                      </Box>
+                                    );
+                                  })}
+                              </SubQuestionContainer>
+                            )}
+                        </Box>
                       );
                     })}
-                </Box>
 
-                {selfPrimaryFieldIds
-                  .filter((fieldId) => !selfHeightFieldIds.has(fieldId))
-                  .map((fieldId) => {
+                  {selfConditionalFieldIds.map((fieldId) => {
+                    if (
+                      selfDriversLicenseFollowupFieldIds.has(fieldId) ||
+                      selfOutsideUsFollowupFieldIds.has(fieldId) ||
+                      selfTravelOutsideUsFollowupFieldIds.has(fieldId)
+                    ) {
+                      return null;
+                    }
+
                     const field = allFields.find((f) => f.id === fieldId);
                     if (!field) return null;
 
                     return (
-                      <Box key={field.id}>
-                        <FieldRenderer
-                          field={field}
-                          control={control}
-                          errors={errors}
-                        />
-
-                        {fieldId === "has-drivers-license" &&
-                          selfConditionalFieldIds.filter((id) =>
-                            selfDriversLicenseFollowupFieldIds.has(id),
-                          ).length > 0 &&
-                          watchedValues[fieldId] === "yes" && (
-                            <SubQuestionContainer>
-                              {selfConditionalFieldIds
-                                .filter((id) =>
-                                  selfDriversLicenseFollowupFieldIds.has(id),
-                                )
-                                .map((conditionalFieldId) => {
-                                  const conditionalField = allFields.find(
-                                    (f) => f.id === conditionalFieldId,
-                                  );
-                                  if (!conditionalField) return null;
-
-                                  return (
-                                    <Box
-                                      key={conditionalField.id}
-                                      sx={{ mb: 2 }}
-                                    >
-                                      <FieldRenderer
-                                        field={conditionalField}
-                                        control={control}
-                                        errors={errors}
-                                      />
-                                    </Box>
-                                  );
-                                })}
-                            </SubQuestionContainer>
-                          )}
-
-                        {fieldId === "intend-live-outside-us" &&
-                          selfConditionalFieldIds.filter((id) =>
-                            selfOutsideUsFollowupFieldIds.has(id),
-                          ).length > 0 &&
-                          watchedValues[fieldId] === "yes" && (
-                            <SubQuestionContainer>
-                              {selfConditionalFieldIds
-                                .filter((id) =>
-                                  selfOutsideUsFollowupFieldIds.has(id),
-                                )
-                                .map((conditionalFieldId) => {
-                                  const conditionalField = allFields.find(
-                                    (f) => f.id === conditionalFieldId,
-                                  );
-                                  if (!conditionalField) return null;
-
-                                  return (
-                                    <Box
-                                      key={conditionalField.id}
-                                      sx={{ mb: 2 }}
-                                    >
-                                      <FieldRenderer
-                                        key={conditionalField.id}
-                                        field={conditionalField}
-                                        control={control}
-                                        errors={errors}
-                                      />
-                                    </Box>
-                                  );
-                                })}
-                            </SubQuestionContainer>
-                          )}
-
-                        {fieldId === "travel-outside-us-six-months" &&
-                          selfConditionalFieldIds.filter((id) =>
-                            selfTravelOutsideUsFollowupFieldIds.has(id),
-                          ).length > 0 &&
-                          watchedValues[fieldId] === "yes" && (
-                            <SubQuestionContainer>
-                              {selfConditionalFieldIds
-                                .filter((id) =>
-                                  selfTravelOutsideUsFollowupFieldIds.has(id),
-                                )
-                                .map((conditionalFieldId) => {
-                                  const conditionalField = allFields.find(
-                                    (f) => f.id === conditionalFieldId,
-                                  );
-                                  if (!conditionalField) return null;
-
-                                  return (
-                                    <Box
-                                      key={conditionalField.id}
-                                      sx={{ mb: 2 }}
-                                    >
-                                      <FieldRenderer
-                                        key={conditionalField.id}
-                                        field={conditionalField}
-                                        control={control}
-                                        errors={errors}
-                                      />
-                                    </Box>
-                                  );
-                                })}
-                            </SubQuestionContainer>
-                          )}
-                      </Box>
+                      <FieldRenderer
+                        key={field.id}
+                        field={field}
+                        control={control}
+                        errors={errors}
+                      />
                     );
                   })}
 
-                {selfConditionalFieldIds.map((fieldId) => {
-                  if (
-                    selfDriversLicenseFollowupFieldIds.has(fieldId) ||
-                    selfOutsideUsFollowupFieldIds.has(fieldId) ||
-                    selfTravelOutsideUsFollowupFieldIds.has(fieldId)
-                  ) {
-                    return null;
-                  }
-
-                  const field = allFields.find((f) => f.id === fieldId);
-                  if (!field) return null;
-
-                  return (
-                    <FieldRenderer
-                      key={field.id}
-                      field={field}
-                      control={control}
-                      errors={errors}
-                    />
-                  );
-                })}
-
-                {showPhysician && (
-                  <Box
-                    sx={{
-                      backgroundColor: SECTION_SURFACE_BG,
-                      borderRadius: 1.5,
-                      px: { xs: 2, sm: 2.5 },
-                      py: 1.5,
-                      mt: 1,
-                    }}
-                  >
+                  {showPhysician && (
                     <Box
                       sx={{
-                        display: "grid",
-                        gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-                        gap: { xs: 0, sm: 2 },
+                        backgroundColor: SECTION_SURFACE_BG,
+                        borderRadius: 1.5,
+                        px: { xs: 2, sm: 2.5 },
+                        py: 1.5,
+                        mt: 1,
                       }}
                     >
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                          gap: { xs: 0, sm: 2 },
+                        }}
+                      >
+                        {sectionGroups.selfPhysician
+                          .filter((fieldId) => physicianNameRow.has(fieldId))
+                          .map((fieldId) => {
+                            const field = allFields.find(
+                              (f) => f.id === fieldId,
+                            );
+                            if (!field) return null;
+
+                            return (
+                              <FieldRenderer
+                                key={field.id}
+                                field={field}
+                                control={control}
+                                errors={errors}
+                              />
+                            );
+                          })}
+                      </Box>
+
                       {sectionGroups.selfPhysician
-                        .filter((fieldId) => physicianNameRow.has(fieldId))
+                        .filter((fieldId) => fieldId === "physician-phone")
                         .map((fieldId) => {
                           const field = allFields.find((f) => f.id === fieldId);
                           if (!field) return null;
@@ -353,74 +378,10 @@ export default function Personal() {
                             />
                           );
                         })}
-                    </Box>
 
-                    {sectionGroups.selfPhysician
-                      .filter((fieldId) => fieldId === "physician-phone")
-                      .map((fieldId) => {
-                        const field = allFields.find((f) => f.id === fieldId);
-                        if (!field) return null;
-
-                        return (
-                          <FieldRenderer
-                            key={field.id}
-                            field={field}
-                            control={control}
-                            errors={errors}
-                          />
-                        );
-                      })}
-
-                    {sectionGroups.selfPhysician
-                      .filter((fieldId) => fieldId === "medical-facility-name")
-                      .map((fieldId) => {
-                        const field = allFields.find((f) => f.id === fieldId);
-                        if (!field) return null;
-
-                        return (
-                          <FieldRenderer
-                            key={field.id}
-                            field={field}
-                            control={control}
-                            errors={errors}
-                          />
-                        );
-                      })}
-
-                    <Box
-                      sx={{
-                        display: "grid",
-                        gridTemplateColumns: { xs: "1fr", sm: "2fr 1fr" },
-                        gap: { xs: 0, sm: 2 },
-                      }}
-                    >
                       {sectionGroups.selfPhysician
-                        .filter((fieldId) => physicianStreetRow.has(fieldId))
-                        .map((fieldId) => {
-                          const field = allFields.find((f) => f.id === fieldId);
-                          if (!field) return null;
-
-                          return (
-                            <FieldRenderer
-                              key={field.id}
-                              field={field}
-                              control={control}
-                              errors={errors}
-                            />
-                          );
-                        })}
-                    </Box>
-
-                    <Box
-                      sx={{
-                        display: "grid",
-                        gridTemplateColumns: { xs: "1fr", sm: "2fr 1fr 1fr" },
-                        gap: { xs: 0, sm: 2 },
-                      }}
-                    >
-                      {sectionGroups.selfPhysician
-                        .filter((fieldId) =>
-                          physicianCityStateZipRow.has(fieldId),
+                        .filter(
+                          (fieldId) => fieldId === "medical-facility-name",
                         )
                         .map((fieldId) => {
                           const field = allFields.find((f) => f.id === fieldId);
@@ -435,22 +396,76 @@ export default function Personal() {
                             />
                           );
                         })}
-                    </Box>
-                  </Box>
-                )}
 
-                <Button
-                  type="button"
-                  variant="outlined"
-                  fullWidth
-                  onClick={() => setShowPhysician((current) => !current)}
-                  sx={{ mt: 2, textTransform: "none", fontWeight: 600 }}
-                >
-                  {showPhysician
-                    ? "Hide your physician information (optional)"
-                    : "Add your physician information (optional)"}
-                </Button>
-              </ApplicantSection>
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: { xs: "1fr", sm: "2fr 1fr" },
+                          gap: { xs: 0, sm: 2 },
+                        }}
+                      >
+                        {sectionGroups.selfPhysician
+                          .filter((fieldId) => physicianStreetRow.has(fieldId))
+                          .map((fieldId) => {
+                            const field = allFields.find(
+                              (f) => f.id === fieldId,
+                            );
+                            if (!field) return null;
+
+                            return (
+                              <FieldRenderer
+                                key={field.id}
+                                field={field}
+                                control={control}
+                                errors={errors}
+                              />
+                            );
+                          })}
+                      </Box>
+
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: { xs: "1fr", sm: "2fr 1fr 1fr" },
+                          gap: { xs: 0, sm: 2 },
+                        }}
+                      >
+                        {sectionGroups.selfPhysician
+                          .filter((fieldId) =>
+                            physicianCityStateZipRow.has(fieldId),
+                          )
+                          .map((fieldId) => {
+                            const field = allFields.find(
+                              (f) => f.id === fieldId,
+                            );
+                            if (!field) return null;
+
+                            return (
+                              <FieldRenderer
+                                key={field.id}
+                                field={field}
+                                control={control}
+                                errors={errors}
+                              />
+                            );
+                          })}
+                      </Box>
+                    </Box>
+                  )}
+
+                  <Button
+                    type="button"
+                    variant="outlined"
+                    fullWidth
+                    onClick={() => setShowPhysician((current) => !current)}
+                    sx={{ mt: 2, textTransform: "none", fontWeight: 600 }}
+                  >
+                    {showPhysician
+                      ? "Hide your physician information (optional)"
+                      : "Add your physician information (optional)"}
+                  </Button>
+                </ApplicantSection>
+              )}
 
               {sectionGroups.spouse.length > 0 && (
                 <ApplicantSection applicant="spouse">

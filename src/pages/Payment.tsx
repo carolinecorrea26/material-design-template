@@ -1,23 +1,12 @@
-import { Controller } from "react-hook-form";
-import {
-  Alert,
-  Box,
-  Card,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, Card, Stack, Typography } from "@mui/material";
 import FormRoutePage from "../components/form/FormRoutePage";
 import FormSectionTitle from "../components/form/FormSectionTitle";
 import FieldRenderer from "../components/form/FieldRenderer";
 import { coverageCategories } from "../config/coverageCategories";
 import type { CoverageCategoryId } from "../config/coverages/types";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
-import type { FieldDefinition } from "../config/fields/types";
+import { fieldCatalog } from "../config/fields";
+import type { FieldDefinition, FieldId } from "../config/fields/types";
 
 type AppliedProduct = {
   coverageId: string;
@@ -42,6 +31,14 @@ const paymentFrequencyOptions = [
   { value: "annually", label: "Annually" },
 ] as const;
 
+const BANK_FIELD_IDS: FieldId[] = [
+  "bank-name-on-account",
+  "bank-institution",
+  "bank-routing-number",
+  "bank-account-number",
+  "bank-authorization",
+];
+
 function toPositiveAmount(value: unknown): number | null {
   if (typeof value === "number" && Number.isFinite(value) && value > 0) {
     return value;
@@ -62,6 +59,7 @@ function estimateMonthlyPremium(
   amount: number,
 ) {
   let raw: number;
+
   switch (categoryId) {
     case "LI":
       raw = (amount / 1000) * 0.12;
@@ -197,6 +195,7 @@ function getPaymentDevFields(
 ): FieldDefinition[] {
   const appliedProducts = getAppliedProducts(values);
   const fields: FieldDefinition[] = [];
+
   const hasAnyBankAccountSelected = appliedProducts.some((product) => {
     const fieldId = `payment-method:${product.coverageId}`;
     return values[fieldId] === "bank-account";
@@ -208,59 +207,26 @@ function getPaymentDevFields(
       label: "Payment Method",
       inputType: "radio",
       required: true,
-      options: [
-        { value: "bill-me", label: "Bill me" },
-        { value: "bank-account", label: "Bank account" },
-      ],
-    } as FieldDefinition);
+      options: paymentMethodOptions.map((option) => ({
+        value: option.value,
+        label: option.label,
+      })),
+    });
 
     fields.push({
       id: `payment-frequency:${product.coverageId}`,
       label: "Payment Frequency",
-      inputType: "dropdown",
+      inputType: "radio",
       required: true,
-      options: [
-        { value: "monthly", label: "Monthly" },
-        { value: "quarterly", label: "Quarterly" },
-        { value: "semiannually", label: "Semiannually" },
-        { value: "annually", label: "Annually" },
-      ],
-    } as FieldDefinition);
+      options: paymentFrequencyOptions.map((option) => ({
+        value: option.value,
+        label: option.label,
+      })),
+    });
   }
 
-  // Add bank account fields if any payment method is set to bank-account
   if (hasAnyBankAccountSelected) {
-    fields.push({
-      id: "payment-routing-number",
-      label: "Routing Number",
-      inputType: "text",
-      required: true,
-    } as FieldDefinition);
-
-    fields.push({
-      id: "payment-account-number",
-      label: "Account Number",
-      inputType: "text",
-      required: true,
-    } as FieldDefinition);
-
-    fields.push({
-      id: "payment-account-type",
-      label: "Account Type",
-      inputType: "dropdown",
-      required: true,
-      options: [
-        { value: "checking", label: "Checking" },
-        { value: "savings", label: "Savings" },
-      ],
-    } as FieldDefinition);
-
-    fields.push({
-      id: "bank-authorization",
-      label: "Authorization",
-      inputType: "checkbox",
-      required: true,
-    } as FieldDefinition);
+    fields.push(...BANK_FIELD_IDS.map((fieldId) => fieldCatalog[fieldId]));
   }
 
   return fields;
@@ -308,7 +274,6 @@ export default function Payment() {
                     />
 
                     {products.map((product) => {
-                      const productLabel = product.coverageName;
                       const paymentMethodFieldId = `payment-method:${product.coverageId}`;
                       const paymentFrequencyFieldId = `payment-frequency:${product.coverageId}`;
 
@@ -326,6 +291,7 @@ export default function Payment() {
                         (sum, entry) => sum + entry.premium,
                         0,
                       );
+
                       const hasDependentBreakdown = applicantPremiums.some(
                         (entry) => entry.applicant !== "member",
                       );
@@ -338,42 +304,37 @@ export default function Payment() {
                         >
                           <Stack spacing={1.5}>
                             <Typography fontWeight={700}>
-                              {productLabel}
+                              {product.coverageName}
                             </Typography>
+
                             <FieldRenderer
-                              field={
-                                {
-                                  id: paymentMethodFieldId,
-                                  label: "Payment Method",
-                                  inputType: "radio",
-                                  required: true,
-                                  options: paymentMethodOptions.map(
-                                    (option) => ({
-                                      value: option.value,
-                                      label: option.label,
-                                    }),
-                                  ),
-                                } satisfies FieldDefinition
-                              }
+                              field={{
+                                id: paymentMethodFieldId,
+                                label: "Payment Method",
+                                inputType: "radio",
+                                required: true,
+                                options: paymentMethodOptions.map((option) => ({
+                                  value: option.value,
+                                  label: option.label,
+                                })),
+                              }}
                               control={control}
                               errors={errors}
                             />
 
                             <FieldRenderer
-                              field={
-                                {
-                                  id: paymentFrequencyFieldId,
-                                  label: "Payment Frequency",
-                                  inputType: "radio",
-                                  required: true,
-                                  options: paymentFrequencyOptions.map(
-                                    (option) => ({
-                                      value: option.value,
-                                      label: option.label,
-                                    }),
-                                  ),
-                                } satisfies FieldDefinition
-                              }
+                              field={{
+                                id: paymentFrequencyFieldId,
+                                label: "Payment Frequency",
+                                inputType: "radio",
+                                required: true,
+                                options: paymentFrequencyOptions.map(
+                                  (option) => ({
+                                    value: option.value,
+                                    label: option.label,
+                                  }),
+                                ),
+                              }}
                               control={control}
                               errors={errors}
                             />
@@ -397,6 +358,7 @@ export default function Payment() {
                                     1
                                   </Box>
                                 </Typography>
+
                                 <Typography
                                   variant="body2"
                                   color="text.secondary"
@@ -442,143 +404,14 @@ export default function Payment() {
                     Bank Account Information
                   </Typography>
 
-                  <Controller
-                    name="bank-name-on-account"
-                    control={control}
-                    rules={{
-                      validate: (value) =>
-                        !hasAnyBankAccountSelected ||
-                        (typeof value === "string" &&
-                          value.trim().length > 0) ||
-                        "Name on Account is required.",
-                    }}
-                    render={({ field }) => (
-                      <TextField
-                        label="Name on Account"
-                        fullWidth
-                        value={(field.value as string) ?? ""}
-                        onChange={field.onChange}
-                        error={Boolean(errors["bank-name-on-account"])}
-                        helperText={
-                          (errors["bank-name-on-account"]?.message as string) ??
-                          ""
-                        }
-                      />
-                    )}
-                  />
-
-                  <Controller
-                    name="bank-institution"
-                    control={control}
-                    rules={{
-                      validate: (value) =>
-                        !hasAnyBankAccountSelected ||
-                        (typeof value === "string" &&
-                          value.trim().length > 0) ||
-                        "Bank Institution is required.",
-                    }}
-                    render={({ field }) => (
-                      <TextField
-                        label="Bank Institution"
-                        fullWidth
-                        value={(field.value as string) ?? ""}
-                        onChange={field.onChange}
-                        error={Boolean(errors["bank-institution"])}
-                        helperText={
-                          (errors["bank-institution"]?.message as string) ?? ""
-                        }
-                      />
-                    )}
-                  />
-
-                  <Controller
-                    name="bank-routing-number"
-                    control={control}
-                    rules={{
-                      validate: (value) =>
-                        !hasAnyBankAccountSelected ||
-                        (typeof value === "string" &&
-                          value.trim().length > 0) ||
-                        "Routing Number is required.",
-                    }}
-                    render={({ field }) => (
-                      <TextField
-                        label="Routing Number"
-                        fullWidth
-                        inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
-                        value={(field.value as string) ?? ""}
-                        onChange={(event) =>
-                          field.onChange(event.target.value.replace(/\D/g, ""))
-                        }
-                        error={Boolean(errors["bank-routing-number"])}
-                        helperText={
-                          (errors["bank-routing-number"]?.message as string) ??
-                          ""
-                        }
-                      />
-                    )}
-                  />
-
-                  <Controller
-                    name="bank-account-number"
-                    control={control}
-                    rules={{
-                      validate: (value) =>
-                        !hasAnyBankAccountSelected ||
-                        (typeof value === "string" &&
-                          value.trim().length > 0) ||
-                        "Account Number is required.",
-                    }}
-                    render={({ field }) => (
-                      <TextField
-                        label="Account Number"
-                        fullWidth
-                        inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
-                        value={(field.value as string) ?? ""}
-                        onChange={(event) =>
-                          field.onChange(event.target.value.replace(/\D/g, ""))
-                        }
-                        error={Boolean(errors["bank-account-number"])}
-                        helperText={
-                          (errors["bank-account-number"]?.message as string) ??
-                          ""
-                        }
-                      />
-                    )}
-                  />
-
-                  <Controller
-                    name="bank-authorization"
-                    control={control}
-                    rules={{
-                      validate: (value) =>
-                        !hasAnyBankAccountSelected ||
-                        value === true ||
-                        "Authorization is required.",
-                    }}
-                    render={({ field }) => (
-                      <FormControl
-                        required
-                        error={Boolean(errors["bank-authorization"])}
-                      >
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={Boolean(field.value)}
-                              onChange={(event) =>
-                                field.onChange(event.target.checked)
-                              }
-                            />
-                          }
-                          label="I authorize recurring payments from this bank account."
-                        />
-                        <FormHelperText>
-                          {(errors["bank-authorization"]?.message as string) ??
-                            ""}
-                        </FormHelperText>
-                      </FormControl>
-                    )}
-                  />
+                  {BANK_FIELD_IDS.map((fieldId) => (
+                    <FieldRenderer
+                      key={fieldId}
+                      field={fieldCatalog[fieldId]}
+                      control={control}
+                      errors={errors}
+                    />
+                  ))}
                 </Stack>
               </Card>
             )}

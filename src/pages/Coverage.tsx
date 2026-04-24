@@ -118,10 +118,15 @@ export default function Coverage() {
       window.removeEventListener("devtools:fillform", handleDevFillForm);
   }, [coverages, setPageValues]);
 
-  function validate() {
-    if (selectedCoverageIds.length === 0) {
+  function validate(nextValues: Record<string, unknown>) {
+    const nextSelectedCoverageIds = Array.isArray(nextValues.coverageSelections)
+      ? nextValues.coverageSelections
+      : [];
+
+    if (nextSelectedCoverageIds.length === 0) {
       return "Please select at least one coverage to continue.";
     }
+
     return undefined;
   }
 

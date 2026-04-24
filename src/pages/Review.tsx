@@ -1,46 +1,19 @@
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ReportRoundedIcon from "@mui/icons-material/ReportRounded";
-import ContentPasteSearchRoundedIcon from "@mui/icons-material/ContentPasteSearchRounded";
 import PrintOutlinedIcon from "@mui/icons-material/PrintOutlined";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Alert,
-  Box,
-  Button,
-  Card,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import FormRoutePage from "../components/form/FormRoutePage";
 import ApplicantSection from "../components/form/ApplicantSection";
-import { shouldShowApplicantLabel } from "../components/form/applicantVisibility";
+import {
+  isApplicantApplying,
+  shouldShowApplicantLabel,
+} from "../components/form/applicantVisibility";
 import { SECTION_SURFACE_BG } from "../components/form/sectionStyles";
 import FieldRenderer from "../components/form/FieldRenderer";
 import type { PageId } from "../types/page";
-import type { FieldDefinition } from "../config/fields/types";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
-import { pageSections } from "../config/pageSections/pageSections";
 import { fieldCatalog } from "../config/fields";
-
-const reviewSelfConsentField: FieldDefinition = {
-  id: "review-self-consent",
-  label:
-    "I confirm that I have reviewed and understand the above material. I consent to the use of electronic signature and delivery of electronic records.",
-  inputType: "checkbox",
-  required: true,
-};
-
-const reviewSpouseConsentField: FieldDefinition = {
-  id: "review-spouse-consent",
-  label:
-    "I confirm that I have reviewed and understand the above material. I consent to the use of electronic signature and delivery of electronic records.",
-  inputType: "checkbox",
-  required: true,
-};
+import ReviewPreviewSection from "../components/form/ReviewPreviewSection";
 
 const reviewCards: Array<{
   pageId: PageId;
@@ -71,6 +44,13 @@ const reviewFieldBlocklist = new Set<string>([
   "spouseDisabilityCompanies",
   "review-self-consent",
   "review-spouse-consent",
+]);
+
+const subQuestionFieldIds = new Set([
+  "tobacco-last-used",
+  "tobacco-products",
+  "spouse-tobacco-last-used",
+  "spouse-tobacco-products",
 ]);
 
 const readAndSignContent = `Please read carefully the statements below.
@@ -170,239 +150,6 @@ Yes. To do business electronically with New York Life and to access and retain t
 GMA-EC
 1/1/18 ed.`;
 
-function formatLabel(key: string) {
-  return key
-    .replace(/[-_]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .replace(/\b\w/g, (match) => match.toUpperCase());
-}
-
-function getNameFieldPair(fieldId: string): string | null {
-  if (fieldId === "first-name" || fieldId === "last-name") return "name";
-  if (fieldId === "spouse-first-name" || fieldId === "spouse-last-name")
-    return "spouse-name";
-  if (fieldId === "child-first-name" || fieldId === "child-last-name")
-    return "child-name";
-  if (fieldId === "physician-first-name" || fieldId === "physician-last-name")
-    return "physician-name";
-  return null;
-}
-
-type PreviewRow = {
-  label: string;
-  fieldId: string;
-  value: unknown;
-  indent?: boolean;
-};
-
-function capitalizeFirst(s: string): string {
-  if (!s) return s;
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-function formatFieldValue(fieldId: string, value: unknown): string | string[] {
-  if (value == null || value === "") return "-";
-  if (typeof value === "boolean") return value ? "Yes" : "No";
-
-  const field = fieldId
-    ? fieldCatalog[fieldId as keyof typeof fieldCatalog]
-    : undefined;
-
-  // Array of values (multi-select, checkbox-group)
-  if (Array.isArray(value)) {
-    if (!value.length) return "-";
-    if (field?.options) {
-      return value.map((v) => {
-        const opt = field.options!.find((o) => o.value === String(v));
-        return opt ? opt.label : capitalizeFirst(String(v));
-      });
-    }
-    return value.map((v) =>
-      typeof v === "string" ? capitalizeFirst(v) : String(v),
-    );
-  }
-
-  // Single value with options (radio, dropdown)
-  if (field?.options && typeof value === "string") {
-    const opt = field.options.find((o) => o.value === value);
-    if (opt) return opt.label;
-  }
-
-  // Date: YYYY-MM-DD → MM/DD/YYYY
-  if (field?.inputType === "date" && typeof value === "string") {
-    const match = value.match(/^(\d{4})-(\d{2})-(\d{2})/);
-    if (match) return `${match[2]}/${match[3]}/${match[1]}`;
-  }
-
-  // Currency
-  if (field?.format === "currency") {
-    const numStr =
-      typeof value === "string" ? value.replace(/[^\d.-]/g, "") : String(value);
-    const num = parseFloat(numStr);
-    if (!isNaN(num)) {
-      return num.toLocaleString("en-US", {
-        style: "currency",
-        currency: "USD",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      });
-    }
-  }
-
-  if (typeof value === "string") return capitalizeFirst(value);
-  if (typeof value === "number") return String(value);
-  return String(value);
-}
-
-function formatBeneficiaryRows(bens: unknown): PreviewRow[] {
-  if (!bens || typeof bens !== "object" || Array.isArray(bens)) return [];
-
-  const coverages = getActiveClientCoverages();
-  const rows: PreviewRow[] = [];
-
-  Object.entries(bens as Record<string, unknown>).forEach(
-    ([productKey, items]) => {
-      if (!Array.isArray(items) || !items.length) return;
-
-      const [coverageId, applicantId] = productKey.split(":");
-      const coverage = coverages.find((c) => c.id === coverageId);
-      const coverageName = coverage ? coverage.name : formatLabel(coverageId);
-      const applicantLabel =
-        applicantId === "spouse" ? " (Spouse)" : " (Member)";
-
-      const displayLines = items.map(
-        (item: {
-          designation: string;
-          beneficiaryType: string;
-          firstName?: string;
-          lastName?: string;
-          relationship?: string;
-          trustName?: string;
-          share: number;
-        }) => {
-          const name =
-            item.beneficiaryType === "trust"
-              ? item.trustName || "Trust"
-              : `${item.firstName || ""} ${item.lastName || ""}`.trim() ||
-                "Unknown";
-          const designation =
-            item.designation === "primary" ? "Primary" : "Contingent";
-          const share = `${item.share}%`;
-          const rel = item.relationship ? ` · ${item.relationship}` : "";
-          return `${name} · ${designation} · ${share}${rel}`;
-        },
-      );
-
-      rows.push({
-        label: `${coverageName}${applicantLabel}`,
-        fieldId: "",
-        value: displayLines,
-      });
-    },
-  );
-
-  return rows;
-}
-
-function splitCoverageOptions(
-  amounts: unknown,
-  riders: unknown,
-): { memberRows: PreviewRow[]; spouseRows: PreviewRow[] } {
-  const memberRows: PreviewRow[] = [];
-  const spouseRows: PreviewRow[] = [];
-  const coverages = getActiveClientCoverages();
-
-  if (typeof amounts === "object" && amounts) {
-    Object.entries(amounts as Record<string, unknown>).forEach(
-      ([key, amount]) => {
-        if (!amount) return;
-        const parts = key.split(":");
-        const coverageId = parts[0];
-        const applicantId = parts[1];
-        const coverage = coverages.find((c) => c.id === coverageId);
-        if (!coverage) return;
-
-        const num =
-          typeof amount === "number"
-            ? amount
-            : parseFloat(String(amount).replace(/[^\d.-]/g, ""));
-        const formattedAmount = isNaN(num)
-          ? String(amount)
-          : num.toLocaleString("en-US", {
-              style: "currency",
-              currency: "USD",
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 0,
-            });
-
-        const row: PreviewRow = {
-          label: coverage.name,
-          fieldId: "",
-          value: formattedAmount,
-        };
-
-        if (applicantId === "spouse") {
-          spouseRows.push(row);
-        } else {
-          memberRows.push(row);
-        }
-      },
-    );
-  }
-
-  if (typeof riders === "object" && riders) {
-    Object.entries(riders as Record<string, unknown>).forEach(
-      ([key, enabled]) => {
-        if (!enabled) return;
-        const parts = key.split(":");
-        // key format: coverageId:riderId:applicantId
-        const coverageId = parts[0];
-        const riderId = parts[1];
-        const applicantId = parts[2];
-        const coverage = coverages.find((c) => c.id === coverageId);
-        const rider = coverage?.riders?.find((r) => r.id === riderId);
-        const riderName = rider
-          ? `${rider.name} Rider`
-          : `${formatLabel(riderId)} Rider`;
-
-        const row: PreviewRow = {
-          label: riderName,
-          fieldId: "",
-          value: "Included",
-        };
-
-        if (applicantId === "spouse") {
-          spouseRows.push(row);
-        } else {
-          memberRows.push(row);
-        }
-      },
-    );
-  }
-
-  return { memberRows, spouseRows };
-}
-
-const subQuestionFieldIds = new Set([
-  "tobacco-last-used",
-  "tobacco-products",
-  "spouse-tobacco-last-used",
-  "spouse-tobacco-products",
-]);
-
-function getCoverageNames(values: Record<string, unknown>): string[] {
-  const selectedCoverageIds = Array.isArray(values.coverageSelections)
-    ? values.coverageSelections
-    : [];
-  const coverages = getActiveClientCoverages();
-  const byId = new Map(
-    coverages.map((coverage) => [coverage.id, coverage.name]),
-  );
-
-  return selectedCoverageIds.map((id) => byId.get(String(id)) ?? String(id));
-}
-
 export default function Review() {
   const navigate = useNavigate();
 
@@ -488,356 +235,31 @@ export default function Review() {
           </Alert>
         );
       }}
-      devFillFields={(currentValues) => {
-        const dependents = Array.isArray(currentValues.dependents)
-          ? currentValues.dependents
-          : [];
-
-        return [
-          reviewSelfConsentField,
-          ...(dependents.includes("spouse") ? [reviewSpouseConsentField] : []),
-        ];
-      }}
+      devFillFields={(currentValues) => [
+        fieldCatalog["review-self-consent"],
+        ...(isApplicantApplying("spouse", currentValues)
+          ? [fieldCatalog["review-spouse-consent"]]
+          : []),
+      ]}
     >
       {({ control, errors, watchedValues }) => {
         const values = watchedValues as Record<string, unknown>;
-        const dependents = Array.isArray(values.dependents)
-          ? values.dependents
-          : [];
-        const hasSpouse = dependents.includes("spouse");
+        const hasSpouse = isApplicantApplying("spouse", values);
 
         function openEdit(pageId: PageId) {
           navigate(`/${pageId}`);
         }
 
-        function renderKeyValueRows(rows: PreviewRow[]) {
-          if (!rows.length) {
-            return (
-              <Typography variant="body2" color="text.secondary">
-                No data available.
-              </Typography>
-            );
-          }
-
-          return (
-            <Stack spacing={0.75}>
-              {rows.map((row, rowIndex) => {
-                const displayValue = formatFieldValue(row.fieldId, row.value);
-                const isMulti = Array.isArray(displayValue);
-                return (
-                  <Box
-                    key={`${row.label}-${rowIndex}`}
-                    sx={
-                      row.indent
-                        ? {
-                            pl: 1.5,
-                            borderLeft: "3px solid",
-                            borderLeftColor: "primary.main",
-                          }
-                        : undefined
-                    }
-                  >
-                    <Stack
-                      direction="row"
-                      spacing={1}
-                      justifyContent="space-between"
-                      alignItems="flex-start"
-                      sx={{ pb: 0.75, borderBottom: "1px dotted #d0d0d0" }}
-                    >
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        sx={{ maxWidth: "40%", flexShrink: 0 }}
-                      >
-                        {row.label}
-                      </Typography>
-                      <Box sx={{ textAlign: "right", flex: 1 }}>
-                        {isMulti ? (
-                          <Stack spacing={0.25} alignItems="flex-end">
-                            {(displayValue as string[]).map((item, i) => (
-                              <Typography
-                                key={i}
-                                variant="body2"
-                                sx={{ wordBreak: "break-word" }}
-                              >
-                                {item}
-                              </Typography>
-                            ))}
-                          </Stack>
-                        ) : (
-                          <Typography
-                            variant="body2"
-                            sx={{ wordBreak: "break-word" }}
-                          >
-                            {displayValue}
-                          </Typography>
-                        )}
-                      </Box>
-                    </Stack>
-                  </Box>
-                );
-              })}
-            </Stack>
-          );
-        }
-
-        function getPageSectionsForApplicant(
-          pageId: PageId,
-          applicant: "self" | "spouse",
-        ): PreviewRow[] {
-          const pageSectionList = pageSections[pageId] || [];
-          const result: PreviewRow[] = [];
-          const processed = new Set<string>();
-
-          const applicantSections = pageSectionList.filter((s) => {
-            if (applicant === "self" && s.applicant === "spouse") return false;
-            if (applicant === "spouse" && s.applicant !== "spouse")
-              return false;
-            return true;
-          });
-
-          // Sections conditioned on a specific field value (equals/notEquals) are
-          // sub-sections that get injected immediately after their trigger field.
-          // Everything else is a main section processed top-to-bottom.
-          const subSectionsByTrigger = new Map<
-            string,
-            Array<{ fieldIds: readonly string[] }>
-          >();
-          const mainSections: Array<{ fieldIds: readonly string[] }> = [];
-
-          for (const section of applicantSections) {
-            const equalsRules = (section.visibleWhen ?? []).filter(
-              (rule) => "equals" in rule || "notEquals" in rule,
-            );
-            if (equalsRules.length) {
-              for (const rule of equalsRules) {
-                const key = rule.fieldId;
-                const existing = subSectionsByTrigger.get(key) ?? [];
-                existing.push({ fieldIds: section.fieldIds });
-                subSectionsByTrigger.set(key, existing);
-              }
-            } else {
-              mainSections.push({ fieldIds: section.fieldIds });
-            }
-          }
-
-          function processSectionFields(
-            fieldIds: readonly string[],
-            indent: boolean,
-          ) {
-            for (const fieldId of fieldIds) {
-              if (reviewFieldBlocklist.has(fieldId) || processed.has(fieldId)) {
-                processed.add(fieldId);
-                continue;
-              }
-
-              const pairKey = getNameFieldPair(fieldId);
-              if (pairKey) {
-                const otherFieldId = fieldId.includes("first")
-                  ? fieldId.replace("-first-", "-last-")
-                  : fieldId.replace("-last-", "-first-");
-
-                if (!processed.has(otherFieldId)) {
-                  const firstValue = fieldId.includes("first")
-                    ? values[fieldId]
-                    : values[otherFieldId];
-                  const lastValue = fieldId.includes("first")
-                    ? values[otherFieldId]
-                    : values[fieldId];
-                  const combined = [firstValue, lastValue]
-                    .filter(Boolean)
-                    .join(" ");
-                  if (combined) {
-                    result.push({
-                      label: formatLabel(pairKey),
-                      fieldId: pairKey,
-                      value: combined,
-                      indent,
-                    });
-                  }
-                }
-                processed.add(fieldId);
-                processed.add(otherFieldId);
-                continue;
-              }
-
-              if (values[fieldId] == null || values[fieldId] === "") {
-                processed.add(fieldId);
-                continue;
-              }
-
-              const field = fieldCatalog[fieldId as keyof typeof fieldCatalog];
-              const label = field?.label || formatLabel(fieldId);
-              const rowIndent = indent || subQuestionFieldIds.has(fieldId);
-              result.push({
-                label,
-                fieldId,
-                value: values[fieldId],
-                indent: rowIndent,
-              });
-              processed.add(fieldId);
-
-              // Inject sub-sections triggered by this field immediately after it
-              for (const sub of subSectionsByTrigger.get(fieldId) ?? []) {
-                processSectionFields(sub.fieldIds, true);
-              }
-            }
-          }
-
-          for (const section of mainSections) {
-            processSectionFields(section.fieldIds, false);
-          }
-
-          return result;
-        }
-        function getPagePreviewEntries(pageId: PageId): {
-          self: PreviewRow[];
-          spouse: PreviewRow[];
-        } {
-          if (pageId === "coverage") {
-            const coverageNames = getCoverageNames(values);
-            if (!coverageNames.length) return { self: [], spouse: [] };
-            return {
-              self: [
-                {
-                  label: "Selected products",
-                  fieldId: "",
-                  value: coverageNames,
-                },
-              ],
-              spouse: [],
-            };
-          }
-
-          if (pageId === "coverage-options") {
-            const { memberRows, spouseRows } = splitCoverageOptions(
-              values.coverageAmounts,
-              values.coverageRiders,
-            );
-            return { self: memberRows, spouse: spouseRows };
-          }
-
-          if (pageId === "beneficiary") {
-            return {
-              self: formatBeneficiaryRows(values.beneficiaries),
-              spouse: [],
-            };
-          }
-
-          const selfEntries = getPageSectionsForApplicant(pageId, "self");
-          const spouseEntries = getPageSectionsForApplicant(pageId, "spouse");
-
-          return { self: selfEntries, spouse: spouseEntries };
-        }
-
-        function renderPreviewCard(
-          pageId: PageId,
-          title: string,
-          showSelfLabel?: boolean,
-        ) {
-          const { self: selfEntries, spouse: spouseEntries } =
-            getPagePreviewEntries(pageId);
-
-          const hasSelfContent = selfEntries.length > 0;
-          const hasSpouseContent = spouseEntries.length > 0 && hasSpouse;
-
-          if (!hasSelfContent && !hasSpouseContent) {
-            return null;
-          }
-
-          return (
-            <Card
-              key={pageId}
-              variant="outlined"
-              sx={{ p: 2, borderRadius: 2 }}
-            >
-              <Stack spacing={1.5}>
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                    {title}
-                  </Typography>
-                  <Button
-                    size="small"
-                    startIcon={<EditOutlinedIcon />}
-                    onClick={() => openEdit(pageId)}
-                  >
-                    Edit
-                  </Button>
-                </Stack>
-
-                <Stack spacing={1.5}>
-                  {hasSelfContent ? (
-                    <ApplicantSection
-                      applicant="self"
-                      showLabel={
-                        showSelfLabel !== false &&
-                        shouldShowApplicantLabel("self", values, "review")
-                      }
-                    >
-                      {renderKeyValueRows(selfEntries)}
-                    </ApplicantSection>
-                  ) : null}
-
-                  {hasSpouseContent ? (
-                    <ApplicantSection applicant="spouse" showLabel>
-                      {renderKeyValueRows(spouseEntries)}
-                    </ApplicantSection>
-                  ) : null}
-                </Stack>
-              </Stack>
-            </Card>
-          );
-        }
-
         return (
           <Stack spacing={2.5}>
-            <Accordion
-              disableGutters
-              sx={{
-                borderRadius: 1,
-                overflow: "hidden",
-                "&:before": {
-                  display: "none",
-                },
-              }}
-            >
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <ContentPasteSearchRoundedIcon
-                    color="primary"
-                    fontSize="small"
-                  />
-                  <Typography
-                    // color="primary"
-                    sx={{
-                      fontSize: "0.875rem",
-                      fontWeight: 600,
-                      // textTransform: "uppercase",
-                      color: "primary.main",
-                    }}
-                  >
-                    Review your application
-                  </Typography>
-                </Stack>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Stack spacing={1.5}>
-                  {reviewCards
-                    .map((card) =>
-                      renderPreviewCard(
-                        card.pageId,
-                        card.title,
-                        card.showSelfLabel,
-                      ),
-                    )
-                    .filter((card) => card !== null)}
-                </Stack>
-              </AccordionDetails>
-            </Accordion>
+            <ReviewPreviewSection
+              values={values}
+              hasSpouse={hasSpouse}
+              reviewCards={reviewCards}
+              reviewFieldBlocklist={reviewFieldBlocklist}
+              subQuestionFieldIds={subQuestionFieldIds}
+              onEdit={openEdit}
+            />
 
             <Box>
               <Typography
@@ -920,7 +342,7 @@ export default function Review() {
                 showLabel={shouldShowApplicantLabel("self", values, "review")}
               >
                 <FieldRenderer
-                  field={reviewSelfConsentField}
+                  field={fieldCatalog["review-self-consent"]}
                   control={control}
                   errors={errors}
                 />
@@ -929,7 +351,7 @@ export default function Review() {
               {hasSpouse ? (
                 <ApplicantSection applicant="spouse" showLabel>
                   <FieldRenderer
-                    field={reviewSpouseConsentField}
+                    field={fieldCatalog["review-spouse-consent"]}
                     control={control}
                     errors={errors}
                   />

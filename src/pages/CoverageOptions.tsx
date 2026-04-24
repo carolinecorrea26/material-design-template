@@ -462,12 +462,22 @@ export default function CoverageOptions() {
     }))
     .filter((group) => group.items.length > 0);
 
-  function validate() {
-    const hasAmount = Object.values(storedAmounts).some((v) => v > 0);
+  function validate(nextValues: Record<string, unknown>) {
+    const nextStoredAmounts =
+      nextValues.coverageAmounts != null &&
+      typeof nextValues.coverageAmounts === "object" &&
+      !Array.isArray(nextValues.coverageAmounts)
+        ? (nextValues.coverageAmounts as Record<string, number>)
+        : {};
+
+    const hasAmount = Object.values(nextStoredAmounts).some(
+      (value) => value > 0,
+    );
 
     if (!hasAmount) {
       return "Select at least one coverage amount before continuing.";
     }
+
     return undefined;
   }
 

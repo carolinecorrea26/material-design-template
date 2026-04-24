@@ -41,8 +41,9 @@ export default function DocuSign() {
       pageId="docusign"
       title="Review and sign your application."
       formMaxWidth={1200}
-      validate={() =>
-        signatureName.trim()
+      validate={(nextValues) =>
+        typeof nextValues["signature-full-name"] === "string" &&
+        nextValues["signature-full-name"].trim()
           ? undefined
           : "Type your full name to complete the signature."
       }

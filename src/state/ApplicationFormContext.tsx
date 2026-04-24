@@ -6,6 +6,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { withApplicantsApplying } from "../utils/applicantsApplying";
 
 export type ApplicationFormValues = Record<
   string,
@@ -42,7 +43,10 @@ function loadStoredValues(): ApplicationFormValues {
   }
 
   try {
-    return JSON.parse(storedValues) as ApplicationFormValues;
+    const parsedValues = JSON.parse(storedValues) as ApplicationFormValues;
+    return Object.keys(parsedValues).length > 0
+      ? (withApplicantsApplying(parsedValues) as ApplicationFormValues)
+      : parsedValues;
   } catch {
     window.sessionStorage.removeItem(STORAGE_KEY);
     return {};
@@ -59,10 +63,13 @@ export function ApplicationFormProvider({
   }, [values]);
 
   function setPageValues(pageValues: ApplicationFormValues) {
-    setValues((currentValues) => ({
-      ...currentValues,
-      ...pageValues,
-    }));
+    setValues(
+      (currentValues) =>
+        withApplicantsApplying({
+          ...currentValues,
+          ...pageValues,
+        }) as ApplicationFormValues,
+    );
   }
 
   function resetValues() {

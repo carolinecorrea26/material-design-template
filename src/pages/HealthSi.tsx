@@ -239,20 +239,17 @@ export default function HealthSi() {
     <FormRoutePage
       pageId="health-si"
       title="We need some health information before proceeding."
-      devFillFields={(currentValues) => {
-        const dependents = Array.isArray(currentValues.dependents)
-          ? currentValues.dependents
-          : [];
-
-        return [
-          ...createHealthQuestionFields("self"),
-          ...(dependents.includes("spouse")
-            ? createHealthQuestionFields("spouse")
-            : []),
-        ];
-      }}
+      devFillFields={(currentValues) => [
+        ...(isApplicantApplying("self", currentValues)
+          ? createHealthQuestionFields("self")
+          : []),
+        ...(isApplicantApplying("spouse", currentValues)
+          ? createHealthQuestionFields("spouse")
+          : []),
+      ]}
     >
       {({ control, errors, watchedValues, allFields }) => {
+        const hasSelf = isApplicantApplying("self", watchedValues);
         const hasSpouse = isApplicantApplying("spouse", watchedValues);
 
         // Get or create field definitions
@@ -267,22 +264,24 @@ export default function HealthSi() {
 
         return (
           <Stack spacing={3}>
-            <ApplicantSection
-              applicant="self"
-              showLabel={shouldShowApplicantLabel(
-                "self",
-                watchedValues,
-                "health-si",
-              )}
-            >
-              <HealthQuestionSet
+            {hasSelf && (
+              <ApplicantSection
                 applicant="self"
-                control={control}
-                errors={errors}
-                watchedValues={watchedValues}
-                allFields={finalFields}
-              />
-            </ApplicantSection>
+                showLabel={shouldShowApplicantLabel(
+                  "self",
+                  watchedValues,
+                  "health-si",
+                )}
+              >
+                <HealthQuestionSet
+                  applicant="self"
+                  control={control}
+                  errors={errors}
+                  watchedValues={watchedValues}
+                  allFields={finalFields}
+                />
+              </ApplicantSection>
+            )}
 
             {hasSpouse && (
               <ApplicantSection

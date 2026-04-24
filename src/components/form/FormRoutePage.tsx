@@ -57,7 +57,7 @@ type FormRoutePageProps = {
   formMaxWidth?: number | string;
   help?: ReactNode | ((props: FormRouteRenderProps) => ReactNode);
   children: ReactNode | ((props: FormRouteRenderProps) => ReactNode);
-  validate?: () => string | undefined;
+  validate?: (values: FormRoutePageValues) => string | undefined;
   defaultValueOverrides?: FormRoutePageFormValues;
   devFillFields?: (currentValues: FormRoutePageValues) => FieldDefinition[];
   onDevFill?: (context: DevFillContext) => void;
@@ -329,24 +329,23 @@ export default function FormRoutePage({
   }, []);
 
   function onSubmit(formValues: FormRoutePageValues) {
-    if (validate) {
-      const validationError = validate();
-
-      if (validationError) {
-        setPageError(validationError);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        return;
-      }
-    }
-
-    setPageError(undefined);
-    setPageValues(formValues);
-
     const nextNavigationValues = {
       ...values,
       ...formValues,
     };
+
+    const validationError = validate?.(nextNavigationValues);
+
+    if (validationError) {
+      setPageError(validationError);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    setPageError(undefined);
+    setPageValues(formValues);
     emitProgressSnapshot(nextNavigationValues);
+
     const nextPageId =
       resolveNextPageId?.(nextNavigationValues) ??
       getNextFormPageId(pageId, nextNavigationValues);
