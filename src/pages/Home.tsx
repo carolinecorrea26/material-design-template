@@ -1,8 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
-import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -117,22 +114,25 @@ const APPLYING_STEPS = [
     id: 0,
     number: "1",
     title: "Apply online",
-    body: "Get an instant quote and submit your application in minutes.",
-    icon: EditOutlinedIcon,
+    body: "Complete our online application to apply for coverage that fits your needs. You'll be able to review your options and see your estimated cost.",
+    imageSrc: "/1-apply.svg",
+    imageAlt: "Apply online",
   },
   {
     id: 1,
     number: "2",
     title: "Provide medical info",
     body: "Many types of insurance require health information to provide a decision on your application. We may ask health questions on your application or a representative of New York Life or their medical service provider may contact you to collect your health history. If needed, we will schedule a medical exam at no cost to you and at a time and place convenient to you.",
-    icon: FavoriteBorderRoundedIcon,
+    imageSrc: "/2-medical.svg",
+    imageAlt: "Provide medical info",
   },
   {
     id: 2,
     number: "3",
     title: "Get a decision",
     body: "Decisions are made after all information is received and reviewed by New York Life. If approved, you will receive a certificate of insurance and have a 30-day no-obligation free look. Plus, when QuickDecisionSM is available, you can get a faster decision on your application, typically with no medical exam.",
-    icon: TaskAltRoundedIcon,
+    imageSrc: "/3-decision.svg",
+    imageAlt: "Get a decision",
   },
 ] as const;
 
@@ -307,7 +307,6 @@ function HowApplyingWorksSection({
   }, [activeStep]);
 
   const active = useMemo(() => APPLYING_STEPS[activeStep], [activeStep]);
-  const ActiveIcon = active.icon;
 
   return (
     <Stack spacing={2.5}>
@@ -611,45 +610,41 @@ function HowApplyingWorksSection({
 
           <Box
             sx={{
-              ...SURFACE_SX,
-              borderRadius: 4,
+              // ...SURFACE_SX,
+              // borderRadius: 4,
               p: { xs: 2.5, md: 3.5 },
-              background:
-                "linear-gradient(135deg, rgba(244, 248, 255, 0.96) 0%, rgba(255, 255, 255, 1) 52%, rgba(247, 251, 255, 1) 100%)",
+              // background:
+              //   "linear-gradient(135deg, rgba(244, 248, 255, 0.96) 0%, rgba(255, 255, 255, 1) 52%, rgba(247, 251, 255, 1) 100%)",
             }}
           >
             <Stack
               direction={{ xs: "column", md: "row" }}
-              spacing={{ xs: 3, md: 4 }}
-              alignItems={{ xs: "flex-start", md: "center" }}
+              spacing={{ xs: 3, md: 5 }}
+              alignItems={{ xs: "center", md: "center" }}
             >
-              <Box
-                sx={{
-                  width: { xs: 96, md: 120 },
-                  height: { xs: 96, md: 120 },
-                  borderRadius: "50%",
-                  backgroundColor: "rgba(7, 104, 255, 0.10)",
-                  color: "primary.main",
-                  border: "1px solid rgba(7, 104, 255, 0.10)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  alignSelf: { xs: "center", md: "center" },
+              <motion.div
+                key={`icon-${active.id}`}
+                animate={{ y: [0, -6, 0], scale: [1, 1.05, 1] }}
+                transition={{
+                  duration: 1.6,
+                  ease: "easeInOut",
+                  repeat: Infinity,
                 }}
+                style={{ flexShrink: 0 }}
               >
-                <motion.div
-                  key={`icon-${active.id}`}
-                  animate={{ y: [0, -6, 0], scale: [1, 1.05, 1] }}
-                  transition={{
-                    duration: 1.6,
-                    ease: "easeInOut",
-                    repeat: Infinity,
+                <Box
+                  component="img"
+                  src={active.imageSrc}
+                  alt={active.imageAlt}
+                  sx={{
+                    display: "block",
+                    width: 100,
+                    height: 100,
+
+                    objectFit: "contain",
                   }}
-                >
-                  <ActiveIcon sx={{ fontSize: { xs: 40, md: 52 } }} />
-                </motion.div>
-              </Box>
+                />
+              </motion.div>
 
               <AnimatePresence mode="wait">
                 <motion.div
@@ -661,22 +656,6 @@ function HowApplyingWorksSection({
                   style={{ width: "100%" }}
                 >
                   <Stack spacing={1.5}>
-                    {/* <Box
-                      sx={{
-                        display: "inline-flex",
-                        width: "fit-content",
-                        px: 1.5,
-                        py: 0.75,
-                        borderRadius: 999,
-                        backgroundColor: "rgba(7, 104, 255, 0.10)",
-                        color: "primary.main",
-                        fontSize: 13,
-                        fontWeight: 700,
-                      }}
-                    >
-                      Step {active.number}
-                    </Box> */}
-
                     <Typography variant="h4">{active.title}</Typography>
 
                     {active.id === 1 ? (
@@ -1677,12 +1656,7 @@ export default function Home() {
           >
             <Stack spacing={2}>
               <Stack spacing={0.75}>
-                <Typography
-                  variant="h3"
-                  // sx={{ fontSize: { xs: "1.875rem", md: "2.25rem" } }}
-                >
-                  {NYL_ABOUT_CONTENT.title}
-                </Typography>
+                <Typography variant="h3">{NYL_ABOUT_CONTENT.title}</Typography>
                 {NYL_ABOUT_CONTENT.subtitle ? (
                   <Typography variant="body1" sx={{ fontWeight: 600 }}>
                     {NYL_ABOUT_CONTENT.subtitle}
