@@ -71,8 +71,7 @@ export const pages = [
     id: "review",
     path: "/review",
     type: "form",
-    title:
-      "Review your application and confirm everything looks good. You must provide your consent to the following continue.",
+    title: "Almost there. Please review the following before continuing.",
     groupId: "review",
   },
   {

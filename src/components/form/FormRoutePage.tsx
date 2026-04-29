@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type ReactNode,
@@ -26,6 +27,8 @@ import {
 import { isApplicantApplying } from "./applicantVisibility";
 import FormPage from "./FormPage";
 import { generateFormDataUpToPage } from "../../dev/utils/generateFormData";
+import FormHelpChips, { type HelpChipItem } from "./FormHelpChips";
+import FormHelpDrawer from "./FormHelpDrawer";
 
 type FormRouteFieldValue = string | boolean | string[];
 type FormRoutePageFormValues = Record<string, FormRouteFieldValue>;
@@ -44,6 +47,11 @@ export type FormRouteRenderProps = {
   trigger: ReturnType<typeof useForm<FormRoutePageFormValues>>["trigger"];
 };
 
+type FormRouteHelpItem = HelpChipItem & {
+  title: string;
+  content: ReactNode;
+};
+
 type DevFillContext = {
   currentValues: FormRoutePageValues;
   currentFields: FieldDefinition[];
@@ -56,6 +64,9 @@ type FormRoutePageProps = {
   title?: string;
   formMaxWidth?: number | string;
   help?: ReactNode | ((props: FormRouteRenderProps) => ReactNode);
+  helpItems?:
+    | FormRouteHelpItem[]
+    | ((props: FormRouteRenderProps) => FormRouteHelpItem[]);
   children: ReactNode | ((props: FormRouteRenderProps) => ReactNode);
   validate?: (values: FormRoutePageValues) => string | undefined;
   defaultValueOverrides?: FormRoutePageFormValues;
@@ -190,6 +201,7 @@ export default function FormRoutePage({
   title,
   formMaxWidth,
   help,
+  helpItems,
   children,
   validate,
   defaultValueOverrides,
@@ -263,10 +275,8 @@ export default function FormRoutePage({
 
   useEffect(() => {
     function handleDevFillForm() {
-      // First, generate and set all form data up to this page
       const formDataUpToPage = generateFormDataUpToPage(pageId);
 
-      // Then fill the current page's fields
       const currentValues = {
         ...formDataUpToPage,
         ...getValues(),
@@ -314,6 +324,7 @@ export default function FormRoutePage({
   }, [devFillFields, getValues, onDevFill, pageId, setValue]);
 
   const [pageError, setPageError] = useState<string | undefined>();
+  const [activeHelpId, setActiveHelpId] = useState<string | null>(null);
 
   const scrollToFirstError = useCallback(() => {
     requestAnimationFrame(() => {
@@ -395,11 +406,45 @@ export default function FormRoutePage({
       trigger,
     };
 
+    const resolvedHelpItems =
+      typeof helpItems === "function"
+        ? helpItems(renderProps)
+        : (helpItems ?? []);
+
+    const activeHelpItem = useMemo(
+      () => resolvedHelpItems.find((item) => item.id === activeHelpId) ?? null,
+      [activeHelpId, resolvedHelpItems],
+    );
+
+    const renderedHelp = typeof help === "function" ? help(renderProps) : help;
+
+    const renderedHelpSection =
+      renderedHelp || resolvedHelpItems.length ? (
+        <>
+          {renderedHelp}
+          {resolvedHelpItems.length ? (
+            <>
+              <FormHelpChips
+                items={resolvedHelpItems}
+                onSelect={(id) => setActiveHelpId(id)}
+              />
+              <FormHelpDrawer
+                open={Boolean(activeHelpItem)}
+                title={activeHelpItem?.title ?? ""}
+                onClose={() => setActiveHelpId(null)}
+              >
+                {activeHelpItem?.content}
+              </FormHelpDrawer>
+            </>
+          ) : null}
+        </>
+      ) : undefined;
+
     return (
       <FormPage
         title={title ?? getPageTitle(pageId)}
         error={pageError}
-        help={typeof help === "function" ? help(renderProps) : help}
+        help={renderedHelpSection}
         maxWidth={formMaxWidth}
         actions={
           <>

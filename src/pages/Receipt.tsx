@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import {
+  Alert,
   Box,
   Button,
   Card,
@@ -9,8 +10,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import ApplicantSection from "../components/form/ApplicantSection";
-import FormSectionTitle from "../components/form/FormSectionTitle";
+import FileDownloadRoundedIcon from "@mui/icons-material/FileDownloadRounded";
 import { shouldShowApplicantLabel } from "../components/form/applicantVisibility";
 import { getActiveClient } from "../client/getActiveClient";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
@@ -86,11 +86,47 @@ function getDecisionMessage(
     ? `${applicantLabel}'s request`
     : "Your request";
 
-  if (underwritingType === "FUW") {
+  const type = underwritingType.toUpperCase();
+
+  if (QUICK_DECISION_UNDERWRITING_TYPES.has(type)) {
+    return `${subject} has been approved. Your coverage selection has been confirmed and will be processed.`;
+  }
+
+  if (type === "FUW") {
     return `${subject} has been submitted. Additional health or medical underwriting information may be needed before a final decision is made, and you may be contacted with next steps.`;
   }
 
   return `${subject} has been securely submitted and will be reviewed and processed by the plan administrator and carrier. You will be contacted if anything else is needed.`;
+}
+
+function getDecisionStatus(underwritingType: CoverageUnderwritingType): {
+  label: string;
+  dotColor: string;
+  dotBgColor: string;
+} {
+  const type = underwritingType.toUpperCase();
+
+  if (QUICK_DECISION_UNDERWRITING_TYPES.has(type)) {
+    return {
+      label: "Approved",
+      dotColor: "#00b24b",
+      dotBgColor: "rgba(0, 178, 75, 0.18)",
+    };
+  }
+
+  if (type === "FUW") {
+    return {
+      label: "Additional review may be needed",
+      dotColor: "#0668ff",
+      dotBgColor: "rgba(6, 104, 255, 0.18)",
+    };
+  }
+
+  return {
+    label: "Submitted",
+    dotColor: "#1E854A",
+    dotBgColor: "rgba(33, 150, 83, 0.14)",
+  };
 }
 
 function isQuickDecisionUnderwritingType(underwritingType: string): boolean {
@@ -186,46 +222,108 @@ export default function Receipt() {
   function renderApplicantProducts(
     entries: SelectedCoverageEntry[],
     applicantLabel: string,
+    showApplicantHeader: boolean,
   ) {
-    return coverageCategories
-      .map((category) => {
-        const categoryEntries = entries.filter(
-          (entry) => entry.coverage.categoryId === category.id,
-        );
+    const orderedEntries = coverageCategories.flatMap((category) =>
+      entries.filter((entry) => entry.coverage.categoryId === category.id),
+    );
 
-        if (categoryEntries.length === 0) return null;
-        return (
-          <Stack spacing={1.25} key={`${applicantLabel}-${category.id}`}>
-            <Box sx={{ mb: 0.5 }}>
-              <FormSectionTitle icon={category.icon} label={category.label} />
-            </Box>
+    if (orderedEntries.length === 0) return null;
 
-            {categoryEntries.map((entry) => (
-              <Card
-                key={`${entry.coverageId}-${entry.applicant}`}
-                variant="outlined"
-                sx={{ borderColor: "rgba(0, 22, 57, 0.12)", boxShadow: "none" }}
-              >
-                <CardContent sx={{ p: 2 }}>
-                  <Stack spacing={1}>
+    return (
+      <Stack
+        sx={{
+          border: "1px solid rgba(0, 22, 57, 0.08)",
+          borderRadius: 1.5,
+          backgroundColor: "#fff",
+          overflow: "hidden",
+        }}
+        divider={
+          <Divider flexItem sx={{ borderColor: "rgba(0, 22, 57, 0.08)" }} />
+        }
+      >
+        {showApplicantHeader && (
+          <Box
+            sx={{
+              px: 2,
+              py: 0.5,
+              backgroundColor: "#d9dde7",
+            }}
+          >
+            <Typography
+              variant="overline"
+              sx={{
+                display: "block",
+                fontWeight: 800,
+                letterSpacing: 1.5,
+                color: "#4f678d",
+              }}
+            >
+              {applicantLabel}
+            </Typography>
+          </Box>
+        )}
+
+        {orderedEntries.map((entry) => {
+          const status = getDecisionStatus(entry.coverage.underwritingType);
+
+          return (
+            <Box
+              key={`${entry.coverageId}-${entry.applicant}`}
+              sx={{ px: 2, py: 1.75 }}
+            >
+              <Stack spacing={0.75}>
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={1}
+                  justifyContent="space-between"
+                  alignItems={{ xs: "flex-start", sm: "center" }}
+                >
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    alignItems="center"
+                    sx={{ minWidth: 0 }}
+                  >
+                    <Box
+                      sx={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: "50%",
+                        flexShrink: 0,
+                        backgroundColor: status.dotColor,
+                        boxShadow: `0 0 0 4px ${status.dotBgColor}`,
+                      }}
+                    />
                     <Typography fontWeight={700}>
                       {entry.coverage.name}
                     </Typography>
-
-                    <Typography variant="body2" color="text.secondary">
-                      {getDecisionMessage(
-                        entry.coverage.underwritingType,
-                        applicantLabel,
-                      )}
-                    </Typography>
                   </Stack>
-                </CardContent>
-              </Card>
-            ))}
-          </Stack>
-        );
-      })
-      .filter(Boolean);
+
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontWeight: 700,
+                      color: status.dotColor,
+                      letterSpacing: 0.2,
+                    }}
+                  >
+                    {status.label}
+                  </Typography>
+                </Stack>
+
+                <Typography variant="body2" color="text.secondary">
+                  {getDecisionMessage(
+                    entry.coverage.underwritingType,
+                    applicantLabel,
+                  )}
+                </Typography>
+              </Stack>
+            </Box>
+          );
+        })}
+      </Stack>
+    );
   }
 
   return (
@@ -263,12 +361,8 @@ export default function Receipt() {
               <CheckCircleRoundedIcon sx={{ color: "#1E854A", fontSize: 54 }} />
             </Box>
 
-            <Typography variant="h4" fontWeight={700}>
-              Thank you! Your application has been submitted.
-            </Typography>
-
-            <Typography color="text.secondary" sx={{ fontWeight: 500 }}>
-              Confirmation number: {confirmationNumber || "-"}
+            <Typography variant="h3" fontWeight={700}>
+              Your application has been submitted!
             </Typography>
 
             <Stack
@@ -278,12 +372,36 @@ export default function Receipt() {
               flexWrap="wrap"
               justifyContent="center"
             >
-              <Button variant="contained">Download Application PDF</Button>
-              <Button variant="outlined">Download Payment PDF</Button>
+              <Button
+                variant="contained"
+                startIcon={<FileDownloadRoundedIcon />}
+              >
+                Application PDF
+              </Button>
+
+              <Button
+                variant="outlined"
+                startIcon={<FileDownloadRoundedIcon />}
+              >
+                Payment PDF
+              </Button>
+
               {shouldShowQuickDecisionDownload && (
-                <Button variant="outlined">Download QuickDecision PDF</Button>
+                <Button
+                  variant="outlined"
+                  startIcon={<FileDownloadRoundedIcon />}
+                >
+                  Download QuickDecision
+                </Button>
               )}
             </Stack>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ fontWeight: 500 }}
+            >
+              Confirmation number: {confirmationNumber || "-"}
+            </Typography>
           </Stack>
 
           <Card
@@ -295,52 +413,41 @@ export default function Receipt() {
           >
             <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
               <Stack spacing={1.25}>
-                <Typography variant="h6" fontWeight={700}>
-                  Next Steps
-                </Typography>
-
-                <Typography color="text.secondary">
-                  Thank you for submitting your application. Your request has
-                  been securely received, and product decisions or follow-up
-                  requirements will depend on the selected coverage.
-                </Typography>
-
-                <Typography color="text.secondary">
-                  Please keep your confirmation number for your records. If any
-                  additional information is needed to continue processing, you
-                  will be contacted with the next steps.
-                </Typography>
-
                 {hasApplicantSelections && (
                   <Box>
-                    <Divider sx={{ my: 1.25 }} />
-                    <Stack spacing={2}>
-                      <Typography variant="h6" fontWeight={700}>
-                        Your Insurance Decision
-                      </Typography>
+                    <Stack spacing={2} sx={{ mt: 2 }}>
+                      <Box sx={{ px: 1.5, pb: 2 }}>
+                        <Stack spacing={2}>
+                          <Typography variant="h5" fontWeight={700}>
+                            What Happens Next
+                          </Typography>
+                          <Typography variant="body1">
+                            Thank you for submitting your application. Your
+                            request has been securely received. Details about
+                            your application and next steps are listed below.
+                          </Typography>
+                          <Typography variant="body1">
+                            <strong>
+                              Please save your confirmation number for your
+                              records.{" "}
+                            </strong>
+                            A digital copy cannot be emailed for security
+                            reasons—use the download buttons to save a copy of
+                            your application now. If additional information is
+                            needed, we'll contact you with next steps.
+                          </Typography>
+                        </Stack>
+                      </Box>
 
-                      {selfEntries.length > 0 && (
-                        <ApplicantSection
-                          applicant="self"
-                          showLabel={shouldShowApplicantLabel(
-                            "self",
-                            values,
-                            "receipt",
-                          )}
-                        >
-                          <Stack spacing={2}>
-                            {renderApplicantProducts(selfEntries, "Self")}
-                          </Stack>
-                        </ApplicantSection>
-                      )}
+                      {selfEntries.length > 0 &&
+                        renderApplicantProducts(
+                          selfEntries,
+                          "MEMBER",
+                          shouldShowApplicantLabel("self", values, "receipt"),
+                        )}
 
-                      {spouseEntries.length > 0 && (
-                        <ApplicantSection applicant="spouse">
-                          <Stack spacing={2}>
-                            {renderApplicantProducts(spouseEntries, "Spouse")}
-                          </Stack>
-                        </ApplicantSection>
-                      )}
+                      {spouseEntries.length > 0 &&
+                        renderApplicantProducts(spouseEntries, "SPOUSE", true)}
                     </Stack>
                   </Box>
                 )}

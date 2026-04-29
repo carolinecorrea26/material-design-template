@@ -160,8 +160,17 @@ export default function Review() {
   return (
     <FormRoutePage
       pageId="review"
-      help={({ watchedValues }) => {
+      devFillFields={(currentValues) => [
+        fieldCatalog["review-self-consent"],
+        ...(isApplicantApplying("spouse", currentValues)
+          ? [fieldCatalog["review-spouse-consent"]]
+          : []),
+      ]}
+    >
+      {({ control, errors, watchedValues }) => {
         const values = watchedValues as Record<string, unknown>;
+        const hasSpouse = isApplicantApplying("spouse", values);
+
         const selectedCoverageIds = Array.isArray(values.coverageSelections)
           ? values.coverageSelections
           : [];
@@ -175,83 +184,67 @@ export default function Review() {
           (coverage) => coverage.underwritingType === "FUW",
         );
 
-        return (
-          <Alert
-            severity="warning"
-            icon={<ReportRoundedIcon fontSize="large" />}
-          >
-            <Stack spacing={1.25}>
-              <Typography variant="body2" fontWeight={700}>
-                Please read the following important information before you
-                submit your application.
-              </Typography>
-
-              <Box component="ul" sx={{ m: 0, pl: 3, "& li + li": { mt: 1 } }}>
-                <li>
-                  <Typography variant="body2">
-                    <Box component="span" fontWeight={700}>
-                      Review:
-                    </Box>{" "}
-                    Review your application carefully below and click the "Edit"
-                    button to make any changes.
-                  </Typography>
-                </li>
-
-                {showHealthQuestionsNote ? (
-                  <li>
-                    <Typography variant="body2">
-                      <Box component="span" fontWeight={700}>
-                        Health questionnaire:
-                      </Box>{" "}
-                      After authorizing, you will be guided to a medical
-                      questionnaire. You will receive a real-time decision or
-                      more information may be required based on your answers.
-                    </Typography>
-                  </li>
-                ) : null}
-
-                <li>
-                  <Typography variant="body2">
-                    <Box component="span" fontWeight={700}>
-                      Payment:
-                    </Box>{" "}
-                    You will then be asked to provide payment information
-                    required to complete your application. You will not be
-                    charged until your application is approved.
-                  </Typography>
-                </li>
-
-                <li>
-                  <Typography variant="body2">
-                    <Box component="span" fontWeight={700}>
-                      Signature:
-                    </Box>{" "}
-                    Finally, you must sign your application via DocuSign
-                    electronic signature.
-                  </Typography>
-                </li>
-              </Box>
-            </Stack>
-          </Alert>
-        );
-      }}
-      devFillFields={(currentValues) => [
-        fieldCatalog["review-self-consent"],
-        ...(isApplicantApplying("spouse", currentValues)
-          ? [fieldCatalog["review-spouse-consent"]]
-          : []),
-      ]}
-    >
-      {({ control, errors, watchedValues }) => {
-        const values = watchedValues as Record<string, unknown>;
-        const hasSpouse = isApplicantApplying("spouse", values);
-
         function openEdit(pageId: PageId) {
           navigate(`/${pageId}`);
         }
 
         return (
           <Stack spacing={2.5}>
+            <Alert
+              severity="info"
+              icon={<ReportRoundedIcon fontSize="large" />}
+            >
+              <Stack spacing={1.5}>
+                <Typography variant="body2" fontWeight={600}>
+                  Important information about your application and next steps:
+                </Typography>
+
+                <Box
+                  component="ul"
+                  sx={{ m: 0, pl: 3, "& li + li": { mt: 1.5 } }}
+                >
+                  <li>
+                    <Box>
+                      <Typography variant="body2" fontWeight={600}>
+                        Check your information
+                      </Typography>
+                      <Typography variant="body2">
+                        Make any edits now—changes can't be made after this
+                        step.
+                      </Typography>
+                    </Box>
+                  </li>
+
+                  <li>
+                    <Box>
+                      <Typography variant="body2" fontWeight={600}>
+                        Review and authorize
+                      </Typography>
+                      <Typography variant="body2">
+                        Read the consent information carefully and provide your
+                        consent to continue.
+                      </Typography>
+                    </Box>
+                  </li>
+
+                  {showHealthQuestionsNote ? (
+                    <li>
+                      <Box>
+                        <Typography variant="body2" fontWeight={600}>
+                          Answer health questions
+                        </Typography>
+                        <Typography variant="body2">
+                          Based on your coverage, you'll answer a short set of
+                          health questions in the next step. This only takes a
+                          few minutes.
+                        </Typography>
+                      </Box>
+                    </li>
+                  ) : null}
+                </Box>
+              </Stack>
+            </Alert>
+
             <ReviewPreviewSection
               values={values}
               hasSpouse={hasSpouse}
