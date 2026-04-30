@@ -12,7 +12,7 @@ import type { ReactNode } from "react";
 
 type FormHelpDrawerProps = {
   open: boolean;
-  title: string;
+  title: ReactNode;
   onClose: () => void;
   children: ReactNode;
 };

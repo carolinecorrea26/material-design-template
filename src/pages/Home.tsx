@@ -1382,14 +1382,21 @@ export default function Home() {
 
   const associationContent = ASSOCIATION_ABOUT_CONTENT[client.id] ?? null;
 
-  const drawerTitle: ReactNode =
-    activeDrawer === "application-review" ? (
-      "About the application review process"
-    ) : (
-      <>
-        What is <QuickDecisionMark />?
-      </>
-    );
+  const DRAWER_CONFIG: Record<Exclude<DrawerId, null>, { title: ReactNode }> = {
+    "application-review": {
+      title: "About the application review process",
+    },
+    "quick-decision": {
+      title: (
+        <>
+          What is <QuickDecisionMark />?
+        </>
+      ),
+    },
+  };
+
+  const drawerTitle =
+    activeDrawer != null ? DRAWER_CONFIG[activeDrawer].title : "";
 
   return (
     <Box sx={{ width: "100%", flex: 1 }}>

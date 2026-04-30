@@ -318,8 +318,8 @@ function getApplicantSectionRows(params: {
   const processed = new Set<string>();
   const rows: PreviewRow[] = [];
   const subSectionsByTrigger = new Map<string, readonly string[][]>();
-  const mainSections: readonly string[][] = [];
-  const mutableMainSections: readonly string[][] = [];
+  const mutableMainSections: string[][] = [];
+  const mainSections: string[][] = [];
 
   sections.forEach((section) => {
     const triggerRules = (section.visibleWhen ?? []).filter(
