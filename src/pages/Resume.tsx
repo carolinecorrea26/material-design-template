@@ -143,9 +143,9 @@ export default function Resume() {
     setShowEmailSentMessage(true);
   }
 
-  function handleBackToEmailStep() {
-    closeModalToResumePage();
-  }
+  // function handleBackToEmailStep() {
+  //   closeModalToResumePage();
+  // }
 
   function handleBackToDeliveryMethod() {
     setStep(2);

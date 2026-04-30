@@ -154,7 +154,7 @@ export default function Personal() {
             );
 
           const hasSelf = isApplicantApplying("self", watchedValues);
-          const hasSpouse = isApplicantApplying("spouse", watchedValues);
+          // const hasSpouse = isApplicantApplying("spouse", watchedValues);
           return (
             <>
               {hasSelf && (
