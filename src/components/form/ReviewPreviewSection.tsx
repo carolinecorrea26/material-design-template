@@ -34,10 +34,10 @@ type ReviewPreviewSectionProps = {
   onEdit: (pageId: PageId) => void;
 };
 
-const sectionTitleSx = {
-  fontSize: "1rem",
-  fontWeight: 700,
-};
+// const sectionTitleSx = {
+//   fontSize: "1rem",
+//   fontWeight: 700,
+// };
 
 const cardSx = {
   p: 2,
@@ -611,25 +611,19 @@ export default function ReviewPreviewSection({
 }: ReviewPreviewSectionProps) {
   return (
     <Stack spacing={1.5}>
-      <Typography sx={sectionTitleSx}>
-        Review your application so far:
-      </Typography>
-
-      <Stack spacing={1.5}>
-        {reviewCards.map((card) => (
-          <PreviewCard
-            key={card.pageId}
-            pageId={card.pageId}
-            title={card.title}
-            showSelfLabel={card.showSelfLabel}
-            values={values}
-            hasSpouse={hasSpouse}
-            reviewFieldBlocklist={reviewFieldBlocklist}
-            subQuestionFieldIds={subQuestionFieldIds}
-            onEdit={onEdit}
-          />
-        ))}
-      </Stack>
+      {reviewCards.map((card) => (
+        <PreviewCard
+          key={card.pageId}
+          pageId={card.pageId}
+          title={card.title}
+          showSelfLabel={card.showSelfLabel}
+          values={values}
+          hasSpouse={hasSpouse}
+          reviewFieldBlocklist={reviewFieldBlocklist}
+          subQuestionFieldIds={subQuestionFieldIds}
+          onEdit={onEdit}
+        />
+      ))}
     </Stack>
   );
 }
