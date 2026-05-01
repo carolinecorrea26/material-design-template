@@ -7,11 +7,16 @@ import {
   Divider,
   FormControl,
   FormHelperText,
+  FormLabel,
   InputLabel,
+  ListSubheader,
   MenuItem,
+  Radio,
   Select,
   Stack,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from "@mui/material";
 import EditNoteRoundedIcon from "@mui/icons-material/EditNoteRounded";
@@ -35,7 +40,7 @@ type EstimateYesNo = "yes" | "no" | "";
 type EstimateState = {
   birthday: string;
   state: string;
-  category: CoverageCategoryId | "";
+  productId: string;
   gender: EstimateGender;
   smoker: EstimateYesNo;
   tobaccoLastUsed: string;
@@ -155,7 +160,7 @@ export default function Membership() {
   const [estimateValues, setEstimateValues] = useState<EstimateState>({
     birthday: "",
     state: "",
-    category: "",
+    productId: "",
     gender: "",
     smoker: "",
     tobaccoLastUsed: "",
@@ -175,33 +180,42 @@ export default function Membership() {
   >({});
 
   const stateOptions = useMemo(() => getStateOptions(), []);
-  const availableEstimateCategories = useMemo(() => {
-    const availableIds = new Set(
-      coverages.map((coverage) => coverage.categoryId),
-    );
-    return coverageCategories.filter((category) =>
-      availableIds.has(category.id),
-    );
-  }, [coverages]);
+  const productsByCategory = useMemo(
+    () =>
+      coverageCategories
+        .map((category) => ({
+          category,
+          products: coverages
+            .filter((coverage) => coverage.categoryId === category.id)
+            .slice()
+            .sort((a, b) => {
+              if (a.featured && !b.featured) return -1;
+              if (!a.featured && b.featured) return 1;
+              return a.name.localeCompare(b.name);
+            }),
+        }))
+        .filter((group) => group.products.length > 0),
+    [coverages],
+  );
+
+  const selectedProduct = useMemo(
+    () =>
+      coverages.find((coverage) => coverage.id === estimateValues.productId),
+    [coverages, estimateValues.productId],
+  );
+
+  const selectedCategoryId = selectedProduct?.categoryId ?? null;
 
   const estimateCategoryNeedsGender =
-    estimateValues.category === "LI" || estimateValues.category === "DI";
+    selectedCategoryId === "LI" || selectedCategoryId === "DI";
   const estimateCategoryNeedsSmoker =
-    estimateValues.category === "LI" || estimateValues.category === "SH";
-  const estimateCategoryNeedsDi = estimateValues.category === "DI";
-  const estimateCategoryNeedsOo = estimateValues.category === "OO";
+    selectedCategoryId === "LI" || selectedCategoryId === "SH";
+  const estimateCategoryNeedsDi = selectedCategoryId === "DI";
+  const estimateCategoryNeedsOo = selectedCategoryId === "OO";
   const estimateCategoryNeedsHours =
     estimateCategoryNeedsDi || estimateCategoryNeedsOo;
 
-  const estimateCategoryProducts = useMemo(
-    () =>
-      estimateValues.category
-        ? coverages.filter(
-            (coverage) => coverage.categoryId === estimateValues.category,
-          )
-        : [],
-    [coverages, estimateValues.category],
-  );
+  const estimateProductsToShow = selectedProduct ? [selectedProduct] : [];
 
   const estimateValidationErrors = useMemo(() => {
     const errors: Record<string, string> = {};
@@ -214,8 +228,8 @@ export default function Membership() {
       errors.state = "State is required.";
     }
 
-    if (!estimateValues.category) {
-      errors.category = "Coverage category is required.";
+    if (!estimateValues.productId) {
+      errors.productId = "Product selection is required.";
     }
 
     if (estimateCategoryNeedsGender && !estimateValues.gender) {
@@ -276,10 +290,10 @@ export default function Membership() {
     resetEstimateResults();
   }
 
-  function handleEstimateCategoryChange(nextCategory: CoverageCategoryId | "") {
+  function handleEstimateProductChange(nextProductId: string) {
     setEstimateValues((current) => ({
       ...current,
-      category: nextCategory,
+      productId: nextProductId,
       gender: "",
       smoker: "",
       tobaccoLastUsed: "",
@@ -295,33 +309,24 @@ export default function Membership() {
   function handleGetEstimate() {
     setEstimateAttempted(true);
 
-    if (Object.keys(estimateValidationErrors).length > 0) {
+    if (Object.keys(estimateValidationErrors).length > 0 || !selectedProduct) {
       setShowEstimateProducts(false);
       return;
     }
 
-    const initialAmounts = estimateCategoryProducts.reduce<
-      Record<string, number>
-    >((acc, product) => {
-      const choices = generateAmountChoices(
-        product.categoryId,
-        product.minAmount,
-        product.maxAmount,
-      );
-      acc[product.id] = choices[0] ?? 0;
-      return acc;
-    }, {});
+    const choices = generateAmountChoices(
+      selectedProduct.categoryId,
+      selectedProduct.minAmount,
+      selectedProduct.maxAmount,
+    );
+    const initialAmount = choices[0] ?? 0;
+    const initialRate = estimateMonthlyPremium(
+      selectedProduct.categoryId,
+      initialAmount,
+    );
 
-    const initialRates = estimateCategoryProducts.reduce<
-      Record<string, number>
-    >((acc, product) => {
-      const amount = initialAmounts[product.id] ?? 0;
-      acc[product.id] = estimateMonthlyPremium(product.categoryId, amount);
-      return acc;
-    }, {});
-
-    setEstimateAmountsByProductId(initialAmounts);
-    setEstimateRatesByProductId(initialRates);
+    setEstimateAmountsByProductId({ [selectedProduct.id]: initialAmount });
+    setEstimateRatesByProductId({ [selectedProduct.id]: initialRate });
     setShowEstimateProducts(true);
   }
 
@@ -493,30 +498,42 @@ export default function Membership() {
           <FormControl
             fullWidth
             required
-            error={estimateAttempted && !!estimateValidationErrors.category}
+            error={estimateAttempted && !!estimateValidationErrors.productId}
           >
-            <InputLabel id="estimate-category-label">
-              Coverage category
+            <InputLabel id="membership-estimate-product-label">
+              Product
             </InputLabel>
             <Select
-              labelId="estimate-category-label"
-              label="Coverage category"
-              value={estimateValues.category}
+              labelId="membership-estimate-product-label"
+              label="Product"
+              value={estimateValues.productId}
               onChange={(event) =>
-                handleEstimateCategoryChange(
-                  (event.target.value as CoverageCategoryId | "") ?? "",
-                )
+                handleEstimateProductChange(event.target.value)
               }
             >
-              {availableEstimateCategories.map((category) => (
-                <MenuItem key={category.id} value={category.id}>
-                  {category.label}
-                </MenuItem>
-              ))}
+              {productsByCategory.flatMap((group) => [
+                <ListSubheader
+                  key={`${group.category.id}-header`}
+                  disableSticky
+                  sx={{
+                    color: "text.primary",
+                    fontWeight: 700,
+                    lineHeight: 1.6,
+                    backgroundColor: "#ffffff",
+                  }}
+                >
+                  {group.category.label}
+                </ListSubheader>,
+                ...group.products.map((product) => (
+                  <MenuItem key={product.id} value={product.id}>
+                    {product.name}
+                  </MenuItem>
+                )),
+              ])}
             </Select>
-            {estimateAttempted && estimateValidationErrors.category ? (
+            {estimateAttempted && estimateValidationErrors.productId ? (
               <FormHelperText>
-                {estimateValidationErrors.category}
+                {estimateValidationErrors.productId}
               </FormHelperText>
             ) : null}
           </FormControl>
@@ -527,20 +544,52 @@ export default function Membership() {
               required
               error={estimateAttempted && !!estimateValidationErrors.gender}
             >
-              <InputLabel id="estimate-gender-label">Gender</InputLabel>
-              <Select
-                labelId="estimate-gender-label"
-                label="Gender"
+              <FormLabel required sx={{ mb: 1 }}>
+                Gender
+              </FormLabel>
+              <ToggleButtonGroup
+                exclusive
                 value={estimateValues.gender}
-                onChange={(event) =>
-                  updateEstimateValues({
-                    gender: event.target.value as EstimateGender,
-                  })
-                }
+                onChange={(_, value) => {
+                  if (value !== null) {
+                    updateEstimateValues({ gender: value as EstimateGender });
+                  }
+                }}
+                sx={{ display: "flex", gap: 1 }}
               >
-                <MenuItem value="male">Male</MenuItem>
-                <MenuItem value="female">Female</MenuItem>
-              </Select>
+                <ToggleButton
+                  value="male"
+                  sx={{
+                    flex: 1,
+                    textTransform: "none",
+                    gap: 1,
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  <Radio
+                    checked={estimateValues.gender === "male"}
+                    size="small"
+                    sx={{ p: 0 }}
+                  />
+                  Male
+                </ToggleButton>
+                <ToggleButton
+                  value="female"
+                  sx={{
+                    flex: 1,
+                    textTransform: "none",
+                    gap: 1,
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  <Radio
+                    checked={estimateValues.gender === "female"}
+                    size="small"
+                    sx={{ p: 0 }}
+                  />
+                  Female
+                </ToggleButton>
+              </ToggleButtonGroup>
               {estimateAttempted && estimateValidationErrors.gender ? (
                 <FormHelperText>
                   {estimateValidationErrors.gender}
@@ -555,30 +604,58 @@ export default function Membership() {
               required
               error={estimateAttempted && !!estimateValidationErrors.smoker}
             >
-              <InputLabel id="estimate-smoker-label">
+              <FormLabel required sx={{ mb: 1 }}>
                 Tobacco or nicotine use
-              </InputLabel>
-              <Select
-                labelId="estimate-smoker-label"
-                label="Tobacco or nicotine use"
+              </FormLabel>
+              <ToggleButtonGroup
+                exclusive
                 value={estimateValues.smoker}
-                onChange={(event) =>
-                  updateEstimateValues({
-                    smoker: event.target.value as EstimateYesNo,
-                    tobaccoLastUsed:
-                      event.target.value === "yes"
-                        ? estimateValues.tobaccoLastUsed
-                        : "",
-                    tobaccoProducts:
-                      event.target.value === "yes"
-                        ? estimateValues.tobaccoProducts
-                        : [],
-                  })
-                }
+                onChange={(_, value) => {
+                  if (value !== null) {
+                    updateEstimateValues({
+                      smoker: value as EstimateYesNo,
+                      tobaccoLastUsed:
+                        value === "yes" ? estimateValues.tobaccoLastUsed : "",
+                      tobaccoProducts:
+                        value === "yes" ? estimateValues.tobaccoProducts : [],
+                    });
+                  }
+                }}
+                sx={{ display: "flex", gap: 1 }}
               >
-                <MenuItem value="yes">Yes</MenuItem>
-                <MenuItem value="no">No</MenuItem>
-              </Select>
+                <ToggleButton
+                  value="yes"
+                  sx={{
+                    flex: 1,
+                    textTransform: "none",
+                    gap: 1,
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  <Radio
+                    checked={estimateValues.smoker === "yes"}
+                    size="small"
+                    sx={{ p: 0 }}
+                  />
+                  Yes
+                </ToggleButton>
+                <ToggleButton
+                  value="no"
+                  sx={{
+                    flex: 1,
+                    textTransform: "none",
+                    gap: 1,
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  <Radio
+                    checked={estimateValues.smoker === "no"}
+                    size="small"
+                    sx={{ p: 0 }}
+                  />
+                  No
+                </ToggleButton>
+              </ToggleButtonGroup>
               {estimateAttempted && estimateValidationErrors.smoker ? (
                 <FormHelperText>
                   {estimateValidationErrors.smoker}
@@ -757,16 +834,15 @@ export default function Membership() {
           {showEstimateProducts ? (
             <Stack spacing={2}>
               <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                Available products
+                Selected product
               </Typography>
 
-              {estimateCategoryProducts.length === 0 ? (
+              {estimateProductsToShow.length === 0 ? (
                 <Alert severity="info">
-                  No products are currently available for this coverage
-                  category.
+                  No products are currently available for this selection.
                 </Alert>
               ) : (
-                estimateCategoryProducts.map((product) => {
+                estimateProductsToShow.map((product) => {
                   const amountChoices = generateAmountChoices(
                     product.categoryId,
                     product.minAmount,

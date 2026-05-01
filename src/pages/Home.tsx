@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Alert,
   Box,
@@ -11,19 +11,21 @@ import {
   Divider,
   FormControl,
   FormHelperText,
+  FormLabel,
   InputLabel,
   Link,
   ListSubheader,
   MenuItem,
+  Radio,
   Select,
   Stack,
   Tab,
   Tabs,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { Link as RouterLink } from "react-router-dom";
 import FormHelpDrawer from "../components/form/FormHelpDrawer";
 import { getActiveClient } from "../client/getActiveClient";
@@ -355,8 +357,8 @@ function HowApplyingWorksSection({
                     >
                       <Box
                         sx={{
-                          width: 56,
-                          height: 56,
+                          width: 50,
+                          height: 50,
                           borderRadius: "50%",
                           border: "2px solid",
                           borderColor: isActive
@@ -472,6 +474,7 @@ function HowApplyingWorksSection({
                   display: "grid",
                   gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
                   gap: 1.5,
+                  alignItems: "start",
                 }}
               >
                 {APPLYING_STEPS.map((step) => {
@@ -493,6 +496,7 @@ function HowApplyingWorksSection({
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
+                        justifyContent: "flex-start",
                         color: "inherit",
                         "&:hover": { backgroundColor: "transparent" },
                       }}
@@ -501,6 +505,7 @@ function HowApplyingWorksSection({
                         sx={{
                           width: 44,
                           height: 44,
+                          flexShrink: 0,
                           borderRadius: "50%",
                           border: "2px solid",
                           borderColor: isActive
@@ -610,87 +615,67 @@ function HowApplyingWorksSection({
 
           <Box
             sx={{
-              // ...SURFACE_SX,
-              // borderRadius: 4,
               p: { xs: 2.5, md: 3.5 },
-              // background:
-              //   "linear-gradient(135deg, rgba(244, 248, 255, 0.96) 0%, rgba(255, 255, 255, 1) 52%, rgba(247, 251, 255, 1) 100%)",
+              maxWidth: 900,
+              mx: "auto",
+              alignSelf: "center",
             }}
           >
             <Stack
               direction={{ xs: "column", md: "row" }}
-              spacing={{ xs: 3, md: 5 }}
+              spacing={{ xs: 3, md: 6 }}
               alignItems={{ xs: "center", md: "center" }}
             >
-              <motion.div
-                key={`icon-${active.id}`}
-                animate={{ y: [0, -6, 0], scale: [1, 1.05, 1] }}
-                transition={{
-                  duration: 1.6,
-                  ease: "easeInOut",
-                  repeat: Infinity,
-                }}
-                style={{ flexShrink: 0 }}
-              >
+              <Box sx={{ flexShrink: 0 }}>
                 <Box
                   component="img"
                   src={active.imageSrc}
                   alt={active.imageAlt}
                   sx={{
                     display: "block",
-                    width: 100,
-                    height: 100,
-
+                    width: 160,
+                    height: 160,
                     objectFit: "contain",
                   }}
                 />
-              </motion.div>
+              </Box>
 
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={active.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.25, ease: "easeOut" }}
-                  style={{ width: "100%" }}
-                >
-                  <Stack spacing={1.5}>
-                    <Typography variant="h4">{active.title}</Typography>
+              <Box sx={{ width: "100%" }}>
+                <Stack spacing={1.5}>
+                  <Typography variant="h4">{active.title}</Typography>
 
-                    {active.id === 1 ? (
-                      <Typography variant="body1" color="text.secondary">
-                        Many types of insurance require health information to
-                        provide a decision on your application. We may ask
-                        health questions on your application or a representative
-                        of New York Life or their medical service provider may
-                        contact you to collect your health history. If needed,
-                        we will schedule a medical exam at no cost to you and at
-                        a time and place convenient to you.{" "}
-                        <InlineDrawerLink onClick={onOpenApplicationReview}>
-                          Learn more about the application review process.
-                        </InlineDrawerLink>
-                      </Typography>
-                    ) : active.id === 2 ? (
-                      <Typography variant="body1" color="text.secondary">
-                        Decisions are made after all information is received and
-                        reviewed by New York Life. If approved, you will receive
-                        a certificate of insurance and have a 30-day
-                        no-obligation free look. Plus, when{" "}
-                        <InlineDrawerLink onClick={onOpenQuickDecision}>
-                          <QuickDecisionMark />
-                        </InlineDrawerLink>{" "}
-                        is available, you can get a faster decision on your
-                        application, typically with no medical exam.
-                      </Typography>
-                    ) : (
-                      <Typography variant="body1" color="text.secondary">
-                        {active.body}
-                      </Typography>
-                    )}
-                  </Stack>
-                </motion.div>
-              </AnimatePresence>
+                  {active.id === 1 ? (
+                    <Typography variant="body1" color="text.secondary">
+                      Many types of insurance require health information to
+                      provide a decision on your application. We may ask health
+                      questions on your application or a representative of New
+                      York Life or their medical service provider may contact
+                      you to collect your health history. If needed, we will
+                      schedule a medical exam at no cost to you and at a time
+                      and place convenient to you.{" "}
+                      <InlineDrawerLink onClick={onOpenApplicationReview}>
+                        Learn more about the application review process.
+                      </InlineDrawerLink>
+                    </Typography>
+                  ) : active.id === 2 ? (
+                    <Typography variant="body1" color="text.secondary">
+                      Decisions are made after all information is received and
+                      reviewed by New York Life. If approved, you will receive a
+                      certificate of insurance and have a 30-day no-obligation
+                      free look. Plus, when{" "}
+                      <InlineDrawerLink onClick={onOpenQuickDecision}>
+                        <QuickDecisionMark />
+                      </InlineDrawerLink>{" "}
+                      is available, you can get a faster decision on your
+                      application, typically with no medical exam.
+                    </Typography>
+                  ) : (
+                    <Typography variant="body1" color="text.secondary">
+                      {active.body}
+                    </Typography>
+                  )}
+                </Stack>
+              </Box>
             </Stack>
           </Box>
         </Stack>
@@ -883,10 +868,10 @@ function HomeQuoteCard() {
         width: "100%",
         borderColor: "rgba(7, 104, 255, 0.14)",
         background:
-          "linear-gradient(135deg, #f4f8ff 0%, #ffffff 52%, #f7fbff 100%)",
+          "linear-gradient(135deg, #f4feff 0%, #ffffff 52%, #f7fbff 100%)",
       }}
     >
-      <Stack spacing={2.25} sx={{ p: { xs: 2, sm: 2.5, md: 3 } }}>
+      <Stack spacing={2.25} sx={{ p: { xs: 2.5, sm: 3 } }}>
         <Stack spacing={0.75}>
           <Typography
             variant="h2"
@@ -997,20 +982,52 @@ function HomeQuoteCard() {
               required
               error={estimateAttempted && !!estimateValidationErrors.gender}
             >
-              <InputLabel id="home-estimate-gender-label">Gender</InputLabel>
-              <Select
-                labelId="home-estimate-gender-label"
-                label="Gender"
+              <FormLabel required sx={{ mb: 1 }}>
+                Gender
+              </FormLabel>
+              <ToggleButtonGroup
+                exclusive
                 value={estimateValues.gender}
-                onChange={(event) =>
-                  updateEstimateValues({
-                    gender: event.target.value as EstimateGender,
-                  })
-                }
+                onChange={(_, value) => {
+                  if (value !== null) {
+                    updateEstimateValues({ gender: value as EstimateGender });
+                  }
+                }}
+                sx={{ display: "flex", gap: 1 }}
               >
-                <MenuItem value="male">Male</MenuItem>
-                <MenuItem value="female">Female</MenuItem>
-              </Select>
+                <ToggleButton
+                  value="male"
+                  sx={{
+                    flex: 1,
+                    textTransform: "none",
+                    gap: 1,
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  <Radio
+                    checked={estimateValues.gender === "male"}
+                    size="small"
+                    sx={{ p: 0 }}
+                  />
+                  Male
+                </ToggleButton>
+                <ToggleButton
+                  value="female"
+                  sx={{
+                    flex: 1,
+                    textTransform: "none",
+                    gap: 1,
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  <Radio
+                    checked={estimateValues.gender === "female"}
+                    size="small"
+                    sx={{ p: 0 }}
+                  />
+                  Female
+                </ToggleButton>
+              </ToggleButtonGroup>
               {estimateAttempted && estimateValidationErrors.gender ? (
                 <FormHelperText>
                   {estimateValidationErrors.gender}
@@ -1025,30 +1042,58 @@ function HomeQuoteCard() {
               required
               error={estimateAttempted && !!estimateValidationErrors.smoker}
             >
-              <InputLabel id="home-estimate-smoker-label">
+              <FormLabel required sx={{ mb: 1 }}>
                 Tobacco or nicotine use
-              </InputLabel>
-              <Select
-                labelId="home-estimate-smoker-label"
-                label="Tobacco or nicotine use"
+              </FormLabel>
+              <ToggleButtonGroup
+                exclusive
                 value={estimateValues.smoker}
-                onChange={(event) =>
-                  updateEstimateValues({
-                    smoker: event.target.value as EstimateYesNo,
-                    tobaccoLastUsed:
-                      event.target.value === "yes"
-                        ? estimateValues.tobaccoLastUsed
-                        : "",
-                    tobaccoProducts:
-                      event.target.value === "yes"
-                        ? estimateValues.tobaccoProducts
-                        : [],
-                  })
-                }
+                onChange={(_, value) => {
+                  if (value !== null) {
+                    updateEstimateValues({
+                      smoker: value as EstimateYesNo,
+                      tobaccoLastUsed:
+                        value === "yes" ? estimateValues.tobaccoLastUsed : "",
+                      tobaccoProducts:
+                        value === "yes" ? estimateValues.tobaccoProducts : [],
+                    });
+                  }
+                }}
+                sx={{ display: "flex", gap: 1 }}
               >
-                <MenuItem value="yes">Yes</MenuItem>
-                <MenuItem value="no">No</MenuItem>
-              </Select>
+                <ToggleButton
+                  value="yes"
+                  sx={{
+                    flex: 1,
+                    textTransform: "none",
+                    gap: 1,
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  <Radio
+                    checked={estimateValues.smoker === "yes"}
+                    size="small"
+                    sx={{ p: 0 }}
+                  />
+                  Yes
+                </ToggleButton>
+                <ToggleButton
+                  value="no"
+                  sx={{
+                    flex: 1,
+                    textTransform: "none",
+                    gap: 1,
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  <Radio
+                    checked={estimateValues.smoker === "no"}
+                    size="small"
+                    sx={{ p: 0 }}
+                  />
+                  No
+                </ToggleButton>
+              </ToggleButtonGroup>
               {estimateAttempted && estimateValidationErrors.smoker ? (
                 <FormHelperText>
                   {estimateValidationErrors.smoker}
@@ -1333,11 +1378,10 @@ function HomeQuoteCard() {
 export default function Home() {
   const client = getActiveClient();
   const coverages = useMemo(() => getActiveClientCoverages(), []);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [activeDrawer, setActiveDrawer] = useState<DrawerId>(null);
   const [activeCoverageCategory, setActiveCoverageCategory] =
     useState<CoverageCategoryId>("LI");
+  const howApplyingWorksRef = useRef<HTMLDivElement>(null);
 
   const coverageGroups = useMemo(
     () =>
@@ -1433,8 +1477,9 @@ export default function Home() {
               alignItems: SHOW_QUOTE_TOOL
                 ? "flex-start"
                 : { xs: "flex-start", md: "center" },
-              px: { xs: 2, sm: 3, md: 4 },
-              py: { xs: 2.5, sm: 3, md: 4 },
+              px: { xs: 2, sm: 3, md: 0 },
+              pb: 2,
+              // py: { xs: 2.5, sm: 3, md: 4 },
             }}
           >
             <Chip
@@ -1478,16 +1523,12 @@ export default function Home() {
                 color="text.secondary"
                 sx={{ maxWidth: 600 }}
               >
-                Exclusive group rates for {client.branding.name} members, with
-                coverage underwritten by New York Life Insurance Company.
+                Coverage designed exclusively for {client.branding.name}{" "}
+                members.
               </Typography>
             </Stack>
 
-            <Stack
-              direction={{ xs: "column", sm: "row" }}
-              spacing={1.5}
-              alignItems={{ xs: "stretch", sm: "center" }}
-            >
+            <Stack direction="row" spacing={1.5} alignItems="center">
               <Button
                 component={RouterLink}
                 to={getPagePath("membership")}
@@ -1498,16 +1539,32 @@ export default function Home() {
               >
                 Get started
               </Button>
+              <Button
+                variant="outlined"
+                size="large"
+                sx={{ px: 3.5, py: 1.25 }}
+                onClick={() => {
+                  howApplyingWorksRef.current?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                }}
+              >
+                Learn more
+              </Button>
             </Stack>
           </Stack>
 
           {SHOW_QUOTE_TOOL ? <HomeQuoteCard /> : null}
         </Box>
 
-        <HowApplyingWorksSection
-          onOpenApplicationReview={() => setActiveDrawer("application-review")}
-          onOpenQuickDecision={() => setActiveDrawer("quick-decision")}
-        />
+        <Box ref={howApplyingWorksRef}>
+          <HowApplyingWorksSection
+            onOpenApplicationReview={() =>
+              setActiveDrawer("application-review")
+            }
+            onOpenQuickDecision={() => setActiveDrawer("quick-decision")}
+          />
+        </Box>
 
         <Stack spacing={2.5}>
           <Stack spacing={1} sx={{ maxWidth: 760 }}>
@@ -1534,17 +1591,12 @@ export default function Home() {
               </Box>
             ) : (
               <Stack
-                direction={{ xs: "column", md: "row" }}
-                divider={
-                  <Divider
-                    flexItem
-                    orientation={isMobile ? "horizontal" : "vertical"}
-                  />
-                }
+                direction="row"
+                divider={<Divider flexItem orientation="vertical" />}
               >
                 <Box
                   sx={{
-                    width: { xs: "100%", md: 260 },
+                    width: { xs: 56, md: 260 },
                     flexShrink: 0,
                     backgroundColor: { xs: "transparent", md: "#fbfcff" },
                   }}
@@ -1554,36 +1606,53 @@ export default function Home() {
                     onChange={(_, value: CoverageCategoryId) =>
                       setActiveCoverageCategory(value)
                     }
-                    orientation={isMobile ? "horizontal" : "vertical"}
-                    variant={isMobile ? "scrollable" : "standard"}
-                    scrollButtons="auto"
-                    allowScrollButtonsMobile
+                    orientation="vertical"
+                    variant="standard"
                     sx={{
-                      px: { xs: 1, md: 0 },
+                      px: { xs: 0, md: 0 },
                       py: { xs: 1, md: 2 },
                       minHeight: "100%",
                       "& .MuiTabs-indicator": {
                         backgroundColor: "primary.main",
                       },
                       "& .MuiTab-root": {
-                        alignItems: "flex-start",
-                        justifyContent: "flex-start",
+                        alignItems: { xs: "center", md: "flex-start" },
+                        justifyContent: { xs: "center", md: "flex-start" },
                         textAlign: "left",
                         textTransform: "none",
                         fontWeight: 600,
                         fontSize: "0.95rem",
                         minHeight: 52,
-                        px: 2,
+                        minWidth: { xs: 56, md: "auto" },
+                        px: { xs: 0, md: 2 },
                       },
                     }}
                   >
-                    {coverageGroups.map(({ category }) => (
-                      <Tab
-                        key={category.id}
-                        value={category.id}
-                        label={category.label}
-                      />
-                    ))}
+                    {coverageGroups.map(({ category }) => {
+                      const IconComponent = category.icon;
+                      return (
+                        <Tab
+                          key={category.id}
+                          value={category.id}
+                          icon={<IconComponent sx={{ fontSize: "1.25rem" }} />}
+                          iconPosition="start"
+                          label={
+                            <Box
+                              component="span"
+                              sx={{ display: { xs: "none", md: "inline" } }}
+                            >
+                              {category.label}
+                            </Box>
+                          }
+                          sx={{
+                            gap: 1,
+                            "& .MuiTab-iconWrapper": {
+                              mr: { xs: 0, md: 1 },
+                            },
+                          }}
+                        />
+                      );
+                    })}
                   </Tabs>
                 </Box>
 

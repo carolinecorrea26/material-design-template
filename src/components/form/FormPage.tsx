@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
 import { Box, Stack } from "@mui/material";
 import FormPageActions from "./FormPageActions";
 import FormPageContent from "./FormPageContent";
