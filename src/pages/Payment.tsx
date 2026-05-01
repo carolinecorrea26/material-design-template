@@ -236,7 +236,7 @@ export default function Payment() {
   return (
     <FormRoutePage
       pageId="payment"
-      title="Choose how you would like to pay for your coverage."
+      title="Choose how you'd like to pay for coverage. You won't be billed until you are approved for coverage."
       devFillFields={getPaymentDevFields}
     >
       {({ control, errors, watchedValues }) => {

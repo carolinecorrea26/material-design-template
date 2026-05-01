@@ -612,7 +612,7 @@ export default function ReviewPreviewSection({
   return (
     <Stack spacing={1.5}>
       <Typography sx={sectionTitleSx}>
-        Review your insurance application
+        Review your application so far:
       </Typography>
 
       <Stack spacing={1.5}>

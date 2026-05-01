@@ -482,11 +482,11 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
 
   "correspondence-to": {
     id: "correspondence-to",
-    label: "Send Correspondence To",
+    label: "Where should we send correspondence regarding your application?",
     inputType: "radio",
     required: true,
     options: [
-      { value: "residential", label: "Residential Address" },
+      { value: "residential", label: "Home Address" },
       { value: "business", label: "Business Address" },
     ],
   },

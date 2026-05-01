@@ -85,10 +85,10 @@ const SURFACE_SX = {
 
 const SECTION_TITLE_SX = {
   fontSize: {
-    xs: "1.5rem",
+    xs: "1.25rem",
     sm: "1.5rem",
     md: "1.75rem",
-    lg: "2rem",
+    // lg: "1.75rem",
   },
   fontWeight: 700,
   // color: "primary.dark",
@@ -1149,7 +1149,7 @@ export default function Home() {
   return (
     <Box sx={{ width: "100%", flex: 1 }}>
       <Stack
-        spacing={{ xs: 12, md: 10 }}
+        spacing={{ xs: 12, md: 12 }}
         sx={{
           width: "100%",
           maxWidth: PAGE_MAX_WIDTH,
@@ -1163,15 +1163,18 @@ export default function Home() {
           sx={{
             display: "grid",
             gridTemplateColumns: SHOW_QUOTE_TOOL
-              ? { xs: "1fr", md: "minmax(0, 500px) minmax(0, 500px)" }
+              ? { xs: "1fr", md: "minmax(0, 1fr) minmax(0, 450px)" }
               : "1fr",
             gap: { xs: 2.5, md: 3.5 },
             alignItems: "start",
+            marginBottom: { xs: 6, md: "2rem !important" },
           }}
         >
           <Stack
             spacing={2}
             sx={{
+              position: "relative",
+              isolation: "isolate",
               alignSelf: "flex-start",
               maxWidth: SHOW_QUOTE_TOOL ? 600 : 760,
               justifySelf: SHOW_QUOTE_TOOL ? "stretch" : "center",
@@ -1183,8 +1186,29 @@ export default function Home() {
                 : { xs: "flex-start", md: "center" },
               px: { xs: 1.5, sm: 3, md: 0 },
               pb: 2,
+              overflow: "visible",
             }}
           >
+            <Box
+              component="img"
+              src={`${import.meta.env.BASE_URL}hero.svg`}
+              alt=""
+              aria-hidden="true"
+              sx={{
+                position: "absolute",
+                left: 0,
+                bottom: { xs: 0, sm: -4, md: "-13rem" },
+                width: { xs: 220, sm: 320, md: 600 },
+                display: { xs: "none", md: "block" },
+                maxWidth: "600px",
+                height: "auto",
+                // opacity: 0.82,
+                zIndex: 0,
+                pointerEvents: "none",
+                userSelect: "none",
+              }}
+            />
+
             <Chip
               icon={
                 <VerifiedUserOutlinedIcon
@@ -1194,6 +1218,8 @@ export default function Home() {
               label="Simple • Secure • Member-only rates"
               variant="outlined"
               sx={{
+                position: "relative",
+                zIndex: 1,
                 borderColor: "divider",
                 bgcolor: "#f9fafc",
                 fontSize: "0.75rem",
@@ -1205,18 +1231,18 @@ export default function Home() {
               }}
             />
 
-            <Stack spacing={1.5}>
+            <Stack spacing={1.5} sx={{ position: "relative", zIndex: 1 }}>
               <Typography
                 variant="h1"
                 sx={{
                   fontSize: {
-                    xs: "2.25rem",
-                    sm: "3rem",
-                    md: "3.5rem",
-                    lg: "4rem",
+                    xs: "2rem",
+                    sm: "2.5rem",
+                    md: "3rem",
+                    // lg: "3rem",
                   },
                   lineHeight: 1.08,
-                  maxWidth: 500,
+                  // maxWidth: { xs: "300px", sm: "500px" },
                   fontWeight: 700,
                 }}
               >
@@ -1225,15 +1251,20 @@ export default function Home() {
               <Typography
                 variant="body1"
                 color="text.secondary"
-                sx={{ maxWidth: 400 }}
-                fontSize={{ xs: "1.125rem", md: "1.25rem" }}
+                // sx={{ maxWidth: 400 }}
+                fontSize={{ xs: "1.125rem", md: "1.125rem" }}
               >
                 Coverage designed exclusively for {client.branding.name}{" "}
                 members.
               </Typography>
             </Stack>
 
-            <Stack direction="row" spacing={1.5} alignItems="center">
+            <Stack
+              direction="row"
+              spacing={1.5}
+              alignItems="center"
+              sx={{ position: "relative", zIndex: 1 }}
+            >
               <Button
                 component={RouterLink}
                 to={getPagePath("membership")}

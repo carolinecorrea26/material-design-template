@@ -361,7 +361,7 @@ export default function Receipt() {
               <CheckCircleRoundedIcon sx={{ color: "#1E854A", fontSize: 54 }} />
             </Box>
 
-            <Typography variant="h3" fontWeight={700}>
+            <Typography variant="h2" fontWeight={700}>
               Your application has been submitted!
             </Typography>
 
@@ -418,23 +418,24 @@ export default function Receipt() {
                     <Stack spacing={2} sx={{ mt: 2 }}>
                       <Box sx={{ px: 1.5, pb: 2 }}>
                         <Stack spacing={2}>
-                          <Typography variant="h5" fontWeight={700}>
-                            What Happens Next
+                          <Typography variant="h4" fontWeight={700}>
+                            Here's what to expect next.
                           </Typography>
                           <Typography variant="body1">
-                            Thank you for submitting your application. Your
-                            request has been securely received. Details about
-                            your application and next steps are listed below.
-                          </Typography>
-                          <Typography variant="body1">
+                            Your application request has been securely received.{" "}
                             <strong>
-                              Please save your confirmation number for your
-                              records.{" "}
+                              For your records, please save a copy of your
+                              application by clicking the download buttons.{" "}
                             </strong>
                             A digital copy cannot be emailed for security
-                            reasons—use the download buttons to save a copy of
-                            your application now. If additional information is
-                            needed, we'll contact you with next steps.
+                            reasons.
+                          </Typography>
+                          {/* <Typography variant="h5" fontWeight={700} color="primary.main">
+                            Your application decision:
+                          </Typography> */}
+                          <Typography variant="body1">
+                            Details about the decision on the coverage you
+                            applied for and next steps are listed below.
                           </Typography>
                         </Stack>
                       </Box>

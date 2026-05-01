@@ -491,10 +491,19 @@ export default function CoverageOptions() {
               defaultExpanded={groupIndex === 0}
               disableGutters
               sx={{
-                borderRadius: 2,
+                backgroundColor: "transparent",
+                border: "none",
+                boxShadow: "none",
+                p: 0,
+                borderRadius: 0,
                 "&::before": { display: "none" },
-                "&.MuiAccordion-root": { borderRadius: 2 },
-                overflow: "hidden",
+                "&.MuiAccordion-root": {
+                  backgroundColor: "transparent",
+                  border: "none",
+                  boxShadow: "none",
+                  m: 0,
+                  p: 0,
+                },
               }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>

@@ -7,14 +7,14 @@ export const pages = [
     id: "membership",
     path: "/membership",
     type: "form",
-    title: "Welcome! This is the start of your insurance application.",
+    title: "Let's get started with your insurance application.",
     groupId: "get-started",
   },
   {
     id: "eligibility",
     path: "/eligibility",
     type: "form",
-    title: "Let's make sure you're eligible for coverage.",
+    title: "Check which coverage options you're eligible for.",
     groupId: "get-started",
   },
   {
@@ -43,7 +43,7 @@ export const pages = [
     id: "beneficiary",
     path: "/beneficiary",
     type: "form",
-    title: "Now, you may choose who you'd like as your beneficiaries.",
+    title: "Now choose who you'd like as your beneficiaries.",
     groupId: "coverage",
   },
   {

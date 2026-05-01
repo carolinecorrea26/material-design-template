@@ -177,10 +177,7 @@ function ContactFields({
           const content = (
             <>
               {/* Residential Address sub-section label */}
-              <FormSectionTitle
-                icon={HomeOutlinedIcon}
-                label="Residential Address"
-              />
+              <FormSectionTitle icon={HomeOutlinedIcon} label="Home Address" />
 
               {/* Street address + Apt/Suite row */}
               <Box

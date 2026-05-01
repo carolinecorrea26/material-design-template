@@ -693,22 +693,29 @@ export default function Beneficiary() {
                 <Typography
                   component="span"
                   sx={{
-                    color: "primary.main",
+                    color: remainingDesignationSlots === 0 ? "error.main" : "primary.main",
                     fontWeight: 700,
                     fontSize: "inherit",
                   }}
                 >
                   {remainingDesignationSlots}
                 </Typography>{" "}
-                {modalValues.designation} beneficiaries remaining (out of 10)
+                {modalValues.designation} beneficiaries remaining
               </Typography>
             </Box>
 
-            <FormControl>
+            {remainingDesignationSlots === 0 && !editingId && (
+              <Alert severity="warning">
+                No more {modalValues.designation} beneficiaries can be added online.
+              </Alert>
+            )}
+
+            <FormControl disabled={remainingDesignationSlots === 0 && !editingId}>
               <FormLabel>Beneficiary Type</FormLabel>
               <ToggleButtonGroup
                 exclusive
                 value={modalValues.beneficiaryType}
+                disabled={remainingDesignationSlots === 0 && !editingId}
                 onChange={(_, value: BeneficiaryType | null) => {
                   if (value === null) return;
                   setModalValues((current) => ({
@@ -740,9 +747,17 @@ export default function Beneficiary() {
 
             {modalValues.beneficiaryType === "individual" ? (
               <>
+                {remainingShare === 0 && !editingId && (
+                  <Alert severity="warning">
+                    No more individuals can be added — 0% unassigned share
+                    remaining.
+                  </Alert>
+                )}
+
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                   <TextField
                     label="First Name"
+                    disabled={(remainingDesignationSlots === 0 || remainingShare === 0) && !editingId}
                     value={modalValues.firstName}
                     onChange={(event) =>
                       setModalValues((current) => ({
@@ -755,6 +770,7 @@ export default function Beneficiary() {
 
                   <TextField
                     label="Last Name"
+                    disabled={(remainingDesignationSlots === 0 || remainingShare === 0) && !editingId}
                     value={modalValues.lastName}
                     onChange={(event) =>
                       setModalValues((current) => ({
@@ -769,6 +785,7 @@ export default function Beneficiary() {
                 <TextField
                   select
                   label="Relationship"
+                  disabled={(remainingDesignationSlots === 0 || remainingShare === 0) && !editingId}
                   value={modalValues.relationship}
                   onChange={(event) =>
                     setModalValues((current) => ({
@@ -787,6 +804,7 @@ export default function Beneficiary() {
 
                 <TextField
                   label="% Share"
+                  disabled={(remainingDesignationSlots === 0 || remainingShare === 0) && !editingId}
                   value={modalValues.share}
                   onChange={(event) => {
                     const sanitizedShare = event.target.value
@@ -817,6 +835,7 @@ export default function Beneficiary() {
                       key={percent}
                       size="small"
                       variant="outlined"
+                      disabled={(remainingDesignationSlots === 0 || remainingShare === 0) && !editingId}
                       onClick={() => {
                         setModalValues((current) => ({
                           ...current,
@@ -838,7 +857,7 @@ export default function Beneficiary() {
                   <Typography
                     component="span"
                     sx={{
-                      color: "primary.main",
+                      color: displayRemainingShare === 0 ? "error.main" : "primary.main",
                       fontWeight: 700,
                       fontSize: "inherit",
                     }}
@@ -852,6 +871,7 @@ export default function Beneficiary() {
               <>
                 <TextField
                   label="Name of Trust"
+                  disabled={remainingDesignationSlots === 0 && !editingId}
                   value={modalValues.trustName}
                   onChange={(event) =>
                     setModalValues((current) => ({
@@ -864,6 +884,7 @@ export default function Beneficiary() {
 
                 <TextField
                   label="Date of Trust"
+                  disabled={remainingDesignationSlots === 0 && !editingId}
                   value={modalValues.trustDate}
                   onChange={(event) =>
                     setModalValues((current) => ({
@@ -884,7 +905,11 @@ export default function Beneficiary() {
 
         <DialogActions>
           <Button onClick={closeModal}>Cancel</Button>
-          <Button variant="contained" onClick={saveBeneficiary}>
+          <Button
+            variant="contained"
+            onClick={saveBeneficiary}
+            disabled={remainingDesignationSlots === 0 && !editingId}
+          >
             Save Beneficiary
           </Button>
         </DialogActions>

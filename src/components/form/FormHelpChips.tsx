@@ -100,7 +100,7 @@ export default function FormHelpChips({
               key={item.id}
               // variant="filled"
               variant="outlined"
-              color="primary"
+              // color="primary"
               clickable
               onClick={() => onSelect(item.id)}
               label={item.label}
