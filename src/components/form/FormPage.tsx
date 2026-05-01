@@ -31,7 +31,7 @@ export default function FormPage({
       <Box sx={{ width: "100%", maxWidth }}>
         <FormShell
           header={
-            <Stack spacing={1}>
+            <Stack spacing={1} sx={{ padding: "0 0.5rem" }}>
               <FormPageTitle title={title} />
               {error && <FormPageError message={error} />}
               {help}

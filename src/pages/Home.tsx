@@ -1210,7 +1210,7 @@ export default function Home() {
                 variant="h1"
                 sx={{
                   fontSize: {
-                    xs: "2.75rem",
+                    xs: "2.25rem",
                     sm: "3.25rem",
                     md: "3.75rem",
                     lg: "4rem",
