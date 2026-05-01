@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 // import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+// import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import {
@@ -321,14 +322,14 @@ function HowApplyingWorksSection({
 
       <Stack spacing={8}>
         {APPLYING_STEPS.map((step) => (
-          <Box key={step.id}>
+          <Box key={step.id} sx={{ padding: { xs: "0 1.5rem", md: "0 2rem" } }}>
             <Stack
-              direction={{ xs: "column", sm: "row" }}
+              direction={{ xs: "column", md: "row" }}
               spacing={{ xs: 3, md: 6 }}
-              alignItems={{ xs: "flex-start", sm: "center" }}
+              alignItems={{ xs: "flex-start", md: "center" }}
             >
               <Box
-                sx={{ flexShrink: 0, alignSelf: { xs: "center", sm: "auto" } }}
+                sx={{ flexShrink: 0, alignSelf: { xs: "center", md: "auto" } }}
               >
                 <Box
                   component="img"
@@ -353,6 +354,7 @@ function HowApplyingWorksSection({
                       md: "1.5rem",
                       lg: "1.5rem",
                     }}
+                    textAlign={{ xs: "center", md: "left" }}
                   >
                     {step.title}
                   </Typography>
@@ -1147,7 +1149,7 @@ export default function Home() {
   return (
     <Box sx={{ width: "100%", flex: 1 }}>
       <Stack
-        spacing={{ xs: 10, md: 7 }}
+        spacing={{ xs: 12, md: 10 }}
         sx={{
           width: "100%",
           maxWidth: PAGE_MAX_WIDTH,
@@ -1209,16 +1211,16 @@ export default function Home() {
                 sx={{
                   fontSize: {
                     xs: "2.75rem",
-                    // sm: "2.5rem",
-                    md: "3rem",
+                    sm: "3.25rem",
+                    md: "3.75rem",
                     lg: "4rem",
                   },
                   lineHeight: 1.08,
-                  maxWidth: 600,
+                  maxWidth: 500,
                   fontWeight: 700,
                 }}
               >
-                Protect what matters most.
+                Protect what matters most
               </Typography>
               <Typography
                 variant="body1"

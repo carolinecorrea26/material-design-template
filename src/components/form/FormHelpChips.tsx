@@ -98,19 +98,21 @@ export default function FormHelpChips({
           {items.map((item) => (
             <Chip
               key={item.id}
-              variant="filled"
+              // variant="filled"
+              variant="outlined"
+              color="primary"
               clickable
               onClick={() => onSelect(item.id)}
               label={item.label}
-              sx={{
-                justifyContent: "flex-start",
-                width: "fit-content",
-                border: "1px solid #d8dbe2",
-                borderRadius: 2,
-                "& .MuiChip-label": {
-                  whiteSpace: "nowrap",
-                },
-              }}
+              // sx={{
+              //   justifyContent: "flex-start",
+              //   width: "fit-content",
+              //   border: "1px solid #d8dbe2",
+              //   borderRadius: 2,
+              //   "& .MuiChip-label": {
+              //     whiteSpace: "nowrap",
+              //   },
+              // }}
             />
           ))}
         </Stack>

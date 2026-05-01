@@ -35,7 +35,7 @@ function getCurrentPageId(pathname: string): PageId | null {
 
 function readProgressVariant(): ProgressVariant {
   const stored = window.sessionStorage.getItem(PROGRESS_VARIANT_STORAGE_KEY);
-  return stored === "stepper" ? "stepper" : "bar";
+  return stored === "bar" ? "bar" : "stepper";
 }
 
 function emitProgressSnapshot(values: ApplicationFormValues) {
@@ -107,20 +107,17 @@ export default function FormProgress() {
             display: "flex",
             alignItems: "flex-start",
             width: "100%",
-            maxWidth: "800px",
+            maxWidth: "1200px",
             mx: "auto",
             justifyContent: "space-between",
-            // px: 2,
             pt: 1,
           }}
         >
           {progressSteps.map((step, index) => {
-            const Icon = step.icon;
             const isActive = index === activeStep;
             const isComplete = index < activeStep;
             const isLast = index === progressSteps.length - 1;
 
-            // Calculate progress within the current step
             let nextStepPercent = 0;
             if (index < activeStep) {
               nextStepPercent = 100;
@@ -132,7 +129,7 @@ export default function FormProgress() {
               const pagesInCurrentStep = currentStep
                 ? currentStep.pageIds.length
                 : 1;
-              // Active chunk starts empty on its first page and fills as pages progress.
+
               nextStepPercent =
                 (currentPageIndexInStep / pagesInCurrentStep) * 100;
             } else {
@@ -150,7 +147,6 @@ export default function FormProgress() {
                   position: "relative",
                 }}
               >
-                {/* Connecting line (positioned absolutely to not affect layout) */}
                 {!isLast && (
                   <Box
                     sx={{
@@ -176,7 +172,6 @@ export default function FormProgress() {
                   </Box>
                 )}
 
-                {/* Icon */}
                 <Box
                   sx={{
                     width: { xs: 36, sm: 40 },
@@ -201,12 +196,13 @@ export default function FormProgress() {
                     zIndex: 1,
                     transition:
                       "border-color 260ms ease, background-color 260ms ease, color 260ms ease",
+                    fontWeight: 700,
+                    fontSize: { xs: "0.95rem", sm: "1rem" },
                   }}
                 >
-                  <Icon sx={{ fontSize: { xs: "1rem", sm: 20 } }} />
+                  {index + 1}
                 </Box>
 
-                {/* Label underneath */}
                 <Typography
                   variant="caption"
                   sx={{
@@ -329,12 +325,10 @@ export default function FormProgress() {
     <Box
       sx={{
         width: "100%",
-        // px: { xs: 0, sm: 3, md: 4 },
       }}
     >
       <Box
         sx={{
-          // maxWidth: 1400,
           mx: "auto",
           width: "100%",
         }}
