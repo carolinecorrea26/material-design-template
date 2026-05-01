@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+// import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
-import { motion } from "framer-motion";
 import {
   Alert,
   Box,
@@ -65,7 +65,6 @@ type AboutCardContent = {
 
 const SHOW_QUOTE_TOOL = true;
 const PAGE_MAX_WIDTH = 1180;
-const STEP_DURATION = 10000;
 
 const TOBACCO_PRODUCT_OPTIONS = [
   "Cigarettes",
@@ -81,6 +80,17 @@ const SURFACE_SX = {
   borderRadius: 4,
   backgroundColor: "#ffffff",
   boxShadow: "0 18px 40px rgba(52, 59, 72, 0.06)",
+};
+
+const SECTION_TITLE_SX = {
+  fontSize: {
+    xs: "1.5rem",
+    sm: "1.5rem",
+    md: "1.75rem",
+    lg: "2rem",
+  },
+  fontWeight: 700,
+  // color: "primary.dark",
 };
 
 const CATEGORY_DESCRIPTIONS: Record<CoverageCategoryId, string> = {
@@ -114,7 +124,7 @@ const ASSOCIATION_ABOUT_CONTENT: Partial<Record<string, AboutCardContent>> = {
 const APPLYING_STEPS = [
   {
     id: 0,
-    number: "1",
+    // number: "1",
     title: "Apply online",
     body: "Complete our online application to apply for coverage that fits your needs. You'll be able to review your options and see your estimated cost.",
     imageSrc: "/1-apply.svg",
@@ -122,15 +132,15 @@ const APPLYING_STEPS = [
   },
   {
     id: 1,
-    number: "2",
-    title: "Provide medical info",
+    // number: "2",
+    title: "Answer health questions",
     body: "Many types of insurance require health information to provide a decision on your application. We may ask health questions on your application or a representative of New York Life or their medical service provider may contact you to collect your health history. If needed, we will schedule a medical exam at no cost to you and at a time and place convenient to you.",
     imageSrc: "/2-medical.svg",
-    imageAlt: "Provide medical info",
+    imageAlt: "Answer health questions",
   },
   {
     id: 2,
-    number: "3",
+    // number: "3",
     title: "Get a decision",
     body: "Decisions are made after all information is received and reviewed by New York Life. If approved, you will receive a certificate of insurance and have a 30-day no-obligation free look. Plus, when QuickDecisionSM is available, you can get a faster decision on your application, typically with no medical exam.",
     imageSrc: "/3-decision.svg",
@@ -296,24 +306,12 @@ function HowApplyingWorksSection({
   onOpenApplicationReview: () => void;
   onOpenQuickDecision: () => void;
 }) {
-  const [activeStep, setActiveStep] = useState(0);
-  const [progressKey, setProgressKey] = useState(0);
-
-  useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      setActiveStep((current) => (current + 1) % APPLYING_STEPS.length);
-      setProgressKey((current) => current + 1);
-    }, STEP_DURATION);
-
-    return () => window.clearTimeout(timeout);
-  }, [activeStep]);
-
-  const active = useMemo(() => APPLYING_STEPS[activeStep], [activeStep]);
-
   return (
-    <Stack spacing={2.5}>
-      <Stack spacing={1} sx={{ maxWidth: 760 }}>
-        <Typography variant="h2">How applying online works</Typography>
+    <Stack spacing={4}>
+      <Stack spacing={1}>
+        <Typography variant="h2" sx={SECTION_TITLE_SX}>
+          What to expect when applying
+        </Typography>
         <Typography variant="body1" color="text.secondary">
           The online process is designed to help you move quickly while still
           giving New York Life the information needed to review your
@@ -321,320 +319,25 @@ function HowApplyingWorksSection({
         </Typography>
       </Stack>
 
-      <Box>
-        <Stack spacing={{ xs: 3, md: 4 }}>
-          <Box sx={{ display: { xs: "none", md: "block" } }}>
-            <Stack spacing={3}>
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-                  gap: 3,
-                }}
-              >
-                {APPLYING_STEPS.map((step) => {
-                  const isActive = step.id === activeStep;
-                  const isComplete = step.id < activeStep;
-
-                  return (
-                    <Button
-                      key={step.id}
-                      variant="text"
-                      onClick={() => {
-                        setActiveStep(step.id);
-                        setProgressKey((current) => current + 1);
-                      }}
-                      sx={{
-                        minWidth: 0,
-                        p: 0,
-                        textTransform: "none",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        color: "inherit",
-                        "&:hover": { backgroundColor: "transparent" },
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          width: 50,
-                          height: 50,
-                          borderRadius: "50%",
-                          border: "2px solid",
-                          borderColor: isActive
-                            ? "primary.main"
-                            : isComplete
-                              ? "rgba(7, 104, 255, 0.18)"
-                              : "rgba(52, 59, 72, 0.16)",
-                          backgroundColor: isActive
-                            ? "primary.main"
-                            : isComplete
-                              ? "rgba(7, 104, 255, 0.08)"
-                              : "#ffffff",
-                          color: isActive
-                            ? "#ffffff"
-                            : isComplete
-                              ? "primary.main"
-                              : "text.secondary",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: "1.375rem",
-                          fontWeight: 700,
-                          boxShadow: isActive
-                            ? "0 12px 28px rgba(7, 104, 255, 0.18)"
-                            : "none",
-                          transition: "all 200ms ease",
-                        }}
-                      >
-                        {step.number}
-                      </Box>
-
-                      <Typography
-                        sx={{
-                          mt: 1.5,
-                          maxWidth: 180,
-                          fontWeight: 600,
-                          fontSize: "1rem",
-                          color: isActive ? "text.primary" : "text.secondary",
-                          textAlign: "center",
-                        }}
-                      >
-                        {step.title}
-                      </Typography>
-                    </Button>
-                  );
-                })}
-              </Box>
-
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-                  gap: 3,
-                  px: 1,
-                }}
-              >
-                {APPLYING_STEPS.map((step) => {
-                  const isComplete = step.id < activeStep;
-                  const isActive = step.id === activeStep;
-
-                  return (
-                    <Box
-                      key={`progress-${step.id}`}
-                      sx={{
-                        height: 3,
-                        borderRadius: 999,
-                        overflow: "hidden",
-                        backgroundColor: "rgba(52, 59, 72, 0.14)",
-                        position: "relative",
-                      }}
-                    >
-                      {isComplete ? (
-                        <Box
-                          sx={{
-                            position: "absolute",
-                            inset: 0,
-                            borderRadius: 999,
-                            backgroundColor: "primary.main",
-                          }}
-                        />
-                      ) : null}
-
-                      {isActive ? (
-                        <motion.div
-                          key={`${progressKey}-${step.id}`}
-                          initial={{ width: "0%" }}
-                          animate={{ width: "100%" }}
-                          transition={{
-                            duration: STEP_DURATION / 1000,
-                            ease: "linear",
-                          }}
-                          style={{
-                            position: "absolute",
-                            inset: 0,
-                            width: "100%",
-                            borderRadius: 999,
-                            backgroundColor: "#0768ff",
-                            transformOrigin: "left center",
-                          }}
-                        />
-                      ) : null}
-                    </Box>
-                  );
-                })}
-              </Box>
-            </Stack>
-          </Box>
-
-          <Box sx={{ display: { xs: "block", md: "none" } }}>
-            <Stack spacing={2.5}>
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-                  gap: 1.5,
-                  alignItems: "start",
-                }}
-              >
-                {APPLYING_STEPS.map((step) => {
-                  const isActive = step.id === activeStep;
-                  const isComplete = step.id < activeStep;
-
-                  return (
-                    <Button
-                      key={step.id}
-                      variant="text"
-                      onClick={() => {
-                        setActiveStep(step.id);
-                        setProgressKey((current) => current + 1);
-                      }}
-                      sx={{
-                        minWidth: 0,
-                        p: 0,
-                        textTransform: "none",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        color: "inherit",
-                        "&:hover": { backgroundColor: "transparent" },
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          width: 44,
-                          height: 44,
-                          flexShrink: 0,
-                          borderRadius: "50%",
-                          border: "2px solid",
-                          borderColor: isActive
-                            ? "primary.main"
-                            : isComplete
-                              ? "rgba(7, 104, 255, 0.18)"
-                              : "rgba(52, 59, 72, 0.16)",
-                          backgroundColor: isActive
-                            ? "primary.main"
-                            : isComplete
-                              ? "rgba(7, 104, 255, 0.08)"
-                              : "#ffffff",
-                          color: isActive
-                            ? "#ffffff"
-                            : isComplete
-                              ? "primary.main"
-                              : "text.secondary",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: "1rem",
-                          fontWeight: 700,
-                          boxShadow: isActive
-                            ? "0 10px 24px rgba(7, 104, 255, 0.18)"
-                            : "none",
-                          transition: "all 200ms ease",
-                        }}
-                      >
-                        {step.number}
-                      </Box>
-
-                      <Typography
-                        sx={{
-                          mt: 1,
-                          fontWeight: 600,
-                          fontSize: "0.875rem",
-                          lineHeight: 1.25,
-                          color: isActive ? "text.primary" : "text.secondary",
-                          textAlign: "center",
-                        }}
-                      >
-                        {step.title}
-                      </Typography>
-                    </Button>
-                  );
-                })}
-              </Box>
-
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-                  gap: 1.5,
-                }}
-              >
-                {APPLYING_STEPS.map((step) => {
-                  const isComplete = step.id < activeStep;
-                  const isActive = step.id === activeStep;
-
-                  return (
-                    <Box
-                      key={`mobile-progress-${step.id}`}
-                      sx={{
-                        height: 6,
-                        borderRadius: 999,
-                        overflow: "hidden",
-                        backgroundColor: "rgba(52, 59, 72, 0.14)",
-                        position: "relative",
-                      }}
-                    >
-                      {isComplete ? (
-                        <Box
-                          sx={{
-                            position: "absolute",
-                            inset: 0,
-                            borderRadius: 999,
-                            backgroundColor: "primary.main",
-                          }}
-                        />
-                      ) : null}
-
-                      {isActive ? (
-                        <motion.div
-                          key={`mobile-${progressKey}-${step.id}`}
-                          initial={{ width: "0%" }}
-                          animate={{ width: "100%" }}
-                          transition={{
-                            duration: STEP_DURATION / 1000,
-                            ease: "linear",
-                          }}
-                          style={{
-                            position: "absolute",
-                            inset: 0,
-                            width: "100%",
-                            borderRadius: 999,
-                            backgroundColor: "#0768ff",
-                            transformOrigin: "left center",
-                          }}
-                        />
-                      ) : null}
-                    </Box>
-                  );
-                })}
-              </Box>
-            </Stack>
-          </Box>
-
-          <Box
-            sx={{
-              p: { xs: 2.5, md: 3.5 },
-              maxWidth: 900,
-              mx: "auto",
-              alignSelf: "center",
-            }}
-          >
+      <Stack spacing={8}>
+        {APPLYING_STEPS.map((step) => (
+          <Box key={step.id}>
             <Stack
-              direction={{ xs: "column", md: "row" }}
+              direction={{ xs: "column", sm: "row" }}
               spacing={{ xs: 3, md: 6 }}
-              alignItems={{ xs: "center", md: "center" }}
+              alignItems={{ xs: "flex-start", sm: "center" }}
             >
-              <Box sx={{ flexShrink: 0 }}>
+              <Box
+                sx={{ flexShrink: 0, alignSelf: { xs: "center", sm: "auto" } }}
+              >
                 <Box
                   component="img"
-                  src={active.imageSrc}
-                  alt={active.imageAlt}
+                  src={step.imageSrc}
+                  alt={step.imageAlt}
                   sx={{
                     display: "block",
-                    width: 160,
-                    height: 160,
+                    width: { xs: "150px", sm: "120px", md: "150px" },
+                    height: { xs: "150px", sm: "120px", md: "150px" },
                     objectFit: "contain",
                   }}
                 />
@@ -642,9 +345,19 @@ function HowApplyingWorksSection({
 
               <Box sx={{ width: "100%" }}>
                 <Stack spacing={1.5}>
-                  <Typography variant="h4">{active.title}</Typography>
+                  <Typography
+                    variant="h4"
+                    fontSize={{
+                      xs: "1.25rem",
+                      sm: "1.25rem",
+                      md: "1.5rem",
+                      lg: "1.5rem",
+                    }}
+                  >
+                    {step.title}
+                  </Typography>
 
-                  {active.id === 1 ? (
+                  {step.id === 1 ? (
                     <Typography variant="body1" color="text.secondary">
                       Many types of insurance require health information to
                       provide a decision on your application. We may ask health
@@ -657,7 +370,7 @@ function HowApplyingWorksSection({
                         Learn more about the application review process.
                       </InlineDrawerLink>
                     </Typography>
-                  ) : active.id === 2 ? (
+                  ) : step.id === 2 ? (
                     <Typography variant="body1" color="text.secondary">
                       Decisions are made after all information is received and
                       reviewed by New York Life. If approved, you will receive a
@@ -671,15 +384,15 @@ function HowApplyingWorksSection({
                     </Typography>
                   ) : (
                     <Typography variant="body1" color="text.secondary">
-                      {active.body}
+                      {step.body}
                     </Typography>
                   )}
                 </Stack>
               </Box>
             </Stack>
           </Box>
-        </Stack>
-      </Box>
+        ))}
+      </Stack>
     </Stack>
   );
 }
@@ -868,24 +581,13 @@ function HomeQuoteCard() {
         width: "100%",
         borderColor: "rgba(7, 104, 255, 0.14)",
         background:
-          "linear-gradient(135deg, #f4feff 0%, #ffffff 52%, #f7fbff 100%)",
+          "linear-gradient(135deg, #f4f8ff 0%, #ffffff 52%, #f7fbff 100%)",
       }}
     >
       <Stack spacing={2.25} sx={{ p: { xs: 2.5, sm: 3 } }}>
         <Stack spacing={0.75}>
-          <Typography
-            variant="h2"
-            paddingBottom={1}
-            sx={{
-              fontSize: {
-                xs: "1.5rem",
-                sm: "1.5rem",
-                md: "1.5rem",
-                lg: "2rem",
-              },
-            }}
-          >
-            Get an instant quote.
+          <Typography variant="h2" paddingBottom={1} sx={SECTION_TITLE_SX}>
+            Estimate your cost
           </Typography>
           <Typography variant="body1" color="text.secondary">
             See coverage options, monthly premiums, and exclusive group rates in
@@ -1445,7 +1147,7 @@ export default function Home() {
   return (
     <Box sx={{ width: "100%", flex: 1 }}>
       <Stack
-        spacing={{ xs: 5, md: 7 }}
+        spacing={{ xs: 10, md: 7 }}
         sx={{
           width: "100%",
           maxWidth: PAGE_MAX_WIDTH,
@@ -1466,7 +1168,7 @@ export default function Home() {
           }}
         >
           <Stack
-            spacing={2.5}
+            spacing={2}
             sx={{
               alignSelf: "flex-start",
               maxWidth: SHOW_QUOTE_TOOL ? 600 : 760,
@@ -1477,9 +1179,8 @@ export default function Home() {
               alignItems: SHOW_QUOTE_TOOL
                 ? "flex-start"
                 : { xs: "flex-start", md: "center" },
-              px: { xs: 2, sm: 3, md: 0 },
+              px: { xs: 1.5, sm: 3, md: 0 },
               pb: 2,
-              // py: { xs: 2.5, sm: 3, md: 4 },
             }}
           >
             <Chip
@@ -1507,13 +1208,14 @@ export default function Home() {
                 variant="h1"
                 sx={{
                   fontSize: {
-                    xs: "2rem",
-                    sm: "2.5rem",
+                    xs: "2.75rem",
+                    // sm: "2.5rem",
                     md: "3rem",
                     lg: "4rem",
                   },
                   lineHeight: 1.08,
                   maxWidth: 600,
+                  fontWeight: 700,
                 }}
               >
                 Protect what matters most.
@@ -1521,7 +1223,8 @@ export default function Home() {
               <Typography
                 variant="body1"
                 color="text.secondary"
-                sx={{ maxWidth: 600 }}
+                sx={{ maxWidth: 400 }}
+                fontSize={{ xs: "1.125rem", md: "1.25rem" }}
               >
                 Coverage designed exclusively for {client.branding.name}{" "}
                 members.
@@ -1534,8 +1237,8 @@ export default function Home() {
                 to={getPagePath("membership")}
                 variant="contained"
                 size="large"
-                endIcon={<ArrowForwardIcon />}
-                sx={{ px: 3.5, py: 1.25 }}
+                endIcon={<ArrowRightAltRoundedIcon />}
+                sx={{ px: 3.5, py: 1.25, fontWeight: 700 }}
               >
                 Get started
               </Button>
@@ -1567,8 +1270,10 @@ export default function Home() {
         </Box>
 
         <Stack spacing={2.5}>
-          <Stack spacing={1} sx={{ maxWidth: 760 }}>
-            <Typography variant="h2">About the coverages</Typography>
+          <Stack spacing={1}>
+            <Typography variant="h2" sx={SECTION_TITLE_SX}>
+              About the coverages
+            </Typography>
             <Typography variant="body1" color="text.secondary">
               Review the coverage categories available on this site and the
               products offered within each category.
@@ -1732,7 +1437,9 @@ export default function Home() {
           >
             <Stack spacing={2}>
               <Stack spacing={0.75}>
-                <Typography variant="h3">{NYL_ABOUT_CONTENT.title}</Typography>
+                <Typography variant="h2" sx={SECTION_TITLE_SX}>
+                  {NYL_ABOUT_CONTENT.title}
+                </Typography>
                 {NYL_ABOUT_CONTENT.subtitle ? (
                   <Typography variant="body1" sx={{ fontWeight: 600 }}>
                     {NYL_ABOUT_CONTENT.subtitle}
