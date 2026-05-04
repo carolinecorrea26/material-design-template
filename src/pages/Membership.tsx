@@ -1,9 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Box,
   Button,
-  Checkbox,
   Divider,
   FormControl,
   FormHelperText,
@@ -34,11 +33,16 @@ import type {
 } from "../config/coverages/types";
 import FieldRenderer from "../components/form/FieldRenderer";
 import FormRoutePage from "../components/form/FormRoutePage";
+import {
+  deriveStateProvinceFromZipOrPostalCode,
+  formatZipOrPostalCode,
+} from "../utils/zipToStateProvince";
 
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
 type EstimateState = {
   birthday: string;
+  zipCode: string;
   state: string;
   productId: string;
   gender: EstimateGender;
@@ -50,15 +54,6 @@ type EstimateState = {
   monthlyExpenses: string;
   responsibilityPct: string;
 };
-
-const TOBACCO_PRODUCT_OPTIONS = [
-  "Cigarettes",
-  "Cigars",
-  "Pipe",
-  "Chewing tobacco",
-  "Nicotine gum or patch",
-  "E-cigarettes or vaping",
-];
 
 function formatUSD(value: number, decimals = 2): string {
   return value.toLocaleString("en-US", {
@@ -152,6 +147,29 @@ function getStateOptions() {
   return options;
 }
 
+function parseStoredDate(value: string): string {
+  if (!value) return "";
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return value;
+  return `${match[2]}/${match[3]}/${match[1]}`;
+}
+
+function formatDateForStorage(display: string): string {
+  const digits = display.replace(/\D/g, "");
+  if (digits.length !== 8) return "";
+  const mm = digits.slice(0, 2);
+  const dd = digits.slice(2, 4);
+  const yyyy = digits.slice(4, 8);
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+function formatDateDisplay(raw: string): string {
+  const digits = raw.replace(/\D/g, "").slice(0, 8);
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+  return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+}
+
 export default function Membership() {
   const client = getActiveClient();
   const pageId = "membership";
@@ -159,6 +177,7 @@ export default function Membership() {
 
   const [estimateValues, setEstimateValues] = useState<EstimateState>({
     birthday: "",
+    zipCode: "",
     state: "",
     productId: "",
     gender: "",
@@ -180,6 +199,18 @@ export default function Membership() {
   >({});
 
   const stateOptions = useMemo(() => getStateOptions(), []);
+
+  // Auto-derive state from zip code
+  useEffect(() => {
+    const derived = deriveStateProvinceFromZipOrPostalCode(
+      estimateValues.zipCode,
+      stateOptions,
+    );
+    if (derived && derived !== estimateValues.state) {
+      setEstimateValues((current) => ({ ...current, state: derived }));
+    }
+  }, [estimateValues.zipCode, stateOptions, estimateValues.state]);
+
   const productsByCategory = useMemo(
     () =>
       coverageCategories
@@ -221,7 +252,13 @@ export default function Membership() {
     const errors: Record<string, string> = {};
 
     if (!estimateValues.birthday) {
-      errors.birthday = "Birthday is required.";
+      errors.birthday = "Date of birth is required.";
+    } else if (!/^\d{4}-\d{2}-\d{2}$/.test(estimateValues.birthday)) {
+      errors.birthday = "Enter a complete date (MM/DD/YYYY).";
+    }
+
+    if (!estimateValues.zipCode) {
+      errors.zipCode = "ZIP / postal code is required.";
     }
 
     if (!estimateValues.state) {
@@ -238,16 +275,6 @@ export default function Membership() {
 
     if (estimateCategoryNeedsSmoker && !estimateValues.smoker) {
       errors.smoker = "Please select an option.";
-    }
-
-    if (estimateCategoryNeedsSmoker && estimateValues.smoker === "yes") {
-      if (!estimateValues.tobaccoLastUsed) {
-        errors.tobaccoLastUsed = "Last used date is required.";
-      }
-
-      if (estimateValues.tobaccoProducts.length === 0) {
-        errors.tobaccoProducts = "Select at least one tobacco product.";
-      }
     }
 
     if (estimateCategoryNeedsDi && !estimateValues.avgIncome) {
@@ -455,18 +482,48 @@ export default function Membership() {
           </Typography>
 
           <TextField
-            label="Birthday"
-            type="date"
+            label="Date of Birth"
             fullWidth
             required
-            value={estimateValues.birthday}
-            onChange={(event) =>
-              updateEstimateValues({ birthday: event.target.value })
-            }
+            placeholder="MM/DD/YYYY"
+            value={parseStoredDate(estimateValues.birthday)}
+            onChange={(event) => {
+              const formatted = formatDateDisplay(event.target.value);
+              const digits = formatted.replace(/\D/g, "");
+              if (digits.length === 8) {
+                updateEstimateValues({
+                  birthday: formatDateForStorage(formatted),
+                });
+              } else {
+                updateEstimateValues({ birthday: formatted });
+              }
+            }}
+            inputProps={{ inputMode: "numeric" }}
             InputLabelProps={{ shrink: true }}
             error={estimateAttempted && !!estimateValidationErrors.birthday}
             helperText={
-              estimateAttempted ? estimateValidationErrors.birthday || " " : " "
+              estimateAttempted
+                ? estimateValidationErrors.birthday || undefined
+                : undefined
+            }
+          />
+
+          <TextField
+            label="ZIP / Postal Code"
+            fullWidth
+            required
+            value={estimateValues.zipCode}
+            onChange={(event) =>
+              updateEstimateValues({
+                zipCode: formatZipOrPostalCode(event.target.value),
+              })
+            }
+            inputProps={{ inputMode: "text", maxLength: 7 }}
+            error={estimateAttempted && !!estimateValidationErrors.zipCode}
+            helperText={
+              estimateAttempted
+                ? estimateValidationErrors.zipCode || undefined
+                : undefined
             }
           />
 
@@ -500,16 +557,23 @@ export default function Membership() {
             required
             error={estimateAttempted && !!estimateValidationErrors.productId}
           >
-            <InputLabel id="membership-estimate-product-label">
-              Product
-            </InputLabel>
+            <FormLabel
+              required
+              sx={{ mb: 1, fontWeight: 600, color: "text.primary" }}
+            >
+              What coverage are you interested in?
+            </FormLabel>
             <Select
-              labelId="membership-estimate-product-label"
-              label="Product"
+              displayEmpty
               value={estimateValues.productId}
               onChange={(event) =>
                 handleEstimateProductChange(event.target.value)
               }
+              renderValue={(value) => {
+                if (!value) return <em>Select a product</em>;
+                const product = coverages.find((c) => c.id === value);
+                return product?.name ?? value;
+              }}
             >
               {productsByCategory.flatMap((group) => [
                 <ListSubheader
@@ -605,7 +669,7 @@ export default function Membership() {
               error={estimateAttempted && !!estimateValidationErrors.smoker}
             >
               <FormLabel required sx={{ mb: 1 }}>
-                Tobacco or nicotine use
+                Do you use nicotine products?
               </FormLabel>
               <ToggleButtonGroup
                 exclusive
@@ -614,10 +678,6 @@ export default function Membership() {
                   if (value !== null) {
                     updateEstimateValues({
                       smoker: value as EstimateYesNo,
-                      tobaccoLastUsed:
-                        value === "yes" ? estimateValues.tobaccoLastUsed : "",
-                      tobaccoProducts:
-                        value === "yes" ? estimateValues.tobaccoProducts : [],
                     });
                   }
                 }}
@@ -662,77 +722,6 @@ export default function Membership() {
                 </FormHelperText>
               ) : null}
             </FormControl>
-          ) : null}
-
-          {estimateCategoryNeedsSmoker && estimateValues.smoker === "yes" ? (
-            <>
-              <TextField
-                label="Last used date"
-                type="date"
-                fullWidth
-                required
-                value={estimateValues.tobaccoLastUsed}
-                onChange={(event) =>
-                  updateEstimateValues({ tobaccoLastUsed: event.target.value })
-                }
-                InputLabelProps={{ shrink: true }}
-                error={
-                  estimateAttempted &&
-                  !!estimateValidationErrors.tobaccoLastUsed
-                }
-                helperText={
-                  estimateAttempted
-                    ? estimateValidationErrors.tobaccoLastUsed || " "
-                    : " "
-                }
-              />
-
-              <FormControl
-                fullWidth
-                required
-                error={
-                  estimateAttempted &&
-                  !!estimateValidationErrors.tobaccoProducts
-                }
-              >
-                <InputLabel id="estimate-tobacco-products-label">
-                  Tobacco products used
-                </InputLabel>
-                <Select
-                  labelId="estimate-tobacco-products-label"
-                  label="Tobacco products used"
-                  multiple
-                  value={estimateValues.tobaccoProducts}
-                  onChange={(event) =>
-                    updateEstimateValues({
-                      tobaccoProducts:
-                        typeof event.target.value === "string"
-                          ? event.target.value.split(",")
-                          : event.target.value,
-                    })
-                  }
-                  renderValue={(selected) => selected.join(", ")}
-                >
-                  {TOBACCO_PRODUCT_OPTIONS.map((option) => (
-                    <MenuItem key={option} value={option}>
-                      <Checkbox
-                        checked={estimateValues.tobaccoProducts.includes(
-                          option,
-                        )}
-                        size="small"
-                      />
-                      {option}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {estimateAttempted &&
-                estimateValidationErrors.tobaccoProducts ? (
-                  <FormHelperText>
-                    {estimateValidationErrors.tobaccoProducts}
-                  </FormHelperText>
-                ) : null}
-              </FormControl>
-            </>
           ) : null}
 
           {estimateCategoryNeedsDi ? (

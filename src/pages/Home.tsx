@@ -2,17 +2,21 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 // import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 // import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
+import CloseIcon from "@mui/icons-material/Close";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import {
   Alert,
   Box,
   Button,
-  Checkbox,
   Chip,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   Divider,
   FormControl,
   FormHelperText,
   FormLabel,
+  IconButton,
   InputLabel,
   Link,
   ListSubheader,
@@ -26,6 +30,8 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import FormHelpDrawer from "../components/form/FormHelpDrawer";
@@ -39,6 +45,10 @@ import type {
 } from "../config/coverages/types";
 import { fieldCatalog } from "../config/fields";
 import { getPagePath } from "../config/pages";
+import {
+  deriveStateProvinceFromZipOrPostalCode,
+  formatZipOrPostalCode,
+} from "../utils/zipToStateProvince";
 
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
@@ -46,6 +56,7 @@ type DrawerId = "application-review" | "quick-decision" | null;
 
 type EstimateState = {
   birthday: string;
+  zipCode: string;
   state: string;
   productId: string;
   gender: EstimateGender;
@@ -66,15 +77,6 @@ type AboutCardContent = {
 
 const SHOW_QUOTE_TOOL = true;
 const PAGE_MAX_WIDTH = 1180;
-
-const TOBACCO_PRODUCT_OPTIONS = [
-  "Cigarettes",
-  "Cigars",
-  "Pipe",
-  "Chewing tobacco",
-  "Nicotine gum or patch",
-  "E-cigarettes or vaping",
-];
 
 const SURFACE_SX = {
   border: "1px solid rgba(52, 59, 72, 0.10)",
@@ -255,6 +257,29 @@ function getStateOptions() {
   return fieldCatalog["state-province"].options ?? [];
 }
 
+function parseStoredDate(value: string): string {
+  if (!value) return "";
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return value;
+  return `${match[2]}/${match[3]}/${match[1]}`;
+}
+
+function formatDateForStorage(display: string): string {
+  const digits = display.replace(/\D/g, "");
+  if (digits.length !== 8) return "";
+  const mm = digits.slice(0, 2);
+  const dd = digits.slice(2, 4);
+  const yyyy = digits.slice(4, 8);
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+function formatDateDisplay(raw: string): string {
+  const digits = raw.replace(/\D/g, "").slice(0, 8);
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+  return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+}
+
 function InlineDrawerLink({
   children,
   onClick,
@@ -400,11 +425,14 @@ function HowApplyingWorksSection({
 }
 
 function HomeQuoteCard() {
+  const theme = useTheme();
+  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const stateOptions = useMemo(() => getStateOptions(), []);
 
   const [estimateValues, setEstimateValues] = useState<EstimateState>({
     birthday: "",
+    zipCode: "",
     state: "",
     productId: "",
     gender: "",
@@ -416,8 +444,8 @@ function HomeQuoteCard() {
     monthlyExpenses: "",
     responsibilityPct: "",
   });
-  const [estimateAttempted, setEstimateAttempted] = useState(false);
-  const [showEstimateProducts, setShowEstimateProducts] = useState(false);
+  const [initialAttempted, setInitialAttempted] = useState(false);
+  const [quoteModalOpen, setQuoteModalOpen] = useState(false);
   const [estimateAmountsByProductId, setEstimateAmountsByProductId] = useState<
     Record<string, number>
   >({});
@@ -443,6 +471,17 @@ function HomeQuoteCard() {
     [coverages],
   );
 
+  // Auto-derive state from zip code
+  useEffect(() => {
+    const derived = deriveStateProvinceFromZipOrPostalCode(
+      estimateValues.zipCode,
+      stateOptions,
+    );
+    if (derived && derived !== estimateValues.state) {
+      setEstimateValues((current) => ({ ...current, state: derived }));
+    }
+  }, [estimateValues.zipCode, stateOptions, estimateValues.state]);
+
   const selectedProduct = useMemo(
     () =>
       coverages.find((coverage) => coverage.id === estimateValues.productId),
@@ -460,65 +499,21 @@ function HomeQuoteCard() {
   const estimateCategoryNeedsHours =
     estimateCategoryNeedsDi || estimateCategoryNeedsOo;
 
-  const estimateProductsToShow = selectedProduct ? [selectedProduct] : [];
-
-  const estimateValidationErrors = useMemo(() => {
+  const initialValidationErrors = useMemo(() => {
     const errors: Record<string, string> = {};
-
-    if (!estimateValues.birthday) errors.birthday = "Birthday is required.";
+    if (!estimateValues.birthday) {
+      errors.birthday = "Date of birth is required.";
+    } else if (!/^\d{4}-\d{2}-\d{2}$/.test(estimateValues.birthday)) {
+      errors.birthday = "Enter a complete date (MM/DD/YYYY).";
+    }
+    if (!estimateValues.zipCode)
+      errors.zipCode = "ZIP / postal code is required.";
     if (!estimateValues.state) errors.state = "State is required.";
-    if (!estimateValues.productId) {
-      errors.productId = "Product selection is required.";
-    }
-    if (estimateCategoryNeedsGender && !estimateValues.gender) {
-      errors.gender = "Gender is required.";
-    }
-    if (estimateCategoryNeedsSmoker && !estimateValues.smoker) {
-      errors.smoker = "Please select an option.";
-    }
-
-    if (estimateCategoryNeedsSmoker && estimateValues.smoker === "yes") {
-      if (!estimateValues.tobaccoLastUsed) {
-        errors.tobaccoLastUsed = "Last used date is required.";
-      }
-      if (estimateValues.tobaccoProducts.length === 0) {
-        errors.tobaccoProducts = "Select at least one tobacco product.";
-      }
-    }
-
-    if (estimateCategoryNeedsDi && !estimateValues.avgIncome) {
-      errors.avgIncome = "Average monthly income is required.";
-    }
-    if (estimateCategoryNeedsHours && !estimateValues.hoursPerWeek) {
-      errors.hoursPerWeek = "Hours worked per week is required.";
-    }
-    if (estimateCategoryNeedsOo && !estimateValues.monthlyExpenses) {
-      errors.monthlyExpenses =
-        "Average monthly business expenses are required.";
-    }
-    if (estimateCategoryNeedsOo && !estimateValues.responsibilityPct) {
-      errors.responsibilityPct = "Responsibility percentage is required.";
-    }
-
     return errors;
-  }, [
-    estimateCategoryNeedsDi,
-    estimateCategoryNeedsGender,
-    estimateCategoryNeedsHours,
-    estimateCategoryNeedsOo,
-    estimateCategoryNeedsSmoker,
-    estimateValues,
-  ]);
-
-  function resetEstimateResults() {
-    setShowEstimateProducts(false);
-    setEstimateAmountsByProductId({});
-    setEstimateRatesByProductId({});
-  }
+  }, [estimateValues.birthday, estimateValues.zipCode, estimateValues.state]);
 
   function updateEstimateValues(nextValues: Partial<EstimateState>) {
     setEstimateValues((current) => ({ ...current, ...nextValues }));
-    resetEstimateResults();
   }
 
   function handleEstimateProductChange(nextProductId: string) {
@@ -534,31 +529,53 @@ function HomeQuoteCard() {
       monthlyExpenses: "",
       responsibilityPct: "",
     }));
-    resetEstimateResults();
+    setEstimateAmountsByProductId({});
+    setEstimateRatesByProductId({});
   }
 
   function handleGetEstimate() {
-    setEstimateAttempted(true);
+    setInitialAttempted(true);
 
-    if (Object.keys(estimateValidationErrors).length > 0 || !selectedProduct) {
-      setShowEstimateProducts(false);
+    if (Object.keys(initialValidationErrors).length > 0) {
       return;
     }
 
+    // Pre-select first product and compute initial quote so modal opens with results
+    const firstProduct =
+      selectedProduct ??
+      (productsByCategory.length > 0
+        ? productsByCategory[0].products[0]
+        : undefined);
+
+    if (!firstProduct) return;
+
+    const nextProductId = estimateValues.productId || firstProduct.id;
+    const product =
+      coverages.find((c) => c.id === nextProductId) ?? firstProduct;
+
     const choices = generateAmountChoices(
-      selectedProduct.categoryId,
-      selectedProduct.minAmount,
-      selectedProduct.maxAmount,
+      product.categoryId,
+      product.minAmount,
+      product.maxAmount,
     );
     const initialAmount = choices[0] ?? 0;
     const initialRate = estimateMonthlyPremium(
-      selectedProduct.categoryId,
+      product.categoryId,
       initialAmount,
     );
 
-    setEstimateAmountsByProductId({ [selectedProduct.id]: initialAmount });
-    setEstimateRatesByProductId({ [selectedProduct.id]: initialRate });
-    setShowEstimateProducts(true);
+    if (!estimateValues.productId) {
+      setEstimateValues((current) => ({
+        ...current,
+        productId: product.id,
+        smoker: "no",
+        gender: "male",
+      }));
+    }
+
+    setEstimateAmountsByProductId({ [product.id]: initialAmount });
+    setEstimateRatesByProductId({ [product.id]: initialRate });
+    setQuoteModalOpen(true);
   }
 
   function handleEstimateAmountChange(
@@ -576,506 +593,509 @@ function HomeQuoteCard() {
     }));
   }
 
+  // Recompute quote when modal product/questions change
+  function recomputeQuote(productId?: string) {
+    const pid = productId ?? estimateValues.productId;
+    const product = coverages.find((c) => c.id === pid);
+    if (!product) return;
+
+    const choices = generateAmountChoices(
+      product.categoryId,
+      product.minAmount,
+      product.maxAmount,
+    );
+    const currentAmount = estimateAmountsByProductId[product.id];
+    const amount =
+      currentAmount && choices.includes(currentAmount)
+        ? currentAmount
+        : (choices[0] ?? 0);
+    const rate = estimateMonthlyPremium(product.categoryId, amount);
+
+    setEstimateAmountsByProductId((current) => ({
+      ...current,
+      [product.id]: amount,
+    }));
+    setEstimateRatesByProductId((current) => ({
+      ...current,
+      [product.id]: rate,
+    }));
+  }
+
+  // The product currently showing a quote in the modal
+  const modalProduct = selectedProduct ?? null;
+  const modalAmountChoices = modalProduct
+    ? generateAmountChoices(
+        modalProduct.categoryId,
+        modalProduct.minAmount,
+        modalProduct.maxAmount,
+      )
+    : [];
+  const modalSelectedAmount = modalProduct
+    ? (estimateAmountsByProductId[modalProduct.id] ??
+      modalAmountChoices[0] ??
+      0)
+    : 0;
+  const modalEstimatedRate = modalProduct
+    ? (estimateRatesByProductId[modalProduct.id] ?? 0)
+    : 0;
+
   return (
-    <Box
-      sx={{
-        ...SURFACE_SX,
-        width: "100%",
-        borderColor: "rgba(7, 104, 255, 0.14)",
-        background:
-          "linear-gradient(135deg, #f4f8ff 0%, #ffffff 52%, #f7fbff 100%)",
-      }}
-    >
-      <Stack spacing={2.25} sx={{ p: { xs: 2.5, sm: 3 } }}>
-        <Stack spacing={0.75}>
-          <Typography variant="h2" paddingBottom={1} sx={SECTION_TITLE_SX}>
-            Estimate your cost
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            See coverage options, monthly premiums, and exclusive group rates in
-            minutes.
-          </Typography>
-        </Stack>
-
-        <Stack spacing={1.25}>
-          <TextField
-            label="Birthday"
-            type="date"
-            fullWidth
-            required
-            value={estimateValues.birthday}
-            onChange={(event) =>
-              updateEstimateValues({ birthday: event.target.value })
-            }
-            InputLabelProps={{ shrink: true }}
-            error={estimateAttempted && !!estimateValidationErrors.birthday}
-            helperText={
-              estimateAttempted ? estimateValidationErrors.birthday || " " : " "
-            }
-          />
-
-          <FormControl
-            fullWidth
-            required
-            error={estimateAttempted && !!estimateValidationErrors.state}
-          >
-            <InputLabel id="home-estimate-state-label">State</InputLabel>
-            <Select
-              labelId="home-estimate-state-label"
-              label="State"
-              value={estimateValues.state}
-              onChange={(event) =>
-                updateEstimateValues({ state: event.target.value })
-              }
-            >
-              {stateOptions.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </Select>
-            {estimateAttempted && estimateValidationErrors.state ? (
-              <FormHelperText>{estimateValidationErrors.state}</FormHelperText>
-            ) : null}
-          </FormControl>
-
-          <FormControl
-            fullWidth
-            required
-            error={estimateAttempted && !!estimateValidationErrors.productId}
-          >
-            <InputLabel id="home-estimate-product-label">Product</InputLabel>
-            <Select
-              labelId="home-estimate-product-label"
-              label="Product"
-              value={estimateValues.productId}
-              onChange={(event) =>
-                handleEstimateProductChange(event.target.value)
-              }
-            >
-              {productsByCategory.flatMap((group) => [
-                <ListSubheader
-                  key={`${group.category.id}-header`}
-                  disableSticky
-                  sx={{
-                    color: "text.primary",
-                    fontWeight: 700,
-                    lineHeight: 1.6,
-                    backgroundColor: "#ffffff",
-                  }}
-                >
-                  {group.category.label}
-                </ListSubheader>,
-                ...group.products.map((product) => (
-                  <MenuItem key={product.id} value={product.id}>
-                    {product.name}
-                  </MenuItem>
-                )),
-              ])}
-            </Select>
-            {estimateAttempted && estimateValidationErrors.productId ? (
-              <FormHelperText>
-                {estimateValidationErrors.productId}
-              </FormHelperText>
-            ) : null}
-          </FormControl>
-
-          {estimateCategoryNeedsGender ? (
-            <FormControl
-              fullWidth
-              required
-              error={estimateAttempted && !!estimateValidationErrors.gender}
-            >
-              <FormLabel required sx={{ mb: 1 }}>
-                Gender
-              </FormLabel>
-              <ToggleButtonGroup
-                exclusive
-                value={estimateValues.gender}
-                onChange={(_, value) => {
-                  if (value !== null) {
-                    updateEstimateValues({ gender: value as EstimateGender });
-                  }
-                }}
-                sx={{ display: "flex", gap: 1 }}
-              >
-                <ToggleButton
-                  value="male"
-                  sx={{
-                    flex: 1,
-                    textTransform: "none",
-                    gap: 1,
-                    justifyContent: "flex-start",
-                  }}
-                >
-                  <Radio
-                    checked={estimateValues.gender === "male"}
-                    size="small"
-                    sx={{ p: 0 }}
-                  />
-                  Male
-                </ToggleButton>
-                <ToggleButton
-                  value="female"
-                  sx={{
-                    flex: 1,
-                    textTransform: "none",
-                    gap: 1,
-                    justifyContent: "flex-start",
-                  }}
-                >
-                  <Radio
-                    checked={estimateValues.gender === "female"}
-                    size="small"
-                    sx={{ p: 0 }}
-                  />
-                  Female
-                </ToggleButton>
-              </ToggleButtonGroup>
-              {estimateAttempted && estimateValidationErrors.gender ? (
-                <FormHelperText>
-                  {estimateValidationErrors.gender}
-                </FormHelperText>
-              ) : null}
-            </FormControl>
-          ) : null}
-
-          {estimateCategoryNeedsSmoker ? (
-            <FormControl
-              fullWidth
-              required
-              error={estimateAttempted && !!estimateValidationErrors.smoker}
-            >
-              <FormLabel required sx={{ mb: 1 }}>
-                Tobacco or nicotine use
-              </FormLabel>
-              <ToggleButtonGroup
-                exclusive
-                value={estimateValues.smoker}
-                onChange={(_, value) => {
-                  if (value !== null) {
-                    updateEstimateValues({
-                      smoker: value as EstimateYesNo,
-                      tobaccoLastUsed:
-                        value === "yes" ? estimateValues.tobaccoLastUsed : "",
-                      tobaccoProducts:
-                        value === "yes" ? estimateValues.tobaccoProducts : [],
-                    });
-                  }
-                }}
-                sx={{ display: "flex", gap: 1 }}
-              >
-                <ToggleButton
-                  value="yes"
-                  sx={{
-                    flex: 1,
-                    textTransform: "none",
-                    gap: 1,
-                    justifyContent: "flex-start",
-                  }}
-                >
-                  <Radio
-                    checked={estimateValues.smoker === "yes"}
-                    size="small"
-                    sx={{ p: 0 }}
-                  />
-                  Yes
-                </ToggleButton>
-                <ToggleButton
-                  value="no"
-                  sx={{
-                    flex: 1,
-                    textTransform: "none",
-                    gap: 1,
-                    justifyContent: "flex-start",
-                  }}
-                >
-                  <Radio
-                    checked={estimateValues.smoker === "no"}
-                    size="small"
-                    sx={{ p: 0 }}
-                  />
-                  No
-                </ToggleButton>
-              </ToggleButtonGroup>
-              {estimateAttempted && estimateValidationErrors.smoker ? (
-                <FormHelperText>
-                  {estimateValidationErrors.smoker}
-                </FormHelperText>
-              ) : null}
-            </FormControl>
-          ) : null}
-
-          {estimateCategoryNeedsSmoker && estimateValues.smoker === "yes" ? (
-            <>
-              <TextField
-                label="Last used date"
-                type="date"
-                fullWidth
-                required
-                value={estimateValues.tobaccoLastUsed}
-                onChange={(event) =>
-                  updateEstimateValues({ tobaccoLastUsed: event.target.value })
-                }
-                InputLabelProps={{ shrink: true }}
-                error={
-                  estimateAttempted &&
-                  !!estimateValidationErrors.tobaccoLastUsed
-                }
-                helperText={
-                  estimateAttempted
-                    ? estimateValidationErrors.tobaccoLastUsed || " "
-                    : " "
-                }
-              />
-
-              <FormControl
-                fullWidth
-                required
-                error={
-                  estimateAttempted &&
-                  !!estimateValidationErrors.tobaccoProducts
-                }
-              >
-                <InputLabel id="home-estimate-tobacco-products-label">
-                  Tobacco products used
-                </InputLabel>
-                <Select
-                  labelId="home-estimate-tobacco-products-label"
-                  label="Tobacco products used"
-                  multiple
-                  value={estimateValues.tobaccoProducts}
-                  onChange={(event) =>
-                    updateEstimateValues({
-                      tobaccoProducts:
-                        typeof event.target.value === "string"
-                          ? event.target.value.split(",")
-                          : event.target.value,
-                    })
-                  }
-                  renderValue={(selected) => selected.join(", ")}
-                >
-                  {TOBACCO_PRODUCT_OPTIONS.map((option) => (
-                    <MenuItem key={option} value={option}>
-                      <Checkbox
-                        checked={estimateValues.tobaccoProducts.includes(
-                          option,
-                        )}
-                        size="small"
-                      />
-                      {option}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {estimateAttempted &&
-                estimateValidationErrors.tobaccoProducts ? (
-                  <FormHelperText>
-                    {estimateValidationErrors.tobaccoProducts}
-                  </FormHelperText>
-                ) : null}
-              </FormControl>
-            </>
-          ) : null}
-
-          {estimateCategoryNeedsDi ? (
-            <TextField
-              label="Average monthly income"
-              fullWidth
-              required
-              value={estimateValues.avgIncome}
-              onChange={(event) =>
-                updateEstimateValues({
-                  avgIncome: event.target.value.replace(/[^0-9]/g, ""),
-                })
-              }
-              error={estimateAttempted && !!estimateValidationErrors.avgIncome}
-              helperText={
-                estimateAttempted
-                  ? estimateValidationErrors.avgIncome || " "
-                  : " "
-              }
-            />
-          ) : null}
-
-          {estimateCategoryNeedsHours ? (
-            <TextField
-              label="Hours worked per week"
-              fullWidth
-              required
-              value={estimateValues.hoursPerWeek}
-              onChange={(event) =>
-                updateEstimateValues({
-                  hoursPerWeek: event.target.value.replace(/[^0-9]/g, ""),
-                })
-              }
-              error={
-                estimateAttempted && !!estimateValidationErrors.hoursPerWeek
-              }
-              helperText={
-                estimateAttempted
-                  ? estimateValidationErrors.hoursPerWeek || " "
-                  : " "
-              }
-            />
-          ) : null}
-
-          {estimateCategoryNeedsOo ? (
-            <>
-              <TextField
-                label="Average monthly business expenses"
-                fullWidth
-                required
-                value={estimateValues.monthlyExpenses}
-                onChange={(event) =>
-                  updateEstimateValues({
-                    monthlyExpenses: event.target.value.replace(/[^0-9]/g, ""),
-                  })
-                }
-                error={
-                  estimateAttempted &&
-                  !!estimateValidationErrors.monthlyExpenses
-                }
-                helperText={
-                  estimateAttempted
-                    ? estimateValidationErrors.monthlyExpenses || " "
-                    : " "
-                }
-              />
-
-              <TextField
-                label="% you are responsible for"
-                fullWidth
-                required
-                value={estimateValues.responsibilityPct}
-                onChange={(event) => {
-                  const digits = event.target.value.replace(/[^0-9]/g, "");
-                  const normalized = digits
-                    ? Math.min(parseInt(digits, 10), 100).toString()
-                    : "";
-                  updateEstimateValues({ responsibilityPct: normalized });
-                }}
-                error={
-                  estimateAttempted &&
-                  !!estimateValidationErrors.responsibilityPct
-                }
-                helperText={
-                  estimateAttempted
-                    ? estimateValidationErrors.responsibilityPct || " "
-                    : " "
-                }
-              />
-            </>
-          ) : null}
-        </Stack>
-
-        <Stack spacing={1}>
-          <Button variant="outlined" size="large" onClick={handleGetEstimate}>
-            Get estimate
-          </Button>
-          <Typography variant="caption" color="text.secondary">
-            Estimates are illustrative only and based on the information
-            entered.
-          </Typography>
-        </Stack>
-
-        {showEstimateProducts ? (
-          <Stack spacing={1.25}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-              Selected product
+    <>
+      <Box
+        sx={{
+          ...SURFACE_SX,
+          width: "100%",
+          borderColor: "rgba(7, 104, 255, 0.14)",
+          background:
+            "linear-gradient(135deg, #f4f8ff 0%, #ffffff 52%, #f7fbff 100%)",
+        }}
+      >
+        <Stack spacing={2.25} sx={{ p: { xs: 2.5, sm: 3 } }}>
+          <Stack spacing={0.75}>
+            <Typography variant="h2" paddingBottom={1} sx={SECTION_TITLE_SX}>
+              Estimate your cost
             </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Get an instant quote and see your exclusive group rates.
+            </Typography>
+          </Stack>
 
-            {estimateProductsToShow.length === 0 ? (
-              <Alert severity="info">
-                No products are currently available for this selection.
-              </Alert>
-            ) : (
-              estimateProductsToShow.map((product) => {
-                const amountChoices = generateAmountChoices(
-                  product.categoryId,
-                  product.minAmount,
-                  product.maxAmount,
-                );
-                const selectedAmount =
-                  estimateAmountsByProductId[product.id] ??
-                  amountChoices[0] ??
-                  0;
-                const estimatedRate = estimateRatesByProductId[product.id] ?? 0;
+          <Stack spacing={2.5}>
+            <TextField
+              label="Date of Birth"
+              fullWidth
+              required
+              placeholder="MM/DD/YYYY"
+              value={parseStoredDate(estimateValues.birthday)}
+              onChange={(event) => {
+                const formatted = formatDateDisplay(event.target.value);
+                const digits = formatted.replace(/\D/g, "");
+                if (digits.length === 8) {
+                  updateEstimateValues({
+                    birthday: formatDateForStorage(formatted),
+                  });
+                } else {
+                  updateEstimateValues({ birthday: formatted });
+                }
+              }}
+              inputProps={{ inputMode: "numeric" }}
+              InputLabelProps={{ shrink: true }}
+              error={initialAttempted && !!initialValidationErrors.birthday}
+              helperText={
+                initialAttempted
+                  ? initialValidationErrors.birthday || undefined
+                  : undefined
+              }
+            />
 
-                return (
-                  <Box
-                    key={product.id}
-                    sx={{
-                      border: "1px solid rgba(52, 59, 72, 0.12)",
-                      borderRadius: 3,
-                      backgroundColor: "#ffffff",
-                      p: 2,
+            <TextField
+              label="ZIP / Postal Code"
+              fullWidth
+              required
+              value={estimateValues.zipCode}
+              onChange={(event) =>
+                updateEstimateValues({
+                  zipCode: formatZipOrPostalCode(event.target.value),
+                })
+              }
+              inputProps={{ inputMode: "text", maxLength: 7 }}
+              error={initialAttempted && !!initialValidationErrors.zipCode}
+              helperText={
+                initialAttempted
+                  ? initialValidationErrors.zipCode || undefined
+                  : undefined
+              }
+            />
+
+            <FormControl
+              fullWidth
+              required
+              error={initialAttempted && !!initialValidationErrors.state}
+            >
+              <InputLabel id="home-estimate-state-label">State</InputLabel>
+              <Select
+                labelId="home-estimate-state-label"
+                label="State"
+                value={estimateValues.state}
+                onChange={(event) =>
+                  updateEstimateValues({ state: event.target.value })
+                }
+              >
+                {stateOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+              {initialAttempted && initialValidationErrors.state ? (
+                <FormHelperText>{initialValidationErrors.state}</FormHelperText>
+              ) : null}
+            </FormControl>
+          </Stack>
+
+          <Stack spacing={1}>
+            <Button variant="outlined" size="large" onClick={handleGetEstimate}>
+              Get estimate
+            </Button>
+            {/* <Typography variant="caption" color="text.secondary">
+              Estimates are illustrative only and based on the information
+              entered.
+            </Typography> */}
+          </Stack>
+        </Stack>
+      </Box>
+
+      {/* Quote Modal */}
+      <Dialog
+        open={quoteModalOpen}
+        onClose={() => setQuoteModalOpen(false)}
+        maxWidth="md"
+        fullWidth
+        fullScreen={!isMdUp}
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            pb: 1,
+          }}
+        >
+          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+            Your coverage estimate
+          </Typography>
+          <IconButton
+            onClick={() => setQuoteModalOpen(false)}
+            aria-label="Close"
+            size="small"
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Stack
+            direction={{ xs: "column", md: "row" }}
+            spacing={{ xs: 3, md: 4 }}
+          >
+            {/* Questions - left on desktop, top on mobile */}
+            <Box
+              sx={{
+                flex: 1,
+                order: { xs: 1, md: 1 },
+                minWidth: 0,
+              }}
+            >
+              <Stack spacing={2}>
+                <FormControl fullWidth required>
+                  <FormLabel
+                    required
+                    sx={{ mb: 1, fontWeight: 600, color: "text.primary" }}
+                  >
+                    What coverage are you interested in?
+                  </FormLabel>
+                  <Select
+                    displayEmpty
+                    value={estimateValues.productId}
+                    onChange={(event) => {
+                      handleEstimateProductChange(event.target.value);
+                      // Recompute quote for new product
+                      setTimeout(() => recomputeQuote(event.target.value), 0);
+                    }}
+                    renderValue={(value) => {
+                      if (!value) return <em>Select a product</em>;
+                      const product = coverages.find((c) => c.id === value);
+                      return product?.name ?? value;
                     }}
                   >
-                    <Stack spacing={1.25}>
-                      <Stack spacing={0.5}>
-                        <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                          {product.name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {product.description ?? product.definition}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {coverageCategories.find(
-                            (category) => category.id === product.categoryId,
-                          )?.label ?? product.categoryId}{" "}
-                          · Available for{" "}
-                          {product.applicants.map(getApplicantLabel).join(", ")}
-                        </Typography>
-                      </Stack>
-
-                      <FormControl fullWidth size="small">
-                        <InputLabel id={`${product.id}-home-amount-label`}>
-                          {getEstimateAmountLabel(product.categoryId)}
-                        </InputLabel>
-                        <Select
-                          labelId={`${product.id}-home-amount-label`}
-                          label={getEstimateAmountLabel(product.categoryId)}
-                          value={selectedAmount}
-                          onChange={(event) =>
-                            handleEstimateAmountChange(
-                              product,
-                              Number(event.target.value),
-                            )
-                          }
-                        >
-                          {amountChoices.map((amount) => (
-                            <MenuItem key={amount} value={amount}>
-                              {formatUSD(amount, 0)}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-
-                      <Stack
-                        direction="row"
-                        justifyContent="space-between"
-                        alignItems="center"
-                        gap={2}
+                    {productsByCategory.flatMap((group) => [
+                      <ListSubheader
+                        key={`${group.category.id}-header`}
+                        disableSticky
+                        sx={{
+                          color: "text.primary",
+                          fontWeight: 700,
+                          lineHeight: 1.6,
+                          backgroundColor: "#ffffff",
+                        }}
                       >
-                        <Typography variant="body2" color="text.secondary">
-                          Estimated monthly rate
-                        </Typography>
-                        <Typography
-                          variant="h6"
-                          sx={{ fontWeight: 700, color: "success.main" }}
+                        {group.category.label}
+                      </ListSubheader>,
+                      ...group.products.map((product) => (
+                        <MenuItem key={product.id} value={product.id}>
+                          {product.name}
+                        </MenuItem>
+                      )),
+                    ])}
+                  </Select>
+                </FormControl>
+
+                {estimateCategoryNeedsGender ? (
+                  <FormControl fullWidth required>
+                    <FormLabel required sx={{ mb: 1 }}>
+                      Gender
+                    </FormLabel>
+                    <ToggleButtonGroup
+                      exclusive
+                      value={estimateValues.gender}
+                      onChange={(_, value) => {
+                        if (value !== null) {
+                          updateEstimateValues({
+                            gender: value as EstimateGender,
+                          });
+                        }
+                      }}
+                      sx={{ display: "flex", gap: 1 }}
+                    >
+                      <ToggleButton
+                        value="male"
+                        sx={{
+                          flex: 1,
+                          textTransform: "none",
+                          gap: 1,
+                          justifyContent: "flex-start",
+                        }}
+                      >
+                        <Radio
+                          checked={estimateValues.gender === "male"}
+                          size="small"
+                          sx={{ p: 0 }}
+                        />
+                        Male
+                      </ToggleButton>
+                      <ToggleButton
+                        value="female"
+                        sx={{
+                          flex: 1,
+                          textTransform: "none",
+                          gap: 1,
+                          justifyContent: "flex-start",
+                        }}
+                      >
+                        <Radio
+                          checked={estimateValues.gender === "female"}
+                          size="small"
+                          sx={{ p: 0 }}
+                        />
+                        Female
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </FormControl>
+                ) : null}
+
+                {estimateCategoryNeedsSmoker ? (
+                  <FormControl fullWidth required>
+                    <FormLabel required sx={{ mb: 1 }}>
+                      Do you use nicotine products?
+                    </FormLabel>
+                    <ToggleButtonGroup
+                      exclusive
+                      value={estimateValues.smoker}
+                      onChange={(_, value) => {
+                        if (value !== null) {
+                          updateEstimateValues({
+                            smoker: value as EstimateYesNo,
+                          });
+                        }
+                      }}
+                      sx={{ display: "flex", gap: 1 }}
+                    >
+                      <ToggleButton
+                        value="yes"
+                        sx={{
+                          flex: 1,
+                          textTransform: "none",
+                          gap: 1,
+                          justifyContent: "flex-start",
+                        }}
+                      >
+                        <Radio
+                          checked={estimateValues.smoker === "yes"}
+                          size="small"
+                          sx={{ p: 0 }}
+                        />
+                        Yes
+                      </ToggleButton>
+                      <ToggleButton
+                        value="no"
+                        sx={{
+                          flex: 1,
+                          textTransform: "none",
+                          gap: 1,
+                          justifyContent: "flex-start",
+                        }}
+                      >
+                        <Radio
+                          checked={estimateValues.smoker === "no"}
+                          size="small"
+                          sx={{ p: 0 }}
+                        />
+                        No
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </FormControl>
+                ) : null}
+
+                {estimateCategoryNeedsDi ? (
+                  <TextField
+                    label="Average monthly income"
+                    fullWidth
+                    required
+                    value={estimateValues.avgIncome}
+                    onChange={(event) =>
+                      updateEstimateValues({
+                        avgIncome: event.target.value.replace(/[^0-9]/g, ""),
+                      })
+                    }
+                  />
+                ) : null}
+
+                {estimateCategoryNeedsHours ? (
+                  <TextField
+                    label="Hours worked per week"
+                    fullWidth
+                    required
+                    value={estimateValues.hoursPerWeek}
+                    onChange={(event) =>
+                      updateEstimateValues({
+                        hoursPerWeek: event.target.value.replace(/[^0-9]/g, ""),
+                      })
+                    }
+                  />
+                ) : null}
+
+                {estimateCategoryNeedsOo ? (
+                  <>
+                    <TextField
+                      label="Average monthly business expenses"
+                      fullWidth
+                      required
+                      value={estimateValues.monthlyExpenses}
+                      onChange={(event) =>
+                        updateEstimateValues({
+                          monthlyExpenses: event.target.value.replace(
+                            /[^0-9]/g,
+                            "",
+                          ),
+                        })
+                      }
+                    />
+                    <TextField
+                      label="% you are responsible for"
+                      fullWidth
+                      required
+                      value={estimateValues.responsibilityPct}
+                      onChange={(event) => {
+                        const digits = event.target.value.replace(
+                          /[^0-9]/g,
+                          "",
+                        );
+                        const normalized = digits
+                          ? Math.min(parseInt(digits, 10), 100).toString()
+                          : "";
+                        updateEstimateValues({
+                          responsibilityPct: normalized,
+                        });
+                      }}
+                    />
+                  </>
+                ) : null}
+              </Stack>
+            </Box>
+
+            {/* Quote result - right on desktop, bottom on mobile */}
+            <Box
+              sx={{
+                flex: 1,
+                order: { xs: 2, md: 2 },
+                minWidth: 0,
+              }}
+            >
+              {modalProduct ? (
+                <Box
+                  sx={{
+                    border: "1px solid rgba(52, 59, 72, 0.12)",
+                    borderRadius: 3,
+                    backgroundColor: "#f9fafc",
+                    p: 2.5,
+                  }}
+                >
+                  <Stack spacing={2}>
+                    <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                      {modalProduct.name}
+                    </Typography>
+
+                    <FormControl fullWidth size="small">
+                      <InputLabel id={`${modalProduct.id}-modal-amount-label`}>
+                        {getEstimateAmountLabel(modalProduct.categoryId)}
+                      </InputLabel>
+                      <Select
+                        labelId={`${modalProduct.id}-modal-amount-label`}
+                        label={getEstimateAmountLabel(modalProduct.categoryId)}
+                        value={modalSelectedAmount}
+                        onChange={(event) =>
+                          handleEstimateAmountChange(
+                            modalProduct,
+                            Number(event.target.value),
+                          )
+                        }
+                      >
+                        {modalAmountChoices.map((amount) => (
+                          <MenuItem key={amount} value={amount}>
+                            {formatUSD(amount, 0)}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+
+                    <Divider />
+
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      gap={2}
+                    >
+                      <Typography variant="body2" color="text.secondary">
+                        Estimated monthly rate
+                        <Box
+                          component="sup"
+                          sx={{ fontSize: "0.7em", lineHeight: 1 }}
                         >
-                          {formatUSD(estimatedRate)}/mo
-                        </Typography>
-                      </Stack>
+                          1
+                        </Box>
+                      </Typography>
+                      <Typography
+                        variant="h2"
+                        sx={{ fontWeight: 700, color: "success.main" }}
+                      >
+                        {formatUSD(modalEstimatedRate)}/mo
+                      </Typography>
                     </Stack>
-                  </Box>
-                );
-              })
-            )}
+
+                    <Typography variant="caption" color="text.secondary">
+                      <Box
+                        component="sup"
+                        sx={{ fontSize: "0.85em", lineHeight: 1 }}
+                      >
+                        1
+                      </Box>
+                      Quoted cost is the best rate available based on the
+                      information you provided. Final cost may be based upon
+                      factors such as gender, health status, and use of
+                      tobacco/nicotine. Rates current as of 2026.
+                    </Typography>
+                  </Stack>
+                </Box>
+              ) : (
+                <Alert severity="info">
+                  Select a product to see your estimate.
+                </Alert>
+              )}
+            </Box>
           </Stack>
-        ) : null}
-      </Stack>
-    </Box>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
