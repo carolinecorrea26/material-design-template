@@ -160,11 +160,7 @@ export default function Personal() {
               {hasSelf && (
                 <ApplicantSection
                   applicant="self"
-                  showLabel={shouldShowApplicantLabel(
-                    "self",
-                    watchedValues,
-                    "personal",
-                  )}
+                  showLabel={shouldShowApplicantLabel("self", watchedValues)}
                 >
                   <Box
                     sx={{

@@ -20,10 +20,6 @@ export default function CoverageQuestions() {
   const selectedCategories = getSelectedCategoryIds(values);
   const coverages = getActiveClientCoverages();
 
-  const selectedCoverageIds = Array.isArray(values.coverageSelections)
-    ? values.coverageSelections
-    : [];
-
   const selectedDependents = Array.isArray(values.dependents)
     ? values.dependents
     : [];
@@ -35,56 +31,38 @@ export default function CoverageQuestions() {
       ? (values.productApplicants as Record<string, CoverageApplicantId[]>)
       : {};
 
-  // Determine which applicants are "active" for each category
-  // An applicant is active if they were selected for at least one product in that category
-  function isApplicantActiveForCategory(
-    applicant: CoverageApplicantId | "self",
-    categoryId: string,
-  ): boolean {
-    const normalizedApplicant = applicant === "self" ? "member" : applicant;
-
-    // If no productApplicants or empty, fall back to selectedDependents
-    if (!productApplicants || Object.keys(productApplicants).length === 0) {
-      // Fall back: member always active, else check selectedDependents
-      if (normalizedApplicant === "member") return true;
-      if (normalizedApplicant === "spouse")
-        return (
-          Array.isArray(selectedDependents) &&
-          selectedDependents.includes("spouse")
-        );
-      if (normalizedApplicant === "child")
-        return (
-          Array.isArray(selectedDependents) &&
-          selectedDependents.includes("child")
-        );
-      return false;
-    }
-
-    // Check if this applicant was selected for any product in this category
-    for (const coverage of coverages) {
-      if (
-        coverage.categoryId === categoryId &&
-        selectedCoverageIds.includes(coverage.id)
-      ) {
-        const applicantsForProduct = productApplicants[coverage.id] ?? [];
-        if (applicantsForProduct.includes(normalizedApplicant)) {
-          return true;
-        }
+  // Compute categories active per applicant
+  const categoriesByApplicant: Partial<
+    Record<CoverageApplicantId, Set<string>>
+  > = {};
+  for (const [productId, applicants] of Object.entries(productApplicants)) {
+    const product = coverages.find((c) => c.id === productId);
+    if (!product) continue;
+    const categoryId = product.categoryId;
+    for (const applicant of applicants) {
+      if (!categoriesByApplicant[applicant]) {
+        categoriesByApplicant[applicant] = new Set();
       }
+      categoriesByApplicant[applicant]!.add(categoryId);
     }
-
-    return false;
   }
 
-  const selfFieldIds = new Set(
-    selectedCategories.flatMap((cat) => categoryQuestionFields[cat] ?? []),
-  );
-
-  const spouseFieldIds = new Set(
-    selectedCategories.flatMap(
-      (cat) => categoryQuestionFieldsSpouse[cat] ?? [],
-    ),
-  );
+  // Fallback for when productApplicants is empty (old logic)
+  if (Object.keys(productApplicants).length === 0) {
+    categoriesByApplicant["member"] = new Set(selectedCategories);
+    if (
+      Array.isArray(selectedDependents) &&
+      selectedDependents.includes("spouse")
+    ) {
+      categoriesByApplicant["spouse"] = new Set(selectedCategories);
+    }
+    if (
+      Array.isArray(selectedDependents) &&
+      selectedDependents.includes("child")
+    ) {
+      categoriesByApplicant["child"] = new Set(selectedCategories);
+    }
+  }
 
   const tobaccoConditionalFieldIds = new Set([
     "tobacco-last-used",
@@ -101,19 +79,46 @@ export default function CoverageQuestions() {
         pageSections.map((section) => {
           if (!isSectionVisible(section, watchedValues)) return null;
 
-          // Skip applicant sections if the applicant is not active for any category
+          // Skip applicant sections if the applicant has no active categories
           if (section.applicant) {
-            const applicantActive = selectedCategories.some((cat) =>
-              isApplicantActiveForCategory(
-                section.applicant as CoverageApplicantId | "self",
-                cat,
-              ),
-            );
-            if (!applicantActive) return null;
+            const normalizedApplicant =
+              section.applicant === "self" ? "member" : section.applicant;
+            const activeCats =
+              categoriesByApplicant[
+                normalizedApplicant as CoverageApplicantId
+              ] || new Set();
+            if (activeCats.size === 0) return null;
           }
 
-          const activeFieldIds =
-            section.applicant === "spouse" ? spouseFieldIds : selfFieldIds;
+          // Compute activeFieldIds based on applicant's active categories
+          let activeFieldIds: Set<string>;
+          if (section.applicant === "spouse") {
+            const activeCats = categoriesByApplicant["spouse"] || new Set();
+            activeFieldIds = new Set(
+              Array.from(activeCats).flatMap(
+                (cat) =>
+                  (
+                    categoryQuestionFieldsSpouse as Record<
+                      string,
+                      string[] | undefined
+                    >
+                  )[cat] ?? [],
+              ),
+            );
+          } else {
+            const activeCats = categoriesByApplicant["member"] || new Set();
+            activeFieldIds = new Set(
+              Array.from(activeCats).flatMap(
+                (cat) =>
+                  (
+                    categoryQuestionFields as Record<
+                      string,
+                      string[] | undefined
+                    >
+                  )[cat] ?? [],
+              ),
+            );
+          }
 
           const smokerFieldId =
             section.applicant === "spouse" ? "spouse-smoker" : "smoker";
@@ -192,7 +197,6 @@ export default function CoverageQuestions() {
                   showLabel={shouldShowApplicantLabel(
                     section.applicant,
                     watchedValues,
-                    "coverage-questions",
                   )}
                 >
                   {content}
@@ -200,7 +204,10 @@ export default function CoverageQuestions() {
               ) : (
                 <>
                   {section.title && (
-                    <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ mt: 2, mb: 1, color: "primary.main" }}
+                    >
                       {section.title}
                     </Typography>
                   )}

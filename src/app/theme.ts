@@ -326,7 +326,7 @@ const theme = createTheme({
             lineHeight: 1,
             textTransform: "uppercase" as const,
             letterSpacing: "1px",
-            color: "#828793",
+            color: "#4e6d9c",
             display: "block",
           },
         },

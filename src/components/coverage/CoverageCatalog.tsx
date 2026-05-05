@@ -106,11 +106,11 @@ export default function CoverageCatalog({
             },
           }}
         >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ p: 0 }}>
             <FormSectionTitle icon={category.icon} label={category.label} />
           </AccordionSummary>
 
-          <AccordionDetails>
+          <AccordionDetails sx={{ p: 0 }}>
             <Stack spacing={1.5}>
               {items.map((coverage) => {
                 const checked = selectedCoverageIds.includes(coverage.id);

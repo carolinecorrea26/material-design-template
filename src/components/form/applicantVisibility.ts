@@ -1,13 +1,8 @@
 import type { ApplicantSectionId } from "../../config/formSectionTitle";
 import { getApplicantsApplying } from "../../utils/applicantsApplying";
-import type { PageId } from "../../types/page";
 
 export type FormValuesLike = Record<string, unknown>;
 export type ApplicantLike = ApplicantSectionId | "member";
-
-function usesCoverageSelectionApplicantState(pageId?: PageId): boolean {
-  return pageId !== undefined;
-}
 
 export function hasDependentsSelected(values: FormValuesLike): boolean {
   return getApplicantsApplying(values).some(
@@ -26,16 +21,7 @@ export function isApplicantApplying(
 export function shouldShowApplicantLabel(
   applicant: ApplicantLike,
   values: FormValuesLike,
-  pageId?: PageId,
 ): boolean {
-  if (!usesCoverageSelectionApplicantState(pageId)) {
-    if (applicant === "self" || applicant === "member") {
-      return hasDependentsSelected(values);
-    }
-
-    return isApplicantApplying(applicant, values);
-  }
-
   if (applicant === "self" || applicant === "member") {
     return hasDependentsSelected(values);
   }

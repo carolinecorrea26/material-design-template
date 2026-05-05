@@ -25,7 +25,6 @@ import AddListItem from "../components/form/AddListItem";
 import ApplicantSection from "../components/form/ApplicantSection";
 import { shouldShowApplicantLabel } from "../components/form/applicantVisibility";
 import FormRoutePage from "../components/form/FormRoutePage";
-import FormSectionTitle from "../components/form/FormSectionTitle";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
 import type { CoverageApplicantId } from "../config/coverages/types";
@@ -404,6 +403,36 @@ export default function Beneficiary() {
     return Math.max(0, 100 - assigned);
   }
 
+  function hasTypeForDesignation(
+    list: BeneficiaryItem[],
+    designation: BeneficiaryDesignation,
+    type: BeneficiaryType,
+  ) {
+    return getFilteredListForDesignation(list, designation).some(
+      (item) => item.beneficiaryType === type,
+    );
+  }
+
+  function isDesignationMaxed(
+    list: BeneficiaryItem[],
+    designation: BeneficiaryDesignation,
+  ) {
+    const items = list.filter((item) => item.designation === designation);
+    if (items.length === 0) return false;
+    if (items.length >= 10) return true;
+    if (items.some((item) => item.beneficiaryType === "trust")) return true;
+    const totalShare = items.reduce((sum, item) => sum + item.share, 0);
+    return totalShare >= 100;
+  }
+
+  function isProductFullyMaxed(productKey: string) {
+    const list = getProductBeneficiaries(productKey);
+    return (
+      isDesignationMaxed(list, "primary") &&
+      isDesignationMaxed(list, "contingent")
+    );
+  }
+
   function saveBeneficiary() {
     if (!activeProduct) return;
 
@@ -495,42 +524,73 @@ export default function Beneficiary() {
       >
         <Stack spacing={1.5}>
           <Stack spacing={1}>
-            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+            <Typography
+              variant="body2"
+              sx={{ fontWeight: 600, fontSize: "1rem" }}
+            >
               {product.coverageName}
             </Typography>
           </Stack>
 
-          {items.map((item) => (
-            <AddListItem
-              key={item.id}
-              onEdit={() => openEditModal(product, item)}
-              onRemove={() => removeBeneficiary(product.productKey, item.id)}
-            >
-              <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                {getBeneficiaryDisplayName(item)}
-              </Typography>
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ fontSize: "0.6875rem" }}
-              >
-                {getDesignationLabel(item.designation)} |{" "}
-                {getRelationshipLabel(item)}
-                {item.beneficiaryType === "individual"
-                  ? ` | ${item.share}%`
-                  : ""}
-              </Typography>
-            </AddListItem>
-          ))}
+          {(["primary", "contingent"] as const).map((designation) => {
+            const designationItems = items.filter(
+              (item) => item.designation === designation,
+            );
+            if (designationItems.length === 0) return null;
+            return (
+              <Stack spacing={0.75} key={designation}>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: "0.6875rem",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {getDesignationLabel(designation)}
+                </Typography>
+                {designationItems.map((item) => (
+                  <AddListItem
+                    key={item.id}
+                    onEdit={() => openEditModal(product, item)}
+                    onRemove={() =>
+                      removeBeneficiary(product.productKey, item.id)
+                    }
+                  >
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                      {getBeneficiaryDisplayName(item)}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ fontSize: "0.6875rem" }}
+                    >
+                      {getRelationshipLabel(item)}
+                      {item.beneficiaryType === "individual"
+                        ? ` | ${item.share}%`
+                        : ""}
+                    </Typography>
+                  </AddListItem>
+                ))}
+              </Stack>
+            );
+          })}
 
-          <Button
-            variant="outlined"
-            fullWidth
-            startIcon={<AddIcon />}
-            onClick={() => openAddModal(product)}
-          >
-            Add Beneficiary
-          </Button>
+          {isProductFullyMaxed(product.productKey) ? (
+            <Alert severity="info" sx={{ mt: 1 }}>
+              No more beneficiaries can be added online for this coverage.
+            </Alert>
+          ) : (
+            <Button
+              variant="outlined"
+              fullWidth
+              startIcon={<AddIcon />}
+              onClick={() => openAddModal(product)}
+            >
+              Add Beneficiary
+            </Button>
+          )}
         </Stack>
       </Card>
     );
@@ -556,15 +616,11 @@ export default function Beneficiary() {
     return (
       <ApplicantSection
         applicant={applicant === "member" ? "self" : "spouse"}
-        showLabel={shouldShowApplicantLabel(applicant, values, "beneficiary")}
+        showLabel={shouldShowApplicantLabel(applicant, values)}
       >
         <Stack spacing={2}>
           {groupedByCategory.map((group) => (
             <Stack spacing={1.25} key={group.category.id}>
-              <FormSectionTitle
-                icon={group.category.icon}
-                label={group.category.label}
-              />
               <Stack spacing={1.25}>
                 {group.products.map((product) => renderProductCard(product))}
               </Stack>
@@ -591,6 +647,22 @@ export default function Beneficiary() {
         ? (committedSharePercent ?? 0)
         : 0),
   );
+
+  const designationHasIndividual = hasTypeForDesignation(
+    modalItems,
+    modalValues.designation,
+    "individual",
+  );
+  const designationHasTrust = hasTypeForDesignation(
+    modalItems,
+    modalValues.designation,
+    "trust",
+  );
+
+  const individualBlocked =
+    !editingId && (designationHasTrust || remainingShare === 0);
+  const trustBlocked =
+    !editingId && (designationHasIndividual || designationHasTrust);
 
   const hasAnyApplicantProducts =
     applicantProducts.member.length > 0 || applicantProducts.spouse.length > 0;
@@ -693,7 +765,10 @@ export default function Beneficiary() {
                 <Typography
                   component="span"
                   sx={{
-                    color: remainingDesignationSlots === 0 ? "error.main" : "primary.main",
+                    color:
+                      remainingDesignationSlots === 0
+                        ? "error.main"
+                        : "primary.main",
                     fontWeight: 700,
                     fontSize: "inherit",
                   }}
@@ -706,11 +781,14 @@ export default function Beneficiary() {
 
             {remainingDesignationSlots === 0 && !editingId && (
               <Alert severity="warning">
-                No more {modalValues.designation} beneficiaries can be added online.
+                No more {modalValues.designation} beneficiaries can be added
+                online.
               </Alert>
             )}
 
-            <FormControl disabled={remainingDesignationSlots === 0 && !editingId}>
+            <FormControl
+              disabled={remainingDesignationSlots === 0 && !editingId}
+            >
               <FormLabel>Beneficiary Type</FormLabel>
               <ToggleButtonGroup
                 exclusive
@@ -745,19 +823,32 @@ export default function Beneficiary() {
               </ToggleButtonGroup>
             </FormControl>
 
+            {modalValues.beneficiaryType === "individual" &&
+              individualBlocked && (
+                <Alert severity="warning">
+                  {designationHasTrust
+                    ? `A trust has already been designated as ${modalValues.designation} beneficiary. Individuals cannot be added for this designation.`
+                    : "No more individuals can be added \u2014 0% unassigned share remaining."}
+                </Alert>
+              )}
+
+            {modalValues.beneficiaryType === "trust" && trustBlocked && (
+              <Alert severity="warning">
+                {designationHasTrust
+                  ? `Only one trust can be designated per ${modalValues.designation} beneficiary.`
+                  : `An individual has already been designated as ${modalValues.designation} beneficiary. A trust cannot be added for this designation.`}
+              </Alert>
+            )}
+
             {modalValues.beneficiaryType === "individual" ? (
               <>
-                {remainingShare === 0 && !editingId && (
-                  <Alert severity="warning">
-                    No more individuals can be added — 0% unassigned share
-                    remaining.
-                  </Alert>
-                )}
-
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                   <TextField
                     label="First Name"
-                    disabled={(remainingDesignationSlots === 0 || remainingShare === 0) && !editingId}
+                    disabled={
+                      (remainingDesignationSlots === 0 || individualBlocked) &&
+                      !editingId
+                    }
                     value={modalValues.firstName}
                     onChange={(event) =>
                       setModalValues((current) => ({
@@ -770,7 +861,10 @@ export default function Beneficiary() {
 
                   <TextField
                     label="Last Name"
-                    disabled={(remainingDesignationSlots === 0 || remainingShare === 0) && !editingId}
+                    disabled={
+                      (remainingDesignationSlots === 0 || individualBlocked) &&
+                      !editingId
+                    }
                     value={modalValues.lastName}
                     onChange={(event) =>
                       setModalValues((current) => ({
@@ -785,7 +879,10 @@ export default function Beneficiary() {
                 <TextField
                   select
                   label="Relationship"
-                  disabled={(remainingDesignationSlots === 0 || remainingShare === 0) && !editingId}
+                  disabled={
+                    (remainingDesignationSlots === 0 || individualBlocked) &&
+                    !editingId
+                  }
                   value={modalValues.relationship}
                   onChange={(event) =>
                     setModalValues((current) => ({
@@ -804,7 +901,10 @@ export default function Beneficiary() {
 
                 <TextField
                   label="% Share"
-                  disabled={(remainingDesignationSlots === 0 || remainingShare === 0) && !editingId}
+                  disabled={
+                    (remainingDesignationSlots === 0 || individualBlocked) &&
+                    !editingId
+                  }
                   value={modalValues.share}
                   onChange={(event) => {
                     const sanitizedShare = event.target.value
@@ -835,7 +935,11 @@ export default function Beneficiary() {
                       key={percent}
                       size="small"
                       variant="outlined"
-                      disabled={(remainingDesignationSlots === 0 || remainingShare === 0) && !editingId}
+                      disabled={
+                        (remainingDesignationSlots === 0 ||
+                          individualBlocked) &&
+                        !editingId
+                      }
                       onClick={() => {
                         setModalValues((current) => ({
                           ...current,
@@ -857,7 +961,10 @@ export default function Beneficiary() {
                   <Typography
                     component="span"
                     sx={{
-                      color: displayRemainingShare === 0 ? "error.main" : "primary.main",
+                      color:
+                        displayRemainingShare === 0
+                          ? "error.main"
+                          : "primary.main",
                       fontWeight: 700,
                       fontSize: "inherit",
                     }}
@@ -871,7 +978,10 @@ export default function Beneficiary() {
               <>
                 <TextField
                   label="Name of Trust"
-                  disabled={remainingDesignationSlots === 0 && !editingId}
+                  disabled={
+                    (remainingDesignationSlots === 0 || trustBlocked) &&
+                    !editingId
+                  }
                   value={modalValues.trustName}
                   onChange={(event) =>
                     setModalValues((current) => ({
@@ -884,7 +994,10 @@ export default function Beneficiary() {
 
                 <TextField
                   label="Date of Trust"
-                  disabled={remainingDesignationSlots === 0 && !editingId}
+                  disabled={
+                    (remainingDesignationSlots === 0 || trustBlocked) &&
+                    !editingId
+                  }
                   value={modalValues.trustDate}
                   onChange={(event) =>
                     setModalValues((current) => ({
@@ -908,7 +1021,13 @@ export default function Beneficiary() {
           <Button
             variant="contained"
             onClick={saveBeneficiary}
-            disabled={remainingDesignationSlots === 0 && !editingId}
+            disabled={
+              !editingId &&
+              (remainingDesignationSlots === 0 ||
+                (modalValues.beneficiaryType === "individual" &&
+                  individualBlocked) ||
+                (modalValues.beneficiaryType === "trust" && trustBlocked))
+            }
           >
             Save Beneficiary
           </Button>

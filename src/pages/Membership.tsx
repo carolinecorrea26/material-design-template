@@ -559,7 +559,7 @@ export default function Membership() {
           >
             <FormLabel
               required
-              sx={{ mb: 1, fontWeight: 600, color: "text.primary" }}
+              sx={{ mb: 1, fontWeight: 500, color: "text.primary" }}
             >
               What coverage are you interested in?
             </FormLabel>

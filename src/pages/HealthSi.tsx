@@ -267,11 +267,7 @@ export default function HealthSi() {
             {hasSelf && (
               <ApplicantSection
                 applicant="self"
-                showLabel={shouldShowApplicantLabel(
-                  "self",
-                  watchedValues,
-                  "health-si",
-                )}
+                showLabel={shouldShowApplicantLabel("self", watchedValues)}
               >
                 <HealthQuestionSet
                   applicant="self"
@@ -286,11 +282,7 @@ export default function HealthSi() {
             {hasSpouse && (
               <ApplicantSection
                 applicant="spouse"
-                showLabel={shouldShowApplicantLabel(
-                  "spouse",
-                  watchedValues,
-                  "health-si",
-                )}
+                showLabel={shouldShowApplicantLabel("spouse", watchedValues)}
               >
                 <HealthQuestionSet
                   applicant="spouse"

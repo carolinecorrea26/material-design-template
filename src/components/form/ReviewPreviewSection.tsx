@@ -583,7 +583,7 @@ function PreviewCard({
               applicant="self"
               showLabel={
                 showSelfLabel !== false &&
-                shouldShowApplicantLabel("self", values, "review")
+                shouldShowApplicantLabel("self", values)
               }
             >
               <PreviewRows rows={self} />

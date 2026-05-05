@@ -14,10 +14,12 @@ export const pageFields: Partial<Record<PageId, FieldId[]>> = {
     "zip-postal-code",
     "state-province",
     "birth-date",
+    "gender",
     "dependents",
     "spouse-first-name",
     "spouse-last-name",
     "spouse-birth-date",
+    "spouse-gender",
   ],
   "coverage-questions": [
     "gender",

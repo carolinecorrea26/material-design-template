@@ -1,6 +1,5 @@
 import { Alert, Box, Card, Stack, Typography } from "@mui/material";
 import FormRoutePage from "../components/form/FormRoutePage";
-import FormSectionTitle from "../components/form/FormSectionTitle";
 import FieldRenderer from "../components/form/FieldRenderer";
 import { coverageCategories } from "../config/coverageCategories";
 import type { CoverageCategoryId } from "../config/coverages/types";
@@ -268,11 +267,6 @@ export default function Payment() {
               groupedCategories.map(({ category, products }) => {
                 return (
                   <Stack key={category.id} spacing={1.25}>
-                    <FormSectionTitle
-                      icon={category.icon}
-                      label={category.label}
-                    />
-
                     {products.map((product) => {
                       const paymentMethodFieldId = `payment-method:${product.coverageId}`;
                       const paymentFrequencyFieldId = `payment-frequency:${product.coverageId}`;
@@ -303,7 +297,10 @@ export default function Payment() {
                           sx={{ p: 2 }}
                         >
                           <Stack spacing={1.5}>
-                            <Typography fontWeight={700}>
+                            <Typography
+                              fontWeight={700}
+                              sx={{ fontSize: "1rem" }}
+                            >
                               {product.coverageName}
                             </Typography>
 

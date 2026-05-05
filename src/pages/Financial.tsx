@@ -439,11 +439,7 @@ export default function Financial() {
           return (
             <ApplicantSection
               applicant={applicant}
-              showLabel={shouldShowApplicantLabel(
-                applicant,
-                watchedValues,
-                "financial",
-              )}
+              showLabel={shouldShowApplicantLabel(applicant, watchedValues)}
             >
               {sections.map((section, index) => {
                 return (

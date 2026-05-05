@@ -1,10 +1,8 @@
 import type { SvgIconComponent } from "@mui/icons-material";
 import { Box, Stack, Typography } from "@mui/material";
 import {
-  applicantIcons,
   applicantSectionTitles,
   sectionTitleIconSx,
-  shouldShowSectionLabelIcon,
   type ApplicantSectionId,
 } from "../../config/formSectionTitle";
 
@@ -13,34 +11,54 @@ type FormSectionTitleProps =
       applicant: ApplicantSectionId;
       icon?: never;
       label?: never;
-      showIcon?: boolean;
     }
   | {
       applicant?: never;
-      icon: SvgIconComponent;
+      icon?: SvgIconComponent;
       label: string;
-      showIcon?: boolean;
     };
 
 export default function FormSectionTitle(props: FormSectionTitleProps) {
-  const Icon = props.applicant ? applicantIcons[props.applicant] : props.icon;
-  const title = props.applicant
-    ? applicantSectionTitles[props.applicant]
-    : props.label;
-  const showIcon = shouldShowSectionLabelIcon(
-    props.applicant ? "applicant" : "section",
-    props.showIcon,
-  );
+  if (props.applicant) {
+    const title = applicantSectionTitles[props.applicant];
+
+    return (
+      <Box
+        sx={{
+          background: "rgb(234 242 255 / 84%)",
+          padding: "0rem 1.25rem",
+          borderRadius: "8px",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Typography
+          sx={{
+            lineHeight: 2.66,
+            textTransform: "uppercase",
+            color: "#4e6d9c",
+            fontWeight: 700,
+            fontSize: "0.75rem",
+            letterSpacing: "1px",
+          }}
+        >
+          {title}
+        </Typography>
+      </Box>
+    );
+  }
+
+  const Icon = props.icon;
 
   return (
     <Stack direction="row" spacing={1} alignItems="center">
-      {showIcon ? (
+      {Icon ? (
         <Box sx={sectionTitleIconSx}>
           <Icon />
         </Box>
       ) : null}
 
-      <Typography variant="sectionLabel">{title}</Typography>
+      <Typography variant="sectionLabel">{props.label}</Typography>
     </Stack>
   );
 }

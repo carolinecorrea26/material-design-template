@@ -72,7 +72,7 @@ type EstimateState = {
 type AboutCardContent = {
   title: string;
   subtitle?: string;
-  paragraphs: string[];
+  paragraphs: ReactNode[];
 };
 
 const SHOW_QUOTE_TOOL = true;
@@ -109,7 +109,16 @@ const NYL_ABOUT_CONTENT: AboutCardContent = {
   subtitle: "A trusted name for over 180 years",
   paragraphs: [
     "At the heart of New York Life is a commitment to be there for customers when they need us, whether today or decades into the future.",
-    "New York Life has received the highest financial strength ratings currently awarded to any U.S. life insurer, helping give customers confidence in the promises behind their coverage.",
+    <>
+      As of today, New York Life has received the highest financial strength
+      ratings
+      <Box component="sup" sx={{ fontSize: "0.75em", lineHeight: 1 }}>
+        1
+      </Box>{" "}
+      currently awarded to any U.S. life insurer. For our customers, that means
+      promises kept, and peace of mind for the millions of families and
+      businesses who rely on us.
+    </>,
   ],
 };
 
@@ -789,7 +798,7 @@ function HomeQuoteCard() {
                 <FormControl fullWidth required>
                   <FormLabel
                     required
-                    sx={{ mb: 1, fontWeight: 600, color: "text.primary" }}
+                    sx={{ mb: 1, fontWeight: 500, color: "text.primary" }}
                   >
                     What coverage are you interested in?
                   </FormLabel>
@@ -1056,7 +1065,7 @@ function HomeQuoteCard() {
                       gap={2}
                     >
                       <Typography variant="body2" color="text.secondary">
-                        Estimated monthly rate
+                        Your estimated rate
                         <Box
                           component="sup"
                           sx={{ fontSize: "0.7em", lineHeight: 1 }}
@@ -1428,7 +1437,7 @@ export default function Home() {
                                 variant="caption"
                                 color="text.secondary"
                               >
-                                {formatCoverageRange(product)} · Available for{" "}
+                                {formatCoverageRange(product)} · Available for:{" "}
                                 {product.applicants
                                   .map(getApplicantLabel)
                                   .join(", ")}
@@ -1458,6 +1467,19 @@ export default function Home() {
             }}
           >
             <Stack spacing={2}>
+              <Box
+                component="img"
+                src="/logo.svg"
+                alt="New York Life Logo"
+                sx={{
+                  display: "block",
+                  height: 40,
+                  width: "auto",
+                  objectFit: "contain",
+                  objectPosition: "left center",
+                  mb: 0.5,
+                }}
+              />
               <Stack spacing={0.75}>
                 <Typography variant="h2" sx={SECTION_TITLE_SX}>
                   {NYL_ABOUT_CONTENT.title}
@@ -1470,9 +1492,9 @@ export default function Home() {
               </Stack>
 
               <Stack spacing={1.25}>
-                {NYL_ABOUT_CONTENT.paragraphs.map((paragraph) => (
+                {NYL_ABOUT_CONTENT.paragraphs.map((paragraph, index) => (
                   <Typography
-                    key={paragraph}
+                    key={index}
                     variant="body2"
                     color="text.secondary"
                   >
@@ -1514,15 +1536,30 @@ export default function Home() {
               </Stack>
 
               <Typography variant="caption" color="text.secondary">
-                Financial strength ratings shown are based on the referenced
-                marketing content and noted there as of 09/30/2025.
+                <Box component="sup" sx={{ fontSize: "0.85em", lineHeight: 1 }}>
+                  1
+                </Box>
+                Third Party Rating Reports as of 09/30/2025.
               </Typography>
             </Stack>
 
             {associationContent ? (
               <Stack spacing={2}>
+                <Box
+                  component="img"
+                  src={client.branding.logo}
+                  alt={client.branding.logoAlt}
+                  sx={{
+                    display: "block",
+                    height: 40,
+                    width: "auto",
+                    objectFit: "contain",
+                    objectPosition: "left center",
+                    mb: 0.5,
+                  }}
+                />
                 <Stack spacing={0.75}>
-                  <Typography variant="h5">
+                  <Typography variant="h2" sx={SECTION_TITLE_SX}>
                     {associationContent.title}
                   </Typography>
                   {associationContent.subtitle ? (
@@ -1533,9 +1570,9 @@ export default function Home() {
                 </Stack>
 
                 <Stack spacing={1.25}>
-                  {associationContent.paragraphs.map((paragraph) => (
+                  {associationContent.paragraphs.map((paragraph, index) => (
                     <Typography
-                      key={paragraph}
+                      key={index}
                       variant="body2"
                       color="text.secondary"
                     >

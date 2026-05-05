@@ -1,8 +1,5 @@
 import { useCallback, useEffect, useMemo } from "react";
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Alert,
   Box,
   Checkbox,
@@ -14,7 +11,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormRoutePage from "../components/form/FormRoutePage";
 import FormSectionTitle from "../components/form/FormSectionTitle";
 import SelectableOptionCard from "../components/form/SelectableOptionCard";
@@ -256,10 +252,17 @@ export default function CoverageOptions() {
     let needsUpdate = false;
 
     for (const coverage of selectedCoverages) {
+      const choices = generateAmountChoices(
+        coverage.categoryId,
+        coverage.minAmount,
+        coverage.maxAmount,
+      );
+      const defaultAmount = choices.find((choice) => choice > 0) ?? 0;
+
       for (const applicantId of getVisibleApplicants(coverage.applicants)) {
         const key = `${coverage.id}:${applicantId}`;
         if (storedAmounts[key] == null) {
-          amountPatch[key] = 0;
+          amountPatch[key] = defaultAmount;
           needsUpdate = true;
         }
       }
@@ -484,122 +487,151 @@ export default function CoverageOptions() {
   return (
     <FormRoutePage pageId={pageId} validate={validate}>
       {selectedCoverages.length > 0 ? (
-        <Stack spacing={2}>
-          {groupedCategories.map(({ category, items }, groupIndex) => (
-            <Accordion
-              key={category.id}
-              defaultExpanded={groupIndex === 0}
-              disableGutters
-              sx={{
-                backgroundColor: "transparent",
-                border: "none",
-                boxShadow: "none",
-                p: 0,
-                borderRadius: 0,
-                "&::before": { display: "none" },
-                "&.MuiAccordion-root": {
-                  backgroundColor: "transparent",
-                  border: "none",
-                  boxShadow: "none",
-                  m: 0,
-                  p: 0,
-                },
-              }}
-            >
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <FormSectionTitle icon={category.icon} label={category.label} />
-              </AccordionSummary>
-              <AccordionDetails>
-                <Stack spacing={5}>
-                  {items.map((coverage) => {
-                    const visibleApplicants = getVisibleApplicants(
-                      coverage.applicants,
-                      coverage.id,
-                    );
-                    const choices = generateAmountChoices(
-                      coverage.categoryId,
-                      coverage.minAmount,
-                      coverage.maxAmount,
-                    );
-                    const amountLabel = getBenefitAmountLabel(
-                      coverage.categoryId,
-                    );
-                    const noteText = resolveCoverageNote(coverage);
-                    const spouseNote = visibleApplicants.includes("spouse")
-                      ? resolveSpouseCoverageNote(coverage)
-                      : undefined;
+        <>
+          <Stack spacing={2}>
+            {groupedCategories
+              .flatMap(({ items }) => items)
+              .map((coverage) => {
+                const visibleApplicants = getVisibleApplicants(
+                  coverage.applicants,
+                  coverage.id,
+                );
+                const choices = generateAmountChoices(
+                  coverage.categoryId,
+                  coverage.minAmount,
+                  coverage.maxAmount,
+                );
+                const amountLabel = getBenefitAmountLabel(coverage.categoryId);
+                const noteText = resolveCoverageNote(coverage);
+                const spouseNote = visibleApplicants.includes("spouse")
+                  ? resolveSpouseCoverageNote(coverage)
+                  : undefined;
 
-                    return (
-                      <Box key={coverage.id}>
-                        <Stack spacing={1.5}>
-                          <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                            {coverage.name}
-                          </Typography>
+                return (
+                  <Box
+                    key={coverage.id}
+                    sx={{
+                      bgcolor: "background.paper",
+                      border: "1px solid",
+                      borderColor: "divider",
+                      borderRadius: "16px",
+                      p: 2,
+                      // boxShadow: 1,
+                    }}
+                  >
+                    <Stack spacing={1.5}>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontWeight: 600, fontSize: "1rem" }}
+                      >
+                        {coverage.name}
+                      </Typography>
 
-                          {(noteText || spouseNote) && (
-                            <Alert severity="info">
-                              {noteText}
-                              {spouseNote && (
+                      {(noteText || spouseNote) && (
+                        <Alert severity="info">
+                          {noteText}
+                          {spouseNote && (
+                            <>
+                              {noteText && (
                                 <>
-                                  {noteText && (
-                                    <>
-                                      <br />
-                                      <br />
-                                    </>
-                                  )}
-                                  {spouseNote}
+                                  <br />
+                                  <br />
                                 </>
                               )}
-                            </Alert>
+                              {spouseNote}
+                            </>
                           )}
+                        </Alert>
+                      )}
 
-                          {visibleApplicants.map((applicantId) => {
-                            const sectionId =
-                              coverageApplicantToSection[applicantId];
-                            const key = `${coverage.id}:${applicantId}`;
-                            const selectedAmount = storedAmounts[key] ?? 0;
-                            const premium = calcApplicantPremium(
-                              coverage,
-                              applicantId,
-                            );
+                      {visibleApplicants.map((applicantId) => {
+                        const sectionId =
+                          coverageApplicantToSection[applicantId];
+                        const key = `${coverage.id}:${applicantId}`;
+                        const selectedAmount = storedAmounts[key] ?? 0;
+                        const premium = calcApplicantPremium(
+                          coverage,
+                          applicantId,
+                        );
 
-                            const showApplicantLabel =
-                              visibleApplicants.length > 1;
+                        const showApplicantLabel = visibleApplicants.length > 1;
 
-                            return (
-                              <Box key={applicantId}>
-                                {showApplicantLabel && (
-                                  <Box sx={{ mb: 1 }}>
-                                    <FormSectionTitle applicant={sectionId} />
-                                  </Box>
-                                )}
+                        return (
+                          <Box key={applicantId}>
+                            {showApplicantLabel && (
+                              <Box sx={{ mb: 2 }}>
+                                <FormSectionTitle applicant={sectionId} />
+                              </Box>
+                            )}
 
-                                <Box>
-                                  <Stack spacing={1.5}>
+                            <Box>
+                              <Stack spacing={1.5}>
+                                <FormControl fullWidth margin="normal">
+                                  <InputLabel>{amountLabel}</InputLabel>
+                                  <Select
+                                    label={amountLabel}
+                                    value={selectedAmount}
+                                    onChange={(e) =>
+                                      handleAmountChange(
+                                        key,
+                                        Number(e.target.value),
+                                      )
+                                    }
+                                  >
+                                    {choices.map((amt) => (
+                                      <MenuItem key={amt} value={amt}>
+                                        {formatUSD(amt, 0)}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
+
+                                {/* DI additional fields: Waiting Period */}
+                                {coverage.categoryId === "DI" &&
+                                  coverage.waitingPeriodOptions &&
+                                  selectedAmount > 0 && (
                                     <FormControl fullWidth margin="normal">
-                                      <InputLabel>{amountLabel}</InputLabel>
+                                      <InputLabel>Waiting Period</InputLabel>
                                       <Select
-                                        label={amountLabel}
-                                        value={selectedAmount}
+                                        label="Waiting Period"
+                                        value={
+                                          storedWaitingPeriods[coverage.id] ??
+                                          coverage.waitingPeriodOptions[0].value
+                                        }
                                         onChange={(e) =>
-                                          handleAmountChange(
-                                            key,
-                                            Number(e.target.value),
+                                          handleWaitingPeriodChange(
+                                            coverage.id,
+                                            e.target.value as string,
                                           )
                                         }
                                       >
-                                        {choices.map((amt) => (
-                                          <MenuItem key={amt} value={amt}>
-                                            {formatUSD(amt, 0)}
-                                          </MenuItem>
-                                        ))}
+                                        {coverage.waitingPeriodOptions.map(
+                                          (opt) => (
+                                            <MenuItem
+                                              key={opt.value}
+                                              value={opt.value}
+                                            >
+                                              {opt.label}
+                                            </MenuItem>
+                                          ),
+                                        )}
                                       </Select>
+                                      <FormHelperText>
+                                        The number of consecutive days you must
+                                        be totally disabled by a covered illness
+                                        or injury and not gainfully employed in
+                                        any occupation before benefits commence.
+                                        Coverage with a longer waiting period is
+                                        less expensive.
+                                      </FormHelperText>
                                     </FormControl>
+                                  )}
 
-                                    {/* DI additional fields: Waiting Period */}
-                                    {coverage.categoryId === "DI" &&
-                                      coverage.waitingPeriodOptions &&
-                                      selectedAmount > 0 && (
+                                {/* OO additional fields: Waiting Period + Max Benefit Period */}
+                                {coverage.categoryId === "OO" &&
+                                  selectedAmount > 0 && (
+                                    <Stack spacing={1.5}>
+                                      {coverage.waitingPeriodOptions && (
                                         <FormControl fullWidth margin="normal">
                                           <InputLabel>
                                             Waiting Period
@@ -643,279 +675,226 @@ export default function CoverageOptions() {
                                         </FormControl>
                                       )}
 
-                                    {/* OO additional fields: Waiting Period + Max Benefit Period */}
-                                    {coverage.categoryId === "OO" &&
-                                      selectedAmount > 0 && (
-                                        <Stack spacing={1.5}>
-                                          {coverage.waitingPeriodOptions && (
-                                            <FormControl
-                                              fullWidth
-                                              margin="normal"
-                                            >
-                                              <InputLabel>
-                                                Waiting Period
-                                              </InputLabel>
-                                              <Select
-                                                label="Waiting Period"
-                                                value={
-                                                  storedWaitingPeriods[
-                                                    coverage.id
-                                                  ] ??
-                                                  coverage
-                                                    .waitingPeriodOptions[0]
-                                                    .value
-                                                }
-                                                onChange={(e) =>
-                                                  handleWaitingPeriodChange(
-                                                    coverage.id,
-                                                    e.target.value as string,
-                                                  )
-                                                }
-                                              >
-                                                {coverage.waitingPeriodOptions.map(
-                                                  (opt) => (
-                                                    <MenuItem
-                                                      key={opt.value}
-                                                      value={opt.value}
-                                                    >
-                                                      {opt.label}
-                                                    </MenuItem>
-                                                  ),
-                                                )}
-                                              </Select>
-                                              <FormHelperText>
-                                                The number of consecutive days
-                                                you must be totally disabled by
-                                                a covered illness or injury and
-                                                not gainfully employed in any
-                                                occupation before benefits
-                                                commence. Coverage with a longer
-                                                waiting period is less
-                                                expensive.
-                                              </FormHelperText>
-                                            </FormControl>
-                                          )}
-
-                                          {coverage.maxBenefitPeriodOptions && (
-                                            <FormControl
-                                              fullWidth
-                                              margin="normal"
-                                            >
-                                              <InputLabel>
-                                                Maximum Benefit Period
-                                              </InputLabel>
-                                              <Select
-                                                label="Maximum Benefit Period"
-                                                value={
-                                                  storedMaxBenefitPeriods[
-                                                    coverage.id
-                                                  ] ??
-                                                  coverage
-                                                    .maxBenefitPeriodOptions[0]
-                                                    .value
-                                                }
-                                                onChange={(e) =>
-                                                  handleMaxBenefitPeriodChange(
-                                                    coverage.id,
-                                                    e.target.value as string,
-                                                  )
-                                                }
-                                              >
-                                                {coverage.maxBenefitPeriodOptions.map(
-                                                  (opt) => (
-                                                    <MenuItem
-                                                      key={opt.value}
-                                                      value={opt.value}
-                                                    >
-                                                      {opt.label}
-                                                    </MenuItem>
-                                                  ),
-                                                )}
-                                              </Select>
-                                              <FormHelperText>
-                                                The maximum length of time
-                                                Office Overhead benefits will be
-                                                paid for eligible business
-                                                expenses while disabled.
-                                              </FormHelperText>
-                                            </FormControl>
-                                          )}
-                                        </Stack>
-                                      )}
-
-                                    {/* Optional Benefit(s) — per applicant */}
-                                    {coverage.riders &&
-                                      coverage.riders.length > 0 &&
-                                      selectedAmount > 0 && (
-                                        <Box>
-                                          <Typography
-                                            variant="body2"
-                                            sx={{ fontWeight: 600, mb: 1 }}
+                                      {coverage.maxBenefitPeriodOptions && (
+                                        <FormControl fullWidth margin="normal">
+                                          <InputLabel>
+                                            Maximum Benefit Period
+                                          </InputLabel>
+                                          <Select
+                                            label="Maximum Benefit Period"
+                                            value={
+                                              storedMaxBenefitPeriods[
+                                                coverage.id
+                                              ] ??
+                                              coverage
+                                                .maxBenefitPeriodOptions[0]
+                                                .value
+                                            }
+                                            onChange={(e) =>
+                                              handleMaxBenefitPeriodChange(
+                                                coverage.id,
+                                                e.target.value as string,
+                                              )
+                                            }
                                           >
-                                            Optional Benefit(s)
-                                          </Typography>
-                                          <Stack spacing={1}>
-                                            {coverage.riders.map((rider) => {
-                                              const riderKey = `${coverage.id}:${rider.id}:${applicantId}`;
-                                              const isChecked =
-                                                !!storedRiders[riderKey];
+                                            {coverage.maxBenefitPeriodOptions.map(
+                                              (opt) => (
+                                                <MenuItem
+                                                  key={opt.value}
+                                                  value={opt.value}
+                                                >
+                                                  {opt.label}
+                                                </MenuItem>
+                                              ),
+                                            )}
+                                          </Select>
+                                          <FormHelperText>
+                                            The maximum length of time Office
+                                            Overhead benefits will be paid for
+                                            eligible business expenses while
+                                            disabled.
+                                          </FormHelperText>
+                                        </FormControl>
+                                      )}
+                                    </Stack>
+                                  )}
 
-                                              return (
-                                                <Box key={rider.id}>
-                                                  <SelectableOptionCard
-                                                    onClick={() =>
-                                                      handleRiderToggle(
-                                                        coverage.id,
-                                                        rider.id,
-                                                        applicantId,
-                                                      )
-                                                    }
+                                {/* Optional Benefit(s) — per applicant */}
+                                {coverage.riders &&
+                                  coverage.riders.length > 0 &&
+                                  selectedAmount > 0 && (
+                                    <Box>
+                                      <Typography
+                                        variant="body2"
+                                        sx={{ fontWeight: 600, mb: 1 }}
+                                      >
+                                        Optional Benefit(s)
+                                      </Typography>
+                                      <Stack spacing={1}>
+                                        {coverage.riders.map((rider) => {
+                                          const riderKey = `${coverage.id}:${rider.id}:${applicantId}`;
+                                          const isChecked =
+                                            !!storedRiders[riderKey];
+
+                                          return (
+                                            <Box key={rider.id}>
+                                              <SelectableOptionCard
+                                                onClick={() =>
+                                                  handleRiderToggle(
+                                                    coverage.id,
+                                                    rider.id,
+                                                    applicantId,
+                                                  )
+                                                }
+                                              >
+                                                <Checkbox
+                                                  checked={isChecked}
+                                                  onChange={() =>
+                                                    handleRiderToggle(
+                                                      coverage.id,
+                                                      rider.id,
+                                                      applicantId,
+                                                    )
+                                                  }
+                                                  onClick={(event) =>
+                                                    event.stopPropagation()
+                                                  }
+                                                  inputProps={{
+                                                    "aria-label": `${rider.name} selection`,
+                                                  }}
+                                                  size="small"
+                                                  sx={{
+                                                    mt: 0.25,
+                                                    color: "text.primary",
+                                                    "&.Mui-checked": {
+                                                      color: "primary.main",
+                                                    },
+                                                  }}
+                                                />
+                                                <Stack
+                                                  spacing={0.5}
+                                                  sx={{
+                                                    flex: 1,
+                                                    minWidth: 0,
+                                                  }}
+                                                >
+                                                  <Typography
+                                                    variant="body2"
+                                                    sx={{ fontWeight: 600 }}
                                                   >
-                                                    <Checkbox
-                                                      checked={isChecked}
-                                                      onChange={() =>
-                                                        handleRiderToggle(
+                                                    {rider.name}
+                                                  </Typography>
+                                                  <Typography
+                                                    variant="body2"
+                                                    color="text.secondary"
+                                                  >
+                                                    {rider.description}
+                                                  </Typography>
+                                                </Stack>
+                                              </SelectableOptionCard>
+
+                                              {/* Rider with amount selection */}
+                                              {rider.hasAmount &&
+                                                isChecked &&
+                                                rider.minAmount != null &&
+                                                rider.maxAmount != null && (
+                                                  <FormControl
+                                                    margin="normal"
+                                                    sx={{
+                                                      ml: 4,
+                                                      minWidth: 200,
+                                                    }}
+                                                  >
+                                                    <InputLabel>
+                                                      Rider Benefit Amount
+                                                    </InputLabel>
+                                                    <Select
+                                                      label="Rider Benefit Amount"
+                                                      value={
+                                                        storedRiderAmounts[
+                                                          riderKey
+                                                        ] ?? 0
+                                                      }
+                                                      onChange={(e) =>
+                                                        handleRiderAmountChange(
                                                           coverage.id,
                                                           rider.id,
                                                           applicantId,
+                                                          Number(
+                                                            e.target.value,
+                                                          ),
                                                         )
                                                       }
-                                                      onClick={(event) =>
-                                                        event.stopPropagation()
-                                                      }
-                                                      inputProps={{
-                                                        "aria-label": `${rider.name} selection`,
-                                                      }}
-                                                      size="small"
-                                                      sx={{
-                                                        mt: 0.25,
-                                                        color: "text.primary",
-                                                        "&.Mui-checked": {
-                                                          color: "primary.main",
-                                                        },
-                                                      }}
-                                                    />
-                                                    <Stack
-                                                      spacing={0.5}
-                                                      sx={{
-                                                        flex: 1,
-                                                        minWidth: 0,
-                                                      }}
                                                     >
-                                                      <Typography
-                                                        variant="body2"
-                                                        sx={{ fontWeight: 600 }}
-                                                      >
-                                                        {rider.name}
-                                                      </Typography>
-                                                      <Typography
-                                                        variant="body2"
-                                                        color="text.secondary"
-                                                      >
-                                                        {rider.description}
-                                                      </Typography>
-                                                    </Stack>
-                                                  </SelectableOptionCard>
-
-                                                  {/* Rider with amount selection */}
-                                                  {rider.hasAmount &&
-                                                    isChecked &&
-                                                    rider.minAmount != null &&
-                                                    rider.maxAmount != null && (
-                                                      <FormControl
-                                                        margin="normal"
-                                                        sx={{
-                                                          ml: 4,
-                                                          minWidth: 200,
-                                                        }}
-                                                      >
-                                                        <InputLabel>
-                                                          Rider Benefit Amount
-                                                        </InputLabel>
-                                                        <Select
-                                                          label="Rider Benefit Amount"
-                                                          value={
-                                                            storedRiderAmounts[
-                                                              riderKey
-                                                            ] ?? 0
-                                                          }
-                                                          onChange={(e) =>
-                                                            handleRiderAmountChange(
-                                                              coverage.id,
-                                                              rider.id,
-                                                              applicantId,
-                                                              Number(
-                                                                e.target.value,
-                                                              ),
-                                                            )
-                                                          }
+                                                      {generateAmountChoices(
+                                                        coverage.categoryId,
+                                                        rider.minAmount,
+                                                        rider.maxAmount,
+                                                      ).map((amt) => (
+                                                        <MenuItem
+                                                          key={amt}
+                                                          value={amt}
                                                         >
-                                                          {generateAmountChoices(
-                                                            coverage.categoryId,
-                                                            rider.minAmount,
-                                                            rider.maxAmount,
-                                                          ).map((amt) => (
-                                                            <MenuItem
-                                                              key={amt}
-                                                              value={amt}
-                                                            >
-                                                              {formatUSD(
-                                                                amt,
-                                                                0,
-                                                              )}
-                                                            </MenuItem>
-                                                          ))}
-                                                        </Select>
-                                                      </FormControl>
-                                                    )}
-                                                </Box>
-                                              );
-                                            })}
-                                          </Stack>
-                                        </Box>
-                                      )}
+                                                          {formatUSD(amt, 0)}
+                                                        </MenuItem>
+                                                      ))}
+                                                    </Select>
+                                                  </FormControl>
+                                                )}
+                                            </Box>
+                                          );
+                                        })}
+                                      </Stack>
+                                    </Box>
+                                  )}
 
-                                    {/* Estimated cost — right-aligned at end of applicant section */}
-                                    {selectedAmount > 0 && (
-                                      <Box
+                                {/* Estimated cost — right-aligned at end of applicant section */}
+                                {selectedAmount > 0 && (
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      justifyContent: "flex-end",
+                                      mt: 1,
+                                      // pb: 2,
+                                      // borderBottom: "1px solid",
+                                      // borderColor: "rgba(0, 0, 0, 0.12)",
+                                    }}
+                                  >
+                                    <Typography variant="body2">
+                                      Estimated cost¹:{" "}
+                                      <Typography
+                                        component="span"
+                                        variant="body2"
                                         sx={{
-                                          display: "flex",
-                                          justifyContent: "flex-end",
-                                          mt: 1,
-                                          pb: 2,
-                                          borderBottom: "1px solid",
-                                          borderColor: "rgba(0, 0, 0, 0.12)",
+                                          color: "success.main",
+                                          fontWeight: 600,
+                                          fontSize: "1.5rem",
                                         }}
                                       >
-                                        <Typography variant="body2">
-                                          Estimated cost¹:{" "}
-                                          <Typography
-                                            component="span"
-                                            variant="body2"
-                                            sx={{
-                                              color: "success.main",
-                                              fontWeight: 600,
-                                              fontSize: "1.5rem",
-                                            }}
-                                          >
-                                            {formatUSD(premium)}/mo
-                                          </Typography>
-                                        </Typography>
-                                      </Box>
-                                    )}
-                                  </Stack>
-                                </Box>
-                              </Box>
-                            );
-                          })}
-                        </Stack>
-                      </Box>
-                    );
-                  })}
-                </Stack>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+                                        {formatUSD(premium)}/mo
+                                      </Typography>
+                                    </Typography>
+                                  </Box>
+                                )}
+
+                                {/* Message when amount is $0 */}
+                                {selectedAmount === 0 && (
+                                  <Alert severity="info" sx={{ mt: 1 }}>
+                                    You have selected $0 for this coverage. This
+                                    means you are not applying for this product.
+                                    Please ensure your selections look correct.
+                                  </Alert>
+                                )}
+                              </Stack>
+                            </Box>
+                          </Box>
+                        );
+                      })}
+                    </Stack>
+                  </Box>
+                );
+              })}
+          </Stack>
 
           <Typography variant="caption" color="text.secondary">
             ¹ Quoted cost is the best rate available based on the information
@@ -923,7 +902,7 @@ export default function CoverageOptions() {
             health status, and use of tobacco/nicotine. Rates current as of
             2026.
           </Typography>
-        </Stack>
+        </>
       ) : (
         <Alert severity="info">
           No coverage options are available for your current selections.

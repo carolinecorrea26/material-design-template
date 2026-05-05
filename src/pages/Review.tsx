@@ -332,7 +332,7 @@ export default function Review() {
             <Stack spacing={1.5}>
               <ApplicantSection
                 applicant="self"
-                showLabel={shouldShowApplicantLabel("self", values, "review")}
+                showLabel={shouldShowApplicantLabel("self", values)}
               >
                 <FieldRenderer
                   field={fieldCatalog["review-self-consent"]}

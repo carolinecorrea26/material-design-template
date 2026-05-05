@@ -32,7 +32,7 @@ export const sectionLabelConfig: SectionLabelConfig = {
   labels: {},
   sectionTitles: {},
   showIcons: {
-    applicant: false,
+    applicant: true,
     section: true,
   },
 };

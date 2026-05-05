@@ -24,12 +24,15 @@ export default function AppFooter({ client }: AppFooterProps) {
       <Box
         sx={{
           width: "100%",
-          maxWidth: 700,
+          maxWidth: 1400,
           marginLeft: "auto",
           marginRight: "auto",
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", sm: "repeat(2, minmax(0, 1fr))" },
-          gap: 4,
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr)",
+          },
+          gap: 2,
         }}
       >
         <Box>
@@ -118,14 +121,14 @@ export default function AppFooter({ client }: AppFooterProps) {
               )}
             </Box>
 
-            <Box sx={{ mt: 2 }}>
+            {/* <Box sx={{ mt: 2 }}>
               <Box
                 component="img"
                 src={client.branding.logo}
                 alt={client.branding.logoAlt}
                 sx={{ height: 36, width: "auto" }}
               />
-            </Box>
+            </Box> */}
           </Stack>
         </Box>
 
@@ -271,11 +274,7 @@ export default function AppFooter({ client }: AppFooterProps) {
           </Stack>
         </Box>
 
-        <Box
-          sx={{
-            gridColumn: "1 / -1",
-          }}
-        >
+        <Box>
           <Stack spacing={2}>
             <Typography
               variant="body2"

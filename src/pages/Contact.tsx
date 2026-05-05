@@ -1,7 +1,5 @@
 import { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import BusinessCenterOutlinedIcon from "@mui/icons-material/BusinessCenterOutlined";
 import FormRoutePage, {
   isSectionVisible,
 } from "../components/form/FormRoutePage";
@@ -70,6 +68,7 @@ export default function Contact() {
             setValue={setValue}
             showBusinessSection={showBusinessSection}
             sameAsHome={sameAsHome}
+            hasDiOrOo={hasDiOrOo}
           />
         );
       }}
@@ -86,6 +85,7 @@ function ContactFields({
   setValue,
   showBusinessSection,
   sameAsHome,
+  hasDiOrOo,
 }: {
   control: any;
   errors: any;
@@ -95,6 +95,7 @@ function ContactFields({
   setValue: any;
   showBusinessSection: boolean;
   sameAsHome: boolean;
+  hasDiOrOo: boolean;
 }) {
   const homeStreetAddress = watchedValues["street-address"];
   const homeAptSuite = watchedValues["apt-suite"];
@@ -177,7 +178,7 @@ function ContactFields({
           const content = (
             <>
               {/* Residential Address sub-section label */}
-              <FormSectionTitle icon={HomeOutlinedIcon} label="Home Address" />
+              <FormSectionTitle label="Home Address" />
 
               {/* Street address + Apt/Suite row */}
               <Box
@@ -249,10 +250,7 @@ function ContactFields({
               {/* Business / Employer Info inside Self container */}
               {showBusinessSection && businessSection && (
                 <Box sx={{ mt: 2 }}>
-                  <FormSectionTitle
-                    icon={BusinessCenterOutlinedIcon}
-                    label="Business / Employer Information"
-                  />
+                  <FormSectionTitle label="Business / Employer Information" />
 
                   {renderBusinessFields(
                     businessSection,
@@ -260,6 +258,7 @@ function ContactFields({
                     control,
                     errors,
                     sameAsHome,
+                    hasDiOrOo,
                   )}
                 </Box>
               )}
@@ -270,11 +269,7 @@ function ContactFields({
             <div key={section.id}>
               <ApplicantSection
                 applicant="self"
-                showLabel={shouldShowApplicantLabel(
-                  "self",
-                  watchedValues,
-                  "contact",
-                )}
+                showLabel={shouldShowApplicantLabel("self", watchedValues)}
               >
                 {content}
               </ApplicantSection>
@@ -313,7 +308,6 @@ function ContactFields({
                 showLabel={shouldShowApplicantLabel(
                   section.applicant,
                   watchedValues,
-                  "contact",
                 )}
               >
                 {content}
@@ -341,30 +335,51 @@ function renderBusinessFields(
   control: any,
   errors: any,
   sameAsHome: boolean,
+  hasDiOrOo: boolean,
 ) {
   const nonAddressNonPhone = section.fieldIds.filter(
     (id: string) =>
       !businessStreetRow.has(id) &&
       !businessCityStateZipRow.has(id) &&
-      id !== "business-phone",
+      id !== "business-phone" &&
+      id !== "business-address-same-as-home",
   );
 
   return (
     <>
-      {nonAddressNonPhone.map((fieldId: string) => {
-        const field = allFields.find((f: any) => f.id === fieldId);
-        if (!field) return null;
-        return (
-          <FieldRenderer
-            key={field.id}
-            field={field}
-            control={control}
-            errors={errors}
-          />
-        );
-      })}
+      {/* Show employer name, type of business only for DI/OO */}
+      {hasDiOrOo &&
+        nonAddressNonPhone.map((fieldId: string) => {
+          const field = allFields.find((f: any) => f.id === fieldId);
+          if (!field) return null;
+          return (
+            <FieldRenderer
+              key={field.id}
+              field={field}
+              control={control}
+              errors={errors}
+            />
+          );
+        })}
 
-      {!sameAsHome && (
+      {/* Same-as-home checkbox — only for DI/OO */}
+      {hasDiOrOo &&
+        section.fieldIds
+          .filter((id: string) => id === "business-address-same-as-home")
+          .map((fieldId: string) => {
+            const field = allFields.find((f: any) => f.id === fieldId);
+            if (!field) return null;
+            return (
+              <FieldRenderer
+                key={field.id}
+                field={field}
+                control={control}
+                errors={errors}
+              />
+            );
+          })}
+
+      {(!sameAsHome || !hasDiOrOo) && (
         <>
           {/* Business street + apt row */}
           <Box
@@ -416,21 +431,22 @@ function renderBusinessFields(
         </>
       )}
 
-      {/* Business phone */}
-      {section.fieldIds
-        .filter((id: string) => id === "business-phone")
-        .map((fieldId: string) => {
-          const field = allFields.find((f: any) => f.id === fieldId);
-          if (!field) return null;
-          return (
-            <FieldRenderer
-              key={field.id}
-              field={field}
-              control={control}
-              errors={errors}
-            />
-          );
-        })}
+      {/* Business phone — only for DI/OO */}
+      {hasDiOrOo &&
+        section.fieldIds
+          .filter((id: string) => id === "business-phone")
+          .map((fieldId: string) => {
+            const field = allFields.find((f: any) => f.id === fieldId);
+            if (!field) return null;
+            return (
+              <FieldRenderer
+                key={field.id}
+                field={field}
+                control={control}
+                errors={errors}
+              />
+            );
+          })}
     </>
   );
 }

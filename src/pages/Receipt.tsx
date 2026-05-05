@@ -247,7 +247,7 @@ export default function Receipt() {
             sx={{
               px: 2,
               py: 0.5,
-              backgroundColor: "#d9dde7",
+              backgroundColor: "#eef0f4",
             }}
           >
             <Typography
@@ -361,12 +361,20 @@ export default function Receipt() {
               <CheckCircleRoundedIcon sx={{ color: "#1E854A", fontSize: 54 }} />
             </Box>
 
-            <Typography variant="h2" fontWeight={700}>
+            <Typography
+              component="h1"
+              sx={{
+                fontWeight: 700,
+                fontSize: { xs: "1.25rem", md: "1.75rem" },
+                lineHeight: 1.35,
+              }}
+              fontWeight={700}
+            >
               Your application has been submitted!
             </Typography>
 
             <Stack
-              direction={{ xs: "column", sm: "row" }}
+              direction="row"
               spacing={1}
               useFlexGap
               flexWrap="wrap"
@@ -406,9 +414,13 @@ export default function Receipt() {
 
           <Card
             sx={{
-              backgroundColor: "#f5f6fa",
-              boxShadow: "none",
-              borderRadius: 1.5,
+              width: "100%",
+              border: "1px solid",
+              borderColor: "rgba(7, 104, 255, 0.14)",
+              borderRadius: "32px",
+              background:
+                "linear-gradient(135deg, #f4f8ff 0%, #ffffff 52%, #f7fbff 100%)",
+              boxShadow: "0 18px 40px rgba(52, 59, 72, 0.06)",
             }}
           >
             <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
@@ -418,17 +430,14 @@ export default function Receipt() {
                     <Stack spacing={2} sx={{ mt: 2 }}>
                       <Box sx={{ px: 1.5, pb: 2 }}>
                         <Stack spacing={2}>
-                          <Typography variant="h4" fontWeight={700}>
-                            Here's what to expect next.
+                          <Typography variant="h5" fontWeight={700}>
+                            Here's what to expect next:
                           </Typography>
                           <Typography variant="body1">
-                            Your application request has been securely received.{" "}
-                            <strong>
-                              For your records, please save a copy of your
-                              application by clicking the download buttons.{" "}
-                            </strong>
-                            A digital copy cannot be emailed for security
-                            reasons.
+                            Your application request has been securely received.
+                            For your records, please save a copy of your
+                            application by clicking the download buttons. A
+                            digital copy cannot be emailed for security reasons.
                           </Typography>
                           {/* <Typography variant="h5" fontWeight={700} color="primary.main">
                             Your application decision:
@@ -444,7 +453,7 @@ export default function Receipt() {
                         renderApplicantProducts(
                           selfEntries,
                           "MEMBER",
-                          shouldShowApplicantLabel("self", values, "receipt"),
+                          shouldShowApplicantLabel("self", values),
                         )}
 
                       {spouseEntries.length > 0 &&

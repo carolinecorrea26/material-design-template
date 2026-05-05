@@ -10,7 +10,7 @@ export default function FormPageTitle({ title }: FormPageTitleProps) {
       <Typography
         component="h1"
         sx={{
-          fontWeight: 600,
+          fontWeight: 700,
           fontSize: { xs: "1.25rem", md: "1.75rem" },
           lineHeight: 1.35,
         }}
