@@ -225,6 +225,7 @@ function formatDateDisplay(raw: string): string {
 
 const controlSx = {
   p: 0,
+  pointerEvents: "none",
   color: "text.primary",
   "&.Mui-checked": {
     color: "primary.main",
@@ -371,7 +372,7 @@ export default function FieldRenderer({
                   <Radio
                     checked={controllerField.value === option.value}
                     size="small"
-                    sx={{ p: 0 }}
+                    sx={controlSx}
                   />
                   {option.label}
                 </ToggleButton>

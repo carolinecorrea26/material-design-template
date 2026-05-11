@@ -665,7 +665,7 @@ function HomeQuoteCard() {
               Estimate your cost
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              Get an instant quote and see your exclusive group rates.
+              Get an instant quote with just a few details.
             </Typography>
           </Stack>
 

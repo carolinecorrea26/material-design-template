@@ -1,5 +1,17 @@
+import { useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import { Box, Button, Card, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Stack,
+  Typography,
+} from "@mui/material";
 import ApplicantSection from "../form/ApplicantSection";
 import { shouldShowApplicantLabel } from "../form/applicantVisibility";
 import type { PageId } from "../../types/page";
@@ -34,11 +46,6 @@ type ReviewPreviewSectionProps = {
   onEdit: (pageId: PageId) => void;
 };
 
-// const sectionTitleSx = {
-//   fontSize: "1rem",
-//   fontWeight: 700,
-// };
-
 const cardSx = {
   p: 2,
   borderRadius: 2,
@@ -50,7 +57,7 @@ const rowStackSx = {
 };
 
 const rowLabelSx = {
-  maxWidth: "40%",
+  maxWidth: "60%",
   flexShrink: 0,
 };
 
@@ -76,17 +83,71 @@ function capitalizeFirst(value: string) {
   return value ? value.charAt(0).toUpperCase() + value.slice(1) : value;
 }
 
-function getNameFieldPair(fieldId: string): string | null {
-  if (fieldId === "first-name" || fieldId === "last-name") return "name";
-  if (fieldId === "spouse-first-name" || fieldId === "spouse-last-name") {
-    return "spouse-name";
+type CombinedFieldConfig = {
+  pairedFieldId: string;
+  label: string;
+  buildValue: (current: unknown, paired: unknown) => string;
+};
+
+function getCombinedFieldConfig(fieldId: string): CombinedFieldConfig | null {
+  const namePairMap: Record<string, { pair: string; label: string }> = {
+    "first-name": { pair: "last-name", label: "Name" },
+    "last-name": { pair: "first-name", label: "Name" },
+    "spouse-first-name": { pair: "spouse-last-name", label: "Spouse Name" },
+    "spouse-last-name": { pair: "spouse-first-name", label: "Spouse Name" },
+    "child-first-name": { pair: "child-last-name", label: "Child Name" },
+    "child-last-name": { pair: "child-first-name", label: "Child Name" },
+    "physician-first-name": {
+      pair: "physician-last-name",
+      label: "Physician Name",
+    },
+    "physician-last-name": {
+      pair: "physician-first-name",
+      label: "Physician Name",
+    },
+  };
+
+  const heightPairMap: Record<string, { pair: string; label: string }> = {
+    "height-feet": { pair: "height-inches", label: "Height" },
+    "height-inches": { pair: "height-feet", label: "Height" },
+    "spouse-height-feet": { pair: "spouse-height-inches", label: "Height" },
+    "spouse-height-inches": { pair: "spouse-height-feet", label: "Height" },
+  };
+
+  const namePair = namePairMap[fieldId];
+  if (namePair) {
+    return {
+      pairedFieldId: namePair.pair,
+      label: namePair.label,
+      buildValue: (current, paired) =>
+        [current, paired]
+          .map((item) => (item == null ? "" : String(item).trim()))
+          .filter(Boolean)
+          .join(" "),
+    };
   }
-  if (fieldId === "child-first-name" || fieldId === "child-last-name") {
-    return "child-name";
+
+  const heightPair = heightPairMap[fieldId];
+  if (heightPair) {
+    return {
+      pairedFieldId: heightPair.pair,
+      label: heightPair.label,
+      buildValue: (current, paired) => {
+        const feetField = fieldId.includes("feet") ? current : paired;
+        const inchesField = fieldId.includes("inches") ? current : paired;
+        const feet =
+          feetField == null || feetField === "" ? "" : String(feetField);
+        const inches =
+          inchesField == null || inchesField === "" ? "" : String(inchesField);
+
+        const parts: string[] = [];
+        if (feet) parts.push(`${feet} ft`);
+        if (inches) parts.push(`${inches} in`);
+        return parts.join(" ");
+      },
+    };
   }
-  if (fieldId === "physician-first-name" || fieldId === "physician-last-name") {
-    return "physician-name";
-  }
+
   return null;
 }
 
@@ -346,34 +407,27 @@ function getApplicantSectionRows(params: {
         return;
       }
 
-      const pairKey = getNameFieldPair(fieldId);
+      const combinedField = getCombinedFieldConfig(fieldId);
 
-      if (pairKey) {
-        const otherFieldId = fieldId.includes("first")
-          ? fieldId.replace("-first-", "-last-")
-          : fieldId.replace("-last-", "-first-");
+      if (combinedField) {
+        const currentValue = values[fieldId];
+        const pairedValue = values[combinedField.pairedFieldId];
+        const combinedValue = combinedField.buildValue(
+          currentValue,
+          pairedValue,
+        );
 
-        if (!processed.has(otherFieldId)) {
-          const firstValue = fieldId.includes("first")
-            ? values[fieldId]
-            : values[otherFieldId];
-          const lastValue = fieldId.includes("first")
-            ? values[otherFieldId]
-            : values[fieldId];
-          const combined = [firstValue, lastValue].filter(Boolean).join(" ");
-
-          if (combined) {
-            rows.push({
-              label: formatLabel(pairKey),
-              fieldId: pairKey,
-              value: combined,
-              indent,
-            });
-          }
+        if (combinedValue) {
+          rows.push({
+            label: combinedField.label,
+            fieldId,
+            value: combinedValue,
+            indent,
+          });
         }
 
         processed.add(fieldId);
-        processed.add(otherFieldId);
+        processed.add(combinedField.pairedFieldId);
         return;
       }
 
@@ -550,6 +604,8 @@ function PreviewCard({
   const hasSelfContent = self.length > 0;
   const hasSpouseContent = spouse.length > 0 && hasSpouse;
 
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
   if (!hasSelfContent && !hasSpouseContent) {
     return null;
   }
@@ -557,25 +613,9 @@ function PreviewCard({
   return (
     <Card variant="outlined" sx={cardSx}>
       <Stack spacing={1.5}>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Typography variant="body2" sx={{ fontWeight: 700 }}>
-            {title}
-          </Typography>
-
-          <Button
-            size="small"
-            variant="contained"
-            color="info"
-            startIcon={<EditOutlinedIcon />}
-            onClick={() => onEdit(pageId)}
-          >
-            Edit
-          </Button>
-        </Stack>
+        <Typography variant="body2" sx={{ fontWeight: 700 }}>
+          {title}
+        </Typography>
 
         <Stack spacing={1.5}>
           {hasSelfContent ? (
@@ -596,7 +636,43 @@ function PreviewCard({
             </ApplicantSection>
           ) : null}
         </Stack>
+
+        <Button
+          size="small"
+          variant="contained"
+          color="info"
+          startIcon={<EditOutlinedIcon />}
+          onClick={() => setConfirmOpen(true)}
+          sx={{
+            mt: "1rem",
+            width: { xs: "100%", lg: "auto" },
+            alignSelf: { xs: "stretch", lg: "flex-end" },
+          }}
+        >
+          Edit
+        </Button>
       </Stack>
+
+      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+        <DialogTitle>Edit Section</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            You will be taken back to this section to make changes. Continue?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmOpen(false)}>Cancel</Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setConfirmOpen(false);
+              onEdit(pageId);
+            }}
+          >
+            Continue
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 }
