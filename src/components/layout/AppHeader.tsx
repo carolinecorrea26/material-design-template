@@ -1,6 +1,7 @@
 import { useMemo, useState, useSyncExternalStore } from "react";
 import {
   AppBar,
+  Badge,
   Box,
   Button,
   Chip,
@@ -18,6 +19,7 @@ import {
   useScrollTrigger,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import AssignmentIndOutlinedIcon from "@mui/icons-material/AssignmentIndOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
@@ -34,6 +36,9 @@ import { useApplicationForm } from "../../state/ApplicationFormContext";
 import { router } from "../../app/router";
 import FormProgress from "../form/FormProgress";
 import { APP_MENU_SECTION_TITLE_SX } from "../form/sectionStyles";
+import ApplicationSummaryDrawer, {
+  useApplicationSummaryBadge,
+} from "./ApplicationSummaryDrawer";
 
 type AppHeaderProps = {
   client: ClientConfig;
@@ -136,9 +141,11 @@ function getPathnameSnapshot() {
 export default function AppHeader({ client }: AppHeaderProps) {
   const [imageError, setImageError] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSummaryOpen, setIsSummaryOpen] = useState(false);
   const [activeCoverage, setActiveCoverage] =
     useState<CoverageDefinition | null>(null);
   const { values } = useApplicationForm();
+  const summaryBadgeCount = useApplicationSummaryBadge();
 
   const pathname = useSyncExternalStore(
     subscribeToPathname,
@@ -308,6 +315,22 @@ export default function AppHeader({ client }: AppHeaderProps) {
                       />
                       {/* Call Us */}
                     </Link>
+
+                    <IconButton
+                      aria-label="Open application summary"
+                      onClick={() => setIsSummaryOpen(true)}
+                      size="small"
+                    >
+                      <Badge
+                        badgeContent={summaryBadgeCount}
+                        color="error"
+                        max={99}
+                      >
+                        <AssignmentIndOutlinedIcon
+                        // sx={{ color: "primary.main" }}
+                        />
+                      </Badge>
+                    </IconButton>
 
                     <IconButton
                       aria-label="Open application navigation menu"
@@ -640,6 +663,11 @@ export default function AppHeader({ client }: AppHeaderProps) {
           <Button onClick={() => setActiveCoverage(null)}>Close</Button>
         </DialogActions>
       </Dialog>
+
+      <ApplicationSummaryDrawer
+        open={isSummaryOpen}
+        onClose={() => setIsSummaryOpen(false)}
+      />
     </>
   );
 }

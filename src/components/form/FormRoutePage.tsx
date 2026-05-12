@@ -6,9 +6,9 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { Button } from "@mui/material";
+import { Alert, Button, CircularProgress, Snackbar } from "@mui/material";
 import { useForm, type FieldErrors } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import type { PageId } from "../../types/page";
 import { getClientPageFields } from "../../config/clientFields/getClientPageFields";
 import {
@@ -29,6 +29,12 @@ import FormPage from "./FormPage";
 import { generateFormDataUpToPage } from "../../dev/utils/generateFormData";
 import FormHelpChips, { type HelpChipItem } from "./FormHelpChips";
 import FormHelpDrawer from "./FormHelpDrawer";
+import FormTransitionSkeleton from "./FormTransitionSkeleton";
+import {
+  getForwardMessages,
+  BACK_MESSAGE,
+  MESSAGE_DURATION,
+} from "../../config/transitionMessages";
 
 type FormRouteFieldValue = string | boolean | string[];
 type FormRoutePageFormValues = Record<string, FormRouteFieldValue>;
@@ -210,7 +216,17 @@ export default function FormRoutePage({
   resolveNextPageId,
 }: FormRoutePageProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { values, setPageValues } = useApplicationForm();
+
+  const [showProgressSaved, setShowProgressSaved] = useState(false);
+
+  useEffect(() => {
+    if ((location.state as Record<string, unknown>)?.showProgressSaved) {
+      setShowProgressSaved(true);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate]);
 
   const initialFields = getMergedPageFields(pageId, values, devFillFields);
   const defaultValueOverridesRef = useRef(defaultValueOverrides);
@@ -325,6 +341,15 @@ export default function FormRoutePage({
 
   const [pageError, setPageError] = useState<string | undefined>();
   const [activeHelpId, setActiveHelpId] = useState<string | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [transitionMessage, setTransitionMessage] = useState("");
+  const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+    };
+  }, []);
 
   const scrollToFirstError = useCallback(() => {
     requestAnimationFrame(() => {
@@ -355,20 +380,27 @@ export default function FormRoutePage({
 
     setPageError(undefined);
     setPageValues(formValues);
-    emitProgressSnapshot(nextNavigationValues);
 
     const nextPageId =
       resolveNextPageId?.(nextNavigationValues) ??
       getNextFormPageId(pageId, nextNavigationValues);
 
-    if (nextPageId) {
-      navigate(`/${nextPageId}`);
-      return;
-    }
+    const destination = nextPageId ?? (pageId === "payment" ? "receipt" : null);
+    if (!destination) return;
 
-    if (pageId === "payment") {
-      navigate("/receipt");
-    }
+    const [msg1, msg2] = getForwardMessages(pageId);
+    setTransitionMessage(msg1);
+    setIsTransitioning(true);
+    window.scrollTo({ top: 0 });
+
+    transitionTimerRef.current = setTimeout(() => {
+      setTransitionMessage(msg2);
+
+      transitionTimerRef.current = setTimeout(() => {
+        emitProgressSnapshot(nextNavigationValues);
+        navigate(`/${destination}`, { state: { showProgressSaved: true } });
+      }, MESSAGE_DURATION);
+    }, MESSAGE_DURATION);
   }
 
   function onFormError(fieldErrors: FieldErrors<FormRoutePageValues>) {
@@ -389,9 +421,16 @@ export default function FormRoutePage({
         ...values,
         ...getValues(),
       };
-      emitProgressSnapshot(previousNavigationValues);
       setPageValues(previousNavigationValues);
-      navigate(`/${previousPageId}`);
+
+      setTransitionMessage(BACK_MESSAGE);
+      setIsTransitioning(true);
+      window.scrollTo({ top: 0 });
+
+      transitionTimerRef.current = setTimeout(() => {
+        emitProgressSnapshot(previousNavigationValues);
+        navigate(`/${previousPageId}`);
+      }, MESSAGE_DURATION);
     }
   }
 
@@ -441,35 +480,70 @@ export default function FormRoutePage({
       ) : undefined;
 
     return (
-      <FormPage
-        title={title ?? getPageTitle(pageId)}
-        error={pageError}
-        help={renderedHelpSection}
-        maxWidth={formMaxWidth}
-        actions={
-          <>
-            <Button
-              type="button"
-              form={`${pageId}-form`}
-              onClick={handleBack}
-              disabled={!getPreviousFormPageId(pageId, watchedValues)}
-            >
-              Back
-            </Button>
-            <Button type="submit" form={`${pageId}-form`} variant="contained">
-              Next
-            </Button>
-          </>
-        }
-      >
-        <form
-          id={`${pageId}-form`}
-          noValidate
-          onSubmit={handleSubmit(onSubmit, onFormError)}
+      <>
+        <Snackbar
+          open={showProgressSaved}
+          autoHideDuration={3000}
+          onClose={() => setShowProgressSaved(false)}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
-          {typeof children === "function" ? children(renderProps) : children}
-        </form>
-      </FormPage>
+          <Alert
+            onClose={() => setShowProgressSaved(false)}
+            severity="success"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            Progress saved
+          </Alert>
+        </Snackbar>
+        <FormPage
+          title={isTransitioning ? "" : (title ?? getPageTitle(pageId))}
+          error={isTransitioning ? undefined : pageError}
+          help={isTransitioning ? undefined : renderedHelpSection}
+          maxWidth={formMaxWidth}
+          actions={
+            <>
+              <Button
+                type="button"
+                form={`${pageId}-form`}
+                onClick={handleBack}
+                disabled={
+                  isTransitioning ||
+                  !getPreviousFormPageId(pageId, watchedValues)
+                }
+              >
+                Back
+              </Button>
+              <Button
+                type="submit"
+                form={`${pageId}-form`}
+                variant="contained"
+                disabled={isTransitioning}
+              >
+                {isTransitioning ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  "Next"
+                )}
+              </Button>
+            </>
+          }
+        >
+          {isTransitioning ? (
+            <FormTransitionSkeleton statusMessage={transitionMessage} />
+          ) : (
+            <form
+              id={`${pageId}-form`}
+              noValidate
+              onSubmit={handleSubmit(onSubmit, onFormError)}
+            >
+              {typeof children === "function"
+                ? children(renderProps)
+                : children}
+            </form>
+          )}
+        </FormPage>
+      </>
     );
   })();
 }

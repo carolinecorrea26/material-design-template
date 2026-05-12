@@ -119,6 +119,12 @@ function getApplicantsFromPositiveCoverageAmounts(
     return [];
   }
 
+  // Determine which applicants are actually selected on the coverage page.
+  // Amounts for applicants no longer selected (e.g. spouse deselected) are stale.
+  const allowedApplicants = new Set(
+    getApplicantsFromCoverageSelections(values),
+  );
+
   const selectedCoverageIdSet = new Set(selectedCoverageIds);
   const applicantsApplying: CoverageApplicantId[] = [];
 
@@ -137,6 +143,7 @@ function getApplicantsFromPositiveCoverageAmounts(
 
     if (
       normalizedApplicant &&
+      allowedApplicants.has(normalizedApplicant) &&
       !applicantsApplying.includes(normalizedApplicant)
     ) {
       applicantsApplying.push(normalizedApplicant);
@@ -164,7 +171,7 @@ function getApplicantsFromCoverageSelections(
 
   const productApplicants = getProductApplicants(values);
 
-  return uniqueApplicants(
+  const applicants = uniqueApplicants(
     selectedCoverageIds.flatMap((coverageId) => {
       const applicantsForProduct = productApplicants[coverageId];
 
@@ -175,6 +182,9 @@ function getApplicantsFromCoverageSelections(
       return applicantsForProduct;
     }),
   );
+
+  // If no dependent was selected for any product, only member is applying.
+  return applicants.length > 0 ? applicants : ["member"];
 }
 
 export function deriveApplicantsApplying(
@@ -193,7 +203,7 @@ export function deriveApplicantsApplying(
     return applicantsFromCoverage;
   }
 
-  return uniqueApplicants(["member", ...getSelectedDependents(values)]);
+  return ["member"];
 }
 
 export function getApplicantsApplying(
