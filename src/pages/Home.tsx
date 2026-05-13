@@ -291,6 +291,25 @@ function formatDateDisplay(raw: string): string {
   return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
 }
 
+function calculateAge(birthdayStr: string): number | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(birthdayStr)) return null;
+  const [y, m, d] = birthdayStr.split("-").map(Number);
+  const birth = new Date(y, m - 1, d);
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+  return age;
+}
+
+function formatCurrencyInput(value: string): string {
+  const digits = value.replace(/[^0-9]/g, "").slice(0, 12);
+  if (!digits) return "";
+  return `$${Number(digits).toLocaleString("en-US")}`;
+}
+
 function InlineDrawerLink({
   children,
   onClick,
@@ -463,6 +482,9 @@ function HomeQuoteCard() {
   const [estimateRatesByProductId, setEstimateRatesByProductId] = useState<
     Record<string, number>
   >({});
+  const [quoteRevealed, setQuoteRevealed] = useState(false);
+  const [ageError, setAgeError] = useState("");
+  const [modalAttempted, setModalAttempted] = useState(false);
 
   const productsByCategory = useMemo(
     () =>
@@ -523,69 +545,205 @@ function HomeQuoteCard() {
     return errors;
   }, [estimateValues.birthday, estimateValues.zipCode, estimateValues.state]);
 
+  const modalValidationErrors = useMemo(() => {
+    const errors: Record<string, string> = {};
+    if (!estimateValues.productId) {
+      errors.productId = "Please select a product.";
+    }
+    if (estimateCategoryNeedsGender && !estimateValues.gender) {
+      errors.gender = "Gender is required.";
+    }
+    if (estimateCategoryNeedsSmoker && !estimateValues.smoker) {
+      errors.smoker = "This field is required.";
+    }
+    if (estimateCategoryNeedsDi && !estimateValues.avgIncome) {
+      errors.avgIncome = "Average monthly income is required.";
+    }
+    if (estimateCategoryNeedsHours && !estimateValues.hoursPerWeek) {
+      errors.hoursPerWeek = "Hours worked per week is required.";
+    }
+    if (estimateCategoryNeedsOo && !estimateValues.monthlyExpenses) {
+      errors.monthlyExpenses = "Monthly business expenses is required.";
+    }
+    if (estimateCategoryNeedsOo && !estimateValues.responsibilityPct) {
+      errors.responsibilityPct = "Responsibility percentage is required.";
+    }
+    return errors;
+  }, [
+    estimateValues.productId,
+    estimateValues.gender,
+    estimateValues.smoker,
+    estimateValues.avgIncome,
+    estimateValues.hoursPerWeek,
+    estimateValues.monthlyExpenses,
+    estimateValues.responsibilityPct,
+    estimateCategoryNeedsGender,
+    estimateCategoryNeedsSmoker,
+    estimateCategoryNeedsDi,
+    estimateCategoryNeedsHours,
+    estimateCategoryNeedsOo,
+  ]);
+
   function updateEstimateValues(nextValues: Partial<EstimateState>) {
     setEstimateValues((current) => ({ ...current, ...nextValues }));
   }
 
   function handleEstimateProductChange(nextProductId: string) {
+    const nextProduct = coverages.find((c) => c.id === nextProductId);
+    const nextCategoryId = nextProduct?.categoryId ?? null;
+
+    // Determine if the new product needs additional fields
+    const needsGender = nextCategoryId === "LI" || nextCategoryId === "DI";
+    const needsSmoker = nextCategoryId === "LI" || nextCategoryId === "SH";
+    const needsDi = nextCategoryId === "DI";
+    const needsOo = nextCategoryId === "OO";
+    const needsHours = needsDi || needsOo;
+
+    // Check if all required additional fields are already filled
+    const hasGender = !needsGender || !!estimateValues.gender;
+    const hasSmoker = !needsSmoker || !!estimateValues.smoker;
+    const hasIncome = !needsDi || !!estimateValues.avgIncome;
+    const hasHours = !needsHours || !!estimateValues.hoursPerWeek;
+    const hasExpenses = !needsOo || !!estimateValues.monthlyExpenses;
+    const hasResponsibility = !needsOo || !!estimateValues.responsibilityPct;
+
+    const allAdditionalFieldsFilled =
+      hasGender &&
+      hasSmoker &&
+      hasIncome &&
+      hasHours &&
+      hasExpenses &&
+      hasResponsibility;
+
+    // No additional fields required at all for this product
+    const noAdditionalFieldsNeeded =
+      !needsGender && !needsSmoker && !needsDi && !needsOo && !needsHours;
+
     setEstimateValues((current) => ({
       ...current,
       productId: nextProductId,
-      gender: "",
-      smoker: "",
-      tobaccoLastUsed: "",
-      tobaccoProducts: [],
-      avgIncome: "",
-      hoursPerWeek: "",
-      monthlyExpenses: "",
-      responsibilityPct: "",
     }));
-    setEstimateAmountsByProductId({});
-    setEstimateRatesByProductId({});
+    setModalAttempted(false);
+
+    if (noAdditionalFieldsNeeded || allAdditionalFieldsFilled) {
+      // Auto-compute quote
+      if (nextProduct) {
+        // Check hours ineligibility
+        if (needsHours) {
+          const hours = parseInt(estimateValues.hoursPerWeek, 10);
+          if (!isNaN(hours) && hours < 40) {
+            setQuoteRevealed(true);
+            return;
+          }
+        }
+        const choices = generateAmountChoices(
+          nextProduct.categoryId,
+          nextProduct.minAmount,
+          nextProduct.maxAmount,
+        );
+
+        // If switching within the same category, try to keep the previous amount
+        const prevProduct = coverages.find(
+          (c) => c.id === estimateValues.productId,
+        );
+        const prevAmount = prevProduct
+          ? estimateAmountsByProductId[prevProduct.id]
+          : undefined;
+        const keepAmount =
+          prevProduct &&
+          prevProduct.categoryId === nextProduct.categoryId &&
+          prevAmount != null &&
+          choices.includes(prevAmount);
+
+        const selectedAmount = keepAmount ? prevAmount : (choices[0] ?? 0);
+        const selectedRate = estimateMonthlyPremium(
+          nextProduct.categoryId,
+          selectedAmount,
+        );
+        setEstimateAmountsByProductId((current) => ({
+          ...current,
+          [nextProduct.id]: selectedAmount,
+        }));
+        setEstimateRatesByProductId((current) => ({
+          ...current,
+          [nextProduct.id]: selectedRate,
+        }));
+        setQuoteRevealed(true);
+      }
+    } else {
+      setQuoteRevealed(false);
+    }
   }
 
   function handleGetEstimate() {
     setInitialAttempted(true);
+    setAgeError("");
 
     if (Object.keys(initialValidationErrors).length > 0) {
       return;
     }
 
-    // Pre-select first product and compute initial quote so modal opens with results
+    // Check age eligibility (80+)
+    const age = calculateAge(estimateValues.birthday);
+    if (age !== null && age >= 80) {
+      setAgeError(
+        "We're sorry, but coverage is not available for applicants age 80 or older.",
+      );
+      return;
+    }
+
+    // Pre-select first product if none selected
     const firstProduct =
-      selectedProduct ??
-      (productsByCategory.length > 0
+      productsByCategory.length > 0
         ? productsByCategory[0].products[0]
-        : undefined);
+        : undefined;
+    const preselectedId = estimateValues.productId || firstProduct?.id || "";
+    const preselectedProduct =
+      coverages.find((c) => c.id === preselectedId) ?? firstProduct;
 
-    if (!firstProduct) return;
-
-    const nextProductId = estimateValues.productId || firstProduct.id;
-    const product =
-      coverages.find((c) => c.id === nextProductId) ?? firstProduct;
-
-    const choices = generateAmountChoices(
-      product.categoryId,
-      product.minAmount,
-      product.maxAmount,
-    );
-    const initialAmount = choices[0] ?? 0;
-    const initialRate = estimateMonthlyPremium(
-      product.categoryId,
-      initialAmount,
-    );
-
-    if (!estimateValues.productId) {
+    if (preselectedProduct && !estimateValues.productId) {
       setEstimateValues((current) => ({
         ...current,
-        productId: product.id,
-        smoker: "no",
-        gender: "male",
+        productId: preselectedProduct.id,
       }));
     }
 
-    setEstimateAmountsByProductId({ [product.id]: initialAmount });
-    setEstimateRatesByProductId({ [product.id]: initialRate });
+    // Determine if the preselected product needs additional fields
+    const catId = preselectedProduct?.categoryId ?? null;
+    const needsGender = catId === "LI" || catId === "DI";
+    const needsSmoker = catId === "LI" || catId === "SH";
+    const needsDi = catId === "DI";
+    const needsOo = catId === "OO";
+    const needsHours = needsDi || needsOo;
+    const noAdditionalFieldsNeeded =
+      !needsGender && !needsSmoker && !needsDi && !needsOo && !needsHours;
+
+    if (noAdditionalFieldsNeeded && preselectedProduct) {
+      // Auto-reveal quote immediately
+      const choices = generateAmountChoices(
+        preselectedProduct.categoryId,
+        preselectedProduct.minAmount,
+        preselectedProduct.maxAmount,
+      );
+      const initialAmount = choices[0] ?? 0;
+      const initialRate = estimateMonthlyPremium(
+        preselectedProduct.categoryId,
+        initialAmount,
+      );
+      setEstimateAmountsByProductId((current) => ({
+        ...current,
+        [preselectedProduct.id]: initialAmount,
+      }));
+      setEstimateRatesByProductId((current) => ({
+        ...current,
+        [preselectedProduct.id]: initialRate,
+      }));
+      setQuoteRevealed(true);
+    } else {
+      setQuoteRevealed(false);
+    }
+
+    setModalAttempted(false);
     setQuoteModalOpen(true);
   }
 
@@ -604,33 +762,55 @@ function HomeQuoteCard() {
     }));
   }
 
-  // Recompute quote when modal product/questions change
-  function recomputeQuote(productId?: string) {
-    const pid = productId ?? estimateValues.productId;
-    const product = coverages.find((c) => c.id === pid);
+  function handleModalGetEstimate() {
+    setModalAttempted(true);
+
+    if (Object.keys(modalValidationErrors).length > 0) {
+      return;
+    }
+
+    const product = selectedProduct;
     if (!product) return;
+
+    // Check hours eligibility for DI/OO
+    if (estimateCategoryNeedsHours) {
+      const hours = parseInt(estimateValues.hoursPerWeek, 10);
+      if (!isNaN(hours) && hours < 40) {
+        // Reveal in error state
+        setQuoteRevealed(true);
+        return;
+      }
+    }
 
     const choices = generateAmountChoices(
       product.categoryId,
       product.minAmount,
       product.maxAmount,
     );
-    const currentAmount = estimateAmountsByProductId[product.id];
-    const amount =
-      currentAmount && choices.includes(currentAmount)
-        ? currentAmount
-        : (choices[0] ?? 0);
-    const rate = estimateMonthlyPremium(product.categoryId, amount);
+    const initialAmount = choices[0] ?? 0;
+    const initialRate = estimateMonthlyPremium(
+      product.categoryId,
+      initialAmount,
+    );
 
     setEstimateAmountsByProductId((current) => ({
       ...current,
-      [product.id]: amount,
+      [product.id]: initialAmount,
     }));
     setEstimateRatesByProductId((current) => ({
       ...current,
-      [product.id]: rate,
+      [product.id]: initialRate,
     }));
+    setQuoteRevealed(true);
   }
+
+  const isHoursIneligible =
+    quoteRevealed &&
+    estimateCategoryNeedsHours &&
+    (() => {
+      const hours = parseInt(estimateValues.hoursPerWeek, 10);
+      return !isNaN(hours) && hours < 40;
+    })();
 
   // The product currently showing a quote in the modal
   const modalProduct = selectedProduct ?? null;
@@ -748,10 +928,11 @@ function HomeQuoteCard() {
             <Button variant="outlined" size="large" onClick={handleGetEstimate}>
               Get estimate
             </Button>
-            {/* <Typography variant="caption" color="text.secondary">
-              Estimates are illustrative only and based on the information
-              entered.
-            </Typography> */}
+            {ageError ? (
+              <Alert severity="error" sx={{ mt: 0.5 }}>
+                {ageError}
+              </Alert>
+            ) : null}
           </Stack>
         </Stack>
       </Box>
@@ -797,7 +978,11 @@ function HomeQuoteCard() {
               }}
             >
               <Stack spacing={2}>
-                <FormControl fullWidth required>
+                <FormControl
+                  fullWidth
+                  required
+                  error={modalAttempted && !!modalValidationErrors.productId}
+                >
                   <FormLabel
                     required
                     sx={{ mb: 1, fontWeight: 500, color: "text.primary" }}
@@ -809,8 +994,6 @@ function HomeQuoteCard() {
                     value={estimateValues.productId}
                     onChange={(event) => {
                       handleEstimateProductChange(event.target.value);
-                      // Recompute quote for new product
-                      setTimeout(() => recomputeQuote(event.target.value), 0);
                     }}
                     renderValue={(value) => {
                       if (!value) return <em>Select a product</em>;
@@ -838,10 +1021,19 @@ function HomeQuoteCard() {
                       )),
                     ])}
                   </Select>
+                  {modalAttempted && modalValidationErrors.productId ? (
+                    <FormHelperText>
+                      {modalValidationErrors.productId}
+                    </FormHelperText>
+                  ) : null}
                 </FormControl>
 
                 {estimateCategoryNeedsGender ? (
-                  <FormControl fullWidth required>
+                  <FormControl
+                    fullWidth
+                    required
+                    error={modalAttempted && !!modalValidationErrors.gender}
+                  >
                     <FormLabel required sx={{ mb: 1 }}>
                       Gender
                     </FormLabel>
@@ -890,11 +1082,20 @@ function HomeQuoteCard() {
                         Female
                       </ToggleButton>
                     </ToggleButtonGroup>
+                    {modalAttempted && modalValidationErrors.gender ? (
+                      <FormHelperText>
+                        {modalValidationErrors.gender}
+                      </FormHelperText>
+                    ) : null}
                   </FormControl>
                 ) : null}
 
                 {estimateCategoryNeedsSmoker ? (
-                  <FormControl fullWidth required>
+                  <FormControl
+                    fullWidth
+                    required
+                    error={modalAttempted && !!modalValidationErrors.smoker}
+                  >
                     <FormLabel required sx={{ mb: 1 }}>
                       Do you use nicotine products?
                     </FormLabel>
@@ -943,6 +1144,11 @@ function HomeQuoteCard() {
                         No
                       </ToggleButton>
                     </ToggleButtonGroup>
+                    {modalAttempted && modalValidationErrors.smoker ? (
+                      <FormHelperText>
+                        {modalValidationErrors.smoker}
+                      </FormHelperText>
+                    ) : null}
                   </FormControl>
                 ) : null}
 
@@ -951,18 +1157,30 @@ function HomeQuoteCard() {
                     label="Average monthly income"
                     fullWidth
                     required
-                    value={estimateValues.avgIncome}
-                    onChange={(event) =>
-                      updateEstimateValues({
-                        avgIncome: event.target.value.replace(/[^0-9]/g, ""),
-                      })
+                    value={
+                      estimateValues.avgIncome
+                        ? formatCurrencyInput(estimateValues.avgIncome)
+                        : ""
                     }
+                    onChange={(event) => {
+                      const digits = event.target.value.replace(/[^0-9]/g, "");
+                      updateEstimateValues({ avgIncome: digits });
+                    }}
+                    inputProps={{ inputMode: "numeric" }}
+                    InputLabelProps={{ shrink: true }}
+                    placeholder="$0"
+                    helperText={
+                      modalAttempted && modalValidationErrors.avgIncome
+                        ? modalValidationErrors.avgIncome
+                        : "Enter your average gross monthly income before taxes."
+                    }
+                    error={modalAttempted && !!modalValidationErrors.avgIncome}
                   />
                 ) : null}
 
                 {estimateCategoryNeedsHours ? (
                   <TextField
-                    label="Hours worked per week"
+                    label="# Hours You Work/Week"
                     fullWidth
                     required
                     value={estimateValues.hoursPerWeek}
@@ -970,6 +1188,15 @@ function HomeQuoteCard() {
                       updateEstimateValues({
                         hoursPerWeek: event.target.value.replace(/[^0-9]/g, ""),
                       })
+                    }
+                    inputProps={{ inputMode: "numeric" }}
+                    helperText={
+                      modalAttempted && modalValidationErrors.hoursPerWeek
+                        ? modalValidationErrors.hoursPerWeek
+                        : undefined
+                    }
+                    error={
+                      modalAttempted && !!modalValidationErrors.hoursPerWeek
                     }
                   />
                 ) : null}
@@ -980,14 +1207,29 @@ function HomeQuoteCard() {
                       label="Average monthly business expenses"
                       fullWidth
                       required
-                      value={estimateValues.monthlyExpenses}
-                      onChange={(event) =>
-                        updateEstimateValues({
-                          monthlyExpenses: event.target.value.replace(
-                            /[^0-9]/g,
-                            "",
-                          ),
-                        })
+                      value={
+                        estimateValues.monthlyExpenses
+                          ? formatCurrencyInput(estimateValues.monthlyExpenses)
+                          : ""
+                      }
+                      onChange={(event) => {
+                        const digits = event.target.value.replace(
+                          /[^0-9]/g,
+                          "",
+                        );
+                        updateEstimateValues({ monthlyExpenses: digits });
+                      }}
+                      inputProps={{ inputMode: "numeric" }}
+                      InputLabelProps={{ shrink: true }}
+                      placeholder="$0"
+                      helperText={
+                        modalAttempted && modalValidationErrors.monthlyExpenses
+                          ? modalValidationErrors.monthlyExpenses
+                          : undefined
+                      }
+                      error={
+                        modalAttempted &&
+                        !!modalValidationErrors.monthlyExpenses
                       }
                     />
                     <TextField
@@ -1007,8 +1249,33 @@ function HomeQuoteCard() {
                           responsibilityPct: normalized,
                         });
                       }}
+                      helperText={
+                        modalAttempted &&
+                        modalValidationErrors.responsibilityPct
+                          ? modalValidationErrors.responsibilityPct
+                          : undefined
+                      }
+                      error={
+                        modalAttempted &&
+                        !!modalValidationErrors.responsibilityPct
+                      }
                     />
                   </>
+                ) : null}
+
+                {estimateCategoryNeedsGender ||
+                estimateCategoryNeedsSmoker ||
+                estimateCategoryNeedsDi ||
+                estimateCategoryNeedsOo ||
+                estimateCategoryNeedsHours ? (
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={handleModalGetEstimate}
+                    sx={{ mt: 1 }}
+                  >
+                    Get estimate
+                  </Button>
                 ) : null}
               </Stack>
             </Box>
@@ -1035,72 +1302,113 @@ function HomeQuoteCard() {
                       {modalProduct.name}
                     </Typography>
 
-                    <FormControl fullWidth size="small">
-                      <InputLabel id={`${modalProduct.id}-modal-amount-label`}>
-                        {getEstimateAmountLabel(modalProduct.categoryId)}
-                      </InputLabel>
-                      <Select
-                        labelId={`${modalProduct.id}-modal-amount-label`}
-                        label={getEstimateAmountLabel(modalProduct.categoryId)}
-                        value={modalSelectedAmount}
-                        onChange={(event) =>
-                          handleEstimateAmountChange(
-                            modalProduct,
-                            Number(event.target.value),
-                          )
-                        }
-                      >
-                        {modalAmountChoices.map((amount) => (
-                          <MenuItem key={amount} value={amount}>
-                            {formatUSD(amount, 0)}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    {quoteRevealed && !isHoursIneligible ? (
+                      <>
+                        <FormControl fullWidth size="small">
+                          <InputLabel
+                            id={`${modalProduct.id}-modal-amount-label`}
+                          >
+                            {getEstimateAmountLabel(modalProduct.categoryId)}
+                          </InputLabel>
+                          <Select
+                            labelId={`${modalProduct.id}-modal-amount-label`}
+                            label={getEstimateAmountLabel(
+                              modalProduct.categoryId,
+                            )}
+                            value={modalSelectedAmount}
+                            onChange={(event) =>
+                              handleEstimateAmountChange(
+                                modalProduct,
+                                Number(event.target.value),
+                              )
+                            }
+                          >
+                            {modalAmountChoices.map((amount) => (
+                              <MenuItem key={amount} value={amount}>
+                                {formatUSD(amount, 0)}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
 
-                    <Divider />
+                        <Divider />
 
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      gap={2}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        Your estimated rate
-                        <Box
-                          component="sup"
-                          sx={{ fontSize: "0.7em", lineHeight: 1 }}
+                        <Stack
+                          direction="row"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          gap={2}
                         >
-                          1
-                        </Box>
-                      </Typography>
-                      <Typography
-                        variant="h2"
-                        sx={{ fontWeight: 700, color: "success.main" }}
-                      >
-                        {formatUSD(modalEstimatedRate)}/mo
-                      </Typography>
-                    </Stack>
+                          <Typography variant="body2" color="text.secondary">
+                            Your estimated rate
+                            <Box
+                              component="sup"
+                              sx={{ fontSize: "0.7em", lineHeight: 1 }}
+                            >
+                              1
+                            </Box>
+                          </Typography>
+                          <Typography
+                            variant="h2"
+                            sx={{
+                              fontWeight: 700,
+                              color: "success.main",
+                            }}
+                          >
+                            {formatUSD(modalEstimatedRate)}/mo
+                          </Typography>
+                        </Stack>
 
-                    <Typography variant="caption" color="text.secondary">
+                        <Typography variant="caption" color="text.secondary">
+                          <Box
+                            component="sup"
+                            sx={{ fontSize: "0.85em", lineHeight: 1 }}
+                          >
+                            1
+                          </Box>
+                          Quoted cost is the best rate available based on the
+                          information you provided. Final cost may be based upon
+                          factors such as gender, health status, and use of
+                          tobacco/nicotine. Rates current as of 2026.
+                        </Typography>
+                      </>
+                    ) : quoteRevealed && isHoursIneligible ? (
+                      <Alert severity="error">
+                        We're sorry, but this product requires working at least
+                        40 hours per week to be eligible for coverage.
+                      </Alert>
+                    ) : (
                       <Box
-                        component="sup"
-                        sx={{ fontSize: "0.85em", lineHeight: 1 }}
+                        sx={{
+                          textAlign: "center",
+                          py: 4,
+                          color: "text.secondary",
+                        }}
                       >
-                        1
+                        <Typography variant="body2" color="text.secondary">
+                          Your estimated cost will appear here once you select
+                          fill in the fields and click &ldquo;Get
+                          estimate&rdquo;.
+                        </Typography>
                       </Box>
-                      Quoted cost is the best rate available based on the
-                      information you provided. Final cost may be based upon
-                      factors such as gender, health status, and use of
-                      tobacco/nicotine. Rates current as of 2026.
-                    </Typography>
+                    )}
                   </Stack>
                 </Box>
               ) : (
-                <Alert severity="info">
-                  Select a product to see your estimate.
-                </Alert>
+                <Box
+                  sx={{
+                    border: "1px solid rgba(52, 59, 72, 0.12)",
+                    borderRadius: 3,
+                    backgroundColor: "#f9fafc",
+                    p: 2.5,
+                    textAlign: "center",
+                    py: 4,
+                  }}
+                >
+                  <Typography variant="body2" color="text.secondary">
+                    Select a product and fill in the fields to get started.
+                  </Typography>
+                </Box>
               )}
             </Box>
           </Stack>
@@ -1278,6 +1586,7 @@ export default function Home() {
                 size="large"
                 endIcon={<ArrowRightAltRoundedIcon />}
                 sx={{
+                  width: { xs: "100%", sm: "auto" },
                   px: 3.5,
                   py: 1.25,
                   fontWeight: 700,
@@ -1292,6 +1601,7 @@ export default function Home() {
                 variant="outlined"
                 size="large"
                 sx={{
+                  width: { xs: "100%", sm: "auto" },
                   px: 3.5,
                   py: 1.25,
                   whiteSpace: "nowrap",
