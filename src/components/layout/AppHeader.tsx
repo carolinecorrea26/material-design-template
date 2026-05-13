@@ -221,6 +221,11 @@ export default function AppHeader({ client }: AppHeaderProps) {
     isFormPage(currentPage.id as PageId) &&
     currentPage.id !== "receipt";
 
+  const showSummaryIcon =
+    currentPageId !== undefined &&
+    currentPageId !== "home" &&
+    currentPageId !== "receipt";
+
   const phone = client.support.phone;
 
   function handleNavigate(path: string) {
@@ -316,21 +321,23 @@ export default function AppHeader({ client }: AppHeaderProps) {
                       {/* Call Us */}
                     </Link>
 
-                    <IconButton
-                      aria-label="Open application summary"
-                      onClick={() => setIsSummaryOpen(true)}
-                      size="small"
-                    >
-                      <Badge
-                        badgeContent={summaryBadgeCount}
-                        color="error"
-                        max={99}
+                    {showSummaryIcon && (
+                      <IconButton
+                        aria-label="Open application summary"
+                        onClick={() => setIsSummaryOpen(true)}
+                        size="small"
                       >
-                        <AssignmentIndOutlinedIcon
-                        // sx={{ color: "primary.main" }}
-                        />
-                      </Badge>
-                    </IconButton>
+                        <Badge
+                          badgeContent={summaryBadgeCount}
+                          color="error"
+                          max={99}
+                        >
+                          <AssignmentIndOutlinedIcon
+                          // sx={{ color: "primary.main" }}
+                          />
+                        </Badge>
+                      </IconButton>
+                    )}
 
                     <IconButton
                       aria-label="Open application navigation menu"

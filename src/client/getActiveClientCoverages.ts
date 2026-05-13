@@ -28,6 +28,8 @@ export function getActiveClientCoverages() {
         maxBenefitPeriodOptions:
           override?.maxBenefitPeriodOptions ?? coverage.maxBenefitPeriodOptions,
         applicants: override?.applicants ?? coverage.applicants,
+        underwritingType:
+          override?.underwritingType ?? coverage.underwritingType,
       };
     });
 }

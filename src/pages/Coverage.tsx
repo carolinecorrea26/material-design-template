@@ -1,6 +1,11 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
+import { Box, Typography } from "@mui/material";
 import CoverageCatalog from "../components/coverage/CoverageCatalog";
 import FormRoutePage from "../components/form/FormRoutePage";
+import FormHelpDrawer from "../components/form/FormHelpDrawer";
+import QuickDecisionDrawerContent from "../components/common/QuickDecisionDrawerContent";
+import { QuickDecisionMark } from "../components/common/QuickDecisionDrawerContent";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { useApplicationForm } from "../state/ApplicationFormContext";
 import type { CoverageApplicantId } from "../config/coverages/types";
@@ -9,6 +14,9 @@ export default function Coverage() {
   const pageId = "coverage";
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const { values, setPageValues } = useApplicationForm();
+  const [qdDrawerOpen, setQdDrawerOpen] = useState(false);
+
+  const hasQdProduct = coverages.some((c) => c.underwritingType === "QD");
 
   const selectedDependents = Array.isArray(values.dependents)
     ? values.dependents
@@ -132,6 +140,57 @@ export default function Coverage() {
 
   return (
     <FormRoutePage pageId={pageId} validate={validate}>
+      {hasQdProduct && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 1,
+            p: 2,
+            mb: 2,
+            borderRadius: 2,
+            backgroundColor: "rgba(46, 125, 50, 0.06)",
+            border: "1px solid rgba(46, 125, 50, 0.2)",
+          }}
+        >
+          <OfflineBoltIcon color="success" sx={{ mt: 0.25, flexShrink: 0 }} />
+          <Typography variant="body2" color="text.secondary">
+            <Typography
+              component="span"
+              variant="body2"
+              sx={{ fontWeight: 700, color: "success.main" }}
+            >
+              <QuickDecisionMark />
+            </Typography>{" "}
+            helps many applicants receive a decision instantly or within a few
+            days without a medical exam. This starts with health questions you
+            answer online to reduce time needed with phone calls or other follow
+            up.{" "}
+            <Typography
+              component="span"
+              role="button"
+              tabIndex={0}
+              onClick={() => setQdDrawerOpen(true)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setQdDrawerOpen(true);
+                }
+              }}
+              sx={{
+                color: "primary.main",
+                textDecoration: "underline",
+                textUnderlineOffset: "0.12em",
+                cursor: "pointer",
+                font: "inherit",
+                lineHeight: "inherit",
+              }}
+            >
+              Learn more about this process.
+            </Typography>
+          </Typography>
+        </Box>
+      )}
       <CoverageCatalog
         coverages={coverages}
         selectedCoverageIds={selectedCoverageIds}
@@ -144,6 +203,17 @@ export default function Coverage() {
           setPageValues({ productApplicants: nextApplicants })
         }
       />
+      <FormHelpDrawer
+        open={qdDrawerOpen}
+        title={
+          <>
+            What is <QuickDecisionMark />?
+          </>
+        }
+        onClose={() => setQdDrawerOpen(false)}
+      >
+        <QuickDecisionDrawerContent />
+      </FormHelpDrawer>
     </FormRoutePage>
   );
 }

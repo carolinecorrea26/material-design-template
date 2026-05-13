@@ -18,6 +18,7 @@ import SelectableOptionCard from "../form/SelectableOptionCard";
 import FormSectionTitle from "../form/FormSectionTitle";
 import DependentChipSelector from "../form/DependentChipSelector";
 import { applicantLabels } from "../../config/formSectionTitle";
+import QuickDecisionIndicator from "../common/QuickDecisionIndicator";
 
 type CoverageCatalogProps = {
   coverages: CoverageDefinition[];
@@ -158,6 +159,9 @@ export default function CoverageCatalog({
                       >
                         <Typography variant="body2" sx={{ fontWeight: 600 }}>
                           {coverage.name}
+                          {coverage.underwritingType === "QD" && (
+                            <QuickDecisionIndicator />
+                          )}
                         </Typography>
 
                         {coverage.featured ? (

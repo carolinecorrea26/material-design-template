@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import {
   Alert,
   Box,
@@ -13,6 +14,10 @@ import {
 } from "@mui/material";
 import FormRoutePage from "../components/form/FormRoutePage";
 import FormSectionTitle from "../components/form/FormSectionTitle";
+import FormHelpDrawer from "../components/form/FormHelpDrawer";
+import QuickDecisionDrawerContent from "../components/common/QuickDecisionDrawerContent";
+import { QuickDecisionMark } from "../components/common/QuickDecisionDrawerContent";
+import QuickDecisionIndicator from "../components/common/QuickDecisionIndicator";
 import SelectableOptionCard from "../components/form/SelectableOptionCard";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
@@ -140,6 +145,7 @@ export default function CoverageOptions() {
   const pageId = "coverage-options";
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const { values, setPageValues } = useApplicationForm();
+  const [qdDrawerOpen, setQdDrawerOpen] = useState(false);
 
   const selectedCoverageIds = Array.isArray(values.coverageSelections)
     ? values.coverageSelections
@@ -147,6 +153,10 @@ export default function CoverageOptions() {
 
   const selectedCoverages = coverages.filter((c) =>
     selectedCoverageIds.includes(c.id),
+  );
+
+  const hasSelectedQdProduct = selectedCoverages.some(
+    (c) => c.underwritingType === "QD",
   );
 
   const selectedDependents = useMemo<string[]>(() => {
@@ -488,6 +498,60 @@ export default function CoverageOptions() {
     <FormRoutePage pageId={pageId} validate={validate}>
       {selectedCoverages.length > 0 ? (
         <>
+          {hasSelectedQdProduct && (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 1,
+                p: 2,
+                mb: 2,
+                borderRadius: 2,
+                backgroundColor: "rgba(46, 125, 50, 0.06)",
+                border: "1px solid rgba(46, 125, 50, 0.2)",
+              }}
+            >
+              <OfflineBoltIcon
+                color="success"
+                sx={{ mt: 0.25, flexShrink: 0 }}
+              />
+              <Typography variant="body2" color="text.secondary">
+                <Typography
+                  component="span"
+                  variant="body2"
+                  sx={{ fontWeight: 700, color: "success.main" }}
+                >
+                  <QuickDecisionMark />
+                </Typography>{" "}
+                helps many applicants receive a decision instantly or within a
+                few days without a medical exam. This starts with health
+                questions you answer online to reduce time needed with phone
+                calls or other follow up.{" "}
+                <Typography
+                  component="span"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setQdDrawerOpen(true)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setQdDrawerOpen(true);
+                    }
+                  }}
+                  sx={{
+                    color: "primary.main",
+                    textDecoration: "underline",
+                    textUnderlineOffset: "0.12em",
+                    cursor: "pointer",
+                    font: "inherit",
+                    lineHeight: "inherit",
+                  }}
+                >
+                  Learn more about this process.
+                </Typography>
+              </Typography>
+            </Box>
+          )}
           <Stack spacing={2}>
             {groupedCategories
               .flatMap(({ items }) => items)
@@ -525,6 +589,9 @@ export default function CoverageOptions() {
                         sx={{ fontWeight: 600, fontSize: "1rem" }}
                       >
                         {coverage.name}
+                        {coverage.underwritingType === "QD" && (
+                          <QuickDecisionIndicator />
+                        )}
                       </Typography>
 
                       {(noteText || spouseNote) && (
@@ -908,6 +975,18 @@ export default function CoverageOptions() {
           No coverage options are available for your current selections.
         </Alert>
       )}
+
+      <FormHelpDrawer
+        open={qdDrawerOpen}
+        title={
+          <>
+            What is <QuickDecisionMark />?
+          </>
+        }
+        onClose={() => setQdDrawerOpen(false)}
+      >
+        <QuickDecisionDrawerContent />
+      </FormHelpDrawer>
     </FormRoutePage>
   );
 }

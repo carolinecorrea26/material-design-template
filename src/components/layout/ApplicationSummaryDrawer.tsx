@@ -18,6 +18,7 @@ import type {
   CoverageCategoryId,
   CoverageDefinition,
 } from "../../config/coverages/types";
+import QuickDecisionIndicator from "../common/QuickDecisionIndicator";
 
 type ApplicationSummaryDrawerProps = {
   open: boolean;
@@ -311,6 +312,9 @@ export default function ApplicationSummaryDrawer({
                         sx={{ fontWeight: 600, lineHeight: 1.3 }}
                       >
                         {coverage.name}
+                        {coverage.underwritingType === "QD" && (
+                          <QuickDecisionIndicator />
+                        )}
                       </Typography>
                       <Typography
                         variant="caption"

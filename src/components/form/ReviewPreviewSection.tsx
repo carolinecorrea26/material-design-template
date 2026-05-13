@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import ApplicantSection from "../form/ApplicantSection";
 import { shouldShowApplicantLabel } from "../form/applicantVisibility";
+import QuickDecisionIndicator from "../common/QuickDecisionIndicator";
 import type { PageId } from "../../types/page";
 import { getActiveClientCoverages } from "../../client/getActiveClientCoverages";
 import { pageSections } from "../../config/pageSections/pageSections";
@@ -24,6 +25,7 @@ type PreviewRow = {
   fieldId: string;
   value: unknown;
   indent?: boolean;
+  isQd?: boolean;
 };
 
 type PreviewEntries = {
@@ -323,6 +325,7 @@ function getCoverageOptionRows(
       label: coverage.name,
       fieldId: "",
       value: formatCurrencyValue(amount),
+      isQd: coverage.underwritingType === "QD",
     };
 
     if (applicantId === "spouse") {
@@ -547,6 +550,7 @@ function PreviewRows({ rows }: { rows: PreviewRow[] }) {
                 sx={rowLabelSx}
               >
                 {row.label}
+                {row.isQd && <QuickDecisionIndicator />}
               </Typography>
 
               <Box sx={{ textAlign: "right", flex: 1 }}>

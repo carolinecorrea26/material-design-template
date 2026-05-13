@@ -59,6 +59,7 @@ export type ClientCoverageOverrides = {
   applicants?: ("member" | "spouse" | "child")[];
   coverageNote?: string;
   featured?: boolean;
+  underwritingType?: "FUW" | "GI" | "NA" | "QD" | "SI";
 };
 
 export type ClientCoverages = {

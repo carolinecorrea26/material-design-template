@@ -55,6 +55,7 @@ export const abeClient: ClientConfig = {
     overrides: {
       "li-term": {
         featured: true,
+        underwritingType: "QD",
         riders: [
           {
             id: "cir",
@@ -64,6 +65,12 @@ export const abeClient: ClientConfig = {
             premiumFactor: 0.05,
           },
         ],
+      },
+      "li-10yr": {
+        underwritingType: "QD",
+      },
+      "li-20yr": {
+        underwritingType: "QD",
       },
       "di-ltd-plus": {
         applicants: ["member", "spouse"],
