@@ -501,6 +501,11 @@ export default function FormRoutePage({
           error={isTransitioning ? undefined : pageError}
           help={isTransitioning ? undefined : renderedHelpSection}
           maxWidth={formMaxWidth}
+          onBack={
+            !isTransitioning && getPreviousFormPageId(pageId, watchedValues)
+              ? handleBack
+              : undefined
+          }
           actions={
             <>
               <Button

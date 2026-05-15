@@ -173,6 +173,17 @@ export default function FormProgress() {
                 )}
 
                 <Box
+                  onClick={
+                    isActive || isComplete
+                      ? () => {
+                          const firstPageId = step.pageIds[0];
+                          if (firstPageId) {
+                            emitProgressSnapshot(progressSnapshotValues);
+                            void router.navigate(`/${firstPageId}`);
+                          }
+                        }
+                      : undefined
+                  }
                   sx={{
                     width: { xs: 36, sm: 40 },
                     height: { xs: 36, sm: 40 },
@@ -198,6 +209,8 @@ export default function FormProgress() {
                       "border-color 260ms ease, background-color 260ms ease, color 260ms ease",
                     fontWeight: 700,
                     fontSize: { xs: "0.95rem", sm: "1rem" },
+                    cursor: isActive || isComplete ? "pointer" : "default",
+                    // "&:hover": isActive || isComplete ? { opacity: 0.85 } : {},
                   }}
                 >
                   {index + 1}
@@ -205,6 +218,17 @@ export default function FormProgress() {
 
                 <Typography
                   variant="caption"
+                  onClick={
+                    isActive || isComplete
+                      ? () => {
+                          const firstPageId = step.pageIds[0];
+                          if (firstPageId) {
+                            emitProgressSnapshot(progressSnapshotValues);
+                            void router.navigate(`/${firstPageId}`);
+                          }
+                        }
+                      : undefined
+                  }
                   sx={{
                     mt: 1,
                     textAlign: "center",
@@ -212,6 +236,7 @@ export default function FormProgress() {
                     fontSize: "0.75rem",
                     maxWidth: 70,
                     lineHeight: 1.3,
+                    cursor: isActive || isComplete ? "pointer" : "default",
                   }}
                 >
                   {step.label}
