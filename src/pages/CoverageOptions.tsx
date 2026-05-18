@@ -595,7 +595,7 @@ export default function CoverageOptions() {
                       </Typography>
 
                       {(noteText || spouseNote) && (
-                        <Alert severity="info">
+                        <Alert severity="info" icon={false}>
                           {noteText}
                           {spouseNote && (
                             <>
@@ -946,7 +946,11 @@ export default function CoverageOptions() {
 
                                 {/* Message when amount is $0 */}
                                 {selectedAmount === 0 && (
-                                  <Alert severity="info" sx={{ mt: 1 }}>
+                                  <Alert
+                                    severity="info"
+                                    icon={false}
+                                    sx={{ mt: 1 }}
+                                  >
                                     You have selected $0 for this coverage. This
                                     means you are not applying for this product.
                                     Please ensure your selections look correct.
@@ -971,7 +975,7 @@ export default function CoverageOptions() {
           </Typography>
         </>
       ) : (
-        <Alert severity="info">
+        <Alert severity="info" icon={false}>
           No coverage options are available for your current selections.
         </Alert>
       )}

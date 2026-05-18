@@ -856,7 +856,6 @@ function HomeQuoteCard() {
               label="Date of Birth"
               fullWidth
               required
-              placeholder="MM/DD/YYYY"
               value={parseStoredDate(estimateValues.birthday)}
               onChange={(event) => {
                 const formatted = formatDateDisplay(event.target.value);
@@ -873,9 +872,9 @@ function HomeQuoteCard() {
               InputLabelProps={{ shrink: true }}
               error={initialAttempted && !!initialValidationErrors.birthday}
               helperText={
-                initialAttempted
-                  ? initialValidationErrors.birthday || undefined
-                  : undefined
+                initialAttempted && initialValidationErrors.birthday
+                  ? initialValidationErrors.birthday
+                  : "MM/DD/YYYY"
               }
             />
 
@@ -1758,8 +1757,7 @@ export default function Home() {
                                 {product.name}
                                 {product.underwritingType === "QD" && (
                                   <QuickDecisionIndicator />
-                                )}{" "}
-                                brochure
+                                )}
                               </Link>
                               <Typography
                                 variant="body2"

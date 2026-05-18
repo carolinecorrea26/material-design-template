@@ -485,7 +485,6 @@ export default function Membership() {
             label="Date of Birth"
             fullWidth
             required
-            placeholder="MM/DD/YYYY"
             value={parseStoredDate(estimateValues.birthday)}
             onChange={(event) => {
               const formatted = formatDateDisplay(event.target.value);
@@ -502,9 +501,9 @@ export default function Membership() {
             InputLabelProps={{ shrink: true }}
             error={estimateAttempted && !!estimateValidationErrors.birthday}
             helperText={
-              estimateAttempted
-                ? estimateValidationErrors.birthday || undefined
-                : undefined
+              estimateAttempted && estimateValidationErrors.birthday
+                ? estimateValidationErrors.birthday
+                : "MM/DD/YYYY"
             }
           />
 

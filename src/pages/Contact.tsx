@@ -431,8 +431,9 @@ function renderBusinessFields(
         </>
       )}
 
-      {/* Business phone — only for DI/OO */}
+      {/* Business phone — only for DI/OO, hidden when same-as-home */}
       {hasDiOrOo &&
+        !sameAsHome &&
         section.fieldIds
           .filter((id: string) => id === "business-phone")
           .map((fieldId: string) => {

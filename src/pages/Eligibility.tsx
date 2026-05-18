@@ -179,22 +179,21 @@ function EligibilityFields({
               )}
             />
           ) : section.id === "spouseSection" ? (
-            <>
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-                  gap: { xs: 0, sm: 2 },
-                }}
-              >
-                {section.fieldIds
-                  .filter((fieldId) =>
-                    ["spouse-first-name", "spouse-last-name"].includes(fieldId),
-                  )
-                  .map((fieldId) => {
+            (() => {
+              const nameFields = ["spouse-first-name", "spouse-last-name"];
+              const firstNameIndex = section.fieldIds.findIndex((id) =>
+                nameFields.includes(id),
+              );
+              const beforeName = section.fieldIds.slice(0, firstNameIndex);
+              const afterName = section.fieldIds.filter(
+                (id) => !nameFields.includes(id) && !beforeName.includes(id),
+              );
+
+              return (
+                <>
+                  {beforeName.map((fieldId) => {
                     const field = allFields.find((f) => f.id === fieldId);
                     if (!field) return null;
-
                     return (
                       <FieldRenderer
                         key={field.id}
@@ -204,29 +203,45 @@ function EligibilityFields({
                       />
                     );
                   })}
-              </Box>
 
-              {section.fieldIds
-                .filter(
-                  (fieldId) =>
-                    !["spouse-first-name", "spouse-last-name"].includes(
-                      fieldId,
-                    ),
-                )
-                .map((fieldId) => {
-                  const field = allFields.find((f) => f.id === fieldId);
-                  if (!field) return null;
+                  <Box
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                      gap: { xs: 0, sm: 2 },
+                    }}
+                  >
+                    {section.fieldIds
+                      .filter((fieldId) => nameFields.includes(fieldId))
+                      .map((fieldId) => {
+                        const field = allFields.find((f) => f.id === fieldId);
+                        if (!field) return null;
+                        return (
+                          <FieldRenderer
+                            key={field.id}
+                            field={field}
+                            control={control}
+                            errors={errors}
+                          />
+                        );
+                      })}
+                  </Box>
 
-                  return (
-                    <FieldRenderer
-                      key={field.id}
-                      field={field}
-                      control={control}
-                      errors={errors}
-                    />
-                  );
-                })}
-            </>
+                  {afterName.map((fieldId) => {
+                    const field = allFields.find((f) => f.id === fieldId);
+                    if (!field) return null;
+                    return (
+                      <FieldRenderer
+                        key={field.id}
+                        field={field}
+                        control={control}
+                        errors={errors}
+                      />
+                    );
+                  })}
+                </>
+              );
+            })()
           ) : (
             <>
               {section.fieldIds.map((fieldId) => {

@@ -1,4 +1,4 @@
-import { Alert, Box, Typography } from "@mui/material";
+import { Alert, Box, FormLabel, Typography } from "@mui/material";
 import { useMemo } from "react";
 import FormRoutePage, {
   isSectionVisible,
@@ -8,6 +8,7 @@ import ApplicantSection from "../components/form/ApplicantSection";
 import { shouldShowApplicantLabel } from "../components/form/applicantVisibility";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import AddList from "../components/form/AddList";
+import SubQuestionContainer from "../components/form/SubQuestionContainer";
 import type { FieldDefinition } from "../config/fields/types";
 
 const otherCoverageInfoNote =
@@ -19,6 +20,7 @@ const disabilityCompanyFields: FieldDefinition[] = [
     label: "Company",
     inputType: "text",
     labelVariant: "floating",
+    required: true,
   },
   {
     id: "di-company-monthly-benefit",
@@ -27,7 +29,8 @@ const disabilityCompanyFields: FieldDefinition[] = [
     format: "currency",
     inputMode: "numeric",
     labelVariant: "floating",
-    tooltip:
+    required: true,
+    helperText:
       "You can find your current coverage amount in your recent statement from your carrier.",
   },
   {
@@ -36,6 +39,7 @@ const disabilityCompanyFields: FieldDefinition[] = [
     inputType: "text",
     placeholder: "Age 65 or older, 1-5 year, etc.",
     labelVariant: "floating",
+    required: true,
   },
   {
     id: "di-company-waiting-period",
@@ -43,6 +47,7 @@ const disabilityCompanyFields: FieldDefinition[] = [
     inputType: "text",
     placeholder: "30 days, 60 days, etc",
     labelVariant: "floating",
+    required: true,
   },
 ];
 
@@ -244,7 +249,7 @@ export default function Financial() {
 
           return (
             <>
-              <Alert severity="info" sx={{ mb: 1.5 }}>
+              <Alert severity="info" icon={false} sx={{ mb: 1.5 }}>
                 {otherCoverageInfoNote}
               </Alert>
 
@@ -252,21 +257,21 @@ export default function Financial() {
                 <>
                   {renderFieldById(hasOtherLifeInsuranceFieldId)}
 
-                  {watchedValues[hasOtherLifeInsuranceFieldId] === "yes"
-                    ? [
-                        renderFieldById(existingLifeAmountFieldId),
-                        renderFieldById(replacingLifeFieldId),
-                      ]
-                    : null}
+                  {watchedValues[hasOtherLifeInsuranceFieldId] === "yes" && (
+                    <SubQuestionContainer>
+                      {renderFieldById(existingLifeAmountFieldId)}
+                      {renderFieldById(replacingLifeFieldId)}
+                    </SubQuestionContainer>
+                  )}
 
                   {renderFieldById(pendingLifeAppsFieldId)}
 
-                  {watchedValues[pendingLifeAppsFieldId] === "yes"
-                    ? [
-                        renderFieldById(pendingLifeAmountFieldId),
-                        renderFieldById(pendingLifeCompanyFieldId),
-                      ]
-                    : null}
+                  {watchedValues[pendingLifeAppsFieldId] === "yes" && (
+                    <SubQuestionContainer>
+                      {renderFieldById(pendingLifeAmountFieldId)}
+                      {renderFieldById(pendingLifeCompanyFieldId)}
+                    </SubQuestionContainer>
+                  )}
                 </>
               ) : null}
 
@@ -275,7 +280,7 @@ export default function Financial() {
                   {renderFieldById(hasDiFieldId)}
 
                   {watchedValues[hasDiFieldId] === "yes" ? (
-                    <>
+                    <SubQuestionContainer>
                       <Box sx={{ mt: 1, mb: 2 }}>
                         <AddList
                           control={control}
@@ -291,7 +296,7 @@ export default function Financial() {
                       {watchedValues[replacingDiFieldId] === "yes"
                         ? renderFieldById(replacingDiAmountFieldId)
                         : null}
-                    </>
+                    </SubQuestionContainer>
                   ) : null}
                 </Box>
               ) : null}
@@ -347,10 +352,54 @@ export default function Financial() {
             case "financialSelfFinancialProfile":
               return showSelfFinancialProfile ? fieldIds : [];
 
-            case "financialSelfEmploymentDetails":
-              return watchedValues["is-self-employed"] === "yes"
-                ? fieldIds
-                : [];
+            case "financialSelfEmploymentDetails": {
+              if (watchedValues["is-self-employed"] !== "yes") {
+                return [];
+              }
+
+              const selfEmploymentIds: string[] = [
+                "is-sole-proprietor",
+                "is-professional-corporation",
+              ];
+
+              if (watchedValues["is-sole-proprietor"]) {
+                selfEmploymentIds.push(
+                  "sole-proprietor-gross-income",
+                  "sole-proprietor-gross-earnings",
+                  "sole-proprietor-business-expenses",
+                );
+              }
+
+              if (watchedValues["is-professional-corporation"]) {
+                selfEmploymentIds.push(
+                  "professional-corporation-annual-salary",
+                  "professional-corporation-s-corp-distribution",
+                  "professional-corporation-dividends",
+                  "professional-corporation-bonus",
+                  "bonus-payment-frequency",
+                  "professional-corporation-commission",
+                  "commission-payment-frequency",
+                  "professional-corporation-benefits-cost",
+                );
+              }
+
+              if (
+                watchedValues["is-sole-proprietor"] ||
+                watchedValues["is-professional-corporation"]
+              ) {
+                selfEmploymentIds.push(
+                  "years-self-employed",
+                  "work-from-home",
+                  "has-work-location-outside-home",
+                );
+
+                if (watchedValues["has-work-location-outside-home"] === "yes") {
+                  selfEmploymentIds.push("work-location-details");
+                }
+              }
+
+              return selfEmploymentIds;
+            }
 
             case "financialSpouseOtherCoverage": {
               const visibleFieldIds: string[] = [];
@@ -428,6 +477,171 @@ export default function Financial() {
           (section) => section.applicant === "spouse",
         );
 
+        const soleProprietorFieldIds = [
+          "sole-proprietor-gross-income",
+          "sole-proprietor-gross-earnings",
+          "sole-proprietor-business-expenses",
+        ];
+
+        const professionalCorporationFieldIds = [
+          "professional-corporation-annual-salary",
+          "professional-corporation-s-corp-distribution",
+          "professional-corporation-dividends",
+          "professional-corporation-bonus",
+          "bonus-payment-frequency",
+          "professional-corporation-commission",
+          "commission-payment-frequency",
+          "professional-corporation-benefits-cost",
+        ];
+
+        const sharedEmploymentFieldIds = [
+          "years-self-employed",
+          "work-from-home",
+          "has-work-location-outside-home",
+          "work-location-details",
+        ];
+
+        function computeSoleProprietorTotal(): string {
+          const gross = toNumericAmount(
+            watchedValues["sole-proprietor-gross-income"],
+          );
+          const expenses = toNumericAmount(
+            watchedValues["sole-proprietor-business-expenses"],
+          );
+          const net = gross - expenses;
+          return net.toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+          });
+        }
+
+        function computeProfessionalCorporationTotal(): string {
+          const salary = toNumericAmount(
+            watchedValues["professional-corporation-annual-salary"],
+          );
+          const sCorp = toNumericAmount(
+            watchedValues["professional-corporation-s-corp-distribution"],
+          );
+          const dividends = toNumericAmount(
+            watchedValues["professional-corporation-dividends"],
+          );
+          const bonus = toNumericAmount(
+            watchedValues["professional-corporation-bonus"],
+          );
+          const commission = toNumericAmount(
+            watchedValues["professional-corporation-commission"],
+          );
+          const total = salary + sCorp + dividends + bonus + commission;
+          return total.toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+          });
+        }
+
+        function renderEmploymentDetailsContent() {
+          const isSoleProprietor = watchedValues["is-sole-proprietor"];
+          const isProfCorp = watchedValues["is-professional-corporation"];
+
+          return (
+            <>
+              <FormLabel sx={{ mb: 1, display: "block", fontWeight: 600 }}>
+                Select all sources of income:
+              </FormLabel>
+              {renderFieldById("is-sole-proprietor")}
+              {renderFieldById("is-professional-corporation")}
+
+              {isSoleProprietor && (
+                <SubQuestionContainer>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ fontWeight: 600, mt: 1, mb: 1 }}
+                  >
+                    Sole Proprietor or Partner
+                  </Typography>
+                  {soleProprietorFieldIds.map((fieldId) =>
+                    renderFieldById(fieldId),
+                  )}
+                  <Box
+                    sx={{
+                      mt: 2,
+                      mb: 1,
+                      p: 1.5,
+                      bgcolor: "grey.50",
+                      borderRadius: 1,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                      Net earned income, before personal income tax:
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                      {computeSoleProprietorTotal()}
+                    </Typography>
+                  </Box>
+                </SubQuestionContainer>
+              )}
+
+              {isProfCorp && (
+                <SubQuestionContainer>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ fontWeight: 600, mt: 1, mb: 1 }}
+                  >
+                    Professional Corporation
+                  </Typography>
+                  {professionalCorporationFieldIds.map((fieldId) =>
+                    renderFieldById(fieldId),
+                  )}
+                  <Box
+                    sx={{
+                      mt: 2,
+                      mb: 1,
+                      p: 1.5,
+                      bgcolor: "grey.50",
+                      borderRadius: 1,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                      Total annual earned income:
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                      {computeProfessionalCorporationTotal()}
+                    </Typography>
+                  </Box>
+                </SubQuestionContainer>
+              )}
+
+              {(isSoleProprietor || isProfCorp) && (
+                <Box sx={{ mt: 2 }}>
+                  {sharedEmploymentFieldIds
+                    .filter((fieldId) => fieldId !== "work-location-details")
+                    .map((fieldId) => (
+                      <Box key={fieldId}>
+                        {renderFieldById(fieldId)}
+                        {fieldId === "has-work-location-outside-home" &&
+                          watchedValues["has-work-location-outside-home"] ===
+                            "yes" && (
+                            <SubQuestionContainer>
+                              {renderFieldById("work-location-details")}
+                            </SubQuestionContainer>
+                          )}
+                      </Box>
+                    ))}
+                </Box>
+              )}
+            </>
+          );
+        }
+
         function renderApplicantSections(
           applicant: "self" | "spouse",
           sections: typeof visibleSections,
@@ -448,9 +662,11 @@ export default function Financial() {
                       ? renderOtherCoverageContent("self")
                       : section.id === "financialSpouseOtherCoverage"
                         ? renderOtherCoverageContent("spouse")
-                        : section.visibleFieldIds.map((fieldId) =>
-                            renderFieldById(fieldId),
-                          )}
+                        : section.id === "financialSelfEmploymentDetails"
+                          ? renderEmploymentDetailsContent()
+                          : section.visibleFieldIds.map((fieldId) =>
+                              renderFieldById(fieldId),
+                            )}
                   </Box>
                 );
               })}

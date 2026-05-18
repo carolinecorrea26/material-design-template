@@ -339,6 +339,14 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     inputMode: "numeric",
   },
 
+  "spouse-membership": {
+    id: "spouse-membership",
+    label: "Is your spouse also an active member?",
+    inputType: "radio",
+    required: true,
+    options: yesNoOptions,
+  },
+
   "spouse-gender": {
     id: "spouse-gender",
     label: "Gender",
@@ -640,21 +648,18 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
 
   "height-feet": {
     id: "height-feet",
-    label: "Height (ft)",
-    inputType: "dropdown",
-    options: [
-      { value: "4", label: "4'" },
-      { value: "5", label: "5'" },
-      { value: "6", label: "6'" },
-      { value: "7", label: "7'" },
-    ],
+    label: "Feet",
+    inputType: "text",
+    inputMode: "numeric",
+    required: true,
   },
 
   "height-inches": {
     id: "height-inches",
     label: "Inches",
-    inputType: "number",
+    inputType: "text",
     inputMode: "numeric",
+    required: true,
   },
 
   "weight-lbs": {
@@ -662,13 +667,15 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "Weight (lbs.)",
     inputType: "number",
     inputMode: "numeric",
+    required: true,
   },
 
   "weight-12-months-ago-lbs": {
     id: "weight-12-months-ago-lbs",
-    label: "Weight 12 Months Ago (lbs.)",
+    label: "Weight 12 Mos. Ago",
     inputType: "number",
     inputMode: "numeric",
+    required: true,
   },
 
   "social-security-number": {
@@ -679,6 +686,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     format: "ssn",
     inputMode: "numeric",
     autoComplete: "off",
+    required: true,
   },
 
   "marital-status": {
@@ -686,6 +694,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "Marital Status",
     inputType: "dropdown",
     placeholder: "Select",
+    required: true,
     options: [
       { value: "single", label: "Single" },
       { value: "married", label: "Married" },
@@ -699,6 +708,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     id: "has-drivers-license",
     label: "Do you have a valid driver's license?",
     inputType: "radio",
+    required: true,
     options: [
       { value: "yes", label: "Yes" },
       { value: "no", label: "No" },
@@ -710,6 +720,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "Driver's License Number",
     inputType: "text",
     autoComplete: "off",
+    required: true,
   },
 
   "drivers-license-state": {
@@ -717,6 +728,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "Driver's License State",
     inputType: "dropdown",
     placeholder: "Select",
+    required: true,
     options: usStateOptions,
   },
 
@@ -724,6 +736,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     id: "intend-live-outside-us",
     label: "Do you intend to live outside the United States?",
     inputType: "radio",
+    required: true,
     options: [
       { value: "yes", label: "Yes" },
       { value: "no", label: "No" },
@@ -735,6 +748,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "How many months?",
     inputType: "number",
     inputMode: "numeric",
+    required: true,
   },
 
   "outside-us-country": {
@@ -742,6 +756,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "Country",
     inputType: "dropdown",
     placeholder: "Select",
+    required: true,
     options: countryOptions,
   },
 
@@ -749,6 +764,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     id: "travel-outside-us-six-months",
     label: "Will you travel outside the U.S. for 6+ months in the next year?",
     inputType: "radio",
+    required: true,
     options: [
       { value: "yes", label: "Yes" },
       { value: "no", label: "No" },
@@ -760,26 +776,24 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "Country",
     inputType: "dropdown",
     placeholder: "Select",
+    required: true,
     options: countryOptions,
   },
 
   "spouse-height-feet": {
     id: "spouse-height-feet",
-    label: "Height (ft)",
-    inputType: "dropdown",
-    options: [
-      { value: "4", label: "4'" },
-      { value: "5", label: "5'" },
-      { value: "6", label: "6'" },
-      { value: "7", label: "7'" },
-    ],
+    label: "Feet",
+    inputType: "text",
+    inputMode: "numeric",
+    required: true,
   },
 
   "spouse-height-inches": {
     id: "spouse-height-inches",
     label: "Inches",
-    inputType: "number",
+    inputType: "text",
     inputMode: "numeric",
+    required: true,
   },
 
   "spouse-weight-lbs": {
@@ -787,13 +801,15 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "Weight (lbs.)",
     inputType: "number",
     inputMode: "numeric",
+    required: true,
   },
 
   "spouse-weight-12-months-ago-lbs": {
     id: "spouse-weight-12-months-ago-lbs",
-    label: "Weight 12 Months Ago (lbs.)",
+    label: "Weight 12 Mos. Ago",
     inputType: "number",
     inputMode: "numeric",
+    required: true,
   },
 
   "spouse-social-security-number": {
@@ -804,12 +820,14 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     format: "ssn",
     inputMode: "numeric",
     autoComplete: "off",
+    required: true,
   },
 
   "spouse-has-drivers-license": {
     id: "spouse-has-drivers-license",
     label: "Does your spouse have a valid driver's license?",
     inputType: "radio",
+    required: true,
     options: [
       { value: "yes", label: "Yes" },
       { value: "no", label: "No" },
@@ -821,6 +839,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "Spouse Driver's License Number",
     inputType: "text",
     autoComplete: "off",
+    required: true,
   },
 
   "spouse-drivers-license-state": {
@@ -828,13 +847,16 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "Spouse Driver's License State",
     inputType: "dropdown",
     placeholder: "Select",
+    required: true,
     options: usStateOptions,
   },
 
   "spouse-intend-live-outside-us": {
     id: "spouse-intend-live-outside-us",
-    label: "Does your spouse intend to live outside the United States?",
+    label:
+      "Does your spouse intend to reside outside the U.S. or Canada within the next 12 months?",
     inputType: "radio",
+    required: true,
     options: [
       { value: "yes", label: "Yes" },
       { value: "no", label: "No" },
@@ -846,6 +868,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "How many months?",
     inputType: "number",
     inputMode: "numeric",
+    required: true,
   },
 
   "spouse-outside-us-country": {
@@ -853,14 +876,16 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "Country",
     inputType: "dropdown",
     placeholder: "Select",
+    required: true,
     options: countryOptions,
   },
 
   "spouse-travel-outside-us-six-months": {
     id: "spouse-travel-outside-us-six-months",
     label:
-      "Will your spouse travel outside the U.S. for 6+ months in the next year?",
+      "Does your spouse intend to travel outside the U.S. or Canada within the next 12 months?",
     inputType: "radio",
+    required: true,
     options: [
       { value: "yes", label: "Yes" },
       { value: "no", label: "No" },
@@ -872,37 +897,109 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "Country",
     inputType: "dropdown",
     placeholder: "Select",
+    required: true,
     options: countryOptions,
+  },
+
+  "spouse-physician-first-name": {
+    id: "spouse-physician-first-name",
+    label: "Physician First Name",
+    inputType: "text",
+    autoComplete: "off",
+  },
+
+  "spouse-physician-last-name": {
+    id: "spouse-physician-last-name",
+    label: "Physician Last Name",
+    inputType: "text",
+    autoComplete: "off",
+  },
+
+  "spouse-physician-phone": {
+    id: "spouse-physician-phone",
+    label: "Physician Phone Number",
+    inputType: "text",
+    format: "phone",
+    inputMode: "tel",
+    autoComplete: "off",
+    showPhoneTypeSelector: false,
+  },
+
+  "spouse-medical-facility-name": {
+    id: "spouse-medical-facility-name",
+    label: "Medical Facility Name",
+    inputType: "text",
+    autoComplete: "organization",
+  },
+
+  "spouse-medical-facility-street-address": {
+    id: "spouse-medical-facility-street-address",
+    label: "Street Address",
+    inputType: "text",
+    autoComplete: "street-address",
+  },
+
+  "spouse-medical-facility-apt-suite": {
+    id: "spouse-medical-facility-apt-suite",
+    label: "Apt/Suite",
+    inputType: "text",
+    autoComplete: "address-line2",
+  },
+
+  "spouse-medical-city": {
+    id: "spouse-medical-city",
+    label: "City",
+    inputType: "text",
+    autoComplete: "address-level2",
+  },
+
+  "spouse-medical-state": {
+    id: "spouse-medical-state",
+    label: "State",
+    inputType: "dropdown",
+    placeholder: "Select",
+    options: usStateOptions,
+  },
+
+  "spouse-medical-zip-code": {
+    id: "spouse-medical-zip-code",
+    label: "Zip Code",
+    inputType: "text",
+    inputMode: "numeric",
+    autoComplete: "postal-code",
   },
 
   "has-other-life-insurance": {
     id: "has-other-life-insurance",
     label: "Do you have other life insurance in force?",
-    tooltip:
+    helperText:
       'If you have life insurance in-force with New York Life or another carrier, select "Yes"',
     inputType: "radio",
     options: yesNoOptions,
     labelVariant: "standard",
+    required: true,
   },
 
   "existing-life-insurance-amount": {
     id: "existing-life-insurance-amount",
-    label: "What is the total amount in all companies?",
-    tooltip:
+    label: "Total life insurance amount",
+    helperText:
       "You can find your current coverage amount in your recent statement from your carrier.",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "standard",
+    required: true,
   },
 
   "is-replacing-life-insurance": {
     id: "is-replacing-life-insurance",
     label:
-      "Is the life insurance applied for intended to replace, discontinue or change an existing life insurance policy or annuity contract?",
+      "Is the life insurance applied for intended to replace, discontinue, or change an existing life insurance policy or annuity contract?",
     inputType: "radio",
     options: yesNoOptions,
     labelVariant: "standard",
+    required: true,
   },
 
   "has-pending-life-insurance-applications": {
@@ -911,6 +1008,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     inputType: "radio",
     options: yesNoOptions,
     labelVariant: "standard",
+    required: true,
   },
 
   "pending-life-insurance-amount": {
@@ -920,6 +1018,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     format: "currency",
     inputMode: "numeric",
     labelVariant: "floating",
+    required: true,
   },
 
   "pending-life-insurance-company": {
@@ -927,6 +1026,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "Company",
     inputType: "text",
     labelVariant: "floating",
+    required: true,
   },
 
   "has-disability-insurance": {
@@ -936,36 +1036,41 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     inputType: "radio",
     options: yesNoOptions,
     labelVariant: "standard",
+    required: true,
   },
 
   "disability-carrier": {
     id: "disability-carrier",
-    label: "Disability Carrier",
+    label: "Company",
     inputType: "text",
     labelVariant: "standard",
+    required: true,
   },
 
   "disability-monthly-benefit": {
     id: "disability-monthly-benefit",
-    label: "Monthly Benefit",
+    label: "Monthly benefit amount",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "standard",
+    required: true,
   },
 
   "disability-benefit-period": {
     id: "disability-benefit-period",
-    label: "Benefit Period",
+    label: "Benefit period",
     inputType: "text",
     labelVariant: "standard",
+    required: true,
   },
 
   "disability-waiting-period": {
     id: "disability-waiting-period",
-    label: "Waiting Period",
+    label: "Waiting period",
     inputType: "text",
     labelVariant: "standard",
+    required: true,
   },
 
   "is-replacing-disability-insurance": {
@@ -975,33 +1080,37 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     inputType: "radio",
     options: yesNoOptions,
     labelVariant: "standard",
+    required: true,
   },
 
   "disability-replacement-amount": {
     id: "disability-replacement-amount",
-    label: "Replacing Amount",
+    label: "Replacement amount",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "floating",
+    required: true,
   },
 
   "total-net-worth": {
     id: "total-net-worth",
-    label: "Total Net Worth",
+    label: "Total net worth (Assets minus liabilities)",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "standard",
+    required: true,
   },
 
   "total-annual-unearned-income": {
     id: "total-annual-unearned-income",
-    label: "Total Annual Unearned Income",
+    label: "Total annual unearned income",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "standard",
+    required: true,
   },
 
   "is-self-employed": {
@@ -1010,123 +1119,136 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     inputType: "radio",
     options: yesNoOptions,
     labelVariant: "standard",
+    required: true,
   },
 
   "is-sole-proprietor": {
     id: "is-sole-proprietor",
-    label: "I am a sole proprietor",
+    label: "Sole Proprietor or Partner",
     inputType: "checkbox",
   },
 
   "is-professional-corporation": {
     id: "is-professional-corporation",
-    label: "I am part of a professional corporation",
+    label: "Professional Corporation",
     inputType: "checkbox",
   },
 
   "sole-proprietor-gross-income": {
     id: "sole-proprietor-gross-income",
-    label: "Sole Proprietor Gross Income",
+    label: "Annual gross revenue",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "standard",
+    required: true,
   },
 
   "sole-proprietor-gross-earnings": {
     id: "sole-proprietor-gross-earnings",
-    label: "Sole Proprietor Gross Earnings",
+    label: "Annual net income after business expenses",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "standard",
+    required: true,
   },
 
   "sole-proprietor-business-expenses": {
     id: "sole-proprietor-business-expenses",
-    label: "Sole Proprietor Business Expenses",
+    label: "Business expenses",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "standard",
+    required: true,
   },
 
   "professional-corporation-annual-salary": {
     id: "professional-corporation-annual-salary",
-    label: "Professional Corporation Annual Salary",
+    label: "Annual salary",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "standard",
+    required: true,
   },
 
   "professional-corporation-s-corp-distribution": {
     id: "professional-corporation-s-corp-distribution",
-    label: "Professional Corporation S-Corp Distribution",
+    label: "S-Corp distribution",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "standard",
+    required: true,
   },
 
   "professional-corporation-dividends": {
     id: "professional-corporation-dividends",
-    label: "Professional Corporation Dividends",
+    label: "Dividends",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "standard",
+    required: true,
   },
 
   "professional-corporation-bonus": {
     id: "professional-corporation-bonus",
-    label: "Professional Corporation Bonus",
+    label: "Bonus amount",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "standard",
+    required: true,
   },
 
   "bonus-payment-frequency": {
     id: "bonus-payment-frequency",
-    label: "Bonus Payment Frequency",
+    label: "Bonus payment frequency",
     inputType: "radio",
     options: paymentFrequencyOptions,
     labelVariant: "standard",
+    required: true,
   },
 
   "professional-corporation-commission": {
     id: "professional-corporation-commission",
-    label: "Professional Corporation Commission",
+    label: "Commission amount",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "standard",
+    required: true,
   },
 
   "commission-payment-frequency": {
     id: "commission-payment-frequency",
-    label: "Commission Payment Frequency",
+    label: "Commission payment frequency",
     inputType: "radio",
     options: paymentFrequencyOptions,
     labelVariant: "standard",
+    required: true,
   },
 
   "professional-corporation-benefits-cost": {
     id: "professional-corporation-benefits-cost",
-    label: "Professional Corporation Benefits Cost",
+    label: "Employer-paid benefits cost",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "standard",
+    required: true,
   },
 
   "years-self-employed": {
     id: "years-self-employed",
-    label: "Years Self-Employed",
+    label: "Years self-employed",
     inputType: "number",
     inputMode: "numeric",
     labelVariant: "standard",
+    required: true,
   },
 
   "work-from-home": {
@@ -1135,6 +1257,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     inputType: "radio",
     options: yesNoOptions,
     labelVariant: "standard",
+    required: true,
   },
 
   "has-work-location-outside-home": {
@@ -1143,53 +1266,59 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     inputType: "radio",
     options: yesNoOptions,
     labelVariant: "standard",
+    required: true,
   },
 
   "work-location-details": {
     id: "work-location-details",
-    label: "Work Location Details",
+    label: "Please explain where you work outside your home",
     inputType: "text",
     labelVariant: "standard",
     multiline: true,
     minRows: 4,
+    required: true,
   },
 
   "spouse-has-other-life-insurance": {
     id: "spouse-has-other-life-insurance",
     label: "Does your spouse have other life insurance in force?",
-    tooltip:
+    helperText:
       'If your spouse has life insurance in-force with New York Life or another carrier, select "Yes"',
     inputType: "radio",
     options: yesNoOptions,
     labelVariant: "standard",
+    required: true,
   },
 
   "spouse-existing-life-insurance-amount": {
     id: "spouse-existing-life-insurance-amount",
-    label: "What is the total amount in all companies?",
-    tooltip:
+    label: "Total life insurance amount",
+    helperText:
       "You can find your current coverage amount in your recent statement from your carrier.",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "standard",
+    required: true,
   },
 
   "spouse-is-replacing-life-insurance": {
     id: "spouse-is-replacing-life-insurance",
     label:
-      "Is the life insurance applied for intended to replace, discontinue or change an existing life insurance policy or annuity contract?",
+      "Is the life insurance applied for intended to replace, discontinue, or change an existing life insurance policy or annuity contract?",
     inputType: "radio",
     options: yesNoOptions,
     labelVariant: "standard",
+    required: true,
   },
 
   "spouse-has-pending-life-insurance-applications": {
     id: "spouse-has-pending-life-insurance-applications",
-    label: "Do you have other life insurance applications pending?",
+    label: "Does your spouse have other life insurance applications pending?",
     inputType: "radio",
     options: yesNoOptions,
     labelVariant: "standard",
+    required: true,
   },
 
   "spouse-pending-life-insurance-amount": {
@@ -1199,6 +1328,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     format: "currency",
     inputMode: "numeric",
     labelVariant: "floating",
+    required: true,
   },
 
   "spouse-pending-life-insurance-company": {
@@ -1206,45 +1336,51 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "Company",
     inputType: "text",
     labelVariant: "floating",
+    required: true,
   },
 
   "spouse-has-disability-insurance": {
     id: "spouse-has-disability-insurance",
     label:
-      "Do you now have or are you now applying for any other insurance which provides benefits if you are unable to work because of a disability?",
+      "Does your spouse now have or is your spouse now applying for any other insurance which provides benefits if they are unable to work because of a disability?",
     inputType: "radio",
     options: yesNoOptions,
     labelVariant: "standard",
+    required: true,
   },
 
   "spouse-disability-carrier": {
     id: "spouse-disability-carrier",
-    label: "Spouse Disability Carrier",
+    label: "Company",
     inputType: "text",
     labelVariant: "standard",
+    required: true,
   },
 
   "spouse-monthly-benefit": {
     id: "spouse-monthly-benefit",
-    label: "Spouse Monthly Benefit",
+    label: "Monthly benefit amount",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "standard",
+    required: true,
   },
 
   "spouse-benefit-period": {
     id: "spouse-benefit-period",
-    label: "Spouse Benefit Period",
+    label: "Benefit period",
     inputType: "text",
     labelVariant: "standard",
+    required: true,
   },
 
   "spouse-waiting-period": {
     id: "spouse-waiting-period",
-    label: "Spouse Waiting Period",
+    label: "Waiting period",
     inputType: "text",
     labelVariant: "standard",
+    required: true,
   },
 
   "spouse-is-replacing-disability-insurance": {
@@ -1254,15 +1390,17 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     inputType: "radio",
     options: yesNoOptions,
     labelVariant: "standard",
+    required: true,
   },
 
   "spouse-disability-replacement-amount": {
     id: "spouse-disability-replacement-amount",
-    label: "Replacing Amount",
+    label: "Replacement amount",
     inputType: "text",
     format: "currency",
     inputMode: "numeric",
     labelVariant: "floating",
+    required: true,
   },
 
   "bank-name-on-account": {

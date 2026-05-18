@@ -78,6 +78,7 @@ function clearClientOverride() {
 }
 
 export default function DevTools() {
+  const isDevMode = new URLSearchParams(window.location.search).has("devMode");
   const { resetValues } = useApplicationForm();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -130,6 +131,8 @@ export default function DevTools() {
     const pagePath = getPagePath(pageId);
     void router.navigate(pagePath);
   };
+
+  if (!isDevMode) return null;
 
   return (
     <>

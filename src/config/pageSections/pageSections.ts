@@ -37,6 +37,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       title: applicantSectionTitles.spouse,
       applicant: "spouse",
       fieldIds: [
+        "spouse-membership",
         "spouse-first-name",
         "spouse-last-name",
         "spouse-birth-date",
@@ -233,6 +234,23 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
         { fieldId: "dependents", includes: "spouse" },
         { fieldId: "spouse-travel-outside-us-six-months", equals: "yes" },
       ],
+    },
+    {
+      id: "personalSpousePhysician",
+      pageId: "personal",
+      applicant: "spouse",
+      fieldIds: [
+        "spouse-physician-first-name",
+        "spouse-physician-last-name",
+        "spouse-physician-phone",
+        "spouse-medical-facility-name",
+        "spouse-medical-facility-street-address",
+        "spouse-medical-facility-apt-suite",
+        "spouse-medical-city",
+        "spouse-medical-state",
+        "spouse-medical-zip-code",
+      ],
+      visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
     },
   ],
 

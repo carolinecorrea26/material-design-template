@@ -102,6 +102,16 @@ export const abeClient: ClientConfig = {
       },
     },
   },
-  fields: {},
+  fields: {
+    eligibility: {
+      extra: ["spouse-membership"],
+      overrides: {
+        "spouse-membership": {
+          label:
+            "Is your spouse also an active member of a State, Local, or Specialty Bar Association?",
+        },
+      },
+    },
+  },
   content: {},
 };

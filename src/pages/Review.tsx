@@ -53,6 +53,59 @@ const subQuestionFieldIds = new Set([
   "spouse-tobacco-products",
 ]);
 
+const followUpFieldMap: Record<string, string[]> = {
+  "is-sole-proprietor": [
+    "sole-proprietor-gross-income",
+    "sole-proprietor-gross-earnings",
+    "sole-proprietor-business-expenses",
+  ],
+  "is-professional-corporation": [
+    "professional-corporation-annual-salary",
+    "professional-corporation-s-corp-distribution",
+    "professional-corporation-dividends",
+    "professional-corporation-bonus",
+    "bonus-payment-frequency",
+    "professional-corporation-commission",
+    "commission-payment-frequency",
+    "professional-corporation-benefits-cost",
+  ],
+  "has-work-location-outside-home": ["work-location-details"],
+  "has-other-life-insurance": [
+    "existing-life-insurance-amount",
+    "is-replacing-life-insurance",
+  ],
+  "has-pending-life-insurance-applications": [
+    "pending-life-insurance-amount",
+    "pending-life-insurance-company",
+  ],
+  "has-disability-insurance": [
+    "disability-carrier",
+    "disability-monthly-benefit",
+    "disability-benefit-period",
+    "disability-waiting-period",
+    "is-replacing-disability-insurance",
+  ],
+  "is-replacing-disability-insurance": ["disability-replacement-amount"],
+  "spouse-has-other-life-insurance": [
+    "spouse-existing-life-insurance-amount",
+    "spouse-is-replacing-life-insurance",
+  ],
+  "spouse-has-pending-life-insurance-applications": [
+    "spouse-pending-life-insurance-amount",
+    "spouse-pending-life-insurance-company",
+  ],
+  "spouse-has-disability-insurance": [
+    "spouse-disability-carrier",
+    "spouse-monthly-benefit",
+    "spouse-benefit-period",
+    "spouse-waiting-period",
+    "spouse-is-replacing-disability-insurance",
+  ],
+  "spouse-is-replacing-disability-insurance": [
+    "spouse-disability-replacement-amount",
+  ],
+};
+
 const readAndSignContent = `Please read carefully the statements below.
 I understand that payment of a premium contribution for insurance does not mean that there is any coverage in force before the effective date as specified by New York Life.
 
@@ -251,6 +304,7 @@ export default function Review() {
               reviewCards={reviewCards}
               reviewFieldBlocklist={reviewFieldBlocklist}
               subQuestionFieldIds={subQuestionFieldIds}
+              followUpFieldMap={followUpFieldMap}
               onEdit={openEdit}
             />
 

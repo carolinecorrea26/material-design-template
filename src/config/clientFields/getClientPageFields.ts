@@ -2,6 +2,8 @@ import type { PageId } from "../../types/page";
 import { getActiveClient } from "../../client/getActiveClient";
 import type { ApplicationFormValues } from "../../state/ApplicationFormContext";
 import { getPageFields } from "../fields/getPageFields";
+import { fieldCatalog } from "../fields";
+import type { FieldDefinition } from "../fields/types";
 import { membershipClientFields } from "./membership";
 
 export function getClientPageFields(
@@ -12,7 +14,27 @@ export function getClientPageFields(
   const baseFields = getPageFields(pageId);
 
   if (pageId !== "membership") {
-    return baseFields;
+    const clientPageConfig = client.fields[pageId];
+    if (!clientPageConfig?.extra?.length && !clientPageConfig?.overrides) {
+      return baseFields;
+    }
+
+    const overrides = clientPageConfig?.overrides ?? {};
+    const mergedBase = baseFields.map((field) => {
+      const override = overrides[field.id];
+      return override ? { ...field, ...override } : field;
+    });
+
+    const extraFields = (clientPageConfig?.extra ?? [])
+      .map((id) => {
+        const base = fieldCatalog[id as keyof typeof fieldCatalog];
+        if (!base) return null;
+        const override = overrides[id];
+        return override ? { ...base, ...override } : base;
+      })
+      .filter((f): f is FieldDefinition => Boolean(f));
+
+    return [...mergedBase, ...extraFields];
   }
 
   const clientConfig = membershipClientFields[client.id];

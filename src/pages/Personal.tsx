@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button } from "@mui/material";
+import { Box, Button, FormLabel } from "@mui/material";
 import FormRoutePage, {
   isSectionVisible,
 } from "../components/form/FormRoutePage";
@@ -68,6 +68,19 @@ const physicianFieldIds = new Set([
   "medical-state",
   "medical-zip-code",
 ]);
+const spousePhysicianNameRow = new Set([
+  "spouse-physician-first-name",
+  "spouse-physician-last-name",
+]);
+const spousePhysicianStreetRow = new Set([
+  "spouse-medical-facility-street-address",
+  "spouse-medical-facility-apt-suite",
+]);
+const spousePhysicianCityStateZipRow = new Set([
+  "spouse-medical-city",
+  "spouse-medical-state",
+  "spouse-medical-zip-code",
+]);
 
 type PersonalSectionGroups = {
   selfPrimary: string[];
@@ -75,10 +88,12 @@ type PersonalSectionGroups = {
   selfPhysician: string[];
   spouse: string[];
   spouseConditional: string[];
+  spousePhysician: string[];
 };
 
 export default function Personal() {
   const [showPhysician, setShowPhysician] = useState(false);
+  const [showSpousePhysician, setShowSpousePhysician] = useState(false);
 
   return (
     <FormRoutePage pageId="personal">
@@ -117,6 +132,11 @@ export default function Personal() {
                 return acc;
               }
 
+              if (section.id === "personalSpousePhysician") {
+                acc.spousePhysician.push(...section.fieldIds);
+                return acc;
+              }
+
               if (section.id === "personalSpouse") {
                 acc.spouse.push(...section.fieldIds);
                 return acc;
@@ -134,6 +154,7 @@ export default function Personal() {
               selfPhysician: [],
               spouse: [],
               spouseConditional: [],
+              spousePhysician: [],
             },
           );
 
@@ -162,28 +183,34 @@ export default function Personal() {
                   applicant="self"
                   showLabel={shouldShowApplicantLabel("self", watchedValues)}
                 >
-                  <Box
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr",
-                      gap: 2,
-                    }}
-                  >
-                    {selfPrimaryFieldIds
-                      .filter((fieldId) => selfHeightFieldIds.has(fieldId))
-                      .map((fieldId) => {
-                        const field = allFields.find((f) => f.id === fieldId);
-                        if (!field) return null;
+                  <Box>
+                    <FormLabel sx={{ mb: 1, display: "block" }}>
+                      Height
+                    </FormLabel>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr",
+                        gap: 2,
+                      }}
+                    >
+                      {selfPrimaryFieldIds
+                        .filter((fieldId) => selfHeightFieldIds.has(fieldId))
+                        .map((fieldId) => {
+                          const field = allFields.find((f) => f.id === fieldId);
+                          if (!field) return null;
 
-                        return (
-                          <FieldRenderer
-                            key={field.id}
-                            field={field}
-                            control={control}
-                            errors={errors}
-                          />
-                        );
-                      })}
+                          return (
+                            <FieldRenderer
+                              key={field.id}
+                              field={field}
+                              control={control}
+                              errors={errors}
+                              margin="none"
+                            />
+                          );
+                        })}
+                    </Box>
                   </Box>
 
                   {selfPrimaryFieldIds
@@ -465,28 +492,34 @@ export default function Personal() {
 
               {sectionGroups.spouse.length > 0 && (
                 <ApplicantSection applicant="spouse">
-                  <Box
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr",
-                      gap: 2,
-                    }}
-                  >
-                    {spouseFieldIds
-                      .filter((fieldId) => spouseHeightFieldIds.has(fieldId))
-                      .map((fieldId) => {
-                        const field = allFields.find((f) => f.id === fieldId);
-                        if (!field) return null;
+                  <Box>
+                    <FormLabel sx={{ mb: 1, display: "block" }}>
+                      Height
+                    </FormLabel>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr",
+                        gap: 2,
+                      }}
+                    >
+                      {spouseFieldIds
+                        .filter((fieldId) => spouseHeightFieldIds.has(fieldId))
+                        .map((fieldId) => {
+                          const field = allFields.find((f) => f.id === fieldId);
+                          if (!field) return null;
 
-                        return (
-                          <FieldRenderer
-                            key={field.id}
-                            field={field}
-                            control={control}
-                            errors={errors}
-                          />
-                        );
-                      })}
+                          return (
+                            <FieldRenderer
+                              key={field.id}
+                              field={field}
+                              control={control}
+                              errors={errors}
+                              margin="none"
+                            />
+                          );
+                        })}
+                    </Box>
                   </Box>
 
                   {spouseFieldIds.map((fieldId) => {
@@ -651,6 +684,153 @@ export default function Personal() {
                       />
                     );
                   })}
+
+                  {showSpousePhysician && (
+                    <Box
+                      sx={{
+                        backgroundColor: SECTION_SURFACE_BG,
+                        borderRadius: 1.5,
+                        px: { xs: 2, sm: 2.5 },
+                        py: 1.5,
+                        mt: 1,
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                          gap: { xs: 0, sm: 2 },
+                        }}
+                      >
+                        {sectionGroups.spousePhysician
+                          .filter((fieldId) =>
+                            spousePhysicianNameRow.has(fieldId),
+                          )
+                          .map((fieldId) => {
+                            const field = allFields.find(
+                              (f) => f.id === fieldId,
+                            );
+                            if (!field) return null;
+
+                            return (
+                              <FieldRenderer
+                                key={field.id}
+                                field={field}
+                                control={control}
+                                errors={errors}
+                              />
+                            );
+                          })}
+                      </Box>
+
+                      {sectionGroups.spousePhysician
+                        .filter(
+                          (fieldId) => fieldId === "spouse-physician-phone",
+                        )
+                        .map((fieldId) => {
+                          const field = allFields.find((f) => f.id === fieldId);
+                          if (!field) return null;
+
+                          return (
+                            <FieldRenderer
+                              key={field.id}
+                              field={field}
+                              control={control}
+                              errors={errors}
+                            />
+                          );
+                        })}
+
+                      {sectionGroups.spousePhysician
+                        .filter(
+                          (fieldId) =>
+                            fieldId === "spouse-medical-facility-name",
+                        )
+                        .map((fieldId) => {
+                          const field = allFields.find((f) => f.id === fieldId);
+                          if (!field) return null;
+
+                          return (
+                            <FieldRenderer
+                              key={field.id}
+                              field={field}
+                              control={control}
+                              errors={errors}
+                            />
+                          );
+                        })}
+
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: { xs: "1fr", sm: "2fr 1fr" },
+                          gap: { xs: 0, sm: 2 },
+                        }}
+                      >
+                        {sectionGroups.spousePhysician
+                          .filter((fieldId) =>
+                            spousePhysicianStreetRow.has(fieldId),
+                          )
+                          .map((fieldId) => {
+                            const field = allFields.find(
+                              (f) => f.id === fieldId,
+                            );
+                            if (!field) return null;
+
+                            return (
+                              <FieldRenderer
+                                key={field.id}
+                                field={field}
+                                control={control}
+                                errors={errors}
+                              />
+                            );
+                          })}
+                      </Box>
+
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: { xs: "1fr", sm: "2fr 1fr 1fr" },
+                          gap: { xs: 0, sm: 2 },
+                        }}
+                      >
+                        {sectionGroups.spousePhysician
+                          .filter((fieldId) =>
+                            spousePhysicianCityStateZipRow.has(fieldId),
+                          )
+                          .map((fieldId) => {
+                            const field = allFields.find(
+                              (f) => f.id === fieldId,
+                            );
+                            if (!field) return null;
+
+                            return (
+                              <FieldRenderer
+                                key={field.id}
+                                field={field}
+                                control={control}
+                                errors={errors}
+                              />
+                            );
+                          })}
+                      </Box>
+                    </Box>
+                  )}
+
+                  <Button
+                    type="button"
+                    variant="outlined"
+                    fullWidth
+                    onClick={() =>
+                      setShowSpousePhysician((current) => !current)
+                    }
+                    sx={{ mt: 2, textTransform: "none", fontWeight: 600 }}
+                  >
+                    {showSpousePhysician
+                      ? "Hide spouse physician information (optional)"
+                      : "Add spouse physician information (optional)"}
+                  </Button>
                 </ApplicantSection>
               )}
             </>

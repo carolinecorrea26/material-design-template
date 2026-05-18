@@ -614,28 +614,66 @@ export default function FieldRenderer({
   }
 
   if (field.inputType === "date") {
+    const dateHelperText = fieldError ?? field.helperText ?? "MM/DD/YYYY";
     return (
       <Controller
         key={field.id}
         name={field.id}
         control={control}
         rules={validationRules}
-        render={({ field: controllerField }) =>
-          renderTextLikeField(controllerField, {
-            value: parseStoredDate((controllerField.value as string) ?? ""),
-            placeholder: "MM/DD/YYYY",
-            inputProps: { inputMode: "numeric" },
-            onChange: (event) => {
-              const formatted = formatDateDisplay(event.target.value);
-              const digits = formatted.replace(/\D/g, "");
-              if (digits.length === 8) {
-                controllerField.onChange(formatDateForStorage(formatted));
-              } else {
-                controllerField.onChange(formatted);
+        render={({ field: controllerField }) => {
+          const labelVariant = getLabelVariant(field);
+          const textField = (
+            <TextField
+              label={
+                labelVariant === "floating"
+                  ? renderFieldLabel(field)
+                  : undefined
               }
-            },
-          })
-        }
+              required={field.required}
+              fullWidth
+              margin={labelVariant === "floating" ? "normal" : "none"}
+              autoComplete={field.autoComplete}
+              inputProps={{ inputMode: "numeric" }}
+              value={parseStoredDate((controllerField.value as string) ?? "")}
+              onChange={(event) => {
+                const formatted = formatDateDisplay(event.target.value);
+                const digits = formatted.replace(/\D/g, "");
+                if (digits.length === 8) {
+                  controllerField.onChange(formatDateForStorage(formatted));
+                } else {
+                  controllerField.onChange(formatted);
+                }
+              }}
+              onBlur={controllerField.onBlur}
+              disabled={field.disabled}
+              error={Boolean(errors[field.id])}
+              helperText={
+                labelVariant === "floating" ? dateHelperText : undefined
+              }
+            />
+          );
+
+          if (labelVariant === "floating") {
+            return textField;
+          }
+
+          return (
+            <FormControl
+              fullWidth
+              margin={margin}
+              error={Boolean(errors[field.id])}
+            >
+              {!hideLabel ? (
+                <FormLabel required={field.required} sx={{ mb: 1 }}>
+                  {renderFieldLabel(field)}
+                </FormLabel>
+              ) : null}
+              {textField}
+              <FormHelperText>{dateHelperText}</FormHelperText>
+            </FormControl>
+          );
+        }}
       />
     );
   }

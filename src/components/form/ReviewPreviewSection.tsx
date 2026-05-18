@@ -45,6 +45,7 @@ type ReviewPreviewSectionProps = {
   reviewCards: ReviewCardConfig[];
   reviewFieldBlocklist: Set<string>;
   subQuestionFieldIds: Set<string>;
+  followUpFieldMap?: Record<string, string[]>;
   onEdit: (pageId: PageId) => void;
 };
 
@@ -364,6 +365,7 @@ function getApplicantSectionRows(params: {
   applicant: "self" | "spouse";
   reviewFieldBlocklist: Set<string>;
   subQuestionFieldIds: Set<string>;
+  followUpFieldMap: Record<string, string[]>;
 }): PreviewRow[] {
   const {
     values,
@@ -371,6 +373,7 @@ function getApplicantSectionRows(params: {
     applicant,
     reviewFieldBlocklist,
     subQuestionFieldIds,
+    followUpFieldMap,
   } = params;
 
   const sections = (pageSections[pageId] || []).filter((section) => {
@@ -449,6 +452,11 @@ function getApplicantSectionRows(params: {
 
       processed.add(fieldId);
 
+      const followUps = followUpFieldMap[fieldId];
+      if (followUps) {
+        pushFieldRows(followUps, true);
+      }
+
       const dependentSections = subSectionsByTrigger.get(fieldId) ?? [];
       dependentSections.forEach((sectionFieldIds) => {
         pushFieldRows(sectionFieldIds, true);
@@ -468,8 +476,9 @@ function getPreviewEntries(params: {
   pageId: PageId;
   reviewFieldBlocklist: Set<string>;
   subQuestionFieldIds: Set<string>;
+  followUpFieldMap: Record<string, string[]>;
 }): PreviewEntries {
-  const { values, pageId, reviewFieldBlocklist, subQuestionFieldIds } = params;
+  const { values, pageId, reviewFieldBlocklist, subQuestionFieldIds, followUpFieldMap } = params;
 
   if (pageId === "coverage") {
     const coverageNames = getCoverageNames(values);
@@ -506,6 +515,7 @@ function getPreviewEntries(params: {
       applicant: "self",
       reviewFieldBlocklist,
       subQuestionFieldIds,
+      followUpFieldMap,
     }),
     spouse: getApplicantSectionRows({
       values,
@@ -513,6 +523,7 @@ function getPreviewEntries(params: {
       applicant: "spouse",
       reviewFieldBlocklist,
       subQuestionFieldIds,
+      followUpFieldMap,
     }),
   };
 }
@@ -588,6 +599,7 @@ function PreviewCard({
   hasSpouse,
   reviewFieldBlocklist,
   subQuestionFieldIds,
+  followUpFieldMap,
   onEdit,
 }: ReviewCardConfig &
   Pick<
@@ -596,6 +608,7 @@ function PreviewCard({
     | "hasSpouse"
     | "reviewFieldBlocklist"
     | "subQuestionFieldIds"
+    | "followUpFieldMap"
     | "onEdit"
   >) {
   const { self, spouse } = getPreviewEntries({
@@ -603,6 +616,7 @@ function PreviewCard({
     pageId,
     reviewFieldBlocklist,
     subQuestionFieldIds,
+    followUpFieldMap: followUpFieldMap ?? {},
   });
 
   const hasSelfContent = self.length > 0;
@@ -687,6 +701,7 @@ export default function ReviewPreviewSection({
   reviewCards,
   reviewFieldBlocklist,
   subQuestionFieldIds,
+  followUpFieldMap,
   onEdit,
 }: ReviewPreviewSectionProps) {
   return (
@@ -701,6 +716,7 @@ export default function ReviewPreviewSection({
           hasSpouse={hasSpouse}
           reviewFieldBlocklist={reviewFieldBlocklist}
           subQuestionFieldIds={subQuestionFieldIds}
+          followUpFieldMap={followUpFieldMap}
           onEdit={onEdit}
         />
       ))}

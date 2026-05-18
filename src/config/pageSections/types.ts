@@ -22,6 +22,7 @@ export type PageSectionId =
   | "personalSpouseDriversLicense"
   | "personalSpouseOutsideUs"
   | "personalSpouseTravelOutsideUs"
+  | "personalSpousePhysician"
   | "financialSelfOtherCoverage"
   | "financialSelfFinancialProfile"
   | "financialSelfEmploymentDetails"

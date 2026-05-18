@@ -2,6 +2,7 @@ import type { CoverageCategoryId } from "../coverageCategories";
 import type { CoverageId } from "../../types/coverage";
 import type { PageId } from "../../types/page";
 import type { ClientId } from "../../types/client";
+import type { FieldDefinition } from "../fields/types";
 
 export type FieldId = string;
 
@@ -77,6 +78,7 @@ export type ClientFields = Partial<
       extra?: FieldId[];
       hidden?: FieldId[];
       required?: FieldId[];
+      overrides?: Partial<Record<FieldId, Partial<FieldDefinition>>>;
     }
   >
 >;
