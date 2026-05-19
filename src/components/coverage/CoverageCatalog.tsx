@@ -29,6 +29,7 @@ type CoverageCatalogProps = {
   onChangeProductApplicants?: (
     nextApplicants: Record<string, CoverageApplicantId[]>,
   ) => void;
+  allCategoriesExpanded?: boolean;
 };
 
 function formatCoverageAmount(amount?: number) {
@@ -54,6 +55,7 @@ export default function CoverageCatalog({
   selectedDependents = [],
   productApplicants = {},
   onChangeProductApplicants,
+  allCategoriesExpanded = false,
 }: CoverageCatalogProps) {
   const hasDependents = selectedDependents.length > 0;
 
@@ -89,29 +91,28 @@ export default function CoverageCatalog({
       {groupedCategories.map(({ category, items }, groupIndex) => (
         <Accordion
           key={category.id}
-          defaultExpanded={groupIndex === 0}
+          defaultExpanded={allCategoriesExpanded || groupIndex === 0}
           disableGutters
           sx={{
-            backgroundColor: "transparent",
-            border: "none",
-            boxShadow: "none",
-            p: 0,
-            borderRadius: 0,
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: "12px !important",
+            overflow: "hidden",
             "&::before": { display: "none" },
             "&.MuiAccordion-root": {
-              backgroundColor: "transparent",
-              border: "none",
-              boxShadow: "none",
               m: 0,
-              p: 0,
+              boxShadow: "none",
             },
           }}
         >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ p: 0 }}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            sx={{ px: 2, py: 0.5 }}
+          >
             <FormSectionTitle icon={category.icon} label={category.label} />
           </AccordionSummary>
 
-          <AccordionDetails sx={{ p: 0 }}>
+          <AccordionDetails sx={{ px: 2, pb: 2, pt: 0 }}>
             <Stack spacing={1.5}>
               {items.map((coverage) => {
                 const checked = selectedCoverageIds.includes(coverage.id);

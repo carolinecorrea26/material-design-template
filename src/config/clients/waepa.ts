@@ -37,6 +37,7 @@ export const waepaClient: ClientConfig = {
         featured: true,
       },
     },
+    allCategoriesExpanded: true,
   },
   fields: {},
   content: {},

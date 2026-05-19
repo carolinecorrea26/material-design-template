@@ -3,9 +3,17 @@ import { Box } from "@mui/material";
 
 type FormPageContentProps = {
   children: ReactNode;
+  noContainer?: boolean;
 };
 
-export default function FormPageContent({ children }: FormPageContentProps) {
+export default function FormPageContent({
+  children,
+  noContainer,
+}: FormPageContentProps) {
+  if (noContainer) {
+    return <Box sx={{ width: "100%" }}>{children}</Box>;
+  }
+
   return (
     <Box
       sx={{

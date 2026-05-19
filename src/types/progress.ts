@@ -1,1 +1,1 @@
-export type ProgressVariant = "bar" | "stepper";
+export type ProgressVariant = "bar" | "stepper" | "vertical-stepper";

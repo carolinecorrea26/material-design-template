@@ -84,10 +84,13 @@ export default function FormHelpChips({
           ref={scrollRef}
           spacing={1}
           direction="row"
+          useFlexGap
           sx={{
             overflowX: "auto",
             overflowY: "hidden",
-            flexWrap: "nowrap",
+            flexWrap: "wrap",
+            rowGap: 1,
+            justifyContent: "flex-start",
             scrollbarWidth: "none",
             msOverflowStyle: "none",
             "&::-webkit-scrollbar": {

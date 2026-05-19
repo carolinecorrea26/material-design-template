@@ -15,6 +15,10 @@ type FormPageProps = {
   error?: string;
   maxWidth?: number | string;
   onBack?: () => void;
+  compactTitle?: boolean;
+  aboveHeader?: ReactNode;
+  noTitle?: boolean;
+  noContainer?: boolean;
 };
 
 export default function FormPage({
@@ -25,6 +29,10 @@ export default function FormPage({
   error,
   maxWidth = 700,
   onBack,
+  compactTitle,
+  aboveHeader,
+  noTitle,
+  noContainer,
 }: FormPageProps) {
   return (
     <Stack
@@ -33,8 +41,9 @@ export default function FormPage({
     >
       <Box sx={{ width: "100%", maxWidth }}>
         <FormShell
+          headerWide={aboveHeader}
           header={
-            title ? (
+            !noTitle && title ? (
               <Stack spacing={1} sx={{ padding: "0 0.5rem" }}>
                 {onBack && (
                   <Link
@@ -55,13 +64,17 @@ export default function FormPage({
                     Back
                   </Link>
                 )}
-                <FormPageTitle title={title} />
+                <FormPageTitle title={title} compact={compactTitle} />
                 {error && <FormPageError message={error} />}
                 {help}
               </Stack>
             ) : undefined
           }
-          body={<FormPageContent>{children}</FormPageContent>}
+          body={
+            <FormPageContent noContainer={noContainer}>
+              {children}
+            </FormPageContent>
+          }
           footer={<FormPageActions>{actions}</FormPageActions>}
         />
       </Box>

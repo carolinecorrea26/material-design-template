@@ -99,6 +99,19 @@ function hasSelectedUnderwritingType(
   );
 }
 
+function hasSelectedCirRider(values: ApplicationFormValues): boolean {
+  const riders =
+    values.coverageRiders != null &&
+    typeof values.coverageRiders === "object" &&
+    !Array.isArray(values.coverageRiders)
+      ? (values.coverageRiders as Record<string, boolean>)
+      : {};
+
+  return Object.entries(riders).some(
+    ([key, enabled]) => enabled && key.includes(":cir:"),
+  );
+}
+
 /** True when a page should be skipped given the current form values. */
 export function shouldSkipPage(
   pageId: PageId,
@@ -111,15 +124,18 @@ export function shouldSkipPage(
   }
 
   if (pageId === "coverage-questions") {
-    const selectedCategories = getSelectedCategoryIds(values);
-    return !selectedCategories.some((cat) =>
-      categoriesRequiringQuestions.includes(cat),
-    );
+    // Always show coverage-questions (gender is always asked)
+    return false;
   }
 
   if (pageId === "beneficiary") {
     const selectedCategories = getSelectedCategoryIds(values);
     return !selectedCategories.some((cat) => cat === "LI" || cat === "AD");
+  }
+
+  if (pageId === "financial") {
+    const selectedCategories = getSelectedCategoryIds(values);
+    return !selectedCategories.some((cat) => cat === "LI" || cat === "DI");
   }
 
   if (pageId === "health-si") {
@@ -131,11 +147,12 @@ export function shouldSkipPage(
   }
 
   if (pageId === "health-di") {
-    return true;
+    const selectedCategories = getSelectedCategoryIds(values);
+    return !selectedCategories.some((cat) => cat === "DI");
   }
 
   if (pageId === "health-cir") {
-    return true;
+    return !hasSelectedCirRider(values);
   }
 
   return false;

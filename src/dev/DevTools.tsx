@@ -51,7 +51,9 @@ const PROGRESS_VARIANT_STORAGE_KEY = "devtools:progressVariant";
 
 function getStoredProgressVariant(): ProgressVariant {
   const stored = window.sessionStorage.getItem(PROGRESS_VARIANT_STORAGE_KEY);
-  return stored === "stepper" ? "stepper" : "bar";
+  if (stored === "bar") return "bar";
+  if (stored === "stepper") return "stepper";
+  return "vertical-stepper";
 }
 
 function setStoredProgressVariant(variant: ProgressVariant) {
@@ -77,8 +79,21 @@ function clearClientOverride() {
   window.location.replace(url.toString());
 }
 
+const DEVMODE_STORAGE_KEY = "devtools:devMode";
+
+function getIsDevMode(): boolean {
+  const urlHasDevMode = new URLSearchParams(window.location.search).has(
+    "devMode",
+  );
+  if (urlHasDevMode) {
+    window.sessionStorage.setItem(DEVMODE_STORAGE_KEY, "true");
+    return true;
+  }
+  return window.sessionStorage.getItem(DEVMODE_STORAGE_KEY) === "true";
+}
+
 export default function DevTools() {
-  const isDevMode = new URLSearchParams(window.location.search).has("devMode");
+  const isDevMode = getIsDevMode();
   const { resetValues } = useApplicationForm();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -98,7 +113,7 @@ export default function DevTools() {
     resetValues();
     window.sessionStorage.clear();
     window.localStorage.clear();
-    window.location.replace(`/membership?reset=${Date.now()}`);
+    window.location.replace(`/?reset=${Date.now()}`);
   };
 
   const handleFillOutPage = () => {
@@ -371,7 +386,22 @@ export default function DevTools() {
                   onClick={() => handleProgressVariantChange("stepper")}
                   sx={{ justifyContent: "flex-start" }}
                 >
-                  Icon Stepper
+                  Horizontal Stepper
+                </Button>
+
+                <Button
+                  fullWidth
+                  variant={
+                    progressVariant === "vertical-stepper"
+                      ? "contained"
+                      : "outlined"
+                  }
+                  onClick={() =>
+                    handleProgressVariantChange("vertical-stepper")
+                  }
+                  sx={{ justifyContent: "flex-start" }}
+                >
+                  Vertical Stepper
                 </Button>
               </Stack>
             </Box>

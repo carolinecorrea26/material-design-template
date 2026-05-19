@@ -6,7 +6,7 @@ export default function HealthCir() {
     <FormRoutePage pageId="health-cir">
       {() => (
         <Typography variant="body2" color="text.secondary">
-          This page is a placeholder for future health questions.
+          This page is a placeholder for CIR health questions.
         </Typography>
       )}
     </FormRoutePage>

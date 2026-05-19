@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   Alert,
   Box,
   Button,
-  Divider,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -18,9 +17,6 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import EditNoteRoundedIcon from "@mui/icons-material/EditNoteRounded";
-import ContentPasteSearchRoundedIcon from "@mui/icons-material/ContentPasteSearchRounded";
-import VerifiedUserRoundedIcon from "@mui/icons-material/VerifiedUserRounded";
 import { getActiveClient } from "../client/getActiveClient";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { getPageTitle } from "../config/pages";
@@ -33,6 +29,8 @@ import type {
 } from "../config/coverages/types";
 import FieldRenderer from "../components/form/FieldRenderer";
 import FormRoutePage from "../components/form/FormRoutePage";
+import FormHelpDrawer from "../components/form/FormHelpDrawer";
+import QuickDecisionDrawerContent from "../components/common/QuickDecisionDrawerContent";
 import {
   deriveStateProvinceFromZipOrPostalCode,
   formatZipOrPostalCode,
@@ -168,6 +166,225 @@ function formatDateDisplay(raw: string): string {
   if (digits.length <= 2) return digits;
   if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
   return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+}
+
+function InlineDrawerLink({
+  children,
+  onClick,
+}: {
+  children: ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <Typography
+      component="span"
+      role="button"
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onClick();
+        }
+      }}
+      sx={{
+        display: "inline",
+        color: "primary.main",
+        font: "inherit",
+        lineHeight: "inherit",
+        textDecoration: "underline",
+        textUnderlineOffset: "0.12em",
+        cursor: "pointer",
+      }}
+    >
+      {children}
+    </Typography>
+  );
+}
+
+function QuickDecisionMark() {
+  return (
+    <>
+      QuickDecision
+      <Box component="sup" sx={{ fontSize: "0.6em", lineHeight: 1 }}>
+        SM
+      </Box>
+    </>
+  );
+}
+
+const APPLYING_STEPS = [
+  {
+    id: 0,
+    title: "Apply online",
+    body: "Complete our online application to apply for coverage that fits your needs. You'll be able to review your options and see your estimated cost.",
+    imageSrc: "/1-apply.svg",
+    imageAlt: "Apply online",
+  },
+  {
+    id: 1,
+    title: "Answer health questions",
+    body: "Many types of insurance require health information to provide a decision on your application. We may ask health questions on your application or a representative of New York Life or their medical service provider may contact you to collect your health history. If needed, we will schedule a medical exam at no cost to you and at a time and place convenient to you.",
+    imageSrc: "/2-medical.svg",
+    imageAlt: "Answer health questions",
+  },
+  {
+    id: 2,
+    title: "Get a decision",
+    body: "Decisions are made after all information is received and reviewed by New York Life. If approved, you will receive a certificate of insurance and have a 30-day no-obligation free look. Plus, when QuickDecision SM is available, you can get a faster decision on your application, typically with no medical exam.",
+    imageSrc: "/3-decision.svg",
+    imageAlt: "Get a decision",
+  },
+] as const;
+
+function HowApplyingWorksDrawerContent() {
+  type SubDrawerId = "application-review" | "quick-decision" | null;
+  const [subDrawer, setSubDrawer] = useState<SubDrawerId>(null);
+
+  return (
+    <>
+      <Stack spacing={3}>
+        <Typography variant="body2" color="text.secondary">
+          The online process is designed to help you move quickly while still
+          giving New York Life the information needed to review your
+          application.
+        </Typography>
+
+        {APPLYING_STEPS.map((step) => (
+          <Stack
+            key={step.id}
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+            alignItems={{ xs: "center", sm: "flex-start" }}
+          >
+            <Box sx={{ flexShrink: 0 }}>
+              <Box
+                component="img"
+                src={step.imageSrc}
+                alt={step.imageAlt}
+                sx={{
+                  display: "block",
+                  width: 80,
+                  height: 80,
+                  objectFit: "contain",
+                }}
+              />
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
+                {step.title}
+              </Typography>
+              {step.id === 1 ? (
+                <Typography variant="body2" color="text.secondary">
+                  Many types of insurance require health information to provide
+                  a decision on your application. We may ask health questions on
+                  your application or a representative of New York Life or their
+                  medical service provider may contact you to collect your
+                  health history. If needed, we will schedule a medical exam at
+                  no cost to you and at a time and place convenient to you.{" "}
+                  <InlineDrawerLink
+                    onClick={() => setSubDrawer("application-review")}
+                  >
+                    Learn more about the application review process.
+                  </InlineDrawerLink>
+                </Typography>
+              ) : step.id === 2 ? (
+                <Typography variant="body2" color="text.secondary">
+                  Decisions are made after all information is received and
+                  reviewed by New York Life. If approved, you will receive a
+                  certificate of insurance and have a 30-day no-obligation free
+                  look. Plus, when{" "}
+                  <InlineDrawerLink
+                    onClick={() => setSubDrawer("quick-decision")}
+                  >
+                    <QuickDecisionMark />
+                  </InlineDrawerLink>{" "}
+                  is available, you can get a faster decision on your
+                  application, typically with no medical exam.
+                </Typography>
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  {step.body}
+                </Typography>
+              )}
+            </Box>
+          </Stack>
+        ))}
+      </Stack>
+
+      <FormHelpDrawer
+        open={subDrawer !== null}
+        title={
+          subDrawer === "application-review"
+            ? "Application review process"
+            : "QuickDecision"
+        }
+        onClose={() => setSubDrawer(null)}
+      >
+        {subDrawer === "application-review" ? (
+          <Stack spacing={2}>
+            <Typography variant="body2" color="text.secondary">
+              During the application review process, also known as underwriting,
+              our team will review your application to provide a decision on
+              your application.
+            </Typography>
+
+            <Box>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
+                What to expect
+              </Typography>
+              <Stack component="ul" spacing={1} sx={{ m: 0, pl: 2.5 }}>
+                <Typography
+                  component="li"
+                  variant="body2"
+                  color="text.secondary"
+                >
+                  A medical service provider may contact you to confirm details
+                  about your health.
+                </Typography>
+                <Typography
+                  component="li"
+                  variant="body2"
+                  color="text.secondary"
+                >
+                  A medical exam may be scheduled if needed at no cost to you
+                  and at a time and place convenient to you.
+                </Typography>
+                <Typography
+                  component="li"
+                  variant="body2"
+                  color="text.secondary"
+                >
+                  We may also request additional information, such as
+                  prescription history, financial information, medical records
+                  from your physician(s), and/or medical claims history.
+                </Typography>
+                <Typography
+                  component="li"
+                  variant="body2"
+                  color="text.secondary"
+                >
+                  Any forms needing your signature will be sent securely via
+                  DocuSign.
+                </Typography>
+              </Stack>
+            </Box>
+
+            <Typography variant="body2" color="text.secondary">
+              The review process typically takes a few business days, but with{" "}
+              <InlineDrawerLink onClick={() => setSubDrawer("quick-decision")}>
+                <QuickDecisionMark />
+              </InlineDrawerLink>
+              , many applications can get a real-time decision, often without
+              requiring a medical exam.
+            </Typography>
+          </Stack>
+        ) : (
+          <QuickDecisionDrawerContent />
+        )}
+      </FormHelpDrawer>
+    </>
+  );
 }
 
 export default function Membership() {
@@ -377,98 +594,7 @@ export default function Membership() {
       id: "application-process",
       label: "How does applying work?",
       title: "How does applying work?",
-      content: (
-        <Stack spacing={3}>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <EditNoteRoundedIcon
-              sx={{
-                color: "primary.main",
-                fontSize: "2.5rem",
-                flexShrink: 0,
-              }}
-            />
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-                Apply online in about 20 minutes.
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Answer a few questions and submit your application securely.
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <ContentPasteSearchRoundedIcon
-              sx={{
-                color: "primary.main",
-                fontSize: "2.5rem",
-                flexShrink: 0,
-              }}
-            />
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-                Your application will be reviewed.
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                Once your application is submitted, it will be reviewed. This
-                may happen in real time or take a few days depending on the
-                coverage you apply for. In some cases, you may also need to
-                answer health-related questions before a decision can be made.
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <VerifiedUserRoundedIcon
-              sx={{
-                color: "primary.main",
-                fontSize: "2.5rem",
-                flexShrink: 0,
-              }}
-            />
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-                Receive your application decision.
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Once all information is reviewed, you&apos;ll be notified of
-                your decision. If approved, you will receive a certificate of
-                insurance and have a 30-day no-obligation free look. When
-                QuickDecision
-                <sup>SM</sup> is available, you may receive a faster decision,
-                often without a medical exam.
-              </Typography>
-            </Box>
-          </Box>
-
-          <Divider />
-
-          <Stack spacing={1.5}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-              About the application review process
-            </Typography>
-
-            <Typography variant="body2" color="text.secondary">
-              When you apply for coverage, the underwriting team reviews your
-              application to make a decision.
-            </Typography>
-
-            <Typography variant="body2" color="text.secondary">
-              Depending on the coverage you&apos;re applying for and the
-              information you provide, you may be asked to answer some
-              health-related questions. This helps evaluate eligibility and
-              determine the best rate for you.
-            </Typography>
-
-            <Typography variant="body2" color="text.secondary">
-              The review process typically takes a few business days, but with
-              QuickDecision
-              <sup>SM</sup>, many applications can be approved faster without
-              requiring a medical exam.
-            </Typography>
-          </Stack>
-        </Stack>
-      ),
+      content: <HowApplyingWorksDrawerContent />,
     },
     {
       id: "estimate-cost",
@@ -923,6 +1049,72 @@ export default function Membership() {
         </Stack>
       ),
     },
+    {
+      id: "membership-eligibility",
+      label: "How do I know if I'm a member?",
+      title: "How do I know if I'm a member?",
+      content: (
+        <Stack spacing={2}>
+          <Typography variant="body2" color="text.secondary">
+            Membership is required to apply for coverage through{" "}
+            {client.branding.name}. If you&apos;re unsure of your membership
+            status, here are some ways to confirm:
+          </Typography>
+
+          <Box>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
+              Check your membership
+            </Typography>
+            <Stack component="ul" spacing={1} sx={{ m: 0, pl: 2.5 }}>
+              <Typography component="li" variant="body2" color="text.secondary">
+                Look for a membership card or welcome email from your
+                association.
+              </Typography>
+              <Typography component="li" variant="body2" color="text.secondary">
+                Check if you receive association newsletters, journals, or other
+                member communications.
+              </Typography>
+              <Typography component="li" variant="body2" color="text.secondary">
+                Log in to your association&apos;s member portal to verify your
+                status.
+              </Typography>
+            </Stack>
+          </Box>
+
+          <Box>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
+              Not yet a member?
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              You can apply for membership with your association to become
+              eligible for coverage. Contact {client.branding.name} or visit
+              your association&apos;s website to learn about membership options
+              and how to join.
+            </Typography>
+          </Box>
+
+          {client.support.website && (
+            <Typography variant="body2" color="text.secondary">
+              For more information, visit{" "}
+              <Typography
+                component="a"
+                href={`https://${client.support.website}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  color: "primary.main",
+                  textDecoration: "underline",
+                  font: "inherit",
+                }}
+              >
+                {client.support.website}
+              </Typography>{" "}
+              or call {client.support.phoneDisplay}.
+            </Typography>
+          )}
+        </Stack>
+      ),
+    },
   ];
 
   return (
@@ -930,6 +1122,7 @@ export default function Membership() {
       pageId={pageId}
       title={getPageTitle(pageId)}
       helpItems={helpItems}
+      initialTransitionMessage="Loading your membership application..."
     >
       {({ control, errors, watchedValues, allFields }) => {
         const membershipField = allFields.find(

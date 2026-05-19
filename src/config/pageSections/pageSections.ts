@@ -24,7 +24,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       pageId: "eligibility",
       title: applicantSectionTitles.self,
       applicant: "self",
-      fieldIds: ["zip-postal-code", "state-province", "birth-date", "gender"],
+      fieldIds: ["zip-postal-code", "state-province", "birth-date"],
     },
     {
       id: "dependentSelection",
@@ -41,7 +41,6 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
         "spouse-first-name",
         "spouse-last-name",
         "spouse-birth-date",
-        "spouse-gender",
       ],
       visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
     },

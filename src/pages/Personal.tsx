@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, FormLabel } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import FormRoutePage, {
   isSectionVisible,
 } from "../components/form/FormRoutePage";
@@ -184,9 +184,6 @@ export default function Personal() {
                   showLabel={shouldShowApplicantLabel("self", watchedValues)}
                 >
                   <Box>
-                    <FormLabel sx={{ mb: 1, display: "block" }}>
-                      Height
-                    </FormLabel>
                     <Box
                       sx={{
                         display: "grid",
@@ -493,9 +490,6 @@ export default function Personal() {
               {sectionGroups.spouse.length > 0 && (
                 <ApplicantSection applicant="spouse">
                   <Box>
-                    <FormLabel sx={{ mb: 1, display: "block" }}>
-                      Height
-                    </FormLabel>
                     <Box
                       sx={{
                         display: "grid",

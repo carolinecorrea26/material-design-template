@@ -13,98 +13,8 @@ import FieldRenderer from "../components/form/FieldRenderer";
 import type { PageId } from "../types/page";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { fieldCatalog } from "../config/fields";
-import ReviewPreviewSection from "../components/form/ReviewPreviewSection";
-
-const reviewCards: Array<{
-  pageId: PageId;
-  title: string;
-  showSelfLabel?: boolean;
-}> = [
-  { pageId: "membership", title: "Membership" },
-  { pageId: "eligibility", title: "Eligibility" },
-  { pageId: "coverage", title: "Coverage", showSelfLabel: false },
-  { pageId: "coverage-questions", title: "Coverage Questions" },
-  { pageId: "coverage-options", title: "Coverage Options" },
-  { pageId: "beneficiary", title: "Beneficiary" },
-  { pageId: "contact", title: "Contact" },
-  { pageId: "personal", title: "Personal" },
-  { pageId: "financial", title: "Financial" },
-];
-
-const reviewFieldBlocklist = new Set<string>([
-  "coverageSelections",
-  "coverageAmounts",
-  "coverageRiders",
-  "coverageRiderAmounts",
-  "coverageWaitingPeriods",
-  "coverageMaxBenefitPeriods",
-  "children",
-  "beneficiaries",
-  "selfDisabilityCompanies",
-  "spouseDisabilityCompanies",
-  "review-self-consent",
-  "review-spouse-consent",
-]);
-
-const subQuestionFieldIds = new Set([
-  "tobacco-last-used",
-  "tobacco-products",
-  "spouse-tobacco-last-used",
-  "spouse-tobacco-products",
-]);
-
-const followUpFieldMap: Record<string, string[]> = {
-  "is-sole-proprietor": [
-    "sole-proprietor-gross-income",
-    "sole-proprietor-gross-earnings",
-    "sole-proprietor-business-expenses",
-  ],
-  "is-professional-corporation": [
-    "professional-corporation-annual-salary",
-    "professional-corporation-s-corp-distribution",
-    "professional-corporation-dividends",
-    "professional-corporation-bonus",
-    "bonus-payment-frequency",
-    "professional-corporation-commission",
-    "commission-payment-frequency",
-    "professional-corporation-benefits-cost",
-  ],
-  "has-work-location-outside-home": ["work-location-details"],
-  "has-other-life-insurance": [
-    "existing-life-insurance-amount",
-    "is-replacing-life-insurance",
-  ],
-  "has-pending-life-insurance-applications": [
-    "pending-life-insurance-amount",
-    "pending-life-insurance-company",
-  ],
-  "has-disability-insurance": [
-    "disability-carrier",
-    "disability-monthly-benefit",
-    "disability-benefit-period",
-    "disability-waiting-period",
-    "is-replacing-disability-insurance",
-  ],
-  "is-replacing-disability-insurance": ["disability-replacement-amount"],
-  "spouse-has-other-life-insurance": [
-    "spouse-existing-life-insurance-amount",
-    "spouse-is-replacing-life-insurance",
-  ],
-  "spouse-has-pending-life-insurance-applications": [
-    "spouse-pending-life-insurance-amount",
-    "spouse-pending-life-insurance-company",
-  ],
-  "spouse-has-disability-insurance": [
-    "spouse-disability-carrier",
-    "spouse-monthly-benefit",
-    "spouse-benefit-period",
-    "spouse-waiting-period",
-    "spouse-is-replacing-disability-insurance",
-  ],
-  "spouse-is-replacing-disability-insurance": [
-    "spouse-disability-replacement-amount",
-  ],
-};
+import ApplicationDocumentPreview from "../components/docusign/ApplicationDocumentPreview";
+import type { ApplicationFormValues } from "../state/ApplicationFormContext";
 
 const readAndSignContent = `Please read carefully the statements below.
 I understand that payment of a premium contribution for insurance does not mean that there is any coverage in force before the effective date as specified by New York Life.
@@ -221,7 +131,7 @@ export default function Review() {
       ]}
     >
       {({ control, errors, watchedValues }) => {
-        const values = watchedValues as Record<string, unknown>;
+        const values = watchedValues as ApplicationFormValues;
         const hasSpouse = isApplicantApplying("spouse", values);
 
         const selectedCoverageIds = Array.isArray(values.coverageSelections)
@@ -244,7 +154,7 @@ export default function Review() {
         return (
           <Stack spacing={2.5}>
             <Alert
-              severity="info"
+              severity="warning"
               icon={<ReportRoundedIcon fontSize="large" />}
             >
               <Stack spacing={1.5}>
@@ -298,14 +208,17 @@ export default function Review() {
               </Stack>
             </Alert>
 
-            <ReviewPreviewSection
+            <ApplicationDocumentPreview
               values={values}
-              hasSpouse={hasSpouse}
-              reviewCards={reviewCards}
-              reviewFieldBlocklist={reviewFieldBlocklist}
-              subQuestionFieldIds={subQuestionFieldIds}
-              followUpFieldMap={followUpFieldMap}
-              onEdit={openEdit}
+              signatureName=""
+              signedDate=""
+              currentDate={new Intl.DateTimeFormat("en-US", {
+                month: "2-digit",
+                day: "2-digit",
+                year: "numeric",
+              }).format(new Date())}
+              onEditSection={openEdit}
+              hideSignature
             />
 
             <Box>

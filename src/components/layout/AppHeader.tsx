@@ -1,35 +1,56 @@
-import { useMemo, useState, useSyncExternalStore } from "react";
+import {
+  type ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import {
   AppBar,
   Badge,
   Box,
   Button,
-  Chip,
+  ClickAwayListener,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Drawer,
   IconButton,
+  InputAdornment,
   Link,
+  List,
+  ListItemButton,
+  ListItemText,
+  Paper,
   Slide,
   Stack,
+  TextField,
   Toolbar,
   Typography,
   useScrollTrigger,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import AssignmentIndOutlinedIcon from "@mui/icons-material/AssignmentIndOutlined";
+import SearchIcon from "@mui/icons-material/Search";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import CloseIcon from "@mui/icons-material/Close";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
+import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
-import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
-import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
+import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import { CoverageOptionsDrawerContent } from "../../pages/Coverage";
+import { CoverageNeedsCalculator } from "../../pages/CoverageOptions";
+import FormHelpDrawer from "../form/FormHelpDrawer";
 import { pages } from "../../config/pages";
-import { coverageCategories } from "../../config/coverageCategories";
-import { getActiveClientCoverages } from "../../client/getActiveClientCoverages";
 import type { CoverageDefinition } from "../../config/coverages/types";
-import { getActiveFormFlow, isFormPage } from "../../config/formFlow";
-import { progressSteps } from "../../config/progressSteps";
+import { getActiveClientCoverages } from "../../client/getActiveClientCoverages";
+import { coverageCategories } from "../../config/coverageCategories";
+import { isFormPage } from "../../config/formFlow";
 import type { ClientConfig } from "../../config/clients/types";
 import type { PageId } from "../../types/page";
 import { useApplicationForm } from "../../state/ApplicationFormContext";
@@ -49,22 +70,6 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
   currency: "USD",
   maximumFractionDigits: 0,
 });
-
-function toPageLabel(pageId: PageId) {
-  const acronymWords = new Set(["SI", "QD", "DI", "CIR"]);
-
-  return pageId
-    .split("-")
-    .map((segment) => {
-      const upper = segment.toUpperCase();
-      if (acronymWords.has(upper)) {
-        return upper;
-      }
-
-      return segment.charAt(0).toUpperCase() + segment.slice(1);
-    })
-    .join(" ");
-}
 
 function formatCoverageRange(coverage: CoverageDefinition) {
   if (coverage.minAmount == null && coverage.maxAmount == null) {
@@ -138,14 +143,125 @@ function getPathnameSnapshot() {
   return window.location.pathname;
 }
 
+type SearchResult = {
+  label: string;
+  description: string;
+  action: "navigate" | "drawer";
+  target: string;
+};
+
+function buildSearchItems(): SearchResult[] {
+  const items: SearchResult[] = [];
+
+  // Coverage categories
+  for (const category of coverageCategories) {
+    items.push({
+      label: category.label,
+      description: `Browse ${category.label} coverage options`,
+      action: "drawer",
+      target: "coverage",
+    });
+  }
+
+  // Individual coverages from active client
+  const clientCoverages = getActiveClientCoverages();
+  for (const coverage of clientCoverages) {
+    items.push({
+      label: coverage.name,
+      description: coverage.definition,
+      action: "drawer",
+      target: "coverage",
+    });
+  }
+
+  // General coverage-related items
+  items.push(
+    {
+      label: "Coverage Options",
+      description: "View available coverage categories and products",
+      action: "drawer",
+      target: "coverage",
+    },
+    {
+      label: "Needs Calculator",
+      description: "Calculate how much coverage you need",
+      action: "drawer",
+      target: "needs-calc",
+    },
+    {
+      label: "QuickDecision",
+      description: "Learn about instant underwriting decisions",
+      action: "drawer",
+      target: "quick-decision",
+    },
+    {
+      label: "Resume Application",
+      description: "Continue a previously started application",
+      action: "navigate",
+      target: "/resume",
+    },
+  );
+
+  return items;
+}
+
+function searchItems(query: string): SearchResult[] {
+  if (!query.trim()) return [];
+  const lower = query.toLowerCase();
+  const items = buildSearchItems();
+  // Deduplicate by label
+  const seen = new Set<string>();
+  return items
+    .filter(
+      (item) =>
+        item.label.toLowerCase().includes(lower) ||
+        item.description.toLowerCase().includes(lower),
+    )
+    .filter((item) => {
+      const key = `${item.label}-${item.target}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, 6);
+}
+
+function highlightMatch(text: string, query: string): ReactNode {
+  if (!query.trim()) return text;
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(`(${escaped})`, "gi");
+  const parts = text.split(regex);
+  if (parts.length === 1) return text;
+  return (
+    <>
+      {parts.map((part, i) =>
+        regex.test(part) ? (
+          <Box key={i} component="span" sx={{ backgroundColor: "#fff9c4" }}>
+            {part}
+          </Box>
+        ) : (
+          <span key={i}>{part}</span>
+        ),
+      )}
+    </>
+  );
+}
+
 export default function AppHeader({ client }: AppHeaderProps) {
   const [imageError, setImageError] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
+  const [isCoverageDrawerOpen, setIsCoverageDrawerOpen] = useState(false);
+  const [isNeedsCalcOpen, setIsNeedsCalcOpen] = useState(false);
   const [activeCoverage, setActiveCoverage] =
     useState<CoverageDefinition | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchAnchorRef = useRef<HTMLDivElement>(null);
   const { values } = useApplicationForm();
   const summaryBadgeCount = useApplicationSummaryBadge();
+
+  const searchResults = useMemo(() => searchItems(searchQuery), [searchQuery]);
 
   const pathname = useSyncExternalStore(
     subscribeToPathname,
@@ -164,57 +280,8 @@ export default function AppHeader({ client }: AppHeaderProps) {
       : pathname;
 
   const currentPage = pages.find((page) => page.path === normalizedPath);
-  const activeFlow = useMemo(() => getActiveFormFlow(values), [values]);
-  const activeFlowSet = useMemo(() => new Set(activeFlow), [activeFlow]);
-  const pageById = useMemo(
-    () => new Map(pages.map((page) => [page.id, page])),
-    [],
-  );
 
   const currentPageId = currentPage?.id as PageId | undefined;
-  const currentFlowIndex =
-    currentPageId && activeFlowSet.has(currentPageId)
-      ? activeFlow.indexOf(currentPageId)
-      : -1;
-
-  const maxReachedPageIndex =
-    currentPageId === "receipt"
-      ? activeFlow.length - 1
-      : Math.max(currentFlowIndex, 0);
-
-  let completionPercent = 0;
-  if (currentPageId === "receipt") {
-    completionPercent = 100;
-  } else if (currentPageId && activeFlowSet.has(currentPageId)) {
-    completionPercent =
-      activeFlow.length > 0
-        ? Math.round(((currentFlowIndex + 1) / activeFlow.length) * 100)
-        : 0;
-  }
-
-  const groupedApplicationMenuItems = useMemo(
-    () =>
-      progressSteps
-        .map((step) => ({
-          ...step,
-          pageIds: step.pageIds.filter((pageId) => activeFlowSet.has(pageId)),
-        }))
-        .filter((step) => step.pageIds.length > 0),
-    [activeFlowSet],
-  );
-
-  const groupedCoverageItems = useMemo(() => {
-    const activeCoverages = getActiveClientCoverages();
-
-    return coverageCategories
-      .map((category) => ({
-        category,
-        coverages: activeCoverages.filter(
-          (coverage) => coverage.categoryId === category.id,
-        ),
-      }))
-      .filter((group) => group.coverages.length > 0);
-  }, []);
 
   const showProgress =
     !!currentPage &&
@@ -226,11 +293,61 @@ export default function AppHeader({ client }: AppHeaderProps) {
     currentPageId !== "home" &&
     currentPageId !== "receipt";
 
+  // Auto-open coverage requested drawer when a coverage is added on the coverage page
+  const prevCoverageCountRef = useRef<number>(
+    Array.isArray(values.coverageSelections)
+      ? values.coverageSelections.length
+      : 0,
+  );
+
+  useEffect(() => {
+    const currentCount = Array.isArray(values.coverageSelections)
+      ? values.coverageSelections.length
+      : 0;
+    const prevCount = prevCoverageCountRef.current;
+    prevCoverageCountRef.current = currentCount;
+
+    if (
+      currentPageId === "coverage" &&
+      currentCount > prevCount &&
+      prevCount >= 0
+    ) {
+      setIsSummaryOpen(true);
+    }
+  }, [values.coverageSelections, currentPageId]);
+
   const phone = client.support.phone;
 
   function handleNavigate(path: string) {
     setIsMenuOpen(false);
     void router.navigate(path);
+  }
+
+  function handleSearchSelect(result: SearchResult) {
+    setSearchQuery("");
+    setSearchOpen(false);
+
+    if (result.action === "navigate") {
+      void router.navigate(result.target);
+    } else {
+      switch (result.target) {
+        case "coverage":
+          setIsCoverageDrawerOpen(true);
+          break;
+        case "needs-calc":
+          setIsNeedsCalcOpen(true);
+          break;
+        case "quick-decision":
+          setIsCoverageDrawerOpen(true);
+          break;
+        case "contact":
+          setIsMenuOpen(true);
+          break;
+        case "faq":
+          setIsMenuOpen(true);
+          break;
+      }
+    }
   }
 
   return (
@@ -272,7 +389,12 @@ export default function AppHeader({ client }: AppHeaderProps) {
             >
               <Box sx={{ display: "flex", alignItems: "center", minWidth: 0 }}>
                 {imageError ? (
-                  <Typography variant="h6" noWrap>
+                  <Typography
+                    variant="h6"
+                    noWrap
+                    sx={{ cursor: "pointer" }}
+                    onClick={() => void router.navigate("/")}
+                  >
                     {client.branding.name}
                   </Typography>
                 ) : (
@@ -281,75 +403,240 @@ export default function AppHeader({ client }: AppHeaderProps) {
                     src={client.branding.logo}
                     alt={client.branding.logoAlt}
                     onError={() => setImageError(true)}
+                    onClick={() => void router.navigate("/")}
                     sx={{
                       height: "auto",
                       width: "auto",
                       maxWidth: { xs: 200, sm: 250 },
-                      maxHeight: 40,
+                      maxHeight: 35,
                       display: "block",
+                      cursor: "pointer",
                     }}
                   />
                 )}
               </Box>
 
-              {phone && (
+              {/* Site Search - inline on sm+, hidden on xs (shown below) */}
+              <ClickAwayListener onClickAway={() => setSearchOpen(false)}>
                 <Box
+                  ref={searchAnchorRef}
                   sx={{
-                    ml: "auto",
-                    minWidth: 0,
-                    textAlign: "right",
+                    flex: 1,
+                    maxWidth: 280,
+                    display: { xs: "none", sm: "block" },
+                    position: "relative",
                   }}
                 >
-                  <Stack direction="row" spacing={0.75} alignItems="center">
-                    <Link
-                      href={`tel:${phone}`}
-                      underline="hover"
-                      color="inherit"
+                  <TextField
+                    size="small"
+                    placeholder="Search coverages…"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setSearchOpen(e.target.value.trim().length > 0);
+                    }}
+                    onFocus={() => {
+                      if (searchQuery.trim()) setSearchOpen(true);
+                    }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon
+                            sx={{ fontSize: "1.2rem", color: "text.secondary" }}
+                          />
+                        </InputAdornment>
+                      ),
+                      endAdornment: searchQuery ? (
+                        <InputAdornment position="end">
+                          <IconButton
+                            size="small"
+                            aria-label="Clear search"
+                            onClick={() => {
+                              setSearchQuery("");
+                              setSearchOpen(false);
+                            }}
+                            sx={{ p: 0.25 }}
+                          >
+                            <CloseIcon sx={{ fontSize: "1rem" }} />
+                          </IconButton>
+                        </InputAdornment>
+                      ) : null,
+                    }}
+                    sx={{
+                      width: "100%",
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "999px",
+                        height: 36,
+                        fontSize: "0.85rem",
+                      },
+                    }}
+                  />
+                  {searchOpen && searchResults.length > 0 && (
+                    <Paper
+                      elevation={8}
                       sx={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 0.75,
-                        fontSize: 14,
-                        fontWeight: 600,
-                        lineHeight: 1.2,
-                        whiteSpace: "nowrap",
+                        position: "absolute",
+                        top: "100%",
+                        left: 0,
+                        right: 0,
+                        mt: 0.5,
+                        borderRadius: 2,
+                        overflow: "hidden",
+                        zIndex: 1300,
                       }}
                     >
-                      <PhoneOutlinedIcon
-                        sx={{ fontSize: 18, color: "primary.main" }}
-                      />
-                      {/* Call Us */}
-                    </Link>
+                      <List dense disablePadding>
+                        {searchResults.map((result) => (
+                          <ListItemButton
+                            key={`${result.action}-${result.target}-${result.label}`}
+                            onClick={() => handleSearchSelect(result)}
+                          >
+                            <ListItemText
+                              primary={highlightMatch(
+                                result.label,
+                                searchQuery,
+                              )}
+                              secondary={result.description}
+                              primaryTypographyProps={{
+                                variant: "body2",
+                                fontWeight: 600,
+                              }}
+                              secondaryTypographyProps={{ variant: "caption" }}
+                            />
+                          </ListItemButton>
+                        ))}
+                      </List>
+                    </Paper>
+                  )}
+                </Box>
+              </ClickAwayListener>
 
-                    {showSummaryIcon && (
-                      <IconButton
-                        aria-label="Open application summary"
-                        onClick={() => setIsSummaryOpen(true)}
-                        size="small"
-                      >
-                        <Badge
-                          badgeContent={summaryBadgeCount}
-                          color="error"
-                          max={99}
-                        >
-                          <AssignmentIndOutlinedIcon
-                          // sx={{ color: "primary.main" }}
-                          />
-                        </Badge>
-                      </IconButton>
-                    )}
-
+              <Box
+                sx={{
+                  ml: "auto",
+                  minWidth: 0,
+                  textAlign: "right",
+                }}
+              >
+                <Stack direction="row" spacing={0.75} alignItems="center">
+                  {showSummaryIcon && (
                     <IconButton
-                      aria-label="Open application navigation menu"
-                      onClick={() => setIsMenuOpen(true)}
+                      aria-label="Open coverage requested"
+                      onClick={() => setIsSummaryOpen(true)}
                       size="small"
                     >
-                      <MenuIcon />
+                      <Badge
+                        badgeContent={summaryBadgeCount}
+                        color="primary"
+                        max={99}
+                      >
+                        <ShoppingCartOutlinedIcon
+                          sx={{ color: "primary.main" }}
+                        />
+                      </Badge>
                     </IconButton>
-                  </Stack>
-                </Box>
-              )}
+                  )}
+
+                  <IconButton
+                    aria-label="Open application navigation menu"
+                    onClick={() => setIsMenuOpen(true)}
+                    size="small"
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                </Stack>
+              </Box>
             </Box>
+
+            {/* Site Search - full width on xs */}
+            <ClickAwayListener onClickAway={() => setSearchOpen(false)}>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: { xs: "block", sm: "none" },
+                  position: "relative",
+                }}
+              >
+                <TextField
+                  size="small"
+                  placeholder="Search coverages…"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setSearchOpen(e.target.value.trim().length > 0);
+                  }}
+                  onFocus={() => {
+                    if (searchQuery.trim()) setSearchOpen(true);
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon
+                          sx={{ fontSize: "1.2rem", color: "text.secondary" }}
+                        />
+                      </InputAdornment>
+                    ),
+                    endAdornment: searchQuery ? (
+                      <InputAdornment position="end">
+                        <IconButton
+                          size="small"
+                          aria-label="Clear search"
+                          onClick={() => {
+                            setSearchQuery("");
+                            setSearchOpen(false);
+                          }}
+                          sx={{ p: 0.25 }}
+                        >
+                          <CloseIcon sx={{ fontSize: "1rem" }} />
+                        </IconButton>
+                      </InputAdornment>
+                    ) : null,
+                  }}
+                  sx={{
+                    width: "100%",
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "999px",
+                      height: 36,
+                      fontSize: "0.85rem",
+                    },
+                  }}
+                />
+                {searchOpen && searchResults.length > 0 && (
+                  <Paper
+                    elevation={8}
+                    sx={{
+                      position: "absolute",
+                      top: "100%",
+                      left: 0,
+                      right: 0,
+                      mt: 0.5,
+                      borderRadius: 2,
+                      overflow: "hidden",
+                      zIndex: 1300,
+                    }}
+                  >
+                    <List dense disablePadding>
+                      {searchResults.map((result) => (
+                        <ListItemButton
+                          key={`${result.action}-${result.target}-${result.label}`}
+                          onClick={() => handleSearchSelect(result)}
+                        >
+                          <ListItemText
+                            primary={highlightMatch(result.label, searchQuery)}
+                            secondary={result.description}
+                            primaryTypographyProps={{
+                              variant: "body2",
+                              fontWeight: 600,
+                            }}
+                            secondaryTypographyProps={{ variant: "caption" }}
+                          />
+                        </ListItemButton>
+                      ))}
+                    </List>
+                  </Paper>
+                )}
+              </Box>
+            </ClickAwayListener>
 
             {showProgress && (
               <Box sx={{ width: "100%", minWidth: 0 }}>
@@ -366,7 +653,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
         onClose={() => setIsMenuOpen(false)}
         sx={{
           "& .MuiDrawer-paper": {
-            width: { xs: "100%", sm: 420 },
+            width: { xs: "80vw", sm: 420 },
             maxWidth: "100%",
             p: 2,
           },
@@ -393,140 +680,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
             </IconButton>
           </Box>
 
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: 1,
-              bgcolor: "grey.100",
-            }}
-          >
-            <Stack spacing={2}>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography variant="subtitle1" sx={APP_MENU_SECTION_TITLE_SX}>
-                  Application Progress
-                </Typography>
-                <Typography variant="caption" sx={{ color: "text.primary" }}>
-                  <Box
-                    component="span"
-                    sx={{ color: "primary.main", fontWeight: 700 }}
-                  >
-                    {completionPercent}%
-                  </Box>{" "}
-                  complete
-                </Typography>
-              </Box>
-
-              {groupedApplicationMenuItems.map((step) => (
-                <Stack key={step.id} spacing={0.5}>
-                  <Typography variant="sectionLabel">{step.label}</Typography>
-
-                  <Stack spacing={0.4}>
-                    {step.pageIds.map((pageId) => {
-                      const page = pageById.get(pageId);
-
-                      if (!page) return null;
-
-                      const pageIndex = activeFlow.indexOf(pageId);
-                      const isDisabled =
-                        pageIndex === -1 || pageIndex > maxReachedPageIndex;
-                      const isActive = currentPageId === pageId;
-                      const isComplete = !isDisabled && !isActive;
-
-                      const StepIcon = isComplete
-                        ? CheckCircleRoundedIcon
-                        : CircleRoundedIcon;
-                      const iconColor = isComplete ? "success.main" : "#dcdcdc";
-
-                      if (isDisabled) {
-                        return (
-                          <Stack
-                            key={pageId}
-                            direction="row"
-                            alignItems="center"
-                            justifyContent="space-between"
-                          >
-                            <Typography
-                              sx={{
-                                color: "#b4b4b4",
-                                fontWeight: 500,
-                                fontSize: "0.875rem",
-                                lineHeight: 1.35,
-                              }}
-                            >
-                              {toPageLabel(pageId)}
-                            </Typography>
-                            <CircleRoundedIcon
-                              sx={{ fontSize: 14, color: "#dcdcdc" }}
-                            />
-                          </Stack>
-                        );
-                      }
-
-                      return (
-                        <Stack
-                          key={pageId}
-                          direction="row"
-                          alignItems="center"
-                          justifyContent="space-between"
-                        >
-                          <Link
-                            component="button"
-                            type="button"
-                            underline={isActive ? "always" : "hover"}
-                            onClick={() => handleNavigate(page.path)}
-                            sx={{
-                              textAlign: "left",
-                              fontSize: "0.875rem",
-                              fontWeight: isActive || isComplete ? 600 : 500,
-                              lineHeight: 1.35,
-                              color:
-                                isActive || isComplete
-                                  ? "primary.main"
-                                  : "#b4b4b4",
-                            }}
-                          >
-                            {toPageLabel(pageId)}
-                          </Link>
-                          <StepIcon sx={{ fontSize: 14, color: iconColor }} />
-                        </Stack>
-                      );
-                    })}
-                  </Stack>
-                </Stack>
-              ))}
-
-              <Box
-                sx={{
-                  pt: 1.5,
-                  borderTop: "1px solid",
-                  borderColor: "divider",
-                }}
-              >
-                <Stack spacing={1.25}>
-                  <Typography
-                    variant="caption"
-                    sx={{ color: "text.secondary" }}
-                  >
-                    Started an earlier application? Resume it below.
-                  </Typography>
-                  <Button
-                    variant="contained"
-                    fullWidth
-                    onClick={() => handleNavigate("/resume")}
-                  >
-                    Resume Application
-                  </Button>
-                </Stack>
-              </Box>
-            </Stack>
-          </Box>
-
+          {/* Resume Application Section */}
           <Box
             sx={{
               p: 2,
@@ -536,44 +690,169 @@ export default function AppHeader({ client }: AppHeaderProps) {
           >
             <Stack spacing={2}>
               <Typography variant="subtitle1" sx={APP_MENU_SECTION_TITLE_SX}>
-                About Coverage
+                Resume Application
               </Typography>
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                If you started an earlier application, you can resume it below.
+              </Typography>
+              <Button
+                variant="contained"
+                fullWidth
+                onClick={() => handleNavigate("/resume")}
+              >
+                Resume Application
+              </Button>
+            </Stack>
+          </Box>
 
-              {groupedCoverageItems.map(({ category, coverages }) => (
-                <Stack key={category.id} spacing={0.5}>
-                  <Typography variant="sectionLabel">
-                    {category.label}
+          {/* Application Tools Section */}
+          <Box
+            sx={{
+              p: 2,
+              borderRadius: 1,
+              bgcolor: "grey.100",
+            }}
+          >
+            <Stack spacing={2}>
+              <Typography variant="subtitle1" sx={APP_MENU_SECTION_TITLE_SX}>
+                Application Tools
+              </Typography>
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                  gap: 1.5,
+                }}
+              >
+                <Button
+                  variant="outlined"
+                  startIcon={<InfoOutlinedIcon />}
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsCoverageDrawerOpen(true);
+                  }}
+                  sx={{ justifyContent: "flex-start", textTransform: "none" }}
+                >
+                  About Coverage
+                </Button>
+                <Button
+                  variant="outlined"
+                  startIcon={<RequestQuoteOutlinedIcon />}
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsSummaryOpen(true);
+                  }}
+                  sx={{ justifyContent: "flex-start", textTransform: "none" }}
+                >
+                  Get Quote
+                </Button>
+                <Button
+                  variant="outlined"
+                  startIcon={<CalculateOutlinedIcon />}
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsNeedsCalcOpen(true);
+                  }}
+                  sx={{ justifyContent: "flex-start", textTransform: "none" }}
+                >
+                  Needs Calculator
+                </Button>
+                <Button
+                  variant="outlined"
+                  startIcon={<HelpOutlineIcon />}
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                  }}
+                  sx={{ justifyContent: "flex-start", textTransform: "none" }}
+                >
+                  FAQ
+                </Button>
+              </Box>
+            </Stack>
+          </Box>
+
+          {/* Contact Us Section */}
+          <Box
+            sx={{
+              p: 2,
+              borderRadius: 1,
+              bgcolor: "grey.100",
+            }}
+          >
+            <Stack spacing={1.5}>
+              <Typography variant="subtitle1" sx={APP_MENU_SECTION_TITLE_SX}>
+                Contact Us
+              </Typography>
+              <Stack spacing={1}>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <PersonOutlineIcon
+                    sx={{ fontSize: 18, color: "text.secondary" }}
+                  />
+                  <Typography variant="body2">
+                    {client.branding.name}
                   </Typography>
-
-                  <Stack
-                    direction="row"
-                    spacing={0.75}
-                    useFlexGap
-                    flexWrap="wrap"
-                  >
-                    {coverages.map((coverage) => (
-                      <Chip
-                        key={coverage.id}
-                        clickable
-                        variant="outlined"
-                        color="primary"
-                        size="small"
-                        label={coverage.name}
-                        onClick={() => {
-                          setIsMenuOpen(false);
-                          setActiveCoverage(coverage);
-                        }}
-                      />
-                    ))}
-                  </Stack>
                 </Stack>
-              ))}
+                {client.support.email && (
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <EmailOutlinedIcon
+                      sx={{ fontSize: 18, color: "text.secondary" }}
+                    />
+                    <Link
+                      href={`mailto:${client.support.email}`}
+                      underline="hover"
+                      variant="body2"
+                    >
+                      {client.support.email}
+                    </Link>
+                  </Stack>
+                )}
+                {phone && (
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <PhoneOutlinedIcon
+                      sx={{ fontSize: 18, color: "text.secondary" }}
+                    />
+                    <Link
+                      href={`tel:${phone}`}
+                      underline="hover"
+                      variant="body2"
+                    >
+                      {client.support.phoneDisplay ?? phone}
+                    </Link>
+                  </Stack>
+                )}
+                {client.support.phoneHours && (
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <AccessTimeOutlinedIcon
+                      sx={{ fontSize: 18, color: "text.secondary" }}
+                    />
+                    <Typography variant="body2" color="text.secondary">
+                      {client.support.phoneHours}
+                    </Typography>
+                  </Stack>
+                )}
+              </Stack>
             </Stack>
           </Box>
 
           <Box sx={{ mt: "auto" }} />
         </Stack>
       </Drawer>
+
+      <FormHelpDrawer
+        open={isCoverageDrawerOpen}
+        title="What coverage options are available?"
+        onClose={() => setIsCoverageDrawerOpen(false)}
+      >
+        <CoverageOptionsDrawerContent />
+      </FormHelpDrawer>
+
+      <FormHelpDrawer
+        open={isNeedsCalcOpen}
+        title="How much coverage do I need?"
+        onClose={() => setIsNeedsCalcOpen(false)}
+      >
+        <CoverageNeedsCalculator />
+      </FormHelpDrawer>
 
       <Dialog
         open={Boolean(activeCoverage)}

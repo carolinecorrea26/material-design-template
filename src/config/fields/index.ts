@@ -648,8 +648,8 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
 
   "height-feet": {
     id: "height-feet",
-    label: "Feet",
-    inputType: "text",
+    label: "Height (Feet)",
+    inputType: "number",
     inputMode: "numeric",
     required: true,
   },
@@ -657,7 +657,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
   "height-inches": {
     id: "height-inches",
     label: "Inches",
-    inputType: "text",
+    inputType: "number",
     inputMode: "numeric",
     required: true,
   },
@@ -782,8 +782,8 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
 
   "spouse-height-feet": {
     id: "spouse-height-feet",
-    label: "Feet",
-    inputType: "text",
+    label: "Height (Feet)",
+    inputType: "number",
     inputMode: "numeric",
     required: true,
   },
@@ -791,7 +791,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
   "spouse-height-inches": {
     id: "spouse-height-inches",
     label: "Inches",
-    inputType: "text",
+    inputType: "number",
     inputMode: "numeric",
     required: true,
   },

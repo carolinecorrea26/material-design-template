@@ -69,6 +69,8 @@ export type ClientCoverages = {
   ranges?: Partial<Record<CoverageId, { min: number; max: number }>>;
   descriptions?: Partial<Record<CoverageId, string>>;
   overrides?: Partial<Record<CoverageId, ClientCoverageOverrides>>;
+  /** When true, all coverage category accordions are expanded by default. Otherwise only the first is expanded. */
+  allCategoriesExpanded?: boolean;
 };
 
 export type ClientFields = Partial<

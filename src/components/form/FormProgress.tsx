@@ -16,8 +16,8 @@ import {
   isFormPage,
 } from "../../config/formFlow";
 import {
-  getProgressStepIndex,
-  progressSteps,
+  getActiveProgressSteps,
+  getActiveProgressStepIndex,
 } from "../../config/progressSteps";
 import type { ProgressVariant } from "../../types/progress";
 import {
@@ -34,8 +34,15 @@ function getCurrentPageId(pathname: string): PageId | null {
 }
 
 function readProgressVariant(): ProgressVariant {
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlProgress = urlParams.get("progress");
+  if (urlProgress === "hstep") return "stepper";
+  if (urlProgress === "vstep") return "vertical-stepper";
+  if (urlProgress === "bar") return "bar";
   const stored = window.sessionStorage.getItem(PROGRESS_VARIANT_STORAGE_KEY);
-  return stored === "bar" ? "bar" : "stepper";
+  if (stored === "bar") return "bar";
+  if (stored === "stepper") return "stepper";
+  return "vertical-stepper";
 }
 
 function emitProgressSnapshot(values: ApplicationFormValues) {
@@ -92,9 +99,14 @@ export default function FormProgress() {
     return null;
   }
 
+  if (progressVariant === "vertical-stepper") {
+    return null;
+  }
+
   const percent = getFormProgressPercent(pageId, progressSnapshotValues);
   const roundedPercent = Math.round(percent);
-  const activeStep = getProgressStepIndex(pageId);
+  const filteredSteps = getActiveProgressSteps(progressSnapshotValues);
+  const activeStep = getActiveProgressStepIndex(pageId, progressSnapshotValues);
   const previousPageId = getPreviousFormPageId(pageId, progressSnapshotValues);
   const nextPageId = getNextFormPageId(pageId, progressSnapshotValues);
   const hasNextAction = Boolean(nextPageId) || pageId === "payment";
@@ -113,16 +125,16 @@ export default function FormProgress() {
             pt: 1,
           }}
         >
-          {progressSteps.map((step, index) => {
+          {filteredSteps.map((step, index) => {
             const isActive = index === activeStep;
             const isComplete = index < activeStep;
-            const isLast = index === progressSteps.length - 1;
+            const isLast = index === filteredSteps.length - 1;
 
             let nextStepPercent = 0;
             if (index < activeStep) {
               nextStepPercent = 100;
             } else if (index === activeStep) {
-              const currentStep = progressSteps[activeStep];
+              const currentStep = filteredSteps[activeStep];
               const currentPageIndexInStep = currentStep
                 ? Math.max(0, currentStep.pageIds.indexOf(pageId))
                 : 0;

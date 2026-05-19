@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 // import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 // import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
+import { keyframes } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import {
@@ -9,6 +10,7 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -23,6 +25,7 @@ import {
   MenuItem,
   Radio,
   Select,
+  Skeleton,
   Stack,
   Tab,
   Tabs,
@@ -97,6 +100,22 @@ const SECTION_TITLE_SX = {
   fontWeight: 700,
   // color: "primary.dark",
 };
+
+const fadeInUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const FADE_IN_SECTION_SX = (delay: number) => ({
+  opacity: 0,
+  animation: `${fadeInUp} 0.7s ease-out ${delay}s forwards`,
+});
 
 const CATEGORY_DESCRIPTIONS: Record<CoverageCategoryId, string> = {
   LI: "Life coverage can help provide financial protection for the people who depend on you.",
@@ -454,16 +473,36 @@ function HowApplyingWorksSection({
   );
 }
 
+const ESTIMATE_STORAGE_KEY = "homeEstimateValues";
+
+function loadStoredEstimateValues(): Partial<EstimateState> {
+  try {
+    const stored = window.localStorage.getItem(ESTIMATE_STORAGE_KEY);
+    if (!stored) return {};
+    return JSON.parse(stored) as Partial<EstimateState>;
+  } catch {
+    return {};
+  }
+}
+
+function saveEstimateValues(
+  values: Pick<EstimateState, "birthday" | "zipCode" | "state">,
+) {
+  window.localStorage.setItem(ESTIMATE_STORAGE_KEY, JSON.stringify(values));
+}
+
 function HomeQuoteCard() {
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const stateOptions = useMemo(() => getStateOptions(), []);
 
+  const storedEstimate = useMemo(() => loadStoredEstimateValues(), []);
+
   const [estimateValues, setEstimateValues] = useState<EstimateState>({
-    birthday: "",
-    zipCode: "",
-    state: "",
+    birthday: storedEstimate.birthday ?? "",
+    zipCode: storedEstimate.zipCode ?? "",
+    state: storedEstimate.state ?? "",
     productId: "",
     gender: "",
     smoker: "",
@@ -476,6 +515,10 @@ function HomeQuoteCard() {
   });
   const [initialAttempted, setInitialAttempted] = useState(false);
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
+  const [isEstimateLoading, setIsEstimateLoading] = useState(false);
+  const [isQuoteLoading, setIsQuoteLoading] = useState(false);
+  const [quoteLoadingMessage, setQuoteLoadingMessage] = useState("");
+  const [dobFocused, setDobFocused] = useState(false);
   const [estimateAmountsByProductId, setEstimateAmountsByProductId] = useState<
     Record<string, number>
   >({});
@@ -692,6 +735,22 @@ function HomeQuoteCard() {
       return;
     }
 
+    // Persist DOB/zip/state to localStorage
+    saveEstimateValues({
+      birthday: estimateValues.birthday,
+      zipCode: estimateValues.zipCode,
+      state: estimateValues.state,
+    });
+
+    // Show loading state on button
+    setIsEstimateLoading(true);
+    setTimeout(() => {
+      setIsEstimateLoading(false);
+      openQuoteModal();
+    }, 1000);
+  }
+
+  function openQuoteModal() {
     // Pre-select first product if none selected
     const firstProduct =
       productsByCategory.length > 0
@@ -719,32 +778,45 @@ function HomeQuoteCard() {
       !needsGender && !needsSmoker && !needsDi && !needsOo && !needsHours;
 
     if (noAdditionalFieldsNeeded && preselectedProduct) {
-      // Auto-reveal quote immediately
-      const choices = generateAmountChoices(
-        preselectedProduct.categoryId,
-        preselectedProduct.minAmount,
-        preselectedProduct.maxAmount,
-      );
-      const initialAmount = choices[0] ?? 0;
-      const initialRate = estimateMonthlyPremium(
-        preselectedProduct.categoryId,
-        initialAmount,
-      );
-      setEstimateAmountsByProductId((current) => ({
-        ...current,
-        [preselectedProduct.id]: initialAmount,
-      }));
-      setEstimateRatesByProductId((current) => ({
-        ...current,
-        [preselectedProduct.id]: initialRate,
-      }));
-      setQuoteRevealed(true);
+      // Show loading skeleton then reveal quote
+      setQuoteRevealed(false);
+      setIsQuoteLoading(true);
+      setQuoteLoadingMessage("Checking for latest rates...");
+      setModalAttempted(false);
+      setQuoteModalOpen(true);
+
+      setTimeout(() => {
+        setQuoteLoadingMessage("Calculating your estimated cost...");
+      }, 500);
+
+      setTimeout(() => {
+        const choices = generateAmountChoices(
+          preselectedProduct.categoryId,
+          preselectedProduct.minAmount,
+          preselectedProduct.maxAmount,
+        );
+        const initialAmount = choices[0] ?? 0;
+        const initialRate = estimateMonthlyPremium(
+          preselectedProduct.categoryId,
+          initialAmount,
+        );
+        setEstimateAmountsByProductId((current) => ({
+          ...current,
+          [preselectedProduct.id]: initialAmount,
+        }));
+        setEstimateRatesByProductId((current) => ({
+          ...current,
+          [preselectedProduct.id]: initialRate,
+        }));
+        setIsQuoteLoading(false);
+        setQuoteLoadingMessage("");
+        setQuoteRevealed(true);
+      }, 1000);
     } else {
       setQuoteRevealed(false);
+      setModalAttempted(false);
+      setQuoteModalOpen(true);
     }
-
-    setModalAttempted(false);
-    setQuoteModalOpen(true);
   }
 
   function handleEstimateAmountChange(
@@ -782,26 +854,39 @@ function HomeQuoteCard() {
       }
     }
 
-    const choices = generateAmountChoices(
-      product.categoryId,
-      product.minAmount,
-      product.maxAmount,
-    );
-    const initialAmount = choices[0] ?? 0;
-    const initialRate = estimateMonthlyPremium(
-      product.categoryId,
-      initialAmount,
-    );
+    // Show loading skeleton then reveal
+    setQuoteRevealed(false);
+    setIsQuoteLoading(true);
+    setQuoteLoadingMessage("Checking for latest rates...");
 
-    setEstimateAmountsByProductId((current) => ({
-      ...current,
-      [product.id]: initialAmount,
-    }));
-    setEstimateRatesByProductId((current) => ({
-      ...current,
-      [product.id]: initialRate,
-    }));
-    setQuoteRevealed(true);
+    setTimeout(() => {
+      setQuoteLoadingMessage("Calculating your estimated cost...");
+    }, 500);
+
+    setTimeout(() => {
+      const choices = generateAmountChoices(
+        product.categoryId,
+        product.minAmount,
+        product.maxAmount,
+      );
+      const initialAmount = choices[0] ?? 0;
+      const initialRate = estimateMonthlyPremium(
+        product.categoryId,
+        initialAmount,
+      );
+
+      setEstimateAmountsByProductId((current) => ({
+        ...current,
+        [product.id]: initialAmount,
+      }));
+      setEstimateRatesByProductId((current) => ({
+        ...current,
+        [product.id]: initialRate,
+      }));
+      setIsQuoteLoading(false);
+      setQuoteLoadingMessage("");
+      setQuoteRevealed(true);
+    }, 1000);
   }
 
   const isHoursIneligible =
@@ -856,6 +941,7 @@ function HomeQuoteCard() {
               label="Date of Birth"
               fullWidth
               required
+              placeholder="MM/DD/YYYY"
               value={parseStoredDate(estimateValues.birthday)}
               onChange={(event) => {
                 const formatted = formatDateDisplay(event.target.value);
@@ -868,13 +954,17 @@ function HomeQuoteCard() {
                   updateEstimateValues({ birthday: formatted });
                 }
               }}
+              onFocus={() => setDobFocused(true)}
+              onBlur={() => setDobFocused(false)}
               inputProps={{ inputMode: "numeric" }}
-              InputLabelProps={{ shrink: true }}
+              InputLabelProps={{
+                shrink: dobFocused || !!estimateValues.birthday,
+              }}
               error={initialAttempted && !!initialValidationErrors.birthday}
               helperText={
                 initialAttempted && initialValidationErrors.birthday
                   ? initialValidationErrors.birthday
-                  : "MM/DD/YYYY"
+                  : undefined
               }
             />
 
@@ -924,8 +1014,17 @@ function HomeQuoteCard() {
           </Stack>
 
           <Stack spacing={1}>
-            <Button variant="outlined" size="large" onClick={handleGetEstimate}>
-              Get estimate
+            <Button
+              variant="outlined"
+              size="large"
+              onClick={handleGetEstimate}
+              disabled={isEstimateLoading}
+            >
+              {isEstimateLoading ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                "Get estimate"
+              )}
             </Button>
             {ageError ? (
               <Alert severity="error" sx={{ mt: 0.5 }}>
@@ -1271,9 +1370,14 @@ function HomeQuoteCard() {
                     variant="contained"
                     size="large"
                     onClick={handleModalGetEstimate}
+                    disabled={isQuoteLoading}
                     sx={{ mt: 1 }}
                   >
-                    Get estimate
+                    {isQuoteLoading ? (
+                      <CircularProgress size={20} color="inherit" />
+                    ) : (
+                      "Get estimate"
+                    )}
                   </Button>
                 ) : null}
               </Stack>
@@ -1301,7 +1405,35 @@ function HomeQuoteCard() {
                       {modalProduct.name}
                     </Typography>
 
-                    {quoteRevealed && !isHoursIneligible ? (
+                    {isQuoteLoading ? (
+                      <Box sx={{ py: 2 }}>
+                        <Skeleton
+                          variant="rounded"
+                          height={42}
+                          sx={{ borderRadius: 1, mb: 2 }}
+                        />
+                        <Skeleton
+                          variant="rounded"
+                          height={20}
+                          sx={{ borderRadius: 1, mb: 1, width: "60%" }}
+                        />
+                        <Skeleton
+                          variant="rounded"
+                          height={32}
+                          sx={{ borderRadius: 1, mb: 2, width: "40%" }}
+                        />
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: "text.secondary",
+                            display: "block",
+                            mt: 1,
+                          }}
+                        >
+                          {quoteLoadingMessage}
+                        </Typography>
+                      </Box>
+                    ) : quoteRevealed && !isHoursIneligible ? (
                       <>
                         <FormControl fullWidth size="small">
                           <InputLabel
@@ -1385,9 +1517,8 @@ function HomeQuoteCard() {
                         }}
                       >
                         <Typography variant="body2" color="text.secondary">
-                          Your estimated cost will appear here once you select
-                          fill in the fields and click &ldquo;Get
-                          estimate&rdquo;.
+                          Your estimated cost will appear here once you click
+                          &ldquo;Get estimate&rdquo;.
                         </Typography>
                       </Box>
                     )}
@@ -1405,7 +1536,8 @@ function HomeQuoteCard() {
                   }}
                 >
                   <Typography variant="body2" color="text.secondary">
-                    Select a product and fill in the fields to get started.
+                    Your estimated cost will appear here once you click
+                    &ldquo;Get estimate&rdquo;.
                   </Typography>
                 </Box>
               )}
@@ -1505,6 +1637,7 @@ export default function Home() {
               : "1fr",
             gap: { xs: 2.5, md: 3.5 },
             alignItems: "start",
+            ...FADE_IN_SECTION_SX(0),
           }}
         >
           <Stack
@@ -1620,7 +1753,7 @@ export default function Home() {
           {SHOW_QUOTE_TOOL ? <HomeQuoteCard /> : null}
         </Box>
 
-        <Box ref={howApplyingWorksRef}>
+        <Box ref={howApplyingWorksRef} sx={FADE_IN_SECTION_SX(0.15)}>
           <HowApplyingWorksSection
             onOpenApplicationReview={() =>
               setActiveDrawer("application-review")
@@ -1629,7 +1762,7 @@ export default function Home() {
           />
         </Box>
 
-        <Stack spacing={2.5}>
+        <Stack spacing={2.5} sx={FADE_IN_SECTION_SX(0.3)}>
           <Stack spacing={1}>
             <Typography variant="h2" sx={SECTION_TITLE_SX}>
               About the coverages
@@ -1786,7 +1919,7 @@ export default function Home() {
           </Box>
         </Stack>
 
-        <Stack spacing={2.5}>
+        <Stack spacing={2.5} sx={FADE_IN_SECTION_SX(0.45)}>
           <Box
             sx={{
               display: "grid",

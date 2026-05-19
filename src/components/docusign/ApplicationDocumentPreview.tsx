@@ -1,4 +1,5 @@
-import { Box, Divider, Stack, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Stack, Typography } from "@mui/material";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { getActiveClient } from "../../client/getActiveClient";
 import { getActiveClientCoverages } from "../../client/getActiveClientCoverages";
 import { fieldCatalog } from "../../config/fields";
@@ -38,6 +39,8 @@ type ApplicationDocumentPreviewProps = {
   signatureName: string;
   signedDate: string;
   currentDate: string;
+  onEditSection?: (pageId: PageId) => void;
+  hideSignature?: boolean;
 };
 
 const PLACEHOLDER = "\u2014";
@@ -90,7 +93,9 @@ function formatCurrency(value: string) {
 }
 
 function resolveOptionLabel(field: FieldDefinition | undefined, value: string) {
-  return field?.options?.find((option) => option.value === value)?.label ?? value;
+  return (
+    field?.options?.find((option) => option.value === value)?.label ?? value
+  );
 }
 
 function formatFieldValue(fieldId: string, rawValue: unknown) {
@@ -141,10 +146,7 @@ function getNameFieldPair(fieldId: string): string | null {
   if (fieldId === "child-first-name" || fieldId === "child-last-name") {
     return "child-name";
   }
-  if (
-    fieldId === "physician-first-name" ||
-    fieldId === "physician-last-name"
-  ) {
+  if (fieldId === "physician-first-name" || fieldId === "physician-last-name") {
     return "physician-name";
   }
 
@@ -178,10 +180,12 @@ function buildSectionEntries(values: ApplicationFormValues, pageId: PageId) {
             ? fieldId.replace("-first-", "-last-")
             : fieldId.replace("-last-", "-first-");
 
-          const firstName =
-            fieldId.includes("first") ? values[fieldId] : values[otherFieldId];
-          const lastName =
-            fieldId.includes("last") ? values[fieldId] : values[otherFieldId];
+          const firstName = fieldId.includes("first")
+            ? values[fieldId]
+            : values[otherFieldId];
+          const lastName = fieldId.includes("last")
+            ? values[fieldId]
+            : values[otherFieldId];
 
           entries.push({
             label: formatLabel(pairKey),
@@ -217,7 +221,10 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
     : [];
   const coverages = getActiveClientCoverages();
   const coverageNames = selectedIds
-    .map((coverageId) => coverages.find((coverage) => coverage.id === coverageId)?.name)
+    .map(
+      (coverageId) =>
+        coverages.find((coverage) => coverage.id === coverageId)?.name,
+    )
     .filter((value): value is string => Boolean(value));
 
   return {
@@ -227,7 +234,9 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
         entries: [
           {
             label: "Selected products",
-            value: coverageNames.length ? coverageNames.join(", ") : PLACEHOLDER,
+            value: coverageNames.length
+              ? coverageNames.join(", ")
+              : PLACEHOLDER,
           },
         ],
       },
@@ -235,26 +244,38 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
   };
 }
 
-function buildCoverageOptionsSection(values: ApplicationFormValues): DisplaySection {
+function buildCoverageOptionsSection(
+  values: ApplicationFormValues,
+): DisplaySection {
   const coverages = getActiveClientCoverages();
   const amounts =
-    values.coverageAmounts && typeof values.coverageAmounts === "object" && !Array.isArray(values.coverageAmounts)
+    values.coverageAmounts &&
+    typeof values.coverageAmounts === "object" &&
+    !Array.isArray(values.coverageAmounts)
       ? (values.coverageAmounts as Record<string, unknown>)
       : {};
   const riders =
-    values.coverageRiders && typeof values.coverageRiders === "object" && !Array.isArray(values.coverageRiders)
+    values.coverageRiders &&
+    typeof values.coverageRiders === "object" &&
+    !Array.isArray(values.coverageRiders)
       ? (values.coverageRiders as Record<string, unknown>)
       : {};
   const riderAmounts =
-    values.coverageRiderAmounts && typeof values.coverageRiderAmounts === "object" && !Array.isArray(values.coverageRiderAmounts)
+    values.coverageRiderAmounts &&
+    typeof values.coverageRiderAmounts === "object" &&
+    !Array.isArray(values.coverageRiderAmounts)
       ? (values.coverageRiderAmounts as Record<string, unknown>)
       : {};
   const waitingPeriods =
-    values.coverageWaitingPeriods && typeof values.coverageWaitingPeriods === "object" && !Array.isArray(values.coverageWaitingPeriods)
+    values.coverageWaitingPeriods &&
+    typeof values.coverageWaitingPeriods === "object" &&
+    !Array.isArray(values.coverageWaitingPeriods)
       ? (values.coverageWaitingPeriods as Record<string, unknown>)
       : {};
   const maxBenefitPeriods =
-    values.coverageMaxBenefitPeriods && typeof values.coverageMaxBenefitPeriods === "object" && !Array.isArray(values.coverageMaxBenefitPeriods)
+    values.coverageMaxBenefitPeriods &&
+    typeof values.coverageMaxBenefitPeriods === "object" &&
+    !Array.isArray(values.coverageMaxBenefitPeriods)
       ? (values.coverageMaxBenefitPeriods as Record<string, unknown>)
       : {};
 
@@ -341,10 +362,14 @@ function buildCoverageOptionsSection(values: ApplicationFormValues): DisplaySect
   };
 }
 
-function buildBeneficiariesSection(values: ApplicationFormValues): DisplaySection {
+function buildBeneficiariesSection(
+  values: ApplicationFormValues,
+): DisplaySection {
   const coverages = getActiveClientCoverages();
   const beneficiaries =
-    values.beneficiaries && typeof values.beneficiaries === "object" && !Array.isArray(values.beneficiaries)
+    values.beneficiaries &&
+    typeof values.beneficiaries === "object" &&
+    !Array.isArray(values.beneficiaries)
       ? (values.beneficiaries as Record<string, BeneficiaryItem[]>)
       : {};
 
@@ -355,22 +380,23 @@ function buildBeneficiariesSection(values: ApplicationFormValues): DisplaySectio
       ? `${coverage.name} - ${getApplicantLabel(applicant)}`
       : productKey;
 
-    const value = Array.isArray(items) && items.length > 0
-      ? items
-          .map((item) => {
-            const name =
-              item.beneficiaryType === "trust"
-                ? item.trustName
-                : `${item.firstName} ${item.lastName}`.trim();
-            const relationship =
-              item.beneficiaryType === "trust"
-                ? "Trust"
-                : item.relationship || "Relationship not provided";
+    const value =
+      Array.isArray(items) && items.length > 0
+        ? items
+            .map((item) => {
+              const name =
+                item.beneficiaryType === "trust"
+                  ? item.trustName
+                  : `${item.firstName} ${item.lastName}`.trim();
+              const relationship =
+                item.beneficiaryType === "trust"
+                  ? "Trust"
+                  : item.relationship || "Relationship not provided";
 
-            return `${formatLabel(item.designation)}: ${name || PLACEHOLDER} (${relationship}, ${item.share}%)`;
-          })
-          .join("; ")
-      : PLACEHOLDER;
+              return `${formatLabel(item.designation)}: ${name || PLACEHOLDER} (${relationship}, ${item.share}%)`;
+            })
+            .join("; ")
+        : PLACEHOLDER;
 
     return { label, value };
   });
@@ -379,7 +405,9 @@ function buildBeneficiariesSection(values: ApplicationFormValues): DisplaySectio
     title: "Beneficiaries",
     groups: [
       {
-        entries: entries.length ? entries : [{ label: "Beneficiaries", value: PLACEHOLDER }],
+        entries: entries.length
+          ? entries
+          : [{ label: "Beneficiaries", value: PLACEHOLDER }],
       },
     ],
   };
@@ -445,10 +473,17 @@ export default function ApplicationDocumentPreview({
   signatureName,
   signedDate,
   currentDate,
+  onEditSection,
+  hideSignature,
 }: ApplicationDocumentPreviewProps) {
   const client = getActiveClient();
   const sections = buildDocumentSections(values);
   const pages = chunkSections(sections, 3);
+
+  // Map section titles back to page IDs for edit buttons
+  const sectionTitleToPageId = new Map(
+    documentPages.map((p) => [p.title, p.pageId]),
+  );
 
   return (
     <Box
@@ -486,7 +521,9 @@ export default function ApplicationDocumentPreview({
                     spacing={1}
                   >
                     <div>
-                      <Typography variant="h5">{client.branding.name}</Typography>
+                      <Typography variant="h5">
+                        {client.branding.name}
+                      </Typography>
                       <Typography variant="body2" color="text.secondary">
                         Insurance Application Review Copy
                       </Typography>
@@ -501,54 +538,82 @@ export default function ApplicationDocumentPreview({
                 </Stack>
               ) : null}
 
-              {pageSections.map((section) => (
-                <Stack key={section.title} spacing={1.5}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                    {section.title}
-                  </Typography>
-
-                  {section.groups.map((group, groupIndex) => (
-                    <Stack key={`${section.title}-${group.title ?? groupIndex}`} spacing={1}>
-                      {group.title ? (
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                          {group.title}
-                        </Typography>
-                      ) : null}
-
-                      <Stack spacing={0.75}>
-                        {group.entries.map((entry) => (
-                          <Stack
-                            key={`${section.title}-${group.title ?? "group"}-${entry.label}`}
-                            direction={{ xs: "column", sm: "row" }}
-                            spacing={0.75}
-                            justifyContent="space-between"
-                            sx={{
-                              py: 0.75,
-                              borderBottom: "1px dotted rgba(15, 23, 42, 0.16)",
-                            }}
+              {pageSections.map((section) => {
+                const sectionPageId = sectionTitleToPageId.get(section.title);
+                return (
+                  <Stack key={section.title} spacing={1.5}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                    >
+                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                        {section.title}
+                      </Typography>
+                      {onEditSection &&
+                        sectionPageId &&
+                        sectionPageId !== "review" && (
+                          <IconButton
+                            size="small"
+                            onClick={() => onEditSection(sectionPageId)}
+                            aria-label={`Edit ${section.title}`}
+                            sx={{ color: "primary.main" }}
                           >
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                              sx={{ width: { sm: "42%" }, flexShrink: 0 }}
-                            >
-                              {entry.label}
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              sx={{ textAlign: { sm: "right" }, wordBreak: "break-word" }}
-                            >
-                              {renderEntryValue(entry.value)}
-                            </Typography>
-                          </Stack>
-                        ))}
-                      </Stack>
+                            <EditOutlinedIcon fontSize="small" />
+                          </IconButton>
+                        )}
                     </Stack>
-                  ))}
-                </Stack>
-              ))}
 
-              {pageIndex === pages.length - 1 ? (
+                    {section.groups.map((group, groupIndex) => (
+                      <Stack
+                        key={`${section.title}-${group.title ?? groupIndex}`}
+                        spacing={1}
+                      >
+                        {group.title ? (
+                          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                            {group.title}
+                          </Typography>
+                        ) : null}
+
+                        <Stack spacing={0.75}>
+                          {group.entries.map((entry) => (
+                            <Stack
+                              key={`${section.title}-${group.title ?? "group"}-${entry.label}`}
+                              direction={{ xs: "column", sm: "row" }}
+                              spacing={0.75}
+                              justifyContent="space-between"
+                              sx={{
+                                py: 0.75,
+                                borderBottom:
+                                  "1px dotted rgba(15, 23, 42, 0.16)",
+                              }}
+                            >
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                sx={{ width: { sm: "42%" }, flexShrink: 0 }}
+                              >
+                                {entry.label}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  textAlign: { sm: "right" },
+                                  wordBreak: "break-word",
+                                }}
+                              >
+                                {renderEntryValue(entry.value)}
+                              </Typography>
+                            </Stack>
+                          ))}
+                        </Stack>
+                      </Stack>
+                    ))}
+                  </Stack>
+                );
+              })}
+
+              {pageIndex === pages.length - 1 && !hideSignature ? (
                 <Stack spacing={1.25} sx={{ pt: 1.5 }}>
                   <Divider />
                   <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
@@ -570,8 +635,11 @@ export default function ApplicationDocumentPreview({
                           minHeight: 44,
                           fontSize: "2rem",
                           lineHeight: 1.1,
-                          fontFamily: '"Brush Script MT", "Segoe Script", cursive',
-                          color: signatureName.trim() ? "text.primary" : "text.disabled",
+                          fontFamily:
+                            '"Brush Script MT", "Segoe Script", cursive',
+                          color: signatureName.trim()
+                            ? "text.primary"
+                            : "text.disabled",
                         }}
                       >
                         {signatureName.trim() || PLACEHOLDER}

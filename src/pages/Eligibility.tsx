@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
 import {
   Alert,
   Box,
@@ -65,7 +65,37 @@ export default function Eligibility() {
 
   return (
     <>
-      <FormRoutePage pageId="eligibility">
+      <FormRoutePage
+        pageId="eligibility"
+        validate={(nextValues) => {
+          const dependents = Array.isArray(nextValues.dependents)
+            ? nextValues.dependents
+            : [];
+
+          if (dependents.includes("child")) {
+            const children = Array.isArray(nextValues.children)
+              ? nextValues.children
+              : [];
+            if (children.length === 0) {
+              return "Please add at least one child or remove child from dependents.";
+            }
+          }
+
+          if (dependents.includes("spouse")) {
+            const spouseFirstName = String(
+              nextValues["spouse-first-name"] ?? "",
+            ).trim();
+            const spouseLastName = String(
+              nextValues["spouse-last-name"] ?? "",
+            ).trim();
+            if (!spouseFirstName && !spouseLastName) {
+              return "Please add spouse details or remove spouse from dependents.";
+            }
+          }
+
+          return undefined;
+        }}
+      >
         {(props) => <EligibilityFields {...props} />}
       </FormRoutePage>
       <Snackbar
@@ -321,7 +351,7 @@ function EligibilityFields({
                             },
                           }}
                         >
-                          <CheckCircleIcon
+                          <TaskAltRoundedIcon
                             sx={{
                               fontSize: 16,
                               color: "success.main",

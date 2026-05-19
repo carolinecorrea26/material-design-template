@@ -6,7 +6,13 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { Alert, Button, CircularProgress, Snackbar } from "@mui/material";
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Snackbar,
+  Stack,
+} from "@mui/material";
 import { useForm, type FieldErrors } from "react-hook-form";
 import { useNavigate, useLocation } from "react-router-dom";
 import type { PageId } from "../../types/page";
@@ -26,15 +32,20 @@ import {
 } from "../../state/ApplicationFormContext";
 import { isApplicantApplying } from "./applicantVisibility";
 import FormPage from "./FormPage";
+import FormVerticalStepper, {
+  VerticalStepperBreadcrumbs,
+} from "./FormVerticalStepper";
 import { generateFormDataUpToPage } from "../../dev/utils/generateFormData";
 import FormHelpChips, { type HelpChipItem } from "./FormHelpChips";
 import FormHelpDrawer from "./FormHelpDrawer";
 import FormTransitionSkeleton from "./FormTransitionSkeleton";
+import FormPageError from "./FormPageError";
 import {
   getForwardMessages,
   BACK_MESSAGE,
   MESSAGE_DURATION,
 } from "../../config/transitionMessages";
+import type { ProgressVariant } from "../../types/progress";
 
 type FormRouteFieldValue = string | boolean | string[];
 type FormRoutePageFormValues = Record<string, FormRouteFieldValue>;
@@ -79,6 +90,7 @@ type FormRoutePageProps = {
   devFillFields?: (currentValues: FormRoutePageValues) => FieldDefinition[];
   onDevFill?: (context: DevFillContext) => void;
   resolveNextPageId?: (values: FormRoutePageValues) => PageId | null;
+  initialTransitionMessage?: string;
 };
 
 function getDefaultValueForField(field: FieldDefinition): FormRouteFieldValue {
@@ -214,12 +226,44 @@ export default function FormRoutePage({
   devFillFields,
   onDevFill,
   resolveNextPageId,
+  initialTransitionMessage,
 }: FormRoutePageProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { values, setPageValues } = useApplicationForm();
 
   const [showProgressSaved, setShowProgressSaved] = useState(false);
+
+  const [progressVariant, setProgressVariant] = useState<ProgressVariant>(
+    () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlProgress = urlParams.get("progress");
+      if (urlProgress === "hstep") return "stepper";
+      if (urlProgress === "vstep") return "vertical-stepper";
+      if (urlProgress === "bar") return "bar";
+      const stored = window.sessionStorage.getItem("devtools:progressVariant");
+      if (stored === "bar") return "bar";
+      if (stored === "stepper") return "stepper";
+      return "vertical-stepper";
+    },
+  );
+
+  useEffect(() => {
+    function handleVariantChange(event: Event) {
+      const customEvent = event as CustomEvent<ProgressVariant>;
+      setProgressVariant(customEvent.detail ?? "vertical-stepper");
+    }
+    window.addEventListener(
+      "devtools:progressvariantchange",
+      handleVariantChange,
+    );
+    return () => {
+      window.removeEventListener(
+        "devtools:progressvariantchange",
+        handleVariantChange,
+      );
+    };
+  }, []);
 
   useEffect(() => {
     if ((location.state as Record<string, unknown>)?.showProgressSaved) {
@@ -341,9 +385,22 @@ export default function FormRoutePage({
 
   const [pageError, setPageError] = useState<string | undefined>();
   const [activeHelpId, setActiveHelpId] = useState<string | null>(null);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [transitionMessage, setTransitionMessage] = useState("");
+  const [isTransitioning, setIsTransitioning] = useState(
+    Boolean(initialTransitionMessage),
+  );
+  const [transitionMessage, setTransitionMessage] = useState(
+    initialTransitionMessage ?? "",
+  );
   const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (initialTransitionMessage) {
+      transitionTimerRef.current = setTimeout(() => {
+        setIsTransitioning(false);
+        setTransitionMessage("");
+      }, 1000);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     return () => {
@@ -388,19 +445,23 @@ export default function FormRoutePage({
     const destination = nextPageId ?? (pageId === "payment" ? "receipt" : null);
     if (!destination) return;
 
-    const [msg1, msg2] = getForwardMessages(pageId);
-    setTransitionMessage(msg1);
-    setIsTransitioning(true);
-    window.scrollTo({ top: 0 });
-
-    transitionTimerRef.current = setTimeout(() => {
-      setTransitionMessage(msg2);
+    const startTransition = () => {
+      const [msg1, msg2] = getForwardMessages(pageId);
+      setTransitionMessage(msg1);
+      setIsTransitioning(true);
+      window.scrollTo({ top: 0 });
 
       transitionTimerRef.current = setTimeout(() => {
-        emitProgressSnapshot(nextNavigationValues);
-        navigate(`/${destination}`, { state: { showProgressSaved: true } });
+        setTransitionMessage(msg2);
+
+        transitionTimerRef.current = setTimeout(() => {
+          emitProgressSnapshot(nextNavigationValues);
+          navigate(`/${destination}`, { state: { showProgressSaved: true } });
+        }, MESSAGE_DURATION);
       }, MESSAGE_DURATION);
-    }, MESSAGE_DURATION);
+    };
+
+    startTransition();
   }
 
   function onFormError(fieldErrors: FieldErrors<FormRoutePageValues>) {
@@ -450,6 +511,8 @@ export default function FormRoutePage({
         ? helpItems(renderProps)
         : (helpItems ?? []);
 
+    const isVerticalStepper = progressVariant === "vertical-stepper";
+
     const activeHelpItem = useMemo(
       () => resolvedHelpItems.find((item) => item.id === activeHelpId) ?? null,
       [activeHelpId, resolvedHelpItems],
@@ -479,6 +542,76 @@ export default function FormRoutePage({
         </>
       ) : undefined;
 
+    const formPageElement = (
+      <FormPage
+        title={isTransitioning ? "" : (title ?? getPageTitle(pageId))}
+        error={isTransitioning ? undefined : pageError}
+        help={isTransitioning ? undefined : renderedHelpSection}
+        maxWidth={formMaxWidth}
+        compactTitle={isVerticalStepper}
+        noTitle={isVerticalStepper}
+        noContainer={isVerticalStepper}
+        onBack={
+          !isVerticalStepper &&
+          !isTransitioning &&
+          getPreviousFormPageId(pageId, watchedValues)
+            ? handleBack
+            : undefined
+        }
+        actions={
+          <>
+            <Button
+              type="button"
+              form={`${pageId}-form`}
+              onClick={handleBack}
+              disabled={
+                isTransitioning || !getPreviousFormPageId(pageId, watchedValues)
+              }
+            >
+              Back
+            </Button>
+            <Button
+              type="submit"
+              form={`${pageId}-form`}
+              variant="contained"
+              disabled={isTransitioning}
+            >
+              {isTransitioning ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                "Next"
+              )}
+            </Button>
+          </>
+        }
+        aboveHeader={
+          isVerticalStepper ? (
+            <VerticalStepperBreadcrumbs pageId={pageId} />
+          ) : undefined
+        }
+      >
+        {isTransitioning ? (
+          <FormTransitionSkeleton statusMessage={transitionMessage} />
+        ) : (
+          <Stack spacing={2}>
+            {isVerticalStepper && pageError && (
+              <FormPageError message={pageError} />
+            )}
+            {isVerticalStepper && renderedHelpSection}
+            <form
+              id={`${pageId}-form`}
+              noValidate
+              onSubmit={handleSubmit(onSubmit, onFormError)}
+            >
+              {typeof children === "function"
+                ? children(renderProps)
+                : children}
+            </form>
+          </Stack>
+        )}
+      </FormPage>
+    );
+
     return (
       <>
         <Snackbar
@@ -496,58 +629,13 @@ export default function FormRoutePage({
             Progress saved
           </Alert>
         </Snackbar>
-        <FormPage
-          title={isTransitioning ? "" : (title ?? getPageTitle(pageId))}
-          error={isTransitioning ? undefined : pageError}
-          help={isTransitioning ? undefined : renderedHelpSection}
-          maxWidth={formMaxWidth}
-          onBack={
-            !isTransitioning && getPreviousFormPageId(pageId, watchedValues)
-              ? handleBack
-              : undefined
-          }
-          actions={
-            <>
-              <Button
-                type="button"
-                form={`${pageId}-form`}
-                onClick={handleBack}
-                disabled={
-                  isTransitioning ||
-                  !getPreviousFormPageId(pageId, watchedValues)
-                }
-              >
-                Back
-              </Button>
-              <Button
-                type="submit"
-                form={`${pageId}-form`}
-                variant="contained"
-                disabled={isTransitioning}
-              >
-                {isTransitioning ? (
-                  <CircularProgress size={20} color="inherit" />
-                ) : (
-                  "Next"
-                )}
-              </Button>
-            </>
-          }
-        >
-          {isTransitioning ? (
-            <FormTransitionSkeleton statusMessage={transitionMessage} />
-          ) : (
-            <form
-              id={`${pageId}-form`}
-              noValidate
-              onSubmit={handleSubmit(onSubmit, onFormError)}
-            >
-              {typeof children === "function"
-                ? children(renderProps)
-                : children}
-            </form>
-          )}
-        </FormPage>
+        {isVerticalStepper ? (
+          <FormVerticalStepper pageId={pageId}>
+            {formPageElement}
+          </FormVerticalStepper>
+        ) : (
+          formPageElement
+        )}
       </>
     );
   })();
