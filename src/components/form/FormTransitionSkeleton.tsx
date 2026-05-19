@@ -1,21 +1,14 @@
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 
 type FormTransitionSkeletonProps = {
-  statusMessage: string;
+  statusMessage?: string;
 };
 
-export default function FormTransitionSkeleton({
-  statusMessage,
-}: FormTransitionSkeletonProps) {
+export default function FormTransitionSkeleton(
+  _props: FormTransitionSkeletonProps,
+) {
   return (
     <Box>
-      <Typography
-        variant="body2"
-        sx={{ color: "text.secondary", mb: 2, fontSize: "0.85rem" }}
-      >
-        {statusMessage}
-      </Typography>
-
       <Skeleton variant="rounded" height={42} sx={{ borderRadius: 1, mb: 2 }} />
       <Skeleton variant="rounded" height={42} sx={{ borderRadius: 1, mb: 2 }} />
       <Skeleton variant="rounded" height={42} sx={{ borderRadius: 1 }} />

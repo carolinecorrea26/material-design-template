@@ -30,7 +30,7 @@ export const progressSteps: ProgressStep[] = [
     id: "getting-started",
     label: "Eligibility",
     icon: HowToReg,
-    pageIds: ["membership", "eligibility"],
+    pageIds: ["advisor-login", "membership", "eligibility"],
   },
   {
     id: "coverage-options",

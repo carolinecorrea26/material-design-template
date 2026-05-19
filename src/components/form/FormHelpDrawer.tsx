@@ -53,6 +53,7 @@ export default function FormHelpDrawer({
             py: 2,
             borderBottom: "1px solid",
             borderColor: "divider",
+            bgcolor: "#f3f4f8",
           }}
         >
           <Typography variant="h6">{title}</Typography>
@@ -68,6 +69,7 @@ export default function FormHelpDrawer({
             py: 3,
             overflowY: "auto",
             flex: 1,
+            bgcolor: "#f3f4f8",
           }}
         >
           {children}

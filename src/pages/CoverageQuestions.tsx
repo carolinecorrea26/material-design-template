@@ -153,8 +153,45 @@ export default function CoverageQuestions() {
     },
   ];
 
+  function validate(nextValues: Record<string, unknown>) {
+    // Check eligibility based on coverage question answers
+    const hoursWorked = Number(nextValues["hours-worked-per-week"]);
+    const monthlyIncome = Number(nextValues["average-monthly-income"]);
+
+    const ineligibleProducts: string[] = [];
+
+    // DI eligibility: must work at least 20 hours/week and have income
+    if (selectedCategories.includes("DI")) {
+      if (hoursWorked > 0 && hoursWorked < 20) {
+        ineligibleProducts.push("Disability");
+      }
+      if (monthlyIncome > 0 && monthlyIncome < 500) {
+        ineligibleProducts.push("Disability");
+      }
+    }
+
+    // OO eligibility: must have business expenses
+    if (selectedCategories.includes("OO")) {
+      const expenses = Number(nextValues["monthly-business-expenses"]);
+      if (expenses === 0) {
+        ineligibleProducts.push("Office Overhead");
+      }
+    }
+
+    const uniqueIneligible = [...new Set(ineligibleProducts)];
+    if (uniqueIneligible.length > 0) {
+      return `Based on your answers, you may not be eligible for: ${uniqueIneligible.join(", ")}. Please review your information or remove ineligible coverage to continue.`;
+    }
+
+    return undefined;
+  }
+
   return (
-    <FormRoutePage pageId="coverage-questions" helpItems={helpItems}>
+    <FormRoutePage
+      pageId="coverage-questions"
+      helpItems={helpItems}
+      validate={validate}
+    >
       {({ control, errors, watchedValues, allFields, pageSections }) =>
         pageSections.map((section) => {
           if (!isSectionVisible(section, watchedValues)) return null;

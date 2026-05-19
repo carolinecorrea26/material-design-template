@@ -1076,7 +1076,7 @@ export default function CoverageOptions() {
                                         component="span"
                                         variant="body2"
                                         sx={{
-                                          color: "success.main",
+                                          color: "primary.main",
                                           fontWeight: 600,
                                           fontSize: "1.5rem",
                                         }}

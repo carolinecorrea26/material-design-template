@@ -2,10 +2,12 @@ import { useMemo } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
+import AdminPanelSettingsRoundedIcon from "@mui/icons-material/AdminPanelSettingsRounded";
 import {
+  Alert,
   Box,
   Chip,
+  Divider,
   Drawer,
   IconButton,
   Stack,
@@ -22,7 +24,6 @@ import type {
   CoverageCategoryId,
   CoverageDefinition,
 } from "../../config/coverages/types";
-import { sectionTitleIconSx } from "../../config/formSectionTitle";
 import QuickDecisionIndicator from "../common/QuickDecisionIndicator";
 
 type ApplicationSummaryDrawerProps = {
@@ -237,9 +238,33 @@ export default function ApplicationSummaryDrawer({
   onClose,
 }: ApplicationSummaryDrawerProps) {
   const { entries, totalMonthly } = useSummaryData();
+  const { values } = useApplicationForm();
   const isEmpty = entries.length === 0;
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
+
+  // Check for ineligibility warnings
+  const ineligibleProducts: string[] = [];
+  if (entries.length > 1) {
+    const hoursWorked = Number(values["hours-worked-per-week"]);
+    const monthlyIncome = Number(values["average-monthly-income"]);
+    const hasDisability = entries.some((e) => e.coverage.categoryId === "DI");
+    const hasOO = entries.some((e) => e.coverage.categoryId === "OO");
+
+    if (hasDisability && hoursWorked > 0 && hoursWorked < 20) {
+      ineligibleProducts.push("Disability");
+    }
+    if (hasDisability && monthlyIncome > 0 && monthlyIncome < 500) {
+      if (!ineligibleProducts.includes("Disability"))
+        ineligibleProducts.push("Disability");
+    }
+    if (hasOO) {
+      const expenses = Number(values["monthly-business-expenses"]);
+      if (expenses === 0 && values["monthly-business-expenses"] != null) {
+        ineligibleProducts.push("Office Overhead");
+      }
+    }
+  }
 
   // Group entries by category in standard order
   const groupedByCategory = useMemo(() => {
@@ -300,7 +325,7 @@ export default function ApplicationSummaryDrawer({
           }}
         >
           <Stack spacing={1} alignItems="center">
-            <PersonOutlineRoundedIcon
+            <AdminPanelSettingsRoundedIcon
               sx={{ fontSize: 48, color: "text.disabled" }}
             />
             <Typography variant="body1" sx={{ color: "text.secondary" }}>
@@ -325,138 +350,109 @@ export default function ApplicationSummaryDrawer({
               }}
             >
               {groupedByCategory.map(({ category, items }, groupIdx) => {
-                const CategoryIcon = category.icon;
+                let globalItemIndex = 0;
+                for (let i = 0; i < groupIdx; i++) {
+                  globalItemIndex += groupedByCategory[i].items.length;
+                }
                 return (
                   <Box key={category.id}>
-                    {groupIdx > 0 && (
-                      <Box
-                        sx={{
-                          borderTop: "1px solid",
-                          borderColor: "divider",
-                        }}
-                      />
-                    )}
-                    {/* Category header with icon */}
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 1,
-                        px: 2,
-                        pt: 2,
-                        pb: 0.5,
-                      }}
-                    >
-                      <Box sx={sectionTitleIconSx}>
-                        <CategoryIcon />
-                      </Box>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          textTransform: "uppercase",
-                          fontWeight: 700,
-                          fontSize: "0.75rem",
-                          letterSpacing: "1px",
-                          color: "#4e6d9c",
-                        }}
-                      >
-                        {category.label}
-                      </Typography>
-                    </Box>
-
                     {/* Coverage items in this category */}
-                    {items.map(({ coverage, applicants }) => {
+                    {items.map(({ coverage, applicants }, itemIdx) => {
+                      const currentGlobalIdx = globalItemIndex + itemIdx;
                       const isMemberOnly =
                         applicants.length === 1 &&
                         applicants[0].applicantId === "member";
 
                       return (
-                        <Box key={coverage.id} sx={{ px: 2, pb: 2, pt: 1 }}>
-                          <Stack spacing={1}>
-                            <Typography
-                              variant="body2"
-                              sx={{ fontWeight: 600, fontSize: "0.85rem" }}
-                            >
-                              {coverage.name}
-                              {coverage.underwritingType === "QD" && (
-                                <QuickDecisionIndicator />
-                              )}
-                            </Typography>
+                        <Box key={coverage.id}>
+                          {currentGlobalIdx > 0 && <Divider />}
+                          <Box sx={{ px: 2, pb: 2, pt: 1.5 }}>
+                            <Stack spacing={1}>
+                              <Typography
+                                variant="body2"
+                                sx={{ fontWeight: 600, fontSize: "1rem" }}
+                              >
+                                {coverage.name}
+                                {coverage.underwritingType === "QD" && (
+                                  <QuickDecisionIndicator />
+                                )}
+                              </Typography>
 
-                            {applicants.map(
-                              ({
-                                applicantId,
-                                amount,
-                                riders: selectedRiders,
-                                monthlyEstimate,
-                              }) => (
-                                <Box key={applicantId} sx={{ pl: 1 }}>
-                                  <Stack spacing={0.5}>
-                                    {!isMemberOnly && (
+                              {applicants.map(
+                                ({
+                                  applicantId,
+                                  amount,
+                                  riders: selectedRiders,
+                                  monthlyEstimate,
+                                }) => (
+                                  <Box key={applicantId} sx={{ pl: 1 }}>
+                                    <Stack spacing={0.5}>
+                                      {!isMemberOnly && (
+                                        <Typography
+                                          variant="body2"
+                                          sx={{
+                                            fontWeight: 600,
+                                            fontSize: "0.8rem",
+                                          }}
+                                        >
+                                          {applicantLabels[applicantId]}
+                                        </Typography>
+                                      )}
+
                                       <Typography
                                         variant="body2"
                                         sx={{
-                                          fontWeight: 600,
+                                          color: "text.secondary",
                                           fontSize: "0.8rem",
                                         }}
                                       >
-                                        {applicantLabels[applicantId]}
+                                        Coverage amount:{" "}
+                                        {amount != null && amount > 0
+                                          ? formatUSD(amount, 0)
+                                          : "\u2014"}
                                       </Typography>
-                                    )}
 
-                                    <Typography
-                                      variant="body2"
-                                      sx={{
-                                        color: "text.secondary",
-                                        fontSize: "0.8rem",
-                                      }}
-                                    >
-                                      Coverage amount:{" "}
-                                      {amount != null && amount > 0
-                                        ? formatUSD(amount, 0)
-                                        : "\u2014"}
-                                    </Typography>
+                                      {selectedRiders.length > 0 && (
+                                        <Box
+                                          sx={{
+                                            display: "flex",
+                                            flexWrap: "wrap",
+                                            gap: 0.5,
+                                          }}
+                                        >
+                                          {selectedRiders.map((rider) => (
+                                            <Chip
+                                              key={rider.name}
+                                              label={
+                                                rider.amount != null
+                                                  ? `${rider.name}: ${formatUSD(rider.amount, 0)}`
+                                                  : rider.name
+                                              }
+                                              size="small"
+                                              variant="outlined"
+                                            />
+                                          ))}
+                                        </Box>
+                                      )}
 
-                                    {selectedRiders.length > 0 && (
-                                      <Box
+                                      <Typography
+                                        variant="body2"
                                         sx={{
-                                          display: "flex",
-                                          flexWrap: "wrap",
-                                          gap: 0.5,
+                                          color: "text.secondary",
+                                          fontSize: "0.8rem",
                                         }}
                                       >
-                                        {selectedRiders.map((rider) => (
-                                          <Chip
-                                            key={rider.name}
-                                            label={
-                                              rider.amount != null
-                                                ? `${rider.name}: ${formatUSD(rider.amount, 0)}`
-                                                : rider.name
-                                            }
-                                            size="small"
-                                            variant="outlined"
-                                          />
-                                        ))}
-                                      </Box>
-                                    )}
-
-                                    <Typography
-                                      variant="body2"
-                                      sx={{
-                                        color: "text.secondary",
-                                        fontSize: "0.8rem",
-                                      }}
-                                    >
-                                      Est. monthly:{" "}
-                                      {monthlyEstimate != null
-                                        ? formatUSD(monthlyEstimate)
-                                        : "\u2014"}
-                                    </Typography>
-                                  </Stack>
-                                </Box>
-                              ),
-                            )}
-                          </Stack>
+                                        Est. monthly:{" "}
+                                        {monthlyEstimate != null
+                                          ? formatUSD(monthlyEstimate)
+                                          : "\u2014"}
+                                      </Typography>
+                                    </Stack>
+                                  </Box>
+                                ),
+                              )}
+                            </Stack>
+                          </Box>
                         </Box>
                       );
                     })}
@@ -464,6 +460,23 @@ export default function ApplicationSummaryDrawer({
                 );
               })}
             </Box>
+
+            {ineligibleProducts.length > 0 && (
+              <Alert
+                severity="warning"
+                variant="outlined"
+                sx={{ backgroundColor: "rgba(255, 152, 0, 0.04)" }}
+              >
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  Eligibility concern
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 0.5 }}>
+                  Based on your answers, you may not be eligible for:{" "}
+                  {ineligibleProducts.join(", ")}. You may still continue with
+                  your other selected coverage.
+                </Typography>
+              </Alert>
+            )}
 
             {/* Estimated monthly total — styled like quote needs calculator */}
             {totalMonthly > 0 && (

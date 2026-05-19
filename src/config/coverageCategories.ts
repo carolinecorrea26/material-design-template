@@ -4,11 +4,11 @@ import AccessibleOutlinedIcon from "@mui/icons-material/AccessibleOutlined";
 import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
 // import MonitorHeartOutlinedIcon from "@mui/icons-material/MonitorHeartOutlined";
 import PersonalInjuryOutlinedIcon from "@mui/icons-material/PersonalInjuryOutlined";
-import SupportOutlinedIcon from "@mui/icons-material/SupportOutlined";
+import Diversity1RoundedIcon from "@mui/icons-material/Diversity1Rounded";
 // import EmergencyOutlinedIcon from "@mui/icons-material/EmergencyOutlined";
 
 export const coverageCategories = [
-  { id: "LI", label: "Life", icon: SupportOutlinedIcon },
+  { id: "LI", label: "Life", icon: Diversity1RoundedIcon },
   {
     id: "AD",
     label: "Accidental Death and Dismemberment",

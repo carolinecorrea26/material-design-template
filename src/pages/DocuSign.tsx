@@ -1,5 +1,4 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
-import DrawOutlinedIcon from "@mui/icons-material/DrawOutlined";
 import FormRoutePage from "../components/form/FormRoutePage";
 
 export default function DocuSign() {
@@ -8,6 +7,7 @@ export default function DocuSign() {
       pageId="docusign"
       title="Review and sign your application."
       formMaxWidth={1200}
+      noBreadcrumb
     >
       <Box
         sx={{
@@ -23,7 +23,11 @@ export default function DocuSign() {
           <CircularProgress size={48} thickness={4} />
           <Stack spacing={1} alignItems="center">
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
-              <DrawOutlinedIcon color="primary" sx={{ fontSize: "1.4rem" }} />
+              <img
+                src="/docusign.png"
+                alt="DocuSign"
+                style={{ height: "1.4rem", width: "auto" }}
+              />
               <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                 DocuSign
               </Typography>

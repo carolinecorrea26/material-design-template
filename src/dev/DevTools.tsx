@@ -82,9 +82,7 @@ function clearClientOverride() {
 const DEVMODE_STORAGE_KEY = "devtools:devMode";
 
 function getIsDevMode(): boolean {
-  const urlHasDevMode = new URLSearchParams(window.location.search).has(
-    "devMode",
-  );
+  const urlHasDevMode = new URLSearchParams(window.location.search).has("dev");
   if (urlHasDevMode) {
     window.sessionStorage.setItem(DEVMODE_STORAGE_KEY, "true");
     return true;

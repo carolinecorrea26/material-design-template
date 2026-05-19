@@ -101,18 +101,19 @@ export default function CoverageCatalog({
             "&::before": { display: "none" },
             "&.MuiAccordion-root": {
               m: 0,
+              mt: groupIndex > 0 ? 2 : 0,
               boxShadow: "none",
             },
           }}
         >
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
-            sx={{ px: 2, py: 0.5 }}
+            sx={{ px: 2, py: 0.5, bgcolor: "#f3f4f8" }}
           >
             <FormSectionTitle icon={category.icon} label={category.label} />
           </AccordionSummary>
 
-          <AccordionDetails sx={{ px: 2, pb: 2, pt: 0 }}>
+          <AccordionDetails sx={{ px: 2, pb: 2, pt: 0, bgcolor: "#f3f4f8" }}>
             <Stack spacing={1.5}>
               {items.map((coverage) => {
                 const checked = selectedCoverageIds.includes(coverage.id);
@@ -158,7 +159,10 @@ export default function CoverageCatalog({
                         alignItems="center"
                         flexWrap="wrap"
                       >
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        <Typography
+                          variant="body2"
+                          sx={{ fontWeight: 600, fontSize: "1rem" }}
+                        >
                           {coverage.name}
                           {coverage.underwritingType === "QD" && (
                             <QuickDecisionIndicator />

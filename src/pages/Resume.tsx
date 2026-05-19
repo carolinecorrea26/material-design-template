@@ -3,36 +3,31 @@ import {
   Alert,
   Box,
   Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  FormLabel,
-  Radio,
+  CircularProgress,
+  Link,
+  Snackbar,
+  Stack,
+  Step,
+  StepContent,
+  StepLabel,
+  Stepper,
   TextField,
-  ToggleButton,
-  ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import DialogContentText from "@mui/material/DialogContentText";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getActiveClient } from "../client/getActiveClient";
-import { getPagePath, getPageTitle } from "../config/pages";
-import FormPageActions from "../components/form/FormPageActions";
-import FormPageContent from "../components/form/FormPageContent";
-import FormPage from "../components/form/FormPage";
+import { getPagePath } from "../config/pages";
 import {
   useApplicationForm,
   type ApplicationFormValues,
 } from "../state/ApplicationFormContext";
 import type { ClientId } from "../types/client";
 
-type ResumeStep = 1 | 2 | 3;
-type DeliveryMethod = "text-message" | "phone-call";
+type DeliveryMode = "text" | "voice";
 
 const RESUME_LINK_URL =
-  "http://redesignv2--material-design-template.netlify.app/resume?resumeFlow=code-preference";
+  "http://redesignv2--material-design-template.netlify.app/resume?resumeFlow=code";
 
 const MOCK_SAVED_APPLICATIONS: Record<string, ApplicationFormValues> = {
   "returning.user@example.com": {
@@ -77,35 +72,29 @@ function sendResumeLinkEmail(emailAddress: string) {
   window.location.href = `mailto:${encodeURIComponent(emailAddress)}?subject=${subject}&body=${body}`;
 }
 
-const handleResendCode = () => {
-  // resend logic here
-};
-
 export default function Resume() {
   const location = useLocation();
   const navigate = useNavigate();
   const client = getActiveClient();
   const { setPageValues } = useApplicationForm();
 
-  const shouldOpenCodePreferenceModal =
-    new URLSearchParams(location.search).get("resumeFlow") ===
-    "code-preference";
+  const resumeFlow = new URLSearchParams(location.search).get("resumeFlow");
+  const startAtStep2 = resumeFlow === "code";
 
-  const [isModalOpen, setIsModalOpen] = useState(shouldOpenCodePreferenceModal);
-  const [step, setStep] = useState<ResumeStep>(2);
+  const [activeStep] = useState(startAtStep2 ? 1 : 0);
+  const [emailCompleted] = useState(startAtStep2);
 
   const [emailAddress, setEmailAddress] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
-  const [showEmailSentMessage, setShowEmailSentMessage] = useState(false);
-
-  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod | "">("");
-  const [deliveryMethodError, setDeliveryMethodError] = useState<string | null>(
-    null,
-  );
+  const [isEmailSending, setIsEmailSending] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   const [phoneCode, setPhoneCode] = useState("");
   const [phoneCodeError, setPhoneCodeError] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [deliveryMode, setDeliveryMode] = useState<DeliveryMode>("text");
+  const [snackMessage, setSnackMessage] = useState<string | null>(null);
+
   const mailtoTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -116,14 +105,6 @@ export default function Resume() {
     };
   }, []);
 
-  function closeModalToResumePage() {
-    setIsModalOpen(false);
-    setStep(2);
-    setDeliveryMethodError(null);
-    setPhoneCodeError(null);
-    navigate(getPagePath("resume"), { replace: true });
-  }
-
   function handleEmailSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -133,33 +114,20 @@ export default function Resume() {
     }
 
     setEmailError(null);
-    if (mailtoTimeoutRef.current !== null) {
-      window.clearTimeout(mailtoTimeoutRef.current);
-    }
+    setIsEmailSending(true);
 
-    mailtoTimeoutRef.current = window.setTimeout(() => {
-      sendResumeLinkEmail(emailAddress.trim());
-    }, 10000);
-    setShowEmailSentMessage(true);
-  }
+    // Simulate sending, then show success message
+    window.setTimeout(() => {
+      setIsEmailSending(false);
+      setEmailSent(true);
 
-  // function handleBackToEmailStep() {
-  //   closeModalToResumePage();
-  // }
-
-  function handleBackToDeliveryMethod() {
-    setStep(2);
-    setPhoneCodeError(null);
-  }
-
-  function handleDeliveryContinue() {
-    if (!deliveryMethod) {
-      setDeliveryMethodError("Select how to receive your phone code.");
-      return;
-    }
-
-    setDeliveryMethodError(null);
-    setStep(3);
+      if (mailtoTimeoutRef.current !== null) {
+        window.clearTimeout(mailtoTimeoutRef.current);
+      }
+      mailtoTimeoutRef.current = window.setTimeout(() => {
+        sendResumeLinkEmail(emailAddress.trim());
+      }, 8000);
+    }, 1500);
   }
 
   function handleVerifySubmit(event: FormEvent<HTMLFormElement>) {
@@ -181,7 +149,6 @@ export default function Resume() {
 
       setPageValues(savedApplication);
       setIsVerifying(false);
-      setIsModalOpen(false);
 
       navigate(getPagePath("eligibility"), {
         state: { resumeLoaded: true },
@@ -190,223 +157,197 @@ export default function Resume() {
   }
 
   return (
-    <>
-      <FormPage
-        title={getPageTitle("resume")}
-        actions={
-          <Button type="submit" form="resume-email-form" variant="contained">
-            Next
-          </Button>
-        }
-      >
-        <Box
-          id="resume-email-form"
-          component="form"
-          onSubmit={handleEmailSubmit}
-          noValidate
-        >
-          <Typography variant="body1" sx={{ color: "text.secondary", mb: 2 }}>
-            Enter your email below to receive a secure link to your saved
-            application.
-          </Typography>
-          <TextField
-            fullWidth
-            label="Email address"
-            type="email"
-            value={emailAddress}
-            onChange={(event) => {
-              setEmailAddress(event.target.value);
-              if (showEmailSentMessage) {
-                setShowEmailSentMessage(false);
-              }
-            }}
-            error={Boolean(emailError)}
-            helperText={emailError ?? undefined}
-          />
-          {showEmailSentMessage ? (
-            <Alert severity="success" sx={{ mt: 1.5, mb: 2 }}>
-              A secure link has been sent to your email. Please click the link
-              in the email to continue to your saved application.
-            </Alert>
-          ) : null}
-        </Box>
-      </FormPage>
-
-      <Dialog
-        open={isModalOpen}
-        onClose={closeModalToResumePage}
-        fullWidth
-        maxWidth="sm"
-      >
-        {step === 2 ? (
-          <>
-            <DialogTitle>Phone Verification</DialogTitle>
-            <DialogContent>
-              <FormPageContent>
-                <DialogContentText sx={{ mb: 2 }}>
-                  A security code will be sent to the phone number ending in{" "}
-                  <Box component="span" sx={{ fontWeight: 700 }}>
-                    1111
-                  </Box>
-                  .
-                </DialogContentText>
-                <FormControl
-                  component="fieldset"
-                  error={Boolean(deliveryMethodError)}
-                  fullWidth
-                >
-                  <FormLabel>How should we send the code?</FormLabel>
-                  <ToggleButtonGroup
-                    exclusive
-                    value={deliveryMethod}
-                    onChange={(_, value) => {
-                      if (value !== null) {
-                        setDeliveryMethod(value as DeliveryMethod);
-                      }
-                    }}
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      width: "100%",
-                      gap: 1,
-                      mt: 1,
-                    }}
-                  >
-                    <ToggleButton
-                      value="text-message"
-                      sx={{
-                        width: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        gap: 1.5,
-                        py: 1.5,
-                        textTransform: "none",
-                      }}
-                    >
-                      <Radio
-                        checked={deliveryMethod === "text-message"}
-                        size="small"
-                        sx={{ p: 0 }}
-                      />
-                      Text message
-                    </ToggleButton>
-                    <ToggleButton
-                      value="phone-call"
-                      sx={{
-                        width: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        gap: 1.5,
-                        py: 1.5,
-                        textTransform: "none",
-                      }}
-                    >
-                      <Radio
-                        checked={deliveryMethod === "phone-call"}
-                        size="small"
-                        sx={{ p: 0 }}
-                      />
-                      Voice call
-                    </ToggleButton>
-                  </ToggleButtonGroup>
-                </FormControl>
-
-                {deliveryMethodError ? (
-                  <Typography
-                    variant="caption"
-                    color="error"
-                    sx={{ mt: 1, display: "block" }}
-                  >
-                    {deliveryMethodError}
+    <Box
+      sx={{
+        width: "100%",
+        maxWidth: 650,
+        mx: "auto",
+        py: 4,
+        px: { xs: 2, sm: 3 },
+      }}
+    >
+      <Stepper activeStep={activeStep} orientation="vertical">
+        {/* Step 1: Enter your email */}
+        <Step completed={emailCompleted}>
+          <StepLabel>
+            <Typography
+              sx={{
+                fontWeight: activeStep === 0 ? 700 : 500,
+                fontSize: "1rem",
+              }}
+            >
+              Enter your email address
+            </Typography>
+          </StepLabel>
+          <StepContent>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Enter the email that you started an application with. A secure
+              link will be sent to your email with next steps to resume your
+              saved application.
+            </Typography>
+            {isEmailSending ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  py: 4,
+                }}
+              >
+                <Stack spacing={2} alignItems="center">
+                  <CircularProgress size={40} thickness={4} />
+                  <Typography variant="body2" color="text.secondary">
+                    Sending secure link…
                   </Typography>
-                ) : null}
-              </FormPageContent>
-
-              <FormPageActions>
-                <Box marginTop={"1rem !important"}>
-                  {/* <Button variant="text" onClick={handleBackToEmailStep}>
-                    Back
-                  </Button> */}
-                  <Button variant="contained" onClick={handleDeliveryContinue}>
+                </Stack>
+              </Box>
+            ) : emailSent ? (
+              <Stack spacing={2} sx={{ py: 1 }}>
+                <Alert severity="success">
+                  A secure link has been sent to your email. Open your email and
+                  click the link to continue with your saved application.
+                </Alert>
+              </Stack>
+            ) : (
+              <Box
+                component="form"
+                onSubmit={handleEmailSubmit}
+                noValidate
+                sx={{ py: 1 }}
+              >
+                <TextField
+                  fullWidth
+                  label="Email address"
+                  type="email"
+                  required
+                  value={emailAddress}
+                  onChange={(event) => {
+                    setEmailAddress(event.target.value);
+                    if (emailError) setEmailError(null);
+                  }}
+                  error={Boolean(emailError)}
+                  helperText={emailError ?? undefined}
+                  sx={{ mb: 2 }}
+                />
+                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                  <Button type="submit" variant="contained">
                     Next
                   </Button>
                 </Box>
-              </FormPageActions>
-            </DialogContent>
-          </>
-        ) : null}
-
-        {step === 3 ? (
-          <>
-            <DialogTitle>Phone Verification</DialogTitle>
-            <DialogContent>
-              <Box
-                id="resume-phone-code-form"
-                component="form"
-                onSubmit={handleVerifySubmit}
-                noValidate
-              >
-                <FormPageContent>
-                  <DialogContentText sx={{ mb: 2 }}>
-                    Enter the security code sent to the phone number ending in{" "}
-                    <Box component="span" sx={{ fontWeight: 700 }}>
-                      1111
-                    </Box>
-                    .
-                  </DialogContentText>
-                  <TextField
-                    margin="normal"
-                    fullWidth
-                    type="text"
-                    value={phoneCode}
-                    label="Security Code"
-                    onChange={(event) => setPhoneCode(event.target.value)}
-                    inputProps={{
-                      inputMode: "numeric",
-                      pattern: "[0-9]*",
-                    }}
-                    error={Boolean(phoneCodeError)}
-                    helperText={phoneCodeError ?? undefined}
-                  />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      mt: 0.5,
-                    }}
-                  >
-                    <Button
-                      variant="text"
-                      size="small"
-                      startIcon={<RefreshRoundedIcon />}
-                      onClick={handleResendCode}
-                    >
-                      Resend code
-                    </Button>
-                  </Box>
-                </FormPageContent>
-
-                <FormPageActions>
-                  <Box marginTop={"1rem !important"}>
-                    <Button variant="text" onClick={handleBackToDeliveryMethod}>
-                      Back
-                    </Button>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      disabled={isVerifying}
-                    >
-                      {isVerifying ? "Verifying..." : "Next"}
-                    </Button>
-                  </Box>
-                </FormPageActions>
               </Box>
-            </DialogContent>
-          </>
-        ) : null}
-      </Dialog>
-    </>
+            )}
+          </StepContent>
+        </Step>
+
+        {/* Step 2: Enter phone code */}
+        <Step completed={false}>
+          <StepLabel>
+            <Typography
+              sx={{
+                fontWeight: activeStep === 1 ? 700 : 500,
+                fontSize: "1rem",
+              }}
+            >
+              Enter security code
+            </Typography>
+          </StepLabel>
+          <StepContent>
+            <Box
+              component="form"
+              onSubmit={handleVerifySubmit}
+              noValidate
+              sx={{ py: 1 }}
+            >
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                Enter the security code sent to the phone number ending in{" "}
+                <Box component="span" sx={{ fontWeight: 700 }}>
+                  1111
+                </Box>
+                .
+              </Typography>
+              <TextField
+                fullWidth
+                type="text"
+                required
+                value={phoneCode}
+                label="Security Code"
+                onChange={(event) => {
+                  setPhoneCode(event.target.value);
+                  if (phoneCodeError) setPhoneCodeError(null);
+                }}
+                inputProps={{
+                  inputMode: "numeric",
+                  pattern: "[0-9]*",
+                }}
+                error={Boolean(phoneCodeError)}
+                helperText={phoneCodeError ?? undefined}
+              />
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                sx={{ mt: 1 }}
+              >
+                <Button
+                  variant="text"
+                  size="small"
+                  startIcon={<RefreshRoundedIcon />}
+                  onClick={() => {
+                    setSnackMessage("A new code has been sent.");
+                  }}
+                >
+                  Resend code
+                </Button>
+                <Link
+                  component="button"
+                  type="button"
+                  variant="body2"
+                  underline="hover"
+                  onClick={() => {
+                    const nextMode = deliveryMode === "text" ? "voice" : "text";
+                    setDeliveryMode(nextMode);
+                    setSnackMessage(
+                      nextMode === "voice"
+                        ? "Code will be sent via voice call."
+                        : "Code will be sent via text message.",
+                    );
+                  }}
+                  sx={{ fontSize: "0.8125rem" }}
+                >
+                  {deliveryMode === "text"
+                    ? "Send code with voice call"
+                    : "Send code with text"}
+                </Link>
+              </Stack>
+              <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  disabled={isVerifying}
+                >
+                  {isVerifying ? "Verifying..." : "Next"}
+                </Button>
+              </Box>
+            </Box>
+          </StepContent>
+        </Step>
+      </Stepper>
+
+      <Snackbar
+        open={Boolean(snackMessage)}
+        autoHideDuration={3000}
+        onClose={() => setSnackMessage(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnackMessage(null)}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackMessage}
+        </Alert>
+      </Snackbar>
+    </Box>
   );
 }

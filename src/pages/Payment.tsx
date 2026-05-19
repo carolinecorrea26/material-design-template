@@ -13,7 +13,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import CreditCardOffOutlinedIcon from "@mui/icons-material/CreditCardOffOutlined";
 import LoopRoundedIcon from "@mui/icons-material/LoopRounded";
@@ -405,7 +405,7 @@ export default function Payment() {
           <Stack spacing={2}>
             <Alert
               severity="warning"
-              icon={<WarningAmberRoundedIcon fontSize="inherit" />}
+              icon={<InfoOutlinedIcon fontSize="inherit" />}
               sx={{ alignItems: "flex-start" }}
             >
               <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
@@ -470,7 +470,7 @@ export default function Payment() {
                         >
                           <Stack spacing={1.5}>
                             <Typography
-                              fontWeight={700}
+                              fontWeight={600}
                               sx={{ fontSize: "1rem" }}
                             >
                               {product.coverageName}

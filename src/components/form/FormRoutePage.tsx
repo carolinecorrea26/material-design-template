@@ -80,6 +80,7 @@ type FormRoutePageProps = {
   pageId: PageId;
   title?: string;
   formMaxWidth?: number | string;
+  noBreadcrumb?: boolean;
   help?: ReactNode | ((props: FormRouteRenderProps) => ReactNode);
   helpItems?:
     | FormRouteHelpItem[]
@@ -218,6 +219,7 @@ export default function FormRoutePage({
   pageId,
   title,
   formMaxWidth,
+  noBreadcrumb,
   help,
   helpItems,
   children,
@@ -585,7 +587,7 @@ export default function FormRoutePage({
           </>
         }
         aboveHeader={
-          isVerticalStepper ? (
+          isVerticalStepper && !noBreadcrumb ? (
             <VerticalStepperBreadcrumbs pageId={pageId} />
           ) : undefined
         }
@@ -618,13 +620,14 @@ export default function FormRoutePage({
           open={showProgressSaved}
           autoHideDuration={3000}
           onClose={() => setShowProgressSaved(false)}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          sx={{ bottom: { xs: 20, sm: 24 } }}
         >
           <Alert
             onClose={() => setShowProgressSaved(false)}
             severity="success"
             variant="filled"
-            sx={{ width: "100%" }}
+            // sx={{ width: "100%" }}
           >
             Progress saved
           </Alert>

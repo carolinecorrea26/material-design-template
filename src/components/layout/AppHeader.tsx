@@ -148,6 +148,8 @@ type SearchResult = {
   description: string;
   action: "navigate" | "drawer";
   target: string;
+  /** Optional: coverage category to show in drawer */
+  categoryId?: string;
 };
 
 function buildSearchItems(): SearchResult[] {
@@ -160,17 +162,22 @@ function buildSearchItems(): SearchResult[] {
       description: `Browse ${category.label} coverage options`,
       action: "drawer",
       target: "coverage",
+      categoryId: category.id,
     });
   }
 
   // Individual coverages from active client
   const clientCoverages = getActiveClientCoverages();
   for (const coverage of clientCoverages) {
+    const category = coverageCategories.find(
+      (c) => c.id === coverage.categoryId,
+    );
     items.push({
       label: coverage.name,
       description: coverage.definition,
       action: "drawer",
       target: "coverage",
+      categoryId: category?.id,
     });
   }
 
@@ -199,6 +206,30 @@ function buildSearchItems(): SearchResult[] {
       description: "Continue a previously started application",
       action: "navigate",
       target: "/resume",
+    },
+    {
+      label: "How does applying work?",
+      description: "Learn about the application process and steps involved",
+      action: "drawer",
+      target: "how-applying-works",
+    },
+    {
+      label: "How much does it cost?",
+      description: "Estimate coverage costs based on your profile",
+      action: "drawer",
+      target: "cost-estimate",
+    },
+    {
+      label: "What is QuickDecision?",
+      description: "Get an instant underwriting decision on eligible products",
+      action: "drawer",
+      target: "quick-decision",
+    },
+    {
+      label: "Contact support",
+      description: "Get help from our support team",
+      action: "drawer",
+      target: "contact",
     },
   );
 
@@ -257,6 +288,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
     useState<CoverageDefinition | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileSearchDrawerOpen, setMobileSearchDrawerOpen] = useState(false);
   const searchAnchorRef = useRef<HTMLDivElement>(null);
   const { values } = useApplicationForm();
   const summaryBadgeCount = useApplicationSummaryBadge();
@@ -326,6 +358,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
   function handleSearchSelect(result: SearchResult) {
     setSearchQuery("");
     setSearchOpen(false);
+    setMobileSearchDrawerOpen(false);
 
     if (result.action === "navigate") {
       void router.navigate(result.target);
@@ -339,6 +372,12 @@ export default function AppHeader({ client }: AppHeaderProps) {
           break;
         case "quick-decision":
           setIsCoverageDrawerOpen(true);
+          break;
+        case "how-applying-works":
+          setIsCoverageDrawerOpen(true);
+          break;
+        case "cost-estimate":
+          setIsNeedsCalcOpen(true);
           break;
         case "contact":
           setIsMenuOpen(true);
@@ -549,94 +588,38 @@ export default function AppHeader({ client }: AppHeaderProps) {
             </Box>
 
             {/* Site Search - full width on xs */}
-            <ClickAwayListener onClickAway={() => setSearchOpen(false)}>
-              <Box
+            <Box
+              sx={{
+                width: "100%",
+                display: { xs: "block", sm: "none" },
+                position: "relative",
+              }}
+            >
+              <TextField
+                size="small"
+                placeholder="Search coverages…"
+                value={searchQuery}
+                onFocus={() => setMobileSearchDrawerOpen(true)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon
+                        sx={{ fontSize: "1.2rem", color: "text.secondary" }}
+                      />
+                    </InputAdornment>
+                  ),
+                  readOnly: true,
+                }}
                 sx={{
                   width: "100%",
-                  display: { xs: "block", sm: "none" },
-                  position: "relative",
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "999px",
+                    height: 36,
+                    fontSize: "0.85rem",
+                  },
                 }}
-              >
-                <TextField
-                  size="small"
-                  placeholder="Search coverages…"
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setSearchOpen(e.target.value.trim().length > 0);
-                  }}
-                  onFocus={() => {
-                    if (searchQuery.trim()) setSearchOpen(true);
-                  }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SearchIcon
-                          sx={{ fontSize: "1.2rem", color: "text.secondary" }}
-                        />
-                      </InputAdornment>
-                    ),
-                    endAdornment: searchQuery ? (
-                      <InputAdornment position="end">
-                        <IconButton
-                          size="small"
-                          aria-label="Clear search"
-                          onClick={() => {
-                            setSearchQuery("");
-                            setSearchOpen(false);
-                          }}
-                          sx={{ p: 0.25 }}
-                        >
-                          <CloseIcon sx={{ fontSize: "1rem" }} />
-                        </IconButton>
-                      </InputAdornment>
-                    ) : null,
-                  }}
-                  sx={{
-                    width: "100%",
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "999px",
-                      height: 36,
-                      fontSize: "0.85rem",
-                    },
-                  }}
-                />
-                {searchOpen && searchResults.length > 0 && (
-                  <Paper
-                    elevation={8}
-                    sx={{
-                      position: "absolute",
-                      top: "100%",
-                      left: 0,
-                      right: 0,
-                      mt: 0.5,
-                      borderRadius: 2,
-                      overflow: "hidden",
-                      zIndex: 1300,
-                    }}
-                  >
-                    <List dense disablePadding>
-                      {searchResults.map((result) => (
-                        <ListItemButton
-                          key={`${result.action}-${result.target}-${result.label}`}
-                          onClick={() => handleSearchSelect(result)}
-                        >
-                          <ListItemText
-                            primary={highlightMatch(result.label, searchQuery)}
-                            secondary={result.description}
-                            primaryTypographyProps={{
-                              variant: "body2",
-                              fontWeight: 600,
-                            }}
-                            secondaryTypographyProps={{ variant: "caption" }}
-                          />
-                        </ListItemButton>
-                      ))}
-                    </List>
-                  </Paper>
-                )}
-              </Box>
-            </ClickAwayListener>
+              />
+            </Box>
 
             {showProgress && (
               <Box sx={{ width: "100%", minWidth: 0 }}>
@@ -954,6 +937,128 @@ export default function AppHeader({ client }: AppHeaderProps) {
         open={isSummaryOpen}
         onClose={() => setIsSummaryOpen(false)}
       />
+
+      {/* Mobile Search Drawer */}
+      <Drawer
+        anchor="bottom"
+        open={mobileSearchDrawerOpen}
+        onClose={() => {
+          setMobileSearchDrawerOpen(false);
+          setSearchQuery("");
+        }}
+        sx={{
+          display: { xs: "block", sm: "none" },
+          "& .MuiDrawer-paper": {
+            height: "75vh",
+            borderTopLeftRadius: 12,
+            borderTopRightRadius: 12,
+          },
+        }}
+      >
+        <Box
+          sx={{
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+          }}
+        >
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{ mb: 2 }}
+          >
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              Search
+            </Typography>
+            <IconButton
+              onClick={() => {
+                setMobileSearchDrawerOpen(false);
+                setSearchQuery("");
+              }}
+              aria-label="Close search"
+            >
+              <CloseIcon />
+            </IconButton>
+          </Stack>
+          <TextField
+            size="small"
+            placeholder="Search coverages, help topics…"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            autoFocus
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon
+                    sx={{ fontSize: "1.2rem", color: "text.secondary" }}
+                  />
+                </InputAdornment>
+              ),
+              endAdornment: searchQuery ? (
+                <InputAdornment position="end">
+                  <IconButton
+                    size="small"
+                    aria-label="Clear search"
+                    onClick={() => setSearchQuery("")}
+                    sx={{ p: 0.25 }}
+                  >
+                    <CloseIcon sx={{ fontSize: "1rem" }} />
+                  </IconButton>
+                </InputAdornment>
+              ) : null,
+            }}
+            sx={{
+              width: "100%",
+              mb: 1,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "999px",
+                height: 36,
+                fontSize: "0.85rem",
+              },
+            }}
+          />
+          <Box sx={{ overflowY: "auto", flex: 1 }}>
+            {searchResults.length > 0 ? (
+              <List dense disablePadding>
+                {searchResults.map((result) => (
+                  <ListItemButton
+                    key={`${result.action}-${result.target}-${result.label}`}
+                    onClick={() => handleSearchSelect(result)}
+                  >
+                    <ListItemText
+                      primary={highlightMatch(result.label, searchQuery)}
+                      secondary={result.description}
+                      primaryTypographyProps={{
+                        variant: "body2",
+                        fontWeight: 600,
+                      }}
+                      secondaryTypographyProps={{ variant: "caption" }}
+                    />
+                  </ListItemButton>
+                ))}
+              </List>
+            ) : searchQuery.trim() ? (
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ p: 2, textAlign: "center" }}
+              >
+                No results found for "{searchQuery}"
+              </Typography>
+            ) : (
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ p: 2, textAlign: "center" }}
+              >
+                Type to search coverages, help topics, and more
+              </Typography>
+            )}
+          </Box>
+        </Box>
+      </Drawer>
     </>
   );
 }

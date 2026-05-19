@@ -672,7 +672,11 @@ export default function Receipt() {
               {hasSupportInfo && (
                 <>
                   <Divider />
-                  <Alert severity="warning" variant="filled">
+                  <Alert
+                    severity="warning"
+                    variant="outlined"
+                    sx={{ backgroundColor: "rgba(255, 152, 0, 0.04)" }}
+                  >
                     If you have any questions about your application status,
                     please contact us
                     {supportEmail ? (
