@@ -253,23 +253,10 @@ function HowApplyingWorksDrawerContent() {
         {APPLYING_STEPS.map((step) => (
           <Stack
             key={step.id}
-            direction={{ xs: "column", sm: "row" }}
+            direction="row"
             spacing={2}
-            alignItems={{ xs: "center", sm: "flex-start" }}
+            alignItems="flex-start"
           >
-            <Box sx={{ flexShrink: 0 }}>
-              <Box
-                component="img"
-                src={step.imageSrc}
-                alt={step.imageAlt}
-                sx={{
-                  display: "block",
-                  width: 80,
-                  height: 80,
-                  objectFit: "contain",
-                }}
-              />
-            </Box>
             <Box sx={{ flex: 1 }}>
               <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
                 {step.title}

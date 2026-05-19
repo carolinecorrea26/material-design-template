@@ -15,6 +15,8 @@ import {
   Typography,
 } from "@mui/material";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CheckIcon from "@mui/icons-material/Check";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getActiveClient } from "../client/getActiveClient";
 import { getPagePath } from "../config/pages";
@@ -92,6 +94,7 @@ export default function Resume() {
   const [phoneCode, setPhoneCode] = useState("");
   const [phoneCodeError, setPhoneCodeError] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [verifySuccess, setVerifySuccess] = useState(false);
   const [deliveryMode, setDeliveryMode] = useState<DeliveryMode>("text");
   const [snackMessage, setSnackMessage] = useState<string | null>(null);
 
@@ -142,17 +145,21 @@ export default function Resume() {
     setIsVerifying(true);
 
     window.setTimeout(() => {
-      const savedApplication = getSavedApplicationForEmail(
-        emailAddress,
-        client.id,
-      );
-
-      setPageValues(savedApplication);
       setIsVerifying(false);
+      setVerifySuccess(true);
 
-      navigate(getPagePath("eligibility"), {
-        state: { resumeLoaded: true },
-      });
+      window.setTimeout(() => {
+        const savedApplication = getSavedApplicationForEmail(
+          emailAddress,
+          client.id,
+        );
+
+        setPageValues(savedApplication);
+
+        navigate(getPagePath("eligibility"), {
+          state: { resumeLoaded: true },
+        });
+      }, 2000);
     }, 700);
   }
 
@@ -166,6 +173,21 @@ export default function Resume() {
         px: { xs: 2, sm: 3 },
       }}
     >
+      <Button
+        component="a"
+        href="/"
+        startIcon={<ArrowBackIcon />}
+        sx={{
+          color: "text.secondary",
+          fontSize: "0.8125rem",
+          textTransform: "none",
+          mb: 2,
+          pl: 0,
+        }}
+      >
+        Back to home page
+      </Button>
+
       <Stepper activeStep={activeStep} orientation="vertical">
         {/* Step 1: Enter your email */}
         <Step completed={emailCompleted}>
@@ -176,7 +198,7 @@ export default function Resume() {
                 fontSize: "1rem",
               }}
             >
-              Enter your email address
+              Resume your saved application
             </Typography>
           </StepLabel>
           <StepContent>
@@ -323,9 +345,25 @@ export default function Resume() {
                 <Button
                   type="submit"
                   variant="contained"
-                  disabled={isVerifying}
+                  disabled={isVerifying || verifySuccess}
+                  sx={{
+                    ...(verifySuccess && {
+                      bgcolor: "success.main",
+                      "&:hover": { bgcolor: "success.main" },
+                      "&.Mui-disabled": {
+                        bgcolor: "success.main",
+                        color: "#fff",
+                      },
+                    }),
+                  }}
                 >
-                  {isVerifying ? "Verifying..." : "Next"}
+                  {verifySuccess ? (
+                    <CheckIcon sx={{ color: "#fff" }} />
+                  ) : isVerifying ? (
+                    "Verifying..."
+                  ) : (
+                    "Next"
+                  )}
                 </Button>
               </Box>
             </Box>

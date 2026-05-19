@@ -35,6 +35,7 @@ import FormPage from "./FormPage";
 import FormVerticalStepper, {
   VerticalStepperBreadcrumbs,
 } from "./FormVerticalStepper";
+import { getActiveProgressStepIndex } from "../../config/progressSteps";
 import { generateFormDataUpToPage } from "../../dev/utils/generateFormData";
 import FormHelpChips, { type HelpChipItem } from "./FormHelpChips";
 import FormHelpDrawer from "./FormHelpDrawer";
@@ -513,7 +514,9 @@ export default function FormRoutePage({
         ? helpItems(renderProps)
         : (helpItems ?? []);
 
-    const isVerticalStepper = progressVariant === "vertical-stepper";
+    const isVerticalStepper =
+      progressVariant === "vertical-stepper" &&
+      getActiveProgressStepIndex(pageId, values) >= 0;
 
     const activeHelpItem = useMemo(
       () => resolvedHelpItems.find((item) => item.id === activeHelpId) ?? null,

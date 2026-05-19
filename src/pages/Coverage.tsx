@@ -117,7 +117,7 @@ export function CoverageOptionsDrawerContent() {
             </Tabs>
           </Box>
 
-          <Box sx={{ flex: 1, p: 2 }}>
+          <Box sx={{ flex: 1, p: 2, bgcolor: "#fff" }}>
             {activeGroup ? (
               <Stack spacing={2}>
                 <Stack spacing={0.5}>
