@@ -1,20 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
-import DownloadForOfflineRoundedIcon from "@mui/icons-material/DownloadForOfflineRounded";
-import ScheduleSendRoundedIcon from "@mui/icons-material/ScheduleSendRounded";
+import FileDownloadRoundedIcon from "@mui/icons-material/FileDownloadRounded";
 import {
   Alert,
   Box,
   Button,
   Divider,
+  Link,
   Stack,
-  Step,
-  StepConnector,
-  StepLabel,
-  Stepper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
 } from "@mui/material";
-import FileDownloadRoundedIcon from "@mui/icons-material/FileDownloadRounded";
 import QuickDecisionIndicator from "../components/common/QuickDecisionIndicator";
 import {
   shouldShowApplicantLabel,
@@ -25,13 +26,13 @@ import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
 import type {
   CoverageDefinition,
-  CoverageCategoryId,
   CoverageUnderwritingType,
 } from "../config/coverages/types";
 import {
   useApplicationForm,
   type ApplicationFormValues,
 } from "../state/ApplicationFormContext";
+import { sendReceiptMockEmail } from "../utils/mockEmail";
 
 const RECEIPT_CONFIRMATION_KEY = "receiptConfirmationNumber";
 const QUICK_DECISION_UNDERWRITING_TYPES = new Set(["SI", "GI", "NA", "QD"]);
@@ -47,7 +48,6 @@ type ReceiptApplicant = "member" | "spouse";
 type SelectedCoverageEntry = {
   coverageId: string;
   applicant: ReceiptApplicant;
-  amount: number;
   coverage: CoverageDefinition;
 };
 
@@ -114,147 +114,56 @@ function getQdDecisionResult(
   return "conditionally-approved";
 }
 
-function hasImpairmentRider(
-  values: ApplicationFormValues,
-  coverageId: string,
-  applicant: string,
-): boolean {
-  const riders = values.qdImpairmentRiders;
-  if (riders && typeof riders === "object" && !Array.isArray(riders)) {
-    const key = `${coverageId}:${applicant}`;
-    return Boolean((riders as Record<string, boolean>)[key]);
-  }
-  return false;
-}
-
-function formatCurrencyAmount(amount: number): string {
-  return amount.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  });
-}
-
-function getDecisionMessage(opts: {
-  underwritingType: CoverageUnderwritingType;
-  categoryId: CoverageCategoryId;
-  decisionResult: QdDecisionResult;
-  amount: number;
-  impairmentRider: boolean;
-}): string {
-  const {
-    underwritingType,
-    categoryId,
-    decisionResult,
-    amount,
-    impairmentRider,
-  } = opts;
-  const type = underwritingType.toUpperCase();
-
-  // Non-QD products (FUW)
-  if (!QUICK_DECISION_UNDERWRITING_TYPES.has(type)) {
-    return "QuickDecision processing is helping to speed some of your insurance product decisions. However it is not currently available for the product referenced above. You'll be contacted if we need further information or to share a decision on your application.";
-  }
-
-  // QD products — determine decision result message
-  const isDisability = categoryId === "DI";
-  const formattedAmount = formatCurrencyAmount(amount);
-
-  let message: string;
-
-  switch (decisionResult) {
-    case "conditionally-approved":
-      if (isDisability) {
-        message = `Your QuickDecision application has been processed. Congratulations! Based on the information you provided and data securely reviewed, you've been conditionally approved for a monthly benefit of ${formattedAmount} in disability insurance coverage. Your group plan administrator now needs to confirm your eligibility for this product. Once that review is complete—typically within just a few days—you'll receive full details about your new coverage.`;
-      } else {
-        message = `Your QuickDecision application has been processed. Congratulations! Based on the information you provided and data securely reviewed, you've been conditionally approved for ${formattedAmount} in life insurance coverage. Your group plan administrator now needs to confirm your eligibility for this product. Once that review is complete—typically within just a few days—you'll receive full details about your new coverage.`;
-      }
-      break;
-
-    case "referred":
-      message =
-        "Before we can make a decision on your application we need a bit more information. A representative from New York Life or our medical service provider will contact you with details. This may include confirming information you've provided, requesting medical records, or scheduling a medical exam and lab tests. If an exam is needed, it will be arranged at no cost to you and at a time and place that's convenient for you. To help move things along, please respond promptly to any phone calls or emails. Our team is here to answer your questions and will work to provide a decision as quickly as possible.";
-      break;
-
-    case "soft-declined":
-      message =
-        "Based on the health or other information you provided, along with data reviewed from secure sources, we're unable to offer coverage for this insurance product at this time. Please continue to the final page to download a copy of your completed application for your records. If you have any questions about this decision, you may contact your Plan Administrator.";
-      break;
-
-    case "database-unavailable":
-      message =
-        "One of the databases we use to verify information about you did not respond to our request in time. This is typically a result of scheduled maintenance. Our team will contact the vendor within the next business day to complete your application processing. If additional information is needed from you, a representative will contact you. Otherwise, you will be sent details about your coverage request once our confirmation is complete.";
-      break;
-  }
-
-  // Append impairment rider text for disability products
-  if (
-    isDisability &&
-    impairmentRider &&
-    decisionResult === "conditionally-approved"
-  ) {
-    message +=
-      "\n\nPlease note: An impairment rider(s) / Specific named exclusion(s) is applicable to your coverage. This policy will not cover any related loss to this impairment rider(s) / specific named exclusion(s). You will be provided complete details shortly under separate cover.";
-  }
-
-  return message;
-}
-
 function getDecisionStatus(opts: {
   underwritingType: CoverageUnderwritingType;
   decisionResult: QdDecisionResult;
 }): {
   label: string;
-  dotColor: string;
-  dotBgColor: string;
+  color: string;
 } {
   const { underwritingType, decisionResult } = opts;
   const type = underwritingType.toUpperCase();
 
-  // Non-QD products
   if (!QUICK_DECISION_UNDERWRITING_TYPES.has(type)) {
     return {
-      label: "Standard underwriting",
-      dotColor: "#0668ff",
-      dotBgColor: "rgba(6, 104, 255, 0.18)",
+      label: "Sent for review",
+      color: "#0668ff",
     };
   }
 
-  // QD products — status based on decision result
   switch (decisionResult) {
     case "conditionally-approved":
       return {
-        label: "Conditionally approved!",
-        dotColor: "#00b24b",
-        dotBgColor: "rgba(0, 178, 75, 0.18)",
+        label: "Conditionally approved",
+        color: "#00a344",
       };
 
     case "referred":
       return {
-        label: "Need more information",
-        dotColor: "#f5a623",
-        dotBgColor: "rgba(245, 166, 35, 0.18)",
+        label: "Needs review",
+        color: "#b26a00",
       };
 
     case "soft-declined":
       return {
         label: "Unable to offer coverage",
-        dotColor: "#7b61a6",
-        dotBgColor: "rgba(123, 97, 166, 0.18)",
+        color: "#7b61a6",
       };
 
     case "database-unavailable":
       return {
-        label: "Connection timed out",
-        dotColor: "#d32f2f",
-        dotBgColor: "rgba(211, 47, 47, 0.18)",
+        label: "Review pending",
+        color: "#d32f2f",
       };
   }
 }
 
 function isQuickDecisionUnderwritingType(underwritingType: string): boolean {
   return QUICK_DECISION_UNDERWRITING_TYPES.has(underwritingType.toUpperCase());
+}
+
+function getTelHref(phone: string): string {
+  return phone.replace(/\D/g, "");
 }
 
 function buildSelectedCoverageEntries(
@@ -298,7 +207,6 @@ function buildSelectedCoverageEntries(
         {
           coverageId,
           applicant,
-          amount,
           coverage,
         } satisfies SelectedCoverageEntry,
       ];
@@ -316,7 +224,13 @@ export default function Receipt() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-    setConfirmationNumber(getOrCreateConfirmationNumber(values));
+
+    const nextConfirmationNumber = getOrCreateConfirmationNumber(values);
+    setConfirmationNumber(nextConfirmationNumber);
+
+    void sendReceiptMockEmail(values, nextConfirmationNumber).catch((error) => {
+      console.warn("Receipt mock email failed", error);
+    });
   }, [values]);
 
   const selectedEntries = useMemo(
@@ -324,16 +238,21 @@ export default function Receipt() {
     [values, coverages],
   );
 
-  const selfEntries = selectedEntries.filter(
-    (entry) => entry.applicant === "member",
-  );
   const spouseApplying = isApplicantApplying("spouse", values);
-  const spouseEntries = spouseApplying
-    ? selectedEntries.filter((entry) => entry.applicant === "spouse")
-    : [];
+  const shouldShowMemberLabel =
+    spouseApplying || shouldShowApplicantLabel("self", values);
 
-  const hasApplicantSelections =
-    selfEntries.length > 0 || spouseEntries.length > 0;
+  const orderedDecisionEntries = useMemo(
+    () =>
+      coverageCategories.flatMap((category) =>
+        selectedEntries.filter(
+          (entry) => entry.coverage.categoryId === category.id,
+        ),
+      ),
+    [selectedEntries],
+  );
+
+  const hasApplicantSelections = orderedDecisionEntries.length > 0;
 
   const shouldShowQuickDecisionDownload = selectedEntries.some((entry) =>
     isQuickDecisionUnderwritingType(entry.coverage.underwritingType),
@@ -344,139 +263,10 @@ export default function Receipt() {
   const supportHours = client.support.phoneHours;
   const hasSupportInfo = Boolean(supportPhone || supportEmail || supportHours);
 
-  function renderApplicantProducts(
-    entries: SelectedCoverageEntry[],
-    applicantLabel: string,
-    showApplicantHeader: boolean,
-  ) {
-    const orderedEntries = coverageCategories.flatMap((category) =>
-      entries.filter((entry) => entry.coverage.categoryId === category.id),
-    );
-
-    if (orderedEntries.length === 0) return null;
-
-    return (
-      <Stack
-        sx={{
-          border: "1px solid rgba(0, 22, 57, 0.08)",
-          borderRadius: 1.5,
-          backgroundColor: "#fff",
-          overflow: "hidden",
-        }}
-        divider={
-          <Divider flexItem sx={{ borderColor: "rgba(0, 22, 57, 0.08)" }} />
-        }
-      >
-        {showApplicantHeader && (
-          <Box
-            sx={{
-              px: 2,
-              py: 0.5,
-              backgroundColor: "#eef0f4",
-            }}
-          >
-            <Typography
-              variant="overline"
-              sx={{
-                display: "block",
-                fontWeight: 800,
-                letterSpacing: 1.5,
-                color: "#4f678d",
-              }}
-            >
-              {applicantLabel}
-            </Typography>
-          </Box>
-        )}
-
-        {orderedEntries.map((entry) => {
-          const decisionResult = getQdDecisionResult(
-            values,
-            entry.coverageId,
-            entry.applicant,
-          );
-          const status = getDecisionStatus({
-            underwritingType: entry.coverage.underwritingType,
-            decisionResult,
-          });
-          const impairmentRider = hasImpairmentRider(
-            values,
-            entry.coverageId,
-            entry.applicant,
-          );
-          const message = getDecisionMessage({
-            underwritingType: entry.coverage.underwritingType,
-            categoryId: entry.coverage.categoryId,
-            decisionResult,
-            amount: entry.amount,
-            impairmentRider,
-          });
-
-          return (
-            <Box
-              key={`${entry.coverageId}-${entry.applicant}`}
-              sx={{ px: 2, py: 1.75 }}
-            >
-              <Stack spacing={0.75}>
-                <Stack
-                  direction={{ xs: "column", sm: "row" }}
-                  spacing={1}
-                  justifyContent="space-between"
-                  alignItems={{ xs: "flex-start", sm: "center" }}
-                >
-                  <Stack direction="row" spacing={0.25} alignItems="center">
-                    <Typography variant="body2" fontWeight={600}>
-                      {entry.coverage.name}
-                    </Typography>
-                    {isQuickDecisionUnderwritingType(
-                      entry.coverage.underwritingType,
-                    ) && <QuickDecisionIndicator />}
-                  </Stack>
-
-                  <Stack direction="row" spacing={0.75} alignItems="center">
-                    <Box
-                      sx={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: "50%",
-                        flexShrink: 0,
-                        backgroundColor: status.dotColor,
-                        boxShadow: `0 0 0 4px ${status.dotBgColor}`,
-                      }}
-                    />
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        fontWeight: 700,
-                        color: status.dotColor,
-                        letterSpacing: 0,
-                      }}
-                    >
-                      {status.label}
-                    </Typography>
-                  </Stack>
-                </Stack>
-
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ whiteSpace: "pre-line" }}
-                >
-                  {message}
-                </Typography>
-              </Stack>
-            </Box>
-          );
-        })}
-      </Stack>
-    );
-  }
-
   return (
     <Stack spacing={2.5} sx={{ flex: 1, alignItems: "center", pb: 2 }}>
       <Box sx={{ width: "100%", maxWidth: 760 }}>
         <Stack spacing={2.5}>
-          {/* Thank you header + confirmation number */}
           <Stack
             alignItems="center"
             spacing={1.5}
@@ -515,7 +305,6 @@ export default function Receipt() {
                 fontSize: { xs: "1.25rem", md: "1.75rem" },
                 lineHeight: 1.35,
               }}
-              fontWeight={700}
             >
               Your application has been submitted!
             </Typography>
@@ -529,69 +318,6 @@ export default function Receipt() {
             </Typography>
           </Stack>
 
-          {/* Section: Download a copy of your application */}
-          <Box
-            sx={{
-              border: "1px solid rgba(0, 22, 57, 0.08)",
-              borderRadius: 3,
-              p: { xs: 2.5, sm: 3 },
-              backgroundColor: "#fff",
-            }}
-          >
-            <Stack spacing={2}>
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <Box
-                  sx={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: "rgba(7, 104, 255, 0.1)",
-                    color: "primary.main",
-                  }}
-                >
-                  <DownloadForOfflineRoundedIcon />
-                </Box>
-                <Typography variant="h6" fontWeight={700}>
-                  Download a copy of your application
-                </Typography>
-              </Stack>
-              <Typography variant="body2" color="text.secondary">
-                Please save a copy of your application now by using the download
-                buttons below. For security purposes, a digital copy will not be
-                sent via email — this is the only opportunity to download your
-                records.
-              </Typography>
-              <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-                <Button
-                  variant="outlined"
-                  startIcon={<FileDownloadRoundedIcon />}
-                >
-                  Application PDF
-                </Button>
-
-                <Button
-                  variant="outlined"
-                  startIcon={<FileDownloadRoundedIcon />}
-                >
-                  Payment PDF
-                </Button>
-
-                {shouldShowQuickDecisionDownload && (
-                  <Button
-                    variant="outlined"
-                    startIcon={<FileDownloadRoundedIcon />}
-                  >
-                    QuickDecision PDF
-                  </Button>
-                )}
-              </Stack>
-            </Stack>
-          </Box>
-
-          {/* Section: Track your application status */}
           <Box
             sx={{
               border: "1px solid rgba(0, 22, 57, 0.08)",
@@ -601,100 +327,258 @@ export default function Receipt() {
             }}
           >
             <Stack spacing={2.5}>
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <Box
-                  sx={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: "rgba(7, 104, 255, 0.1)",
-                    color: "primary.main",
-                  }}
-                >
-                  <ScheduleSendRoundedIcon />
-                </Box>
+              <Stack spacing={0.75}>
                 <Typography variant="h6" fontWeight={700}>
-                  Track your application status
+                  Decision status
                 </Typography>
+
+                {hasApplicantSelections ? (
+                  <TableContainer
+                    sx={{
+                      border: "1px solid rgba(0, 22, 57, 0.08)",
+                      borderRadius: 2,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <Table size="small" aria-label="Decision status table">
+                      <TableHead>
+                        <TableRow
+                          sx={{
+                            backgroundColor: "#f6f8fb",
+                            "& th": {
+                              color: "#4f678d",
+                              fontWeight: 800,
+                              fontSize: "0.75rem",
+                              letterSpacing: 0.6,
+                              textTransform: "uppercase",
+                            },
+                          }}
+                        >
+                          <TableCell>Coverage</TableCell>
+                          <TableCell>Status</TableCell>
+                        </TableRow>
+                      </TableHead>
+
+                      <TableBody>
+                        {orderedDecisionEntries.map((entry) => {
+                          const decisionResult = getQdDecisionResult(
+                            values,
+                            entry.coverageId,
+                            entry.applicant,
+                          );
+
+                          const status = getDecisionStatus({
+                            underwritingType: entry.coverage.underwritingType,
+                            decisionResult,
+                          });
+
+                          const applicantLabel =
+                            entry.applicant === "member" ? "Member" : "Spouse";
+
+                          const shouldShowApplicant =
+                            entry.applicant === "spouse" ||
+                            shouldShowMemberLabel;
+
+                          return (
+                            <TableRow
+                              key={`${entry.coverageId}-${entry.applicant}`}
+                              sx={{
+                                "&:last-child td": {
+                                  borderBottom: 0,
+                                },
+                              }}
+                            >
+                              <TableCell>
+                                <Stack spacing={0.35}>
+                                  <Stack
+                                    direction="row"
+                                    spacing={0.25}
+                                    alignItems="center"
+                                  >
+                                    <Typography
+                                      variant="body2"
+                                      fontWeight={600}
+                                    >
+                                      {entry.coverage.name}
+                                    </Typography>
+
+                                    {isQuickDecisionUnderwritingType(
+                                      entry.coverage.underwritingType,
+                                    ) && <QuickDecisionIndicator />}
+                                  </Stack>
+
+                                  {shouldShowApplicant && (
+                                    <Typography
+                                      variant="caption"
+                                      color="text.secondary"
+                                      sx={{ fontWeight: 600 }}
+                                    >
+                                      {applicantLabel}
+                                    </Typography>
+                                  )}
+                                </Stack>
+                              </TableCell>
+
+                              <TableCell>
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    fontWeight: 700,
+                                    color: status.color,
+                                  }}
+                                >
+                                  {status.label}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                ) : (
+                  <Alert severity="info" variant="outlined">
+                    No selected coverage details are available for this
+                    application.
+                  </Alert>
+                )}
               </Stack>
 
-              <Stepper
-                activeStep={1}
-                orientation="vertical"
-                connector={<StepConnector />}
-              >
-                <Step completed>
-                  <StepLabel>
-                    <Typography fontWeight={600}>Submit application</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Your application has been successfully submitted.
-                    </Typography>
-                  </StepLabel>
-                </Step>
+              <Divider />
 
-                <Step active>
-                  <StepLabel>
-                    <Typography fontWeight={600}>Application review</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Your application is being sent for review by the plan
-                      administrator and carrier. You will be contacted if any
-                      additional information is needed.
-                    </Typography>
-                  </StepLabel>
+              <Stack spacing={1.5}>
+                <Typography variant="h6" fontWeight={700}>
+                  Next steps
+                </Typography>
 
-                  {hasApplicantSelections && (
-                    <Box sx={{ mt: 2 }}>
-                      {selfEntries.length > 0 &&
-                        renderApplicantProducts(
-                          selfEntries,
-                          "Member",
-                          shouldShowApplicantLabel("self", values),
-                        )}
+                <Typography variant="body2" color="text.secondary">
+                  Your application is being sent for review by the plan
+                  administrator and carrier. You will be contacted if any
+                  additional information is needed.
+                </Typography>
 
-                      {spouseEntries.length > 0 &&
-                        renderApplicantProducts(spouseEntries, "Spouse", true)}
-                    </Box>
+                <Typography variant="body2" color="text.secondary">
+                  Please save a copy of your application now by using the
+                  download buttons below. For security purposes, a digital copy
+                  will not be sent via email — this is the only opportunity to
+                  download your records.
+                </Typography>
+
+                <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                  <Button
+                    variant="outlined"
+                    startIcon={<FileDownloadRoundedIcon />}
+                  >
+                    Application PDF
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    startIcon={<FileDownloadRoundedIcon />}
+                  >
+                    Payment PDF
+                  </Button>
+
+                  {shouldShowQuickDecisionDownload && (
+                    <Button
+                      variant="outlined"
+                      startIcon={<FileDownloadRoundedIcon />}
+                    >
+                      QuickDecision PDF
+                    </Button>
                   )}
-                </Step>
-
-                <Step>
-                  <StepLabel>
-                    <Typography fontWeight={600}>
-                      Receive your certificate
-                    </Typography>
-                  </StepLabel>
-                </Step>
-              </Stepper>
+                </Stack>
+              </Stack>
 
               {hasSupportInfo && (
                 <>
                   <Divider />
-                  <Alert
-                    severity="warning"
-                    variant="outlined"
-                    sx={{ backgroundColor: "rgba(255, 152, 0, 0.04)" }}
+
+                  <Box
+                    sx={{
+                      backgroundColor: "#eef5ff",
+                      border: "1px solid #006fff",
+                      borderRadius: 2,
+                      p: { xs: 2.25, sm: 2.75 },
+                      color: "#12233d",
+                    }}
                   >
-                    If you have any questions about your application status,
-                    please contact us
-                    {supportEmail ? (
-                      <>
-                        {" "}
-                        via email at <strong>{supportEmail}</strong>
-                      </>
-                    ) : null}
-                    {supportEmail && supportPhone ? " or" : ""}
-                    {supportPhone ? (
-                      <>
-                        {" "}
-                        by phone at <strong>{supportPhone}</strong>
-                        {supportHours ? ` (${supportHours})` : ""}
-                      </>
-                    ) : null}
-                    .
-                  </Alert>
+                    <Stack spacing={1.5}>
+                      <Typography
+                        sx={{
+                          color: "#071b3a",
+                          fontSize: "1.125rem",
+                          lineHeight: 1.25,
+                          fontWeight: 700,
+                        }}
+                      >
+                        Questions? We&rsquo;re here to help.
+                      </Typography>
+
+                      <Typography
+                        sx={{
+                          color: "#12233d",
+                          fontSize: "1rem",
+                          lineHeight: 1.45,
+                          fontWeight: 400,
+                        }}
+                      >
+                        {client.branding.name} Insurance Administrator
+                      </Typography>
+
+                      {supportPhone && (
+                        <Typography
+                          sx={{
+                            color: "#12233d",
+                            fontSize: "1rem",
+                            lineHeight: 1.45,
+                            fontWeight: 700,
+                          }}
+                        >
+                          Call:{" "}
+                          <Link
+                            href={`tel:${getTelHref(supportPhone)}`}
+                            underline="none"
+                            sx={{
+                              color: "#006fff",
+                              fontWeight: 700,
+                            }}
+                          >
+                            {supportPhone}
+                          </Link>
+                          {supportHours ? (
+                            <Box component="span" sx={{ fontWeight: 400 }}>
+                              {" "}
+                              ({supportHours})
+                            </Box>
+                          ) : null}
+                        </Typography>
+                      )}
+
+                      {supportEmail && (
+                        <Typography
+                          sx={{
+                            color: "#12233d",
+                            fontSize: "1rem",
+                            lineHeight: 1.45,
+                            fontWeight: 700,
+                          }}
+                        >
+                          Email:{" "}
+                          <Link
+                            href={`mailto:${supportEmail}`}
+                            underline="none"
+                            sx={{
+                              color: "#006fff",
+                              fontWeight: 700,
+                            }}
+                          >
+                            {supportEmail}
+                          </Link>
+                        </Typography>
+                      )}
+                    </Stack>
+                  </Box>
                 </>
               )}
             </Stack>

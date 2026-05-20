@@ -146,9 +146,23 @@ export const pages = [
     type: "form",
     title: "Application Sent Successfully!",
   },
+
+  {
+    id: "mock-email-preview",
+    path: "/mock-email-preview",
+    type: "receipt",
+    title: "Mock Email Preview",
+  },
+
+  {
+    id: "information-architecture",
+    path: "/information-architecture",
+    type: "internal",
+    title: "Information Architecture",
+  },
 ] as const;
 
-export type PageType = "home" | "form" | "receipt" | "resume";
+export type PageType = "home" | "form" | "receipt" | "resume" | "internal";
 
 export function getPagePath(id: (typeof pages)[number]["id"]) {
   const page = pages.find((page) => page.id === id);

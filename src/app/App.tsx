@@ -1,7 +1,8 @@
+// src/app/App.tsx
+
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import { RouterProvider } from "react-router-dom";
-import AppShell from "../components/layout/AppShell";
 import { ApplicationFormProvider } from "../state/ApplicationFormContext";
 import theme from "./theme";
 import { router } from "./router";
@@ -14,9 +15,7 @@ export default function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <ApplicationFormProvider>
-          <AppShell>
-            <RouterProvider router={router} />
-          </AppShell>
+          <RouterProvider router={router} />
         </ApplicationFormProvider>
       </ThemeProvider>
     </LocalizationProvider>

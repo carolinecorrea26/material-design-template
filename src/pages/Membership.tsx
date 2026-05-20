@@ -1151,6 +1151,41 @@ export default function Membership() {
             {showMembershipIneligibleAlert && (
               <Alert severity="warning" sx={{ mt: 2 }}>
                 You must be an active member to continue with this application.
+                <Stack sx={{ mt: 2 }} spacing={2}>
+                  <Box>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ fontWeight: 700, mb: 1 }}
+                    >
+                      Not yet a member?
+                    </Typography>
+                    <Typography variant="body2">
+                      Contact {client.branding.name} or visit your
+                      association&apos;s website to learn about membership
+                      options and how to join.
+                    </Typography>
+                  </Box>
+
+                  {client.support.website && (
+                    <Typography variant="body2">
+                      For more information, visit{" "}
+                      <Typography
+                        component="a"
+                        href={`https://${client.support.website}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{
+                          color: "primary.main",
+                          textDecoration: "underline",
+                          font: "inherit",
+                        }}
+                      >
+                        {client.support.website}
+                      </Typography>{" "}
+                      or call {client.support.phoneDisplay}.
+                    </Typography>
+                  )}
+                </Stack>
               </Alert>
             )}
 

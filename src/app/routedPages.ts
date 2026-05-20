@@ -22,4 +22,6 @@ export const routedPages = [
   "resume",
   "advisor-login",
   "advisor-send-confirmation",
+  "mock-email-preview",
+  "information-architecture",
 ] satisfies PageId[];

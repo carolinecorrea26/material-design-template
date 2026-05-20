@@ -29,11 +29,13 @@ export function generateFormDataUpToPage(
     }
   }
 
+  const coverageIndex = formFlow.indexOf("coverage");
+  const paymentIndex = formFlow.indexOf("payment");
+  const shouldSeedCoverageData = targetIndex >= coverageIndex;
+  const shouldSeedPaymentData = targetIndex >= paymentIndex;
+
   // Add special handling for coverage-dependent fields
-  if (
-    targetPageId === "payment" ||
-    formFlow.indexOf(targetPageId as PageId) >= formFlow.indexOf("payment")
-  ) {
+  if (shouldSeedCoverageData) {
     // Ensure coverage selections exist
     if (!values.coverageSelections) {
       const coverages = getActiveClientCoverages();
@@ -69,35 +71,39 @@ export function generateFormDataUpToPage(
         (coverageAmounts as Record<string, number>)[spouseKey] = 50000;
       }
 
-      // Set payment method and frequency for each coverage
-      // First coverage uses bank-account, others use bill-me
-      const methodKey = `payment-method:${coverageId}`;
-      const frequencyKey = `payment-frequency:${coverageId}`;
+      if (shouldSeedPaymentData) {
+        // Set payment method and frequency for each coverage
+        // First coverage uses bank-account, others use bill-me
+        const methodKey = `payment-method:${coverageId}`;
+        const frequencyKey = `payment-frequency:${coverageId}`;
 
-      if (!(methodKey in values)) {
-        values[methodKey] = i === 0 ? "bank-account" : "bill-me";
+        if (!(methodKey in values)) {
+          values[methodKey] = i === 0 ? "bank-account" : "bill-me";
+        }
+
+        if (!(frequencyKey in values)) {
+          values[frequencyKey] = "monthly";
+        }
+      }
+    }
+
+    if (shouldSeedPaymentData) {
+      // Add bank account details if not already set
+      if (!values["payment-routing-number"]) {
+        values["payment-routing-number"] = "021000021";
       }
 
-      if (!(frequencyKey in values)) {
-        values[frequencyKey] = "monthly";
+      if (!values["payment-account-number"]) {
+        values["payment-account-number"] = "123456789";
       }
-    }
 
-    // Add bank account details if not already set
-    if (!values["payment-routing-number"]) {
-      values["payment-routing-number"] = "021000021";
-    }
+      if (!values["payment-account-type"]) {
+        values["payment-account-type"] = "checking";
+      }
 
-    if (!values["payment-account-number"]) {
-      values["payment-account-number"] = "123456789";
-    }
-
-    if (!values["payment-account-type"]) {
-      values["payment-account-type"] = "checking";
-    }
-
-    if (!values["bank-authorization"]) {
-      values["bank-authorization"] = true;
+      if (!values["bank-authorization"]) {
+        values["bank-authorization"] = true;
+      }
     }
 
     values.coverageAmounts = coverageAmounts;

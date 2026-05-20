@@ -25,24 +25,11 @@ import {
   useApplicationForm,
 } from "../../state/ApplicationFormContext";
 import { router } from "../../app/router";
-
-const PROGRESS_VARIANT_STORAGE_KEY = "devtools:progressVariant";
+import { readProgressVariant } from "../../utils/progressVariant";
 
 function getCurrentPageId(pathname: string): PageId | null {
   const match = pages.find((page) => page.path === pathname);
   return match?.id ?? null;
-}
-
-function readProgressVariant(): ProgressVariant {
-  const urlParams = new URLSearchParams(window.location.search);
-  const urlProgress = urlParams.get("progress");
-  if (urlProgress === "hstep") return "stepper";
-  if (urlProgress === "vstep") return "vertical-stepper";
-  if (urlProgress === "bar") return "bar";
-  const stored = window.sessionStorage.getItem(PROGRESS_VARIANT_STORAGE_KEY);
-  if (stored === "bar") return "bar";
-  if (stored === "stepper") return "stepper";
-  return "vertical-stepper";
 }
 
 function emitProgressSnapshot(values: ApplicationFormValues) {
@@ -222,7 +209,6 @@ export default function FormProgress() {
                     fontWeight: 700,
                     fontSize: { xs: "0.95rem", sm: "1rem" },
                     cursor: isActive || isComplete ? "pointer" : "default",
-                    // "&:hover": isActive || isComplete ? { opacity: 0.85 } : {},
                   }}
                 >
                   {index + 1}

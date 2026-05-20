@@ -21,6 +21,8 @@ import Receipt from "../pages/Receipt";
 import Resume from "../pages/Resume";
 import AdvisorLogin from "../pages/AdvisorLogin";
 import AdvisorSendConfirmation from "../pages/AdvisorSendConfirmation";
+import MockEmailPreview from "../pages/MockEmailPreview";
+import InformationArchitecture from "../pages/InformationArchitecture";
 
 type RoutedPageId = (typeof routedPages)[number];
 
@@ -46,4 +48,6 @@ export const pageComponents: Record<RoutedPageId, ComponentType> = {
   resume: Resume,
   "advisor-login": AdvisorLogin,
   "advisor-send-confirmation": AdvisorSendConfirmation,
+  "mock-email-preview": MockEmailPreview,
+  "information-architecture": InformationArchitecture,
 };

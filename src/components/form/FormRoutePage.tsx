@@ -47,6 +47,8 @@ import {
   MESSAGE_DURATION,
 } from "../../config/transitionMessages";
 import type { ProgressVariant } from "../../types/progress";
+import { readProgressVariant } from "../../utils/progressVariant";
+import { sendAutosaveMockEmail } from "../../utils/mockEmail";
 
 type FormRouteFieldValue = string | boolean | string[];
 type FormRoutePageFormValues = Record<string, FormRouteFieldValue>;
@@ -216,6 +218,14 @@ function emitProgressSnapshot(values: FormRoutePageValues) {
   );
 }
 
+function emitPendingBreadcrumbCompletion(pageId: PageId | null) {
+  window.dispatchEvent(
+    new CustomEvent<PageId | null>("form:pendingbreadcrumbcompletion", {
+      detail: pageId,
+    }),
+  );
+}
+
 export default function FormRoutePage({
   pageId,
   title,
@@ -237,18 +247,8 @@ export default function FormRoutePage({
 
   const [showProgressSaved, setShowProgressSaved] = useState(false);
 
-  const [progressVariant, setProgressVariant] = useState<ProgressVariant>(
-    () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlProgress = urlParams.get("progress");
-      if (urlProgress === "hstep") return "stepper";
-      if (urlProgress === "vstep") return "vertical-stepper";
-      if (urlProgress === "bar") return "bar";
-      const stored = window.sessionStorage.getItem("devtools:progressVariant");
-      if (stored === "bar") return "bar";
-      if (stored === "stepper") return "stepper";
-      return "vertical-stepper";
-    },
+  const [progressVariant, setProgressVariant] = useState<ProgressVariant>(() =>
+    readProgressVariant(),
   );
 
   useEffect(() => {
@@ -408,6 +408,7 @@ export default function FormRoutePage({
   useEffect(() => {
     return () => {
       if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+      emitPendingBreadcrumbCompletion(null);
     };
   }, []);
 
@@ -440,6 +441,11 @@ export default function FormRoutePage({
 
     setPageError(undefined);
     setPageValues(formValues);
+    if (pageId === "membership") {
+      void sendAutosaveMockEmail(nextNavigationValues).catch((error) => {
+        console.warn("Autosave mock email failed", error);
+      });
+    }
 
     const nextPageId =
       resolveNextPageId?.(nextNavigationValues) ??
@@ -450,6 +456,7 @@ export default function FormRoutePage({
 
     const startTransition = () => {
       const [msg1, msg2] = getForwardMessages(pageId);
+      emitPendingBreadcrumbCompletion(pageId);
       setTransitionMessage(msg1);
       setIsTransitioning(true);
       window.scrollTo({ top: 0 });
@@ -458,6 +465,7 @@ export default function FormRoutePage({
         setTransitionMessage(msg2);
 
         transitionTimerRef.current = setTimeout(() => {
+          emitPendingBreadcrumbCompletion(null);
           emitProgressSnapshot(nextNavigationValues);
           navigate(`/${destination}`, { state: { showProgressSaved: true } });
         }, MESSAGE_DURATION);
@@ -487,6 +495,7 @@ export default function FormRoutePage({
       };
       setPageValues(previousNavigationValues);
 
+      emitPendingBreadcrumbCompletion(null);
       setTransitionMessage(BACK_MESSAGE);
       setIsTransitioning(true);
       window.scrollTo({ top: 0 });
@@ -624,15 +633,17 @@ export default function FormRoutePage({
           autoHideDuration={3000}
           onClose={() => setShowProgressSaved(false)}
           anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          sx={{ bottom: { xs: 20, sm: 24 } }}
+          sx={{
+            bottom: { xs: 20, sm: 24, lg: "auto" },
+            top: { lg: 24 },
+          }}
         >
           <Alert
             onClose={() => setShowProgressSaved(false)}
             severity="success"
             variant="filled"
-            // sx={{ width: "100%" }}
           >
-            Progress saved
+            Progress saved!
           </Alert>
         </Snackbar>
         {isVerticalStepper ? (

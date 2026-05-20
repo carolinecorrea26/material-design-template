@@ -25,6 +25,10 @@ import type { PageId } from "../types/page";
 import { formFlow } from "../config/formFlow";
 import { generateFormDataUpToPage } from "./utils/generateFormData";
 import { router } from "../app/router";
+import {
+  readProgressVariant,
+  writeProgressVariant,
+} from "../utils/progressVariant";
 
 const CLIENT_QUERY_PARAM = "client";
 
@@ -46,24 +50,6 @@ const FORM_PAGE_PATHS = new Set([
   "/health-cir",
   "/payment",
 ]);
-
-const PROGRESS_VARIANT_STORAGE_KEY = "devtools:progressVariant";
-
-function getStoredProgressVariant(): ProgressVariant {
-  const stored = window.sessionStorage.getItem(PROGRESS_VARIANT_STORAGE_KEY);
-  if (stored === "bar") return "bar";
-  if (stored === "stepper") return "stepper";
-  return "vertical-stepper";
-}
-
-function setStoredProgressVariant(variant: ProgressVariant) {
-  window.sessionStorage.setItem(PROGRESS_VARIANT_STORAGE_KEY, variant);
-  window.dispatchEvent(
-    new CustomEvent("devtools:progressvariantchange", {
-      detail: variant,
-    }),
-  );
-}
 
 function switchClient(clientId: ClientId) {
   const url = new URL(window.location.href);
@@ -92,13 +78,13 @@ function getIsDevMode(): boolean {
 
 export default function DevTools() {
   const isDevMode = getIsDevMode();
-  const { resetValues } = useApplicationForm();
+  const { resetValues, setPageValues } = useApplicationForm();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [jumpPageAnchorEl, setJumpPageAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const [progressVariant, setProgressVariant] = React.useState<ProgressVariant>(
-    getStoredProgressVariant(),
+    readProgressVariant(),
   );
 
   const currentClient = getActiveClient();
@@ -120,27 +106,23 @@ export default function DevTools() {
 
   const handleProgressVariantChange = (variant: ProgressVariant) => {
     setProgressVariant(variant);
-    setStoredProgressVariant(variant);
+    writeProgressVariant(variant);
   };
 
   const handleJumpToPage = (pageId: PageId) => {
-    // Generate form data up to this page
     const formData = generateFormDataUpToPage(pageId);
 
-    // Write directly to sessionStorage before navigating — React state updates
-    // (and their effects) don't flush synchronously before window.location.href.
     const current = JSON.parse(
       window.sessionStorage.getItem(STORAGE_KEY) ?? "{}",
     ) as typeof formData;
-    window.sessionStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ ...current, ...formData }),
-    );
 
-    // Close the menu
+    const nextValues = { ...current, ...formData };
+
+    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(nextValues));
+    setPageValues(nextValues);
+
     setJumpPageAnchorEl(null);
 
-    // Navigate to the page
     const pagePath = getPagePath(pageId);
     void router.navigate(pagePath);
   };

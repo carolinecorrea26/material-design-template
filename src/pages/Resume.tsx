@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import {
   Alert,
   Box,
@@ -25,11 +25,9 @@ import {
   type ApplicationFormValues,
 } from "../state/ApplicationFormContext";
 import type { ClientId } from "../types/client";
+import { sendResumeMagicLinkMockEmail } from "../utils/mockEmail";
 
 type DeliveryMode = "text" | "voice";
-
-const RESUME_LINK_URL =
-  "http://redesignv2--material-design-template.netlify.app/resume?resumeFlow=code";
 
 const MOCK_SAVED_APPLICATIONS: Record<string, ApplicationFormValues> = {
   "returning.user@example.com": {
@@ -65,15 +63,6 @@ function getSavedApplicationForEmail(
   };
 }
 
-function sendResumeLinkEmail(emailAddress: string) {
-  const subject = encodeURIComponent("Resume your application");
-  const body = encodeURIComponent(
-    `Resume your application here: ${RESUME_LINK_URL}`,
-  );
-
-  window.location.href = `mailto:${encodeURIComponent(emailAddress)}?subject=${subject}&body=${body}`;
-}
-
 export default function Resume() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -96,17 +85,24 @@ export default function Resume() {
   const [isVerifying, setIsVerifying] = useState(false);
   const [verifySuccess, setVerifySuccess] = useState(false);
   const [deliveryMode, setDeliveryMode] = useState<DeliveryMode>("text");
-  const [snackMessage, setSnackMessage] = useState<string | null>(null);
 
-  const mailtoTimeoutRef = useRef<number | null>(null);
+  const [snackAlert, setSnackAlert] = useState<{
+    key: number;
+    deliveryMode: DeliveryMode;
+  } | null>(null);
+
+  function showPhoneCodeSuccess(nextDeliveryMode: DeliveryMode) {
+    setSnackAlert({
+      key: Date.now(),
+      deliveryMode: nextDeliveryMode,
+    });
+  }
 
   useEffect(() => {
-    return () => {
-      if (mailtoTimeoutRef.current !== null) {
-        window.clearTimeout(mailtoTimeoutRef.current);
-      }
-    };
-  }, []);
+    if (!startAtStep2) return;
+
+    showPhoneCodeSuccess("text");
+  }, [startAtStep2]);
 
   function handleEmailSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -121,15 +117,10 @@ export default function Resume() {
 
     // Simulate sending, then show success message
     window.setTimeout(() => {
+      void sendResumeMagicLinkMockEmail(emailAddress.trim());
+
       setIsEmailSending(false);
       setEmailSent(true);
-
-      if (mailtoTimeoutRef.current !== null) {
-        window.clearTimeout(mailtoTimeoutRef.current);
-      }
-      mailtoTimeoutRef.current = window.setTimeout(() => {
-        sendResumeLinkEmail(emailAddress.trim());
-      }, 8000);
     }, 1500);
   }
 
@@ -167,7 +158,7 @@ export default function Resume() {
     <Box
       sx={{
         width: "100%",
-        maxWidth: 650,
+        maxWidth: 800,
         mx: "auto",
         py: 4,
         px: { xs: 2, sm: 3 },
@@ -198,7 +189,7 @@ export default function Resume() {
                 fontSize: "1rem",
               }}
             >
-              Resume your saved application
+              Finish your saved application
             </Typography>
           </StepLabel>
           <StepContent>
@@ -280,13 +271,6 @@ export default function Resume() {
               noValidate
               sx={{ py: 1 }}
             >
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                Enter the security code sent to the phone number ending in{" "}
-                <Box component="span" sx={{ fontWeight: 700 }}>
-                  1111
-                </Box>
-                .
-              </Typography>
               <TextField
                 fullWidth
                 type="text"
@@ -315,7 +299,7 @@ export default function Resume() {
                   size="small"
                   startIcon={<RefreshRoundedIcon />}
                   onClick={() => {
-                    setSnackMessage("A new code has been sent.");
+                    showPhoneCodeSuccess(deliveryMode);
                   }}
                 >
                   Resend code
@@ -327,12 +311,9 @@ export default function Resume() {
                   underline="hover"
                   onClick={() => {
                     const nextMode = deliveryMode === "text" ? "voice" : "text";
+
                     setDeliveryMode(nextMode);
-                    setSnackMessage(
-                      nextMode === "voice"
-                        ? "Code will be sent via voice call."
-                        : "Code will be sent via text message.",
-                    );
+                    showPhoneCodeSuccess(nextMode);
                   }}
                   sx={{ fontSize: "0.8125rem" }}
                 >
@@ -372,18 +353,52 @@ export default function Resume() {
       </Stepper>
 
       <Snackbar
-        open={Boolean(snackMessage)}
-        autoHideDuration={3000}
-        onClose={() => setSnackMessage(null)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        key={snackAlert?.key}
+        open={Boolean(snackAlert)}
+        autoHideDuration={null}
+        onClose={(_, reason) => {
+          if (reason === "clickaway") return;
+          setSnackAlert(null);
+        }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert
-          onClose={() => setSnackMessage(null)}
-          severity="success"
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          {snackMessage}
+        <Alert onClose={() => setSnackAlert(null)} severity="success">
+          Code sent via{" "}
+          {snackAlert?.deliveryMode === "voice" ? "voice call" : "text message"}{" "}
+          to phone number{" "}
+          <Box
+            component="span"
+            sx={{
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              whiteSpace: "nowrap",
+            }}
+          >
+            (•••)•••1111
+          </Box>
+          . This code expires in{" "}
+          <Box component="span" sx={{ fontWeight: 700 }}>
+            5
+          </Box>{" "}
+          minutes.{" "}
+          <Link
+            component="button"
+            type="button"
+            variant="body2"
+            underline="hover"
+            onClick={() => {
+              const nextMode =
+                snackAlert?.deliveryMode === "text" ? "voice" : "text";
+
+              setDeliveryMode(nextMode);
+              showPhoneCodeSuccess(nextMode);
+            }}
+            sx={{ fontSize: "0.8125rem" }}
+          >
+            {snackAlert?.deliveryMode === "text"
+              ? "Send code with voice call"
+              : "Send code with text message"}
+          </Link>
         </Alert>
       </Snackbar>
     </Box>

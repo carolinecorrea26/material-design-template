@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   Box,
   Breadcrumbs,
@@ -24,6 +24,8 @@ const fadeIn = keyframes`
   from { opacity: 0; transform: scale(0.6); }
   to { opacity: 1; transform: scale(1); }
 `;
+
+const PENDING_BREADCRUMB_COMPLETION_EVENT = "form:pendingbreadcrumbcompletion";
 
 const ACRONYM_WORDS = new Set(["SI", "QD", "DI", "CIR"]);
 
@@ -102,6 +104,27 @@ function getBreadcrumbEntries(
 export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
   const navigate = useNavigate();
   const { values } = useApplicationForm();
+  const [pendingCompletedPageId, setPendingCompletedPageId] =
+    useState<PageId | null>(null);
+
+  useEffect(() => {
+    function handlePendingCompletion(event: Event) {
+      const customEvent = event as CustomEvent<PageId | null>;
+      setPendingCompletedPageId(customEvent.detail ?? null);
+    }
+
+    window.addEventListener(
+      PENDING_BREADCRUMB_COMPLETION_EVENT,
+      handlePendingCompletion,
+    );
+
+    return () => {
+      window.removeEventListener(
+        PENDING_BREADCRUMB_COMPLETION_EVENT,
+        handlePendingCompletion,
+      );
+    };
+  }, []);
 
   const activeSteps = getActiveProgressSteps(values);
   const activeStepIndex = getActiveProgressStepIndex(pageId, values);
@@ -128,8 +151,15 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
     >
       {breadcrumbEntries.map((entry, index) => {
         const isCurrentEntry = index === currentEntryIndex;
-        const isCompleted = index < currentEntryIndex;
-        const isJustCompleted = index === currentEntryIndex - 1;
+        const isPendingCompletedEntry =
+          pendingCompletedPageId === entry.navigateTo ||
+          (entry.id === "health" &&
+            pendingCompletedPageId !== null &&
+            HEALTH_PAGE_IDS.includes(pendingCompletedPageId));
+        const isCompleted =
+          index < currentEntryIndex || isPendingCompletedEntry;
+        const isJustCompleted =
+          index === currentEntryIndex - 1 || isPendingCompletedEntry;
 
         if (isCompleted) {
           return (
@@ -208,7 +238,7 @@ export default function FormVerticalStepper({
   const activeStep = getActiveProgressStepIndex(pageId, values);
 
   return (
-    <Box sx={{ width: "100%", maxWidth: 650, mx: "auto" }}>
+    <Box sx={{ width: "100%", maxWidth: 800, mx: "auto" }}>
       <Stepper activeStep={activeStep} orientation="vertical">
         {activeSteps.map((step, index) => {
           const isActive = index === activeStep;
