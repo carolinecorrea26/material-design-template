@@ -442,17 +442,25 @@ export default function Receipt() {
           </Stack>
 
           <Box
-            sx={{
-              border: "1px solid rgba(0, 22, 57, 0.08)",
-              borderRadius: 3,
-              p: { xs: 2.5, sm: 3 },
-              backgroundColor: "#fff",
-            }}
+            sx={
+              {
+                // border: "1px solid rgba(0, 22, 57, 0.08)",
+                // borderRadius: 3,
+                // p: { xs: 2.5, sm: 3 },
+                // backgroundColor: "#fff",
+              }
+            }
           >
             <Stack spacing={2.5}>
               <Stack spacing={1.5}>
                 <Typography variant="h6" fontWeight={700}>
-                  Decision status
+                  Your application status
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Below is your decision for your request for coverage based on
+                  the information you provided and the data we securely
+                  reviewed. If you have multiple coverage selections, some may
+                  be conditionally approved while others are sent for review.
                 </Typography>
 
                 {hasApplicantSelections ? (
