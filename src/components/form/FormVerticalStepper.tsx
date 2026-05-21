@@ -41,7 +41,7 @@ function toPageLabel(pageId: string) {
 }
 
 const STEP_LABELS: Record<string, string> = {
-  "getting-started": "Start your insurance journey",
+  "getting-started": "Start your insurance application",
   "coverage-options": "Choose your coverage",
   "about-applicant": "Your application profile",
   "application-review": "Review your application",

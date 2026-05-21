@@ -433,6 +433,22 @@ export default function Membership() {
     [coverages],
   );
 
+  const welcomeCoverageList = productsByCategory
+    .flatMap(({ products }) => products.map((product) => product.name))
+    .join(", ");
+
+  const welcomeAlert = (
+    <Alert severity="info">
+      <Typography component="p" variant="body2" sx={{ fontWeight: 700 }}>
+        This application is for {client.branding.acronym}-sponsored group
+        insurance
+      </Typography>
+      <Typography component="p" variant="body2" sx={{ mt: 0.5 }}>
+        The following coverage is available: {welcomeCoverageList}.
+      </Typography>
+    </Alert>
+  );
+
   const selectedProduct = useMemo(
     () =>
       coverages.find((coverage) => coverage.id === estimateValues.productId),
@@ -1108,6 +1124,7 @@ export default function Membership() {
     <FormRoutePage
       pageId={pageId}
       title={getPageTitle(pageId)}
+      help={welcomeAlert}
       helpItems={helpItems}
       initialTransitionMessage="Loading your membership application..."
     >

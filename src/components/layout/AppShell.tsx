@@ -28,6 +28,7 @@ export default function AppShell({ children }: AppShellProps) {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
+        // backgroundColor: "#f9fafc",
         // pb: showCookieBanner ? "80px" : 0,
       }}
     >

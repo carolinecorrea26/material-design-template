@@ -84,6 +84,9 @@ type FormRoutePageProps = {
   title?: string;
   formMaxWidth?: number | string;
   noBreadcrumb?: boolean;
+  noTitle?: boolean;
+  noContainer?: boolean;
+  hideActions?: boolean;
   help?: ReactNode | ((props: FormRouteRenderProps) => ReactNode);
   helpItems?:
     | FormRouteHelpItem[]
@@ -231,6 +234,9 @@ export default function FormRoutePage({
   title,
   formMaxWidth,
   noBreadcrumb,
+  noTitle,
+  noContainer,
+  hideActions,
   help,
   helpItems,
   children,
@@ -563,8 +569,8 @@ export default function FormRoutePage({
         help={isTransitioning ? undefined : renderedHelpSection}
         maxWidth={formMaxWidth}
         compactTitle={isVerticalStepper}
-        noTitle={isVerticalStepper}
-        noContainer={isVerticalStepper}
+        noTitle={noTitle || isVerticalStepper}
+        noContainer={noContainer || isVerticalStepper}
         onBack={
           !isVerticalStepper &&
           !isTransitioning &&
@@ -573,30 +579,33 @@ export default function FormRoutePage({
             : undefined
         }
         actions={
-          <>
-            <Button
-              type="button"
-              form={`${pageId}-form`}
-              onClick={handleBack}
-              disabled={
-                isTransitioning || !getPreviousFormPageId(pageId, watchedValues)
-              }
-            >
-              Back
-            </Button>
-            <Button
-              type="submit"
-              form={`${pageId}-form`}
-              variant="contained"
-              disabled={isTransitioning}
-            >
-              {isTransitioning ? (
-                <CircularProgress size={20} color="inherit" />
-              ) : (
-                "Next"
-              )}
-            </Button>
-          </>
+          hideActions ? undefined : (
+            <>
+              <Button
+                type="button"
+                form={`${pageId}-form`}
+                onClick={handleBack}
+                disabled={
+                  isTransitioning ||
+                  !getPreviousFormPageId(pageId, watchedValues)
+                }
+              >
+                Back
+              </Button>
+              <Button
+                type="submit"
+                form={`${pageId}-form`}
+                variant="contained"
+                disabled={isTransitioning}
+              >
+                {isTransitioning ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  "Next"
+                )}
+              </Button>
+            </>
+          )
         }
         aboveHeader={
           isVerticalStepper && !noBreadcrumb ? (

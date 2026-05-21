@@ -70,13 +70,14 @@ export default function AppBody({ children }: AppBodyProps) {
         marginLeft: "auto",
         marginRight: "auto",
         px: { xs: 2, sm: 3, md: 4 },
-        pt: 1,
+        pt: 2,
         pb: 4,
         flex: 1,
         display: "flex",
         flexDirection: "column",
         minHeight: "60vh",
         boxSizing: "border-box",
+        // backgroundColor: "#f9fafc",
       }}
     >
       {children}
