@@ -8,23 +8,13 @@ import {
   Divider,
   Link,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
 } from "@mui/material";
-import QuickDecisionIndicator from "../components/common/QuickDecisionIndicator";
-import {
-  shouldShowApplicantLabel,
-  isApplicantApplying,
-} from "../components/form/applicantVisibility";
 import { getActiveClient } from "../client/getActiveClient";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
 import type {
+  CoverageApplicantId,
   CoverageDefinition,
   CoverageUnderwritingType,
 } from "../config/coverages/types";
@@ -43,13 +33,36 @@ type QdDecisionResult =
   | "soft-declined"
   | "database-unavailable";
 
-type ReceiptApplicant = "member" | "spouse";
-
 type SelectedCoverageEntry = {
   coverageId: string;
-  applicant: ReceiptApplicant;
+  applicant: CoverageApplicantId;
   coverage: CoverageDefinition;
 };
+
+type DecisionStatus = {
+  label: string;
+  color: string;
+  description: string;
+};
+
+const APPLICANT_LABELS: Record<CoverageApplicantId, string> = {
+  member: "Member",
+  spouse: "Spouse",
+  child: "Child",
+};
+
+const APPLICANT_SORT_ORDER: Record<CoverageApplicantId, number> = {
+  member: 0,
+  spouse: 1,
+  child: 2,
+};
+
+const DEMO_QD_DECISION_RESULTS: QdDecisionResult[] = [
+  "conditionally-approved",
+  "referred",
+  "soft-declined",
+  "database-unavailable",
+];
 
 function toPositiveAmount(value: unknown): number | null {
   if (typeof value === "number" && Number.isFinite(value) && value > 0) {
@@ -64,6 +77,46 @@ function toPositiveAmount(value: unknown): number | null {
   }
 
   return null;
+}
+
+function formatCurrencyAmount(value: number): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
+function normalizeApplicant(value: unknown): CoverageApplicantId | null {
+  if (typeof value !== "string") return null;
+
+  const normalized = value.trim().toLowerCase();
+
+  if (normalized === "self") return "member";
+
+  if (
+    normalized === "member" ||
+    normalized === "spouse" ||
+    normalized === "child"
+  ) {
+    return normalized;
+  }
+
+  return null;
+}
+
+function getUniqueApplicants(values: unknown[]): CoverageApplicantId[] {
+  const applicants: CoverageApplicantId[] = [];
+
+  for (const value of values) {
+    const applicant = normalizeApplicant(value);
+
+    if (applicant && !applicants.includes(applicant)) {
+      applicants.push(applicant);
+    }
+  }
+
+  return applicants;
 }
 
 function hashStringToDigits(input: string): string {
@@ -85,6 +138,8 @@ function getOrCreateConfirmationNumber(values: ApplicationFormValues): string {
     firstName: values["first-name"],
     lastName: values["last-name"],
     memberId: values["member-id"],
+    coverageSelections: values.coverageSelections,
+    productApplicants: values.productApplicants,
     coverageAmounts: values.coverageAmounts,
   });
 
@@ -96,12 +151,15 @@ function getOrCreateConfirmationNumber(values: ApplicationFormValues): string {
 function getQdDecisionResult(
   values: ApplicationFormValues,
   coverageId: string,
-  applicant: string,
+  applicant: CoverageApplicantId,
+  fallbackIndex: number,
 ): QdDecisionResult {
   const decisions = values.qdDecisions;
+
   if (decisions && typeof decisions === "object" && !Array.isArray(decisions)) {
     const key = `${coverageId}:${applicant}`;
     const result = (decisions as Record<string, string>)[key];
+
     if (
       result === "conditionally-approved" ||
       result === "referred" ||
@@ -111,16 +169,16 @@ function getQdDecisionResult(
       return result;
     }
   }
-  return "conditionally-approved";
+
+  return DEMO_QD_DECISION_RESULTS[
+    fallbackIndex % DEMO_QD_DECISION_RESULTS.length
+  ];
 }
 
 function getDecisionStatus(opts: {
   underwritingType: CoverageUnderwritingType;
   decisionResult: QdDecisionResult;
-}): {
-  label: string;
-  color: string;
-} {
+}): DecisionStatus {
   const { underwritingType, decisionResult } = opts;
   const type = underwritingType.toUpperCase();
 
@@ -128,32 +186,42 @@ function getDecisionStatus(opts: {
     return {
       label: "Sent for review",
       color: "#0668ff",
+      description:
+        "QuickDecision is not currently available for this product. Your application will continue through the standard review process, and you’ll be contacted if additional information is needed or when a decision is available.",
     };
   }
 
   switch (decisionResult) {
     case "conditionally-approved":
       return {
-        label: "Conditionally approved",
+        label: "Approved",
         color: "#00a344",
+        description:
+          "Congratulations! Your application has been conditionally approved. Once your group plan administrator confirms your eligibility, you’ll receive details about your new coverage.",
       };
 
     case "referred":
       return {
-        label: "Needs review",
-        color: "#b26a00",
+        label: "Sent for review",
+        color: "#0668ff",
+        description:
+          "We need a bit more information before we can make a decision. Your application will continue through the standard review process, and you’ll be contacted if additional information is needed or when a decision is available.",
       };
 
     case "soft-declined":
       return {
-        label: "Unable to offer coverage",
-        color: "#7b61a6",
+        label: "Unable to offer",
+        color: "#ab0b0b",
+        description:
+          "Based on the information provided and the data securely reviewed, we’re unable to offer this coverage through QuickDecision at this time. Your application will still be reviewed by the plan administrator and carrier, and you’ll be contacted if additional information is needed.",
       };
 
     case "database-unavailable":
       return {
-        label: "Review pending",
-        color: "#d32f2f",
+        label: "Sent for review",
+        color: "#0668ff",
+        description:
+          "We couldn’t complete QuickDecision processing for this coverage in real time. Your application will continue through the standard review process, and you’ll be contacted if additional information is needed or when a decision is available.",
       };
   }
 }
@@ -166,52 +234,100 @@ function getTelHref(phone: string): string {
   return phone.replace(/\D/g, "");
 }
 
+function getSelectedCoverageIds(values: ApplicationFormValues): string[] {
+  return Array.isArray(values.coverageSelections)
+    ? values.coverageSelections.map(String)
+    : [];
+}
+
+function getSelectedDependents(
+  values: ApplicationFormValues,
+): CoverageApplicantId[] {
+  return Array.isArray(values.dependents)
+    ? getUniqueApplicants(values.dependents).filter(
+        (applicant) => applicant === "spouse" || applicant === "child",
+      )
+    : [];
+}
+
+function getProductApplicants(
+  values: ApplicationFormValues,
+): Record<string, CoverageApplicantId[]> {
+  if (
+    values.productApplicants != null &&
+    typeof values.productApplicants === "object" &&
+    !Array.isArray(values.productApplicants)
+  ) {
+    return values.productApplicants as Record<string, CoverageApplicantId[]>;
+  }
+
+  return {};
+}
+
+function getCoverageAmountRequested(
+  values: ApplicationFormValues,
+  coverageId: string,
+  applicant: CoverageApplicantId,
+): number | null {
+  const coverageAmounts = values.coverageAmounts;
+
+  if (
+    !coverageAmounts ||
+    typeof coverageAmounts !== "object" ||
+    Array.isArray(coverageAmounts)
+  ) {
+    return null;
+  }
+
+  return toPositiveAmount(
+    (coverageAmounts as Record<string, unknown>)[`${coverageId}:${applicant}`],
+  );
+}
+
 function buildSelectedCoverageEntries(
   values: ApplicationFormValues,
   coverages: CoverageDefinition[],
 ): SelectedCoverageEntry[] {
-  const selectedCoverageIds = Array.isArray(values.coverageSelections)
-    ? new Set(values.coverageSelections.map(String))
-    : new Set<string>();
-
-  const coverageAmounts = values.coverageAmounts;
-  if (!coverageAmounts || typeof coverageAmounts !== "object") {
-    return [];
-  }
+  const selectedCoverageIds = getSelectedCoverageIds(values);
+  const selectedDependents = getSelectedDependents(values);
+  const productApplicants = getProductApplicants(values);
 
   const coverageById = new Map(
     coverages.map((coverage) => [coverage.id, coverage]),
   );
 
-  return Object.entries(coverageAmounts as Record<string, unknown>)
-    .flatMap(([compoundKey, rawAmount]) => {
-      const amount = toPositiveAmount(rawAmount);
-      if (!amount) return [];
+  return selectedCoverageIds.flatMap((coverageId) => {
+    const coverage = coverageById.get(coverageId);
+    if (!coverage) return [];
 
-      const [coverageId, applicant] = compoundKey.split(":");
-      if (!coverageId || (applicant !== "member" && applicant !== "spouse")) {
-        return [];
-      }
+    let applicants: CoverageApplicantId[];
 
-      if (
-        selectedCoverageIds.size > 0 &&
-        !selectedCoverageIds.has(coverageId)
-      ) {
-        return [];
-      }
+    if (Object.prototype.hasOwnProperty.call(productApplicants, coverageId)) {
+      const selectedApplicants = Array.isArray(productApplicants[coverageId])
+        ? productApplicants[coverageId]
+        : [];
 
-      const coverage = coverageById.get(coverageId);
-      if (!coverage) return [];
+      applicants = coverage.applicants.filter((applicant) =>
+        selectedApplicants.includes(applicant),
+      );
+    } else if (selectedDependents.length > 0) {
+      applicants = coverage.applicants.filter((applicant) => {
+        if (applicant === "member") return true;
+        return selectedDependents.includes(applicant);
+      });
+    } else {
+      applicants = coverage.applicants.includes("member") ? ["member"] : [];
+    }
 
-      return [
-        {
+    return applicants.map(
+      (applicant) =>
+        ({
           coverageId,
           applicant,
           coverage,
-        } satisfies SelectedCoverageEntry,
-      ];
-    })
-    .sort((a, b) => a.coverage.name.localeCompare(b.coverage.name));
+        }) satisfies SelectedCoverageEntry,
+    );
+  });
 }
 
 export default function Receipt() {
@@ -238,23 +354,30 @@ export default function Receipt() {
     [values, coverages],
   );
 
-  const spouseApplying = isApplicantApplying("spouse", values);
-  const shouldShowMemberLabel =
-    spouseApplying || shouldShowApplicantLabel("self", values);
-
   const orderedDecisionEntries = useMemo(
     () =>
       coverageCategories.flatMap((category) =>
-        selectedEntries.filter(
-          (entry) => entry.coverage.categoryId === category.id,
-        ),
+        selectedEntries
+          .filter((entry) => entry.coverage.categoryId === category.id)
+          .sort((a, b) => {
+            const coverageCompare = a.coverage.name.localeCompare(
+              b.coverage.name,
+            );
+
+            if (coverageCompare !== 0) return coverageCompare;
+
+            return (
+              APPLICANT_SORT_ORDER[a.applicant] -
+              APPLICANT_SORT_ORDER[b.applicant]
+            );
+          }),
       ),
     [selectedEntries],
   );
 
   const hasApplicantSelections = orderedDecisionEntries.length > 0;
 
-  const shouldShowQuickDecisionDownload = selectedEntries.some((entry) =>
+  const shouldShowQuickDecisionDownload = orderedDecisionEntries.some((entry) =>
     isQuickDecisionUnderwritingType(entry.coverage.underwritingType),
   );
 
@@ -327,115 +450,175 @@ export default function Receipt() {
             }}
           >
             <Stack spacing={2.5}>
-              <Stack spacing={0.75}>
+              <Stack spacing={1.5}>
                 <Typography variant="h6" fontWeight={700}>
                   Decision status
                 </Typography>
 
                 {hasApplicantSelections ? (
-                  <TableContainer
+                  <Box
                     sx={{
                       border: "1px solid rgba(0, 22, 57, 0.08)",
                       borderRadius: 2,
                       overflow: "hidden",
                     }}
                   >
-                    <Table size="small" aria-label="Decision status table">
-                      <TableHead>
-                        <TableRow
-                          sx={{
-                            backgroundColor: "#f6f8fb",
-                            "& th": {
-                              color: "#4f678d",
-                              fontWeight: 800,
-                              fontSize: "0.75rem",
-                              letterSpacing: 0.6,
-                              textTransform: "uppercase",
-                            },
-                          }}
-                        >
-                          <TableCell>Coverage</TableCell>
-                          <TableCell>Status</TableCell>
-                        </TableRow>
-                      </TableHead>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: {
+                          xs: "1fr",
+                          sm: "minmax(0, 1fr) minmax(260px, 1.15fr)",
+                        },
+                        columnGap: 2,
+                        px: { xs: 1.5, sm: 2 },
+                        py: 1,
+                        backgroundColor: "#f6f8fb",
+                        borderBottom: "1px solid rgba(0, 22, 57, 0.08)",
+                      }}
+                    >
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "#4f678d",
+                          fontWeight: 800,
+                          fontSize: "0.75rem",
+                          letterSpacing: 0.6,
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        Coverage
+                      </Typography>
 
-                      <TableBody>
-                        {orderedDecisionEntries.map((entry) => {
-                          const decisionResult = getQdDecisionResult(
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "#4f678d",
+                          fontWeight: 800,
+                          fontSize: "0.75rem",
+                          letterSpacing: 0.6,
+                          textTransform: "uppercase",
+                          display: { xs: "none", sm: "block" },
+                        }}
+                      >
+                        Status
+                      </Typography>
+                    </Box>
+
+                    <Stack
+                      spacing={0}
+                      divider={
+                        <Divider
+                          sx={{ borderColor: "rgba(0, 22, 57, 0.08)" }}
+                        />
+                      }
+                    >
+                      {orderedDecisionEntries.map((entry, index) => {
+                        const decisionResult = getQdDecisionResult(
+                          values,
+                          entry.coverageId,
+                          entry.applicant,
+                          index,
+                        );
+
+                        const status = getDecisionStatus({
+                          underwritingType: entry.coverage.underwritingType,
+                          decisionResult,
+                        });
+
+                        const applicantLabel =
+                          APPLICANT_LABELS[entry.applicant];
+
+                        const coverageAmountRequested =
+                          getCoverageAmountRequested(
                             values,
                             entry.coverageId,
                             entry.applicant,
                           );
 
-                          const status = getDecisionStatus({
-                            underwritingType: entry.coverage.underwritingType,
-                            decisionResult,
-                          });
+                        return (
+                          <Box
+                            key={`${entry.coverageId}-${entry.applicant}`}
+                            sx={{
+                              display: "grid",
+                              gridTemplateColumns: {
+                                xs: "1fr",
+                                sm: "minmax(0, 1fr) minmax(260px, 1.15fr)",
+                              },
+                              columnGap: 2,
+                              rowGap: 1,
+                              px: { xs: 1.5, sm: 2 },
+                              py: 1.75,
+                              backgroundColor: "#fff",
+                            }}
+                          >
+                            <Stack spacing={0.35}>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  fontWeight: 700,
+                                  color: "text.primary",
+                                }}
+                              >
+                                {entry.coverage.name} ({applicantLabel})
+                              </Typography>
 
-                          const applicantLabel =
-                            entry.applicant === "member" ? "Member" : "Spouse";
-
-                          const shouldShowApplicant =
-                            entry.applicant === "spouse" ||
-                            shouldShowMemberLabel;
-
-                          return (
-                            <TableRow
-                              key={`${entry.coverageId}-${entry.applicant}`}
-                              sx={{
-                                "&:last-child td": {
-                                  borderBottom: 0,
-                                },
-                              }}
-                            >
-                              <TableCell>
-                                <Stack spacing={0.35}>
-                                  <Stack
-                                    direction="row"
-                                    spacing={0.25}
-                                    alignItems="center"
-                                  >
-                                    <Typography
-                                      variant="body2"
-                                      fontWeight={600}
-                                    >
-                                      {entry.coverage.name}
-                                    </Typography>
-
-                                    {isQuickDecisionUnderwritingType(
-                                      entry.coverage.underwritingType,
-                                    ) && <QuickDecisionIndicator />}
-                                  </Stack>
-
-                                  {shouldShowApplicant && (
-                                    <Typography
-                                      variant="caption"
-                                      color="text.secondary"
-                                      sx={{ fontWeight: 600 }}
-                                    >
-                                      {applicantLabel}
-                                    </Typography>
+                              {coverageAmountRequested ? (
+                                <Typography
+                                  variant="caption"
+                                  color="text.secondary"
+                                  sx={{ fontWeight: 600 }}
+                                >
+                                  Coverage amount requested:{" "}
+                                  {formatCurrencyAmount(
+                                    coverageAmountRequested,
                                   )}
-                                </Stack>
-                              </TableCell>
+                                </Typography>
+                              ) : null}
+                            </Stack>
 
-                              <TableCell>
+                            <Stack spacing={0.75} alignItems="flex-start">
+                              <Stack
+                                direction="row"
+                                spacing={0.75}
+                                alignItems="center"
+                              >
+                                <Box
+                                  aria-hidden="true"
+                                  sx={{
+                                    width: 10,
+                                    height: 10,
+                                    borderRadius: "50%",
+                                    backgroundColor: status.color,
+                                    boxShadow: `0 0 0 3px ${status.color}22`,
+                                    flexShrink: 0,
+                                  }}
+                                />
+
                                 <Typography
                                   variant="body2"
                                   sx={{
-                                    fontWeight: 700,
+                                    fontWeight: 800,
                                     color: status.color,
                                   }}
                                 >
                                   {status.label}
                                 </Typography>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                              </Stack>
+
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ lineHeight: 1.45 }}
+                              >
+                                {status.description}
+                              </Typography>
+                            </Stack>
+                          </Box>
+                        );
+                      })}
+                    </Stack>
+                  </Box>
                 ) : (
                   <Alert severity="info" variant="outlined">
                     No selected coverage details are available for this

@@ -15,6 +15,7 @@ type MockEmailType =
 export type MockEmailPreview = {
   id: string;
   type: MockEmailType;
+  clientId: string;
   fromName: string;
   fromEmail: string;
   toEmail: string;
@@ -75,22 +76,35 @@ function getDisplayName(firstName: string, lastName: string) {
   return [firstName, lastName].filter(Boolean).join(" ").trim() || "Applicant";
 }
 
+function getNormalizedWebsiteUrl(website?: string) {
+  const fallbackUrl =
+    "https://redesignv2--material-design-template.netlify.app";
+
+  if (!website) return fallbackUrl;
+
+  const trimmedWebsite = website.trim().replace(/\/$/, "");
+  if (!trimmedWebsite) return fallbackUrl;
+
+  return trimmedWebsite.startsWith("http")
+    ? trimmedWebsite
+    : `https://${trimmedWebsite}`;
+}
+
 function getClientEmailPayload() {
   const client = getActiveClient();
+  const startUrl = getNormalizedWebsiteUrl(client.support.website);
 
   return {
+    clientId: client.id,
     associationName: client.branding.name,
     tpaName: client.branding.name,
     tpaPhone: client.support.phoneDisplay || client.support.phone || "",
     tpaEmail: client.support.email || "",
-    startUrl: `https://${
-      client.support.website ||
-      "redesignv2--material-design-template.netlify.app"
-    }`,
-    resumeUrl:
-      "https://redesignv2--material-design-template.netlify.app/resume",
-    resumeMagicLinkUrl:
-      "https://redesignv2--material-design-template.netlify.app/resume?resumeFlow=code",
+    clientLogo: client.branding.logo,
+    clientLogoAlt: client.branding.logoAlt,
+    startUrl,
+    resumeUrl: `${startUrl}/resume`,
+    resumeMagicLinkUrl: `${startUrl}/resume?resumeFlow=code`,
   };
 }
 
@@ -101,6 +115,18 @@ function getApplicationEmailPayload(values: ApplicationFormValues) {
     firstName: getStringValue(values, "first-name"),
     lastName: getStringValue(values, "last-name"),
   };
+}
+
+function getInsuranceAdministratorFromName(
+  payload: ReturnType<typeof getClientEmailPayload>,
+) {
+  return `${payload.tpaName} Insurance Administrator`;
+}
+
+function getAdvisorNotificationsFromName(
+  payload: ReturnType<typeof getClientEmailPayload>,
+) {
+  return `${payload.tpaName} Advisor Notifications`;
 }
 
 function hasRecipientEmail(values: ApplicationFormValues) {
@@ -144,7 +170,7 @@ function getGeneratedMockEmailId(type: MockEmailType) {
 }
 
 function getBaseEmailHtml(options: { title: string; bodyHtml: string }) {
-  const client = getActiveClient();
+  const payload = getClientEmailPayload();
 
   return `<!doctype html>
 <html lang="en">
@@ -167,7 +193,7 @@ function getBaseEmailHtml(options: { title: string; bodyHtml: string }) {
                       <img src="/logo.svg" alt="New York Life" width="48" style="display:block; width:48px; max-width:48px; height:auto; border:0; outline:none; text-decoration:none; border-radius:2px;" />
                     </td>
                     <td align="right" style="vertical-align:top;">
-                      <img src="${escapeHtml(client.branding.logo)}" alt="${escapeHtml(client.branding.logoAlt)}" width="170" style="display:block; width:170px; max-width:170px; height:auto; border:0; outline:none; text-decoration:none;" />
+                      <img src="${escapeHtml(payload.clientLogo)}" alt="${escapeHtml(payload.clientLogoAlt)}" width="170" style="display:block; width:170px; max-width:170px; height:auto; border:0; outline:none; text-decoration:none;" />
                     </td>
                   </tr>
                 </table>
@@ -413,7 +439,9 @@ function buildResumeMagicLinkEmailHtml() {
     title: "Continue your saved application",
     bodyHtml: `
       <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
-       Please click the button below to finish your saved insurance application. This link expires in <strong>10 minutes.</strong>
+        Please click the button below to finish your saved insurance application through <strong>${escapeHtml(
+          payload.associationName,
+        )}</strong>. This link expires in <strong>10 minutes.</strong>
       </p>
 
       ${getButtonHtml("Verify my email", payload.resumeMagicLinkUrl)}
@@ -587,7 +615,8 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
     {
       id: "sample-autosave",
       type: "autosave",
-      fromName: `${payload.tpaName} Insurance Administrator`,
+      clientId: payload.clientId,
+      fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
       subject: "[DO NOT REPLY] Your saved insurance application",
@@ -597,7 +626,8 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
     {
       id: "sample-resume-magic-link",
       type: "resume-magic-link",
-      fromName: `${payload.tpaName} Insurance Administrator`,
+      clientId: payload.clientId,
+      fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
       subject:
@@ -608,7 +638,8 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
     {
       id: "sample-pending-reminder",
       type: "pending-reminder",
-      fromName: `${payload.tpaName} Insurance Administrator`,
+      clientId: payload.clientId,
+      fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
       subject:
@@ -619,7 +650,8 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
     {
       id: "sample-purge-reminder",
       type: "purge-reminder",
-      fromName: `${payload.tpaName} Insurance Administrator`,
+      clientId: payload.clientId,
+      fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
       subject: "[DO NOT REPLY] Your insurance application has expired",
@@ -629,7 +661,8 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
     {
       id: "advisor-sent-for-signature",
       type: "advisor-sent-for-signature",
-      fromName: `${payload.tpaName} Advisor Notifications`,
+      clientId: payload.clientId,
+      fromName: getAdvisorNotificationsFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_ADVISOR_EMAIL,
       subject: "[DO NOT REPLY] Application sent for signature",
@@ -643,7 +676,8 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
     {
       id: "advisor-pending-reminder",
       type: "advisor-pending-reminder",
-      fromName: `${payload.tpaName} Advisor Notifications`,
+      clientId: payload.clientId,
+      fromName: getAdvisorNotificationsFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_ADVISOR_EMAIL,
       subject: "[DO NOT REPLY] Application still pending signature",
@@ -657,7 +691,8 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
     {
       id: "advisor-edit-request",
       type: "advisor-edit-request",
-      fromName: `${payload.tpaName} Advisor Notifications`,
+      clientId: payload.clientId,
+      fromName: getAdvisorNotificationsFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_ADVISOR_EMAIL,
       subject: "[DO NOT REPLY] Application edit request",
@@ -672,7 +707,8 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
     {
       id: "advisor-application-complete",
       type: "advisor-application-complete",
-      fromName: `${payload.tpaName} Advisor Notifications`,
+      clientId: payload.clientId,
+      fromName: getAdvisorNotificationsFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_ADVISOR_EMAIL,
       subject: "[DO NOT REPLY] Application submitted",
@@ -688,7 +724,10 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
 }
 
 export function readMockEmailPreviews() {
-  const storedPreviews = getStoredMockEmails();
+  const activeClientId = getClientEmailPayload().clientId;
+  const storedPreviews = getStoredMockEmails().filter(
+    (storedPreview) => storedPreview.clientId === activeClientId,
+  );
   const alwaysVisiblePreviews = getAlwaysVisibleMockEmails();
 
   return [
@@ -740,7 +779,8 @@ export async function sendAutosaveMockEmail(values: ApplicationFormValues) {
   saveMockEmailPreview({
     id: getGeneratedMockEmailId("autosave"),
     type: "autosave",
-    fromName: `${payload.tpaName} Insurance Administrator`,
+    clientId: payload.clientId,
+    fromName: getInsuranceAdministratorFromName(payload),
     fromEmail: MOCK_FROM_EMAIL,
     toEmail: payload.toEmail,
     subject: "[DO NOT REPLY] Your application is saved!",
@@ -760,7 +800,8 @@ export async function sendReceiptMockEmail(
   saveMockEmailPreview({
     id: getGeneratedMockEmailId("receipt"),
     type: "receipt",
-    fromName: `${payload.tpaName} Insurance Administrator`,
+    clientId: payload.clientId,
+    fromName: getInsuranceAdministratorFromName(payload),
     fromEmail: MOCK_FROM_EMAIL,
     toEmail: payload.toEmail,
     subject: "[DO NOT REPLY] Your insurance application has been submitted",
@@ -778,7 +819,8 @@ export async function sendResumeMagicLinkMockEmail(emailAddress: string) {
   saveMockEmailPreview({
     id: getGeneratedMockEmailId("resume-magic-link"),
     type: "resume-magic-link",
-    fromName: `${payload.tpaName} Insurance Administrator`,
+    clientId: payload.clientId,
+    fromName: getInsuranceAdministratorFromName(payload),
     fromEmail: MOCK_FROM_EMAIL,
     toEmail: trimmedEmailAddress,
     subject:

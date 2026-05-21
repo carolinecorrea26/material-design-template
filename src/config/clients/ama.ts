@@ -10,12 +10,12 @@ export const amaClient: ClientConfig = {
   },
   support: {
     phone: "8886275902",
-    phoneDisplay: "888-627-5902",
+    phoneDisplay: "800-458-5736",
     phoneHours: "M-F 8:00am-5:00pm CT",
-    email: "insurance@ama-assn.org",
-    website: "ama-assn.org",
+    email: "wecare@amainsure.com",
+    website: "https://www.amainsure.com",
     address: {
-      street: "330 North Wabash Avenue",
+      street: "330 North Wabash Avenue Suite 39300",
       city: "Chicago",
       state: "Illinois",
       zip: "60611",
