@@ -211,7 +211,9 @@ function getDecisionStatus(opts: {
     case "soft-declined":
       return {
         label: "Unable to offer",
-        color: "#ab0b0b",
+        // color: "#ab0b0b",
+        // color: "#55575b",
+        color: "#213967",
         description:
           "Based on the information provided and the data securely reviewed, we’re unable to offer this coverage through QuickDecision at this time. Your application will still be reviewed by the plan administrator and carrier, and you’ll be contacted if additional information is needed.",
       };
@@ -577,7 +579,7 @@ export default function Receipt() {
                                   color="text.secondary"
                                   sx={{ fontWeight: 600 }}
                                 >
-                                  Coverage amount requested:{" "}
+                                  Requested:{" "}
                                   {formatCurrencyAmount(
                                     coverageAmountRequested,
                                   )}

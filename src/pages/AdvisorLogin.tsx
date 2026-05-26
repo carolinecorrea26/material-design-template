@@ -43,7 +43,7 @@ function AdvisorLoginFields({
         width: "100%",
         borderRadius: "28px",
         backgroundColor: "#eff4ff63",
-        border: "2px solid #e6effa",
+        border: "1px solid #e6effa",
         boxShadow: "0 30px 30px rgb(15 23 42 / 5%)",
         px: { xs: 3, sm: 4 },
         py: { xs: 3.5, sm: 4 },
@@ -55,16 +55,16 @@ function AdvisorLoginFields({
           <Typography
             component="h1"
             sx={{
-              color: "#70708a",
-              fontSize: "1rem",
-              textTransform: "uppercase",
-              fontWeight: 700,
-              lineHeight: 1.1,
-              letterSpacing: "0.3px",
+              // color: "#54637a",
+              fontSize: "1.15rem",
+              // textTransform: "uppercase",
+              fontWeight: 600,
+              // lineHeight: 1.1,
+              // letterSpacing: "0.2px",
               mb: 0.75,
             }}
           >
-            Log In
+            Welcome back.
           </Typography>
 
           <Typography
@@ -101,8 +101,8 @@ function AdvisorLoginFields({
             },
           }}
         >
-          <Tab label="New" value="new" />
-          <Tab label="Saved" value="saved" />
+          <Tab label="Start" value="new" />
+          <Tab label="Continue" value="saved" />
         </Tabs>
 
         <Stack spacing={2}>
@@ -117,7 +117,7 @@ function AdvisorLoginFields({
                 ...field,
                 labelVariant: "floating" as const,
                 placeholder: undefined,
-                helperText: undefined,
+                // helperText: undefined,
               };
 
               return (

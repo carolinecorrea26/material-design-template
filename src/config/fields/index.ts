@@ -1464,30 +1464,36 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
 
   "advisor-email": {
     id: "advisor-email",
-    label: "Advisor Email",
+
+    label: "Email",
     inputType: "text",
     required: true,
     format: "email",
     autoComplete: "email",
     inputMode: "email",
+    // helperText: "Your advisor email",
   },
 
   "advisor-phone": {
     id: "advisor-phone",
-    label: "Advisor Phone Number",
+
+    label: "Phone Number",
     inputType: "text",
     required: true,
     format: "phone",
     autoComplete: "tel",
     inputMode: "tel",
     showPhoneTypeSelector: false,
+    // helperText: "Your advisor phone number",
   },
 
   "advisor-code": {
     id: "advisor-code",
-    label: "Advisor Code",
+    label: "Code",
     inputType: "text",
     required: true,
+    helperText:
+      "Enter the code assigned to you. This tracks your submitted applications.",
   },
 
   "applicant-email": {

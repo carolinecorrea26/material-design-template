@@ -152,7 +152,7 @@ function ApplicationIntro({ client }: { client: ClientConfig }) {
     <Box
       sx={{
         width: "100%",
-        maxWidth: 1000,
+        maxWidth: 900,
         mt: "12px",
         mb: "8px",
         mx: "auto",

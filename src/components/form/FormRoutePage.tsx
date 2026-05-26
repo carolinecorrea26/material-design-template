@@ -641,7 +641,7 @@ export default function FormRoutePage({
           open={showProgressSaved}
           autoHideDuration={3000}
           onClose={() => setShowProgressSaved(false)}
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
           <Alert
             onClose={() => setShowProgressSaved(false)}
