@@ -31,7 +31,7 @@ export const membershipClientFields: Partial<
     showTitleField: true,
     overrides: {
       membership: {
-        label: "What is your current medical role?",
+        label: "I am a (select one)",
         inputType: "dropdown",
         labelVariant: "standard",
         placeholder: "Select one",

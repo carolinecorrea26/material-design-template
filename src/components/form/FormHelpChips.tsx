@@ -101,9 +101,9 @@ export default function FormHelpChips({
           {items.map((item) => (
             <Chip
               key={item.id}
-              // variant="filled"
               variant="outlined"
-              // color="primary"
+              // variant="outlined"
+              color="info"
               clickable
               onClick={() => onSelect(item.id)}
               label={item.label}

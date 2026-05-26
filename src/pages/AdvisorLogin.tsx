@@ -42,8 +42,9 @@ function AdvisorLoginFields({
       sx={{
         width: "100%",
         borderRadius: "28px",
-        backgroundColor: "#ffffff",
-        boxShadow: "0 24px 70px rgba(15, 23, 42, 0.12)",
+        backgroundColor: "#eff4ff63",
+        border: "2px solid #e6effa",
+        boxShadow: "0 30px 30px rgb(15 23 42 / 5%)",
         px: { xs: 3, sm: 4 },
         py: { xs: 3.5, sm: 4 },
         mt: { xs: 3, sm: 4 },
@@ -54,15 +55,16 @@ function AdvisorLoginFields({
           <Typography
             component="h1"
             sx={{
-              color: "text.primary",
-              fontSize: { xs: "1.25rem", sm: "1.5rem" },
+              color: "#70708a",
+              fontSize: "1rem",
+              textTransform: "uppercase",
               fontWeight: 700,
               lineHeight: 1.1,
-              letterSpacing: "-0.04em",
+              letterSpacing: "0.3px",
               mb: 0.75,
             }}
           >
-            Advisor Login
+            Log In
           </Typography>
 
           <Typography
