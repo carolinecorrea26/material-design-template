@@ -67,15 +67,16 @@ export default function AppBody({ children }: AppBodyProps) {
       component="main"
       sx={{
         width: "100%",
+        maxWidth: { lg: 1400 },
         marginLeft: "auto",
         marginRight: "auto",
         px: { xs: 2, sm: 3, md: 4 },
-        pt: 2,
+        pt: 4,
         pb: 4,
         flex: 1,
         display: "flex",
         flexDirection: "column",
-        minHeight: "60vh",
+        minHeight: "85vh",
         boxSizing: "border-box",
         // backgroundColor: "#f9fafc",
       }}

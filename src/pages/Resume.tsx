@@ -165,8 +165,8 @@ export default function Resume() {
       }}
     >
       <Button
-        component="a"
-        href="/"
+        type="button"
+        onClick={() => navigate(-1)}
         startIcon={<ArrowBackIcon />}
         sx={{
           color: "text.secondary",
@@ -176,7 +176,7 @@ export default function Resume() {
           pl: 0,
         }}
       >
-        Back to home page
+        Back
       </Button>
 
       <Stepper activeStep={activeStep} orientation="vertical">
@@ -189,14 +189,13 @@ export default function Resume() {
                 fontSize: "1rem",
               }}
             >
-              Finish your saved application
+              Enter your email address
             </Typography>
           </StepLabel>
           <StepContent>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Enter the email that you started an application with. A secure
-              link will be sent to your email with next steps to resume your
-              saved application.
+              A secure link will be sent to your email with next steps to resume
+              your saved application.
             </Typography>
             {isEmailSending ? (
               <Box
@@ -318,8 +317,8 @@ export default function Resume() {
                   sx={{ fontSize: "0.8125rem" }}
                 >
                   {deliveryMode === "text"
-                    ? "Send code with voice call"
-                    : "Send code with text"}
+                    ? "Send with voice call"
+                    : "Send with text message"}
                 </Link>
               </Stack>
               <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
@@ -363,7 +362,7 @@ export default function Resume() {
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert onClose={() => setSnackAlert(null)} severity="success">
-          Code sent via{" "}
+          Code sent with{" "}
           {snackAlert?.deliveryMode === "voice" ? "voice call" : "text message"}{" "}
           to phone number{" "}
           <Box
@@ -396,8 +395,8 @@ export default function Resume() {
             sx={{ fontSize: "0.8125rem" }}
           >
             {snackAlert?.deliveryMode === "text"
-              ? "Send code with voice call"
-              : "Send code with text message"}
+              ? "Send with voice call"
+              : "Send with text message"}
           </Link>
         </Alert>
       </Snackbar>

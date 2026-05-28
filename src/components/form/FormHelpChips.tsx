@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Box, Chip, Stack, useMediaQuery, useTheme } from "@mui/material";
+import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
 
 export type HelpChipItem = {
   id: string;
@@ -51,10 +52,11 @@ export default function FormHelpChips({
   if (!items.length) return null;
 
   return (
-    <Stack spacing={2} sx={{ maxWidth }}>
+    <Stack spacing={2} sx={{ maxWidth, mt: { xs: 0, md: 3 }, mb: 3 }}>
       <Box
         sx={{
           position: "relative",
+          minWidth: 0,
           ...(showFade
             ? {
                 "&::before, &::after": {
@@ -68,8 +70,6 @@ export default function FormHelpChips({
                 },
                 "&::before": {
                   left: 0,
-                  background:
-                    "linear-gradient(90deg, rgba(255,255,255,0.9), rgba(255,255,255,0))",
                 },
                 "&::after": {
                   right: 0,
@@ -88,11 +88,11 @@ export default function FormHelpChips({
           sx={{
             overflowX: "auto",
             overflowY: "hidden",
-            flexWrap: "wrap",
-            rowGap: 1,
+            flexWrap: "nowrap",
             justifyContent: "flex-start",
             scrollbarWidth: "none",
             msOverflowStyle: "none",
+            WebkitOverflowScrolling: "touch",
             "&::-webkit-scrollbar": {
               display: "none",
             },
@@ -101,21 +101,18 @@ export default function FormHelpChips({
           {items.map((item) => (
             <Chip
               key={item.id}
-              variant="outlined"
-              // variant="outlined"
-              color="info"
+              variant="filled"
               clickable
               onClick={() => onSelect(item.id)}
+              icon={<HelpOutlineRoundedIcon sx={{ fontSize: 16 }} />}
               label={item.label}
-              // sx={{
-              //   justifyContent: "flex-start",
-              //   width: "fit-content",
-              //   border: "1px solid #d8dbe2",
-              //   borderRadius: 2,
-              //   "& .MuiChip-label": {
-              //     whiteSpace: "nowrap",
-              //   },
-              // }}
+              sx={{
+                flexShrink: 0,
+                backgroundColor: "#f1f5f9",
+                "&:hover": {
+                  backgroundColor: "#e2e8f0",
+                },
+              }}
             />
           ))}
         </Stack>

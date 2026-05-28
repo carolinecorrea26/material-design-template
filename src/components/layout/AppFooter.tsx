@@ -18,6 +18,7 @@ export default function AppFooter({ client }: AppFooterProps) {
         py: 4,
         px: { xs: 2, sm: 3, md: 4 },
         // backgroundColor: "#f2f4f8",
+        // backgroundColor: "#dce3ed",
         color: "#798293",
       }}
     >

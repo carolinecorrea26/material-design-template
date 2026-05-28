@@ -106,7 +106,7 @@ export default function FormProgress() {
             display: "flex",
             alignItems: "flex-start",
             width: "100%",
-            maxWidth: "1200px",
+            maxWidth: "1400px",
             mx: "auto",
             justifyContent: "space-between",
             pt: 1,

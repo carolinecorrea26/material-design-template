@@ -6,6 +6,8 @@ declare module "@mui/material/Typography" {
   }
 }
 
+const inputBorderRadius = "16px";
+
 const theme = createTheme({
   spacing: 8,
   shape: {
@@ -33,32 +35,32 @@ const theme = createTheme({
       'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     h1: {
       fontSize: "2.25rem",
-      fontWeight: 600,
+      fontWeight: 700,
       lineHeight: 1.167,
     },
     h2: {
       fontSize: "1.75rem",
-      fontWeight: 600,
+      fontWeight: 700,
       lineHeight: 1.2,
     },
     h3: {
       fontSize: "1.5rem",
-      fontWeight: 600,
+      fontWeight: 700,
       lineHeight: 1.167,
     },
     h4: {
       fontSize: "1.375rem",
-      fontWeight: 600,
+      fontWeight: 700,
       lineHeight: 1.235,
     },
     h5: {
       fontSize: "1.125rem",
-      fontWeight: 600,
+      fontWeight: 700,
       lineHeight: 1.334,
     },
     h6: {
       fontSize: "1rem",
-      fontWeight: 600,
+      fontWeight: 700,
       lineHeight: 1.6,
     },
     body1: {
@@ -71,16 +73,78 @@ const theme = createTheme({
     },
     button: {
       textTransform: "none",
-      fontWeight: 500,
+      fontWeight: 700,
     },
   },
   components: {
+    MuiBadge: {
+      styleOverrides: {
+        badge: {
+          height: "16px",
+          minWidth: "16px",
+          padding: "0 4px",
+          fontSize: "0.65rem",
+          fontWeight: 800,
+          backgroundColor: "#ed0a0a",
+        },
+      },
+    },
+    MuiStepIcon: {
+      styleOverrides: {
+        root: {
+          color: "#8fa1b9",
+
+          "&.Mui-active": {
+            color: "#0668ff",
+          },
+
+          "&.Mui-completed": {
+            color: "#0668ff",
+          },
+        },
+      },
+    },
+    MuiStepLabel: {
+      styleOverrides: {
+        root: {
+          padding: 3,
+          color: "#62748e",
+        },
+      },
+    },
+
+    MuiStepConnector: {
+      styleOverrides: {
+        root: {
+          marginLeft: 15,
+        },
+        line: {
+          borderColor: "#d7dee8",
+        },
+      },
+    },
+    MuiStepContent: {
+      styleOverrides: {
+        root: {
+          marginLeft: 15,
+          borderColor: "#d7dee8",
+        },
+      },
+    },
+    MuiAlert: {
+      styleOverrides: {
+        root: {
+          borderRadius: inputBorderRadius,
+          // border: "none",
+        },
+      },
+    },
     MuiTextField: {
       styleOverrides: {
         root: {
           "& .MuiOutlinedInput-root": {
             backgroundColor: "white",
-            borderRadius: "8px",
+            borderRadius: inputBorderRadius,
             "& .MuiOutlinedInput-notchedOutline": {
               borderColor: "rgba(52, 59, 72, 0.23)",
               borderWidth: "1px",
@@ -93,12 +157,12 @@ const theme = createTheme({
               borderWidth: "1px",
             },
             "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#D32F2F",
+              borderColor: "#ed0a0a",
             },
           },
           "& .MuiPickersOutlinedInput-root": {
             backgroundColor: "white",
-            borderRadius: "8px",
+            borderRadius: inputBorderRadius,
             "& .MuiPickersOutlinedInput-notchedOutline": {
               borderColor: "rgba(52, 59, 72, 0.23)",
               borderWidth: "1px",
@@ -111,7 +175,7 @@ const theme = createTheme({
               borderWidth: "1px",
             },
             "&.Mui-error .MuiPickersOutlinedInput-notchedOutline": {
-              borderColor: "#D32F2F",
+              borderColor: "#ed0a0a",
             },
           },
           "& .MuiOutlinedInput-input": {},
@@ -123,7 +187,7 @@ const theme = createTheme({
         root: {
           "& .MuiOutlinedInput-root": {
             backgroundColor: "white",
-            borderRadius: "8px",
+            borderRadius: inputBorderRadius,
             "& .MuiOutlinedInput-notchedOutline": {
               borderColor: "rgba(52, 59, 72, 0.23)",
               borderWidth: "1px",
@@ -136,12 +200,12 @@ const theme = createTheme({
               borderWidth: "1px",
             },
             "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#D32F2F",
+              borderColor: "#ed0a0a",
             },
           },
           "& .MuiPickersOutlinedInput-root": {
             backgroundColor: "white",
-            borderRadius: "8px",
+            borderRadius: inputBorderRadius,
             "& .MuiPickersOutlinedInput-notchedOutline": {
               borderColor: "rgba(52, 59, 72, 0.23)",
               borderWidth: "1px",
@@ -154,7 +218,7 @@ const theme = createTheme({
               borderWidth: "1px",
             },
             "&.Mui-error .MuiPickersOutlinedInput-notchedOutline": {
-              borderColor: "#D32F2F",
+              borderColor: "#ed0a0a",
             },
           },
         },
@@ -164,7 +228,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: "white",
-          borderRadius: "8px",
+          borderRadius: inputBorderRadius,
           "& .MuiOutlinedInput-notchedOutline": {
             borderColor: "rgba(52, 59, 72, 0.23)",
             borderWidth: "1px",
@@ -177,7 +241,7 @@ const theme = createTheme({
             borderWidth: "1px",
           },
           "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-            borderColor: "#D32F2F",
+            borderColor: "#ed0a0a",
           },
         },
       },
@@ -187,7 +251,7 @@ const theme = createTheme({
         root: {
           "& .MuiOutlinedInput-root": {
             backgroundColor: "white",
-            borderRadius: "8px",
+            borderRadius: inputBorderRadius,
           },
           "& .MuiSelect-select": {
             whiteSpace: "normal",
@@ -216,7 +280,7 @@ const theme = createTheme({
           },
         },
         asterisk: {
-          color: "#D32F2F",
+          color: "#ed0a0a",
         },
       },
     },
@@ -232,7 +296,7 @@ const theme = createTheme({
           },
         },
         asterisk: {
-          color: "#D32F2F",
+          color: "#ed0a0a",
         },
       },
     },
@@ -240,7 +304,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 9999,
-          fontWeight: 500,
+          fontWeight: 600,
           textTransform: "none",
           transition: "transform 180ms ease, box-shadow 180ms ease",
           "&:hover": {
@@ -252,7 +316,7 @@ const theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
+          borderRadius: inputBorderRadius,
         },
       },
     },
@@ -308,7 +372,7 @@ const theme = createTheme({
       styleOverrides: {
         root: ({ theme: activeTheme }) => ({
           color: activeTheme.palette.primary.main,
-          fontWeight: 600,
+          fontWeight: 700,
           textDecoration: "none",
           "&:hover": {
             textDecoration: "underline",
@@ -321,11 +385,11 @@ const theme = createTheme({
         {
           props: { variant: "sectionLabel" as const },
           style: {
-            fontWeight: 700,
+            fontWeight: 800,
             fontSize: "0.75rem",
             lineHeight: 1,
             textTransform: "uppercase" as const,
-            letterSpacing: "1px",
+            letterSpacing: "0.25px",
             color: "#4e6d9c",
             display: "block",
           },
@@ -360,7 +424,7 @@ const theme = createTheme({
         root: ({ theme: activeTheme }) => ({
           backgroundColor: "#ffffff",
           border: `1px solid ${activeTheme.palette.divider}`,
-          borderRadius: 8,
+          borderRadius: inputBorderRadius,
           textTransform: "none",
           "&:hover": {
             backgroundColor: activeTheme.palette.action.hover,
@@ -382,7 +446,7 @@ const theme = createTheme({
           gap: theme.spacing(1.5),
           "& .MuiToggleButtonGroup-grouped": {
             border: `1px solid ${theme.palette.divider}`,
-            borderRadius: "8px !important",
+            borderRadius: `${inputBorderRadius} !important`,
           },
         }),
       },

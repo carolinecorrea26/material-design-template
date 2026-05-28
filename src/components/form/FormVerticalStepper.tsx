@@ -9,8 +9,7 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
-import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
-import { keyframes } from "@mui/system";
+import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
 import { useNavigate } from "react-router-dom";
 import {
   getActiveProgressSteps,
@@ -20,33 +19,24 @@ import {
 import type { PageId } from "../../types/page";
 import { useApplicationForm } from "../../state/ApplicationFormContext";
 
-const fadeIn = keyframes`
-  from { opacity: 0; transform: scale(0.6); }
-  to { opacity: 1; transform: scale(1); }
-`;
+import { getPageNavTitle } from "../../config/pages";
 
 const PENDING_BREADCRUMB_COMPLETION_EVENT = "form:pendingbreadcrumbcompletion";
 
-const ACRONYM_WORDS = new Set(["SI", "QD", "DI", "CIR"]);
-
-function toPageLabel(pageId: string) {
-  return pageId
-    .split("-")
-    .map((segment) => {
-      const upper = segment.toUpperCase();
-      if (ACRONYM_WORDS.has(upper)) return upper;
-      return segment.charAt(0).toUpperCase() + segment.slice(1);
-    })
-    .join(" ");
-}
-
-const STEP_LABELS: Record<string, string> = {
-  "getting-started": "Start your insurance application",
+export const STEP_LABELS: Record<string, string> = {
+  "getting-started": "Start your application",
   "coverage-options": "Choose your coverage",
   "about-applicant": "Your application profile",
   "application-review": "Review your application",
   "esign-submit": "E-sign and submit",
 };
+
+export function getVerticalStepperStepLabel(step: {
+  id: string;
+  label: string;
+}) {
+  return STEP_LABELS[step.id] ?? step.label;
+}
 
 type FormVerticalStepperProps = {
   pageId: PageId;
@@ -91,7 +81,7 @@ function getBreadcrumbEntries(
     } else {
       entries.push({
         id: pid,
-        label: toPageLabel(pid),
+        label: getPageNavTitle(pid),
         navigateTo: pid,
         containsCurrentPage: pid === currentPageId,
       });
@@ -144,8 +134,8 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
       sx={{
         mb: 1,
         "& .MuiBreadcrumbs-separator": {
-          mx: 0.5,
-          color: "text.disabled",
+          mx: { xs: 1, lg: 1 },
+          color: "#62748e",
         },
       }}
     >
@@ -158,8 +148,6 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
             HEALTH_PAGE_IDS.includes(pendingCompletedPageId));
         const isCompleted =
           index < currentEntryIndex || isPendingCompletedEntry;
-        const isJustCompleted =
-          index === currentEntryIndex - 1 || isPendingCompletedEntry;
 
         if (isCompleted) {
           return (
@@ -175,19 +163,18 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
                 alignItems: "center",
                 gap: 0.5,
                 fontSize: "0.75rem",
-                fontWeight: 600,
+                fontWeight: 700,
                 color: "primary.main",
                 cursor: "pointer",
+                paddingBottom: 0.25,
               }}
             >
               {entry.label}
-              <CheckCircleRoundedIcon
+              <DoneRoundedIcon
                 sx={{
                   fontSize: 14,
                   color: "success.main",
-                  ...(isJustCompleted
-                    ? { animation: `${fadeIn} 0.3s ease forwards` }
-                    : { opacity: 1 }),
+                  opacity: 1,
                 }}
               />
             </Link>
@@ -200,9 +187,10 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
               key={entry.id}
               variant="caption"
               sx={{
-                fontWeight: 600,
+                fontWeight: 700,
                 fontSize: "0.75rem",
                 color: "primary.main",
+                letterSpacing: "-0.2px",
               }}
             >
               {entry.label}
@@ -217,7 +205,8 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
             sx={{
               fontSize: "0.75rem",
               fontWeight: 500,
-              color: "text.disabled",
+              color: "#62748e",
+              letterSpacing: "-0.2px",
             }}
           >
             {entry.label}
@@ -238,43 +227,128 @@ export default function FormVerticalStepper({
   const activeStep = getActiveProgressStepIndex(pageId, values);
 
   return (
-    <Box sx={{ width: "100%", maxWidth: 800, mx: "auto" }}>
-      <Stepper activeStep={activeStep} orientation="vertical">
-        {activeSteps.map((step, index) => {
-          const isActive = index === activeStep;
-          const isCompleted = index < activeStep;
+    <Box
+      sx={{
+        width: "100%",
+        maxWidth: 1100,
+        mx: "auto",
+      }}
+    >
+      <Box
+        sx={{
+          display: { xs: "block", md: "grid" },
+          gridTemplateColumns: {
+            md: "200px minmax(0, 1fr)",
+            lg: "280px minmax(0, 1fr)",
+          },
+          columnGap: { md: 6, lg: 3 },
+          alignItems: "flex-start",
+        }}
+      >
+        <Box
+          sx={{
+            display: { xs: "none", md: "block" },
+            position: "sticky",
+            top: 12,
+            borderRadius: "24px",
+          }}
+        >
+          <Stepper activeStep={activeStep} orientation="vertical">
+            {activeSteps.map((step, index) => {
+              const isActive = index === activeStep;
+              const isCompleted = index < activeStep;
+              const stepLabelColor = isActive
+                ? "text.primary"
+                : isCompleted
+                  ? "#62748e"
+                  : "#94a3b8";
 
-          return (
-            <Step key={step.id} completed={isCompleted}>
-              <StepLabel
-                onClick={
-                  isCompleted
-                    ? () => {
-                        const firstPage = step.pageIds[0];
-                        if (firstPage) {
-                          navigate(`/${firstPage}`);
-                        }
-                      }
-                    : undefined
-                }
-                sx={isCompleted ? { cursor: "pointer" } : undefined}
-              >
-                <Typography
-                  sx={{
-                    fontWeight: isActive ? 700 : 500,
-                    fontSize: "1rem",
-                  }}
-                >
-                  {STEP_LABELS[step.id] ?? step.label}
-                </Typography>
-              </StepLabel>
-              <StepContent>
-                {isActive && <Box sx={{ width: "100%" }}>{children}</Box>}
-              </StepContent>
-            </Step>
-          );
-        })}
-      </Stepper>
+              return (
+                <Step key={step.id} completed={isCompleted}>
+                  <StepLabel
+                    onClick={
+                      isCompleted
+                        ? () => {
+                            const firstPage = step.pageIds[0];
+                            if (firstPage) {
+                              navigate(`/${firstPage}`);
+                            }
+                          }
+                        : undefined
+                    }
+                    sx={isCompleted ? { cursor: "pointer" } : undefined}
+                  >
+                    <Typography
+                      sx={{
+                        fontWeight: isActive ? 700 : 500,
+                        fontSize: "0.9rem",
+                        letterSpacing: "-0.25px",
+                        color: stepLabelColor,
+                      }}
+                    >
+                      {getVerticalStepperStepLabel(step)}
+                    </Typography>
+                  </StepLabel>
+                </Step>
+              );
+            })}
+          </Stepper>
+        </Box>
+
+        <Box sx={{ display: { xs: "block", md: "none" } }}>
+          <Stepper activeStep={activeStep} orientation="vertical">
+            {activeSteps.map((step, index) => {
+              const isActive = index === activeStep;
+              const isCompleted = index < activeStep;
+              const stepLabelColor = isActive
+                ? "text.primary"
+                : isCompleted
+                  ? "#62748e"
+                  : "#94a3b8";
+
+              return (
+                <Step key={step.id} completed={isCompleted}>
+                  <StepLabel
+                    onClick={
+                      isCompleted
+                        ? () => {
+                            const firstPage = step.pageIds[0];
+                            if (firstPage) {
+                              navigate(`/${firstPage}`);
+                            }
+                          }
+                        : undefined
+                    }
+                    sx={isCompleted ? { cursor: "pointer" } : undefined}
+                  >
+                    <Typography
+                      sx={{
+                        fontWeight: isActive ? 700 : 500,
+                        fontSize: "1rem",
+                        color: stepLabelColor,
+                      }}
+                    >
+                      {getVerticalStepperStepLabel(step)}
+                    </Typography>
+                  </StepLabel>
+                  <StepContent>
+                    {isActive && <Box sx={{ width: "100%" }}>{children}</Box>}
+                  </StepContent>
+                </Step>
+              );
+            })}
+          </Stepper>
+        </Box>
+
+        <Box
+          sx={{
+            display: { xs: "none", md: "block" },
+            minWidth: 0,
+          }}
+        >
+          {children}
+        </Box>
+      </Box>
     </Box>
   );
 }

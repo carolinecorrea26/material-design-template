@@ -388,9 +388,8 @@ function HowApplyingWorksSection({
           What to expect when applying
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          The online process is designed to help you move quickly while still
-          giving New York Life the information needed to review your
-          application.
+          This online experience is designed to help you complete your
+          application quickly and easily.
         </Typography>
       </Stack>
 
@@ -927,14 +926,16 @@ function HomeQuoteCard() {
         }}
       >
         <Stack spacing={2.25} sx={{ p: { xs: 2.5, sm: 3 } }}>
-          <Stack spacing={0.75}>
-            <Typography variant="h2" paddingBottom={1} sx={SECTION_TITLE_SX}>
-              Estimate your cost
+          <Box>
+            <Typography
+              variant="h4"
+              paddingBottom={1}
+              sx={{ xs: "1.5rem", sm: "1.5rem", md: "1.75rem", lg: "2rem" }}
+              fontWeight={600}
+            >
+              Get an estimate in seconds
             </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Get an instant quote with just a few details.
-            </Typography>
-          </Stack>
+          </Box>
 
           <Stack spacing={2.5}>
             <TextField
@@ -1924,33 +1925,72 @@ export default function Home() {
             sx={{
               display: "grid",
               gridTemplateColumns:
-                associationContent != null
-                  ? { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" }
-                  : "1fr",
+                associationContent != null ? { xs: "1fr" } : "1fr",
               gap: { xs: 3, md: 5 },
               alignItems: "start",
             }}
           >
+            {associationContent ? (
+              <Stack spacing={2}>
+                <Stack spacing={0.75}>
+                  <Typography
+                    variant="h4"
+                    paddingBottom={1}
+                    sx={{
+                      xs: "1.5rem",
+                      sm: "1.5rem",
+                      md: "1.75rem",
+                      lg: "2rem",
+                    }}
+                    fontWeight={600}
+                  >
+                    {associationContent.title}
+                  </Typography>
+                  {associationContent.subtitle ? (
+                    <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                      {associationContent.subtitle}
+                    </Typography>
+                  ) : null}
+                </Stack>
+
+                <Stack spacing={1.25}>
+                  {associationContent.paragraphs.map((paragraph, index) => (
+                    <Typography
+                      key={index}
+                      variant="body2"
+                      color="text.secondary"
+                    >
+                      {paragraph}
+                    </Typography>
+                  ))}
+                </Stack>
+                <Box
+                  component="img"
+                  src={client.branding.logo}
+                  alt={client.branding.logoAlt}
+                  sx={{
+                    display: "block",
+                    height: 30,
+                    width: "auto",
+                    objectFit: "contain",
+                    objectPosition: "left center",
+                    mb: 0.5,
+                  }}
+                />
+              </Stack>
+            ) : null}
             <Stack spacing={2}>
-              <Box
-                component="img"
-                src="/logo.svg"
-                alt="New York Life Logo"
-                sx={{
-                  display: "block",
-                  height: 40,
-                  width: "auto",
-                  objectFit: "contain",
-                  objectPosition: "left center",
-                  mb: 0.5,
-                }}
-              />
               <Stack spacing={0.75}>
-                <Typography variant="h2" sx={SECTION_TITLE_SX}>
+                <Typography
+                  variant="h4"
+                  paddingBottom={1}
+                  sx={{ xs: "1.5rem", sm: "1.5rem", md: "1.75rem", lg: "2rem" }}
+                  fontWeight={600}
+                >
                   {NYL_ABOUT_CONTENT.title}
                 </Typography>
                 {NYL_ABOUT_CONTENT.subtitle ? (
-                  <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                  <Typography variant="body1" sx={{ fontWeight: 500 }}>
                     {NYL_ABOUT_CONTENT.subtitle}
                   </Typography>
                 ) : null}
@@ -2006,47 +2046,20 @@ export default function Home() {
                 </Box>
                 Third Party Rating Reports as of 09/30/2025.
               </Typography>
+              <Box
+                component="img"
+                src="/logo.svg"
+                alt="New York Life Logo"
+                sx={{
+                  display: "block",
+                  height: 40,
+                  width: "auto",
+                  objectFit: "contain",
+                  objectPosition: "left center",
+                  mb: 0.5,
+                }}
+              />
             </Stack>
-
-            {associationContent ? (
-              <Stack spacing={2}>
-                <Box
-                  component="img"
-                  src={client.branding.logo}
-                  alt={client.branding.logoAlt}
-                  sx={{
-                    display: "block",
-                    height: 40,
-                    width: "auto",
-                    objectFit: "contain",
-                    objectPosition: "left center",
-                    mb: 0.5,
-                  }}
-                />
-                <Stack spacing={0.75}>
-                  <Typography variant="h2" sx={SECTION_TITLE_SX}>
-                    {associationContent.title}
-                  </Typography>
-                  {associationContent.subtitle ? (
-                    <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                      {associationContent.subtitle}
-                    </Typography>
-                  ) : null}
-                </Stack>
-
-                <Stack spacing={1.25}>
-                  {associationContent.paragraphs.map((paragraph, index) => (
-                    <Typography
-                      key={index}
-                      variant="body2"
-                      color="text.secondary"
-                    >
-                      {paragraph}
-                    </Typography>
-                  ))}
-                </Stack>
-              </Stack>
-            ) : null}
           </Box>
         </Stack>
       </Stack>

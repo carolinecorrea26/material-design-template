@@ -75,7 +75,7 @@ const forwardMessages: Partial<Record<PageId, TransitionMessagePair>> = {
 
 export const BACK_MESSAGE = "Returning to the previous step...";
 
-export const MESSAGE_DURATION = 1500;
+export const MESSAGE_DURATION = 2200;
 
 export function getForwardMessages(pageId: PageId): TransitionMessagePair {
   return (

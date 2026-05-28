@@ -6,7 +6,7 @@ export default function DocuSign() {
     <FormRoutePage
       pageId="docusign"
       title="Review and sign your application."
-      formMaxWidth={1200}
+      formMaxWidth={1400}
       noBreadcrumb
     >
       <Box

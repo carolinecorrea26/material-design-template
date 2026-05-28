@@ -8,7 +8,8 @@ import FormPageTitle from "./FormPageTitle";
 import FormShell from "../layout/FormShell";
 
 type FormPageProps = {
-  title: string;
+  title: ReactNode;
+  subhead?: ReactNode;
   children?: ReactNode;
   help?: ReactNode;
   actions?: ReactNode;
@@ -17,12 +18,14 @@ type FormPageProps = {
   onBack?: () => void;
   compactTitle?: boolean;
   aboveHeader?: ReactNode;
+  headerOverride?: ReactNode;
   noTitle?: boolean;
   noContainer?: boolean;
 };
 
 export default function FormPage({
   title,
+  subhead,
   children,
   help,
   actions,
@@ -31,6 +34,7 @@ export default function FormPage({
   onBack,
   compactTitle,
   aboveHeader,
+  headerOverride,
   noTitle,
   noContainer,
 }: FormPageProps) {
@@ -43,7 +47,8 @@ export default function FormPage({
         <FormShell
           headerWide={aboveHeader}
           header={
-            !noTitle && title ? (
+            headerOverride ??
+            (!noTitle && title ? (
               <Stack spacing={1} sx={{ padding: "0 0.5rem" }}>
                 {onBack && (
                   <Link
@@ -64,11 +69,15 @@ export default function FormPage({
                     Back
                   </Link>
                 )}
-                <FormPageTitle title={title} compact={compactTitle} />
+                <FormPageTitle
+                  title={title}
+                  subhead={subhead}
+                  compact={compactTitle}
+                />
                 {error && <FormPageError message={error} />}
                 {help}
               </Stack>
-            ) : undefined
+            ) : undefined)
           }
           body={
             <FormPageContent noContainer={noContainer}>

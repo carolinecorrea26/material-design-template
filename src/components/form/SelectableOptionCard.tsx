@@ -20,9 +20,9 @@ export default function SelectableOptionCard({
         px: 2,
         py: 2,
         width: "100%",
-        border: "1px solid",
+        // border: "1px solid",
         borderColor: theme.palette.divider,
-        borderRadius: "8px",
+        borderRadius: "16px",
         bgcolor: theme.palette.background.paper,
         cursor: onClick ? "pointer" : "default",
         transition:

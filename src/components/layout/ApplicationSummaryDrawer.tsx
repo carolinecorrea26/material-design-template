@@ -3,6 +3,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import AdminPanelSettingsRoundedIcon from "@mui/icons-material/AdminPanelSettingsRounded";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {
   Alert,
   Box,
@@ -305,7 +306,7 @@ export default function ApplicationSummaryDrawer({
               color: isEmpty ? "text.primary" : "success.main",
             }}
           >
-            Coverage requested
+            Coverage added
           </Typography>
         </Stack>
         <IconButton aria-label="Close coverage requested" onClick={onClose}>
@@ -343,8 +344,7 @@ export default function ApplicationSummaryDrawer({
             {/* Single outlined box for all coverages */}
             <Box
               sx={{
-                border: "1px solid",
-                borderColor: "divider",
+                bgcolor: "#f5f8fd",
                 borderRadius: 2,
                 overflow: "hidden",
               }}
@@ -365,7 +365,9 @@ export default function ApplicationSummaryDrawer({
 
                       return (
                         <Box key={coverage.id}>
-                          {currentGlobalIdx > 0 && <Divider />}
+                          {currentGlobalIdx > 0 && (
+                            <Divider sx={{ borderColor: "#e6e6e6" }} />
+                          )}
                           <Box sx={{ px: 2, pb: 2, pt: 1.5 }}>
                             <Stack spacing={1}>
                               <Typography
@@ -384,72 +386,111 @@ export default function ApplicationSummaryDrawer({
                                   amount,
                                   riders: selectedRiders,
                                   monthlyEstimate,
-                                }) => (
-                                  <Box key={applicantId} sx={{ pl: 1 }}>
-                                    <Stack spacing={0.5}>
-                                      {!isMemberOnly && (
-                                        <Typography
-                                          variant="body2"
-                                          sx={{
-                                            fontWeight: 600,
-                                            fontSize: "0.8rem",
-                                          }}
-                                        >
-                                          {applicantLabels[applicantId]}
-                                        </Typography>
-                                      )}
+                                }) => {
+                                  const hasSelectedAmount =
+                                    amount != null && amount > 0;
 
-                                      <Typography
-                                        variant="body2"
-                                        sx={{
-                                          color: "text.secondary",
-                                          fontSize: "0.8rem",
-                                        }}
-                                      >
-                                        Coverage amount:{" "}
-                                        {amount != null && amount > 0
-                                          ? formatUSD(amount, 0)
-                                          : "\u2014"}
-                                      </Typography>
+                                  return (
+                                    <Box key={applicantId} sx={{ pl: 1 }}>
+                                      <Stack spacing={0.5}>
+                                        {!isMemberOnly && (
+                                          <Typography
+                                            variant="body2"
+                                            sx={{
+                                              fontWeight: 600,
+                                              fontSize: "0.8rem",
+                                            }}
+                                          >
+                                            {applicantLabels[applicantId]}
+                                          </Typography>
+                                        )}
 
-                                      {selectedRiders.length > 0 && (
-                                        <Box
-                                          sx={{
-                                            display: "flex",
-                                            flexWrap: "wrap",
-                                            gap: 0.5,
-                                          }}
-                                        >
-                                          {selectedRiders.map((rider) => (
-                                            <Chip
-                                              key={rider.name}
-                                              label={
-                                                rider.amount != null
-                                                  ? `${rider.name}: ${formatUSD(rider.amount, 0)}`
-                                                  : rider.name
-                                              }
-                                              size="small"
-                                              variant="outlined"
+                                        {hasSelectedAmount ? (
+                                          <>
+                                            <Typography
+                                              variant="body2"
+                                              sx={{
+                                                color: "text.secondary",
+                                                fontSize: "0.8rem",
+                                              }}
+                                            >
+                                              Requested: {formatUSD(amount, 0)}
+                                            </Typography>
+
+                                            {selectedRiders.length > 0 && (
+                                              <Box
+                                                sx={{
+                                                  display: "flex",
+                                                  flexWrap: "wrap",
+                                                  gap: 0.5,
+                                                }}
+                                              >
+                                                {selectedRiders.map((rider) => (
+                                                  <Chip
+                                                    key={rider.name}
+                                                    label={
+                                                      rider.amount != null
+                                                        ? `${rider.name}: ${formatUSD(rider.amount, 0)}`
+                                                        : rider.name
+                                                    }
+                                                    size="small"
+                                                    variant="outlined"
+                                                  />
+                                                ))}
+                                              </Box>
+                                            )}
+
+                                            {monthlyEstimate != null && (
+                                              <Typography
+                                                variant="body2"
+                                                sx={{
+                                                  color: "text.secondary",
+                                                  fontSize: "0.8rem",
+                                                }}
+                                              >
+                                                Est. cost<sup>1</sup>:{" "}
+                                                {formatUSD(monthlyEstimate)}
+                                              </Typography>
+                                            )}
+                                          </>
+                                        ) : (
+                                          <Box
+                                            sx={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                              gap: 0.75,
+                                              mt: 0.5,
+                                              px: 1.25,
+                                              py: 1,
+                                              borderRadius: 2,
+                                              bgcolor: "#f8fafc",
+                                              border: "1px dashed",
+                                              borderColor: "divider",
+                                              color: "text.secondary",
+                                            }}
+                                          >
+                                            <InfoOutlinedIcon
+                                              sx={{
+                                                fontSize: 17,
+                                                color: "text.disabled",
+                                              }}
                                             />
-                                          ))}
-                                        </Box>
-                                      )}
-
-                                      <Typography
-                                        variant="body2"
-                                        sx={{
-                                          color: "text.secondary",
-                                          fontSize: "0.8rem",
-                                        }}
-                                      >
-                                        Est. monthly:{" "}
-                                        {monthlyEstimate != null
-                                          ? formatUSD(monthlyEstimate)
-                                          : "\u2014"}
-                                      </Typography>
-                                    </Stack>
-                                  </Box>
-                                ),
+                                            <Typography
+                                              variant="body2"
+                                              sx={{
+                                                fontSize: "0.8rem",
+                                                fontWeight: 600,
+                                              }}
+                                            >
+                                              Cost calculated after amount
+                                              selection
+                                            </Typography>
+                                          </Box>
+                                        )}
+                                      </Stack>
+                                    </Box>
+                                  );
+                                },
                               )}
                             </Stack>
                           </Box>
@@ -483,14 +524,14 @@ export default function ApplicationSummaryDrawer({
               <Box
                 sx={{
                   p: 2,
-                  borderRadius: 2,
-                  backgroundColor: "rgba(0, 22, 57, 0.04)",
-                  border: "1px solid rgba(0, 22, 57, 0.08)",
+                  // borderRadius: 2,
+                  // backgroundColor: "rgba(0, 22, 57, 0.04)",
+                  borderTop: "1px solid rgba(0, 22, 57, 0.08)",
                 }}
               >
                 <Stack spacing={1}>
                   <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                    Estimated Monthly Total
+                    Estimated Monthly Total<sup>1</sup>
                   </Typography>
                   <Typography
                     variant="h5"
@@ -526,8 +567,9 @@ export default function ApplicationSummaryDrawer({
                     color="text.secondary"
                     sx={{ mt: 1, fontStyle: "italic" }}
                   >
-                    Quoted cost is the best rate available. Final cost may vary
-                    based on health status, gender, and tobacco/nicotine use.
+                    <sup>1</sup>Quoted cost is the best rate available. Final
+                    cost may vary based on health status, gender, and
+                    tobacco/nicotine use.
                   </Typography>
                 </Stack>
               </Box>

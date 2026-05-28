@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import {
   Alert,
   Box,
   Checkbox,
+  CircularProgress,
   FormControl,
   FormHelperText,
   InputLabel,
@@ -91,6 +92,8 @@ function formatUSD(value: number, decimals = 2): string {
     maximumFractionDigits: decimals,
   });
 }
+
+const RATE_CALCULATION_DELAY_MS = 900;
 
 export function CoverageNeedsCalculator() {
   const [annualIncome, setAnnualIncome] = useState("");
@@ -280,6 +283,10 @@ export default function CoverageOptions() {
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const { values, setPageValues } = useApplicationForm();
   const [qdDrawerOpen, setQdDrawerOpen] = useState(false);
+  const [calculatingRateKeys, setCalculatingRateKeys] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const rateCalculationTimersRef = useRef<Record<string, number>>({});
 
   const selectedCoverageIds = Array.isArray(values.coverageSelections)
     ? values.coverageSelections
@@ -337,6 +344,48 @@ export default function CoverageOptions() {
     },
     [productApplicants, selectedDependents],
   );
+
+  const beginRateCalculation = useCallback((rateKey: string) => {
+    window.clearTimeout(rateCalculationTimersRef.current[rateKey]);
+
+    setCalculatingRateKeys((current) => {
+      const next = new Set(current);
+      next.add(rateKey);
+      return next;
+    });
+
+    rateCalculationTimersRef.current[rateKey] = window.setTimeout(() => {
+      setCalculatingRateKeys((current) => {
+        const next = new Set(current);
+        next.delete(rateKey);
+        return next;
+      });
+
+      delete rateCalculationTimersRef.current[rateKey];
+    }, RATE_CALCULATION_DELAY_MS);
+  }, []);
+
+  const beginRateCalculationForCoverage = useCallback(
+    (coverageId: string) => {
+      const coverage = selectedCoverages.find((item) => item.id === coverageId);
+      if (!coverage) return;
+
+      getVisibleApplicants(coverage.applicants, coverage.id).forEach(
+        (applicantId) => {
+          beginRateCalculation(`${coverage.id}:${applicantId}`);
+        },
+      );
+    },
+    [beginRateCalculation, getVisibleApplicants, selectedCoverages],
+  );
+
+  useEffect(() => {
+    return () => {
+      Object.values(rateCalculationTimersRef.current).forEach((timerId) => {
+        window.clearTimeout(timerId);
+      });
+    };
+  }, []);
 
   const storedAmounts = useMemo<Record<string, number>>(() => {
     if (
@@ -528,6 +577,8 @@ export default function CoverageOptions() {
   ]);
 
   function handleAmountChange(key: string, amount: number) {
+    beginRateCalculation(key);
+
     setPageValues({
       coverageAmounts: { ...storedAmounts, [key]: amount },
     });
@@ -539,6 +590,10 @@ export default function CoverageOptions() {
     applicantId: CoverageApplicantId,
   ) {
     const key = `${coverageId}:${riderId}:${applicantId}`;
+    const rateKey = `${coverageId}:${applicantId}`;
+
+    beginRateCalculation(rateKey);
+
     setPageValues({
       coverageRiders: { ...storedRiders, [key]: !storedRiders[key] },
     });
@@ -551,12 +606,18 @@ export default function CoverageOptions() {
     amount: number,
   ) {
     const key = `${coverageId}:${riderId}:${applicantId}`;
+    const rateKey = `${coverageId}:${applicantId}`;
+
+    beginRateCalculation(rateKey);
+
     setPageValues({
       coverageRiderAmounts: { ...storedRiderAmounts, [key]: amount },
     });
   }
 
   function handleWaitingPeriodChange(coverageId: string, value: string) {
+    beginRateCalculationForCoverage(coverageId);
+
     setPageValues({
       coverageWaitingPeriods: {
         ...storedWaitingPeriods,
@@ -566,6 +627,8 @@ export default function CoverageOptions() {
   }
 
   function handleMaxBenefitPeriodChange(coverageId: string, value: string) {
+    beginRateCalculationForCoverage(coverageId);
+
     setPageValues({
       coverageMaxBenefitPeriods: {
         ...storedMaxBenefitPeriods,
@@ -650,8 +713,8 @@ export default function CoverageOptions() {
                 p: 2,
                 mb: 2,
                 borderRadius: 2,
-                backgroundColor: "rgba(46, 125, 50, 0.06)",
-                border: "1px solid rgba(46, 125, 50, 0.2)",
+                backgroundColor: "#eef6ee",
+                // border: "1px solid rgba(46, 125, 50, 0.2)",
               }}
             >
               <OfflineBoltIcon
@@ -719,7 +782,7 @@ export default function CoverageOptions() {
                     key={coverage.id}
                     sx={{
                       bgcolor: "background.paper",
-                      border: "1px solid",
+                      // border: "1px solid",
                       borderColor: "divider",
                       borderRadius: "16px",
                       p: 2,
@@ -728,8 +791,12 @@ export default function CoverageOptions() {
                   >
                     <Stack spacing={1.5}>
                       <Typography
-                        variant="body2"
-                        sx={{ fontWeight: 600, fontSize: "1rem" }}
+                        // variant="body2"
+                        sx={{
+                          fontWeight: 700,
+                          fontSize: "14px !important",
+                          letterSpacing: "-0.25px",
+                        }}
                       >
                         {coverage.name}
                         {coverage.underwritingType === "QD" && (
@@ -759,6 +826,7 @@ export default function CoverageOptions() {
                           coverageApplicantToSection[applicantId];
                         const key = `${coverage.id}:${applicantId}`;
                         const selectedAmount = storedAmounts[key] ?? 0;
+                        const isCalculatingRate = calculatingRateKeys.has(key);
                         const premium = calcApplicantPremium(
                           coverage,
                           applicantId,
@@ -936,7 +1004,7 @@ export default function CoverageOptions() {
                                     <Box>
                                       <Typography
                                         variant="body2"
-                                        sx={{ fontWeight: 600, mb: 1 }}
+                                        sx={{ fontWeight: 700, mb: 1 }}
                                       >
                                         Optional Benefit(s)
                                       </Typography>
@@ -990,7 +1058,7 @@ export default function CoverageOptions() {
                                                 >
                                                   <Typography
                                                     variant="body2"
-                                                    sx={{ fontWeight: 600 }}
+                                                    sx={{ fontWeight: 700 }}
                                                   >
                                                     {rider.name}
                                                   </Typography>
@@ -1062,28 +1130,94 @@ export default function CoverageOptions() {
                                 {selectedAmount > 0 && (
                                   <Box
                                     sx={{
-                                      display: "flex",
-                                      justifyContent: "flex-end",
+                                      // display: "flex",
+                                      // justifyContent: "flex-end",
                                       mt: 1,
                                       // pb: 2,
                                       // borderBottom: "1px solid",
                                       // borderColor: "rgba(0, 0, 0, 0.12)",
+                                      padding: 2,
+                                      borderRadius: 2,
+                                      backgroundColor: "#f7faff",
                                     }}
                                   >
-                                    <Typography variant="body2">
-                                      Estimated cost¹:{" "}
-                                      <Typography
-                                        component="span"
-                                        variant="body2"
-                                        sx={{
-                                          color: "primary.main",
-                                          fontWeight: 600,
-                                          fontSize: "1.5rem",
-                                        }}
+                                    {isCalculatingRate ? (
+                                      <Stack
+                                        direction="row"
+                                        spacing={1}
+                                        alignItems="center"
+                                        sx={{ color: "text.secondary" }}
                                       >
-                                        {formatUSD(premium)}/mo
-                                      </Typography>
-                                    </Typography>
+                                        <CircularProgress
+                                          size={18}
+                                          thickness={4}
+                                        />
+                                        <Typography variant="body2">
+                                          Calculating...
+                                        </Typography>
+                                      </Stack>
+                                    ) : (
+                                      <Stack
+                                        direction="row"
+                                        spacing={1}
+                                        justifyContent="space-between"
+                                        alignItems="center"
+                                      >
+                                        <Stack
+                                          direction="column"
+                                          spacing={0.5}
+                                          // alignItems="center"
+                                        >
+                                          <Typography
+                                            variant="body2"
+                                            sx={{
+                                              color: "text.primary",
+                                              fontWeight: 600,
+                                              fontSize: 12,
+                                            }}
+                                          >
+                                            Estimated cost<sup>1</sup>{" "}
+                                          </Typography>
+                                          <Typography
+                                            variant="body2"
+                                            sx={{
+                                              fontSize: 10,
+                                              color: "text.secondary",
+                                            }}
+                                          >
+                                            {coverage.name}
+                                          </Typography>
+                                        </Stack>
+                                        <Typography
+                                          component="span"
+                                          variant="body2"
+                                          sx={{
+                                            color: "primary.main",
+                                            fontWeight: 800,
+                                            fontSize: {
+                                              xs: "1.5rem",
+                                              md: "2rem",
+                                            },
+                                          }}
+                                        >
+                                          {formatUSD(premium)}
+                                          <Typography
+                                            component="span"
+                                            variant="body2"
+                                            sx={{
+                                              color: "primary.main",
+                                              fontWeight: 800,
+                                              fontSize: {
+                                                xs: "1rem",
+                                                sm: "1.25rem",
+                                              },
+                                            }}
+                                          >
+                                            /mo
+                                          </Typography>
+                                        </Typography>
+                                      </Stack>
+                                    )}
                                   </Box>
                                 )}
 
@@ -1111,10 +1245,10 @@ export default function CoverageOptions() {
           </Stack>
 
           <Typography variant="caption" color="text.secondary">
-            ¹ Quoted cost is the best rate available based on the information
-            you provided. Final cost may be based upon factors such as gender,
-            health status, and use of tobacco/nicotine. Rates current as of
-            2026.
+            <sup>1</sup> Quoted cost is the best rate available based on the
+            information you provided. Final cost may be based upon factors such
+            as gender, health status, and use of tobacco/nicotine. Rates current
+            as of 2026.
           </Typography>
         </>
       ) : (

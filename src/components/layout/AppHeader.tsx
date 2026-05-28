@@ -33,8 +33,8 @@ import { CoverageOptionsDrawerContent } from "../../pages/Coverage";
 import { CoverageNeedsCalculator } from "../../pages/CoverageOptions";
 import FormHelpDrawer from "../form/FormHelpDrawer";
 import { pages } from "../../config/pages";
-import { getActiveClientCoverages } from "../../client/getActiveClientCoverages";
-import { coverageCategories } from "../../config/coverageCategories";
+// import { getActiveClientCoverages } from "../../client/getActiveClientCoverages";
+// import { coverageCategories } from "../../config/coverageCategories";
 import type { CoverageDefinition } from "../../config/coverages/types";
 import { getFormProgressPercent, isFormPage } from "../../config/formFlow";
 import type { ClientConfig } from "../../config/clients/types";
@@ -129,83 +129,6 @@ function getPathnameSnapshot() {
   return window.location.pathname;
 }
 
-function ApplicationIntro({ client }: { client: ClientConfig }) {
-  const coverages = getActiveClientCoverages();
-
-  const coverageList = coverageCategories
-    .map((category) => ({
-      category,
-      products: coverages
-        .filter((coverage) => coverage.categoryId === category.id)
-        .slice()
-        .sort((a, b) => {
-          if (a.featured && !b.featured) return -1;
-          if (!a.featured && b.featured) return 1;
-          return a.name.localeCompare(b.name);
-        }),
-    }))
-    .filter((group) => group.products.length > 0)
-    .flatMap(({ products }) => products.map((product) => product.name))
-    .join(", ");
-
-  return (
-    <Box
-      sx={{
-        width: "100%",
-        maxWidth: 900,
-        mt: "12px",
-        mb: "8px",
-        mx: "auto",
-        px: { xs: 2, sm: 3 },
-        py: { xs: 2, sm: 2.5 },
-        borderRadius: "24px",
-        background: "#e7f0ff",
-        border: "1px solid",
-        borderColor: "#cdd9ec",
-      }}
-    >
-      <Stack spacing={0.75}>
-        <Typography
-          component="p"
-          variant="overline"
-          sx={{
-            color: "primary.main",
-            fontWeight: 700,
-            letterSpacing: "0.08em",
-            lineHeight: 1.2,
-          }}
-        >
-          Application introduction
-        </Typography>
-
-        <Typography
-          component="h1"
-          variant="h5"
-          sx={{
-            fontWeight: 700,
-            lineHeight: 1.25,
-            color: "text.primary",
-          }}
-        >
-          This application is for {client.branding.acronym}-sponsored group
-          insurance.
-        </Typography>
-
-        <Typography
-          component="p"
-          variant="body2"
-          sx={{
-            color: "text.secondary",
-            maxWidth: 900,
-          }}
-        >
-          The following coverage is available: {coverageList}.
-        </Typography>
-      </Stack>
-    </Box>
-  );
-}
-
 export default function AppHeader({ client }: AppHeaderProps) {
   const [imageError, setImageError] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -224,7 +147,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
   );
 
   const trigger = useScrollTrigger({
-    disableHysteresis: true,
+    // disableHysteresis: true,
     threshold: 8,
   });
 
@@ -293,7 +216,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
             borderBottom: "none",
             boxShadow: "none",
             pt: 2,
-            pb: 2,
+            // pb: 2,
           }}
         >
           <Toolbar
@@ -396,7 +319,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
                       sm: "calc(100% + 48px)",
                       md: "calc(100% + 64px)",
                     },
-                    height: 6,
+                    height: 8,
                     mx: { xs: -2, sm: -3, md: -4 },
                     mt: 2,
                     bgcolor: "rgb(0 0 0 / 6%)",
@@ -406,9 +329,6 @@ export default function AppHeader({ client }: AppHeaderProps) {
                   }}
                 />
 
-                {currentPageId === "membership" && (
-                  <ApplicationIntro client={client} />
-                )}
                 <FormProgress />
               </Box>
             )}
@@ -453,7 +373,8 @@ export default function AppHeader({ client }: AppHeaderProps) {
             sx={{
               p: 2,
               borderRadius: 1,
-              bgcolor: "grey.100",
+
+              bgcolor: "#f5f8fd",
             }}
           >
             <Stack spacing={2}>
@@ -477,7 +398,8 @@ export default function AppHeader({ client }: AppHeaderProps) {
             sx={{
               p: 2,
               borderRadius: 1,
-              bgcolor: "grey.100",
+
+              bgcolor: "#f5f8fd",
             }}
           >
             <Stack spacing={2}>
@@ -542,7 +464,8 @@ export default function AppHeader({ client }: AppHeaderProps) {
             sx={{
               p: 2,
               borderRadius: 1,
-              bgcolor: "grey.100",
+
+              bgcolor: "#f5f8fd",
             }}
           >
             <Stack spacing={1.5}>

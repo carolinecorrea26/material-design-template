@@ -94,7 +94,7 @@ export default function CoverageCatalog({
           defaultExpanded={allCategoriesExpanded || groupIndex === 0}
           disableGutters
           sx={{
-            border: "1px solid",
+            // border: "1px solid",
             borderColor: "divider",
             borderRadius: "12px !important",
             overflow: "hidden",
@@ -108,12 +108,12 @@ export default function CoverageCatalog({
         >
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
-            sx={{ px: 2, py: 0.5, bgcolor: "#f3f4f8" }}
+            sx={{ px: 2, py: 0.5, bgcolor: "#f5f8fd" }}
           >
             <FormSectionTitle icon={category.icon} label={category.label} />
           </AccordionSummary>
 
-          <AccordionDetails sx={{ px: 2, pb: 2, pt: 0, bgcolor: "#f3f4f8" }}>
+          <AccordionDetails sx={{ px: 2, pb: 2, pt: 0, bgcolor: "#f5f8fd" }}>
             <Stack spacing={1.5}>
               {items.map((coverage) => {
                 const checked = selectedCoverageIds.includes(coverage.id);
@@ -161,7 +161,11 @@ export default function CoverageCatalog({
                       >
                         <Typography
                           variant="body2"
-                          sx={{ fontWeight: 600, fontSize: "1rem" }}
+                          sx={{
+                            fontWeight: 700,
+                            fontSize: "14px",
+                            letterSpacing: "-0.25px",
+                          }}
                         >
                           {coverage.name}
                           {coverage.underwritingType === "QD" && (
@@ -178,7 +182,7 @@ export default function CoverageCatalog({
                             sx={{
                               "& .MuiChip-label": {
                                 fontSize: "0.675rem",
-                                fontWeight: 600,
+                                fontWeight: 700,
                               },
                               "& .MuiChip-icon": {
                                 fontSize: "0.875rem",
@@ -228,7 +232,7 @@ export default function CoverageCatalog({
                                 variant="caption"
                                 sx={{
                                   color: "#353b48",
-                                  fontWeight: 600,
+                                  fontWeight: 700,
                                   mb: 0.25,
                                 }}
                               >
@@ -269,7 +273,7 @@ export default function CoverageCatalog({
                                 variant="caption"
                                 sx={{
                                   color: "#353b48",
-                                  fontWeight: 600,
+                                  fontWeight: 700,
                                   mb: 0.25,
                                 }}
                               >

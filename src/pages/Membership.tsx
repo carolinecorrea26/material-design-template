@@ -245,9 +245,8 @@ function HowApplyingWorksDrawerContent() {
     <>
       <Stack spacing={3}>
         <Typography variant="body2" color="text.secondary">
-          The online process is designed to help you move quickly while still
-          giving New York Life the information needed to review your
-          application.
+          This online experience is designed to help you complete your
+          application quickly and easily.
         </Typography>
 
         {APPLYING_STEPS.map((step) => (
@@ -258,7 +257,7 @@ function HowApplyingWorksDrawerContent() {
             alignItems="flex-start"
           >
             <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
                 {step.title}
               </Typography>
               {step.id === 1 ? (
@@ -374,6 +373,47 @@ function HowApplyingWorksDrawerContent() {
   );
 }
 
+function GroupInsuranceDrawerContent({
+  associationName,
+}: {
+  associationName: string;
+}) {
+  return (
+    <Stack spacing={2}>
+      <Typography variant="body2" color="text.secondary">
+        With group insurance through {associationName}, eligible applicants can
+        take advantage of specially negotiated rates made available through the
+        group.
+      </Typography>
+
+      <Box>
+        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
+          Explore available group insurance options
+        </Typography>
+
+        <Stack component="ul" spacing={1} sx={{ m: 0, pl: 2.5 }}>
+          <Typography component="li" variant="body2" color="text.secondary">
+            Group rates may be available to eligible applicants through their
+            association or sponsoring organization.
+          </Typography>
+
+          <Typography component="li" variant="body2" color="text.secondary">
+            Because eligibility and coverage needs can vary, the application
+            helps confirm which products, coverage amounts, and rates are
+            available for each applicant.
+          </Typography>
+
+          <Typography component="li" variant="body2" color="text.secondary">
+            Availability and rates may vary based on state, eligibility,
+            underwriting requirements, coverage selected, and other application
+            details.{" "}
+          </Typography>
+        </Stack>
+      </Box>
+    </Stack>
+  );
+}
+
 export default function Membership() {
   const client = getActiveClient();
   const pageId = "membership";
@@ -404,7 +444,6 @@ export default function Membership() {
 
   const stateOptions = useMemo(() => getStateOptions(), []);
 
-  // Auto-derive state from zip code
   useEffect(() => {
     const derived = deriveStateProvinceFromZipOrPostalCode(
       estimateValues.zipCode,
@@ -431,6 +470,14 @@ export default function Membership() {
         }))
         .filter((group) => group.products.length > 0),
     [coverages],
+  );
+
+  const coverageList = useMemo(
+    () =>
+      productsByCategory
+        .flatMap(({ products }) => products.map((product) => product.name))
+        .join(", "),
+    [productsByCategory],
   );
 
   const selectedProduct = useMemo(
@@ -578,6 +625,14 @@ export default function Membership() {
 
   const helpItems = [
     {
+      id: "group-insurance",
+      label: "What is group insurance?",
+      title: "What is group insurance?",
+      content: (
+        <GroupInsuranceDrawerContent associationName={client.branding.name} />
+      ),
+    },
+    {
       id: "application-process",
       label: "How does applying work?",
       title: "How does applying work?",
@@ -590,8 +645,8 @@ export default function Membership() {
       content: (
         <Stack spacing={2.5}>
           <Typography variant="body2" color="text.secondary">
-            Enter a few details to view available products and estimated
-            coverage amounts.
+            Enter a few details to view available coverage options and estimated
+            costs.
           </Typography>
 
           <TextField
@@ -611,7 +666,7 @@ export default function Membership() {
               }
             }}
             inputProps={{ inputMode: "numeric" }}
-            InputLabelProps={{ shrink: true }}
+            // InputLabelProps={{ shrink: true }}
             error={estimateAttempted && !!estimateValidationErrors.birthday}
             helperText={
               estimateAttempted && estimateValidationErrors.birthday
@@ -1036,72 +1091,6 @@ export default function Membership() {
         </Stack>
       ),
     },
-    {
-      id: "membership-eligibility",
-      label: "How do I know if I'm a member?",
-      title: "How do I know if I'm a member?",
-      content: (
-        <Stack spacing={2}>
-          <Typography variant="body2" color="text.secondary">
-            Membership is required to apply for coverage through{" "}
-            {client.branding.name}. If you&apos;re unsure of your membership
-            status, here are some ways to confirm:
-          </Typography>
-
-          <Box>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-              Check your membership
-            </Typography>
-            <Stack component="ul" spacing={1} sx={{ m: 0, pl: 2.5 }}>
-              <Typography component="li" variant="body2" color="text.secondary">
-                Look for a membership card or welcome email from your
-                association.
-              </Typography>
-              <Typography component="li" variant="body2" color="text.secondary">
-                Check if you receive association newsletters, journals, or other
-                member communications.
-              </Typography>
-              <Typography component="li" variant="body2" color="text.secondary">
-                Log in to your association&apos;s member portal to verify your
-                status.
-              </Typography>
-            </Stack>
-          </Box>
-
-          <Box>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-              Not yet a member?
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              You can apply for membership with your association to become
-              eligible for coverage. Contact {client.branding.name} or visit
-              your association&apos;s website to learn about membership options
-              and how to join.
-            </Typography>
-          </Box>
-
-          {client.support.website && (
-            <Typography variant="body2" color="text.secondary">
-              For more information, visit{" "}
-              <Typography
-                component="a"
-                href={`https://${client.support.website}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{
-                  color: "primary.main",
-                  textDecoration: "underline",
-                  font: "inherit",
-                }}
-              >
-                {client.support.website}
-              </Typography>{" "}
-              or call {client.support.phoneDisplay}.
-            </Typography>
-          )}
-        </Stack>
-      ),
-    },
   ];
 
   return (
@@ -1139,6 +1128,41 @@ export default function Membership() {
 
         return (
           <>
+            <Box
+              sx={{
+                width: "100%",
+                borderRadius: "24px",
+                backgroundColor: "#e7f0ff",
+                borderColor: "#cdd9ec",
+                px: { xs: 2.5, sm: 3 },
+                py: { xs: 2, sm: 2.25 },
+              }}
+            >
+              <Typography
+                variant="subtitle2"
+                component="h2"
+                sx={{
+                  color: "#323a49",
+                  fontWeight: 800,
+                  lineHeight: 1.35,
+                  mb: 0.75,
+                }}
+              >
+                Your coverage options through {client.branding.acronym}
+              </Typography>
+
+              <Typography
+                variant="body2"
+                component="p"
+                sx={{
+                  color: "#5c6572",
+                  lineHeight: 1.5,
+                }}
+              >
+                The following coverage is available: {coverageList}
+              </Typography>
+            </Box>
+
             {membershipField && (
               <FieldRenderer
                 key={membershipField.id}
@@ -1150,8 +1174,36 @@ export default function Membership() {
 
             {showMembershipIneligibleAlert && (
               <Alert severity="warning" sx={{ mt: 2 }}>
-                You must be an active member to continue with this application.
-                <Stack sx={{ mt: 2 }} spacing={2}>
+                <Stack spacing={2}>
+                  <Typography variant="body2">
+                    Membership is required to apply for coverage through{" "}
+                    {client.branding.name}. If you&apos;re unsure of your
+                    membership status, here are some ways to confirm:
+                  </Typography>
+
+                  <Box>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ fontWeight: 700, mb: 1 }}
+                    >
+                      Check your membership
+                    </Typography>
+                    <Stack component="ul" spacing={1} sx={{ m: 0, pl: 2.5 }}>
+                      <Typography component="li" variant="body2">
+                        Look for a membership card or welcome email from your
+                        association.
+                      </Typography>
+                      <Typography component="li" variant="body2">
+                        Check if you receive association newsletters, journals,
+                        or other member communications.
+                      </Typography>
+                      <Typography component="li" variant="body2">
+                        Log in to your association&apos;s member portal to
+                        verify your status.
+                      </Typography>
+                    </Stack>
+                  </Box>
+
                   <Box>
                     <Typography
                       variant="subtitle2"
@@ -1160,9 +1212,11 @@ export default function Membership() {
                       Not yet a member?
                     </Typography>
                     <Typography variant="body2">
-                      Contact {client.branding.name} or visit your
-                      association&apos;s website to learn about membership
-                      options and how to join.
+                      You can apply for membership with your association to
+                      become eligible for coverage. Contact{" "}
+                      {client.branding.name}
+                      or visit your association&apos;s website to learn about
+                      membership options and how to join.
                     </Typography>
                   </Box>
 

@@ -13,6 +13,7 @@ type AppShellProps = {
 
 export default function AppShell({ children }: AppShellProps) {
   const client = getActiveClient();
+
   const [showCookieBanner, setShowCookieBanner] = useState(() => {
     return localStorage.getItem("cookieConsent") !== "accepted";
   });
@@ -30,6 +31,7 @@ export default function AppShell({ children }: AppShellProps) {
         flexDirection: "column",
         // backgroundColor: "#f9fafc",
         // pb: showCookieBanner ? "80px" : 0,
+        backgroundColor: "#f9fafc",
       }}
     >
       <AppHeader client={client} />

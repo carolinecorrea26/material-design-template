@@ -51,9 +51,9 @@ export default function FormHelpDrawer({
           sx={{
             px: 3,
             py: 2,
-            borderBottom: "1px solid",
+            // borderBottom: "1px solid",
             borderColor: "divider",
-            bgcolor: "#f4f8ff",
+            bgcolor: "white",
           }}
         >
           <Typography variant="h6">{title}</Typography>
@@ -66,10 +66,11 @@ export default function FormHelpDrawer({
         <Box
           sx={{
             px: 3,
-            py: 3,
+            pb: 3,
+            pt: 1,
             overflowY: "auto",
             flex: 1,
-            bgcolor: "#f4f8ff",
+            bgcolor: "white",
           }}
         >
           {children}

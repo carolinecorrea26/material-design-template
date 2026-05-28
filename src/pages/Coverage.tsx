@@ -96,7 +96,7 @@ export function CoverageOptionsDrawerContent() {
                   alignItems: "center",
                   justifyContent: "center",
                   textTransform: "none",
-                  fontWeight: 600,
+                  fontWeight: 700,
                   minHeight: 52,
                   minWidth: 56,
                   px: 0,
@@ -136,8 +136,13 @@ export function CoverageOptionsDrawerContent() {
                     <Box key={product.id}>
                       <Stack spacing={0.25}>
                         <Typography
-                          variant="body2"
-                          sx={{ fontWeight: 700, color: "primary.main" }}
+                          // variant="body2"
+                          sx={{
+                            fontWeight: 700,
+                            color: "primary.main",
+                            fontSize: "14px !important",
+                            letterSpacing: "-0.25px",
+                          }}
                         >
                           {product.name}
                           {product.underwritingType === "QD" && (
@@ -313,8 +318,8 @@ export default function Coverage() {
             p: 2,
             mb: 2,
             borderRadius: 2,
-            backgroundColor: "rgba(46, 125, 50, 0.06)",
-            border: "1px solid rgba(46, 125, 50, 0.2)",
+            backgroundColor: "#eef6ee",
+            // border: "1px solid rgba(46, 125, 50, 0.2)",
           }}
         >
           <OfflineBoltIcon color="success" sx={{ mt: 0.25, flexShrink: 0 }} />

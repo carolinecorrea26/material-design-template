@@ -71,8 +71,7 @@ export default function CookieBanner({ onClose }: CookieBannerProps) {
             }}
           >
             New York Life uses cookies to enhance your experience and analyze
-            site performance and traffic. By continuing to use this site, you
-            agree to our use of cookies.{" "}
+            site performance. By continuing, you agree to our use of cookies.{" "}
             <Link
               href="https://www.newyorklife.com/privacy"
               target="_blank"

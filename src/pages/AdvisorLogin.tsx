@@ -56,9 +56,9 @@ function AdvisorLoginFields({
             component="h1"
             sx={{
               // color: "#54637a",
-              fontSize: "1.15rem",
+              fontSize: "1.25rem",
               // textTransform: "uppercase",
-              fontWeight: 600,
+              fontWeight: 800,
               // lineHeight: 1.1,
               // letterSpacing: "0.2px",
               mb: 0.75,

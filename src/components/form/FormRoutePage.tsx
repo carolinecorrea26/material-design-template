@@ -6,13 +6,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import {
-  Alert,
-  Button,
-  CircularProgress,
-  Snackbar,
-  Stack,
-} from "@mui/material";
+import { Alert, Box, Button, CircularProgress, Snackbar } from "@mui/material";
 import { useForm, type FieldErrors } from "react-hook-form";
 import { useNavigate, useLocation } from "react-router-dom";
 import type { PageId } from "../../types/page";
@@ -22,7 +16,7 @@ import {
   getNextFormPageId,
   getPreviousFormPageId,
 } from "../../config/formFlow";
-import { getPageTitle } from "../../config/pages";
+import { getPageSubhead, getPageTitle } from "../../config/pages";
 import { getPageSections } from "../../config/pageSections";
 import type { PageSectionConfig } from "../../config/pageSections/types";
 import type { FieldDefinition } from "../../config/fields/types";
@@ -35,12 +29,16 @@ import FormPage from "./FormPage";
 import FormVerticalStepper, {
   VerticalStepperBreadcrumbs,
 } from "./FormVerticalStepper";
-import { getActiveProgressStepIndex } from "../../config/progressSteps";
+import {
+  getActiveProgressStepIndex,
+  // getActiveProgressSteps,
+} from "../../config/progressSteps";
 import { generateFormDataUpToPage } from "../../dev/utils/generateFormData";
 import FormHelpChips, { type HelpChipItem } from "./FormHelpChips";
 import FormHelpDrawer from "./FormHelpDrawer";
-import FormTransitionSkeleton from "./FormTransitionSkeleton";
-import FormPageError from "./FormPageError";
+import FormTransitionSkeleton, {
+  FormTransitionHeaderSkeleton,
+} from "./FormTransitionSkeleton";
 import {
   getForwardMessages,
   BACK_MESSAGE,
@@ -49,6 +47,7 @@ import {
 import type { ProgressVariant } from "../../types/progress";
 import { readProgressVariant } from "../../utils/progressVariant";
 import { sendAutosaveMockEmail } from "../../utils/mockEmail";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 type FormRouteFieldValue = string | boolean | string[];
 type FormRoutePageFormValues = Record<string, FormRouteFieldValue>;
@@ -81,7 +80,8 @@ type DevFillContext = {
 
 type FormRoutePageProps = {
   pageId: PageId;
-  title?: string;
+  title?: ReactNode;
+  subhead?: ReactNode;
   formMaxWidth?: number | string;
   noBreadcrumb?: boolean;
   noTitle?: boolean;
@@ -232,6 +232,7 @@ function emitPendingBreadcrumbCompletion(pageId: PageId | null) {
 export default function FormRoutePage({
   pageId,
   title,
+  subhead,
   formMaxWidth,
   noBreadcrumb,
   noTitle,
@@ -262,10 +263,12 @@ export default function FormRoutePage({
       const customEvent = event as CustomEvent<ProgressVariant>;
       setProgressVariant(customEvent.detail ?? "vertical-stepper");
     }
+
     window.addEventListener(
       "devtools:progressvariantchange",
       handleVariantChange,
     );
+
     return () => {
       window.removeEventListener(
         "devtools:progressvariantchange",
@@ -350,11 +353,13 @@ export default function FormRoutePage({
         ...formDataUpToPage,
         ...getValues(),
       };
+
       const currentFields = getMergedPageFields(
         pageId,
         currentValues,
         devFillFields,
       );
+
       const devFilledValues = currentFields.reduce<FormRoutePageFormValues>(
         (acc, field) => {
           acc[field.id] = getDevValue(field);
@@ -388,6 +393,7 @@ export default function FormRoutePage({
     }
 
     window.addEventListener("devtools:fillform", handleDevFillForm);
+
     return () =>
       window.removeEventListener("devtools:fillform", handleDevFillForm);
   }, [devFillFields, getValues, onDevFill, pageId, setValue]);
@@ -407,9 +413,9 @@ export default function FormRoutePage({
       transitionTimerRef.current = setTimeout(() => {
         setIsTransitioning(false);
         setTransitionMessage("");
-      }, 1000);
+      }, MESSAGE_DURATION);
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [initialTransitionMessage]);
 
   useEffect(() => {
     return () => {
@@ -423,6 +429,7 @@ export default function FormRoutePage({
       const firstErrorField = document.querySelector(
         '[aria-invalid="true"], .Mui-error input, .Mui-error textarea, .Mui-error .MuiSelect-select',
       );
+
       if (firstErrorField) {
         firstErrorField.scrollIntoView({ behavior: "smooth", block: "center" });
       } else {
@@ -447,6 +454,7 @@ export default function FormRoutePage({
 
     setPageError(undefined);
     setPageValues(formValues);
+
     if (pageId === "membership") {
       void sendAutosaveMockEmail(nextNavigationValues).catch((error) => {
         console.warn("Autosave mock email failed", error);
@@ -462,6 +470,7 @@ export default function FormRoutePage({
 
     const startTransition = () => {
       const [msg1, msg2] = getForwardMessages(pageId);
+
       emitPendingBreadcrumbCompletion(pageId);
       setTransitionMessage(msg1);
       setIsTransitioning(true);
@@ -499,6 +508,7 @@ export default function FormRoutePage({
         ...values,
         ...getValues(),
       };
+
       setPageValues(previousNavigationValues);
 
       emitPendingBreadcrumbCompletion(null);
@@ -513,152 +523,184 @@ export default function FormRoutePage({
     }
   }
 
-  return (() => {
-    const renderProps: FormRouteRenderProps = {
-      control,
-      errors,
-      watchedValues,
-      allFields,
-      pageSections,
-      setValue,
-      trigger,
-    };
+  const renderProps: FormRouteRenderProps = {
+    control,
+    errors,
+    watchedValues,
+    allFields,
+    pageSections,
+    setValue,
+    trigger,
+  };
 
-    const resolvedHelpItems =
-      typeof helpItems === "function"
-        ? helpItems(renderProps)
-        : (helpItems ?? []);
+  const resolvedHelpItems =
+    typeof helpItems === "function"
+      ? helpItems(renderProps)
+      : (helpItems ?? []);
 
-    const isVerticalStepper =
-      progressVariant === "vertical-stepper" &&
-      getActiveProgressStepIndex(pageId, values) >= 0;
+  const activeHelpItem = useMemo(
+    () => resolvedHelpItems.find((item) => item.id === activeHelpId) ?? null,
+    [activeHelpId, resolvedHelpItems],
+  );
 
-    const activeHelpItem = useMemo(
-      () => resolvedHelpItems.find((item) => item.id === activeHelpId) ?? null,
-      [activeHelpId, resolvedHelpItems],
-    );
+  const renderedHelp = typeof help === "function" ? help(renderProps) : help;
 
-    const renderedHelp = typeof help === "function" ? help(renderProps) : help;
+  const renderedHelpSection =
+    renderedHelp || resolvedHelpItems.length ? (
+      <>
+        {renderedHelp}
+        {resolvedHelpItems.length ? (
+          <>
+            <FormHelpChips
+              items={resolvedHelpItems}
+              onSelect={(id) => setActiveHelpId(id)}
+            />
+            <FormHelpDrawer
+              open={Boolean(activeHelpItem)}
+              title={activeHelpItem?.title ?? ""}
+              onClose={() => setActiveHelpId(null)}
+            >
+              {activeHelpItem?.content}
+            </FormHelpDrawer>
+          </>
+        ) : null}
+      </>
+    ) : undefined;
 
-    const renderedHelpSection =
-      renderedHelp || resolvedHelpItems.length ? (
-        <>
-          {renderedHelp}
-          {resolvedHelpItems.length ? (
-            <>
-              <FormHelpChips
-                items={resolvedHelpItems}
-                onSelect={(id) => setActiveHelpId(id)}
-              />
-              <FormHelpDrawer
-                open={Boolean(activeHelpItem)}
-                title={activeHelpItem?.title ?? ""}
-                onClose={() => setActiveHelpId(null)}
-              >
-                {activeHelpItem?.content}
-              </FormHelpDrawer>
-            </>
-          ) : null}
-        </>
-      ) : undefined;
+  // const activeProgressSteps = getActiveProgressSteps(values);
+  const activeProgressStepIndex = getActiveProgressStepIndex(pageId, values);
+  const isVerticalStepper =
+    progressVariant === "vertical-stepper" && activeProgressStepIndex >= 0;
 
-    const formPageElement = (
-      <FormPage
-        title={isTransitioning ? "" : (title ?? getPageTitle(pageId))}
-        error={isTransitioning ? undefined : pageError}
-        help={isTransitioning ? undefined : renderedHelpSection}
-        maxWidth={formMaxWidth}
-        compactTitle={isVerticalStepper}
-        noTitle={noTitle || isVerticalStepper}
-        noContainer={noContainer || isVerticalStepper}
-        onBack={
-          !isVerticalStepper &&
-          !isTransitioning &&
-          getPreviousFormPageId(pageId, watchedValues)
-            ? handleBack
-            : undefined
-        }
-        actions={
-          hideActions ? undefined : (
-            <>
-              <Button
-                type="button"
-                form={`${pageId}-form`}
-                onClick={handleBack}
-                disabled={
-                  isTransitioning ||
-                  !getPreviousFormPageId(pageId, watchedValues)
-                }
-              >
-                Back
-              </Button>
-              <Button
-                type="submit"
-                form={`${pageId}-form`}
-                variant="contained"
-                disabled={isTransitioning}
-              >
-                {isTransitioning ? (
-                  <CircularProgress size={20} color="inherit" />
-                ) : (
-                  "Next"
-                )}
-              </Button>
-            </>
-          )
-        }
-        aboveHeader={
-          isVerticalStepper && !noBreadcrumb ? (
-            <VerticalStepperBreadcrumbs pageId={pageId} />
-          ) : undefined
-        }
-      >
+  const resolvedTitle = title ?? getPageTitle(pageId);
+  const resolvedSubhead = subhead ?? getPageSubhead(pageId);
+
+  const formPageElement = (
+    <FormPage
+      title={resolvedTitle}
+      subhead={isTransitioning ? undefined : resolvedSubhead}
+      error={isTransitioning ? undefined : pageError}
+      help={isTransitioning ? undefined : renderedHelpSection}
+      headerOverride={
+        isTransitioning && !noTitle ? (
+          <FormTransitionHeaderSkeleton statusMessage={transitionMessage} />
+        ) : undefined
+      }
+      maxWidth={isVerticalStepper ? "100%" : formMaxWidth}
+      noTitle={noTitle}
+      noContainer={noContainer || isVerticalStepper}
+      onBack={
+        !isVerticalStepper &&
+        !isTransitioning &&
+        getPreviousFormPageId(pageId, watchedValues)
+          ? handleBack
+          : undefined
+      }
+      actions={
+        hideActions ? undefined : (
+          <>
+            <Button
+              type="button"
+              form={`${pageId}-form`}
+              onClick={handleBack}
+              disabled={
+                isTransitioning || !getPreviousFormPageId(pageId, watchedValues)
+              }
+            >
+              Back
+            </Button>
+            <Button
+              type="submit"
+              form={`${pageId}-form`}
+              variant="contained"
+              disabled={isTransitioning}
+              endIcon={
+                !isTransitioning ? <ArrowForwardRoundedIcon /> : undefined
+              }
+              sx={{
+                fontWeight: 700,
+                paddingX: 3,
+                py: 1.35,
+                boxShadow: "0 8px 18px #0668ff3d",
+                "&:hover": {
+                  boxShadow: "0 8px 18px #0668ff3d",
+                },
+              }}
+            >
+              {isTransitioning ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                "Next"
+              )}
+            </Button>
+          </>
+        )
+      }
+      aboveHeader={
+        isVerticalStepper && !noBreadcrumb ? (
+          <VerticalStepperBreadcrumbs pageId={pageId} />
+        ) : undefined
+      }
+    >
+      <Box>
         {isTransitioning ? (
           <FormTransitionSkeleton statusMessage={transitionMessage} />
         ) : (
-          <Stack spacing={2}>
-            {isVerticalStepper && pageError && (
-              <FormPageError message={pageError} />
-            )}
-            {isVerticalStepper && renderedHelpSection}
-            <form
-              id={`${pageId}-form`}
-              noValidate
-              onSubmit={handleSubmit(onSubmit, onFormError)}
+          <>
+            <Box
+              sx={
+                isVerticalStepper
+                  ? {
+                      width: "100%",
+                      borderRadius: "32px",
+                      backgroundColor: "#ffffff",
+                      boxShadow: "0 18px 40px rgba(52, 59, 72, 0.06)",
+                      px: { xs: 2, sm: 3 },
+                      py: 3,
+                    }
+                  : undefined
+              }
             >
-              {typeof children === "function"
-                ? children(renderProps)
-                : children}
-            </form>
-          </Stack>
+              <form
+                id={`${pageId}-form`}
+                noValidate
+                onSubmit={handleSubmit(onSubmit, onFormError)}
+              >
+                {typeof children === "function"
+                  ? children(renderProps)
+                  : children}
+              </form>
+            </Box>
+          </>
         )}
-      </FormPage>
-    );
+      </Box>
+    </FormPage>
+  );
 
-    return (
-      <>
-        <Snackbar
-          open={showProgressSaved}
-          autoHideDuration={3000}
+  return (
+    <>
+      <Snackbar
+        open={showProgressSaved}
+        autoHideDuration={2000}
+        onClose={() => setShowProgressSaved(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
           onClose={() => setShowProgressSaved(false)}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          severity="success"
+          variant="filled"
         >
-          <Alert
-            onClose={() => setShowProgressSaved(false)}
-            severity="success"
-            variant="filled"
-          >
-            Progress saved!
-          </Alert>
-        </Snackbar>
-        {isVerticalStepper ? (
-          <FormVerticalStepper pageId={pageId}>
-            {formPageElement}
-          </FormVerticalStepper>
-        ) : (
-          formPageElement
-        )}
-      </>
-    );
-  })();
+          Progress saved
+        </Alert>
+      </Snackbar>
+
+      {isVerticalStepper ? (
+        <FormVerticalStepper pageId={pageId}>
+          {formPageElement}
+        </FormVerticalStepper>
+      ) : (
+        formPageElement
+      )}
+    </>
+  );
 }

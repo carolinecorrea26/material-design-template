@@ -314,9 +314,8 @@ function HowApplyingWorksSection({
           What to expect when applying
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          The online process is designed to help you move quickly while still
-          giving New York Life the information needed to review your
-          application.
+          This online experience is designed to help you complete your
+          application quickly and easily.
         </Typography>
       </Stack>
 

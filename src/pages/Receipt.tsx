@@ -405,7 +405,7 @@ export default function Receipt() {
                 display: "grid",
                 placeItems: "center",
                 backgroundColor: "rgba(33, 150, 83, 0.12)",
-                border: "2px solid rgba(33, 150, 83, 0.25)",
+                // border: "2px solid rgba(33, 150, 83, 0.25)",
                 animation: "receipt-ring 750ms ease-out",
                 "@keyframes receipt-ring": {
                   from: { transform: "scale(0.82)", opacity: 0.2 },
@@ -453,18 +453,8 @@ export default function Receipt() {
               }
             }
           >
-            <Stack spacing={2.5}>
-              <Stack spacing={1.5}>
-                <Typography variant="h6" fontWeight={700}>
-                  Your application status
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Below is your decision for your request for coverage based on
-                  the information you provided and the data we securely
-                  reviewed. If you have multiple coverage selections, some may
-                  be conditionally approved while others are sent for review.
-                </Typography>
-
+            <Stack spacing={4.5}>
+              <Box>
                 {hasApplicantSelections ? (
                   <Box
                     sx={{
@@ -497,7 +487,7 @@ export default function Receipt() {
                           textTransform: "uppercase",
                         }}
                       >
-                        Coverage
+                        Request
                       </Typography>
 
                       <Typography
@@ -579,7 +569,7 @@ export default function Receipt() {
                                   color="text.secondary"
                                   sx={{ fontWeight: 600 }}
                                 >
-                                  Requested:{" "}
+                                  {" "}
                                   {formatCurrencyAmount(
                                     coverageAmountRequested,
                                   )}
@@ -635,13 +625,13 @@ export default function Receipt() {
                     application.
                   </Alert>
                 )}
-              </Stack>
+              </Box>
 
-              <Divider />
+              {/* <Divider /> */}
 
               <Stack spacing={1.5}>
                 <Typography variant="h6" fontWeight={700}>
-                  Next steps
+                  What happens next?
                 </Typography>
 
                 <Typography variant="body2" color="text.secondary">
@@ -685,13 +675,14 @@ export default function Receipt() {
 
               {hasSupportInfo && (
                 <>
-                  <Divider />
+                  {/* <Divider /> */}
 
                   <Box
                     sx={{
-                      backgroundColor: "#eef5ff",
-                      border: "1px solid #006fff",
+                      backgroundColor: "#eff4ff63",
+                      border: "1px solid #e6effa",
                       borderRadius: 2,
+                      boxShadow: "0 8px 8px rgb(15 23 42 / 5%)",
                       p: { xs: 2.25, sm: 2.75 },
                       color: "#12233d",
                     }}
