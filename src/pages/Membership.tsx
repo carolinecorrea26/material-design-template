@@ -36,6 +36,8 @@ import {
   formatZipOrPostalCode,
 } from "../utils/zipToStateProvince";
 
+import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
+
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
 type EstimateState = {
@@ -1131,36 +1133,57 @@ export default function Membership() {
             <Box
               sx={{
                 width: "100%",
+                // border: "1px solid",
+                borderColor: "rgba(6, 104, 255, 0.16)",
                 borderRadius: "24px",
-                backgroundColor: "#e7f0ff",
-                borderColor: "#cdd9ec",
-                px: { xs: 2.5, sm: 3 },
-                py: { xs: 2, sm: 2.25 },
+                background: "rgb(231, 240, 255)",
+                px: { xs: 2.25, sm: 3 },
+                py: { xs: 2.25, sm: 2.75 },
               }}
             >
-              <Typography
-                variant="subtitle2"
-                component="h2"
-                sx={{
-                  color: "#323a49",
-                  fontWeight: 800,
-                  lineHeight: 1.35,
-                  mb: 0.75,
-                }}
-              >
-                Your coverage options through {client.branding.acronym}
-              </Typography>
+              <Stack spacing={2}>
+                <Stack direction="row" spacing={1.5} alignItems="flex-start">
+                  <Box
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: "9999px",
+                      display: "grid",
+                      placeItems: "center",
+                      flexShrink: 0,
+                      color: "primary.main",
+                      backgroundColor: "rgba(6, 104, 255, 0.1)",
+                    }}
+                  >
+                    <ShieldOutlinedIcon fontSize="small" />
+                  </Box>
 
-              <Typography
-                variant="body2"
-                component="p"
-                sx={{
-                  color: "#5c6572",
-                  lineHeight: 1.5,
-                }}
-              >
-                The following coverage is available: {coverageList}
-              </Typography>
+                  <Box>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        // color: "#1f2937",
+                        fontWeight: 600,
+                        lineHeight: 1.35,
+                        mb: 0.5,
+                      }}
+                    >
+                      Available {client.branding.acronym}-sponsored coverage
+                    </Typography>
+
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        display: "block",
+                        color: "#5c6572",
+                        lineHeight: 1.45,
+                      }}
+                    >
+                      {coverageList}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </Stack>
             </Box>
 
             {membershipField && (

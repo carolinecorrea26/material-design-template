@@ -10,8 +10,8 @@ export const pages = [
     type: "form",
     title: "Let's get started",
     // subhead: `Tell us your connection to ${clientAcronym} so we can personalize your application.`,
-    subhead: `This application is for ${clientAcronym}-sponsored group insurance.`,
-    navTitle: "Getting started",
+    subhead: `This application is for ${clientAcronym}-sponsored group coverage.`,
+    navTitle: "Start",
     groupId: "get-started",
   },
   {
@@ -28,9 +28,9 @@ export const pages = [
     id: "coverage",
     path: "/coverage",
     type: "form",
-    title: "Choose your coverage",
+    title: "Your coverage options",
     subhead:
-      "Select the insurance products you want to include in your application.",
+      "Explore the coverage options available to you based on your eligibility.",
     navTitle: "Add coverage",
     groupId: "coverage",
   },
@@ -40,7 +40,7 @@ export const pages = [
     type: "form",
     title: "Some follow-up questions",
     subhead: "We need a few more details based on the coverage you selected.",
-    navTitle: "Coverage questions",
+    navTitle: "Follow-up questions",
     groupId: "coverage",
   },
   {
@@ -48,8 +48,9 @@ export const pages = [
     path: "/coverage-options",
     type: "form",
     title: "Tailor your coverage",
-    subhead: "Add optional features or riders to customize your protection.",
-    navTitle: "Coverage options",
+    subhead:
+      "Customize your coverage to enhance your protection based on your needs.",
+    navTitle: "Customize coverage",
     groupId: "coverage",
   },
   {
