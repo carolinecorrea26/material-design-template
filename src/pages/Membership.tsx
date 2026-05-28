@@ -1242,7 +1242,7 @@ export default function Membership() {
                           verticalAlign: "baseline",
                         }}
                       >
-                        View products
+                        View coverage details
                       </Link>
                     ) : null}
                   </Typography>
