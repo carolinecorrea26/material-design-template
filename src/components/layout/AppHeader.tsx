@@ -319,10 +319,10 @@ export default function AppHeader({ client }: AppHeaderProps) {
                       sm: "calc(100% + 48px)",
                       md: "calc(100% + 64px)",
                     },
-                    height: 8,
+                    // height: 8,
                     mx: { xs: -2, sm: -3, md: -4 },
                     mt: 2,
-                    bgcolor: "rgb(0 0 0 / 6%)",
+                    // bgcolor: "rgb(0 0 0 / 6%)",
                     "& .MuiLinearProgress-bar": {
                       bgcolor: "primary.main",
                     },

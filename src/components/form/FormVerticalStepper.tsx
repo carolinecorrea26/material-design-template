@@ -9,7 +9,7 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
-import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
+import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
 import { useNavigate } from "react-router-dom";
 import {
   getActiveProgressSteps,
@@ -135,7 +135,8 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
         mb: 1,
         "& .MuiBreadcrumbs-separator": {
           mx: { xs: 1, lg: 1 },
-          color: "#62748e",
+          color: "#94a3b8",
+          cursor: "default",
         },
       }}
     >
@@ -154,7 +155,7 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
             <Link
               key={entry.id}
               component="button"
-              underline="hover"
+              underline="none"
               onClick={() => {
                 navigate(`/${entry.navigateTo}`);
               }}
@@ -167,10 +168,15 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
                 color: "primary.main",
                 cursor: "pointer",
                 paddingBottom: 0.25,
+                textDecoration: "none",
+                letterSpacing: "-0.25px",
+                "&:hover": {
+                  textDecoration: "none",
+                },
               }}
             >
               {entry.label}
-              <DoneRoundedIcon
+              <TaskAltRoundedIcon
                 sx={{
                   fontSize: 14,
                   color: "success.main",
@@ -190,7 +196,8 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
                 fontWeight: 700,
                 fontSize: "0.75rem",
                 color: "primary.main",
-                letterSpacing: "-0.2px",
+                letterSpacing: "-0.25px",
+                cursor: "default",
               }}
             >
               {entry.label}
@@ -205,8 +212,9 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
             sx={{
               fontSize: "0.75rem",
               fontWeight: 500,
-              color: "#62748e",
-              letterSpacing: "-0.2px",
+              color: "#94a3b8",
+              letterSpacing: "-0.25px",
+              cursor: "default",
             }}
           >
             {entry.label}
@@ -325,6 +333,7 @@ export default function FormVerticalStepper({
                       sx={{
                         fontWeight: isActive ? 700 : 500,
                         fontSize: "1rem",
+                        letterSpacing: "-0.25px",
                         color: stepLabelColor,
                       }}
                     >

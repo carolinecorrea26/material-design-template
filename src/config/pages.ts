@@ -10,7 +10,7 @@ export const pages = [
     type: "form",
     title: "Let's get started",
     // subhead: `Tell us your connection to ${clientAcronym} so we can personalize your application.`,
-    subhead: `This application is for ${clientAcronym}-sponsored group coverage.`,
+    subhead: `This application is for ${clientAcronym}-sponsored group insurance.`,
     navTitle: "Start",
     groupId: "get-started",
   },

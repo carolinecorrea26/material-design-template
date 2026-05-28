@@ -617,7 +617,7 @@ export default function FormRoutePage({
               endIcon={
                 !isTransitioning ? <ArrowForwardRoundedIcon /> : undefined
               }
-              sx={{
+              sx={(theme) => ({
                 fontWeight: 700,
                 paddingX: 3,
                 py: 1.35,
@@ -625,7 +625,13 @@ export default function FormRoutePage({
                 "&:hover": {
                   boxShadow: "0 8px 18px #0668ff3d",
                 },
-              }}
+                "&.Mui-disabled": {
+                  color: theme.palette.primary.contrastText,
+                  backgroundColor: theme.palette.primary.main,
+                  boxShadow: "0 8px 18px #0668ff3d",
+                  opacity: 1,
+                },
+              })}
             >
               {isTransitioning ? (
                 <CircularProgress size={20} color="inherit" />
@@ -654,9 +660,10 @@ export default function FormRoutePage({
                       width: "100%",
                       borderRadius: "32px",
                       backgroundColor: "#ffffff",
-                      boxShadow: "0 18px 40px rgba(52, 59, 72, 0.06)",
+                      boxShadow: "0 8px 16px rgba(52, 59, 72, 0.06)",
                       px: { xs: 2, sm: 3 },
                       py: 3,
+                      mb: 1,
                     }
                   : undefined
               }

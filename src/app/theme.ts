@@ -77,6 +77,14 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiLinearProgress: {
+      styleOverrides: {
+        root: {
+          height: 4,
+          backgroundColor: "rgb(241 245 249)",
+        },
+      },
+    },
     MuiBadge: {
       styleOverrides: {
         badge: {

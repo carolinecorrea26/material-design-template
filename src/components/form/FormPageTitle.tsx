@@ -18,7 +18,7 @@ const compactTitleSx: SxProps<Theme> = {
   fontWeight: 700,
   fontSize: { xs: "1.15rem", md: "1.35rem" },
   lineHeight: 1.3,
-  letterSpacing: "-0.02em",
+  letterSpacing: "-0.025em",
 };
 
 export default function FormPageTitle({

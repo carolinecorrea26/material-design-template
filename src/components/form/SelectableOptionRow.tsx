@@ -23,7 +23,7 @@ export default function SelectableOptionRow({
         width: "100%",
         border: "1px solid",
         borderColor: "divider",
-        borderRadius: "8px",
+        borderRadius: "16px",
         bgcolor: "white",
         cursor: "pointer",
         transition: "background-color 0.2s ease, border-color 0.2s ease",

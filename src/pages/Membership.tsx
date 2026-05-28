@@ -18,7 +18,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
+import GppGoodRoundedIcon from "@mui/icons-material/GppGoodRounded";
 import { getActiveClient } from "../client/getActiveClient";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { getPageTitle } from "../config/pages";
@@ -1187,65 +1187,73 @@ export default function Membership() {
                 py: { xs: 1.5, sm: 1.75 },
               }}
             >
-              <Stack direction="row" spacing={1.5} alignItems="center">
+              <Stack
+                direction="row"
+                spacing={{ xs: 0, sm: 2 }}
+                alignItems="center"
+              >
                 <Box
                   sx={{
                     width: 36,
                     height: 36,
                     borderRadius: "9999px",
-                    display: "grid",
+                    display: { xs: "none", sm: "grid" },
                     placeItems: "center",
                     flexShrink: 0,
                     color: "primary.main",
                     backgroundColor: "rgba(6, 104, 255, 0.1)",
                   }}
                 >
-                  <ShieldOutlinedIcon fontSize="small" />
+                  <GppGoodRoundedIcon fontSize="medium" />
                 </Box>
 
                 <Box sx={{ minWidth: 0, flex: 1 }}>
                   <Typography
                     variant="subtitle1"
                     sx={{
-                      fontWeight: 600,
+                      fontWeight: 700,
                       lineHeight: 1.25,
                       mb: 0.25,
                     }}
                   >
-                    Available {client.branding.acronym}-sponsored coverage
+                    Group insurance through {client.branding.acronym}
                   </Typography>
 
                   <Typography
-                    variant="body2"
+                    variant="caption"
                     sx={{
                       color: "#5c6572",
                       lineHeight: 1.45,
+                      display: "block",
                     }}
                   >
-                    {coverageCategorySummary || "Coverage options"}{" "}
-                    {productsByCategory.length > 0 ? (
-                      <Link
-                        component="button"
-                        type="button"
-                        underline="hover"
-                        onClick={() => setIsCoverageProductsDrawerOpen(true)}
-                        sx={{
-                          ml: 0.5,
-                          color: "primary.main",
-                          font: "inherit",
-                          fontWeight: 600,
-                          textUnderlineOffset: "0.15em",
-                          cursor: "pointer",
-                          border: 0,
-                          background: "transparent",
-                          p: 0,
-                          verticalAlign: "baseline",
-                        }}
-                      >
-                        View coverage details
-                      </Link>
-                    ) : null}
+                    {coverageCategorySummary || "Coverage options"}
                   </Typography>
+
+                  {productsByCategory.length > 0 ? (
+                    <Link
+                      component="button"
+                      type="button"
+                      underline="hover"
+                      onClick={() => setIsCoverageProductsDrawerOpen(true)}
+                      sx={{
+                        display: "inline-block",
+                        mt: 0.75,
+                        color: "primary.main",
+                        font: "inherit",
+                        fontSize: "0.75rem",
+                        lineHeight: 1.45,
+                        fontWeight: 600,
+                        textUnderlineOffset: "0.15em",
+                        cursor: "pointer",
+                        border: 0,
+                        background: "transparent",
+                        p: 0,
+                      }}
+                    >
+                      View coverage details
+                    </Link>
+                  ) : null}
                 </Box>
               </Stack>
             </Box>
