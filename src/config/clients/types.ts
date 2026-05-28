@@ -63,6 +63,13 @@ export type ClientCoverageOverrides = {
   underwritingType?: "FUW" | "GI" | "NA" | "QD" | "SI";
 };
 
+export type EstimatedRateFrequency = "monthly" | "annual";
+
+export type ClientEstimatedRateDisplay = {
+  showFrequencyToggle?: boolean;
+  defaultFrequency?: EstimatedRateFrequency;
+};
+
 export type ClientCoverages = {
   categories?: CoverageCategoryId[];
   enabled?: CoverageId[];
@@ -71,6 +78,7 @@ export type ClientCoverages = {
   overrides?: Partial<Record<CoverageId, ClientCoverageOverrides>>;
   /** When true, all coverage category accordions are expanded by default. Otherwise only the first is expanded. */
   allCategoriesExpanded?: boolean;
+  estimatedRateDisplay?: ClientEstimatedRateDisplay;
 };
 
 export type ClientFields = Partial<

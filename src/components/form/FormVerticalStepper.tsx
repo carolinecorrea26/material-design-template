@@ -24,7 +24,7 @@ import { getPageNavTitle } from "../../config/pages";
 const PENDING_BREADCRUMB_COMPLETION_EVENT = "form:pendingbreadcrumbcompletion";
 
 export const STEP_LABELS: Record<string, string> = {
-  "getting-started": "Start your application",
+  "getting-started": "Getting started",
   "coverage-options": "Choose your coverage",
   "about-applicant": "Your application profile",
   "application-review": "Review your application",

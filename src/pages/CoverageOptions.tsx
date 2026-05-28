@@ -11,9 +11,11 @@ import {
   MenuItem,
   Select,
   Stack,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import FormRoutePage from "../components/form/FormRoutePage";
 import FormSectionTitle from "../components/form/FormSectionTitle";
 import FormHelpDrawer from "../components/form/FormHelpDrawer";
@@ -21,10 +23,12 @@ import QuickDecisionDrawerContent from "../components/common/QuickDecisionDrawer
 import { QuickDecisionMark } from "../components/common/QuickDecisionDrawerContent";
 import QuickDecisionIndicator from "../components/common/QuickDecisionIndicator";
 import SelectableOptionCard from "../components/form/SelectableOptionCard";
+import { getActiveClient } from "../client/getActiveClient";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
 import type { CoverageCategoryId } from "../config/coverages/types";
 import type { CoverageApplicantId } from "../config/coverages/types";
+import type { EstimatedRateFrequency } from "../config/clients/types";
 import { coverageApplicantToSection } from "../config/formSectionTitle";
 import { useApplicationForm } from "../state/ApplicationFormContext";
 
@@ -94,6 +98,62 @@ function formatUSD(value: number, decimals = 2): string {
 }
 
 const RATE_CALCULATION_DELAY_MS = 900;
+
+const RateFrequencySwitch = styled(Switch)(({ theme }) => ({
+  width: 64,
+  height: 34,
+  padding: 7,
+  "& .MuiSwitch-switchBase": {
+    margin: 1,
+    padding: 0,
+    transform: "translateX(6px)",
+    "&.Mui-checked": {
+      color: "#fff",
+      transform: "translateX(30px)",
+      "& .MuiSwitch-thumb:before": {
+        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="18" width="18" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+          "#fff",
+        )}" d="M7 2v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-2V2h-2v2H9V2H7Zm12 18H5V10h14v10Z"/></svg>')`,
+      },
+      "& + .MuiSwitch-track": {
+        opacity: 1,
+        backgroundColor: theme.palette.primary.main,
+      },
+    },
+  },
+  "& .MuiSwitch-thumb": {
+    backgroundColor: theme.palette.primary.main,
+    width: 32,
+    height: 32,
+    "&::before": {
+      content: "''",
+      position: "absolute",
+      width: "100%",
+      height: "100%",
+      left: 0,
+      top: 0,
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="18" width="18" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        "#fff",
+      )}" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2Zm0 16H5V8h14v11Z"/></svg>')`,
+    },
+  },
+  "& .MuiSwitch-track": {
+    opacity: 1,
+    borderRadius: 20 / 2,
+    backgroundColor: "#cdd9ec",
+  },
+}));
+
+function getDisplayedPremium(
+  monthlyPremium: number,
+  rateFrequency: EstimatedRateFrequency,
+): number {
+  return rateFrequency === "annual"
+    ? Math.round(monthlyPremium * 12 * 100) / 100
+    : monthlyPremium;
+}
 
 export function CoverageNeedsCalculator() {
   const [annualIncome, setAnnualIncome] = useState("");
@@ -280,6 +340,7 @@ function resolveSpouseCoverageNote(coverage: {
 
 export default function CoverageOptions() {
   const pageId = "coverage-options";
+  const activeClient = useMemo(() => getActiveClient(), []);
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const { values, setPageValues } = useApplicationForm();
   const [qdDrawerOpen, setQdDrawerOpen] = useState(false);
@@ -287,6 +348,13 @@ export default function CoverageOptions() {
     () => new Set(),
   );
   const rateCalculationTimersRef = useRef<Record<string, number>>({});
+  const rateDisplayConfig = activeClient.coverages.estimatedRateDisplay;
+  const showRateFrequencyToggle =
+    rateDisplayConfig?.showFrequencyToggle === true;
+  const defaultRateFrequency: EstimatedRateFrequency =
+    rateDisplayConfig?.defaultFrequency ?? "monthly";
+  const [rateFrequency, setRateFrequency] =
+    useState<EstimatedRateFrequency>(defaultRateFrequency);
 
   const selectedCoverageIds = Array.isArray(values.coverageSelections)
     ? values.coverageSelections
@@ -378,6 +446,22 @@ export default function CoverageOptions() {
     },
     [beginRateCalculation, getVisibleApplicants, selectedCoverages],
   );
+
+  function handleRateFrequencyChange(
+    nextRateFrequency: EstimatedRateFrequency,
+  ) {
+    if (nextRateFrequency === rateFrequency) return;
+
+    setRateFrequency(nextRateFrequency);
+
+    selectedCoverages.forEach((coverage) => {
+      getVisibleApplicants(coverage.applicants, coverage.id).forEach(
+        (applicantId) => {
+          beginRateCalculation(`${coverage.id}:${applicantId}`);
+        },
+      );
+    });
+  }
 
   useEffect(() => {
     return () => {
@@ -831,6 +915,12 @@ export default function CoverageOptions() {
                           coverage,
                           applicantId,
                         );
+                        const displayedPremium = getDisplayedPremium(
+                          premium,
+                          rateFrequency,
+                        );
+                        const rateSuffix =
+                          rateFrequency === "annual" ? "/yr" : "/mo";
 
                         const showApplicantLabel = visibleApplicants.length > 1;
 
@@ -1128,79 +1218,71 @@ export default function CoverageOptions() {
 
                                 {/* Estimated cost — right-aligned at end of applicant section */}
                                 {selectedAmount > 0 && (
-                                  <Box
-                                    sx={{
-                                      // display: "flex",
-                                      // justifyContent: "flex-end",
-                                      mt: 1,
-                                      // pb: 2,
-                                      // borderBottom: "1px solid",
-                                      // borderColor: "rgba(0, 0, 0, 0.12)",
-                                      padding: 2,
-                                      borderRadius: 2,
-                                      backgroundColor: "#f7faff",
-                                    }}
-                                  >
-                                    {isCalculatingRate ? (
-                                      <Stack
-                                        direction="row"
-                                        spacing={1}
-                                        alignItems="center"
-                                        sx={{ color: "text.secondary" }}
-                                      >
-                                        <CircularProgress
-                                          size={18}
-                                          thickness={4}
-                                        />
-                                        <Typography variant="body2">
-                                          Calculating...
+                                  <Box sx={{ mt: 1 }}>
+                                    <Stack
+                                      direction={{ xs: "column", sm: "row" }}
+                                      spacing={1.5}
+                                      justifyContent="space-between"
+                                      alignItems={{
+                                        xs: "flex-start",
+                                        sm: "flex-start",
+                                      }}
+                                    >
+                                      <Stack direction="column" spacing={0.5}>
+                                        <Typography
+                                          variant="body2"
+                                          sx={{
+                                            color: "text.primary",
+                                            fontWeight: 600,
+                                            fontSize: 12,
+                                          }}
+                                        >
+                                          Estimated cost<sup>1</sup>{" "}
+                                        </Typography>
+                                        <Typography
+                                          variant="body2"
+                                          sx={{
+                                            fontSize: 10,
+                                            color: "text.secondary",
+                                          }}
+                                        >
+                                          {coverage.name}
                                         </Typography>
                                       </Stack>
-                                    ) : (
+
                                       <Stack
-                                        direction="row"
-                                        spacing={1}
-                                        justifyContent="space-between"
-                                        alignItems="center"
+                                        spacing={0.75}
+                                        alignItems={{
+                                          xs: "flex-start",
+                                          sm: "flex-end",
+                                        }}
+                                        sx={{
+                                          alignSelf: {
+                                            xs: "stretch",
+                                            sm: "auto",
+                                          },
+                                          ml: { sm: "auto" },
+                                        }}
                                       >
-                                        <Stack
-                                          direction="column"
-                                          spacing={0.5}
-                                          // alignItems="center"
-                                        >
-                                          <Typography
-                                            variant="body2"
+                                        {isCalculatingRate ? (
+                                          <Stack
+                                            direction="row"
+                                            spacing={1}
+                                            alignItems="center"
                                             sx={{
-                                              color: "text.primary",
-                                              fontWeight: 600,
-                                              fontSize: 12,
-                                            }}
-                                          >
-                                            Estimated cost<sup>1</sup>{" "}
-                                          </Typography>
-                                          <Typography
-                                            variant="body2"
-                                            sx={{
-                                              fontSize: 10,
+                                              minHeight: { xs: 36, md: 48 },
                                               color: "text.secondary",
                                             }}
                                           >
-                                            {coverage.name}
-                                          </Typography>
-                                        </Stack>
-                                        <Typography
-                                          component="span"
-                                          variant="body2"
-                                          sx={{
-                                            color: "primary.main",
-                                            fontWeight: 800,
-                                            fontSize: {
-                                              xs: "1.5rem",
-                                              md: "2rem",
-                                            },
-                                          }}
-                                        >
-                                          {formatUSD(premium)}
+                                            <CircularProgress
+                                              size={18}
+                                              thickness={4}
+                                            />
+                                            <Typography variant="body2">
+                                              Calculating...
+                                            </Typography>
+                                          </Stack>
+                                        ) : (
                                           <Typography
                                             component="span"
                                             variant="body2"
@@ -1208,16 +1290,82 @@ export default function CoverageOptions() {
                                               color: "primary.main",
                                               fontWeight: 800,
                                               fontSize: {
-                                                xs: "1rem",
-                                                sm: "1.25rem",
+                                                xs: "1.5rem",
+                                                md: "2rem",
                                               },
+                                              whiteSpace: "nowrap",
                                             }}
                                           >
-                                            /mo
+                                            {formatUSD(displayedPremium)}
+                                            <Typography
+                                              component="span"
+                                              variant="body2"
+                                              sx={{
+                                                color: "primary.main",
+                                                fontWeight: 800,
+                                                fontSize: {
+                                                  xs: "1rem",
+                                                  sm: "1.25rem",
+                                                },
+                                              }}
+                                            >
+                                              {rateSuffix}
+                                            </Typography>
                                           </Typography>
-                                        </Typography>
+                                        )}
+
+                                        {showRateFrequencyToggle && (
+                                          <Stack
+                                            direction="row"
+                                            spacing={0.75}
+                                            alignItems="center"
+                                          >
+                                            <Typography
+                                              variant="caption"
+                                              sx={{
+                                                color:
+                                                  rateFrequency === "monthly"
+                                                    ? "primary.main"
+                                                    : "text.secondary",
+                                                fontWeight: 700,
+                                              }}
+                                            >
+                                              Monthly
+                                            </Typography>
+                                            <RateFrequencySwitch
+                                              checked={
+                                                rateFrequency === "annual"
+                                              }
+                                              onChange={(event) =>
+                                                handleRateFrequencyChange(
+                                                  event.target.checked
+                                                    ? "annual"
+                                                    : "monthly",
+                                                )
+                                              }
+                                              slotProps={{
+                                                input: {
+                                                  "aria-label":
+                                                    "Toggle estimated cost between monthly and annual",
+                                                },
+                                              }}
+                                            />
+                                            <Typography
+                                              variant="caption"
+                                              sx={{
+                                                color:
+                                                  rateFrequency === "annual"
+                                                    ? "primary.main"
+                                                    : "text.secondary",
+                                                fontWeight: 700,
+                                              }}
+                                            >
+                                              Annual
+                                            </Typography>
+                                          </Stack>
+                                        )}
                                       </Stack>
-                                    )}
+                                    </Stack>
                                   </Box>
                                 )}
 

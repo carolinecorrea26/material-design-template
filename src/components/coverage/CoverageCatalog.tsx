@@ -197,19 +197,19 @@ export default function CoverageCatalog({
                       </Typography>
 
                       {!hasDependents && (
-                        <Stack sx={{ mt: 0.5, width: "100%" }}>
+                        <Stack
+                          sx={{ mt: 0.5, width: "100%" }}
+                          direction={"row"}
+                          alignItems={"center"}
+                          justifyContent={"start"}
+                          gap={1}
+                        >
                           <Typography
-                            variant="caption"
-                            sx={{ color: "text.secondary" }}
+                            component="span"
+                            variant="h6"
+                            sx={{ color: "primary.main", fontWeight: 700 }}
                           >
-                            Available coverage:{" "}
-                            <Typography
-                              component="span"
-                              variant="caption"
-                              sx={{ color: "primary.main", fontWeight: 700 }}
-                            >
-                              {coverageText ?? "-"}
-                            </Typography>
+                            {coverageText ?? "-"}
                           </Typography>
                         </Stack>
                       )}

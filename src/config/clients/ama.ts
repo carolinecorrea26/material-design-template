@@ -68,6 +68,10 @@ export const amaClient: ClientConfig = {
         featured: true,
       },
     },
+    estimatedRateDisplay: {
+      showFrequencyToggle: true,
+      defaultFrequency: "annual",
+    },
   },
   fields: {},
   content: {},

@@ -11,7 +11,7 @@ export const pages = [
     title: "Let's get started",
     // subhead: `Tell us your connection to ${clientAcronym} so we can personalize your application.`,
     subhead: `This application is for ${clientAcronym}-sponsored group insurance.`,
-    navTitle: "Membership",
+    navTitle: "Getting started",
     groupId: "get-started",
   },
   {
