@@ -7,6 +7,7 @@ import {
   FormHelperText,
   FormLabel,
   InputLabel,
+  Link,
   ListSubheader,
   MenuItem,
   Radio,
@@ -17,6 +18,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
+import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import { getActiveClient } from "../client/getActiveClient";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { getPageTitle } from "../config/pages";
@@ -36,8 +38,6 @@ import {
   formatZipOrPostalCode,
 } from "../utils/zipToStateProvince";
 
-import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
-
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
 type EstimateState = {
@@ -53,6 +53,11 @@ type EstimateState = {
   hoursPerWeek: string;
   monthlyExpenses: string;
   responsibilityPct: string;
+};
+
+type CoverageProductGroup = {
+  category: (typeof coverageCategories)[number];
+  products: CoverageDefinition[];
 };
 
 function formatUSD(value: number, decimals = 2): string {
@@ -416,6 +421,52 @@ function GroupInsuranceDrawerContent({
   );
 }
 
+function CoverageProductsDrawerContent({
+  productsByCategory,
+}: {
+  productsByCategory: CoverageProductGroup[];
+}) {
+  return (
+    <Stack spacing={2.25}>
+      <Typography variant="body2" color="text.secondary">
+        These products are available through this group. You can review and
+        select coverage options later in the application.
+      </Typography>
+
+      <Stack spacing={2}>
+        {productsByCategory.map(({ category, products }) => (
+          <Box key={category.id}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.75 }}>
+              {category.label}
+            </Typography>
+
+            <Stack spacing={0.75}>
+              {products.map((product) => (
+                <Link
+                  key={product.id}
+                  href="#"
+                  underline="hover"
+                  onClick={(event) => event.preventDefault()}
+                  sx={{
+                    width: "fit-content",
+                    color: "primary.main",
+                    fontSize: "0.875rem",
+                    fontWeight: 600,
+                    lineHeight: 1.35,
+                    textUnderlineOffset: "0.15em",
+                  }}
+                >
+                  {product.name}
+                </Link>
+              ))}
+            </Stack>
+          </Box>
+        ))}
+      </Stack>
+    </Stack>
+  );
+}
+
 export default function Membership() {
   const client = getActiveClient();
   const pageId = "membership";
@@ -437,6 +488,8 @@ export default function Membership() {
   });
   const [estimateAttempted, setEstimateAttempted] = useState(false);
   const [showEstimateProducts, setShowEstimateProducts] = useState(false);
+  const [isCoverageProductsDrawerOpen, setIsCoverageProductsDrawerOpen] =
+    useState(false);
   const [estimateAmountsByProductId, setEstimateAmountsByProductId] = useState<
     Record<string, number>
   >({});
@@ -474,13 +527,9 @@ export default function Membership() {
     [coverages],
   );
 
-  const coverageList = useMemo(
-    () =>
-      productsByCategory
-        .flatMap(({ products }) => products.map((product) => product.name))
-        .join(", "),
-    [productsByCategory],
-  );
+  const coverageCategorySummary = productsByCategory
+    .map(({ category }) => category.label)
+    .join(" · ");
 
   const selectedProduct = useMemo(
     () =>
@@ -668,7 +717,6 @@ export default function Membership() {
               }
             }}
             inputProps={{ inputMode: "numeric" }}
-            // InputLabelProps={{ shrink: true }}
             error={estimateAttempted && !!estimateValidationErrors.birthday}
             helperText={
               estimateAttempted && estimateValidationErrors.birthday
@@ -1133,58 +1181,84 @@ export default function Membership() {
             <Box
               sx={{
                 width: "100%",
-                // border: "1px solid",
-                borderColor: "rgba(6, 104, 255, 0.16)",
-                borderRadius: "24px",
+                borderRadius: "22px",
                 background: "rgb(231, 240, 255)",
-                px: { xs: 2.25, sm: 3 },
-                py: { xs: 2.25, sm: 2.75 },
+                px: { xs: 2, sm: 2.5 },
+                py: { xs: 1.5, sm: 1.75 },
               }}
             >
-              <Stack spacing={2}>
-                <Stack direction="row" spacing={1.5} alignItems="flex-start">
-                  <Box
+              <Stack direction="row" spacing={1.5} alignItems="center">
+                <Box
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: "9999px",
+                    display: "grid",
+                    placeItems: "center",
+                    flexShrink: 0,
+                    color: "primary.main",
+                    backgroundColor: "rgba(6, 104, 255, 0.1)",
+                  }}
+                >
+                  <ShieldOutlinedIcon fontSize="small" />
+                </Box>
+
+                <Box sx={{ minWidth: 0, flex: 1 }}>
+                  <Typography
+                    variant="subtitle1"
                     sx={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: "9999px",
-                      display: "grid",
-                      placeItems: "center",
-                      flexShrink: 0,
-                      color: "primary.main",
-                      backgroundColor: "rgba(6, 104, 255, 0.1)",
+                      fontWeight: 600,
+                      lineHeight: 1.25,
+                      mb: 0.25,
                     }}
                   >
-                    <ShieldOutlinedIcon fontSize="small" />
-                  </Box>
+                    Available {client.branding.acronym}-sponsored coverage
+                  </Typography>
 
-                  <Box>
-                    <Typography
-                      variant="subtitle1"
-                      sx={{
-                        // color: "#1f2937",
-                        fontWeight: 600,
-                        lineHeight: 1.35,
-                        mb: 0.5,
-                      }}
-                    >
-                      Available {client.branding.acronym}-sponsored coverage
-                    </Typography>
-
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        display: "block",
-                        color: "#5c6572",
-                        lineHeight: 1.45,
-                      }}
-                    >
-                      {coverageList}
-                    </Typography>
-                  </Box>
-                </Stack>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#5c6572",
+                      lineHeight: 1.45,
+                    }}
+                  >
+                    {coverageCategorySummary || "Coverage options"}{" "}
+                    {productsByCategory.length > 0 ? (
+                      <Link
+                        component="button"
+                        type="button"
+                        underline="hover"
+                        onClick={() => setIsCoverageProductsDrawerOpen(true)}
+                        sx={{
+                          ml: 0.5,
+                          color: "primary.main",
+                          font: "inherit",
+                          fontWeight: 600,
+                          textUnderlineOffset: "0.15em",
+                          cursor: "pointer",
+                          border: 0,
+                          background: "transparent",
+                          p: 0,
+                          verticalAlign: "baseline",
+                        }}
+                      >
+                        View products
+                      </Link>
+                    ) : null}
+                  </Typography>
+                </Box>
               </Stack>
             </Box>
+
+            <FormHelpDrawer
+              open={isCoverageProductsDrawerOpen}
+              title="Available coverage products"
+              onClose={() => setIsCoverageProductsDrawerOpen(false)}
+            >
+              <CoverageProductsDrawerContent
+                productsByCategory={productsByCategory}
+              />
+            </FormHelpDrawer>
 
             {membershipField && (
               <FieldRenderer
