@@ -710,7 +710,7 @@ export default function CoverageOptions() {
                             // variant="body2"
                             sx={{
                               fontWeight: 700,
-                              fontSize: "14px !important",
+                              fontSize: "16px !important",
                               letterSpacing: "-0.25px",
                             }}
                           >

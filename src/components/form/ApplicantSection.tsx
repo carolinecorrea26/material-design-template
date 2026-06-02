@@ -27,11 +27,10 @@ export default function ApplicantSection({
       <Box
         sx={{
           background: "rgb(234 242 255 / 84%)",
-          padding: "0.5rem 1.25rem",
-          borderRadius: "20px 20px 4px 4px",
+          padding: "0rem 1.25rem",
+          borderRadius: "8px",
           display: "flex",
           justifyContent: "center",
-          mb: 1.5,
         }}
       >
         <Typography

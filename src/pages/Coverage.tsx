@@ -4,14 +4,12 @@ import { Box, Typography } from "@mui/material";
 import { colors } from "../app/theme";
 import CoverageCatalog from "../components/coverage/CoverageCatalog";
 import FormRoutePage from "../components/form/FormRoutePage";
-import FormPageHelp from "../components/form/FormPageHelp";
 import FormHelpDrawer from "../components/form/FormHelpDrawer";
 import QuickDecisionDrawerContent from "../components/common/QuickDecisionDrawerContent";
 import { QuickDecisionMark } from "../components/common/QuickDecisionDrawerContent";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { useApplicationForm } from "../state/ApplicationFormContext";
 import type { CoverageApplicantId } from "../config/coverages/types";
-import { coverageOptionsAvailableHelpItem } from "../content/helpContent";
 
 export default function Coverage() {
   const pageId = "coverage";
@@ -138,14 +136,8 @@ export default function Coverage() {
     return undefined;
   }
 
-  const helpItems = [coverageOptionsAvailableHelpItem];
-
   return (
-    <FormRoutePage
-      pageId={pageId}
-      validate={validate}
-      help={<FormPageHelp items={helpItems} />}
-    >
+    <FormRoutePage pageId={pageId} validate={validate}>
       {hasQdProduct && (
         <Box
           sx={{

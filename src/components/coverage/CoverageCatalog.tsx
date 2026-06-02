@@ -165,13 +165,15 @@ export default function CoverageCatalog({
           const maxAmount = formatCoverageAmount(coverage.maxAmount);
           const coverageText =
             minAmount && maxAmount ? `${minAmount} - ${maxAmount}` : null;
+          const hasApplicant =
+            (productApplicants[coverage.id] ?? []).length > 0;
 
           return (
             <Box
               key={coverage.id}
               sx={{
                 border: "1px solid",
-                borderColor: "divider",
+                borderColor: hasApplicant ? "primary.main" : "divider",
                 borderRadius: "16px",
                 bgcolor: "background.paper",
                 p: 2.5,
@@ -238,15 +240,18 @@ export default function CoverageCatalog({
                   borderRadius: "8px",
                   bgcolor: "#f5f8fd",
                   color: "primary.main",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
                 }}
               >
                 <Typography
                   variant="body2"
                   sx={{
                     color: "text.secondary",
-                    fontWeight: 400,
-                    fontSize: "11px",
-                    mb: 0.5,
+                    fontWeight: 500,
+                    fontSize: "12px",
+                    // mb: 0.5,
                   }}
                 >
                   Available coverage:
