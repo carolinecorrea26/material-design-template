@@ -1,7 +1,6 @@
 import {
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
   type ReactNode,
@@ -29,13 +28,8 @@ import FormPage from "./FormPage";
 import FormVerticalStepper, {
   VerticalStepperBreadcrumbs,
 } from "./FormVerticalStepper";
-import {
-  getActiveProgressStepIndex,
-  // getActiveProgressSteps,
-} from "../../config/progressSteps";
+import { getActiveProgressStepIndex } from "../../config/progressSteps";
 import { generateFormDataUpToPage } from "../../dev/utils/generateFormData";
-import FormHelpChips, { type HelpChipItem } from "./FormHelpChips";
-import FormHelpDrawer from "./FormHelpDrawer";
 import FormTransitionSkeleton, {
   FormTransitionHeaderSkeleton,
 } from "./FormTransitionSkeleton";
@@ -44,8 +38,6 @@ import {
   BACK_MESSAGE,
   MESSAGE_DURATION,
 } from "../../config/transitionMessages";
-import type { ProgressVariant } from "../../types/progress";
-import { readProgressVariant } from "../../utils/progressVariant";
 import { sendAutosaveMockEmail } from "../../utils/mockEmail";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
@@ -66,11 +58,6 @@ export type FormRouteRenderProps = {
   trigger: ReturnType<typeof useForm<FormRoutePageFormValues>>["trigger"];
 };
 
-type FormRouteHelpItem = HelpChipItem & {
-  title: string;
-  content: ReactNode;
-};
-
 type DevFillContext = {
   currentValues: FormRoutePageValues;
   currentFields: FieldDefinition[];
@@ -88,9 +75,6 @@ type FormRoutePageProps = {
   noContainer?: boolean;
   hideActions?: boolean;
   help?: ReactNode | ((props: FormRouteRenderProps) => ReactNode);
-  helpItems?:
-    | FormRouteHelpItem[]
-    | ((props: FormRouteRenderProps) => FormRouteHelpItem[]);
   children: ReactNode | ((props: FormRouteRenderProps) => ReactNode);
   validate?: (values: FormRoutePageValues) => string | undefined;
   defaultValueOverrides?: FormRoutePageFormValues;
@@ -239,7 +223,6 @@ export default function FormRoutePage({
   noContainer,
   hideActions,
   help,
-  helpItems,
   children,
   validate,
   defaultValueOverrides,
@@ -253,29 +236,6 @@ export default function FormRoutePage({
   const { values, setPageValues } = useApplicationForm();
 
   const [showProgressSaved, setShowProgressSaved] = useState(false);
-
-  const [progressVariant, setProgressVariant] = useState<ProgressVariant>(() =>
-    readProgressVariant(),
-  );
-
-  useEffect(() => {
-    function handleVariantChange(event: Event) {
-      const customEvent = event as CustomEvent<ProgressVariant>;
-      setProgressVariant(customEvent.detail ?? "vertical-stepper");
-    }
-
-    window.addEventListener(
-      "devtools:progressvariantchange",
-      handleVariantChange,
-    );
-
-    return () => {
-      window.removeEventListener(
-        "devtools:progressvariantchange",
-        handleVariantChange,
-      );
-    };
-  }, []);
 
   useEffect(() => {
     if ((location.state as Record<string, unknown>)?.showProgressSaved) {
@@ -399,7 +359,6 @@ export default function FormRoutePage({
   }, [devFillFields, getValues, onDevFill, pageId, setValue]);
 
   const [pageError, setPageError] = useState<string | undefined>();
-  const [activeHelpId, setActiveHelpId] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(
     Boolean(initialTransitionMessage),
   );
@@ -533,44 +492,10 @@ export default function FormRoutePage({
     trigger,
   };
 
-  const resolvedHelpItems =
-    typeof helpItems === "function"
-      ? helpItems(renderProps)
-      : (helpItems ?? []);
-
-  const activeHelpItem = useMemo(
-    () => resolvedHelpItems.find((item) => item.id === activeHelpId) ?? null,
-    [activeHelpId, resolvedHelpItems],
-  );
-
   const renderedHelp = typeof help === "function" ? help(renderProps) : help;
 
-  const renderedHelpSection =
-    renderedHelp || resolvedHelpItems.length ? (
-      <>
-        {renderedHelp}
-        {resolvedHelpItems.length ? (
-          <>
-            <FormHelpChips
-              items={resolvedHelpItems}
-              onSelect={(id) => setActiveHelpId(id)}
-            />
-            <FormHelpDrawer
-              open={Boolean(activeHelpItem)}
-              title={activeHelpItem?.title ?? ""}
-              onClose={() => setActiveHelpId(null)}
-            >
-              {activeHelpItem?.content}
-            </FormHelpDrawer>
-          </>
-        ) : null}
-      </>
-    ) : undefined;
-
-  // const activeProgressSteps = getActiveProgressSteps(values);
   const activeProgressStepIndex = getActiveProgressStepIndex(pageId, values);
-  const isVerticalStepper =
-    progressVariant === "vertical-stepper" && activeProgressStepIndex >= 0;
+  const hasVerticalStepper = activeProgressStepIndex >= 0;
 
   const resolvedTitle = title ?? getPageTitle(pageId);
   const resolvedSubhead = subhead ?? getPageSubhead(pageId);
@@ -580,17 +505,17 @@ export default function FormRoutePage({
       title={resolvedTitle}
       subhead={isTransitioning ? undefined : resolvedSubhead}
       error={isTransitioning ? undefined : pageError}
-      help={isTransitioning ? undefined : renderedHelpSection}
+      help={isTransitioning ? undefined : renderedHelp}
       headerOverride={
         isTransitioning && !noTitle ? (
           <FormTransitionHeaderSkeleton statusMessage={transitionMessage} />
         ) : undefined
       }
-      maxWidth={isVerticalStepper ? "100%" : formMaxWidth}
+      maxWidth={hasVerticalStepper ? "100%" : formMaxWidth}
       noTitle={noTitle}
-      noContainer={noContainer || isVerticalStepper}
+      noContainer={noContainer || hasVerticalStepper}
       onBack={
-        !isVerticalStepper &&
+        !hasVerticalStepper &&
         !isTransitioning &&
         getPreviousFormPageId(pageId, watchedValues)
           ? handleBack
@@ -643,7 +568,7 @@ export default function FormRoutePage({
         )
       }
       aboveHeader={
-        isVerticalStepper && !noBreadcrumb ? (
+        hasVerticalStepper && !noBreadcrumb ? (
           <VerticalStepperBreadcrumbs pageId={pageId} />
         ) : undefined
       }
@@ -655,7 +580,7 @@ export default function FormRoutePage({
           <>
             <Box
               sx={
-                isVerticalStepper
+                hasVerticalStepper
                   ? {
                       width: "100%",
                       borderRadius: "32px",
@@ -701,7 +626,7 @@ export default function FormRoutePage({
         </Alert>
       </Snackbar>
 
-      {isVerticalStepper ? (
+      {hasVerticalStepper ? (
         <FormVerticalStepper pageId={pageId}>
           {formPageElement}
         </FormVerticalStepper>

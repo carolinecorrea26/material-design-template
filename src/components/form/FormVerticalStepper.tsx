@@ -9,7 +9,7 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
-import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import { useNavigate } from "react-router-dom";
 import {
   getActiveProgressSteps,
@@ -163,20 +163,17 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 0.5,
-                fontSize: "0.75rem",
-                fontWeight: 700,
                 color: "primary.main",
                 cursor: "pointer",
                 paddingBottom: 0.25,
                 textDecoration: "none",
-                letterSpacing: "-0.25px",
                 "&:hover": {
                   textDecoration: "none",
                 },
               }}
             >
-              {entry.label}
-              <TaskAltRoundedIcon
+              <Typography variant="formBreadcrumb">{entry.label}</Typography>
+              <CheckRoundedIcon
                 sx={{
                   fontSize: 14,
                   color: "success.main",
@@ -191,12 +188,9 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
           return (
             <Typography
               key={entry.id}
-              variant="caption"
+              variant="formBreadcrumb"
               sx={{
-                fontWeight: 700,
-                fontSize: "0.75rem",
                 color: "primary.main",
-                letterSpacing: "-0.25px",
                 cursor: "default",
               }}
             >
@@ -208,12 +202,10 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
         return (
           <Typography
             key={entry.id}
-            variant="caption"
+            variant="formBreadcrumb"
             sx={{
-              fontSize: "0.75rem",
               fontWeight: 500,
               color: "#94a3b8",
-              letterSpacing: "-0.25px",
               cursor: "default",
             }}
           >
@@ -287,10 +279,9 @@ export default function FormVerticalStepper({
                     sx={isCompleted ? { cursor: "pointer" } : undefined}
                   >
                     <Typography
+                      variant="formVerticalStepLabel"
                       sx={{
                         fontWeight: isActive ? 700 : 500,
-                        fontSize: "0.9rem",
-                        letterSpacing: "-0.25px",
                         color: stepLabelColor,
                       }}
                     >
@@ -330,10 +321,9 @@ export default function FormVerticalStepper({
                     sx={isCompleted ? { cursor: "pointer" } : undefined}
                   >
                     <Typography
+                      variant="formVerticalStepLabelMobile"
                       sx={{
                         fontWeight: isActive ? 700 : 500,
-                        fontSize: "1rem",
-                        letterSpacing: "-0.25px",
                         color: stepLabelColor,
                       }}
                     >

@@ -19,16 +19,11 @@ import {
   useApplicationForm,
   STORAGE_KEY,
 } from "../state/ApplicationFormContext";
-import type { ProgressVariant } from "../types/progress";
 import { pages, getPagePath } from "../config/pages";
 import type { PageId } from "../types/page";
 import { formFlow } from "../config/formFlow";
 import { generateFormDataUpToPage } from "./utils/generateFormData";
 import { router } from "../app/router";
-import {
-  readProgressVariant,
-  writeProgressVariant,
-} from "../utils/progressVariant";
 
 const CLIENT_QUERY_PARAM = "client";
 
@@ -83,9 +78,6 @@ export default function DevTools() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [jumpPageAnchorEl, setJumpPageAnchorEl] =
     React.useState<null | HTMLElement>(null);
-  const [progressVariant, setProgressVariant] = React.useState<ProgressVariant>(
-    readProgressVariant(),
-  );
 
   const currentClient = getActiveClient();
   const isFormPage = FORM_PAGE_PATHS.has(window.location.pathname);
@@ -102,11 +94,6 @@ export default function DevTools() {
 
   const handleFillOutPage = () => {
     window.dispatchEvent(new CustomEvent("devtools:fillform"));
-  };
-
-  const handleProgressVariantChange = (variant: ProgressVariant) => {
-    setProgressVariant(variant);
-    writeProgressVariant(variant);
   };
 
   const handleJumpToPage = (pageId: PageId) => {
@@ -334,54 +321,6 @@ export default function DevTools() {
                   sx={{ justifyContent: "flex-start" }}
                 >
                   Reset App
-                </Button>
-              </Stack>
-            </Box>
-
-            <Divider />
-
-            <Box>
-              <Typography
-                variant="caption"
-                sx={{ color: "text.secondary", mb: 1, display: "block" }}
-              >
-                PROGRESS
-              </Typography>
-
-              <Stack spacing={1}>
-                <Button
-                  fullWidth
-                  variant={progressVariant === "bar" ? "contained" : "outlined"}
-                  onClick={() => handleProgressVariantChange("bar")}
-                  sx={{ justifyContent: "flex-start" }}
-                >
-                  Progress Bar
-                </Button>
-
-                <Button
-                  fullWidth
-                  variant={
-                    progressVariant === "stepper" ? "contained" : "outlined"
-                  }
-                  onClick={() => handleProgressVariantChange("stepper")}
-                  sx={{ justifyContent: "flex-start" }}
-                >
-                  Horizontal Stepper
-                </Button>
-
-                <Button
-                  fullWidth
-                  variant={
-                    progressVariant === "vertical-stepper"
-                      ? "contained"
-                      : "outlined"
-                  }
-                  onClick={() =>
-                    handleProgressVariantChange("vertical-stepper")
-                  }
-                  sx={{ justifyContent: "flex-start" }}
-                >
-                  Vertical Stepper
                 </Button>
               </Stack>
             </Box>

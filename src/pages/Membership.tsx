@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Box,
@@ -31,12 +31,25 @@ import type {
 } from "../config/coverages/types";
 import FieldRenderer from "../components/form/FieldRenderer";
 import FormRoutePage from "../components/form/FormRoutePage";
+import FormPageHelp from "../components/form/FormPageHelp";
 import FormHelpDrawer from "../components/form/FormHelpDrawer";
-import QuickDecisionDrawerContent from "../components/common/QuickDecisionDrawerContent";
+import {
+  CoverageProductsDrawerContent,
+  groupInsuranceHelpItem,
+  howApplyingWorksHelpItem,
+} from "../content/helpContent";
 import {
   deriveStateProvinceFromZipOrPostalCode,
   formatZipOrPostalCode,
 } from "../utils/zipToStateProvince";
+import { formatUSD } from "../utils/formatUSD";
+import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
+import { generateAmountChoices } from "../utils/generateAmountChoices";
+import {
+  parseStoredDate,
+  formatDateForStorage,
+  formatDateDisplay,
+} from "../utils/dateFormatting";
 
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
@@ -55,84 +68,6 @@ type EstimateState = {
   responsibilityPct: string;
 };
 
-type CoverageProductGroup = {
-  category: (typeof coverageCategories)[number];
-  products: CoverageDefinition[];
-};
-
-function formatUSD(value: number, decimals = 2): string {
-  return value.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
-}
-
-function generateAmountChoices(
-  categoryId: CoverageCategoryId,
-  minAmount?: number,
-  maxAmount?: number,
-): number[] {
-  if (minAmount != null && maxAmount != null) {
-    let step: number;
-
-    if (categoryId === "LI" || categoryId === "AD") {
-      step = 25000;
-    } else if (categoryId === "DI" || categoryId === "OO") {
-      step = 500;
-    } else {
-      step = maxAmount <= 1000 ? 50 : 500;
-    }
-
-    const choices = new Set<number>([minAmount, maxAmount]);
-    for (let value = minAmount; value <= maxAmount; value += step) {
-      choices.add(value);
-    }
-
-    return [...choices].sort((a, b) => a - b);
-  }
-
-  if (categoryId === "LI" || categoryId === "AD") {
-    return [25000, 50000, 100000, 250000, 500000];
-  }
-
-  if (categoryId === "DI" || categoryId === "OO") {
-    return [500, 1000, 1500, 2000, 2500, 3000];
-  }
-
-  return [100, 250, 500, 1000];
-}
-
-function estimateMonthlyPremium(
-  categoryId: CoverageCategoryId,
-  amount: number,
-): number {
-  let raw: number;
-
-  switch (categoryId) {
-    case "LI":
-      raw = (amount / 1000) * 0.12;
-      break;
-    case "AD":
-      raw = (amount / 1000) * 0.05;
-      break;
-    case "DI":
-      raw = amount * 0.02;
-      break;
-    case "OO":
-      raw = amount * 0.018;
-      break;
-    case "SH":
-      raw = amount * 0.01;
-      break;
-    default:
-      raw = 0;
-  }
-
-  return Math.round(raw * 100) / 100;
-}
-
 function getBenefitAmountLabel(categoryId: CoverageCategoryId): string {
   if (categoryId === "DI" || categoryId === "OO") {
     return "Monthly Benefit Amount";
@@ -150,321 +85,6 @@ function getApplicantLabel(applicant: CoverageApplicantId): string {
 function getStateOptions() {
   const options = fieldCatalog["state-province"].options ?? [];
   return options;
-}
-
-function parseStoredDate(value: string): string {
-  if (!value) return "";
-  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (!match) return value;
-  return `${match[2]}/${match[3]}/${match[1]}`;
-}
-
-function formatDateForStorage(display: string): string {
-  const digits = display.replace(/\D/g, "");
-  if (digits.length !== 8) return "";
-  const mm = digits.slice(0, 2);
-  const dd = digits.slice(2, 4);
-  const yyyy = digits.slice(4, 8);
-  return `${yyyy}-${mm}-${dd}`;
-}
-
-function formatDateDisplay(raw: string): string {
-  const digits = raw.replace(/\D/g, "").slice(0, 8);
-  if (digits.length <= 2) return digits;
-  if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
-  return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
-}
-
-function InlineDrawerLink({
-  children,
-  onClick,
-}: {
-  children: ReactNode;
-  onClick: () => void;
-}) {
-  return (
-    <Typography
-      component="span"
-      role="button"
-      tabIndex={0}
-      onClick={onClick}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          onClick();
-        }
-      }}
-      sx={{
-        display: "inline",
-        color: "primary.main",
-        font: "inherit",
-        lineHeight: "inherit",
-        textDecoration: "underline",
-        textUnderlineOffset: "0.12em",
-        cursor: "pointer",
-      }}
-    >
-      {children}
-    </Typography>
-  );
-}
-
-function QuickDecisionMark() {
-  return (
-    <>
-      QuickDecision
-      <Box component="sup" sx={{ fontSize: "0.6em", lineHeight: 1 }}>
-        SM
-      </Box>
-    </>
-  );
-}
-
-const APPLYING_STEPS = [
-  {
-    id: 0,
-    title: "Apply online",
-    body: "Complete our online application to apply for coverage that fits your needs. You'll be able to review your options and see your estimated cost.",
-    imageSrc: "/1-apply.svg",
-    imageAlt: "Apply online",
-  },
-  {
-    id: 1,
-    title: "Answer health questions",
-    body: "Many types of insurance require health information to provide a decision on your application. We may ask health questions on your application or a representative of New York Life or their medical service provider may contact you to collect your health history. If needed, we will schedule a medical exam at no cost to you and at a time and place convenient to you.",
-    imageSrc: "/2-medical.svg",
-    imageAlt: "Answer health questions",
-  },
-  {
-    id: 2,
-    title: "Get a decision",
-    body: "Decisions are made after all information is received and reviewed by New York Life. If approved, you will receive a certificate of insurance and have a 30-day no-obligation free look. Plus, when QuickDecision SM is available, you can get a faster decision on your application, typically with no medical exam.",
-    imageSrc: "/3-decision.svg",
-    imageAlt: "Get a decision",
-  },
-] as const;
-
-function HowApplyingWorksDrawerContent() {
-  type SubDrawerId = "application-review" | "quick-decision" | null;
-  const [subDrawer, setSubDrawer] = useState<SubDrawerId>(null);
-
-  return (
-    <>
-      <Stack spacing={3}>
-        <Typography variant="body2" color="text.secondary">
-          This online experience is designed to help you complete your
-          application quickly and easily.
-        </Typography>
-
-        {APPLYING_STEPS.map((step) => (
-          <Stack
-            key={step.id}
-            direction="row"
-            spacing={2}
-            alignItems="flex-start"
-          >
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
-                {step.title}
-              </Typography>
-              {step.id === 1 ? (
-                <Typography variant="body2" color="text.secondary">
-                  Many types of insurance require health information to provide
-                  a decision on your application. We may ask health questions on
-                  your application or a representative of New York Life or their
-                  medical service provider may contact you to collect your
-                  health history. If needed, we will schedule a medical exam at
-                  no cost to you and at a time and place convenient to you.{" "}
-                  <InlineDrawerLink
-                    onClick={() => setSubDrawer("application-review")}
-                  >
-                    Learn more about the application review process.
-                  </InlineDrawerLink>
-                </Typography>
-              ) : step.id === 2 ? (
-                <Typography variant="body2" color="text.secondary">
-                  Decisions are made after all information is received and
-                  reviewed by New York Life. If approved, you will receive a
-                  certificate of insurance and have a 30-day no-obligation free
-                  look. Plus, when{" "}
-                  <InlineDrawerLink
-                    onClick={() => setSubDrawer("quick-decision")}
-                  >
-                    <QuickDecisionMark />
-                  </InlineDrawerLink>{" "}
-                  is available, you can get a faster decision on your
-                  application, typically with no medical exam.
-                </Typography>
-              ) : (
-                <Typography variant="body2" color="text.secondary">
-                  {step.body}
-                </Typography>
-              )}
-            </Box>
-          </Stack>
-        ))}
-      </Stack>
-
-      <FormHelpDrawer
-        open={subDrawer !== null}
-        title={
-          subDrawer === "application-review"
-            ? "Application review process"
-            : "QuickDecision"
-        }
-        onClose={() => setSubDrawer(null)}
-      >
-        {subDrawer === "application-review" ? (
-          <Stack spacing={2}>
-            <Typography variant="body2" color="text.secondary">
-              During the application review process, also known as underwriting,
-              our team will review your application to provide a decision on
-              your application.
-            </Typography>
-
-            <Box>
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-                What to expect
-              </Typography>
-              <Stack component="ul" spacing={1} sx={{ m: 0, pl: 2.5 }}>
-                <Typography
-                  component="li"
-                  variant="body2"
-                  color="text.secondary"
-                >
-                  A medical service provider may contact you to confirm details
-                  about your health.
-                </Typography>
-                <Typography
-                  component="li"
-                  variant="body2"
-                  color="text.secondary"
-                >
-                  A medical exam may be scheduled if needed at no cost to you
-                  and at a time and place convenient to you.
-                </Typography>
-                <Typography
-                  component="li"
-                  variant="body2"
-                  color="text.secondary"
-                >
-                  We may also request additional information, such as
-                  prescription history, financial information, medical records
-                  from your physician(s), and/or medical claims history.
-                </Typography>
-                <Typography
-                  component="li"
-                  variant="body2"
-                  color="text.secondary"
-                >
-                  Any forms needing your signature will be sent securely via
-                  DocuSign.
-                </Typography>
-              </Stack>
-            </Box>
-
-            <Typography variant="body2" color="text.secondary">
-              The review process typically takes a few business days, but with{" "}
-              <InlineDrawerLink onClick={() => setSubDrawer("quick-decision")}>
-                <QuickDecisionMark />
-              </InlineDrawerLink>
-              , many applications can get a real-time decision, often without
-              requiring a medical exam.
-            </Typography>
-          </Stack>
-        ) : (
-          <QuickDecisionDrawerContent />
-        )}
-      </FormHelpDrawer>
-    </>
-  );
-}
-
-function GroupInsuranceDrawerContent({
-  associationName,
-}: {
-  associationName: string;
-}) {
-  return (
-    <Stack spacing={2}>
-      <Typography variant="body2" color="text.secondary">
-        With group insurance through {associationName}, eligible applicants can
-        take advantage of specially negotiated rates made available through the
-        group.
-      </Typography>
-
-      <Box>
-        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-          Explore available group insurance options
-        </Typography>
-
-        <Stack component="ul" spacing={1} sx={{ m: 0, pl: 2.5 }}>
-          <Typography component="li" variant="body2" color="text.secondary">
-            Group rates may be available to eligible applicants through their
-            association or sponsoring organization.
-          </Typography>
-
-          <Typography component="li" variant="body2" color="text.secondary">
-            Because eligibility and coverage needs can vary, the application
-            helps confirm which products, coverage amounts, and rates are
-            available for each applicant.
-          </Typography>
-
-          <Typography component="li" variant="body2" color="text.secondary">
-            Availability and rates may vary based on state, eligibility,
-            underwriting requirements, coverage selected, and other application
-            details.{" "}
-          </Typography>
-        </Stack>
-      </Box>
-    </Stack>
-  );
-}
-
-function CoverageProductsDrawerContent({
-  productsByCategory,
-}: {
-  productsByCategory: CoverageProductGroup[];
-}) {
-  return (
-    <Stack spacing={2.25}>
-      <Typography variant="body2" color="text.secondary">
-        These products are available through this group. You can review and
-        select coverage options later in the application.
-      </Typography>
-
-      <Stack spacing={2}>
-        {productsByCategory.map(({ category, products }) => (
-          <Box key={category.id}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.75 }}>
-              {category.label}
-            </Typography>
-
-            <Stack spacing={0.75}>
-              {products.map((product) => (
-                <Link
-                  key={product.id}
-                  href="#"
-                  underline="hover"
-                  onClick={(event) => event.preventDefault()}
-                  sx={{
-                    width: "fit-content",
-                    color: "primary.main",
-                    fontSize: "0.875rem",
-                    fontWeight: 600,
-                    lineHeight: 1.35,
-                    textUnderlineOffset: "0.15em",
-                  }}
-                >
-                  {product.name}
-                </Link>
-              ))}
-            </Stack>
-          </Box>
-        ))}
-      </Stack>
-    </Stack>
-  );
 }
 
 export default function Membership() {
@@ -675,20 +295,8 @@ export default function Membership() {
   }
 
   const helpItems = [
-    {
-      id: "group-insurance",
-      label: "What is group insurance?",
-      title: "What is group insurance?",
-      content: (
-        <GroupInsuranceDrawerContent associationName={client.branding.name} />
-      ),
-    },
-    {
-      id: "application-process",
-      label: "How does applying work?",
-      title: "How does applying work?",
-      content: <HowApplyingWorksDrawerContent />,
-    },
+    groupInsuranceHelpItem(client.branding.name),
+    howApplyingWorksHelpItem,
     {
       id: "estimate-cost",
       label: "How much does it cost?",
@@ -1147,7 +755,7 @@ export default function Membership() {
     <FormRoutePage
       pageId={pageId}
       title={getPageTitle(pageId)}
-      helpItems={helpItems}
+      help={<FormPageHelp items={helpItems} />}
       initialTransitionMessage="Loading your membership application..."
     >
       {({ control, errors, watchedValues, allFields }) => {
@@ -1189,7 +797,7 @@ export default function Membership() {
             >
               <Stack
                 direction="row"
-                spacing={{ xs: 0, sm: 2 }}
+                spacing={{ xs: 0, lg: 3 }}
                 alignItems="center"
               >
                 <Box
@@ -1197,7 +805,7 @@ export default function Membership() {
                     width: 36,
                     height: 36,
                     borderRadius: "9999px",
-                    display: { xs: "none", sm: "grid" },
+                    display: { xs: "none", lg: "grid" },
                     placeItems: "center",
                     flexShrink: 0,
                     color: "primary.main",

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { colors } from "../../app/theme";
 import {
   AppBar,
   Badge,
@@ -29,8 +30,8 @@ import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import { CoverageOptionsDrawerContent } from "../../pages/Coverage";
-import { CoverageNeedsCalculator } from "../../pages/CoverageOptions";
+import { CoverageOptionsDrawerContent } from "../../content/helpContent";
+import CoverageNeedsCalculator from "../coverage/CoverageNeedsCalculator";
 import FormHelpDrawer from "../form/FormHelpDrawer";
 import { pages } from "../../config/pages";
 // import { getActiveClientCoverages } from "../../client/getActiveClientCoverages";
@@ -41,7 +42,6 @@ import type { ClientConfig } from "../../config/clients/types";
 import type { PageId } from "../../types/page";
 import { useApplicationForm } from "../../state/ApplicationFormContext";
 import { router } from "../../app/router";
-import FormProgress from "../form/FormProgress";
 import { APP_MENU_SECTION_TITLE_SX } from "../form/sectionStyles";
 import ApplicationSummaryDrawer, {
   useApplicationSummaryBadge,
@@ -133,6 +133,9 @@ export default function AppHeader({ client }: AppHeaderProps) {
   const [imageError, setImageError] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
+  const [summarySource, setSummarySource] = useState<
+    "cart-icon" | "coverage-page"
+  >("cart-icon");
   const [isCoverageDrawerOpen, setIsCoverageDrawerOpen] = useState(false);
   const [isNeedsCalcOpen, setIsNeedsCalcOpen] = useState(false);
   const [activeCoverage, setActiveCoverage] =
@@ -193,6 +196,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
       currentCount > prevCount &&
       prevCount >= 0
     ) {
+      setSummarySource("coverage-page");
       setIsSummaryOpen(true);
     }
   }, [values.coverageSelections, currentPageId]);
@@ -281,7 +285,10 @@ export default function AppHeader({ client }: AppHeaderProps) {
                   {showSummaryIcon && (
                     <IconButton
                       aria-label="Open coverage requested"
-                      onClick={() => setIsSummaryOpen(true)}
+                      onClick={() => {
+                        setSummarySource("cart-icon");
+                        setIsSummaryOpen(true);
+                      }}
                       size="small"
                     >
                       <Badge
@@ -328,8 +335,6 @@ export default function AppHeader({ client }: AppHeaderProps) {
                     },
                   }}
                 />
-
-                <FormProgress />
               </Box>
             )}
           </Toolbar>
@@ -374,7 +379,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
               p: 2,
               borderRadius: 1,
 
-              bgcolor: "#f5f8fd",
+              bgcolor: colors.panelBg,
             }}
           >
             <Stack spacing={2}>
@@ -399,7 +404,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
               p: 2,
               borderRadius: 1,
 
-              bgcolor: "#f5f8fd",
+              bgcolor: colors.panelBg,
             }}
           >
             <Stack spacing={2}>
@@ -429,6 +434,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
                   startIcon={<RequestQuoteOutlinedIcon />}
                   onClick={() => {
                     setIsMenuOpen(false);
+                    setSummarySource("cart-icon");
                     setIsSummaryOpen(true);
                   }}
                   sx={{ justifyContent: "flex-start", textTransform: "none" }}
@@ -465,7 +471,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
               p: 2,
               borderRadius: 1,
 
-              bgcolor: "#f5f8fd",
+              bgcolor: colors.panelBg,
             }}
           >
             <Stack spacing={1.5}>
@@ -642,6 +648,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
       <ApplicationSummaryDrawer
         open={isSummaryOpen}
         onClose={() => setIsSummaryOpen(false)}
+        source={summarySource}
       />
     </>
   );

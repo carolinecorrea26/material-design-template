@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
+import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import {
   Alert,
   Box,
@@ -8,6 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import InputAdornment from "@mui/material/InputAdornment";
 import { Controller } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import FormRoutePage, {
@@ -155,6 +158,11 @@ function EligibilityFields({
   );
 
   useEffect(() => {
+    const trimmed = zipPostalCodeValue.trim();
+    if (trimmed.length < 5) {
+      return;
+    }
+
     const derivedStateProvinceValue = deriveStateProvinceFromZipOrPostalCode(
       zipPostalCodeValue,
       stateProvinceOptions,
@@ -284,37 +292,75 @@ function EligibilityFields({
                       key={field.id}
                       name={field.id}
                       control={control}
-                      rules={{ required: "This field is required." }}
-                      render={({ field: controllerField }) => (
-                        <TextField
-                          label={field.label}
-                          required={field.required}
-                          type="text"
-                          fullWidth
-                          margin="normal"
-                          placeholder={field.placeholder}
-                          autoComplete={field.autoComplete}
-                          inputProps={{
-                            inputMode: "text",
-                            maxLength: 7,
-                          }}
-                          value={(controllerField.value as string) ?? ""}
-                          onChange={(event) => {
-                            controllerField.onChange(
-                              formatZipOrPostalCode(event.target.value),
-                            );
-                          }}
-                          onBlur={() => {
-                            controllerField.onBlur();
-                            void trigger("zip-postal-code");
-                          }}
-                          disabled={field.disabled}
-                          error={Boolean(errors[field.id])}
-                          helperText={
-                            (errors[field.id]?.message as string) ?? ""
-                          }
-                        />
-                      )}
+                      rules={{
+                        required: "This field is required.",
+                        validate: (value) => {
+                          if (!value) return true;
+                          return String(value).trim().length >= 5
+                            ? true
+                            : "Enter a valid ZIP / Postal Code.";
+                        },
+                      }}
+                      render={({ field: controllerField }) => {
+                        const value = (controllerField.value as string) ?? "";
+                        const hasError = Boolean(errors[field.id]);
+                        const isComplete =
+                          !hasError && value.trim().length >= 5;
+
+                        return (
+                          <TextField
+                            label={field.label}
+                            required={field.required}
+                            type="text"
+                            fullWidth
+                            margin="normal"
+                            placeholder={field.placeholder}
+                            autoComplete={field.autoComplete}
+                            inputProps={{
+                              inputMode: "text",
+                              maxLength: 7,
+                            }}
+                            value={value}
+                            onChange={(event) => {
+                              controllerField.onChange(
+                                formatZipOrPostalCode(event.target.value),
+                              );
+                            }}
+                            onBlur={() => {
+                              controllerField.onBlur();
+                              void trigger("zip-postal-code");
+                            }}
+                            disabled={field.disabled}
+                            error={hasError}
+                            helperText={
+                              (errors[field.id]?.message as string) ?? ""
+                            }
+                            InputProps={{
+                              endAdornment: isComplete ? (
+                                <InputAdornment position="end">
+                                  <CheckCircleOutlineRoundedIcon
+                                    aria-label="Completed"
+                                    sx={{
+                                      color: "success.main",
+                                      fontSize: "1.25rem",
+                                    }}
+                                  />
+                                </InputAdornment>
+                              ) : hasError ? (
+                                <InputAdornment position="end">
+                                  <HighlightOffRoundedIcon
+                                    aria-label="Error"
+                                    sx={{
+                                      color: "error.main",
+                                      fontSize: "1.25rem",
+                                    }}
+                                  />
+                                </InputAdornment>
+                              ) : undefined,
+                            }}
+                          />
+                        );
+                      }}
                     />
                   );
                 }
@@ -336,7 +382,7 @@ function EligibilityFields({
                           sx={{
                             display: "inline-flex",
                             alignItems: "center",
-                            gap: 0.75,
+                            gap: 0.5,
                             mt: 0.5,
                             animation: "zipStateReveal 220ms ease",
                             "@keyframes zipStateReveal": {
@@ -351,7 +397,7 @@ function EligibilityFields({
                             },
                           }}
                         >
-                          <TaskAltRoundedIcon
+                          <CheckRoundedIcon
                             sx={{
                               fontSize: 16,
                               color: "success.main",

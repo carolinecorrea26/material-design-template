@@ -12,6 +12,7 @@ export const coverageCategories = [
   {
     id: "AD",
     label: "Accidental Death and Dismemberment",
+    shortLabel: "Accidental D&D",
     icon: PersonalInjuryOutlinedIcon,
   },
   { id: "DI", label: "Disability", icon: AccessibleOutlinedIcon },

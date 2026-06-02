@@ -1,12 +1,90 @@
+import type React from "react";
 import { createTheme } from "@mui/material/styles";
+
+type ResponsiveCSSProperties = React.CSSProperties & {
+  [key: `@media ${string}`]: React.CSSProperties;
+};
+
+declare module "@mui/material/styles" {
+  interface TypographyVariants {
+    formPageTitle: ResponsiveCSSProperties;
+    formPageTitleCompact: ResponsiveCSSProperties;
+    formSectionLabel: React.CSSProperties;
+    formApplicantSectionLabel: React.CSSProperties;
+    formBackLink: React.CSSProperties;
+    formTransitionStatus: React.CSSProperties;
+    formBreadcrumb: React.CSSProperties;
+    formVerticalStepLabel: React.CSSProperties;
+    formVerticalStepLabelMobile: React.CSSProperties;
+    formProgressStepNumber: ResponsiveCSSProperties;
+    formProgressStepLabel: React.CSSProperties;
+    formProgressPercent: React.CSSProperties;
+  }
+
+  interface TypographyVariantsOptions {
+    formPageTitle?: ResponsiveCSSProperties;
+    formPageTitleCompact?: ResponsiveCSSProperties;
+    formSectionLabel?: React.CSSProperties;
+    formApplicantSectionLabel?: React.CSSProperties;
+    formBackLink?: React.CSSProperties;
+    formTransitionStatus?: React.CSSProperties;
+    formBreadcrumb?: React.CSSProperties;
+    formVerticalStepLabel?: React.CSSProperties;
+    formVerticalStepLabelMobile?: React.CSSProperties;
+    formProgressStepNumber?: ResponsiveCSSProperties;
+    formProgressStepLabel?: React.CSSProperties;
+    formProgressPercent?: React.CSSProperties;
+  }
+}
 
 declare module "@mui/material/Typography" {
   interface TypographyPropsVariantOverrides {
-    sectionLabel: true;
+    sectionLabel: false;
+    formPageTitle: true;
+    formPageTitleCompact: true;
+    formSectionLabel: true;
+    formApplicantSectionLabel: true;
+    formBackLink: true;
+    formTransitionStatus: true;
+    formBreadcrumb: true;
+    formVerticalStepLabel: true;
+    formVerticalStepLabelMobile: true;
+    formProgressStepNumber: true;
+    formProgressStepLabel: true;
+    formProgressPercent: true;
   }
 }
 
 const inputBorderRadius = "16px";
+
+/** Reusable color tokens for hardcoded values used across components */
+export const colors = {
+  /** Light panel/accordion background */
+  panelBg: "#f5f8fd",
+  /** Success/green highlight background */
+  successBg: "#eef6ee",
+  /** Subtle info box background */
+  infoBoxBg: "rgba(0, 22, 57, 0.04)",
+  /** Subtle info box/divider border */
+  infoBoxBorder: "rgba(0, 22, 57, 0.08)",
+} as const;
+
+/** Reusable sx style fragments for common patterns */
+export const sxPresets = {
+  /** Subtle info/summary box: light bg + faint border + rounded */
+  infoBox: {
+    p: 2,
+    borderRadius: 2,
+    backgroundColor: colors.infoBoxBg,
+    border: `1px solid ${colors.infoBoxBorder}`,
+  },
+  /** Success highlight box (green tint background) */
+  successBox: {
+    p: 2,
+    borderRadius: 2,
+    backgroundColor: colors.successBg,
+  },
+} as const;
 
 const theme = createTheme({
   spacing: 8,
@@ -75,8 +153,95 @@ const theme = createTheme({
       textTransform: "none",
       fontWeight: 700,
     },
+    formPageTitle: {
+      fontSize: "1.25rem",
+      fontWeight: 700,
+      letterSpacing: "-0.025em",
+      "@media (min-width:900px)": {
+        fontSize: "1.5rem",
+      },
+    },
+    formPageTitleCompact: {
+      fontSize: "1.15rem",
+      fontWeight: 700,
+      letterSpacing: "-0.025em",
+      "@media (min-width:900px)": {
+        fontSize: "1.35rem",
+      },
+    },
+    formSectionLabel: {
+      fontSize: "0.75rem",
+      fontWeight: 800,
+      lineHeight: 1,
+      letterSpacing: "0.25px",
+      textTransform: "uppercase",
+    },
+    formApplicantSectionLabel: {
+      fontSize: "0.75rem",
+      fontWeight: 700,
+      lineHeight: 2.66,
+      letterSpacing: "1px",
+      textTransform: "uppercase",
+    },
+    formBackLink: {
+      fontSize: "0.8rem",
+      fontWeight: 700,
+      lineHeight: 1.5,
+    },
+    formTransitionStatus: {
+      fontSize: "0.825rem",
+      fontWeight: 400,
+      lineHeight: 1.4,
+    },
+    formBreadcrumb: {
+      fontSize: "0.75rem",
+      fontWeight: 700,
+      lineHeight: 1.5,
+      letterSpacing: "-0.25px",
+    },
+    formVerticalStepLabel: {
+      fontSize: "0.9rem",
+      fontWeight: 500,
+      lineHeight: 1.5,
+      letterSpacing: "-0.25px",
+    },
+    formVerticalStepLabelMobile: {
+      fontSize: "1rem",
+      fontWeight: 500,
+      lineHeight: 1.5,
+      letterSpacing: "-0.25px",
+    },
+    formProgressStepNumber: {
+      fontSize: "0.95rem",
+      fontWeight: 700,
+      lineHeight: 1,
+      "@media (min-width:600px)": {
+        fontSize: "1rem",
+      },
+    },
+    formProgressStepLabel: {
+      fontSize: "0.75rem",
+      fontWeight: 500,
+      lineHeight: 1.3,
+    },
+    formProgressPercent: {
+      fontSize: "0.68rem",
+      fontWeight: 700,
+      lineHeight: 1,
+    },
   },
   components: {
+    MuiSkeleton: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#e1e7ec",
+          "&::after": {
+            background:
+              "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent)",
+          },
+        },
+      },
+    },
     MuiLinearProgress: {
       styleOverrides: {
         root: {
@@ -120,7 +285,6 @@ const theme = createTheme({
         },
       },
     },
-
     MuiStepConnector: {
       styleOverrides: {
         root: {
@@ -376,6 +540,21 @@ const theme = createTheme({
         },
       },
     },
+    MuiBreadcrumbs: {
+      styleOverrides: {
+        root: {
+          padding: "0 0.5rem",
+          // margin: "0.5rem 0",
+
+          "& .MuiBreadcrumbs-separator": {
+            marginLeft: "0.5rem",
+            marginRight: "0.5rem",
+            color: "#94a3b8",
+            cursor: "default",
+          },
+        },
+      },
+    },
     MuiLink: {
       styleOverrides: {
         root: ({ theme: activeTheme }) => ({
@@ -389,20 +568,22 @@ const theme = createTheme({
       },
     },
     MuiTypography: {
-      variants: [
-        {
-          props: { variant: "sectionLabel" as const },
-          style: {
-            fontWeight: 800,
-            fontSize: "0.75rem",
-            lineHeight: 1,
-            textTransform: "uppercase" as const,
-            letterSpacing: "0.25px",
-            color: "#4e6d9c",
-            display: "block",
-          },
+      defaultProps: {
+        variantMapping: {
+          formPageTitle: "h1",
+          formPageTitleCompact: "h1",
+          formSectionLabel: "span",
+          formApplicantSectionLabel: "span",
+          formBackLink: "span",
+          formTransitionStatus: "p",
+          formBreadcrumb: "span",
+          formVerticalStepLabel: "span",
+          formVerticalStepLabelMobile: "span",
+          formProgressStepNumber: "span",
+          formProgressStepLabel: "span",
+          formProgressPercent: "span",
         },
-      ],
+      },
     },
     MuiFormControlLabel: {
       styleOverrides: {

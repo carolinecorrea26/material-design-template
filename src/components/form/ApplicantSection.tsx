@@ -35,15 +35,8 @@ export default function ApplicantSection({
         }}
       >
         <Typography
-          sx={{
-            lineHeight: 2.66,
-            textTransform: "uppercase",
-            color: "#4e6d9c",
-            display: "block",
-            fontWeight: 700,
-            fontSize: "0.75rem",
-            letterSpacing: "1px",
-          }}
+          variant="formApplicantSectionLabel"
+          sx={{ color: "#4e6d9c", display: "block" }}
         >
           {title}
         </Typography>

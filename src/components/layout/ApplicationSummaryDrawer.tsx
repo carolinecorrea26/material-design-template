@@ -1,5 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import AdminPanelSettingsRoundedIcon from "@mui/icons-material/AdminPanelSettingsRounded";
@@ -7,7 +8,13 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {
   Alert,
   Box,
+  Button,
   Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   Drawer,
   IconButton,
@@ -22,14 +29,16 @@ import { getActiveClientCoverages } from "../../client/getActiveClientCoverages"
 import { coverageCategories } from "../../config/coverageCategories";
 import type {
   CoverageApplicantId,
-  CoverageCategoryId,
   CoverageDefinition,
 } from "../../config/coverages/types";
 import QuickDecisionIndicator from "../common/QuickDecisionIndicator";
+import { formatUSD } from "../../utils/formatUSD";
+import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
 
 type ApplicationSummaryDrawerProps = {
   open: boolean;
   onClose: () => void;
+  source?: "cart-icon" | "coverage-page";
 };
 
 const applicantLabels: Record<CoverageApplicantId, string> = {
@@ -37,42 +46,6 @@ const applicantLabels: Record<CoverageApplicantId, string> = {
   spouse: "Spouse",
   child: "Child",
 };
-
-function formatUSD(value: number, decimals = 2): string {
-  return value.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
-}
-
-function estimateMonthlyPremium(
-  categoryId: CoverageCategoryId,
-  amount: number,
-): number {
-  let raw: number;
-  switch (categoryId) {
-    case "LI":
-      raw = (amount / 1000) * 0.12;
-      break;
-    case "AD":
-      raw = (amount / 1000) * 0.05;
-      break;
-    case "DI":
-      raw = amount * 0.02;
-      break;
-    case "OO":
-      raw = amount * 0.018;
-      break;
-    case "SH":
-      raw = amount * 0.01;
-      break;
-    default:
-      raw = 0;
-  }
-  return Math.round(raw * 100) / 100;
-}
 
 type ApplicantSummary = {
   applicantId: CoverageApplicantId;
@@ -237,12 +210,36 @@ export function useApplicationSummaryBadge(): number {
 export default function ApplicationSummaryDrawer({
   open,
   onClose,
+  source = "cart-icon",
 }: ApplicationSummaryDrawerProps) {
   const { entries, totalMonthly } = useSummaryData();
-  const { values } = useApplicationForm();
+  const { values, setPageValues } = useApplicationForm();
   const isEmpty = entries.length === 0;
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
+  const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
+
+  function handleRemoveCoverage(coverageId: string) {
+    const currentSelections: string[] = Array.isArray(values.coverageSelections)
+      ? values.coverageSelections
+      : [];
+    const nextSelections = currentSelections.filter((id) => id !== coverageId);
+
+    const currentProductApplicants: Record<string, unknown> =
+      values.productApplicants != null &&
+      typeof values.productApplicants === "object" &&
+      !Array.isArray(values.productApplicants)
+        ? (values.productApplicants as Record<string, unknown>)
+        : {};
+    const { [coverageId]: _, ...nextProductApplicants } =
+      currentProductApplicants;
+
+    setPageValues({
+      coverageSelections: nextSelections,
+      productApplicants: nextProductApplicants as Record<string, string[]>,
+    });
+    setConfirmRemoveId(null);
+  }
 
   // Check for ineligibility warnings
   const ineligibleProducts: string[] = [];
@@ -294,20 +291,34 @@ export default function ApplicationSummaryDrawer({
         }}
       >
         <Stack direction="row" spacing={1} alignItems="center">
-          {isEmpty ? (
-            <ShoppingCartOutlinedIcon sx={{ color: "primary.main" }} />
+          {source === "coverage-page" ? (
+            <>
+              {isEmpty ? (
+                <ShoppingCartOutlinedIcon sx={{ color: "primary.main" }} />
+              ) : (
+                <TaskAltIcon sx={{ color: "success.main" }} />
+              )}
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  color: isEmpty ? "text.primary" : "success.main",
+                }}
+              >
+                Coverage added
+              </Typography>
+            </>
           ) : (
-            <TaskAltIcon sx={{ color: "success.main" }} />
+            <>
+              <ShoppingCartOutlinedIcon sx={{ color: "primary.main" }} />
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: 600, color: "text.primary" }}
+              >
+                Your requested coverage
+              </Typography>
+            </>
           )}
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 600,
-              color: isEmpty ? "text.primary" : "success.main",
-            }}
-          >
-            Coverage added
-          </Typography>
         </Stack>
         <IconButton aria-label="Close coverage requested" onClick={onClose}>
           <CloseIcon />
@@ -344,7 +355,8 @@ export default function ApplicationSummaryDrawer({
             {/* Single outlined box for all coverages */}
             <Box
               sx={{
-                bgcolor: "#f5f8fd",
+                bgcolor: "white",
+                border: "1px solid #e6e6e6",
                 borderRadius: 2,
                 overflow: "hidden",
               }}
@@ -370,15 +382,59 @@ export default function ApplicationSummaryDrawer({
                           )}
                           <Box sx={{ px: 2, pb: 2, pt: 1.5 }}>
                             <Stack spacing={1}>
-                              <Typography
-                                variant="body2"
-                                sx={{ fontWeight: 600, fontSize: "1rem" }}
+                              <Stack
+                                direction="row"
+                                justifyContent="space-between"
+                                alignItems="flex-start"
                               >
-                                {coverage.name}
-                                {coverage.underwritingType === "QD" && (
-                                  <QuickDecisionIndicator />
-                                )}
-                              </Typography>
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontWeight: 600, fontSize: "1rem" }}
+                                >
+                                  {coverage.name}
+                                  {coverage.underwritingType === "QD" && (
+                                    <QuickDecisionIndicator />
+                                  )}
+                                </Typography>
+                                <Stack
+                                  direction="row"
+                                  alignItems="center"
+                                  spacing={0.5}
+                                >
+                                  {(() => {
+                                    const productTotal = applicants.reduce(
+                                      (s, a) => s + (a.monthlyEstimate ?? 0),
+                                      0,
+                                    );
+                                    return productTotal > 0 ? (
+                                      <Typography
+                                        variant="body2"
+                                        sx={{
+                                          fontWeight: 700,
+                                          whiteSpace: "nowrap",
+                                        }}
+                                      >
+                                        {formatUSD(productTotal)}/mo
+                                      </Typography>
+                                    ) : null;
+                                  })()}
+                                  <IconButton
+                                    size="small"
+                                    aria-label={`Remove ${coverage.name}`}
+                                    onClick={() =>
+                                      setConfirmRemoveId(coverage.id)
+                                    }
+                                    sx={{
+                                      color: "text.secondary",
+                                      "&:hover": { color: "error.main" },
+                                    }}
+                                  >
+                                    <DeleteOutlineIcon
+                                      sx={{ fontSize: "1.1rem" }}
+                                    />
+                                  </IconButton>
+                                </Stack>
+                              </Stack>
 
                               {applicants.map(
                                 ({
@@ -519,27 +575,32 @@ export default function ApplicationSummaryDrawer({
               </Alert>
             )}
 
-            {/* Estimated monthly total — styled like quote needs calculator */}
+            {/* Estimated monthly total — styled like CoverageOptions */}
             {totalMonthly > 0 && (
               <Box
                 sx={{
-                  p: 2,
-                  // borderRadius: 2,
-                  // backgroundColor: "rgba(0, 22, 57, 0.04)",
-                  borderTop: "1px solid rgba(0, 22, 57, 0.08)",
+                  p: "16px",
+                  borderRadius: "8px",
+                  bgcolor: "#f5f8fd",
                 }}
               >
-                <Stack spacing={1}>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                    Estimated Monthly Total<sup>1</sup>
-                  </Typography>
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: 700, color: "primary.main" }}
-                  >
-                    {formatUSD(totalMonthly)}
-                  </Typography>
-                  <Stack spacing={0.5}>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="flex-start"
+                  sx={{ mb: 2 }}
+                >
+                  <Stack direction="column" spacing={0.5}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "text.primary",
+                        fontWeight: 600,
+                        fontSize: 12,
+                      }}
+                    >
+                      Estimated cost<sup>1</sup>
+                    </Typography>
                     {groupedByCategory.map(({ category, items }) => {
                       const catTotal = items.reduce(
                         (sum, { applicants }) =>
@@ -554,24 +615,51 @@ export default function ApplicationSummaryDrawer({
                       return (
                         <Typography
                           key={category.id}
-                          variant="caption"
-                          color="text.secondary"
+                          variant="body2"
+                          sx={{
+                            fontSize: 10,
+                            color: "text.secondary",
+                          }}
                         >
                           {category.label}: {formatUSD(catTotal)}
                         </Typography>
                       );
                     })}
                   </Stack>
+
                   <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ mt: 1, fontStyle: "italic" }}
+                    component="span"
+                    variant="body2"
+                    sx={{
+                      color: "primary.main",
+                      fontWeight: 800,
+                      fontSize: "1.5rem",
+                      whiteSpace: "nowrap",
+                    }}
                   >
-                    <sup>1</sup>Quoted cost is the best rate available. Final
-                    cost may vary based on health status, gender, and
-                    tobacco/nicotine use.
+                    {formatUSD(totalMonthly)}
+                    <Typography
+                      component="span"
+                      variant="body2"
+                      sx={{
+                        color: "primary.main",
+                        fontWeight: 800,
+                        fontSize: "1rem",
+                      }}
+                    >
+                      /mo
+                    </Typography>
                   </Typography>
                 </Stack>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ fontStyle: "italic" }}
+                >
+                  <sup>1</sup>Quoted cost is the best rate available. Final cost
+                  may vary based on health status, gender, and tobacco/nicotine
+                  use.
+                </Typography>
               </Box>
             )}
           </Stack>
@@ -580,41 +668,94 @@ export default function ApplicationSummaryDrawer({
     </Stack>
   );
 
+  const confirmCoverageName =
+    confirmRemoveId != null
+      ? entries.find((e) => e.coverage.id === confirmRemoveId)?.coverage.name
+      : null;
+
   // On small screens, use bottom SwipeableDrawer (not full screen)
   if (isSmall) {
     return (
-      <SwipeableDrawer
-        anchor="bottom"
-        open={open}
-        onClose={onClose}
-        onOpen={() => {}}
-        disableSwipeToOpen
-        sx={{
-          "& .MuiDrawer-paper": {
-            minHeight: "75vh",
-            borderTopLeftRadius: 16,
-            borderTopRightRadius: 16,
-          },
-        }}
-      >
-        {drawerContent}
-      </SwipeableDrawer>
+      <>
+        <SwipeableDrawer
+          anchor="bottom"
+          open={open}
+          onClose={onClose}
+          onOpen={() => {}}
+          disableSwipeToOpen
+          sx={{
+            "& .MuiDrawer-paper": {
+              minHeight: "75vh",
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+            },
+          }}
+        >
+          {drawerContent}
+        </SwipeableDrawer>
+        <Dialog
+          open={confirmRemoveId != null}
+          onClose={() => setConfirmRemoveId(null)}
+        >
+          <DialogTitle>Remove coverage</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to remove{" "}
+              <strong>{confirmCoverageName}</strong> from your selections?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setConfirmRemoveId(null)}>Cancel</Button>
+            <Button
+              color="error"
+              variant="contained"
+              onClick={() => handleRemoveCoverage(confirmRemoveId!)}
+            >
+              Remove
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
     );
   }
 
   return (
-    <Drawer
-      anchor="right"
-      open={open}
-      onClose={onClose}
-      sx={{
-        "& .MuiDrawer-paper": {
-          width: 420,
-          maxWidth: "100%",
-        },
-      }}
-    >
-      {drawerContent}
-    </Drawer>
+    <>
+      <Drawer
+        anchor="right"
+        open={open}
+        onClose={onClose}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: 420,
+            maxWidth: "100%",
+          },
+        }}
+      >
+        {drawerContent}
+      </Drawer>
+      <Dialog
+        open={confirmRemoveId != null}
+        onClose={() => setConfirmRemoveId(null)}
+      >
+        <DialogTitle>Remove coverage</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to remove{" "}
+            <strong>{confirmCoverageName}</strong> from your selections?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmRemoveId(null)}>Cancel</Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() => handleRemoveCoverage(confirmRemoveId!)}
+          >
+            Remove
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }

@@ -1,24 +1,15 @@
+import { useState } from "react";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Checkbox,
-  Chip,
-  Stack,
-  Typography,
-} from "@mui/material";
+import FilterListOffIcon from "@mui/icons-material/FilterListOff";
+import { Box, Checkbox, Chip, Stack, Typography } from "@mui/material";
 import { coverageCategories } from "../../config/coverageCategories";
 import type {
   CoverageApplicantId,
   CoverageDefinition,
 } from "../../config/coverages/types";
-import SelectableOptionCard from "../form/SelectableOptionCard";
-import FormSectionTitle from "../form/FormSectionTitle";
-import DependentChipSelector from "../form/DependentChipSelector";
-import { applicantLabels } from "../../config/formSectionTitle";
 import QuickDecisionIndicator from "../common/QuickDecisionIndicator";
+import SelectableOptionRow from "../form/SelectableOptionRow";
+import type { CoverageCategoryId } from "../../config/coverages/types";
 
 type CoverageCatalogProps = {
   coverages: CoverageDefinition[];
@@ -48,6 +39,12 @@ function formatCoverageAmount(amount?: number) {
   return `$${amount}`;
 }
 
+const applicantCheckboxLabels: Record<CoverageApplicantId, string> = {
+  member: "Select for myself",
+  spouse: "Select for my spouse",
+  child: "Select for my child",
+};
+
 export default function CoverageCatalog({
   coverages,
   selectedCoverageIds,
@@ -55,10 +52,26 @@ export default function CoverageCatalog({
   selectedDependents = [],
   productApplicants = {},
   onChangeProductApplicants,
-  allCategoriesExpanded = false,
 }: CoverageCatalogProps) {
-  const hasDependents = selectedDependents.length > 0;
+  // Determine which categories have coverages
+  const availableCategories = coverageCategories.filter((category) =>
+    coverages.some((coverage) => coverage.categoryId === category.id),
+  );
 
+  // All category filters selected by default
+  const [selectedFilters, setSelectedFilters] = useState<CoverageCategoryId[]>(
+    () => availableCategories.map((c) => c.id),
+  );
+
+  function toggleFilter(categoryId: CoverageCategoryId) {
+    setSelectedFilters((current) =>
+      current.includes(categoryId)
+        ? current.filter((id) => id !== categoryId)
+        : [...current, categoryId],
+    );
+  }
+
+  // Determine visible applicants for a product
   function getVisibleApplicants(
     applicants: CoverageApplicantId[],
   ): CoverageApplicantId[] {
@@ -69,266 +82,257 @@ export default function CoverageCatalog({
       return false;
     });
   }
-  const groupedCategories = coverageCategories
-    .map((category) => ({
-      category,
-      items: coverages.filter(
-        (coverage) => coverage.categoryId === category.id,
-      ),
-    }))
-    .filter((group) => group.items.length > 0);
 
-  function toggleCoverage(coverageId: string) {
-    const nextIds = selectedCoverageIds.includes(coverageId)
-      ? selectedCoverageIds.filter((id) => id !== coverageId)
-      : [...selectedCoverageIds, coverageId];
+  // Filter coverages based on selected category filters
+  const filteredCoverages = coverages.filter((coverage) =>
+    selectedFilters.includes(coverage.categoryId),
+  );
 
-    onChangeSelectedCoverageIds(nextIds);
+  function toggleApplicantForProduct(
+    coverageId: string,
+    applicant: CoverageApplicantId,
+  ) {
+    const currentApplicants = productApplicants[coverageId] ?? [];
+    const nextApplicants = currentApplicants.includes(applicant)
+      ? currentApplicants.filter((a) => a !== applicant)
+      : [...currentApplicants, applicant];
+
+    // Update coverage selection based on whether any applicants are selected
+    const currentlySelected = selectedCoverageIds.includes(coverageId);
+    if (nextApplicants.length > 0 && !currentlySelected) {
+      onChangeSelectedCoverageIds([...selectedCoverageIds, coverageId]);
+    } else if (nextApplicants.length === 0 && currentlySelected) {
+      onChangeSelectedCoverageIds(
+        selectedCoverageIds.filter((id) => id !== coverageId),
+      );
+    }
+
+    if (onChangeProductApplicants) {
+      onChangeProductApplicants({
+        ...productApplicants,
+        [coverageId]: nextApplicants,
+      });
+    }
   }
 
   return (
     <Stack spacing={2}>
-      {groupedCategories.map(({ category, items }, groupIndex) => (
-        <Accordion
-          key={category.id}
-          defaultExpanded={allCategoriesExpanded || groupIndex === 0}
-          disableGutters
-          sx={{
-            // border: "1px solid",
-            borderColor: "divider",
-            borderRadius: "12px !important",
-            overflow: "hidden",
-            "&::before": { display: "none" },
-            "&.MuiAccordion-root": {
-              m: 0,
-              mt: groupIndex > 0 ? 2 : 0,
-              boxShadow: "none",
-            },
-          }}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            sx={{ px: 2, py: 0.5, bgcolor: "#f5f8fd" }}
-          >
-            <FormSectionTitle icon={category.icon} label={category.label} />
-          </AccordionSummary>
+      {/* Category filter chips */}
+      <Stack direction="row" alignItems="center" flexWrap="wrap" gap={1}>
+        <Typography variant="body2" sx={{ fontWeight: 600, mr: 0.5 }}>
+          Filter coverage:
+        </Typography>
+        {availableCategories.map((category) => {
+          const Icon = category.icon;
+          const isSelected = selectedFilters.includes(category.id);
 
-          <AccordionDetails sx={{ px: 2, pb: 2, pt: 0, bgcolor: "#f5f8fd" }}>
-            <Stack spacing={1.5}>
-              {items.map((coverage) => {
-                const checked = selectedCoverageIds.includes(coverage.id);
-                const visibleApplicants = getVisibleApplicants(
-                  coverage.applicants,
-                );
-                const minAmount = formatCoverageAmount(coverage.minAmount);
-                const maxAmount = formatCoverageAmount(coverage.maxAmount);
-                const coverageText =
-                  minAmount && maxAmount ? `${minAmount} - ${maxAmount}` : null;
+          return (
+            <Chip
+              key={category.id}
+              icon={<Icon sx={{ fontSize: "1rem !important" }} />}
+              label={
+                "shortLabel" in category ? category.shortLabel : category.label
+              }
+              size="small"
+              variant="outlined"
+              onClick={() => toggleFilter(category.id)}
+              sx={{
+                fontSize: "0.75rem",
+                letterSpacing: "-0.2px",
+                color: isSelected ? "primary.main" : "text.secondary",
+                borderColor: isSelected ? "primary.main" : "grey.400",
+                "& .MuiChip-icon": {
+                  color: isSelected ? "primary.main" : "text.secondary",
+                  marginLeft: "6px",
+                },
+              }}
+            />
+          );
+        })}
+      </Stack>
 
-                return (
-                  <SelectableOptionCard
-                    key={coverage.id}
-                    onClick={
-                      hasDependents
-                        ? undefined
-                        : () => toggleCoverage(coverage.id)
-                    }
+      {/* Product cards grid */}
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+          gap: 2,
+        }}
+      >
+        {filteredCoverages.map((coverage) => {
+          const visibleApplicants = getVisibleApplicants(coverage.applicants);
+          const minAmount = formatCoverageAmount(coverage.minAmount);
+          const maxAmount = formatCoverageAmount(coverage.maxAmount);
+          const coverageText =
+            minAmount && maxAmount ? `${minAmount} - ${maxAmount}` : null;
+
+          return (
+            <Box
+              key={coverage.id}
+              sx={{
+                border: "1px solid",
+                borderColor: "divider",
+                borderRadius: "16px",
+                bgcolor: "background.paper",
+                p: 2.5,
+                display: "flex",
+                flexDirection: "column",
+                gap: 1,
+              }}
+            >
+              {/* Title row */}
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="flex-start"
+                spacing={1}
+              >
+                <Stack spacing={0.25} sx={{ minWidth: 0 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: 700,
+                      fontSize: "14px",
+                      letterSpacing: "-0.25px",
+                    }}
                   >
-                    {!hasDependents && (
+                    {coverage.name}
+                    {coverage.underwritingType === "QD" && (
+                      <QuickDecisionIndicator />
+                    )}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ fontSize: "12px" }}
+                  >
+                    {coverage.description ?? coverage.definition}
+                  </Typography>
+                </Stack>
+
+                {coverage.featured && (
+                  <Chip
+                    icon={<AutoAwesomeIcon />}
+                    label="Featured"
+                    size="small"
+                    color="primary"
+                    sx={{
+                      flexShrink: 0,
+                      "& .MuiChip-label": {
+                        fontSize: "0.675rem",
+                        fontWeight: 700,
+                      },
+                      "& .MuiChip-icon": {
+                        fontSize: "0.875rem",
+                      },
+                    }}
+                  />
+                )}
+              </Stack>
+
+              {/* Coverage range */}
+              <Box
+                sx={{
+                  fontWeight: 800,
+                  p: "16px",
+                  borderRadius: "8px",
+                  bgcolor: "#f5f8fd",
+                  color: "primary.main",
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    fontWeight: 400,
+                    fontSize: "11px",
+                    mb: 0.5,
+                  }}
+                >
+                  Available coverage:
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{ color: "primary.main", fontWeight: 800 }}
+                >
+                  {coverageText ?? "-"}
+                </Typography>
+              </Box>
+
+              {/* Applicant checkboxes */}
+              <Stack spacing={1} sx={{ mt: 0.5 }}>
+                {visibleApplicants.map((applicant) => {
+                  const isChecked = (
+                    productApplicants[coverage.id] ?? []
+                  ).includes(applicant);
+
+                  return (
+                    <SelectableOptionRow key={applicant}>
                       <Checkbox
-                        checked={checked}
-                        onChange={() => toggleCoverage(coverage.id)}
-                        onClick={(event) => event.stopPropagation()}
-                        inputProps={{
-                          "aria-label": `${coverage.name} selection`,
-                        }}
+                        checked={isChecked}
+                        onChange={() =>
+                          toggleApplicantForProduct(coverage.id, applicant)
+                        }
                         sx={{
-                          mt: 0.25,
+                          p: 0,
+                          pointerEvents: "none",
                           color: "text.primary",
                           "&.Mui-checked": {
                             color: "primary.main",
                           },
                         }}
                       />
-                    )}
-
-                    <Stack spacing={1} sx={{ flex: 1, minWidth: 0 }}>
-                      <Stack
-                        direction="row"
-                        spacing={1}
-                        alignItems="center"
-                        flexWrap="wrap"
-                      >
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            fontWeight: 700,
-                            fontSize: "14px",
-                            letterSpacing: "-0.25px",
-                          }}
-                        >
-                          {coverage.name}
-                          {coverage.underwritingType === "QD" && (
-                            <QuickDecisionIndicator />
-                          )}
-                        </Typography>
-
-                        {coverage.featured ? (
-                          <Chip
-                            icon={<AutoAwesomeIcon />}
-                            label="Featured"
-                            size="small"
-                            color="primary"
-                            sx={{
-                              "& .MuiChip-label": {
-                                fontSize: "0.675rem",
-                                fontWeight: 700,
-                              },
-                              "& .MuiChip-icon": {
-                                fontSize: "0.875rem",
-                              },
-                            }}
-                          />
-                        ) : null}
-                      </Stack>
-
-                      <Typography variant="body2" color="text.secondary">
-                        {coverage.description ?? coverage.definition}
+                      <Typography variant="body2" sx={{ flex: 1 }}>
+                        {applicantCheckboxLabels[applicant]}
                       </Typography>
-
-                      {!hasDependents && (
-                        <Stack
-                          sx={{ mt: 0.5, width: "100%" }}
-                          direction={"row"}
-                          alignItems={"center"}
-                          justifyContent={"start"}
-                          gap={1}
-                        >
-                          <Typography
-                            component="span"
-                            variant="h6"
-                            sx={{ color: "primary.main", fontWeight: 700 }}
-                          >
-                            {coverageText ?? "-"}
-                          </Typography>
-                        </Stack>
-                      )}
-
-                      {hasDependents && (
-                        <Stack
+                      {isChecked && (
+                        <Chip
+                          label="Added"
+                          size="small"
+                          color="success"
+                          // variant="outlined"
                           sx={{
-                            mt: 0.5,
-                            width: "100%",
+                            height: 22,
+                            "& .MuiChip-label": {
+                              fontSize: "0.7rem",
+                              fontWeight: 600,
+                              px: 1,
+                            },
                           }}
-                        >
-                          <Stack
-                            direction={{ xs: "column", sm: "row" }}
-                            justifyContent="space-between"
-                            alignItems="flex-start"
-                            sx={{ columnGap: 2, rowGap: 1 }}
-                          >
-                            <Stack spacing={0.25} sx={{ minWidth: 0 }}>
-                              <Typography
-                                variant="caption"
-                                sx={{
-                                  color: "#353b48",
-                                  fontWeight: 700,
-                                  mb: 0.25,
-                                }}
-                              >
-                                Available coverage:
-                              </Typography>
-                              {visibleApplicants.length > 0 ? (
-                                visibleApplicants.map((applicant) => (
-                                  <Typography
-                                    key={applicant}
-                                    variant="caption"
-                                    sx={{ color: "text.secondary" }}
-                                  >
-                                    {applicantLabels[applicant]}:{" "}
-                                    <Typography
-                                      component="span"
-                                      variant="caption"
-                                      sx={{
-                                        color: "primary.main",
-                                        fontWeight: 700,
-                                      }}
-                                    >
-                                      {coverageText ?? "-"}
-                                    </Typography>
-                                  </Typography>
-                                ))
-                              ) : (
-                                <Typography
-                                  variant="caption"
-                                  sx={{ color: "text.secondary" }}
-                                >
-                                  -
-                                </Typography>
-                              )}
-                            </Stack>
-
-                            <Stack sx={{ alignItems: "flex-start" }}>
-                              <Typography
-                                variant="caption"
-                                sx={{
-                                  color: "#353b48",
-                                  fontWeight: 700,
-                                  mb: 0.25,
-                                }}
-                              >
-                                Select coverage for:
-                              </Typography>
-                              <DependentChipSelector
-                                applicantIds={visibleApplicants}
-                                selectedApplicants={
-                                  productApplicants[coverage.id] ?? []
-                                }
-                                onChange={(nextApplicants) => {
-                                  const currentlySelected =
-                                    selectedCoverageIds.includes(coverage.id);
-                                  const shouldSelectCoverage =
-                                    nextApplicants.length > 0;
-
-                                  if (
-                                    shouldSelectCoverage &&
-                                    !currentlySelected
-                                  ) {
-                                    onChangeSelectedCoverageIds([
-                                      ...selectedCoverageIds,
-                                      coverage.id,
-                                    ]);
-                                  } else if (
-                                    !shouldSelectCoverage &&
-                                    currentlySelected
-                                  ) {
-                                    onChangeSelectedCoverageIds(
-                                      selectedCoverageIds.filter(
-                                        (id) => id !== coverage.id,
-                                      ),
-                                    );
-                                  }
-
-                                  if (onChangeProductApplicants) {
-                                    onChangeProductApplicants({
-                                      ...productApplicants,
-                                      [coverage.id]: nextApplicants,
-                                    });
-                                  }
-                                }}
-                              />
-                            </Stack>
-                          </Stack>
-                        </Stack>
+                        />
                       )}
-                    </Stack>
-                  </SelectableOptionCard>
-                );
-              })}
-            </Stack>
-          </AccordionDetails>
-        </Accordion>
-      ))}
+                    </SelectableOptionRow>
+                  );
+                })}
+              </Stack>
+            </Box>
+          );
+        })}
+      </Box>
+
+      {/* Empty state when all filters deselected */}
+      {filteredCoverages.length === 0 && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            py: 6,
+            px: 4,
+          }}
+        >
+          <Stack spacing={1} alignItems="center">
+            <FilterListOffIcon sx={{ fontSize: 40, color: "text.disabled" }} />
+            <Typography variant="body1" sx={{ color: "text.secondary" }}>
+              No coverages match the selected filters.
+            </Typography>
+            <Typography variant="body2" sx={{ color: "text.disabled" }}>
+              Adjust the filters above to see available coverage options.
+            </Typography>
+          </Stack>
+        </Box>
+      )}
     </Stack>
   );
 }

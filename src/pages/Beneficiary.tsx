@@ -25,10 +25,12 @@ import AddListItem from "../components/form/AddListItem";
 import ApplicantSection from "../components/form/ApplicantSection";
 import { shouldShowApplicantLabel } from "../components/form/applicantVisibility";
 import FormRoutePage from "../components/form/FormRoutePage";
+import FormPageHelp from "../components/form/FormPageHelp";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
 import type { CoverageApplicantId } from "../config/coverages/types";
 import { useApplicationForm } from "../state/ApplicationFormContext";
+import { beneficiaryHelpItems } from "../content/helpContent";
 
 type BeneficiaryDesignation = "primary" | "contingent";
 type BeneficiaryType = "individual" | "trust";
@@ -245,70 +247,7 @@ export default function Beneficiary() {
     number | null
   >(null);
 
-  const helpItems = useMemo(
-    () => [
-      {
-        id: "beneficiary-basics",
-        label: "What is a beneficiary?",
-        title: "What is a beneficiary?",
-        content: (
-          <Stack spacing={2}>
-            <Typography variant="body2">
-              A beneficiary is the person, people, or trust you choose to
-              receive the money from your policy when you pass away.
-            </Typography>
-            <Typography variant="body2">
-              This can be a family member, friend, or trust, and you can update
-              your beneficiary choices if your situation changes.
-            </Typography>
-            <Typography variant="body2">
-              A <strong>primary beneficiary</strong> is the person or entity who
-              would receive the policy proceeds first.
-            </Typography>
-            <Typography variant="body2">
-              A <strong>contingent beneficiary</strong> would receive the policy
-              proceeds if the primary beneficiary is unable to receive them.
-            </Typography>
-            <Typography variant="body2">
-              You may add up to ten primary and ten contingent beneficiaries
-              online. If no beneficiary is named, proceeds will be paid
-              according to the policy provisions.
-            </Typography>
-            <Typography variant="body2">
-              For dependent child coverage, the beneficiary is the member.
-            </Typography>
-          </Stack>
-        ),
-      },
-      {
-        id: "beneficiary-share",
-        label: "What is the % share?",
-        title: "What is the % share?",
-        content: (
-          <Stack spacing={2}>
-            <Typography variant="body2">
-              The percentage share determines how much of the policy payout each
-              beneficiary will receive.
-            </Typography>
-            <Typography variant="body2">
-              You assign a percentage to each individual beneficiary, and the
-              percentages for that designation must add up to 100%.
-            </Typography>
-            <Typography variant="body2">
-              For example, if one beneficiary is assigned 60% and another is
-              assigned 40%, they would receive those portions of the total
-              benefit.
-            </Typography>
-            <Typography variant="body2">
-              If you name a trust as beneficiary, 100% of the proceeds will be
-              paid to the trust.
-            </Typography>
-          </Stack>
-        ),
-      },
-    ],
-    [],
-  );
+  const helpItems = beneficiaryHelpItems;
 
   function parseCommittedShare(rawShare: string): number | null {
     const parsed = Number(rawShare);
@@ -719,7 +658,10 @@ export default function Beneficiary() {
   }, [applicantProducts, beneficiariesByProduct, setPageValues]);
 
   return (
-    <FormRoutePage pageId="beneficiary" helpItems={helpItems}>
+    <FormRoutePage
+      pageId="beneficiary"
+      help={<FormPageHelp items={helpItems} />}
+    >
       {!hasAnyApplicantProducts ? (
         <Alert severity="info">
           No self or spouse Life/AD product selections were found.

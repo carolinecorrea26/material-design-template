@@ -33,14 +33,8 @@ export default function FormSectionTitle(props: FormSectionTitleProps) {
         }}
       >
         <Typography
-          sx={{
-            lineHeight: 2.66,
-            textTransform: "uppercase",
-            color: "#4e6d9c",
-            fontWeight: 700,
-            fontSize: "0.75rem",
-            letterSpacing: "1px",
-          }}
+          variant="formApplicantSectionLabel"
+          sx={{ color: "#4e6d9c" }}
         >
           {title}
         </Typography>
@@ -58,7 +52,12 @@ export default function FormSectionTitle(props: FormSectionTitleProps) {
         </Box>
       ) : null}
 
-      <Typography variant="sectionLabel">{props.label}</Typography>
+      <Typography
+        variant="formSectionLabel"
+        sx={{ color: "#4e6d9c", display: "block" }}
+      >
+        {props.label}
+      </Typography>
     </Stack>
   );
 }

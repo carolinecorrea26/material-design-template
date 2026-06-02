@@ -1,10 +1,8 @@
-import { Box, Stack, Typography } from "@mui/material";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
-import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
+import { Box, Typography } from "@mui/material";
 import FormRoutePage, {
   isSectionVisible,
 } from "../components/form/FormRoutePage";
+import FormPageHelp from "../components/form/FormPageHelp";
 import FieldRenderer from "../components/form/FieldRenderer";
 import ApplicantSection from "../components/form/ApplicantSection";
 import { shouldShowApplicantLabel } from "../components/form/applicantVisibility";
@@ -17,6 +15,7 @@ import {
 } from "../config/formFlow";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import type { CoverageApplicantId } from "../config/coverages/types";
+import { coverageQuestionsWhyAskedHelpItem } from "../content/helpContent";
 
 export default function CoverageQuestions() {
   const { values } = useApplicationForm();
@@ -76,82 +75,7 @@ export default function CoverageQuestions() {
     "spouse-tobacco-products",
   ]);
 
-  const helpItems = [
-    {
-      id: "why-asked",
-      label: "Why is this information being asked?",
-      title: "Why is this information being asked?",
-      content: (
-        <Stack spacing={3}>
-          <Typography variant="body2" color="text.secondary">
-            We understand these questions can feel personal. Here&apos;s how
-            this information is used in your application.
-          </Typography>
-
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <CalculateOutlinedIcon
-              sx={{
-                color: "primary.main",
-                fontSize: "2.5rem",
-                flexShrink: 0,
-              }}
-            />
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-                Determining your coverage options
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Your answers help us identify the coverage types and amounts
-                available to you. Different products have different eligibility
-                requirements, and this information ensures we show you the right
-                options.
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <TuneRoundedIcon
-              sx={{
-                color: "primary.main",
-                fontSize: "2.5rem",
-                flexShrink: 0,
-              }}
-            />
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-                Calculating your estimated cost
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Health and lifestyle information is used to calculate
-                personalized premium estimates. The more accurate your answers,
-                the more accurate your quoted rate will be.
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <InfoOutlinedIcon
-              sx={{
-                color: "primary.main",
-                fontSize: "2.5rem",
-                flexShrink: 0,
-              }}
-            />
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-                Your information is protected
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                All information you provide is transmitted securely and used
-                only for the purpose of evaluating your application. It is never
-                sold or shared for marketing purposes.
-              </Typography>
-            </Box>
-          </Box>
-        </Stack>
-      ),
-    },
-  ];
+  const helpItems = [coverageQuestionsWhyAskedHelpItem];
 
   function validate(nextValues: Record<string, unknown>) {
     // Check eligibility based on coverage question answers
@@ -189,7 +113,7 @@ export default function CoverageQuestions() {
   return (
     <FormRoutePage
       pageId="coverage-questions"
-      helpItems={helpItems}
+      help={<FormPageHelp items={helpItems} />}
       validate={validate}
     >
       {({ control, errors, watchedValues, allFields, pageSections }) =>

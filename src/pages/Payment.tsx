@@ -14,18 +14,19 @@ import {
   Typography,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import CreditCardOffOutlinedIcon from "@mui/icons-material/CreditCardOffOutlined";
-import LoopRoundedIcon from "@mui/icons-material/LoopRounded";
-import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { Controller } from "react-hook-form";
+import { sxPresets } from "../app/theme";
+import { formatUSD as formatCurrency } from "../utils/formatUSD";
+import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
 import FormRoutePage from "../components/form/FormRoutePage";
+import FormPageHelp from "../components/form/FormPageHelp";
 import FieldRenderer from "../components/form/FieldRenderer";
 import { coverageCategories } from "../config/coverageCategories";
 import type { CoverageCategoryId } from "../config/coverages/types";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { fieldCatalog } from "../config/fields";
 import type { FieldDefinition, FieldId } from "../config/fields/types";
+import { paymentHandlingHelpItem } from "../content/helpContent";
 
 type AppliedProduct = {
   coverageId: string;
@@ -86,44 +87,6 @@ function toPositiveAmount(value: unknown): number | null {
   }
 
   return null;
-}
-
-function estimateMonthlyPremium(
-  categoryId: CoverageCategoryId,
-  amount: number,
-) {
-  let raw: number;
-
-  switch (categoryId) {
-    case "LI":
-      raw = (amount / 1000) * 0.12;
-      break;
-    case "AD":
-      raw = (amount / 1000) * 0.05;
-      break;
-    case "DI":
-      raw = amount * 0.02;
-      break;
-    case "OO":
-      raw = amount * 0.018;
-      break;
-    case "SH":
-      raw = amount * 0.01;
-      break;
-    default:
-      raw = 0;
-  }
-
-  return Math.round(raw * 100) / 100;
-}
-
-function formatCurrency(value: number, decimals = 2): string {
-  return value.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
 }
 
 function getApplicantLabel(applicant: string): string {
@@ -277,111 +240,14 @@ function getPaymentDevFields(
 }
 
 export default function Payment() {
-  const helpItems = [
-    {
-      id: "payment-handling",
-      label: "How is my payment information handled?",
-      title: "How is my payment information handled?",
-      content: (
-        <Stack spacing={3}>
-          <Typography variant="body2" color="text.secondary">
-            We take the security of your payment information seriously. Here's
-            how we handle it throughout the application process.
-          </Typography>
-
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <CreditCardOffOutlinedIcon
-              sx={{
-                color: "primary.main",
-                fontSize: "2.5rem",
-                flexShrink: 0,
-              }}
-            />
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-                Payment is not collected now
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Your payment information is collected as part of the application
-                but you will not be charged until and unless you are approved
-                for coverage. No money leaves your account during the
-                application process.
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <LockOutlinedIcon
-              sx={{
-                color: "primary.main",
-                fontSize: "2.5rem",
-                flexShrink: 0,
-              }}
-            />
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-                Stored securely
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                All payment data is encrypted in transit and at rest using
-                industry-standard security protocols. Your information is stored
-                in PCI-compliant systems and is never accessible in plain text.
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <LoopRoundedIcon
-              sx={{
-                color: "primary.main",
-                fontSize: "2.5rem",
-                flexShrink: 0,
-              }}
-            />
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-                How payment is processed
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                If your application is approved, payment will be processed
-                according to the frequency you select (monthly, quarterly,
-                semiannually, or annually). You&apos;ll receive confirmation
-                before any charge is made.
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <DeleteOutlineRoundedIcon
-              sx={{
-                color: "primary.main",
-                fontSize: "2.5rem",
-                flexShrink: 0,
-              }}
-            />
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-                Cancellation &amp; data purge
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                You can cancel your application at any time before approval with
-                no obligation. All payment and application information is purged
-                from our systems 10 days after submission if no action is taken
-                or the application is not approved.
-              </Typography>
-            </Box>
-          </Box>
-        </Stack>
-      ),
-    },
-  ];
+  const helpItems = [paymentHandlingHelpItem];
 
   return (
     <FormRoutePage
       pageId="payment"
       title="Choose how you'd like to pay for coverage. You won't be billed until you are approved for coverage."
       devFillFields={getPaymentDevFields}
-      helpItems={helpItems}
+      help={<FormPageHelp items={helpItems} />}
     >
       {({ control, errors, watchedValues }) => {
         const values = watchedValues as Record<string, unknown>;
@@ -581,10 +447,7 @@ export default function Payment() {
                             {/* Estimated cost styled like coverage cart total */}
                             <Box
                               sx={{
-                                p: 2,
-                                borderRadius: 2,
-                                backgroundColor: "rgba(0, 22, 57, 0.04)",
-                                border: "1px solid rgba(0, 22, 57, 0.08)",
+                                ...sxPresets.infoBox,
                               }}
                             >
                               <Stack spacing={1}>

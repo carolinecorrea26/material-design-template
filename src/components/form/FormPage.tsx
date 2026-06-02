@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { Box, Link, Stack } from "@mui/material";
+import { Box, Link, Stack, Typography } from "@mui/material";
 import KeyboardBackspaceRoundedIcon from "@mui/icons-material/KeyboardBackspaceRounded";
 import FormPageActions from "./FormPageActions";
 import FormPageContent from "./FormPageContent";
@@ -60,13 +60,12 @@ export default function FormPage({
                       alignItems: "center",
                       gap: 0.5,
                       color: "grey.600",
-                      fontSize: "0.8rem",
                       cursor: "pointer",
                       width: "fit-content",
                     }}
                   >
-                    <KeyboardBackspaceRoundedIcon sx={{ fontSize: "1rem" }} />
-                    Back
+                    <KeyboardBackspaceRoundedIcon fontSize="small" />
+                    <Typography variant="formBackLink">Back</Typography>
                   </Link>
                 )}
                 <FormPageTitle

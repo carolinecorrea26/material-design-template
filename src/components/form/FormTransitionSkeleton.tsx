@@ -13,14 +13,8 @@ export function FormTransitionHeaderSkeleton({
     <Box sx={{ padding: "0 0.5rem" }}>
       {statusMessage ? (
         <Typography
-          sx={{
-            mt: 1.5,
-            mb: 1.5,
-            color: "text.secondary",
-            fontSize: "0.825rem",
-            fontWeight: 400,
-            lineHeight: 1.4,
-          }}
+          variant="formTransitionStatus"
+          sx={{ mt: 1.5, mb: 1.5, color: "text.secondary" }}
         >
           {statusMessage}
         </Typography>

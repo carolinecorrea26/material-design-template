@@ -47,6 +47,15 @@ export function generateFormDataUpToPage(
       ? values.coverageSelections
       : [];
 
+    // Ensure productApplicants are set for each selected coverage
+    if (!values.productApplicants) {
+      const productApplicants: Record<string, string[]> = {};
+      for (const coverageId of coverageSelections) {
+        productApplicants[coverageId] = ["member"];
+      }
+      values.productApplicants = productApplicants;
+    }
+
     if (!values.coverageAmounts) {
       values.coverageAmounts = {};
     }

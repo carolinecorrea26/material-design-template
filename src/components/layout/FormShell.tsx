@@ -15,7 +15,7 @@ export default function FormShell({
   footer,
 }: FormShellProps) {
   return (
-    <Stack spacing={2}>
+    <Stack spacing={0}>
       {headerWide}
       <Stack spacing={2}>
         {header}

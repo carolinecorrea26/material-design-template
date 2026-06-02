@@ -40,6 +40,7 @@ import { Link as RouterLink } from "react-router-dom";
 import FormHelpDrawer from "../components/form/FormHelpDrawer";
 import QuickDecisionIndicator from "../components/common/QuickDecisionIndicator";
 import QuickDecisionDrawerContent from "../components/common/QuickDecisionDrawerContent";
+import { ApplicationReviewDrawerContent } from "../content/helpContent";
 import { getActiveClient } from "../client/getActiveClient";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
@@ -54,6 +55,14 @@ import {
   deriveStateProvinceFromZipOrPostalCode,
   formatZipOrPostalCode,
 } from "../utils/zipToStateProvince";
+import { formatUSD } from "../utils/formatUSD";
+import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
+import { generateAmountChoices } from "../utils/generateAmountChoices";
+import {
+  parseStoredDate,
+  formatDateForStorage,
+  formatDateDisplay,
+} from "../utils/dateFormatting";
 
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
@@ -181,15 +190,6 @@ const APPLYING_STEPS = [
   },
 ] as const;
 
-function formatUSD(value: number, decimals = 2): string {
-  return value.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
-}
-
 function formatCoverageRange(coverage: CoverageDefinition) {
   if (coverage.minAmount == null && coverage.maxAmount == null) {
     return "Coverage amount varies by selection.";
@@ -209,68 +209,6 @@ function formatCoverageRange(coverage: CoverageDefinition) {
   return `Up to ${formatUSD(coverage.maxAmount ?? 0, 0)}`;
 }
 
-function generateAmountChoices(
-  categoryId: CoverageCategoryId,
-  minAmount?: number,
-  maxAmount?: number,
-): number[] {
-  if (minAmount != null && maxAmount != null) {
-    let step: number;
-
-    if (categoryId === "LI" || categoryId === "AD") {
-      step = 25000;
-    } else if (categoryId === "DI" || categoryId === "OO") {
-      step = 500;
-    } else {
-      step = maxAmount <= 1000 ? 50 : 500;
-    }
-
-    const choices = new Set<number>([minAmount, maxAmount]);
-    for (let value = minAmount; value <= maxAmount; value += step) {
-      choices.add(value);
-    }
-
-    return [...choices].sort((a, b) => a - b);
-  }
-
-  if (categoryId === "LI" || categoryId === "AD") {
-    return [25000, 50000, 100000, 250000, 500000];
-  }
-
-  if (categoryId === "DI" || categoryId === "OO") {
-    return [500, 1000, 1500, 2000, 2500, 3000];
-  }
-
-  return [100, 250, 500, 1000];
-}
-
-function estimateMonthlyPremium(
-  categoryId: CoverageCategoryId,
-  amount: number,
-): number {
-  let raw = 0;
-
-  switch (categoryId) {
-    case "LI":
-      raw = (amount / 1000) * 0.12;
-      break;
-    case "AD":
-      raw = (amount / 1000) * 0.05;
-      break;
-    case "DI":
-      raw = amount * 0.02;
-      break;
-    case "OO":
-      raw = amount * 0.018;
-      break;
-    case "SH":
-      raw = amount * 0.01;
-      break;
-  }
-
-  return Math.round(raw * 100) / 100;
-}
-
 function getEstimateAmountLabel(categoryId: CoverageCategoryId): string {
   return categoryId === "DI" || categoryId === "OO"
     ? "Monthly benefit amount"
@@ -285,29 +223,6 @@ function getApplicantLabel(applicant: CoverageApplicantId): string {
 
 function getStateOptions() {
   return fieldCatalog["state-province"].options ?? [];
-}
-
-function parseStoredDate(value: string): string {
-  if (!value) return "";
-  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (!match) return value;
-  return `${match[2]}/${match[3]}/${match[1]}`;
-}
-
-function formatDateForStorage(display: string): string {
-  const digits = display.replace(/\D/g, "");
-  if (digits.length !== 8) return "";
-  const mm = digits.slice(0, 2);
-  const dd = digits.slice(2, 4);
-  const yyyy = digits.slice(4, 8);
-  return `${yyyy}-${mm}-${dd}`;
-}
-
-function formatDateDisplay(raw: string): string {
-  const digits = raw.replace(/\D/g, "").slice(0, 8);
-  if (digits.length <= 2) return digits;
-  if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
-  return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
 }
 
 function calculateAge(birthdayStr: string): number | null {
@@ -2070,65 +1985,9 @@ export default function Home() {
         onClose={() => setActiveDrawer(null)}
       >
         {activeDrawer === "application-review" ? (
-          <Stack spacing={2}>
-            <Typography variant="body2" color="text.secondary">
-              During the application review process, also known as underwriting,
-              our team will review your application to provide a decision on
-              your application.
-            </Typography>
-
-            <Box>
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-                What to expect
-              </Typography>
-              <Stack component="ul" spacing={1} sx={{ m: 0, pl: 2.5 }}>
-                <Typography
-                  component="li"
-                  variant="body2"
-                  color="text.secondary"
-                >
-                  A medical service provider may contact you to confirm details
-                  about your health.
-                </Typography>
-                <Typography
-                  component="li"
-                  variant="body2"
-                  color="text.secondary"
-                >
-                  A medical exam may be scheduled if needed at no cost to you
-                  and at a time and place convenient to you.
-                </Typography>
-                <Typography
-                  component="li"
-                  variant="body2"
-                  color="text.secondary"
-                >
-                  We may also request additional information, such as
-                  prescription history, financial information, medical records
-                  from your physician(s), and/or medical claims history.
-                </Typography>
-                <Typography
-                  component="li"
-                  variant="body2"
-                  color="text.secondary"
-                >
-                  Any forms needing your signature will be sent securely via
-                  DocuSign.
-                </Typography>
-              </Stack>
-            </Box>
-
-            <Typography variant="body2" color="text.secondary">
-              The review process typically takes a few business days, but with{" "}
-              <InlineDrawerLink
-                onClick={() => setActiveDrawer("quick-decision")}
-              >
-                <QuickDecisionMark />
-              </InlineDrawerLink>
-              , many applications can get a real-time decision, often without
-              requiring a medical exam.
-            </Typography>
-          </Stack>
+          <ApplicationReviewDrawerContent
+            onOpenQuickDecision={() => setActiveDrawer("quick-decision")}
+          />
         ) : (
           <QuickDecisionDrawerContent />
         )}

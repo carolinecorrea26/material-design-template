@@ -1,4 +1,4 @@
-import type { ChangeEvent } from "react";
+import type { ChangeEvent, ReactNode } from "react";
 import { Controller, type Control, type FieldErrors } from "react-hook-form";
 import {
   Box,
@@ -16,11 +16,19 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
+  type TextFieldProps,
 } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
+import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import type { FieldDefinition } from "../../config/fields/types";
 import SelectableOptionRow from "./SelectableOptionRow";
+import {
+  parseStoredDate,
+  formatDateForStorage,
+  formatDateDisplay,
+} from "../../utils/dateFormatting";
 
 type FormValues = Record<string, string | boolean | string[]>;
 
@@ -32,6 +40,10 @@ type FieldRendererProps = {
   margin?: "none" | "dense" | "normal";
 };
 
+type FieldStatusState = {
+  hasError?: boolean;
+};
+
 const CURRENCY_FIELD_IDS = new Set([
   "average-monthly-income",
   "spouse-average-monthly-income",
@@ -40,6 +52,10 @@ const CURRENCY_FIELD_IDS = new Set([
 
 function isCurrencyField(field: FieldDefinition) {
   return field.format === "currency" || CURRENCY_FIELD_IDS.has(field.id);
+}
+
+function isZipOrPostalField(field: FieldDefinition) {
+  return field.id.includes("zip") || field.autoComplete === "postal-code";
 }
 
 function getValidationRules(field: FieldDefinition) {
@@ -80,6 +96,15 @@ function getValidationRules(field: FieldDefinition) {
 
   if (field.required) {
     rules.required = "This field is required.";
+  }
+
+  if (isZipOrPostalField(field)) {
+    rules.validate = (value) => {
+      if (!value) return true;
+      return String(value).trim().length >= 5
+        ? true
+        : "Enter a valid ZIP / Postal Code.";
+    };
   }
 
   if (field.format === "email") {
@@ -184,6 +209,136 @@ function getLabelVariant(field: FieldDefinition) {
   return field.labelVariant ?? "floating";
 }
 
+function hasCompletedValue(field: FieldDefinition, value: unknown) {
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  const stringValue = String(value ?? "").trim();
+
+  if (!stringValue) {
+    return false;
+  }
+
+  if (isZipOrPostalField(field)) {
+    return stringValue.length >= 5;
+  }
+
+  if (field.format === "email") {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(stringValue);
+  }
+
+  if (field.format === "phone") {
+    return stringValue.replace(/\D/g, "").length === 10;
+  }
+
+  if (field.format === "ssn") {
+    return stringValue.replace(/\D/g, "").length === 9;
+  }
+
+  if (field.format === "percent") {
+    return stringValue.replace(/\D/g, "").length > 0;
+  }
+
+  if (field.inputType === "number") {
+    return /^\d+$/.test(stringValue);
+  }
+
+  if (field.inputType === "date") {
+    return (
+      /^\d{2}\/\d{2}\/\d{4}$/.test(stringValue) ||
+      /^\d{4}-\d{2}-\d{2}$/.test(stringValue)
+    );
+  }
+
+  return stringValue.length >= 2;
+}
+
+function isFieldComplete(
+  field: FieldDefinition,
+  value: unknown,
+  statusState?: FieldStatusState,
+) {
+  if (statusState?.hasError) return false;
+  return hasCompletedValue(field, value);
+}
+
+function isFieldInError(statusState?: FieldStatusState) {
+  return Boolean(statusState?.hasError);
+}
+
+function renderCompletedIcon(sx = {}) {
+  return (
+    <CheckCircleOutlineRoundedIcon
+      aria-label="Completed"
+      sx={{
+        color: "success.main",
+        fontSize: "1.25rem",
+        flexShrink: 0,
+        ...sx,
+      }}
+    />
+  );
+}
+
+function renderErrorIcon(sx = {}) {
+  return (
+    <HighlightOffRoundedIcon
+      aria-label="Error"
+      sx={{
+        color: "error.main",
+        fontSize: "1.25rem",
+        flexShrink: 0,
+        ...sx,
+      }}
+    />
+  );
+}
+
+function renderCompletedAdornment(existingAdornment?: ReactNode) {
+  return (
+    <>
+      {existingAdornment}
+      <InputAdornment position="end">{renderCompletedIcon()}</InputAdornment>
+    </>
+  );
+}
+
+function renderErrorAdornment(existingAdornment?: ReactNode) {
+  return (
+    <>
+      {existingAdornment}
+      <InputAdornment position="end">{renderErrorIcon()}</InputAdornment>
+    </>
+  );
+}
+
+function renderCompletedSelectIcon() {
+  return renderCompletedIcon({
+    position: "absolute",
+    right: 40,
+    top: "50%",
+    transform: "translateY(-50%)",
+    pointerEvents: "none",
+    zIndex: 1,
+  });
+}
+
+function renderErrorSelectIcon() {
+  return renderErrorIcon({
+    position: "absolute",
+    right: 40,
+    top: "50%",
+    transform: "translateY(-50%)",
+    pointerEvents: "none",
+    zIndex: 1,
+  });
+}
+
 function renderFieldLabel(field: FieldDefinition) {
   return (
     <Box
@@ -198,29 +353,6 @@ function renderFieldLabel(field: FieldDefinition) {
       ) : null}
     </Box>
   );
-}
-
-function parseStoredDate(value: string): string {
-  if (!value) return "";
-  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (!match) return value;
-  return `${match[2]}/${match[3]}/${match[1]}`;
-}
-
-function formatDateForStorage(display: string): string {
-  const digits = display.replace(/\D/g, "");
-  if (digits.length !== 8) return "";
-  const mm = digits.slice(0, 2);
-  const dd = digits.slice(2, 4);
-  const yyyy = digits.slice(4, 8);
-  return `${yyyy}-${mm}-${dd}`;
-}
-
-function formatDateDisplay(raw: string): string {
-  const digits = raw.replace(/\D/g, "").slice(0, 8);
-  if (digits.length <= 2) return digits;
-  if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
-  return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
 }
 
 const controlSx = {
@@ -249,12 +381,16 @@ export default function FieldRenderer({
   const fieldError = errors[field.id]?.message as string | undefined;
   const resolvedHelperText = fieldError ?? field.helperText;
 
+  const hasError = Boolean(errors[field.id]);
+  const statusState: FieldStatusState = { hasError };
+
   function renderTextLikeField(
     controllerField: {
       value: unknown;
       onChange: (value: string) => void;
       onBlur: () => void;
     },
+    _fieldState?: unknown,
     options: {
       type?: string;
       value?: string;
@@ -263,11 +399,27 @@ export default function FieldRenderer({
       ) => void;
       placeholder?: string;
       inputProps?: Record<string, unknown>;
-      inputAdornmentProps?: Record<string, unknown>;
+      inputAdornmentProps?: TextFieldProps["InputProps"];
     } = {},
   ) {
     const labelVariant = getLabelVariant(field);
     const value = options.value ?? (controllerField.value as string) ?? "";
+    const hasCustomEndAdornment = Boolean(
+      options.inputAdornmentProps?.endAdornment,
+    );
+    const isComplete =
+      !field.multiline && isFieldComplete(field, value, statusState);
+    const showError = !field.multiline && isFieldInError(statusState);
+    const inputPropsWithCompletion = {
+      ...options.inputAdornmentProps,
+      endAdornment: hasCustomEndAdornment
+        ? options.inputAdornmentProps?.endAdornment
+        : isComplete
+          ? renderCompletedAdornment()
+          : showError
+            ? renderErrorAdornment()
+            : undefined,
+    };
     const handleChange =
       options.onChange ??
       ((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -296,7 +448,7 @@ export default function FieldRenderer({
         }
         multiline={field.multiline}
         minRows={field.multiline ? (field.minRows ?? 3) : undefined}
-        InputProps={options.inputAdornmentProps}
+        InputProps={inputPropsWithCompletion}
       />
     );
 
@@ -324,64 +476,79 @@ export default function FieldRenderer({
         name={field.id}
         control={control}
         rules={validationRules}
-        render={({ field: controllerField }) => (
-          <FormControl
-            fullWidth
-            margin={margin}
-            error={Boolean(errors[field.id])}
-          >
-            {!hideLabel ? (
-              <FormLabel
-                required={field.required}
-                sx={{ display: "block", mb: 1 }}
-              >
-                {renderFieldLabel(field)}
-              </FormLabel>
-            ) : null}
+        render={({ field: controllerField }) => {
+          const isComplete = isFieldComplete(
+            field,
+            controllerField.value,
+            statusState,
+          );
+          const showError = isFieldInError(statusState);
 
-            <ToggleButtonGroup
-              exclusive
-              value={(controllerField.value as string) ?? ""}
-              onChange={(_, value) => {
-                if (value !== null) {
-                  controllerField.onChange(value);
-                }
-              }}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "100%",
-                gap: 1,
-                mt: hideLabel ? 0 : 1,
-              }}
+          return (
+            <FormControl
+              fullWidth
+              margin={margin}
+              error={Boolean(errors[field.id])}
             >
-              {(field.options ?? []).map((option) => (
-                <ToggleButton
-                  key={option.value}
-                  value={option.value}
-                  sx={{
-                    width: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "flex-start",
-                    gap: 1.5,
-                    py: 1.5,
-                    textTransform: "none",
-                  }}
+              {!hideLabel ? (
+                <FormLabel
+                  required={field.required}
+                  sx={{ display: "block", mb: 1 }}
                 >
-                  <Radio
-                    checked={controllerField.value === option.value}
-                    size="small"
-                    sx={controlSx}
-                  />
-                  {option.label}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
+                  {renderFieldLabel(field)}
+                </FormLabel>
+              ) : null}
 
-            <FormHelperText>{resolvedHelperText}</FormHelperText>
-          </FormControl>
-        )}
+              <ToggleButtonGroup
+                exclusive
+                value={(controllerField.value as string) ?? ""}
+                onChange={(_, value) => {
+                  if (value !== null) {
+                    controllerField.onChange(value);
+                  }
+                }}
+                onBlur={controllerField.onBlur}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "100%",
+                  gap: 1,
+                  mt: hideLabel ? 0 : 1,
+                }}
+              >
+                {(field.options ?? []).map((option) => {
+                  const checked = controllerField.value === option.value;
+
+                  return (
+                    <ToggleButton
+                      key={option.value}
+                      value={option.value}
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        gap: 1.5,
+                        py: 1.5,
+                        textTransform: "none",
+                      }}
+                    >
+                      <Radio checked={checked} size="small" sx={controlSx} />
+                      {option.label}
+                      {isComplete && checked
+                        ? renderCompletedIcon({ ml: "auto" })
+                        : showError && checked
+                          ? renderErrorIcon({ ml: "auto" })
+                          : null}
+                    </ToggleButton>
+                  );
+                })}
+              </ToggleButtonGroup>
+
+              <FormHelperText>{resolvedHelperText}</FormHelperText>
+            </FormControl>
+          );
+        }}
       />
     );
   }
@@ -396,66 +563,101 @@ export default function FieldRenderer({
         name={field.id}
         control={control}
         rules={validationRules}
-        render={({ field: controllerField }) => (
-          <FormControl
-            fullWidth
-            margin={margin}
-            error={Boolean(errors[field.id])}
-          >
-            {labelVariant === "standard" ? (
-              <>
-                {!hideLabel ? (
-                  <FormLabel required={field.required} sx={{ mb: 1 }}>
-                    {renderFieldLabel(field)}
-                  </FormLabel>
-                ) : null}
-                <Select
-                  value={(controllerField.value as string) ?? ""}
-                  onChange={(event) =>
-                    controllerField.onChange(event.target.value)
-                  }
-                  displayEmpty
-                  disabled={field.disabled}
-                >
-                  <MenuItem value="">
-                    <em>{field.placeholder ?? "Select"}</em>
-                  </MenuItem>
-                  {(field.options ?? []).map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </>
-            ) : (
-              <>
-                <InputLabel id={labelId} required={field.required}>
-                  {renderFieldLabel(field)}
-                </InputLabel>
-                <Select
-                  labelId={labelId}
-                  label={field.label}
-                  value={(controllerField.value as string) ?? ""}
-                  onChange={(event) =>
-                    controllerField.onChange(event.target.value)
-                  }
-                  disabled={field.disabled}
-                >
-                  <MenuItem value="">
-                    <em>{field.placeholder ?? "Select"}</em>
-                  </MenuItem>
-                  {(field.options ?? []).map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </>
-            )}
+        render={({ field: controllerField }) => {
+          const value = (controllerField.value as string) ?? "";
+          const isComplete = isFieldComplete(field, value, statusState);
+          const showError = isFieldInError(statusState);
+          const hasIcon = isComplete || showError;
 
-            <FormHelperText>{resolvedHelperText}</FormHelperText>
-          </FormControl>
-        )}
+          return (
+            <FormControl
+              fullWidth
+              margin={margin}
+              error={Boolean(errors[field.id])}
+            >
+              {labelVariant === "standard" ? (
+                <>
+                  {!hideLabel ? (
+                    <FormLabel required={field.required} sx={{ mb: 1 }}>
+                      {renderFieldLabel(field)}
+                    </FormLabel>
+                  ) : null}
+                  <Box sx={{ position: "relative" }}>
+                    <Select
+                      fullWidth
+                      value={value}
+                      onChange={(event) =>
+                        controllerField.onChange(event.target.value)
+                      }
+                      onBlur={controllerField.onBlur}
+                      displayEmpty
+                      disabled={field.disabled}
+                      sx={{
+                        "& .MuiSelect-select": {
+                          pr: hasIcon ? "64px !important" : undefined,
+                        },
+                      }}
+                    >
+                      <MenuItem value="">
+                        <em>{field.placeholder ?? "Select"}</em>
+                      </MenuItem>
+                      {(field.options ?? []).map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {isComplete
+                      ? renderCompletedSelectIcon()
+                      : showError
+                        ? renderErrorSelectIcon()
+                        : null}
+                  </Box>
+                </>
+              ) : (
+                <>
+                  <InputLabel id={labelId} required={field.required}>
+                    {renderFieldLabel(field)}
+                  </InputLabel>
+                  <Box sx={{ position: "relative" }}>
+                    <Select
+                      fullWidth
+                      labelId={labelId}
+                      label={field.label}
+                      value={value}
+                      onChange={(event) =>
+                        controllerField.onChange(event.target.value)
+                      }
+                      onBlur={controllerField.onBlur}
+                      disabled={field.disabled}
+                      sx={{
+                        "& .MuiSelect-select": {
+                          pr: hasIcon ? "64px !important" : undefined,
+                        },
+                      }}
+                    >
+                      <MenuItem value="">
+                        <em>{field.placeholder ?? "Select"}</em>
+                      </MenuItem>
+                      {(field.options ?? []).map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {isComplete
+                      ? renderCompletedSelectIcon()
+                      : showError
+                        ? renderErrorSelectIcon()
+                        : null}
+                  </Box>
+                </>
+              )}
+
+              <FormHelperText>{resolvedHelperText}</FormHelperText>
+            </FormControl>
+          );
+        }}
       />
     );
   }
@@ -473,6 +675,13 @@ export default function FieldRenderer({
           const selectedValues = Array.isArray(controllerField.value)
             ? controllerField.value.map(String)
             : [];
+          const isComplete = isFieldComplete(
+            field,
+            selectedValues,
+            statusState,
+          );
+          const showError = isFieldInError(statusState);
+          const hasIcon = isComplete || showError;
 
           return (
             <FormControl
@@ -485,26 +694,42 @@ export default function FieldRenderer({
                 {renderFieldLabel(field)}
               </InputLabel>
 
-              <Select<string[]>
-                labelId={labelId}
-                label={field.label}
-                multiple
-                value={selectedValues}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  controllerField.onChange(
-                    typeof value === "string" ? value.split(",") : value,
-                  );
-                }}
-                renderValue={(selected) => selected.join(", ")}
-              >
-                {(field.options ?? []).map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    <Checkbox checked={selectedValues.includes(option.value)} />
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </Select>
+              <Box sx={{ position: "relative" }}>
+                <Select<string[]>
+                  fullWidth
+                  labelId={labelId}
+                  label={field.label}
+                  multiple
+                  value={selectedValues}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    controllerField.onChange(
+                      typeof value === "string" ? value.split(",") : value,
+                    );
+                  }}
+                  onBlur={controllerField.onBlur}
+                  renderValue={(selected) => selected.join(", ")}
+                  sx={{
+                    "& .MuiSelect-select": {
+                      pr: hasIcon ? "64px !important" : undefined,
+                    },
+                  }}
+                >
+                  {(field.options ?? []).map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      <Checkbox
+                        checked={selectedValues.includes(option.value)}
+                      />
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {isComplete
+                  ? renderCompletedSelectIcon()
+                  : showError
+                    ? renderErrorSelectIcon()
+                    : null}
+              </Box>
 
               <FormHelperText>{resolvedHelperText}</FormHelperText>
             </FormControl>
@@ -521,36 +746,52 @@ export default function FieldRenderer({
         name={field.id}
         control={control}
         rules={validationRules}
-        render={({ field: controllerField }) => (
-          <FormControl
-            fullWidth
-            margin="normal"
-            error={Boolean(errors[field.id])}
-          >
-            <SelectableOptionRow>
-              <Checkbox
-                checked={Boolean(controllerField.value)}
-                onChange={(event) =>
-                  controllerField.onChange(event.target.checked)
-                }
-                sx={controlSx}
-              />
-              <Typography variant="body2">
-                {field.label}
-                {field.required ? (
-                  <Typography
-                    component="span"
-                    sx={{ color: "error.main", ml: 0.25 }}
-                  >
-                    *
-                  </Typography>
-                ) : null}
-              </Typography>
-            </SelectableOptionRow>
+        render={({ field: controllerField }) => {
+          const isComplete = isFieldComplete(
+            field,
+            controllerField.value,
+            statusState,
+          );
+          const showError = isFieldInError(statusState);
 
-            <FormHelperText>{resolvedHelperText}</FormHelperText>
-          </FormControl>
-        )}
+          return (
+            <FormControl
+              fullWidth
+              margin="normal"
+              error={Boolean(errors[field.id])}
+            >
+              <SelectableOptionRow>
+                <Checkbox
+                  checked={Boolean(controllerField.value)}
+                  onChange={(event) => {
+                    controllerField.onChange(event.target.checked);
+                    controllerField.onBlur();
+                  }}
+                  onBlur={controllerField.onBlur}
+                  sx={controlSx}
+                />
+                <Typography variant="body2">
+                  {field.label}
+                  {field.required ? (
+                    <Typography
+                      component="span"
+                      sx={{ color: "error.main", ml: 0.25 }}
+                    >
+                      *
+                    </Typography>
+                  ) : null}
+                </Typography>
+                {isComplete
+                  ? renderCompletedIcon({ ml: "auto" })
+                  : showError
+                    ? renderErrorIcon({ ml: "auto" })
+                    : null}
+              </SelectableOptionRow>
+
+              <FormHelperText>{resolvedHelperText}</FormHelperText>
+            </FormControl>
+          );
+        }}
       />
     );
   }
@@ -566,6 +807,12 @@ export default function FieldRenderer({
           const selectedValues = Array.isArray(controllerField.value)
             ? controllerField.value.map(String)
             : [];
+          const isComplete = isFieldComplete(
+            field,
+            selectedValues,
+            statusState,
+          );
+          const showError = isFieldInError(statusState);
 
           return (
             <FormControl
@@ -596,10 +843,17 @@ export default function FieldRenderer({
                               );
 
                           controllerField.onChange(nextValues);
+                          controllerField.onBlur();
                         }}
+                        onBlur={controllerField.onBlur}
                         sx={controlSx}
                       />
                       <Typography variant="body2">{option.label}</Typography>
+                      {isComplete && checked
+                        ? renderCompletedIcon({ ml: "auto" })
+                        : showError
+                          ? renderErrorIcon({ ml: "auto" })
+                          : null}
                     </SelectableOptionRow>
                   );
                 })}
@@ -623,6 +877,11 @@ export default function FieldRenderer({
         rules={validationRules}
         render={({ field: controllerField }) => {
           const labelVariant = getLabelVariant(field);
+          const displayValue = parseStoredDate(
+            (controllerField.value as string) ?? "",
+          );
+          const isComplete = isFieldComplete(field, displayValue, statusState);
+          const showError = isFieldInError(statusState);
           const textField = (
             <TextField
               label={
@@ -635,7 +894,7 @@ export default function FieldRenderer({
               margin={labelVariant === "floating" ? "normal" : "none"}
               autoComplete={field.autoComplete}
               inputProps={{ inputMode: "numeric" }}
-              value={parseStoredDate((controllerField.value as string) ?? "")}
+              value={displayValue}
               onChange={(event) => {
                 const formatted = formatDateDisplay(event.target.value);
                 const digits = formatted.replace(/\D/g, "");
@@ -651,6 +910,13 @@ export default function FieldRenderer({
               helperText={
                 labelVariant === "floating" ? dateHelperText : undefined
               }
+              InputProps={{
+                endAdornment: isComplete
+                  ? renderCompletedAdornment()
+                  : showError
+                    ? renderErrorAdornment()
+                    : undefined,
+              }}
             />
           );
 
@@ -685,8 +951,8 @@ export default function FieldRenderer({
         name={field.id}
         control={control}
         rules={validationRules}
-        render={({ field: controllerField }) =>
-          renderTextLikeField(controllerField, {
+        render={({ field: controllerField, fieldState }) =>
+          renderTextLikeField(controllerField, fieldState, {
             value: formatCurrency(controllerField.value),
             inputProps: { inputMode: field.inputMode ?? "numeric" },
             onChange: (event) => {
@@ -705,8 +971,8 @@ export default function FieldRenderer({
         name={field.id}
         control={control}
         rules={validationRules}
-        render={({ field: controllerField }) =>
-          renderTextLikeField(controllerField, {
+        render={({ field: controllerField, fieldState }) =>
+          renderTextLikeField(controllerField, fieldState, {
             value: formatPercent((controllerField.value as string) ?? ""),
             inputProps: {
               inputMode: field.inputMode ?? "numeric",
@@ -736,8 +1002,8 @@ export default function FieldRenderer({
         name={field.id}
         control={control}
         rules={validationRules}
-        render={({ field: controllerField }) =>
-          renderTextLikeField(controllerField, {
+        render={({ field: controllerField, fieldState }) =>
+          renderTextLikeField(controllerField, fieldState, {
             value: (controllerField.value as string) ?? "",
             inputProps: {
               inputMode: field.inputMode ?? "numeric",
@@ -763,8 +1029,8 @@ export default function FieldRenderer({
           name={field.id}
           control={control}
           rules={validationRules}
-          render={({ field: controllerField }) =>
-            renderTextLikeField(controllerField, {
+          render={({ field: controllerField, fieldState }) =>
+            renderTextLikeField(controllerField, fieldState, {
               type: htmlInputType,
               value: (controllerField.value as string) ?? "",
               onChange: (event) => {
@@ -782,48 +1048,73 @@ export default function FieldRenderer({
         name={field.id}
         control={control}
         rules={validationRules}
-        render={({ field: controllerField }) => (
-          <Controller
-            name={phoneTypeFieldName}
-            control={control}
-            defaultValue="mobile"
-            rules={{ required: "Phone Type is required" }}
-            render={({ field: phoneTypeField }) =>
-              renderTextLikeField(controllerField, {
-                type: htmlInputType,
-                value: (controllerField.value as string) ?? "",
-                onChange: (event) => {
-                  controllerField.onChange(formatPhone(event.target.value));
-                },
-                inputAdornmentProps: {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Select
-                        value={(phoneTypeField.value as string) ?? "mobile"}
-                        onChange={(event) =>
-                          phoneTypeField.onChange(event.target.value)
-                        }
-                        variant="standard"
-                        disableUnderline
-                        sx={{
-                          minWidth: 92,
-                          ml: 1,
-                          "& .MuiSelect-select": {
-                            py: 0.5,
-                          },
-                        }}
-                      >
-                        <MenuItem value="mobile">Mobile</MenuItem>
-                        <MenuItem value="home">Home</MenuItem>
-                        <MenuItem value="business">Business</MenuItem>
-                      </Select>
-                    </InputAdornment>
-                  ),
-                },
-              })
-            }
-          />
-        )}
+        render={({ field: controllerField }) => {
+          const phoneValue = (controllerField.value as string) ?? "";
+          const isComplete = isFieldComplete(field, phoneValue, statusState);
+          const showError = isFieldInError(statusState);
+
+          return (
+            <Controller
+              name={phoneTypeFieldName}
+              control={control}
+              defaultValue="mobile"
+              rules={{ required: "Phone Type is required" }}
+              render={({ field: phoneTypeField }) =>
+                renderTextLikeField(controllerField, undefined, {
+                  type: htmlInputType,
+                  value: phoneValue,
+                  onChange: (event) => {
+                    controllerField.onChange(formatPhone(event.target.value));
+                  },
+                  inputAdornmentProps: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Box sx={{ position: "relative" }}>
+                          {isComplete
+                            ? renderCompletedIcon({
+                                position: "absolute",
+                                left: -28,
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                pointerEvents: "none",
+                              })
+                            : showError
+                              ? renderErrorIcon({
+                                  position: "absolute",
+                                  left: -28,
+                                  top: "50%",
+                                  transform: "translateY(-50%)",
+                                  pointerEvents: "none",
+                                })
+                              : null}
+                          <Select
+                            value={(phoneTypeField.value as string) ?? "mobile"}
+                            onChange={(event) =>
+                              phoneTypeField.onChange(event.target.value)
+                            }
+                            variant="standard"
+                            disableUnderline
+                            sx={{
+                              minWidth: 92,
+                              ml: 1,
+                              "& .MuiSelect-select": {
+                                py: 0.5,
+                              },
+                            }}
+                          >
+                            <MenuItem value="mobile">Mobile</MenuItem>
+                            <MenuItem value="home">Home</MenuItem>
+                            <MenuItem value="business">Business</MenuItem>
+                          </Select>
+                        </Box>
+                      </InputAdornment>
+                    ),
+                  },
+                })
+              }
+            />
+          );
+        }}
       />
     );
   }
@@ -835,8 +1126,8 @@ export default function FieldRenderer({
         name={field.id}
         control={control}
         rules={validationRules}
-        render={({ field: controllerField }) =>
-          renderTextLikeField(controllerField, {
+        render={({ field: controllerField, fieldState }) =>
+          renderTextLikeField(controllerField, fieldState, {
             value: (controllerField.value as string) ?? "",
             onChange: (event) => {
               controllerField.onChange(formatSsn(event.target.value));
@@ -853,8 +1144,8 @@ export default function FieldRenderer({
       name={field.id}
       control={control}
       rules={validationRules}
-      render={({ field: controllerField }) =>
-        renderTextLikeField(controllerField, {
+      render={({ field: controllerField, fieldState }) =>
+        renderTextLikeField(controllerField, fieldState, {
           type: htmlInputType,
           value: (controllerField.value as string) ?? "",
         })
