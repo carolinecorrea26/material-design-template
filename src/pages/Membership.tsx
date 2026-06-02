@@ -18,7 +18,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import GppGoodRoundedIcon from "@mui/icons-material/GppGoodRounded";
+// import GppGoodRoundedIcon from "@mui/icons-material/GppGoodRounded";
 import { getActiveClient } from "../client/getActiveClient";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { getPageTitle } from "../config/pages";
@@ -786,12 +786,7 @@ export default function Membership() {
           <>
             <Alert
               severity="info"
-              icon={
-                <GppGoodRoundedIcon
-                  color="primary"
-                  sx={{ fontSize: "1.75rem" }}
-                />
-              }
+              icon={false}
               sx={{ backgroundColor: "#e9f1ff" }}
             >
               <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1.5 }}>

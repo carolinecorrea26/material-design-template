@@ -547,8 +547,8 @@ const theme = createTheme({
           // margin: "0.5rem 0",
 
           "& .MuiBreadcrumbs-separator": {
-            marginLeft: "0.5rem",
-            marginRight: "0.5rem",
+            // marginLeft: "0.5rem",
+            // marginRight: "0.5rem",
             color: "#94a3b8",
             cursor: "default",
           },

@@ -515,9 +515,7 @@ export default function FormRoutePage({
       noTitle={noTitle}
       noContainer={noContainer || hasVerticalStepper}
       onBack={
-        !hasVerticalStepper &&
-        !isTransitioning &&
-        getPreviousFormPageId(pageId, watchedValues)
+        !isTransitioning && getPreviousFormPageId(pageId, watchedValues)
           ? handleBack
           : undefined
       }

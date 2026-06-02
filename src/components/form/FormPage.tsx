@@ -1,6 +1,5 @@
 import { type ReactNode } from "react";
-import { Box, Link, Stack, Typography } from "@mui/material";
-import KeyboardBackspaceRoundedIcon from "@mui/icons-material/KeyboardBackspaceRounded";
+import { Box, Stack } from "@mui/material";
 import FormPageActions from "./FormPageActions";
 import FormPageContent from "./FormPageContent";
 import FormPageError from "./FormPageError";
@@ -50,28 +49,11 @@ export default function FormPage({
             headerOverride ??
             (!noTitle && title ? (
               <Stack spacing={1} sx={{ padding: "0 0.5rem" }}>
-                {onBack && (
-                  <Link
-                    component="button"
-                    onClick={onBack}
-                    underline="none"
-                    sx={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 0.5,
-                      color: "grey.600",
-                      cursor: "pointer",
-                      width: "fit-content",
-                    }}
-                  >
-                    <KeyboardBackspaceRoundedIcon fontSize="small" />
-                    <Typography variant="formBackLink">Back</Typography>
-                  </Link>
-                )}
                 <FormPageTitle
                   title={title}
                   subhead={subhead}
                   compact={compactTitle}
+                  onBack={onBack}
                 />
                 {error && <FormPageError message={error} />}
                 {help}

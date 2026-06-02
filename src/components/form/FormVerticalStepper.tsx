@@ -9,7 +9,8 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
-import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
+import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
 import { useNavigate } from "react-router-dom";
 import {
   getActiveProgressSteps,
@@ -130,7 +131,7 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
 
   return (
     <Breadcrumbs
-      separator="›"
+      separator={<ArrowRightRoundedIcon sx={{ fontSize: 16 }} />}
       sx={{
         mb: 1,
         "& .MuiBreadcrumbs-separator": {
@@ -173,7 +174,7 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
               }}
             >
               <Typography variant="formBreadcrumb">{entry.label}</Typography>
-              <CheckRoundedIcon
+              <CheckCircleOutlineRoundedIcon
                 sx={{
                   fontSize: 14,
                   color: "success.main",

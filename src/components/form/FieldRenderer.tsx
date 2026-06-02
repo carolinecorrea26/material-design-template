@@ -277,7 +277,7 @@ function renderCompletedIcon(sx = {}) {
       aria-label="Completed"
       sx={{
         color: "success.main",
-        fontSize: "1.25rem",
+        fontSize: { xs: "1rem", md: "1.25rem" },
         flexShrink: 0,
         ...sx,
       }}
@@ -291,7 +291,7 @@ function renderErrorIcon(sx = {}) {
       aria-label="Error"
       sx={{
         color: "error.main",
-        fontSize: "1.25rem",
+        fontSize: { xs: "1rem", md: "1.25rem" },
         flexShrink: 0,
         ...sx,
       }}

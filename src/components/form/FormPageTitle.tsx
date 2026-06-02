@@ -1,22 +1,38 @@
-import { Box, Typography } from "@mui/material";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
+import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import type { ReactNode } from "react";
 
 type FormPageTitleProps = {
   title: ReactNode;
   subhead?: ReactNode;
   compact?: boolean;
+  onBack?: () => void;
 };
 
 export default function FormPageTitle({
   title,
   subhead,
   compact,
+  onBack,
 }: FormPageTitleProps) {
   return (
     <Box>
-      <Typography variant={compact ? "formPageTitleCompact" : "formPageTitle"}>
-        {title}
-      </Typography>
+      <Stack direction="row" alignItems="center" spacing={0.5}>
+        {onBack && (
+          <IconButton
+            onClick={onBack}
+            aria-label="Go back"
+            sx={{ color: "#8fa1b9", ml: "-8px !important", p: 0.75 }}
+          >
+            <ArrowBackIosRoundedIcon sx={{ fontSize: "1rem" }} />
+          </IconButton>
+        )}
+        <Typography
+          variant={compact ? "formPageTitleCompact" : "formPageTitle"}
+        >
+          {title}
+        </Typography>
+      </Stack>
       {subhead ? (
         <Typography component="p" variant="subtitle2">
           {subhead}

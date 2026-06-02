@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
@@ -34,6 +35,9 @@ import type {
 import QuickDecisionIndicator from "../common/QuickDecisionIndicator";
 import { formatUSD } from "../../utils/formatUSD";
 import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
+import { formFlow } from "../../config/formFlow";
+import { pages } from "../../config/pages";
+import type { PageId } from "../../types/page";
 
 type ApplicationSummaryDrawerProps = {
   open: boolean;
@@ -214,6 +218,8 @@ export default function ApplicationSummaryDrawer({
 }: ApplicationSummaryDrawerProps) {
   const { entries, totalMonthly } = useSummaryData();
   const { values, setPageValues } = useApplicationForm();
+  const navigate = useNavigate();
+  const location = useLocation();
   const isEmpty = entries.length === 0;
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
@@ -239,6 +245,19 @@ export default function ApplicationSummaryDrawer({
       productApplicants: nextProductApplicants as Record<string, string[]>,
     });
     setConfirmRemoveId(null);
+
+    if (nextSelections.length === 0) {
+      const coverageIndex = formFlow.indexOf("coverage");
+      const currentPath = location.pathname.replace(/\/$/, "");
+      const currentPage = pages.find((p) => p.path === currentPath);
+      const currentPageId = currentPage?.id as PageId | undefined;
+      const currentIndex = currentPageId ? formFlow.indexOf(currentPageId) : -1;
+
+      if (currentIndex > coverageIndex) {
+        onClose();
+        navigate("/coverage");
+      }
+    }
   }
 
   // Check for ineligibility warnings

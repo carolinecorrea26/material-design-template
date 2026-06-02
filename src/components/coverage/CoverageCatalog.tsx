@@ -194,7 +194,7 @@ export default function CoverageCatalog({
                     variant="body2"
                     sx={{
                       fontWeight: 700,
-                      fontSize: "14px",
+                      fontSize: "1rem",
                       letterSpacing: "-0.25px",
                     }}
                   >
