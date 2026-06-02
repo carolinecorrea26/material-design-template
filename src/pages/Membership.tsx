@@ -3,11 +3,11 @@ import {
   Alert,
   Box,
   Button,
+  Chip,
   FormControl,
   FormHelperText,
   FormLabel,
   InputLabel,
-  Link,
   ListSubheader,
   MenuItem,
   Radio,
@@ -34,7 +34,7 @@ import FormRoutePage from "../components/form/FormRoutePage";
 import FormPageHelp from "../components/form/FormPageHelp";
 import FormHelpDrawer from "../components/form/FormHelpDrawer";
 import {
-  CoverageProductsDrawerContent,
+  CoverageOptionsDrawerContent,
   groupInsuranceHelpItem,
   howApplyingWorksHelpItem,
 } from "../content/helpContent";
@@ -108,8 +108,10 @@ export default function Membership() {
   });
   const [estimateAttempted, setEstimateAttempted] = useState(false);
   const [showEstimateProducts, setShowEstimateProducts] = useState(false);
-  const [isCoverageProductsDrawerOpen, setIsCoverageProductsDrawerOpen] =
+  const [isCoverageOptionsDrawerOpen, setIsCoverageOptionsDrawerOpen] =
     useState(false);
+  const [coverageOptionsInitialCategory, setCoverageOptionsInitialCategory] =
+    useState<CoverageCategoryId | undefined>(undefined);
   const [estimateAmountsByProductId, setEstimateAmountsByProductId] = useState<
     Record<string, number>
   >({});
@@ -146,10 +148,6 @@ export default function Membership() {
         .filter((group) => group.products.length > 0),
     [coverages],
   );
-
-  const coverageCategorySummary = productsByCategory
-    .map(({ category }) => category.label)
-    .join(" · ");
 
   const selectedProduct = useMemo(
     () =>
@@ -786,93 +784,70 @@ export default function Membership() {
 
         return (
           <>
-            <Box
-              sx={{
-                width: "100%",
-                borderRadius: "22px",
-                background: "rgb(231, 240, 255)",
-                px: { xs: 2, sm: 2.5 },
-                py: { xs: 1.5, sm: 1.75 },
-              }}
+            <Alert
+              severity="info"
+              icon={
+                <GppGoodRoundedIcon
+                  color="primary"
+                  sx={{ fontSize: "1.75rem" }}
+                />
+              }
+              sx={{ backgroundColor: "#e9f1ff" }}
             >
-              <Stack
-                direction="row"
-                spacing={{ xs: 0, lg: 3 }}
-                alignItems="center"
-              >
-                <Box
-                  sx={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: "9999px",
-                    display: { xs: "none", lg: "grid" },
-                    placeItems: "center",
-                    flexShrink: 0,
-                    color: "primary.main",
-                    backgroundColor: "rgba(6, 104, 255, 0.1)",
-                  }}
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1.5 }}>
+                Learn about your coverage options:
+              </Typography>
+
+              {productsByCategory.length > 0 && (
+                <Stack
+                  direction="row"
+                  flexWrap="wrap"
+                  gap={0.75}
+                  sx={{ mt: 0.75 }}
                 >
-                  <GppGoodRoundedIcon fontSize="medium" />
-                </Box>
-
-                <Box sx={{ minWidth: 0, flex: 1 }}>
-                  <Typography
-                    variant="subtitle1"
-                    sx={{
-                      fontWeight: 700,
-                      lineHeight: 1.25,
-                      mb: 0.25,
-                    }}
-                  >
-                    Group insurance through {client.branding.acronym}
-                  </Typography>
-
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: "#5c6572",
-                      lineHeight: 1.45,
-                      display: "block",
-                    }}
-                  >
-                    {coverageCategorySummary || "Coverage options"}
-                  </Typography>
-
-                  {productsByCategory.length > 0 ? (
-                    <Link
-                      component="button"
-                      type="button"
-                      underline="hover"
-                      onClick={() => setIsCoverageProductsDrawerOpen(true)}
-                      sx={{
-                        display: "inline-block",
-                        mt: 0.75,
-                        color: "primary.main",
-                        font: "inherit",
-                        fontSize: "0.75rem",
-                        lineHeight: 1.45,
-                        fontWeight: 600,
-                        textUnderlineOffset: "0.15em",
-                        cursor: "pointer",
-                        border: 0,
-                        background: "transparent",
-                        p: 0,
-                      }}
-                    >
-                      View coverage details
-                    </Link>
-                  ) : null}
-                </Box>
-              </Stack>
-            </Box>
+                  {productsByCategory.map(({ category }) => {
+                    const Icon = category.icon;
+                    return (
+                      <Chip
+                        key={category.id}
+                        icon={<Icon sx={{ fontSize: "1rem !important" }} />}
+                        label={
+                          "shortLabel" in category
+                            ? category.shortLabel
+                            : category.label
+                        }
+                        size="small"
+                        variant="outlined"
+                        onClick={() => {
+                          setCoverageOptionsInitialCategory(
+                            category.id as CoverageCategoryId,
+                          );
+                          setIsCoverageOptionsDrawerOpen(true);
+                        }}
+                        sx={{
+                          fontSize: "0.75rem",
+                          letterSpacing: "-0.2px",
+                          color: "primary.main",
+                          borderColor: "primary.main",
+                          "& .MuiChip-icon": {
+                            color: "primary.main",
+                            marginLeft: "6px",
+                          },
+                        }}
+                      />
+                    );
+                  })}
+                </Stack>
+              )}
+            </Alert>
 
             <FormHelpDrawer
-              open={isCoverageProductsDrawerOpen}
-              title="Available coverage products"
-              onClose={() => setIsCoverageProductsDrawerOpen(false)}
+              open={isCoverageOptionsDrawerOpen}
+              title="What coverage options are available?"
+              onClose={() => setIsCoverageOptionsDrawerOpen(false)}
             >
-              <CoverageProductsDrawerContent
-                productsByCategory={productsByCategory}
+              <CoverageOptionsDrawerContent
+                initialCategory={coverageOptionsInitialCategory}
               />
             </FormHelpDrawer>
 

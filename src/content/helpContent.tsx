@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   Box,
   Divider,
@@ -324,7 +324,9 @@ export function CoverageProductsDrawerContent({
   );
 }
 
-export function CoverageOptionsDrawerContent() {
+export function CoverageOptionsDrawerContent({
+  initialCategory,
+}: { initialCategory?: CoverageCategoryId } = {}) {
   const coverages = getActiveClientCoverages();
   const coverageGroups = coverageCategories
     .map((category) => ({
@@ -334,8 +336,14 @@ export function CoverageOptionsDrawerContent() {
     .filter((group) => group.products.length > 0);
 
   const [activeCategory, setActiveCategory] = useState<CoverageCategoryId>(
-    coverageGroups[0]?.category.id ?? "LI",
+    initialCategory ?? coverageGroups[0]?.category.id ?? "LI",
   );
+
+  useEffect(() => {
+    if (initialCategory) {
+      setActiveCategory(initialCategory);
+    }
+  }, [initialCategory]);
 
   const activeGroup = coverageGroups.find(
     (g) => g.category.id === activeCategory,
@@ -396,6 +404,9 @@ export function CoverageOptionsDrawerContent() {
                   minHeight: 52,
                   minWidth: 56,
                   px: 0,
+                },
+                "& .Mui-selected": {
+                  background: "rgb(213 229 255 / 47%)",
                 },
               }}
             >
