@@ -12,12 +12,22 @@ export const coverageCategories = [
   {
     id: "AD",
     label: "Accidental Death and Dismemberment",
-    shortLabel: "Accidental D&D",
+    shortLabel: "Accident",
     icon: PersonalInjuryOutlinedIcon,
   },
   { id: "DI", label: "Disability", icon: AccessibleOutlinedIcon },
-  { id: "OO", label: "Office Overhead", icon: BusinessOutlinedIcon },
-  { id: "SH", label: "Supplemental Health", icon: LocalHospitalOutlinedIcon },
+  {
+    id: "OO",
+    label: "Office Overhead",
+    shortLabel: "Office",
+    icon: BusinessOutlinedIcon,
+  },
+  {
+    id: "SH",
+    label: "Supplemental Health",
+    shortLabel: "Health",
+    icon: LocalHospitalOutlinedIcon,
+  },
 ] as const;
 
 export type CoverageCategory = (typeof coverageCategories)[number];

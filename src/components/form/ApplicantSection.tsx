@@ -41,7 +41,7 @@ export default function ApplicantSection({
         </Typography>
       </Box>
 
-      <Box>{children}</Box>
+      <Box sx={{ mt: 2 }}>{children}</Box>
     </Box>
   );
 }

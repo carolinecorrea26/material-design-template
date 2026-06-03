@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import {
   Alert,
@@ -52,18 +53,18 @@ function generateAmountChoices(
 const RATE_CALCULATION_DELAY_MS = 900;
 
 const RateFrequencySwitch = styled(Switch)(({ theme }) => ({
-  width: 64,
-  height: 34,
-  padding: 7,
+  width: 48,
+  height: 26,
+  padding: 5,
   "& .MuiSwitch-switchBase": {
     margin: 1,
     padding: 0,
-    transform: "translateX(6px)",
+    transform: "translateX(4px)",
     "&.Mui-checked": {
       color: "#fff",
-      transform: "translateX(30px)",
+      transform: "translateX(22px)",
       "& .MuiSwitch-thumb:before": {
-        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="18" width="18" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
           "#fff",
         )}" d="M7 2v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-2V2h-2v2H9V2H7Zm12 18H5V10h14v10Z"/></svg>')`,
       },
@@ -75,8 +76,8 @@ const RateFrequencySwitch = styled(Switch)(({ theme }) => ({
   },
   "& .MuiSwitch-thumb": {
     backgroundColor: theme.palette.primary.main,
-    width: 32,
-    height: 32,
+    width: 24,
+    height: 24,
     "&::before": {
       content: "''",
       position: "absolute",
@@ -86,14 +87,14 @@ const RateFrequencySwitch = styled(Switch)(({ theme }) => ({
       top: 0,
       backgroundRepeat: "no-repeat",
       backgroundPosition: "center",
-      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="18" width="18" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
         "#fff",
       )}" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2Zm0 16H5V8h14v11Z"/></svg>')`,
     },
   },
   "& .MuiSwitch-track": {
     opacity: 1,
-    borderRadius: 20 / 2,
+    borderRadius: 13,
     backgroundColor: "#cdd9ec",
   },
 }));
@@ -280,7 +281,10 @@ export default function CoverageOptions() {
     selectedCoverages.forEach((coverage) => {
       getVisibleApplicants(coverage.applicants, coverage.id).forEach(
         (applicantId) => {
-          beginRateCalculation(`${coverage.id}:${applicantId}`);
+          const key = `${coverage.id}:${applicantId}`;
+          if ((storedAmounts[key] ?? 0) > 0) {
+            beginRateCalculation(key);
+          }
         },
       );
     });
@@ -344,28 +348,13 @@ export default function CoverageOptions() {
     return {};
   }, [values.coverageMaxBenefitPeriods]);
 
-  // Initialize missing coverage amount entries
+  // Initialize missing waiting period and max benefit period entries
   useEffect(() => {
-    const amountPatch: Record<string, number> = {};
     const wpPatch: Record<string, string> = {};
     const mbpPatch: Record<string, string> = {};
     let needsUpdate = false;
 
     for (const coverage of selectedCoverages) {
-      const choices = generateAmountChoices(
-        coverage.categoryId,
-        coverage.minAmount,
-        coverage.maxAmount,
-      );
-      const defaultAmount = choices.find((choice) => choice > 0) ?? 0;
-
-      for (const applicantId of getVisibleApplicants(coverage.applicants)) {
-        const key = `${coverage.id}:${applicantId}`;
-        if (storedAmounts[key] == null) {
-          amountPatch[key] = defaultAmount;
-          needsUpdate = true;
-        }
-      }
       // Initialize waiting period defaults
       if (
         coverage.waitingPeriodOptions?.length &&
@@ -386,7 +375,6 @@ export default function CoverageOptions() {
 
     if (needsUpdate) {
       setPageValues({
-        coverageAmounts: { ...storedAmounts, ...amountPatch },
         ...(Object.keys(wpPatch).length > 0
           ? { coverageWaitingPeriods: { ...storedWaitingPeriods, ...wpPatch } }
           : {}),
@@ -600,6 +588,277 @@ export default function CoverageOptions() {
 
   const helpItems = [coverageNeedsHelpItem];
 
+  function EstimatedCostPanelContent() {
+    const grandTotal = groupedCategories
+      .flatMap(({ items }) => items)
+      .reduce((total, coverage) => {
+        const visibleApplicants = getVisibleApplicants(
+          coverage.applicants,
+          coverage.id,
+        );
+        return (
+          total +
+          visibleApplicants.reduce(
+            (sum, applicantId) =>
+              sum + calcApplicantPremium(coverage, applicantId),
+            0,
+          )
+        );
+      }, 0);
+
+    const isAnyRateCalculating = calculatingRateKeys.size > 0;
+
+    if (grandTotal <= 0 && !isAnyRateCalculating) {
+      return (
+        <Box
+          sx={{
+            p: "16px",
+            borderRadius: "8px",
+            bgcolor: "#f5f8fd",
+          }}
+        >
+          <Stack spacing={1.5}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.primary",
+                fontWeight: 600,
+                fontSize: 12,
+              }}
+            >
+              Estimated cost<sup>1</sup>
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0.75,
+                px: 1.25,
+                py: 1,
+                borderRadius: 2,
+                bgcolor: "#f8fafc",
+                border: "1px dashed",
+                borderColor: "divider",
+                color: "text.secondary",
+              }}
+            >
+              <InfoOutlinedIcon
+                sx={{
+                  fontSize: 17,
+                  color: "text.disabled",
+                }}
+              />
+              <Typography
+                variant="body2"
+                sx={{
+                  fontSize: "0.8rem",
+                  fontWeight: 600,
+                }}
+              >
+                Cost calculated after amount selection
+              </Typography>
+            </Box>
+          </Stack>
+        </Box>
+      );
+    }
+
+    const displayedGrandTotal = getDisplayedPremium(grandTotal, rateFrequency);
+    const rateSuffix = rateFrequency === "annual" ? "/yr" : "/mo";
+
+    return (
+      <Box
+        sx={{
+          p: "16px",
+          borderRadius: "8px",
+          bgcolor: "#f5f8fd",
+        }}
+      >
+        <Stack spacing={1.5}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.primary",
+              fontWeight: 600,
+              fontSize: 12,
+            }}
+          >
+            Estimated cost<sup>1</sup>
+          </Typography>
+
+          {groupedCategories
+            .flatMap(({ items }) => items)
+            .map((coverage) => {
+              const visibleApplicants = getVisibleApplicants(
+                coverage.applicants,
+                coverage.id,
+              );
+              const applicantPremiums = visibleApplicants.map(
+                (applicantId) => ({
+                  applicantId,
+                  premium: calcApplicantPremium(coverage, applicantId),
+                  isCalculating: calculatingRateKeys.has(
+                    `${coverage.id}:${applicantId}`,
+                  ),
+                }),
+              );
+              const coverageTotal = applicantPremiums.reduce(
+                (sum, { premium }) => sum + premium,
+                0,
+              );
+              const isAnyCalculating = applicantPremiums.some(
+                (a) => a.isCalculating,
+              );
+
+              if (coverageTotal <= 0 && !isAnyCalculating) return null;
+
+              const displayedTotal = getDisplayedPremium(
+                coverageTotal,
+                rateFrequency,
+              );
+              const coverageRateSuffix =
+                rateFrequency === "annual" ? "/yr" : "/mo";
+
+              return (
+                <Stack
+                  key={coverage.id}
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  spacing={1}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontSize: 12,
+                      fontWeight: 500,
+                      color: "text.secondary",
+                    }}
+                  >
+                    {coverage.name}
+                  </Typography>
+                  {isAnyCalculating ? (
+                    <CircularProgress size={14} thickness={4} />
+                  ) : (
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 700,
+                        fontSize: 14,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {formatUSD(displayedTotal)}
+                      {coverageRateSuffix}
+                    </Typography>
+                  )}
+                </Stack>
+              );
+            })}
+
+          <Box
+            sx={{
+              borderTop: "1px solid",
+              borderColor: "divider",
+              pt: 1.5,
+            }}
+          >
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="baseline"
+            >
+              <Typography
+                variant="body2"
+                sx={{
+                  fontWeight: 600,
+                  fontSize: 12,
+                }}
+              >
+                Total
+              </Typography>
+              {isAnyRateCalculating ? (
+                <CircularProgress size={14} thickness={4} />
+              ) : (
+                <Typography
+                  component="span"
+                  variant="body2"
+                  sx={{
+                    color: "primary.main",
+                    fontWeight: 700,
+                    fontSize: 14,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {formatUSD(displayedGrandTotal)}
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    sx={{
+                      color: "primary.main",
+                      fontWeight: 700,
+                      fontSize: 14,
+                    }}
+                  >
+                    {rateSuffix}
+                  </Typography>
+                </Typography>
+              )}
+            </Stack>
+          </Box>
+
+          {showRateFrequencyToggle && (
+            <Stack
+              direction="row"
+              spacing={0.75}
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Typography
+                variant="caption"
+                sx={{
+                  color:
+                    rateFrequency === "monthly"
+                      ? "primary.main"
+                      : "text.secondary",
+                  fontWeight: 700,
+                }}
+              >
+                Monthly
+              </Typography>
+              <RateFrequencySwitch
+                checked={rateFrequency === "annual"}
+                onChange={(event) =>
+                  handleRateFrequencyChange(
+                    event.target.checked ? "annual" : "monthly",
+                  )
+                }
+                slotProps={{
+                  input: {
+                    "aria-label":
+                      "Toggle estimated cost between monthly and annual",
+                  },
+                }}
+              />
+              <Typography
+                variant="caption"
+                sx={{
+                  color:
+                    rateFrequency === "annual"
+                      ? "primary.main"
+                      : "text.secondary",
+                  fontWeight: 700,
+                }}
+              >
+                Annual
+              </Typography>
+            </Stack>
+          )}
+        </Stack>
+      </Box>
+    );
+  }
+
   return (
     <FormRoutePage
       pageId={pageId}
@@ -698,11 +957,10 @@ export default function CoverageOptions() {
                         key={coverage.id}
                         sx={{
                           bgcolor: "background.paper",
-                          // border: "1px solid",
+                          border: "1px solid",
                           borderColor: "divider",
                           borderRadius: "16px",
                           p: 2,
-                          // boxShadow: 1,
                         }}
                       >
                         <Stack spacing={2}>
@@ -758,6 +1016,12 @@ export default function CoverageOptions() {
                             const showApplicantLabel =
                               visibleApplicants.length > 1;
 
+                            const hasAmountSelection =
+                              storedAmounts[key] != null;
+                            const selectValue = hasAmountSelection
+                              ? selectedAmount
+                              : "";
+
                             return (
                               <Box key={applicantId}>
                                 {showApplicantLabel && (
@@ -772,7 +1036,8 @@ export default function CoverageOptions() {
                                       <InputLabel>{amountLabel}</InputLabel>
                                       <Select
                                         label={amountLabel}
-                                        value={selectedAmount}
+                                        value={selectValue}
+                                        displayEmpty={false}
                                         onChange={(e) =>
                                           handleAmountChange(
                                             key,
@@ -1008,7 +1273,7 @@ export default function CoverageOptions() {
                                                         margin="normal"
                                                         sx={{
                                                           ml: 4,
-                                                          minWidth: 200,
+                                                          minWidth: 250,
                                                         }}
                                                       >
                                                         <InputLabel>
@@ -1057,48 +1322,60 @@ export default function CoverageOptions() {
                                         </Box>
                                       )}
 
-                                    {/* Estimated cost — inline on small screens only */}
-                                    {selectedAmount > 0 && !isMdUp && (
-                                      <Stack
-                                        direction="row"
-                                        spacing={1}
-                                        justifyContent="flex-end"
-                                        alignItems="center"
-                                        sx={{ mt: 0.5 }}
-                                      >
-                                        {isCalculatingRate ? (
-                                          <CircularProgress
-                                            size={14}
-                                            thickness={4}
-                                          />
-                                        ) : (
-                                          <Typography
-                                            variant="body2"
-                                            sx={{
-                                              color: "text.secondary",
-                                              fontSize: 12,
-                                            }}
-                                          >
-                                            Est. {formatUSD(displayedPremium)}
-                                            {rateSuffix}
-                                          </Typography>
-                                        )}
-                                      </Stack>
-                                    )}
+                                    {/* Estimated cost — inline in product box */}
+                                    {hasAmountSelection &&
+                                      selectedAmount > 0 && (
+                                        <Stack
+                                          direction="row"
+                                          spacing={1}
+                                          justifyContent="flex-end"
+                                          alignItems="center"
+                                          sx={{ mt: 0.5 }}
+                                        >
+                                          {isCalculatingRate ? (
+                                            <CircularProgress
+                                              size={14}
+                                              thickness={4}
+                                            />
+                                          ) : (
+                                            <Typography
+                                              variant="body2"
+                                              sx={{
+                                                color: "text.secondary",
+                                                fontSize: 12,
+                                              }}
+                                            >
+                                              Est. cost<sup>1</sup>:{" "}
+                                              <Typography
+                                                component="span"
+                                                sx={{
+                                                  color: "primary.main",
+                                                  fontSize: 14,
+                                                  fontWeight: 700,
+                                                }}
+                                              >
+                                                {formatUSD(displayedPremium)}
+                                                {rateSuffix}
+                                              </Typography>
+                                            </Typography>
+                                          )}
+                                        </Stack>
+                                      )}
 
                                     {/* Message when amount is $0 */}
-                                    {selectedAmount === 0 && (
-                                      <Alert
-                                        severity="info"
-                                        icon={false}
-                                        sx={{ mt: 1 }}
-                                      >
-                                        You have selected $0 for this coverage.
-                                        This means you are not applying for this
-                                        product. Please ensure your selections
-                                        look correct.
-                                      </Alert>
-                                    )}
+                                    {hasAmountSelection &&
+                                      selectedAmount === 0 && (
+                                        <Alert
+                                          severity="info"
+                                          icon={false}
+                                          sx={{ mt: 1 }}
+                                        >
+                                          You have selected $0 for this
+                                          coverage. This means you are not
+                                          applying for this product. Please
+                                          ensure your selections look correct.
+                                        </Alert>
+                                      )}
                                   </Stack>
                                 </Box>
                               </Box>
@@ -1118,239 +1395,13 @@ export default function CoverageOptions() {
                   position: "sticky",
                   top: 24,
                   alignSelf: "flex-start",
-                  width: "30%",
-                  minWidth: 200,
-                  maxWidth: 300,
+                  width: "40%",
+                  minWidth: 240,
+                  maxWidth: 290,
                   flexShrink: 0,
                 }}
               >
-                <Box
-                  sx={{
-                    p: "16px",
-                    borderRadius: "8px",
-                    bgcolor: "#f5f8fd",
-                  }}
-                >
-                  <Stack spacing={1.5}>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "text.primary",
-                        fontWeight: 600,
-                        fontSize: 12,
-                      }}
-                    >
-                      Estimated cost<sup>1</sup>
-                    </Typography>
-
-                    {groupedCategories
-                      .flatMap(({ items }) => items)
-                      .map((coverage) => {
-                        const visibleApplicants = getVisibleApplicants(
-                          coverage.applicants,
-                          coverage.id,
-                        );
-                        const applicantPremiums = visibleApplicants.map(
-                          (applicantId) => ({
-                            applicantId,
-                            premium: calcApplicantPremium(
-                              coverage,
-                              applicantId,
-                            ),
-                            isCalculating: calculatingRateKeys.has(
-                              `${coverage.id}:${applicantId}`,
-                            ),
-                          }),
-                        );
-                        const coverageTotal = applicantPremiums.reduce(
-                          (sum, { premium }) => sum + premium,
-                          0,
-                        );
-                        const isAnyCalculating = applicantPremiums.some(
-                          (a) => a.isCalculating,
-                        );
-
-                        if (coverageTotal <= 0 && !isAnyCalculating)
-                          return null;
-
-                        const displayedTotal = getDisplayedPremium(
-                          coverageTotal,
-                          rateFrequency,
-                        );
-                        const rateSuffix =
-                          rateFrequency === "annual" ? "/yr" : "/mo";
-
-                        return (
-                          <Stack
-                            key={coverage.id}
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="center"
-                            spacing={1}
-                          >
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                fontSize: 12,
-                                color: "text.secondary",
-                              }}
-                            >
-                              {coverage.name}
-                            </Typography>
-                            {isAnyCalculating ? (
-                              <CircularProgress size={14} thickness={4} />
-                            ) : (
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  fontWeight: 700,
-                                  fontSize: 12,
-                                  whiteSpace: "nowrap",
-                                }}
-                              >
-                                {formatUSD(displayedTotal)}
-                                {rateSuffix}
-                              </Typography>
-                            )}
-                          </Stack>
-                        );
-                      })}
-
-                    {(() => {
-                      const grandTotal = groupedCategories
-                        .flatMap(({ items }) => items)
-                        .reduce((total, coverage) => {
-                          const visibleApplicants = getVisibleApplicants(
-                            coverage.applicants,
-                            coverage.id,
-                          );
-                          return (
-                            total +
-                            visibleApplicants.reduce(
-                              (sum, applicantId) =>
-                                sum +
-                                calcApplicantPremium(coverage, applicantId),
-                              0,
-                            )
-                          );
-                        }, 0);
-
-                      const isAnyRateCalculating = calculatingRateKeys.size > 0;
-
-                      if (grandTotal <= 0 && !isAnyRateCalculating) return null;
-
-                      const displayedGrandTotal = getDisplayedPremium(
-                        grandTotal,
-                        rateFrequency,
-                      );
-                      const rateSuffix =
-                        rateFrequency === "annual" ? "/yr" : "/mo";
-
-                      return (
-                        <>
-                          <Box
-                            sx={{
-                              borderTop: "1px solid",
-                              borderColor: "divider",
-                              pt: 1.5,
-                            }}
-                          >
-                            <Stack
-                              direction="row"
-                              justifyContent="space-between"
-                              alignItems="baseline"
-                            >
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  fontWeight: 600,
-                                  fontSize: 12,
-                                }}
-                              >
-                                Total
-                              </Typography>
-                              {isAnyRateCalculating ? (
-                                <CircularProgress size={18} thickness={4} />
-                              ) : (
-                                <Typography
-                                  component="span"
-                                  variant="body2"
-                                  sx={{
-                                    color: "primary.main",
-                                    fontWeight: 800,
-                                    fontSize: "1.5rem",
-                                    whiteSpace: "nowrap",
-                                  }}
-                                >
-                                  {formatUSD(displayedGrandTotal)}
-                                  <Typography
-                                    component="span"
-                                    variant="body2"
-                                    sx={{
-                                      color: "primary.main",
-                                      fontWeight: 800,
-                                      fontSize: "1rem",
-                                    }}
-                                  >
-                                    {rateSuffix}
-                                  </Typography>
-                                </Typography>
-                              )}
-                            </Stack>
-                          </Box>
-
-                          {showRateFrequencyToggle && (
-                            <Stack
-                              direction="row"
-                              spacing={0.75}
-                              alignItems="center"
-                              justifyContent="center"
-                            >
-                              <Typography
-                                variant="caption"
-                                sx={{
-                                  color:
-                                    rateFrequency === "monthly"
-                                      ? "primary.main"
-                                      : "text.secondary",
-                                  fontWeight: 700,
-                                }}
-                              >
-                                Monthly
-                              </Typography>
-                              <RateFrequencySwitch
-                                checked={rateFrequency === "annual"}
-                                onChange={(event) =>
-                                  handleRateFrequencyChange(
-                                    event.target.checked ? "annual" : "monthly",
-                                  )
-                                }
-                                slotProps={{
-                                  input: {
-                                    "aria-label":
-                                      "Toggle estimated cost between monthly and annual",
-                                  },
-                                }}
-                              />
-                              <Typography
-                                variant="caption"
-                                sx={{
-                                  color:
-                                    rateFrequency === "annual"
-                                      ? "primary.main"
-                                      : "text.secondary",
-                                  fontWeight: 700,
-                                }}
-                              >
-                                Annual
-                              </Typography>
-                            </Stack>
-                          )}
-                        </>
-                      );
-                    })()}
-                  </Stack>
-                </Box>
+                <EstimatedCostPanelContent />
                 <Typography
                   variant="caption"
                   color="text.secondary"
@@ -1365,229 +1416,11 @@ export default function CoverageOptions() {
           </Box>
 
           {/* Total estimated cost section on mobile */}
-          {!isMdUp &&
-            (() => {
-              const mobileGrandTotal = groupedCategories
-                .flatMap(({ items }) => items)
-                .reduce((total, coverage) => {
-                  const visibleApplicants = getVisibleApplicants(
-                    coverage.applicants,
-                    coverage.id,
-                  );
-                  return (
-                    total +
-                    visibleApplicants.reduce(
-                      (sum, applicantId) =>
-                        sum + calcApplicantPremium(coverage, applicantId),
-                      0,
-                    )
-                  );
-                }, 0);
-
-              const isAnyRateCalculating = calculatingRateKeys.size > 0;
-
-              if (mobileGrandTotal <= 0 && !isAnyRateCalculating) return null;
-
-              const displayedMobileGrandTotal = getDisplayedPremium(
-                mobileGrandTotal,
-                rateFrequency,
-              );
-              const rateSuffix = rateFrequency === "annual" ? "/yr" : "/mo";
-
-              return (
-                <Box
-                  sx={{
-                    mt: 3,
-                    p: "16px",
-                    borderRadius: "8px",
-                    bgcolor: "#f5f8fd",
-                  }}
-                >
-                  <Stack spacing={1.5}>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "text.primary",
-                        fontWeight: 600,
-                        fontSize: 12,
-                      }}
-                    >
-                      Estimated cost<sup>1</sup>
-                    </Typography>
-
-                    {groupedCategories
-                      .flatMap(({ items }) => items)
-                      .map((coverage) => {
-                        const visibleApplicants = getVisibleApplicants(
-                          coverage.applicants,
-                          coverage.id,
-                        );
-                        const applicantPremiums = visibleApplicants.map(
-                          (applicantId) => ({
-                            applicantId,
-                            premium: calcApplicantPremium(
-                              coverage,
-                              applicantId,
-                            ),
-                            isCalculating: calculatingRateKeys.has(
-                              `${coverage.id}:${applicantId}`,
-                            ),
-                          }),
-                        );
-                        const coverageTotal = applicantPremiums.reduce(
-                          (sum, { premium }) => sum + premium,
-                          0,
-                        );
-                        const isAnyCoverageCalculating = applicantPremiums.some(
-                          (a) => a.isCalculating,
-                        );
-
-                        if (coverageTotal <= 0 && !isAnyCoverageCalculating)
-                          return null;
-
-                        const displayedTotal = getDisplayedPremium(
-                          coverageTotal,
-                          rateFrequency,
-                        );
-
-                        return (
-                          <Stack
-                            key={coverage.id}
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="center"
-                            spacing={1}
-                          >
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                fontSize: 12,
-                                color: "text.secondary",
-                              }}
-                            >
-                              {coverage.name}
-                            </Typography>
-                            {isAnyCoverageCalculating ? (
-                              <CircularProgress size={14} thickness={4} />
-                            ) : (
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  fontWeight: 700,
-                                  fontSize: 12,
-                                  whiteSpace: "nowrap",
-                                }}
-                              >
-                                {formatUSD(displayedTotal)}
-                                {rateSuffix}
-                              </Typography>
-                            )}
-                          </Stack>
-                        );
-                      })}
-
-                    <Box
-                      sx={{
-                        borderTop: "1px solid",
-                        borderColor: "divider",
-                        pt: 1.5,
-                      }}
-                    >
-                      <Stack
-                        direction="row"
-                        justifyContent="space-between"
-                        alignItems="baseline"
-                      >
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            fontWeight: 600,
-                            fontSize: 12,
-                          }}
-                        >
-                          Total
-                        </Typography>
-                        {isAnyRateCalculating ? (
-                          <CircularProgress size={18} thickness={4} />
-                        ) : (
-                          <Typography
-                            component="span"
-                            variant="body2"
-                            sx={{
-                              color: "primary.main",
-                              fontWeight: 800,
-                              fontSize: "1.5rem",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {formatUSD(displayedMobileGrandTotal)}
-                            <Typography
-                              component="span"
-                              variant="body2"
-                              sx={{
-                                color: "primary.main",
-                                fontWeight: 800,
-                                fontSize: "1rem",
-                              }}
-                            >
-                              {rateSuffix}
-                            </Typography>
-                          </Typography>
-                        )}
-                      </Stack>
-                    </Box>
-
-                    {showRateFrequencyToggle && (
-                      <Stack
-                        direction="row"
-                        spacing={0.75}
-                        alignItems="center"
-                        justifyContent="center"
-                      >
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            color:
-                              rateFrequency === "monthly"
-                                ? "primary.main"
-                                : "text.secondary",
-                            fontWeight: 700,
-                          }}
-                        >
-                          Monthly
-                        </Typography>
-                        <RateFrequencySwitch
-                          checked={rateFrequency === "annual"}
-                          onChange={(event) =>
-                            handleRateFrequencyChange(
-                              event.target.checked ? "annual" : "monthly",
-                            )
-                          }
-                          slotProps={{
-                            input: {
-                              "aria-label":
-                                "Toggle estimated cost between monthly and annual",
-                            },
-                          }}
-                        />
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            color:
-                              rateFrequency === "annual"
-                                ? "primary.main"
-                                : "text.secondary",
-                            fontWeight: 700,
-                          }}
-                        >
-                          Annual
-                        </Typography>
-                      </Stack>
-                    )}
-                  </Stack>
-                </Box>
-              );
-            })()}
+          {!isMdUp && (
+            <Box sx={{ mt: 3 }}>
+              <EstimatedCostPanelContent />
+            </Box>
+          )}
 
           {/* Footnote on small screens */}
           {!isMdUp && (

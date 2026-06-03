@@ -606,7 +606,7 @@ export default function ApplicationSummaryDrawer({
                 <Stack
                   direction="row"
                   justifyContent="space-between"
-                  alignItems="flex-start"
+                  alignItems="center"
                   sx={{ mb: 2 }}
                 >
                   <Stack direction="column" spacing={0.5}>
@@ -618,32 +618,8 @@ export default function ApplicationSummaryDrawer({
                         fontSize: 12,
                       }}
                     >
-                      Estimated cost<sup>1</sup>
+                      Total estimated cost<sup>1</sup>
                     </Typography>
-                    {groupedByCategory.map(({ category, items }) => {
-                      const catTotal = items.reduce(
-                        (sum, { applicants }) =>
-                          sum +
-                          applicants.reduce(
-                            (s, a) => s + (a.monthlyEstimate ?? 0),
-                            0,
-                          ),
-                        0,
-                      );
-                      if (catTotal <= 0) return null;
-                      return (
-                        <Typography
-                          key={category.id}
-                          variant="body2"
-                          sx={{
-                            fontSize: 10,
-                            color: "text.secondary",
-                          }}
-                        >
-                          {category.label}: {formatUSD(catTotal)}
-                        </Typography>
-                      );
-                    })}
                   </Stack>
 
                   <Typography
@@ -652,7 +628,7 @@ export default function ApplicationSummaryDrawer({
                     sx={{
                       color: "primary.main",
                       fontWeight: 800,
-                      fontSize: "1.5rem",
+                      fontSize: "1.25rem",
                       whiteSpace: "nowrap",
                     }}
                   >

@@ -63,12 +63,20 @@ export default function CoverageCatalog({
     () => availableCategories.map((c) => c.id),
   );
 
+  const isAllSelected = selectedFilters.length === availableCategories.length;
+
+  function selectAll() {
+    setSelectedFilters(availableCategories.map((c) => c.id));
+  }
+
   function toggleFilter(categoryId: CoverageCategoryId) {
-    setSelectedFilters((current) =>
-      current.includes(categoryId)
+    setSelectedFilters((current) => {
+      const next = current.includes(categoryId)
         ? current.filter((id) => id !== categoryId)
-        : [...current, categoryId],
-    );
+        : [...current, categoryId];
+      // If all categories end up selected, keep them all (will show as "All")
+      return next;
+    });
   }
 
   // Determine visible applicants for a product
@@ -120,11 +128,24 @@ export default function CoverageCatalog({
       {/* Category filter chips */}
       <Stack direction="row" alignItems="center" flexWrap="wrap" gap={1}>
         <Typography variant="body2" sx={{ fontWeight: 600, mr: 0.5 }}>
-          Filter coverage:
+          Filter:
         </Typography>
+        <Chip
+          label="All coverage"
+          size="small"
+          variant="outlined"
+          onClick={selectAll}
+          sx={{
+            fontSize: "0.75rem",
+            letterSpacing: "-0.2px",
+            color: isAllSelected ? "primary.main" : "text.secondary",
+            borderColor: isAllSelected ? "primary.main" : "grey.400",
+          }}
+        />
         {availableCategories.map((category) => {
           const Icon = category.icon;
-          const isSelected = selectedFilters.includes(category.id);
+          const isSelected =
+            !isAllSelected && selectedFilters.includes(category.id);
 
           return (
             <Chip
@@ -135,7 +156,14 @@ export default function CoverageCatalog({
               }
               size="small"
               variant="outlined"
-              onClick={() => toggleFilter(category.id)}
+              onClick={() => {
+                if (isAllSelected) {
+                  // Switching from "All" to a single category
+                  setSelectedFilters([category.id]);
+                } else {
+                  toggleFilter(category.id);
+                }
+              }}
               sx={{
                 fontSize: "0.75rem",
                 letterSpacing: "-0.2px",
@@ -241,27 +269,106 @@ export default function CoverageCatalog({
                   bgcolor: "#f5f8fd",
                   color: "primary.main",
                   display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
+                  flexDirection: "column",
+                  gap: 0.75,
                 }}
               >
-                <Typography
-                  variant="body2"
+                <Box
                   sx={{
-                    color: "text.secondary",
-                    fontWeight: 500,
-                    fontSize: "12px",
-                    // mb: 0.5,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
                   }}
                 >
-                  Available coverage:
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{ color: "primary.main", fontWeight: 800 }}
-                >
-                  {coverageText ?? "-"}
-                </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "text.secondary",
+                      fontWeight: 500,
+                      fontSize: "12px",
+                    }}
+                  >
+                    Member:
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "primary.main",
+                      fontWeight: 700,
+                      fontSize: "0.75rem",
+                    }}
+                  >
+                    {coverageText ?? "-"}
+                  </Typography>
+                </Box>
+                {selectedDependents.includes("spouse") &&
+                  coverage.applicants.includes("spouse") && (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "text.secondary",
+                          fontWeight: 500,
+                          fontSize: "12px",
+                        }}
+                      >
+                        Spouse:
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "primary.main",
+                          fontWeight: 700,
+                          fontSize: "0.75rem",
+                        }}
+                      >
+                        {formatCoverageAmount(coverage.spouseMinAmount) &&
+                        formatCoverageAmount(coverage.spouseMaxAmount)
+                          ? `${formatCoverageAmount(coverage.spouseMinAmount)} - ${formatCoverageAmount(coverage.spouseMaxAmount)}`
+                          : "-"}
+                      </Typography>
+                    </Box>
+                  )}
+                {selectedDependents.includes("child") &&
+                  coverage.applicants.includes("child") && (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "text.secondary",
+                          fontWeight: 500,
+                          fontSize: "12px",
+                        }}
+                      >
+                        Child:
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "primary.main",
+                          fontWeight: 700,
+                          fontSize: "0.75rem",
+                        }}
+                      >
+                        {formatCoverageAmount(coverage.childMinAmount) &&
+                        formatCoverageAmount(coverage.childMaxAmount)
+                          ? `${formatCoverageAmount(coverage.childMinAmount)} - ${formatCoverageAmount(coverage.childMaxAmount)}`
+                          : "-"}
+                      </Typography>
+                    </Box>
+                  )}
               </Box>
 
               {/* Applicant checkboxes */}
@@ -290,14 +397,29 @@ export default function CoverageCatalog({
                       <Typography variant="body2" sx={{ flex: 1 }}>
                         {applicantCheckboxLabels[applicant]}
                       </Typography>
-                      {isChecked && (
+                      {isChecked ? (
                         <Chip
                           label="Added"
                           size="small"
                           color="success"
-                          // variant="outlined"
                           sx={{
                             height: 22,
+                            "& .MuiChip-label": {
+                              fontSize: "0.7rem",
+                              fontWeight: 600,
+                              px: 1,
+                            },
+                          }}
+                        />
+                      ) : (
+                        <Chip
+                          label="Add"
+                          size="small"
+                          variant="outlined"
+                          sx={{
+                            height: 22,
+                            borderColor: "grey.300",
+                            color: "text.secondary",
                             "& .MuiChip-label": {
                               fontSize: "0.7rem",
                               fontWeight: 600,

@@ -238,7 +238,6 @@ export default function HealthSi() {
   return (
     <FormRoutePage
       pageId="health-si"
-      title="Please answer the following health questions to the best of your ability."
       devFillFields={(currentValues) => [
         ...(isApplicantApplying("self", currentValues)
           ? createHealthQuestionFields("self")

@@ -496,8 +496,8 @@ export const howApplyingWorksHelpItem: FormPageHelpItem = {
 
 export const coverageOptionsAvailableHelpItem: FormPageHelpItem = {
   id: "coverage-options-available",
-  label: "What coverage options are available?",
-  title: "What coverage options are available?",
+  label: "What are my coverage options?",
+  title: "What are my coverage options?",
   content: <CoverageOptionsDrawerContent />,
 };
 

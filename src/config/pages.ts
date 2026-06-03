@@ -2,14 +2,21 @@ import { getActiveClient } from "../client/getActiveClient";
 
 const clientAcronym = getActiveClient().branding.acronym;
 
+export const STEP_LABELS: Record<string, string> = {
+  "getting-started": "Getting started",
+  "coverage-options": "Choose your coverage",
+  "about-applicant": "Your application profile",
+  "application-review": "Review your application",
+  "esign-submit": "E-sign and submit",
+};
+
 export const pages = [
   { id: "home", path: "/", type: "home", title: "Home", navTitle: "Home" },
   {
     id: "membership",
     path: "/membership",
     type: "form",
-    title: "Getting started",
-    // subhead: `Tell us your connection to ${clientAcronym} so we can personalize your application.`,
+    title: "Start your insurance application",
     subhead: `This application is for ${clientAcronym}-sponsored group insurance.`,
     navTitle: "Start",
     groupId: "get-started",
@@ -103,7 +110,7 @@ export const pages = [
     id: "docusign",
     path: "/docusign",
     type: "form",
-    title: "DocuSign",
+    title: "Review and sign your application.",
     subhead: "Review and sign your application documents electronically.",
     navTitle: "E-sign",
     groupId: "review",
@@ -112,7 +119,8 @@ export const pages = [
     id: "health-si",
     path: "/health-si",
     type: "form",
-    title: "About your health",
+    title:
+      "Please answer the following health questions to the best of your ability.",
     subhead: "Answer health questions required for your selected coverage.",
     navTitle: "Health",
     groupId: "health",
@@ -148,7 +156,7 @@ export const pages = [
     id: "payment",
     path: "/payment",
     type: "form",
-    title: "Choose payment method",
+    title: "Choose your payment method",
     subhead: "Select how you would like to pay for your coverage.",
     navTitle: "Payment",
     groupId: "payment",
@@ -217,6 +225,10 @@ export function getPagePath(id: (typeof pages)[number]["id"]) {
 }
 
 export function getPageTitle(id: (typeof pages)[number]["id"]) {
+  const client = getActiveClient();
+  const clientOverride = client.pages?.overrides?.[id]?.title;
+  if (clientOverride) return clientOverride;
+
   const page = pages.find((page) => page.id === id);
 
   if (!page) {
@@ -227,13 +239,23 @@ export function getPageTitle(id: (typeof pages)[number]["id"]) {
 }
 
 export function getPageSubhead(id: (typeof pages)[number]["id"]) {
+  const client = getActiveClient();
+  const clientOverride = client.pages?.overrides?.[id];
+
+  // Client can override subhead or explicitly show/hide it
+  if (clientOverride?.subhead !== undefined) return clientOverride.subhead;
+  if (clientOverride?.showSubhead === false) return undefined;
+
   const page = pages.find((page) => page.id === id);
 
   if (!page) {
     throw new Error(`Missing page subhead for page id: ${id}`);
   }
 
-  return "subhead" in page ? page.subhead : undefined;
+  if (!("subhead" in page)) return undefined;
+
+  // showSubhead must be explicitly true on the page to display
+  return "showSubhead" in page && page.showSubhead ? page.subhead : undefined;
 }
 
 export function getPageNavTitle(id: (typeof pages)[number]["id"]) {

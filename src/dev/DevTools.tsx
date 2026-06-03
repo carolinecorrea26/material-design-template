@@ -63,10 +63,12 @@ function clearClientOverride() {
 const DEVMODE_STORAGE_KEY = "devtools:devMode";
 
 function getIsDevMode(): boolean {
-  const urlHasDevMode = new URLSearchParams(window.location.search).has("dev");
-  if (urlHasDevMode) {
-    window.sessionStorage.setItem(DEVMODE_STORAGE_KEY, "true");
-    return true;
+  const params = new URLSearchParams(window.location.search);
+  if (params.has("dev")) {
+    const value = params.get("dev");
+    const enabled = value !== "false";
+    window.sessionStorage.setItem(DEVMODE_STORAGE_KEY, String(enabled));
+    return enabled;
   }
   return window.sessionStorage.getItem(DEVMODE_STORAGE_KEY) === "true";
 }
@@ -86,10 +88,18 @@ export default function DevTools() {
   );
 
   const handleResetApp = () => {
+    const clientId = window.sessionStorage.getItem("activeClientId");
+    const devMode = window.sessionStorage.getItem(DEVMODE_STORAGE_KEY);
     resetValues();
     window.sessionStorage.clear();
     window.localStorage.clear();
-    window.location.replace(`/?reset=${Date.now()}`);
+    if (clientId) window.sessionStorage.setItem("activeClientId", clientId);
+    if (devMode) window.sessionStorage.setItem(DEVMODE_STORAGE_KEY, devMode);
+    const url = new URL("/", window.location.origin);
+    url.searchParams.set("reset", String(Date.now()));
+    if (clientId) url.searchParams.set("client", clientId);
+    if (devMode === "true") url.searchParams.set("dev", "true");
+    window.location.replace(url.toString());
   };
 
   const handleFillOutPage = () => {
@@ -318,6 +328,7 @@ export default function DevTools() {
                   onClick={handleResetApp}
                   fullWidth
                   variant="outlined"
+                  color="warning"
                   sx={{ justifyContent: "flex-start" }}
                 >
                   Reset App

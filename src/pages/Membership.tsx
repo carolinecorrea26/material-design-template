@@ -3,7 +3,6 @@ import {
   Alert,
   Box,
   Button,
-  Chip,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -18,10 +17,9 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-// import GppGoodRoundedIcon from "@mui/icons-material/GppGoodRounded";
+
 import { getActiveClient } from "../client/getActiveClient";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
-import { getPageTitle } from "../config/pages";
 import { fieldCatalog } from "../config/fields";
 import { coverageCategories } from "../config/coverageCategories";
 import type {
@@ -32,9 +30,8 @@ import type {
 import FieldRenderer from "../components/form/FieldRenderer";
 import FormRoutePage from "../components/form/FormRoutePage";
 import FormPageHelp from "../components/form/FormPageHelp";
-import FormHelpDrawer from "../components/form/FormHelpDrawer";
 import {
-  CoverageOptionsDrawerContent,
+  coverageOptionsAvailableHelpItem,
   groupInsuranceHelpItem,
   howApplyingWorksHelpItem,
 } from "../content/helpContent";
@@ -108,10 +105,7 @@ export default function Membership() {
   });
   const [estimateAttempted, setEstimateAttempted] = useState(false);
   const [showEstimateProducts, setShowEstimateProducts] = useState(false);
-  const [isCoverageOptionsDrawerOpen, setIsCoverageOptionsDrawerOpen] =
-    useState(false);
-  const [coverageOptionsInitialCategory, setCoverageOptionsInitialCategory] =
-    useState<CoverageCategoryId | undefined>(undefined);
+
   const [estimateAmountsByProductId, setEstimateAmountsByProductId] = useState<
     Record<string, number>
   >({});
@@ -293,6 +287,7 @@ export default function Membership() {
   }
 
   const helpItems = [
+    coverageOptionsAvailableHelpItem,
     groupInsuranceHelpItem(client.branding.name),
     howApplyingWorksHelpItem,
     {
@@ -752,7 +747,6 @@ export default function Membership() {
   return (
     <FormRoutePage
       pageId={pageId}
-      title={getPageTitle(pageId)}
       help={<FormPageHelp items={helpItems} />}
       initialTransitionMessage="Loading your membership application..."
     >
@@ -784,68 +778,6 @@ export default function Membership() {
 
         return (
           <>
-            <Alert
-              severity="info"
-              icon={false}
-              sx={{ backgroundColor: "#e9f1ff" }}
-            >
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1.5 }}>
-                Learn about your coverage options:
-              </Typography>
-
-              {productsByCategory.length > 0 && (
-                <Stack
-                  direction="row"
-                  flexWrap="wrap"
-                  gap={0.75}
-                  sx={{ mt: 0.75 }}
-                >
-                  {productsByCategory.map(({ category }) => {
-                    const Icon = category.icon;
-                    return (
-                      <Chip
-                        key={category.id}
-                        icon={<Icon sx={{ fontSize: "1rem !important" }} />}
-                        label={
-                          "shortLabel" in category
-                            ? category.shortLabel
-                            : category.label
-                        }
-                        size="small"
-                        variant="outlined"
-                        onClick={() => {
-                          setCoverageOptionsInitialCategory(
-                            category.id as CoverageCategoryId,
-                          );
-                          setIsCoverageOptionsDrawerOpen(true);
-                        }}
-                        sx={{
-                          fontSize: "0.75rem",
-                          letterSpacing: "-0.2px",
-                          color: "primary.main",
-                          borderColor: "primary.main",
-                          "& .MuiChip-icon": {
-                            color: "primary.main",
-                            marginLeft: "6px",
-                          },
-                        }}
-                      />
-                    );
-                  })}
-                </Stack>
-              )}
-            </Alert>
-
-            <FormHelpDrawer
-              open={isCoverageOptionsDrawerOpen}
-              title="What coverage options are available?"
-              onClose={() => setIsCoverageOptionsDrawerOpen(false)}
-            >
-              <CoverageOptionsDrawerContent
-                initialCategory={coverageOptionsInitialCategory}
-              />
-            </FormHelpDrawer>
-
             {membershipField && (
               <FieldRenderer
                 key={membershipField.id}

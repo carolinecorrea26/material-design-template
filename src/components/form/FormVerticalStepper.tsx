@@ -20,17 +20,9 @@ import {
 import type { PageId } from "../../types/page";
 import { useApplicationForm } from "../../state/ApplicationFormContext";
 
-import { getPageNavTitle } from "../../config/pages";
+import { getPageNavTitle, STEP_LABELS } from "../../config/pages";
 
 const PENDING_BREADCRUMB_COMPLETION_EVENT = "form:pendingbreadcrumbcompletion";
-
-export const STEP_LABELS: Record<string, string> = {
-  "getting-started": "Getting started",
-  "coverage-options": "Choose your coverage",
-  "about-applicant": "Your application profile",
-  "application-review": "Review your application",
-  "esign-submit": "E-sign and submit",
-};
 
 export function getVerticalStepperStepLabel(step: {
   id: string;
@@ -131,13 +123,22 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
 
   return (
     <Breadcrumbs
-      separator={<ArrowRightRoundedIcon sx={{ fontSize: 16 }} />}
+      separator={
+        <ArrowRightRoundedIcon sx={{ fontSize: 16, display: "block" }} />
+      }
       sx={{
-        mb: 1,
+        my: 1,
+        "& .MuiBreadcrumbs-ol": {
+          alignItems: "center",
+        },
+        "& .MuiBreadcrumbs-li": {
+          lineHeight: 1,
+        },
         "& .MuiBreadcrumbs-separator": {
-          mx: { xs: 1, lg: 1 },
+          mx: 0.5,
           color: "#94a3b8",
           cursor: "default",
+          lineHeight: 1,
         },
       }}
     >

@@ -20,7 +20,8 @@ import {
   useScrollTrigger,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import ChatIcon from "@mui/icons-material/Chat";
 import CloseIcon from "@mui/icons-material/Close";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
@@ -282,6 +283,27 @@ export default function AppHeader({ client }: AppHeaderProps) {
                 }}
               >
                 <Stack direction="row" spacing={0.75} alignItems="center">
+                  {client.features?.chat && showSummaryIcon && (
+                    <IconButton
+                      aria-label="Open chat"
+                      size="small"
+                      sx={{ borderRadius: 1, gap: 0.5 }}
+                    >
+                      <ChatIcon sx={{ color: "primary.main" }} />
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "primary.main",
+                          fontWeight: 700,
+                          fontSize: "0.75rem",
+                          display: { xs: "none", sm: "block" },
+                        }}
+                      >
+                        Chat
+                      </Typography>
+                    </IconButton>
+                  )}
+
                   {showSummaryIcon && (
                     <IconButton
                       aria-label="Open coverage requested"
@@ -290,16 +312,26 @@ export default function AppHeader({ client }: AppHeaderProps) {
                         setIsSummaryOpen(true);
                       }}
                       size="small"
+                      sx={{ borderRadius: 1, gap: 0.5 }}
                     >
                       <Badge
                         badgeContent={summaryBadgeCount}
                         color="error"
                         max={99}
                       >
-                        <ShoppingCartOutlinedIcon
-                          sx={{ color: "primary.main" }}
-                        />
+                        <ShoppingCartIcon sx={{ color: "primary.main" }} />
                       </Badge>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "primary.main",
+                          fontWeight: 700,
+                          fontSize: "0.75rem",
+                          display: { xs: "none", sm: "block" },
+                        }}
+                      >
+                        Cart
+                      </Typography>
                     </IconButton>
                   )}
 
@@ -535,7 +567,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
 
       <FormHelpDrawer
         open={isCoverageDrawerOpen}
-        title="What coverage options are available?"
+        title="What are my coverage options?"
         onClose={() => setIsCoverageDrawerOpen(false)}
       >
         <CoverageOptionsDrawerContent />

@@ -133,6 +133,23 @@ export default function Coverage() {
       return "Please select at least one coverage to continue.";
     }
 
+    const nextProductApplicants =
+      nextValues.productApplicants != null &&
+      typeof nextValues.productApplicants === "object" &&
+      !Array.isArray(nextValues.productApplicants)
+        ? (nextValues.productApplicants as Record<
+            string,
+            CoverageApplicantId[]
+          >)
+        : {};
+
+    for (const coverageId of nextSelectedCoverageIds) {
+      const applicants = nextProductApplicants[coverageId];
+      if (!Array.isArray(applicants) || applicants.length === 0) {
+        return "Please select at least one applicant for each selected product.";
+      }
+    }
+
     return undefined;
   }
 

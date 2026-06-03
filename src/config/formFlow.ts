@@ -217,53 +217,25 @@ export function getActiveFormFlow(values?: ApplicationFormValues): PageId[] {
   return formFlow.filter((id) => !shouldSkipPage(id, values));
 }
 
-function getProgressFlow(pageId: PageId, values?: ApplicationFormValues) {
-  const activeFlow = getActiveFormFlow(values);
-
-  if (activeFlow.includes(pageId) || pageId === "receipt") {
-    return activeFlow;
-  }
-
-  const pageIndex = formFlow.indexOf(pageId);
-
-  if (pageIndex === -1) {
-    return activeFlow;
-  }
-
-  const insertionIndex = activeFlow.findIndex(
-    (flowPageId) => formFlow.indexOf(flowPageId) > pageIndex,
-  );
-
-  if (insertionIndex === -1) {
-    return [...activeFlow, pageId];
-  }
-
-  return [
-    ...activeFlow.slice(0, insertionIndex),
-    pageId,
-    ...activeFlow.slice(insertionIndex),
-  ];
-}
-
 export function getFormProgressPercent(
   pageId: PageId,
-  values?: ApplicationFormValues,
+  _values?: ApplicationFormValues,
 ) {
-  const activeFlow = getProgressFlow(pageId, values);
-  // Exclude receipt from the progress calculation; it has no progress bar.
-  const activeFlowNoReceipt = activeFlow.filter((id) => id !== "receipt");
+  // Use the static formFlow so progress only changes on page transitions,
+  // not when form values change (e.g. selecting/deselecting coverages).
+  const staticFlowNoReceipt = formFlow.filter((id) => id !== "receipt");
 
   if (pageId === "receipt") {
     return 99;
   }
 
-  const currentIndex = activeFlowNoReceipt.indexOf(pageId);
+  const currentIndex = staticFlowNoReceipt.indexOf(pageId);
 
   if (currentIndex === -1) {
     return 0;
   }
 
-  const last = activeFlowNoReceipt.length - 1;
+  const last = staticFlowNoReceipt.length - 1;
   // Map first page → 1%, last page → 99%.
   return last === 0 ? 1 : 1 + (currentIndex / last) * 98;
 }

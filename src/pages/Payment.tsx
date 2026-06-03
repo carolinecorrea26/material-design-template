@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Controller } from "react-hook-form";
-import { sxPresets } from "../app/theme";
 import { formatUSD as formatCurrency } from "../utils/formatUSD";
 import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
 import FormRoutePage from "../components/form/FormRoutePage";
@@ -245,7 +244,6 @@ export default function Payment() {
   return (
     <FormRoutePage
       pageId="payment"
-      title="Choose how you'd like to pay for coverage. You won't be billed until you are approved for coverage."
       devFillFields={getPaymentDevFields}
       help={<FormPageHelp items={helpItems} />}
     >
@@ -412,27 +410,9 @@ export default function Payment() {
                                           size="small"
                                           sx={{ pointerEvents: "none" }}
                                         />
-                                        <Box
-                                          sx={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "space-between",
-                                            flex: 1,
-                                          }}
-                                        >
-                                          <Typography variant="body2">
-                                            {option.label}
-                                          </Typography>
-                                          <Typography
-                                            variant="caption"
-                                            color="text.secondary"
-                                            sx={{ fontWeight: 600 }}
-                                          >
-                                            {formatCurrency(
-                                              totalMonthly * option.multiplier,
-                                            )}
-                                          </Typography>
-                                        </Box>
+                                        <Typography variant="body2">
+                                          {option.label}
+                                        </Typography>
                                       </ToggleButton>
                                     ))}
                                   </ToggleButtonGroup>
@@ -447,60 +427,96 @@ export default function Payment() {
                             {/* Estimated cost styled like coverage cart total */}
                             <Box
                               sx={{
-                                ...sxPresets.infoBox,
+                                p: "16px",
+                                borderRadius: "8px",
+                                bgcolor: "#f5f8fd",
                               }}
                             >
-                              <Stack spacing={1}>
+                              <Stack spacing={1.5}>
                                 <Typography
-                                  variant="subtitle2"
-                                  sx={{ fontWeight: 700 }}
-                                >
-                                  Estimated {frequencyLabel} Cost
-                                  <Box
-                                    component="sup"
-                                    sx={{ fontSize: "0.7em", ml: 0.25 }}
-                                  >
-                                    1
-                                  </Box>
-                                </Typography>
-
-                                <Typography
-                                  variant="h5"
+                                  variant="body2"
                                   sx={{
-                                    fontWeight: 700,
-                                    color: "primary.main",
+                                    color: "text.primary",
+                                    fontWeight: 600,
+                                    fontSize: 12,
                                   }}
                                 >
-                                  {formatCurrency(totalForFrequency)}
+                                  Estimated {frequencyLabel.toLowerCase()} cost
+                                  <sup>1</sup>
                                 </Typography>
 
-                                {hasDependentBreakdown && (
-                                  <Stack spacing={0.5}>
-                                    {applicantPremiums.map((entry) => (
+                                {hasDependentBreakdown &&
+                                  applicantPremiums.map((entry) => (
+                                    <Stack
+                                      key={entry.applicant}
+                                      direction="row"
+                                      justifyContent="space-between"
+                                      alignItems="center"
+                                      spacing={1}
+                                    >
                                       <Typography
-                                        key={entry.applicant}
-                                        variant="caption"
-                                        color="text.secondary"
+                                        variant="body2"
+                                        sx={{
+                                          fontSize: 12,
+                                          fontWeight: 500,
+                                          color: "text.secondary",
+                                        }}
                                       >
-                                        {getApplicantLabel(entry.applicant)}:{" "}
+                                        {getApplicantLabel(entry.applicant)}
+                                      </Typography>
+                                      <Typography
+                                        variant="body2"
+                                        sx={{
+                                          fontWeight: 700,
+                                          fontSize: 14,
+                                          whiteSpace: "nowrap",
+                                        }}
+                                      >
                                         {formatCurrency(
                                           entry.monthlyPremium *
                                             frequencyMultiplier,
                                         )}
                                       </Typography>
-                                    ))}
-                                  </Stack>
-                                )}
+                                    </Stack>
+                                  ))}
 
-                                <Typography
-                                  variant="caption"
-                                  color="text.secondary"
-                                  sx={{ mt: 0.5, fontStyle: "italic" }}
+                                <Box
+                                  sx={{
+                                    borderTop: hasDependentBreakdown
+                                      ? "1px solid"
+                                      : "none",
+                                    borderColor: "divider",
+                                    pt: hasDependentBreakdown ? 1.5 : 0,
+                                  }}
                                 >
-                                  Quoted cost is the best rate available. Final
-                                  cost may vary based on health status, gender,
-                                  and tobacco/nicotine use.
-                                </Typography>
+                                  <Stack
+                                    direction="row"
+                                    justifyContent="space-between"
+                                    alignItems="baseline"
+                                  >
+                                    <Typography
+                                      variant="body2"
+                                      sx={{
+                                        fontWeight: 600,
+                                        fontSize: 12,
+                                      }}
+                                    >
+                                      Total
+                                    </Typography>
+                                    <Typography
+                                      component="span"
+                                      variant="body2"
+                                      sx={{
+                                        color: "primary.main",
+                                        fontWeight: 700,
+                                        fontSize: 14,
+                                        whiteSpace: "nowrap",
+                                      }}
+                                    >
+                                      {formatCurrency(totalForFrequency)}
+                                    </Typography>
+                                  </Stack>
+                                </Box>
                               </Stack>
                             </Box>
                           </Stack>

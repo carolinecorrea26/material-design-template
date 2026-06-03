@@ -3,12 +3,7 @@ import FormRoutePage from "../components/form/FormRoutePage";
 
 export default function DocuSign() {
   return (
-    <FormRoutePage
-      pageId="docusign"
-      title="Review and sign your application."
-      formMaxWidth={1400}
-      noBreadcrumb
-    >
+    <FormRoutePage pageId="docusign" formMaxWidth={1400} noBreadcrumb>
       <Box
         sx={{
           display: "flex",
