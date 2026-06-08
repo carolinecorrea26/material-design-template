@@ -3,6 +3,7 @@ import type { ApplicationFormValues } from "../state/ApplicationFormContext";
 import type { CoverageCategoryId } from "./coverages/types";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { getActiveClient } from "../client/getActiveClient";
+import { isCombinedFlow } from "./testFlow";
 
 export const formFlow: PageId[] = [
   "membership",
@@ -23,6 +24,28 @@ export const formFlow: PageId[] = [
   "docusign",
   "receipt",
 ];
+
+export const combinedFormFlow: PageId[] = [
+  "membership",
+  "eligibility",
+  "coverage-combined",
+  "beneficiary",
+  "contact",
+  "about-applicant",
+  "review",
+  "health-si",
+  "health-qd",
+  "health-di",
+  "health-cir",
+  "payment",
+  "docusign",
+  "receipt",
+];
+
+/** Returns the active form flow based on the testFlow URL parameter. */
+export function getResolvedFormFlow(): PageId[] {
+  return isCombinedFlow() ? combinedFormFlow : formFlow;
+}
 
 /** Coverage-category IDs that require the coverage-questions page. */
 export const categoriesRequiringQuestions: CoverageCategoryId[] = [
@@ -123,6 +146,24 @@ export function shouldSkipPage(
     return true;
   }
 
+  // In combined flow, skip expanded-only pages
+  if (isCombinedFlow()) {
+    if (
+      pageId === "coverage" ||
+      pageId === "coverage-questions" ||
+      pageId === "coverage-options" ||
+      pageId === "personal" ||
+      pageId === "financial"
+    ) {
+      return true;
+    }
+  } else {
+    // In expanded flow, skip combined-only pages
+    if (pageId === "coverage-combined" || pageId === "about-applicant") {
+      return true;
+    }
+  }
+
   if (pageId === "coverage-questions") {
     // Always show coverage-questions (gender is always asked)
     return false;
@@ -133,8 +174,12 @@ export function shouldSkipPage(
     return !selectedCategories.some((cat) => cat === "LI" || cat === "AD");
   }
 
-  if (pageId === "financial") {
+  if (pageId === "financial" || pageId === "about-applicant") {
     const selectedCategories = getSelectedCategoryIds(values);
+    if (pageId === "about-applicant") {
+      // about-applicant is never skipped in combined flow (personal is always needed)
+      return false;
+    }
     return !selectedCategories.some((cat) => cat === "LI" || cat === "DI");
   }
 
@@ -159,16 +204,18 @@ export function shouldSkipPage(
 }
 
 export function isFormPage(pageId: PageId) {
-  return formFlow.includes(pageId);
+  const flow = getResolvedFormFlow();
+  return flow.includes(pageId);
 }
 
 export function getNextFormPageId(
   pageId: PageId,
   values?: ApplicationFormValues,
 ) {
-  const currentIndex = formFlow.indexOf(pageId);
+  const flow = getResolvedFormFlow();
+  const currentIndex = flow.indexOf(pageId);
 
-  if (currentIndex === -1 || currentIndex === formFlow.length - 1) {
+  if (currentIndex === -1 || currentIndex === flow.length - 1) {
     return null;
   }
 
@@ -176,20 +223,21 @@ export function getNextFormPageId(
 
   while (
     values &&
-    nextIndex < formFlow.length &&
-    shouldSkipPage(formFlow[nextIndex], values)
+    nextIndex < flow.length &&
+    shouldSkipPage(flow[nextIndex], values)
   ) {
     nextIndex++;
   }
 
-  return nextIndex < formFlow.length ? formFlow[nextIndex] : null;
+  return nextIndex < flow.length ? flow[nextIndex] : null;
 }
 
 export function getPreviousFormPageId(
   pageId: PageId,
   values?: ApplicationFormValues,
 ) {
-  const currentIndex = formFlow.indexOf(pageId);
+  const flow = getResolvedFormFlow();
+  const currentIndex = flow.indexOf(pageId);
 
   if (currentIndex <= 0) {
     return null;
@@ -197,33 +245,30 @@ export function getPreviousFormPageId(
 
   let prevIndex = currentIndex - 1;
 
-  while (
-    values &&
-    prevIndex >= 0 &&
-    shouldSkipPage(formFlow[prevIndex], values)
-  ) {
+  while (values && prevIndex >= 0 && shouldSkipPage(flow[prevIndex], values)) {
     prevIndex--;
   }
 
-  return prevIndex >= 0 ? formFlow[prevIndex] : null;
+  return prevIndex >= 0 ? flow[prevIndex] : null;
 }
 
 export function getFormPageIndex(pageId: PageId) {
-  return formFlow.indexOf(pageId);
+  const flow = getResolvedFormFlow();
+  return flow.indexOf(pageId);
 }
 
 export function getActiveFormFlow(values?: ApplicationFormValues): PageId[] {
-  if (!values) return formFlow;
-  return formFlow.filter((id) => !shouldSkipPage(id, values));
+  const flow = getResolvedFormFlow();
+  if (!values) return flow;
+  return flow.filter((id) => !shouldSkipPage(id, values));
 }
 
 export function getFormProgressPercent(
   pageId: PageId,
   _values?: ApplicationFormValues,
 ) {
-  // Use the static formFlow so progress only changes on page transitions,
-  // not when form values change (e.g. selecting/deselecting coverages).
-  const staticFlowNoReceipt = formFlow.filter((id) => id !== "receipt");
+  const flow = getResolvedFormFlow();
+  const staticFlowNoReceipt = flow.filter((id) => id !== "receipt");
 
   if (pageId === "receipt") {
     return 99;

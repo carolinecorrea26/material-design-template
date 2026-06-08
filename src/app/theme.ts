@@ -154,19 +154,19 @@ const theme = createTheme({
       fontWeight: 700,
     },
     formPageTitle: {
-      fontSize: "1.25rem",
+      fontSize: "1rem",
       fontWeight: 700,
       letterSpacing: "-0.025em",
       "@media (min-width:900px)": {
-        fontSize: "1.5rem",
+        fontSize: "1.25rem",
       },
     },
     formPageTitleCompact: {
-      fontSize: "1.15rem",
+      fontSize: "1rem",
       fontWeight: 700,
       letterSpacing: "-0.025em",
       "@media (min-width:900px)": {
-        fontSize: "1.35rem",
+        fontSize: "1.25rem",
       },
     },
     formSectionLabel: {

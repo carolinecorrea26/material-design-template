@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 // import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 // import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import { keyframes } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
@@ -36,7 +37,13 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import {
+  Link as RouterLink,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
+import ComparisonQuoteModal from "../components/common/ComparisonQuoteModal";
+import { STORAGE_KEY } from "../state/ApplicationFormContext";
 import FormHelpDrawer from "../components/form/FormHelpDrawer";
 import QuickDecisionIndicator from "../components/common/QuickDecisionIndicator";
 import QuickDecisionDrawerContent from "../components/common/QuickDecisionDrawerContent";
@@ -410,6 +417,12 @@ function HomeQuoteCard() {
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const stateOptions = useMemo(() => getStateOptions(), []);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  // testQuote=comparison (default) or testQuote=single (alternative)
+  const quoteMode =
+    searchParams.get("testQuote") === "single" ? "single" : "comparison";
 
   const storedEstimate = useMemo(() => loadStoredEstimateValues(), []);
 
@@ -829,6 +842,67 @@ function HomeQuoteCard() {
     ? (estimateRatesByProductId[modalProduct.id] ?? 0)
     : 0;
 
+  function handleSingleModalApply() {
+    if (!modalProduct) return;
+
+    const formValues: Record<string, unknown> = {};
+
+    // Preset basic info
+    if (estimateValues.birthday)
+      formValues["birth-date"] = estimateValues.birthday;
+    if (estimateValues.zipCode)
+      formValues["zip-postal-code"] = estimateValues.zipCode;
+    if (estimateValues.state)
+      formValues["state-province"] = estimateValues.state;
+
+    // Preset category-specific fields
+    const catId = modalProduct.categoryId;
+    if ((catId === "LI" || catId === "DI") && estimateValues.gender) {
+      formValues["gender"] = estimateValues.gender;
+    }
+    if ((catId === "LI" || catId === "SH") && estimateValues.smoker) {
+      formValues["smoker"] = estimateValues.smoker;
+    }
+    if (catId === "DI") {
+      if (estimateValues.avgIncome)
+        formValues["average-monthly-income"] = estimateValues.avgIncome;
+      if (estimateValues.hoursPerWeek)
+        formValues["hours-worked-per-week"] = estimateValues.hoursPerWeek;
+    }
+    if (catId === "OO") {
+      if (estimateValues.hoursPerWeek)
+        formValues["hours-worked-per-week"] = estimateValues.hoursPerWeek;
+      if (estimateValues.monthlyExpenses)
+        formValues["monthly-business-expenses"] =
+          estimateValues.monthlyExpenses;
+      if (estimateValues.responsibilityPct)
+        formValues["business-expense-responsibility"] =
+          estimateValues.responsibilityPct;
+    }
+
+    // Preset coverage selection
+    formValues["selectedCoverageIds"] = [modalProduct.id];
+    formValues["coverageAmounts"] = {
+      [`${modalProduct.id}:member`]: modalSelectedAmount,
+    };
+
+    // Store into sessionStorage
+    const existing = window.sessionStorage.getItem(STORAGE_KEY);
+    let existingValues: Record<string, unknown> = {};
+    if (existing) {
+      try {
+        existingValues = JSON.parse(existing);
+      } catch {
+        /* ignore */
+      }
+    }
+    const merged = { ...existingValues, ...formValues };
+    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+
+    setQuoteModalOpen(false);
+    navigate(getPagePath("eligibility"));
+  }
+
   return (
     <>
       <Box
@@ -951,9 +1025,9 @@ function HomeQuoteCard() {
         </Stack>
       </Box>
 
-      {/* Quote Modal */}
+      {/* Quote Modal (single mode) */}
       <Dialog
-        open={quoteModalOpen}
+        open={quoteMode === "single" && quoteModalOpen}
         onClose={() => setQuoteModalOpen(false)}
         maxWidth="md"
         fullWidth
@@ -1001,7 +1075,7 @@ function HomeQuoteCard() {
                     required
                     sx={{ mb: 1, fontWeight: 500, color: "text.primary" }}
                   >
-                    What coverage are you interested in?
+                    Select a category to see your available coverage options:
                   </FormLabel>
                   <Select
                     displayEmpty
@@ -1310,47 +1384,141 @@ function HomeQuoteCard() {
               {modalProduct ? (
                 <Box
                   sx={{
-                    border: "1px solid rgba(52, 59, 72, 0.12)",
-                    borderRadius: 3,
-                    backgroundColor: "#f9fafc",
+                    border: "1px solid",
+                    borderColor: "divider",
+                    borderRadius: "16px",
+                    bgcolor: "background.paper",
                     p: 2.5,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
                   }}
                 >
-                  <Stack spacing={2}>
-                    <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                      {modalProduct.name}
-                    </Typography>
+                  {/* Title row */}
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="flex-start"
+                    spacing={1}
+                  >
+                    <Stack spacing={0.25} sx={{ minWidth: 0 }}>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: 700,
+                          fontSize: "1rem",
+                          letterSpacing: "-0.25px",
+                        }}
+                      >
+                        {modalProduct.name}
+                        {modalProduct.underwritingType === "QD" && (
+                          <QuickDecisionIndicator />
+                        )}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ fontSize: "12px" }}
+                      >
+                        {modalProduct.description ?? modalProduct.definition}
+                      </Typography>
+                    </Stack>
 
-                    {isQuoteLoading ? (
-                      <Box sx={{ py: 2 }}>
-                        <Skeleton
-                          variant="rounded"
-                          height={42}
-                          sx={{ borderRadius: 1, mb: 2 }}
-                        />
-                        <Skeleton
-                          variant="rounded"
-                          height={20}
-                          sx={{ borderRadius: 1, mb: 1, width: "60%" }}
-                        />
-                        <Skeleton
-                          variant="rounded"
-                          height={32}
-                          sx={{ borderRadius: 1, mb: 2, width: "40%" }}
-                        />
-                        <Typography
-                          variant="caption"
+                    {modalProduct.featured && (
+                      <Chip
+                        icon={<AutoAwesomeIcon />}
+                        label="Featured"
+                        size="small"
+                        color="primary"
+                        sx={{
+                          flexShrink: 0,
+                          "& .MuiChip-label": {
+                            fontSize: "0.675rem",
+                            fontWeight: 700,
+                          },
+                          "& .MuiChip-icon": {
+                            fontSize: "0.875rem",
+                          },
+                        }}
+                      />
+                    )}
+                  </Stack>
+
+                  {isQuoteLoading ? (
+                    <Box sx={{ py: 2 }}>
+                      <Skeleton
+                        variant="rounded"
+                        height={42}
+                        sx={{ borderRadius: 1, mb: 2 }}
+                      />
+                      <Skeleton
+                        variant="rounded"
+                        height={20}
+                        sx={{ borderRadius: 1, mb: 1, width: "60%" }}
+                      />
+                      <Skeleton
+                        variant="rounded"
+                        height={32}
+                        sx={{ borderRadius: 1, mb: 2, width: "40%" }}
+                      />
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: "text.secondary",
+                          display: "block",
+                          mt: 1,
+                        }}
+                      >
+                        {quoteLoadingMessage}
+                      </Typography>
+                    </Box>
+                  ) : quoteRevealed && !isHoursIneligible ? (
+                    <>
+                      {/* Estimated cost - blue section */}
+                      <Box
+                        sx={{
+                          fontWeight: 800,
+                          p: "16px",
+                          borderRadius: "8px",
+                          bgcolor: "#f5f8fd",
+                          color: "primary.main",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 0.75,
+                        }}
+                      >
+                        <Box
                           sx={{
-                            color: "text.secondary",
-                            display: "block",
-                            mt: 1,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
                           }}
                         >
-                          {quoteLoadingMessage}
-                        </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: "text.secondary",
+                              fontWeight: 500,
+                              fontSize: "12px",
+                            }}
+                          >
+                            Estimated cost<sup>1</sup>
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: "primary.main",
+                              fontWeight: 700,
+                              fontSize: "0.75rem",
+                            }}
+                          >
+                            {formatUSD(modalEstimatedRate)}/mo
+                          </Typography>
+                        </Box>
                       </Box>
-                    ) : quoteRevealed && !isHoursIneligible ? (
-                      <>
+
+                      {/* Coverage amount dropdown */}
+                      <Stack spacing={1} sx={{ mt: 0.5 }}>
                         <FormControl fullWidth size="small">
                           <InputLabel
                             id={`${modalProduct.id}-modal-amount-label`}
@@ -1377,75 +1545,60 @@ function HomeQuoteCard() {
                             ))}
                           </Select>
                         </FormControl>
+                      </Stack>
 
-                        <Divider />
-
-                        <Stack
-                          direction="row"
-                          justifyContent="space-between"
-                          alignItems="center"
-                          gap={2}
+                      <Typography variant="caption" color="text.secondary">
+                        <Box
+                          component="sup"
+                          sx={{ fontSize: "0.85em", lineHeight: 1 }}
                         >
-                          <Typography variant="body2" color="text.secondary">
-                            Your estimated rate
-                            <Box
-                              component="sup"
-                              sx={{ fontSize: "0.7em", lineHeight: 1 }}
-                            >
-                              1
-                            </Box>
-                          </Typography>
-                          <Typography
-                            variant="h2"
-                            sx={{
-                              fontWeight: 700,
-                              color: "success.main",
-                            }}
-                          >
-                            {formatUSD(modalEstimatedRate)}/mo
-                          </Typography>
-                        </Stack>
+                          1
+                        </Box>
+                        Quoted cost is the best rate available based on the
+                        information you provided. Final cost may be based upon
+                        factors such as gender, health status, and use of
+                        tobacco/nicotine. Rates current as of 2026.
+                      </Typography>
 
-                        <Typography variant="caption" color="text.secondary">
-                          <Box
-                            component="sup"
-                            sx={{ fontSize: "0.85em", lineHeight: 1 }}
-                          >
-                            1
-                          </Box>
-                          Quoted cost is the best rate available based on the
-                          information you provided. Final cost may be based upon
-                          factors such as gender, health status, and use of
-                          tobacco/nicotine. Rates current as of 2026.
-                        </Typography>
-                      </>
-                    ) : quoteRevealed && isHoursIneligible ? (
-                      <Alert severity="error">
-                        We're sorry, but this product requires working at least
-                        40 hours per week to be eligible for coverage.
-                      </Alert>
-                    ) : (
-                      <Box
-                        sx={{
-                          textAlign: "center",
-                          py: 4,
-                          color: "text.secondary",
-                        }}
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        size="medium"
+                        fullWidth
+                        endIcon={<ArrowRightAltRoundedIcon />}
+                        onClick={handleSingleModalApply}
+                        sx={{ mt: 0.5 }}
                       >
-                        <Typography variant="body2" color="text.secondary">
-                          Your estimated cost will appear here once you click
-                          &ldquo;Get estimate&rdquo;.
-                        </Typography>
-                      </Box>
-                    )}
-                  </Stack>
+                        Apply for coverage
+                      </Button>
+                    </>
+                  ) : quoteRevealed && isHoursIneligible ? (
+                    <Alert severity="error">
+                      We're sorry, but this product requires working at least 40
+                      hours per week to be eligible for coverage.
+                    </Alert>
+                  ) : (
+                    <Box
+                      sx={{
+                        textAlign: "center",
+                        py: 4,
+                        color: "text.secondary",
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary">
+                        Your estimated cost will appear here once you click
+                        &ldquo;Get estimate&rdquo;.
+                      </Typography>
+                    </Box>
+                  )}
                 </Box>
               ) : (
                 <Box
                   sx={{
-                    border: "1px solid rgba(52, 59, 72, 0.12)",
-                    borderRadius: 3,
-                    backgroundColor: "#f9fafc",
+                    border: "1px solid",
+                    borderColor: "divider",
+                    borderRadius: "16px",
+                    bgcolor: "background.paper",
                     p: 2.5,
                     textAlign: "center",
                     py: 4,
@@ -1461,6 +1614,16 @@ function HomeQuoteCard() {
           </Stack>
         </DialogContent>
       </Dialog>
+
+      {/* Alternative comparison quote modal */}
+      <ComparisonQuoteModal
+        open={quoteMode === "comparison" && quoteModalOpen}
+        onClose={() => setQuoteModalOpen(false)}
+        coverages={coverages}
+        birthday={estimateValues.birthday}
+        zipCode={estimateValues.zipCode}
+        state={estimateValues.state}
+      />
     </>
   );
 }

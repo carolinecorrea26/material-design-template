@@ -9,6 +9,7 @@ import {
 import type { SvgIconComponent } from "@mui/icons-material";
 import type { ApplicationFormValues } from "../state/ApplicationFormContext";
 import { shouldSkipPage } from "./formFlow";
+import { isCombinedFlow } from "./testFlow";
 
 export type ProgressStep = {
   id: string;
@@ -25,7 +26,7 @@ export const HEALTH_PAGE_IDS: PageId[] = [
   "health-cir",
 ];
 
-export const progressSteps: ProgressStep[] = [
+const expandedProgressSteps: ProgressStep[] = [
   {
     id: "getting-started",
     label: "Eligibility",
@@ -65,8 +66,55 @@ export const progressSteps: ProgressStep[] = [
   },
 ];
 
+const combinedProgressSteps: ProgressStep[] = [
+  {
+    id: "getting-started",
+    label: "Eligibility",
+    icon: HowToReg,
+    pageIds: ["membership", "eligibility"],
+  },
+  {
+    id: "coverage-options",
+    label: "Coverage",
+    icon: HealthAndSafety,
+    pageIds: ["coverage-combined"],
+  },
+  {
+    id: "about-applicant",
+    label: "Profile",
+    icon: Badge,
+    pageIds: ["beneficiary", "contact", "about-applicant"],
+  },
+  {
+    id: "application-review",
+    label: "Review",
+    icon: FactCheck,
+    pageIds: [
+      "review",
+      "health-si",
+      "health-qd",
+      "health-di",
+      "health-cir",
+      "payment",
+    ],
+  },
+  {
+    id: "esign-submit",
+    label: "E-sign",
+    icon: Draw,
+    pageIds: ["docusign"],
+  },
+];
+
+export const progressSteps: ProgressStep[] = expandedProgressSteps;
+
+function getResolvedProgressSteps(): ProgressStep[] {
+  return isCombinedFlow() ? combinedProgressSteps : expandedProgressSteps;
+}
+
 export function getProgressStepIndex(pageId: PageId) {
-  return progressSteps.findIndex((step) => step.pageIds.includes(pageId));
+  const steps = getResolvedProgressSteps();
+  return steps.findIndex((step) => step.pageIds.includes(pageId));
 }
 
 /**
@@ -76,7 +124,8 @@ export function getProgressStepIndex(pageId: PageId) {
 export function getActiveProgressSteps(
   values: ApplicationFormValues,
 ): ProgressStep[] {
-  return progressSteps
+  const steps = getResolvedProgressSteps();
+  return steps
     .map((step) => ({
       ...step,
       pageIds: step.pageIds.filter((id) => !shouldSkipPage(id, values)),

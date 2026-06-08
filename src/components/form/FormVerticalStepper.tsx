@@ -333,7 +333,9 @@ export default function FormVerticalStepper({
                     </Typography>
                   </StepLabel>
                   <StepContent>
-                    {isActive && <Box sx={{ width: "100%" }}>{children}</Box>}
+                    {isActive && (
+                      <Box sx={{ width: "100%", mt: 2 }}>{children}</Box>
+                    )}
                   </StepContent>
                 </Step>
               );

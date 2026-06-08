@@ -155,9 +155,6 @@ function getDefaultValueForField(field: {
 
   // Checkbox group fields (like dependents)
   if (inputType === "checkbox-group") {
-    if (fieldId === "dependents") {
-      return ["spouse"];
-    }
     return [];
   }
 

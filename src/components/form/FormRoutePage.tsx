@@ -11,7 +11,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import type { PageId } from "../../types/page";
 import { getClientPageFields } from "../../config/clientFields/getClientPageFields";
 import {
-  formFlow,
+  getResolvedFormFlow,
   getNextFormPageId,
   getPreviousFormPageId,
 } from "../../config/formFlow";
@@ -25,9 +25,9 @@ import {
 } from "../../state/ApplicationFormContext";
 import { isApplicantApplying } from "./applicantVisibility";
 import FormPage from "./FormPage";
-import FormVerticalStepper, {
-  VerticalStepperBreadcrumbs,
-} from "./FormVerticalStepper";
+import FormPageError from "./FormPageError";
+import FormPageTitle from "./FormPageTitle";
+import FormVerticalStepper from "./FormVerticalStepper";
 import { getActiveProgressStepIndex } from "../../config/progressSteps";
 import { generateFormDataUpToPage } from "../../dev/utils/generateFormData";
 import FormTransitionSkeleton, {
@@ -70,10 +70,10 @@ type FormRoutePageProps = {
   title?: ReactNode;
   subhead?: ReactNode;
   formMaxWidth?: number | string;
-  noBreadcrumb?: boolean;
   noTitle?: boolean;
   noContainer?: boolean;
   hideActions?: boolean;
+  hideNextButton?: boolean | ((values: FormRoutePageValues) => boolean);
   help?: ReactNode | ((props: FormRouteRenderProps) => ReactNode);
   children: ReactNode | ((props: FormRouteRenderProps) => ReactNode);
   validate?: (values: FormRoutePageValues) => string | undefined;
@@ -131,8 +131,20 @@ export function isSectionVisible(
   section: PageSectionConfig,
   values: FormRoutePageValues,
 ): boolean {
-  const coverageOptionsIndex = formFlow.indexOf("coverage-options");
-  const sectionPageIndex = formFlow.indexOf(section.pageId);
+  const resolvedFlow = getResolvedFormFlow();
+  const coverageOptionsIndex =
+    resolvedFlow.indexOf("coverage-options") !== -1
+      ? resolvedFlow.indexOf("coverage-options")
+      : resolvedFlow.indexOf("coverage-combined");
+  let sectionPageIndex = resolvedFlow.indexOf(section.pageId);
+  // In combined flow, "personal" and "financial" pages are merged into "about-applicant"
+  // but sections still reference the original pageId. Map them to the combined page.
+  if (
+    sectionPageIndex === -1 &&
+    (section.pageId === "personal" || section.pageId === "financial")
+  ) {
+    sectionPageIndex = resolvedFlow.indexOf("about-applicant");
+  }
   const useApplicantCoverageGate =
     sectionPageIndex >= coverageOptionsIndex && coverageOptionsIndex !== -1;
 
@@ -165,7 +177,7 @@ function getDevValue(field: {
   format?: string;
   options?: { value: string }[];
 }) {
-  if (field.id === "dependents") return ["spouse"];
+  if (field.id === "dependents") return [];
   if (field.id.includes("-onset")) return "01/2020";
   if (field.id.startsWith("payment-method:")) return "bill-me";
   if (field.id.startsWith("payment-frequency:")) return "monthly";
@@ -218,10 +230,10 @@ export default function FormRoutePage({
   title,
   subhead,
   formMaxWidth,
-  noBreadcrumb,
   noTitle,
   noContainer,
   hideActions,
+  hideNextButton,
   help,
   children,
   validate,
@@ -278,10 +290,13 @@ export default function FormRoutePage({
   watchRef.current = watch;
   const setPageValuesRef = useRef(setPageValues);
   setPageValuesRef.current = setPageValues;
+  const hasExplicitlySavedRef = useRef(false);
 
   useEffect(() => {
     return () => {
-      setPageValuesRef.current(watchRef.current());
+      if (!hasExplicitlySavedRef.current) {
+        setPageValuesRef.current(watchRef.current());
+      }
     };
   }, []);
 
@@ -413,6 +428,7 @@ export default function FormRoutePage({
 
     setPageError(undefined);
     setPageValues(formValues);
+    hasExplicitlySavedRef.current = true;
 
     if (pageId === "membership") {
       void sendAutosaveMockEmail(nextNavigationValues).catch((error) => {
@@ -469,6 +485,7 @@ export default function FormRoutePage({
       };
 
       setPageValues(previousNavigationValues);
+      hasExplicitlySavedRef.current = true;
 
       emitPendingBreadcrumbCompletion(null);
       setTransitionMessage(BACK_MESSAGE);
@@ -503,77 +520,17 @@ export default function FormRoutePage({
   const formPageElement = (
     <FormPage
       title={resolvedTitle}
-      subhead={isTransitioning ? undefined : resolvedSubhead}
-      error={isTransitioning ? undefined : pageError}
-      help={isTransitioning ? undefined : renderedHelp}
-      headerOverride={
-        isTransitioning && !noTitle ? (
-          <FormTransitionHeaderSkeleton statusMessage={transitionMessage} />
-        ) : undefined
-      }
       maxWidth={hasVerticalStepper ? "100%" : formMaxWidth}
-      noTitle={noTitle}
+      noTitle
       noContainer={noContainer || hasVerticalStepper}
-      onBack={
-        !isTransitioning && getPreviousFormPageId(pageId, watchedValues)
-          ? handleBack
-          : undefined
-      }
-      actions={
-        hideActions ? undefined : (
-          <>
-            <Button
-              type="button"
-              form={`${pageId}-form`}
-              onClick={handleBack}
-              disabled={
-                isTransitioning || !getPreviousFormPageId(pageId, watchedValues)
-              }
-            >
-              Back
-            </Button>
-            <Button
-              type="submit"
-              form={`${pageId}-form`}
-              variant="contained"
-              disabled={isTransitioning}
-              endIcon={
-                !isTransitioning ? <ArrowForwardRoundedIcon /> : undefined
-              }
-              sx={(theme) => ({
-                fontWeight: 700,
-                paddingX: 3,
-                py: 1.35,
-                boxShadow: "0 8px 18px #0668ff3d",
-                "&:hover": {
-                  boxShadow: "0 8px 18px #0668ff3d",
-                },
-                "&.Mui-disabled": {
-                  color: theme.palette.primary.contrastText,
-                  backgroundColor: theme.palette.primary.main,
-                  boxShadow: "0 8px 18px #0668ff3d",
-                  opacity: 1,
-                },
-              })}
-            >
-              {isTransitioning ? (
-                <CircularProgress size={20} color="inherit" />
-              ) : (
-                "Next"
-              )}
-            </Button>
-          </>
-        )
-      }
-      aboveHeader={
-        hasVerticalStepper && !noBreadcrumb ? (
-          <VerticalStepperBreadcrumbs pageId={pageId} />
-        ) : undefined
-      }
+      actions={undefined}
     >
       <Box>
         {isTransitioning ? (
-          <FormTransitionSkeleton statusMessage={transitionMessage} />
+          <>
+            <FormTransitionHeaderSkeleton statusMessage={transitionMessage} />
+            <FormTransitionSkeleton statusMessage={transitionMessage} />
+          </>
         ) : (
           <>
             <Box
@@ -581,7 +538,7 @@ export default function FormRoutePage({
                 hasVerticalStepper
                   ? {
                       width: "100%",
-                      borderRadius: "32px",
+                      borderRadius: "16px",
                       backgroundColor: "#ffffff",
                       boxShadow: "0 8px 16px rgba(52, 59, 72, 0.06)",
                       px: { xs: 2, sm: 3 },
@@ -591,6 +548,25 @@ export default function FormRoutePage({
                   : undefined
               }
             >
+              {!noTitle && (
+                <Box sx={{ mb: "1rem" }}>
+                  <FormPageTitle
+                    title={resolvedTitle}
+                    subhead={resolvedSubhead}
+                    onBack={
+                      getPreviousFormPageId(pageId, watchedValues)
+                        ? handleBack
+                        : undefined
+                    }
+                  />
+                  {renderedHelp}
+                </Box>
+              )}
+              {pageError && (
+                <Box sx={{ mb: 2 }}>
+                  <FormPageError message={pageError} />
+                </Box>
+              )}
               <form
                 id={`${pageId}-form`}
                 noValidate
@@ -599,6 +575,44 @@ export default function FormRoutePage({
                 {typeof children === "function"
                   ? children(renderProps)
                   : children}
+                {!hideActions &&
+                  !(typeof hideNextButton === "function"
+                    ? hideNextButton(watchedValues)
+                    : hideNextButton) && (
+                    <Box sx={{ mt: "1rem", mb: "1rem" }}>
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        fullWidth
+                        disabled={isTransitioning}
+                        endIcon={
+                          !isTransitioning ? (
+                            <ArrowForwardRoundedIcon />
+                          ) : undefined
+                        }
+                        sx={(theme) => ({
+                          fontWeight: 700,
+                          padding: "16px",
+                          boxShadow: "0 8px 18px #0668ff3d",
+                          "&:hover": {
+                            boxShadow: "0 8px 18px #0668ff3d",
+                          },
+                          "&.Mui-disabled": {
+                            color: theme.palette.primary.contrastText,
+                            backgroundColor: theme.palette.primary.main,
+                            boxShadow: "0 8px 18px #0668ff3d",
+                            opacity: 1,
+                          },
+                        })}
+                      >
+                        {isTransitioning ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : (
+                          "Next"
+                        )}
+                      </Button>
+                    </Box>
+                  )}
               </form>
             </Box>
           </>

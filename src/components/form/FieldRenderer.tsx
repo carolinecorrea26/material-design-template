@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import type { FieldDefinition } from "../../config/fields/types";
 import SelectableOptionRow from "./SelectableOptionRow";
@@ -273,7 +273,7 @@ function isFieldInError(statusState?: FieldStatusState) {
 
 function renderCompletedIcon(sx = {}) {
   return (
-    <CheckCircleOutlineRoundedIcon
+    <CheckCircleRoundedIcon
       aria-label="Completed"
       sx={{
         color: "success.main",

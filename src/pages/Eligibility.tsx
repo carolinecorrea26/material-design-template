@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
-import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import {
   Alert,
@@ -338,11 +338,11 @@ function EligibilityFields({
                             InputProps={{
                               endAdornment: isComplete ? (
                                 <InputAdornment position="end">
-                                  <CheckCircleOutlineRoundedIcon
+                                  <CheckCircleRoundedIcon
                                     aria-label="Completed"
                                     sx={{
                                       color: "success.main",
-                                      fontSize: "1.25rem",
+                                      fontSize: { xs: "1rem", md: "1.25rem" },
                                     }}
                                   />
                                 </InputAdornment>

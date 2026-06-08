@@ -35,7 +35,7 @@ import type {
 import QuickDecisionIndicator from "../common/QuickDecisionIndicator";
 import { formatUSD } from "../../utils/formatUSD";
 import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
-import { formFlow } from "../../config/formFlow";
+import { getResolvedFormFlow } from "../../config/formFlow";
 import { pages } from "../../config/pages";
 import type { PageId } from "../../types/page";
 
@@ -247,11 +247,12 @@ export default function ApplicationSummaryDrawer({
     setConfirmRemoveId(null);
 
     if (nextSelections.length === 0) {
-      const coverageIndex = formFlow.indexOf("coverage");
+      const flow = getResolvedFormFlow();
+      const coverageIndex = flow.indexOf("coverage");
       const currentPath = location.pathname.replace(/\/$/, "");
       const currentPage = pages.find((p) => p.path === currentPath);
       const currentPageId = currentPage?.id as PageId | undefined;
-      const currentIndex = currentPageId ? formFlow.indexOf(currentPageId) : -1;
+      const currentIndex = currentPageId ? flow.indexOf(currentPageId) : -1;
 
       if (currentIndex > coverageIndex) {
         onClose();

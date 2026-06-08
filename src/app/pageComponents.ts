@@ -6,10 +6,12 @@ import Eligibility from "../pages/Eligibility";
 import Coverage from "../pages/Coverage";
 import CoverageQuestions from "../pages/CoverageQuestions";
 import CoverageOptions from "../pages/CoverageOptions";
+import CoverageCombined from "../pages/CoverageCombined";
 import Beneficiary from "../pages/Beneficiary";
 import Contact from "../pages/Contact";
 import Personal from "../pages/Personal";
 import Financial from "../pages/Financial";
+import AboutApplicant from "../pages/AboutApplicant";
 import Review from "../pages/Review";
 import DocuSign from "../pages/DocuSign";
 import HealthSi from "../pages/HealthSi";
@@ -33,10 +35,12 @@ export const pageComponents: Record<RoutedPageId, ComponentType> = {
   coverage: Coverage,
   "coverage-questions": CoverageQuestions,
   "coverage-options": CoverageOptions,
+  "coverage-combined": CoverageCombined,
   beneficiary: Beneficiary,
   contact: Contact,
   personal: Personal,
   financial: Financial,
+  "about-applicant": AboutApplicant,
   review: Review,
   docusign: DocuSign,
   "health-si": HealthSi,

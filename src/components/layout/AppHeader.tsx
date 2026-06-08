@@ -193,7 +193,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
     prevCoverageCountRef.current = currentCount;
 
     if (
-      currentPageId === "coverage" &&
+      (currentPageId === "coverage" || currentPageId === "coverage-combined") &&
       currentCount > prevCount &&
       prevCount >= 0
     ) {
@@ -321,7 +321,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
                       >
                         <ShoppingCartIcon sx={{ color: "primary.main" }} />
                       </Badge>
-                      <Typography
+                      {/* <Typography
                         variant="body2"
                         sx={{
                           color: "primary.main",
@@ -331,7 +331,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
                         }}
                       >
                         Cart
-                      </Typography>
+                      </Typography> */}
                     </IconButton>
                   )}
 

@@ -16,9 +16,9 @@ export const pages = [
     id: "membership",
     path: "/membership",
     type: "form",
-    title: "Start your insurance application",
+    title: `Starting your application for ${clientAcronym}-sponsored insurance`,
     subhead: `This application is for ${clientAcronym}-sponsored group insurance.`,
-    navTitle: "Start",
+    navTitle: "Membership",
     groupId: "get-started",
   },
   {
@@ -209,6 +209,25 @@ export const pages = [
     type: "internal",
     title: "Information Architecture",
     navTitle: "Information architecture",
+  },
+  {
+    id: "coverage-combined",
+    path: "/coverage-combined",
+    type: "form",
+    title: "Your coverage options",
+    subhead: "Explore and customize the coverage options available to you.",
+    navTitle: "Choose coverage",
+    groupId: "coverage",
+  },
+  {
+    id: "about-applicant",
+    path: "/about-applicant",
+    type: "form",
+    title: "About you",
+    subhead:
+      "Share the personal and financial details needed to complete your application.",
+    navTitle: "About applicant",
+    groupId: "profile",
   },
 ] as const;
 

@@ -178,7 +178,7 @@ function ContactFields({
           const content = (
             <>
               {/* Residential Address sub-section label */}
-              <FormSectionTitle label="Home Address" />
+              {/* <FormSectionTitle label="Home Address" /> */}
 
               {/* Street address + Apt/Suite row */}
               <Box

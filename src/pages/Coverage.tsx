@@ -154,7 +154,14 @@ export default function Coverage() {
   }
 
   return (
-    <FormRoutePage pageId={pageId} validate={validate}>
+    <FormRoutePage
+      pageId={pageId}
+      validate={validate}
+      hideNextButton={(vals) =>
+        !Array.isArray(vals.coverageSelections) ||
+        vals.coverageSelections.length === 0
+      }
+    >
       {hasQdProduct && (
         <Box
           sx={{

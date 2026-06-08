@@ -52,7 +52,7 @@ export default function FormHelpChips({
   if (!items.length) return null;
 
   return (
-    <Stack spacing={2} sx={{ maxWidth, mt: { xs: 0, md: 3 }, mb: 3 }}>
+    <Stack spacing={2} sx={{ maxWidth, mt: 1.5, mb: 0 }}>
       <Box
         sx={{
           position: "relative",
