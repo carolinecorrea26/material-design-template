@@ -97,6 +97,7 @@ function getClientEmailPayload() {
   return {
     clientId: client.id,
     associationName: client.branding.name,
+    clientAcronym: client.branding.acronym,
     tpaName: client.branding.name,
     tpaPhone: client.support.phoneDisplay || client.support.phone || "",
     tpaEmail: client.support.email || "",
@@ -118,9 +119,9 @@ function getApplicationEmailPayload(values: ApplicationFormValues) {
 }
 
 function getInsuranceAdministratorFromName(
-  payload: ReturnType<typeof getClientEmailPayload>,
+  _payload: ReturnType<typeof getClientEmailPayload>,
 ) {
-  return `${payload.tpaName} Insurance Administrator`;
+  return "Insurance Administrator";
 }
 
 function getAdvisorNotificationsFromName(
@@ -170,8 +171,6 @@ function getGeneratedMockEmailId(type: MockEmailType) {
 }
 
 function getBaseEmailHtml(options: { title: string; bodyHtml: string }) {
-  const payload = getClientEmailPayload();
-
   return `<!doctype html>
 <html lang="en">
   <head>
@@ -186,22 +185,7 @@ function getBaseEmailHtml(options: { title: string; bodyHtml: string }) {
         <td align="center">
           <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px; background-color:#ffffff; border-radius:28px; overflow:hidden;">
             <tr>
-              <td style="padding:24px 24px 16px;">
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-                  <tr>
-                    <td align="left" style="vertical-align:top;">
-                      <img src="/logo.svg" alt="New York Life" width="48" style="display:block; width:48px; max-width:48px; height:auto; border:0; outline:none; text-decoration:none; border-radius:2px;" />
-                    </td>
-                    <td align="right" style="vertical-align:top;">
-                      <img src="${escapeHtml(payload.clientLogo)}" alt="${escapeHtml(payload.clientLogoAlt)}" width="170" style="display:block; width:170px; max-width:170px; height:auto; border:0; outline:none; text-decoration:none;" />
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-
-            <tr>
-              <td style="padding:16px 24px 0; color:#111827; font-size:16px; line-height:1.55;">
+              <td style="padding:32px 32px 0; color:#111827; font-size:16px; line-height:1.55;">
                 ${options.bodyHtml}
               </td>
             </tr>
@@ -277,10 +261,28 @@ function getNoticeHtml(title: string, body: string) {
   </table>`;
 }
 
+function getNylFooterHtml() {
+  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:28px 0 0; border-top:1px solid #d1d5db; padding-top:18px;">
+    <tr>
+      <td style="padding-top:18px; vertical-align:top; width:50px;">
+        <img src="/logo.svg" alt="New York Life" width="50" height="50" style="display:block; width:50px; height:50px; border:0; outline:none; text-decoration:none; border-radius:2px;" />
+      </td>
+      <td style="padding-top:18px; padding-left:14px; vertical-align:top;">
+        <p style="margin:0 0 4px; font-size:11px; line-height:1.4; font-weight:700; color:#111827;">Underwritten By:</p>
+        <p style="margin:0 0 4px; font-size:11px; line-height:1.4; color:#111827;">New York Life Insurance Company</p>
+        <p style="margin:0 0 4px; font-size:11px; line-height:1.4; color:#111827;">51 Madison Avenue New York, New York 10010</p>
+        <p style="margin:0 0 4px; font-size:10px; line-height:1.4; color:#6b7280;">New York Life Insurance Company is licensed/authorized to transact business in all of the 50 United States, the District of Columbia, Puerto Rico and Canada. However, not all group policies it underwrites are available in all jurisdictions. Please check the Coverage detail sections for current availability. New York Life Insurance Company&#039;s state of domicile is New York, and NAIC ID is #66915.</p>
+        <p style="margin:0; font-size:10px; line-height:1.4; color:#6b7280;">NEW YORK LIFE and the NEW YORK LIFE Box Logo are trademarks of New York Life Insurance Company.</p>
+      </td>
+    </tr>
+  </table>`;
+}
+
 function getNoReplyHtml() {
-  return `<div style="margin:24px 0; border-top:1px solid #d1d5db; padding-top:18px;">
-    <p style="margin:0; color:#111827; font-size:14px; line-height:1.45; font-weight:500;">
-      <strong>Please do not reply to this email.</strong> This is an automated message.  If you need assistance, contact the insurance administrator.
+  return `${getNylFooterHtml()}
+  <div style="margin:18px 0 24px; padding-top:14px;">
+    <p style="margin:0; color:#6b7280; font-size:13px; line-height:1.45;">
+      Please note: This is an automated message. Replies to this email are not monitored.
     </p>
   </div>`;
 }
@@ -334,9 +336,11 @@ function buildAutosaveEmailHtml(
   const fullName = escapeHtml(
     getDisplayName(payload.firstName, payload.lastName),
   );
+  const saveDate = new Date();
+  const purgeDate = addDays(saveDate, 9);
 
   return getBaseEmailHtml({
-    title: "Your application has been saved",
+    title: "Your insurance application is being saved",
     bodyHtml: `
       <p style="margin:0 0 24px; font-size:16px; line-height:1.55;">
         Dear ${fullName},
@@ -355,7 +359,7 @@ function buildAutosaveEmailHtml(
       ${getButtonHtml("Continue my application", payload.resumeUrl)}
 
       <p style="margin:0 0 10px; color:#374151; font-size:15px; line-height:1.5;">
-        Or copy and paste the following link into your browser:
+        Or copy and paste this website address into your browser:
       </p>
 
       <p style="margin:0 0 28px; font-size:15px; line-height:1.5; color:#006fff; word-break:break-all;">
@@ -371,13 +375,12 @@ function buildAutosaveEmailHtml(
       ${getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail)}
       ${getNoticeHtml(
         "Your application will be saved for 10 days.",
-        "If you do not complete within 10 calendar days, you will need to start a new application. This is for your security.",
+        `For your security, your saved application will be deleted on ${formatMockDate(purgeDate)} (10 days from when you started). After that, you’ll need to begin a new application.`,
       )}
       ${getNoReplyHtml()}
     `,
   });
 }
-
 function buildReceiptEmailHtml(
   payload: ReturnType<typeof getApplicationEmailPayload>,
   confirmationNumber: string,
@@ -387,43 +390,28 @@ function buildReceiptEmailHtml(
   );
 
   return getBaseEmailHtml({
-    title: "We received your application",
+    title: "Thank you! We’ve received your insurance request",
     bodyHtml: `
       <p style="margin:0 0 24px; font-size:16px; line-height:1.55;">
         Dear ${fullName},
       </p>
 
       <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
-        Thank you. Your insurance application through <strong>${escapeHtml(
-          payload.associationName,
-        )}</strong> has been submitted.
+        We wanted to let you know we have received your application for <strong>${escapeHtml(
+          payload.clientAcronym,
+        )}</strong> sponsored insurance and are processing it now.
       </p>
 
-      ${getNoticeHtml(
-        "Submitted successfully",
-        `Confirmation number: ${confirmationNumber}`,
-      )}
-
-      <p style="margin:28px 0 14px; font-size:21px; line-height:1.25; font-weight:700; color:#111827;">
-        What happens next
+      <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
+        If you have any questions, please use the contact information below and refer to your confirmation number: <strong>${escapeHtml(confirmationNumber)}</strong>
       </p>
 
-      <p style="margin:0 0 16px; font-size:16px; line-height:1.55;">
-        New York Life will review your application and provide a decision after all required information has been received and reviewed.
+      <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
+        Thank you.
       </p>
 
-      <p style="margin:0 0 16px; font-size:16px; line-height:1.55;">
-        If additional information is needed, a representative from New York Life, ${escapeHtml(
-          payload.tpaName,
-        )}, or a medical service provider may contact you.
-      </p>
-
-      <p style="margin:0 0 24px; font-size:16px; line-height:1.55;">
-        If your application is approved, you will receive details about your new coverage.
-      </p>
-
-      <p style="margin:0; font-size:16px; line-height:1.55;">
-        We look forward to serving your insurance needs.
+      <p style="margin:0; font-size:16px; line-height:1.55; font-weight:600;">
+        ${escapeHtml(payload.clientAcronym)} Group Sponsored Insurance Program, Insurance Administrator
       </p>
 
       ${getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail)}
@@ -431,45 +419,55 @@ function buildReceiptEmailHtml(
     `,
   });
 }
-
 function buildResumeMagicLinkEmailHtml() {
   const payload = getClientEmailPayload();
 
   return getBaseEmailHtml({
-    title: "Continue your saved application",
+    title: "Your requested link to resume your application",
     bodyHtml: `
       <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
-        Please click the button below to finish your saved insurance application through <strong>${escapeHtml(
+        A request has been made to return to an insurance application in progress through <strong>${escapeHtml(
           payload.associationName,
-        )}</strong>. This link expires in <strong>10 minutes.</strong>
+        )}</strong>. Click the link below to continue to your application.
       </p>
 
-      ${getButtonHtml("Verify my email", payload.resumeMagicLinkUrl)}
+      ${getButtonHtml("Confirm my email", payload.resumeMagicLinkUrl)}
+
+      <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
+        This link will expire in <strong>5 minutes.</strong>
+      </p>
+
+      <p style="margin:0 0 8px; font-size:16px; line-height:1.55; font-weight:700;">
+        Didn’t request a link?
+      </p>
+
+      <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
+        If you did not request a link, you may ignore this message. Access to application information will only be granted with verification.
+      </p>
 
       ${getNoReplyHtml()}
     `,
   });
 }
-
 function buildPendingReminderEmailHtml() {
   const payload = getClientEmailPayload();
   const startDate = new Date();
   const purgeDate = addDays(startDate, 9);
 
   return getBaseEmailHtml({
-    title: "Your application is still pending",
+    title: "Your insurance application is ready to be completed",
     bodyHtml: `
       <p style="margin:0 0 24px; font-size:16px; line-height:1.55;">
         Dear ${escapeHtml(MOCK_APPLICANT_FIRST_NAME)},
       </p>
 
       <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
-        We noticed you started an insurance application with <strong>${escapeHtml(
+        We noticed you haven’t finished your <strong>${escapeHtml(
           payload.associationName,
-        )}</strong>. Good news—your progress has been saved.
+        )}</strong> insurance application. Good news—your progress has been saved.
       </p>
 
-      ${getButtonHtml("Finish my application", payload.resumeUrl)}
+      ${getButtonHtml("Continue my application", payload.resumeUrl)}
 
       <p style="margin:0 0 10px; color:#374151; font-size:15px; line-height:1.5;">
         Or copy and paste this website address into your browser:
@@ -481,24 +479,28 @@ function buildPendingReminderEmailHtml() {
         </a>
       </p>
 
-      ${getNoticeHtml(
-        "Your application will be deleted in a few days.",
-        `For your security, your saved application will be deleted on ${formatMockDate(
-          purgeDate,
-        )} — 10 days from when you started. After that, you’ll need to begin a new application.`,
-      )}
+      <p style="margin:0; font-size:16px; line-height:1.55;">
+        We look forward to serving your insurance needs.
+      </p>
 
       ${getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail)}
+      ${getNoticeHtml(
+        "Your application will be saved for 10 days.",
+        `For your security, your saved application will be deleted on ${formatMockDate(
+          purgeDate,
+        )} (10 days from when you started). After that, you’ll need to begin a new application.`,
+      )}
       ${getNoReplyHtml()}
     `,
   });
 }
-
 function buildPurgeReminderEmailHtml() {
   const payload = getClientEmailPayload();
+  const startDate = new Date();
+  const purgeDate = addDays(startDate, 9);
 
   return getBaseEmailHtml({
-    title: "Your application request has expired",
+    title: "Your insurance application progress",
     bodyHtml: `
       <p style="margin:0 0 24px; font-size:16px; line-height:1.55;">
         Dear ${escapeHtml(MOCK_APPLICANT_FIRST_NAME)},
@@ -535,11 +537,19 @@ function buildPurgeReminderEmailHtml() {
       </p>
 
       ${getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail)}
+      ${getNoticeHtml(
+        "Your application will be saved for 10 days.",
+        `For your security, your saved application will be deleted on ${formatMockDate(
+          purgeDate,
+        )} (10 days from when you started). After that, you’ll need to begin a new application.`,
+      )}
+
+      <div style="margin:20px 0; border-top:1px dashed #d1d5db;"></div>
+
       ${getNoReplyHtml()}
     `,
   });
 }
-
 function buildAdvisorEmailHtml(options: {
   title: string;
   message: string;
@@ -619,21 +629,9 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
       fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
-      subject: "[DO NOT REPLY] Your saved insurance application",
+      subject: "Your insurance application is being saved",
       createdAt: now,
       html: buildAutosaveEmailHtml(sampleApplicantPayload),
-    },
-    {
-      id: "sample-resume-magic-link",
-      type: "resume-magic-link",
-      clientId: payload.clientId,
-      fromName: getInsuranceAdministratorFromName(payload),
-      fromEmail: MOCK_FROM_EMAIL,
-      toEmail: MOCK_APPLICANT_EMAIL,
-      subject:
-        "[DO NOT REPLY] Confirm your email to continue your insurance application",
-      createdAt: now,
-      html: buildResumeMagicLinkEmailHtml(),
     },
     {
       id: "sample-pending-reminder",
@@ -642,8 +640,7 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
       fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
-      subject:
-        "[DO NOT REPLY] Don't forget to complete your insurance application",
+      subject: "Your insurance application is ready to be completed",
       createdAt: now,
       html: buildPendingReminderEmailHtml(),
     },
@@ -654,9 +651,31 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
       fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
-      subject: "[DO NOT REPLY] Your insurance application has expired",
+      subject: "Your insurance application progress",
       createdAt: now,
       html: buildPurgeReminderEmailHtml(),
+    },
+    {
+      id: "sample-receipt",
+      type: "receipt",
+      clientId: payload.clientId,
+      fromName: getInsuranceAdministratorFromName(payload),
+      fromEmail: MOCK_FROM_EMAIL,
+      toEmail: MOCK_APPLICANT_EMAIL,
+      subject: "Thank you! We\u2019ve received your insurance request",
+      createdAt: now,
+      html: buildReceiptEmailHtml(sampleApplicantPayload, "CONF-2026-001234"),
+    },
+    {
+      id: "sample-resume-magic-link",
+      type: "resume-magic-link",
+      clientId: payload.clientId,
+      fromName: getInsuranceAdministratorFromName(payload),
+      fromEmail: MOCK_FROM_EMAIL,
+      toEmail: MOCK_APPLICANT_EMAIL,
+      subject: "Your requested link to resume your application",
+      createdAt: now,
+      html: buildResumeMagicLinkEmailHtml(),
     },
     {
       id: "advisor-sent-for-signature",
@@ -665,7 +684,7 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
       fromName: getAdvisorNotificationsFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_ADVISOR_EMAIL,
-      subject: "[DO NOT REPLY] Application sent for signature",
+      subject: "Application sent for signature",
       createdAt: now,
       html: buildAdvisorEmailHtml({
         title: "Application sent for signature",
@@ -680,7 +699,7 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
       fromName: getAdvisorNotificationsFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_ADVISOR_EMAIL,
-      subject: "[DO NOT REPLY] Application still pending signature",
+      subject: "Application still pending signature",
       createdAt: now,
       html: buildAdvisorEmailHtml({
         title: "Application still pending signature",
@@ -695,7 +714,7 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
       fromName: getAdvisorNotificationsFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_ADVISOR_EMAIL,
-      subject: "[DO NOT REPLY] Application edit request",
+      subject: "Application edit request",
       createdAt: now,
       html: buildAdvisorEmailHtml({
         title: "Application edit request",
@@ -711,7 +730,7 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
       fromName: getAdvisorNotificationsFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_ADVISOR_EMAIL,
-      subject: "[DO NOT REPLY] Application submitted",
+      subject: "Application submitted",
       createdAt: now,
       html: buildAdvisorEmailHtml({
         title: "Application submitted",
@@ -783,7 +802,7 @@ export async function sendAutosaveMockEmail(values: ApplicationFormValues) {
     fromName: getInsuranceAdministratorFromName(payload),
     fromEmail: MOCK_FROM_EMAIL,
     toEmail: payload.toEmail,
-    subject: "[DO NOT REPLY] Your application is saved!",
+    subject: "Your insurance application is being saved",
     createdAt: new Date().toISOString(),
     html: buildAutosaveEmailHtml(payload),
   });
@@ -804,7 +823,7 @@ export async function sendReceiptMockEmail(
     fromName: getInsuranceAdministratorFromName(payload),
     fromEmail: MOCK_FROM_EMAIL,
     toEmail: payload.toEmail,
-    subject: "[DO NOT REPLY] Your insurance application has been submitted",
+    subject: "Thank you! We\u2019ve received your insurance request",
     createdAt: new Date().toISOString(),
     html: buildReceiptEmailHtml(payload, confirmationNumber),
   });
@@ -823,8 +842,7 @@ export async function sendResumeMagicLinkMockEmail(emailAddress: string) {
     fromName: getInsuranceAdministratorFromName(payload),
     fromEmail: MOCK_FROM_EMAIL,
     toEmail: trimmedEmailAddress,
-    subject:
-      "[DO NOT REPLY] Confirm your email to continue your saved insurance application",
+    subject: "Your requested link to resume your application",
     createdAt: new Date().toISOString(),
     html: buildResumeMagicLinkEmailHtml(),
   });

@@ -127,9 +127,9 @@ export default function CostEstimateDrawerContent() {
   const [fieldsAttempted, setFieldsAttempted] = useState(false);
 
   const [amountsByKey, setAmountsByKey] = useState<Record<string, number>>({});
-  const [productApplicants, setProductApplicants] = useState<
-    Record<string, CoverageApplicantId[]>
-  >({});
+  const [productApplicants] = useState<Record<string, CoverageApplicantId[]>>(
+    {},
+  );
 
   const [showProducts, setShowProducts] = useState(false);
   const [productsLoading, setProductsLoading] = useState(false);
