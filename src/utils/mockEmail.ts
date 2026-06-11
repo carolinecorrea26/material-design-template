@@ -125,9 +125,9 @@ function getInsuranceAdministratorFromName(
 }
 
 function getAdvisorNotificationsFromName(
-  payload: ReturnType<typeof getClientEmailPayload>,
+  _payload: ReturnType<typeof getClientEmailPayload>,
 ) {
-  return `${payload.tpaName} Advisor Notifications`;
+  return "Insurance Administrator";
 }
 
 function hasRecipientEmail(values: ApplicationFormValues) {
