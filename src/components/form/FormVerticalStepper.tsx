@@ -8,9 +8,11 @@ import {
   StepLabel,
   Stepper,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
-import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import { useNavigate } from "react-router-dom";
 import {
   getActiveProgressSteps,
@@ -89,6 +91,11 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
   const { values } = useApplicationForm();
   const [pendingCompletedPageId, setPendingCompletedPageId] =
     useState<PageId | null>(null);
+
+  // Clear pending state when the page changes (the new page's index handles completion naturally)
+  useEffect(() => {
+    setPendingCompletedPageId(null);
+  }, [pageId]);
 
   useEffect(() => {
     function handlePendingCompletion(event: Event) {
@@ -175,7 +182,7 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
               }}
             >
               <Typography variant="formBreadcrumb">{entry.label}</Typography>
-              <CheckCircleOutlineRoundedIcon
+              <CheckRoundedIcon
                 sx={{
                   fontSize: 14,
                   color: "success.main",
@@ -225,6 +232,9 @@ export default function FormVerticalStepper({
 }: FormVerticalStepperProps) {
   const navigate = useNavigate();
   const { values } = useApplicationForm();
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
+
   const activeSteps = getActiveProgressSteps(values);
   const activeStep = getActiveProgressStepIndex(pageId, values);
 
@@ -238,24 +248,45 @@ export default function FormVerticalStepper({
     >
       <Box
         sx={{
-          display: { xs: "block", md: "grid" },
-          gridTemplateColumns: {
-            md: "200px minmax(0, 1fr)",
-            lg: "280px minmax(0, 1fr)",
-          },
-          columnGap: { md: 6, lg: 3 },
+          display: isDesktop ? "grid" : "block",
+          gridTemplateColumns: isDesktop
+            ? {
+                md: "200px minmax(0, 1fr)",
+                lg: "280px minmax(0, 1fr)",
+              }
+            : undefined,
+          columnGap: isDesktop ? { md: 6, lg: 3 } : undefined,
           alignItems: "flex-start",
         }}
       >
         <Box
-          sx={{
-            display: { xs: "none", md: "block" },
-            position: "sticky",
-            top: 12,
-            borderRadius: "24px",
-          }}
+          sx={
+            isDesktop
+              ? { position: "sticky", top: 12, borderRadius: "24px" }
+              : undefined
+          }
         >
-          <Stepper activeStep={activeStep} orientation="vertical">
+          <Stepper
+            activeStep={activeStep}
+            orientation="vertical"
+            sx={
+              !isDesktop
+                ? {
+                    "& .MuiStepConnector-line": {
+                      display: "none",
+                    },
+                    "& .MuiStepContent-root": {
+                      marginLeft: 0,
+                      paddingLeft: 0,
+                      borderLeft: "none",
+                    },
+                    "& .MuiStep-root": {
+                      paddingLeft: 0,
+                    },
+                  }
+                : undefined
+            }
+          >
             {activeSteps.map((step, index) => {
               const isActive = index === activeStep;
               const isCompleted = index < activeStep;
@@ -290,67 +321,20 @@ export default function FormVerticalStepper({
                       {getVerticalStepperStepLabel(step)}
                     </Typography>
                   </StepLabel>
+                  {!isDesktop && (
+                    <StepContent>
+                      {isActive && (
+                        <Box sx={{ width: "100%", mt: 1 }}>{children}</Box>
+                      )}
+                    </StepContent>
+                  )}
                 </Step>
               );
             })}
           </Stepper>
         </Box>
 
-        <Box sx={{ display: { xs: "block", md: "none" } }}>
-          <Stepper activeStep={activeStep} orientation="vertical">
-            {activeSteps.map((step, index) => {
-              const isActive = index === activeStep;
-              const isCompleted = index < activeStep;
-              const stepLabelColor = isActive
-                ? "text.primary"
-                : isCompleted
-                  ? "#62748e"
-                  : "#94a3b8";
-
-              return (
-                <Step key={step.id} completed={isCompleted}>
-                  <StepLabel
-                    onClick={
-                      isCompleted
-                        ? () => {
-                            const firstPage = step.pageIds[0];
-                            if (firstPage) {
-                              navigate(`/${firstPage}`);
-                            }
-                          }
-                        : undefined
-                    }
-                    sx={isCompleted ? { cursor: "pointer" } : undefined}
-                  >
-                    <Typography
-                      variant="formVerticalStepLabelMobile"
-                      sx={{
-                        fontWeight: isActive ? 700 : 500,
-                        color: stepLabelColor,
-                      }}
-                    >
-                      {getVerticalStepperStepLabel(step)}
-                    </Typography>
-                  </StepLabel>
-                  <StepContent>
-                    {isActive && (
-                      <Box sx={{ width: "100%", mt: 2 }}>{children}</Box>
-                    )}
-                  </StepContent>
-                </Step>
-              );
-            })}
-          </Stepper>
-        </Box>
-
-        <Box
-          sx={{
-            display: { xs: "none", md: "block" },
-            minWidth: 0,
-          }}
-        >
-          {children}
-        </Box>
+        {isDesktop && <Box sx={{ minWidth: 0 }}>{children}</Box>}
       </Box>
     </Box>
   );

@@ -214,7 +214,7 @@ export const pages = [
     id: "coverage-combined",
     path: "/coverage-combined",
     type: "form",
-    title: "Your coverage options",
+    title: "Your available coverage options",
     subhead: "Explore and customize the coverage options available to you.",
     navTitle: "Choose coverage",
     groupId: "coverage",

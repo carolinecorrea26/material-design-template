@@ -1,4 +1,10 @@
-import type { ChangeEvent, ReactNode } from "react";
+import {
+  useRef,
+  useState,
+  type ChangeEvent,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import { Controller, type Control, type FieldErrors } from "react-hook-form";
 import {
   Box,
@@ -184,10 +190,33 @@ function formatSsn(value: string) {
   }
 
   if (digits.length <= 5) {
-    return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+    return `${digits.slice(0, 3)} ${digits.slice(3)}`;
   }
 
-  return `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5)}`;
+  return `${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5)}`;
+}
+
+function maskSsnWithLastVisible(value: string, showLast: boolean) {
+  const digits = value.replace(/\D/g, "");
+  if (!digits || !showLast) {
+    return value.replace(/\d/g, "\u2B24");
+  }
+  // Show the last digit, mask the rest
+  let result = "";
+  let digitsSeen = 0;
+  for (let i = 0; i < value.length; i++) {
+    if (/\d/.test(value[i])) {
+      digitsSeen++;
+      if (digitsSeen === digits.length) {
+        result += value[i]; // Show last digit
+      } else {
+        result += "\u2B24";
+      }
+    } else {
+      result += value[i];
+    }
+  }
+  return result;
 }
 
 function formatCurrency(value: unknown) {
@@ -370,6 +399,73 @@ const controlSx = {
   },
 };
 
+function SsnField({
+  field,
+  control,
+  validationRules,
+  renderTextLikeField,
+}: {
+  field: FieldDefinition;
+  control: Control<any>;
+  validationRules: Record<string, unknown>;
+  renderTextLikeField: (
+    controllerField: any,
+    fieldState: any,
+    options?: any,
+  ) => ReactNode;
+}) {
+  const [showLastDigit, setShowLastDigit] = useState(false);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  return (
+    <Controller
+      name={field.id}
+      control={control}
+      rules={validationRules}
+      render={({ field: controllerField, fieldState }) => {
+        const realValue = (controllerField.value as string) ?? "";
+        const maskedDisplay = maskSsnWithLastVisible(realValue, showLastDigit);
+        return renderTextLikeField(controllerField, fieldState, {
+          value: maskedDisplay,
+          onChange: (event: ChangeEvent<HTMLInputElement>) => {
+            const inputVal = event.target.value;
+            const newDigits = inputVal.replace(/[^\d]/g, "");
+            const existingDigits = realValue.replace(/\D/g, "");
+            // Count bullets in display vs input to detect deletion
+            const maskedBullets = maskedDisplay.replace(
+              /[^\u2B24]/g,
+              "",
+            ).length;
+            const inputBullets = inputVal.replace(/[^\u2B24]/g, "").length;
+
+            if (inputBullets < maskedBullets && newDigits.length === 0) {
+              // Deletion: remove last digit(s)
+              const trimmed = existingDigits.slice(0, inputBullets);
+              controllerField.onChange(formatSsn(trimmed));
+              setShowLastDigit(false);
+            } else {
+              // Addition: append new digits to existing
+              const combined = (existingDigits + newDigits).slice(0, 9);
+              controllerField.onChange(formatSsn(combined));
+
+              // Show the last digit briefly
+              setShowLastDigit(true);
+              if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+              hideTimerRef.current = setTimeout(() => {
+                setShowLastDigit(false);
+              }, 800);
+            }
+          },
+          inputProps: {
+            autoComplete: "off",
+            style: { letterSpacing: "0.15em", fontSize: "1.1rem" },
+          },
+        }) as ReactElement;
+      }}
+    />
+  );
+}
+
 export default function FieldRenderer({
   field,
   control,
@@ -428,6 +524,7 @@ export default function FieldRenderer({
 
     const textField = (
       <TextField
+        name={field.id}
         label={
           labelVariant === "floating" ? renderFieldLabel(field) : undefined
         }
@@ -585,6 +682,7 @@ export default function FieldRenderer({
                   <Box sx={{ position: "relative" }}>
                     <Select
                       fullWidth
+                      name={field.id}
                       value={value}
                       onChange={(event) =>
                         controllerField.onChange(event.target.value)
@@ -592,6 +690,7 @@ export default function FieldRenderer({
                       onBlur={controllerField.onBlur}
                       displayEmpty
                       disabled={field.disabled}
+                      inputProps={{ autoComplete: field.autoComplete ?? "off" }}
                       sx={{
                         "& .MuiSelect-select": {
                           pr: hasIcon ? "64px !important" : undefined,
@@ -622,6 +721,7 @@ export default function FieldRenderer({
                   <Box sx={{ position: "relative" }}>
                     <Select
                       fullWidth
+                      name={field.id}
                       labelId={labelId}
                       label={field.label}
                       value={value}
@@ -630,6 +730,7 @@ export default function FieldRenderer({
                       }
                       onBlur={controllerField.onBlur}
                       disabled={field.disabled}
+                      inputProps={{ autoComplete: field.autoComplete ?? "off" }}
                       sx={{
                         "& .MuiSelect-select": {
                           pr: hasIcon ? "64px !important" : undefined,
@@ -1121,19 +1222,12 @@ export default function FieldRenderer({
 
   if (field.format === "ssn") {
     return (
-      <Controller
+      <SsnField
         key={field.id}
-        name={field.id}
+        field={field}
         control={control}
-        rules={validationRules}
-        render={({ field: controllerField, fieldState }) =>
-          renderTextLikeField(controllerField, fieldState, {
-            value: (controllerField.value as string) ?? "",
-            onChange: (event) => {
-              controllerField.onChange(formatSsn(event.target.value));
-            },
-          })
-        }
+        validationRules={validationRules}
+        renderTextLikeField={renderTextLikeField}
       />
     );
   }

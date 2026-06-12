@@ -257,13 +257,38 @@ export default function ComparisonQuoteModal({
   );
 
   function handleCategoryToggle(categoryId: CoverageCategoryId) {
-    setSelectedCategories((current) =>
-      current.includes(categoryId)
-        ? current.filter((id) => id !== categoryId)
-        : [...current, categoryId],
-    );
-    // If products are showing and we're adding a category that needs questions, keep showing
-    // The user can re-click "See my quote" to refresh
+    const isAdding = !selectedCategories.includes(categoryId);
+    const nextCategories = isAdding
+      ? [...selectedCategories, categoryId]
+      : selectedCategories.filter((id) => id !== categoryId);
+
+    setSelectedCategories(nextCategories);
+
+    // If adding a new category after products are revealed, check if the new
+    // combined set needs additional fields. If so, hide products so the user
+    // must answer the new questions before seeing the updated product list.
+    if (isAdding && showProducts) {
+      const nextNeedsGender = nextCategories.some(
+        (c) => c === "LI" || c === "DI",
+      );
+      const nextNeedsSmoker = nextCategories.some(
+        (c) => c === "LI" || c === "SH",
+      );
+      const nextNeedsDi = nextCategories.includes("DI");
+      const nextNeedsOo = nextCategories.includes("OO");
+      const nextNeedsHours = nextNeedsDi || nextNeedsOo;
+      const nextNeedsAdditionalFields =
+        nextNeedsGender ||
+        nextNeedsSmoker ||
+        nextNeedsDi ||
+        nextNeedsOo ||
+        nextNeedsHours;
+
+      if (nextNeedsAdditionalFields) {
+        setShowProducts(false);
+        setFieldsAttempted(false);
+      }
+    }
   }
 
   function handleGetEstimates() {
@@ -500,14 +525,15 @@ export default function ComparisonQuoteModal({
                 <FormLabel sx={{ mb: 1, fontWeight: 500, display: "block" }}>
                   Select a category to see your available coverage options:
                 </FormLabel>
-                <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mt: 1 }}>
+                <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mt: 2 }}>
                   {availableCategories.map((category) => {
                     const Icon = category.icon;
                     const isSelected = selectedCategories.includes(category.id);
                     return (
                       <Chip
                         key={category.id}
-                        icon={<Icon sx={{ fontSize: "0.75rem !important" }} />}
+                        className="coverageCategoryChip"
+                        icon={<Icon sx={{ fontSize: "1.25rem !important" }} />}
                         label={
                           "shortLabel" in category
                             ? category.shortLabel
@@ -516,13 +542,6 @@ export default function ComparisonQuoteModal({
                         variant={isSelected ? "filled" : "outlined"}
                         color={isSelected ? "primary" : "default"}
                         onClick={() => handleCategoryToggle(category.id)}
-                        sx={{
-                          fontSize: "0.75rem",
-                          fontWeight: 600,
-                          "& .MuiChip-icon": {
-                            marginLeft: "8px",
-                          },
-                        }}
                       />
                     );
                   })}

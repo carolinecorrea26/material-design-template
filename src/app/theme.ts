@@ -14,7 +14,7 @@ declare module "@mui/material/styles" {
     formBackLink: React.CSSProperties;
     formTransitionStatus: React.CSSProperties;
     formBreadcrumb: React.CSSProperties;
-    formVerticalStepLabel: React.CSSProperties;
+    formVerticalStepLabel: ResponsiveCSSProperties;
     formVerticalStepLabelMobile: React.CSSProperties;
     formProgressStepNumber: ResponsiveCSSProperties;
     formProgressStepLabel: React.CSSProperties;
@@ -29,7 +29,7 @@ declare module "@mui/material/styles" {
     formBackLink?: React.CSSProperties;
     formTransitionStatus?: React.CSSProperties;
     formBreadcrumb?: React.CSSProperties;
-    formVerticalStepLabel?: React.CSSProperties;
+    formVerticalStepLabel?: ResponsiveCSSProperties;
     formVerticalStepLabelMobile?: React.CSSProperties;
     formProgressStepNumber?: ResponsiveCSSProperties;
     formProgressStepLabel?: React.CSSProperties;
@@ -149,24 +149,31 @@ const theme = createTheme({
       fontSize: "0.875rem",
       fontWeight: 400,
     },
+    overline: {
+      fontSize: "0.75rem",
+      lineHeight: 1.66,
+      fontWeight: 600,
+      textTransform: "uppercase",
+      letterSpacing: "0.5px",
+    },
     button: {
       textTransform: "none",
       fontWeight: 700,
     },
     formPageTitle: {
-      fontSize: "1rem",
+      fontSize: "1.25rem",
       fontWeight: 700,
       letterSpacing: "-0.025em",
       "@media (min-width:900px)": {
-        fontSize: "1.25rem",
+        fontSize: "1.5rem",
       },
     },
     formPageTitleCompact: {
-      fontSize: "1rem",
+      fontSize: "1.25rem",
       fontWeight: 700,
       letterSpacing: "-0.025em",
       "@media (min-width:900px)": {
-        fontSize: "1.25rem",
+        fontSize: "1.5rem",
       },
     },
     formSectionLabel: {
@@ -200,10 +207,13 @@ const theme = createTheme({
       letterSpacing: "-0.25px",
     },
     formVerticalStepLabel: {
-      fontSize: "0.9rem",
+      fontSize: "1rem",
       fontWeight: 500,
       lineHeight: 1.5,
       letterSpacing: "-0.25px",
+      "@media (min-width:900px)": {
+        fontSize: "0.9rem",
+      },
     },
     formVerticalStepLabelMobile: {
       fontSize: "1rem",
@@ -280,8 +290,11 @@ const theme = createTheme({
     MuiStepLabel: {
       styleOverrides: {
         root: {
-          padding: 3,
+          padding: "8px 0",
           color: "#62748e",
+          "@media (min-width:900px)": {
+            padding: 3,
+          },
         },
       },
     },
@@ -543,7 +556,7 @@ const theme = createTheme({
     MuiBreadcrumbs: {
       styleOverrides: {
         root: {
-          padding: "0 0.5rem",
+          // padding: "0 0.5rem",
           // margin: "0.5rem 0",
 
           "& .MuiBreadcrumbs-separator": {
@@ -638,6 +651,34 @@ const theme = createTheme({
             borderRadius: `${inputBorderRadius} !important`,
           },
         }),
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          "& .MuiChip-icon": {
+            marginLeft: "5px",
+            marginRight: "-5px",
+          },
+          "&.coverageCategoryChip": {
+            padding: "12px 8px",
+            height: "auto",
+            borderRadius: "16px",
+            display: "flex",
+            flexDirection: "column",
+            minWidth: "100px",
+            fontSize: "1rem",
+            fontWeight: 600,
+            "& .MuiChip-icon": {
+              marginLeft: 0,
+              marginRight: 0,
+            },
+            "& .MuiChip-label": {
+              paddingTop: 4,
+              paddingBottom: 4,
+            },
+          },
+        },
       },
     },
   },

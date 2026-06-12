@@ -171,7 +171,6 @@ export default function CoverageCatalog({
                 borderColor: isSelected ? "primary.main" : "grey.400",
                 "& .MuiChip-icon": {
                   color: isSelected ? "primary.main" : "text.secondary",
-                  marginLeft: "6px",
                 },
               }}
             />

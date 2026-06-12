@@ -27,11 +27,14 @@ import { isApplicantApplying } from "./applicantVisibility";
 import FormPage from "./FormPage";
 import FormPageError from "./FormPageError";
 import FormPageTitle from "./FormPageTitle";
-import FormVerticalStepper from "./FormVerticalStepper";
+import FormVerticalStepper, {
+  VerticalStepperBreadcrumbs,
+} from "./FormVerticalStepper";
 import { getActiveProgressStepIndex } from "../../config/progressSteps";
 import { generateFormDataUpToPage } from "../../dev/utils/generateFormData";
 import FormTransitionSkeleton, {
   FormTransitionHeaderSkeleton,
+  FormTransitionTitleSkeleton,
 } from "./FormTransitionSkeleton";
 import {
   getForwardMessages,
@@ -394,7 +397,6 @@ export default function FormRoutePage({
   useEffect(() => {
     return () => {
       if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
-      emitPendingBreadcrumbCompletion(null);
     };
   }, []);
 
@@ -455,7 +457,6 @@ export default function FormRoutePage({
         setTransitionMessage(msg2);
 
         transitionTimerRef.current = setTimeout(() => {
-          emitPendingBreadcrumbCompletion(null);
           emitProgressSnapshot(nextNavigationValues);
           navigate(`/${destination}`, { state: { showProgressSaved: true } });
         }, MESSAGE_DURATION);
@@ -526,28 +527,34 @@ export default function FormRoutePage({
       actions={undefined}
     >
       <Box>
-        {isTransitioning ? (
-          <>
-            <FormTransitionHeaderSkeleton statusMessage={transitionMessage} />
-            <FormTransitionSkeleton statusMessage={transitionMessage} />
-          </>
-        ) : (
-          <>
-            <Box
-              sx={
-                hasVerticalStepper
-                  ? {
-                      width: "100%",
-                      borderRadius: "16px",
-                      backgroundColor: "#ffffff",
-                      boxShadow: "0 8px 16px rgba(52, 59, 72, 0.06)",
-                      px: { xs: 2, sm: 3 },
-                      py: 3,
-                      mb: 1,
-                    }
-                  : undefined
-              }
-            >
+        {hasVerticalStepper && (
+          <Box sx={{ pl: "16px", mb: 1.5 }}>
+            <VerticalStepperBreadcrumbs pageId={pageId} />
+          </Box>
+        )}
+        <Box
+          sx={
+            hasVerticalStepper
+              ? {
+                  width: "100%",
+                  borderRadius: "16px",
+                  backgroundColor: "#ffffff",
+                  boxShadow: "0 8px 16px rgba(52, 59, 72, 0.06)",
+                  px: { xs: 2, sm: 3 },
+                  py: 2,
+                  mb: 1,
+                }
+              : undefined
+          }
+        >
+          {isTransitioning ? (
+            <>
+              <FormTransitionHeaderSkeleton statusMessage={transitionMessage} />
+              {!noTitle && <FormTransitionTitleSkeleton />}
+              <FormTransitionSkeleton statusMessage={transitionMessage} />
+            </>
+          ) : (
+            <>
               {!noTitle && (
                 <Box sx={{ mb: "1rem" }}>
                   <FormPageTitle
@@ -575,48 +582,47 @@ export default function FormRoutePage({
                 {typeof children === "function"
                   ? children(renderProps)
                   : children}
-                {!hideActions &&
-                  !(typeof hideNextButton === "function"
-                    ? hideNextButton(watchedValues)
-                    : hideNextButton) && (
-                    <Box sx={{ mt: "1rem", mb: "1rem" }}>
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        fullWidth
-                        disabled={isTransitioning}
-                        endIcon={
-                          !isTransitioning ? (
-                            <ArrowForwardRoundedIcon />
-                          ) : undefined
-                        }
-                        sx={(theme) => ({
-                          fontWeight: 700,
-                          padding: "16px",
-                          boxShadow: "0 8px 18px #0668ff3d",
-                          "&:hover": {
-                            boxShadow: "0 8px 18px #0668ff3d",
-                          },
-                          "&.Mui-disabled": {
-                            color: theme.palette.primary.contrastText,
-                            backgroundColor: theme.palette.primary.main,
-                            boxShadow: "0 8px 18px #0668ff3d",
-                            opacity: 1,
-                          },
-                        })}
-                      >
-                        {isTransitioning ? (
-                          <CircularProgress size={20} color="inherit" />
-                        ) : (
-                          "Next"
-                        )}
-                      </Button>
-                    </Box>
-                  )}
               </form>
-            </Box>
-          </>
-        )}
+            </>
+          )}
+          {!hideActions &&
+            !(typeof hideNextButton === "function"
+              ? hideNextButton(watchedValues)
+              : hideNextButton) && (
+              <Box sx={{ mt: "1rem", mb: "1rem" }}>
+                <Button
+                  type="submit"
+                  form={`${pageId}-form`}
+                  variant="contained"
+                  fullWidth
+                  disabled={isTransitioning}
+                  endIcon={
+                    !isTransitioning ? <ArrowForwardRoundedIcon /> : undefined
+                  }
+                  sx={(theme) => ({
+                    fontWeight: 700,
+                    padding: "16px",
+                    boxShadow: "0 8px 18px #0668ff3d",
+                    "&:hover": {
+                      boxShadow: "0 8px 18px #0668ff3d",
+                    },
+                    "&.Mui-disabled": {
+                      color: theme.palette.primary.contrastText,
+                      backgroundColor: theme.palette.primary.main,
+                      boxShadow: "0 8px 18px #0668ff3d",
+                      opacity: 1,
+                    },
+                  })}
+                >
+                  {isTransitioning ? (
+                    <CircularProgress size={20} color="inherit" />
+                  ) : (
+                    "Next"
+                  )}
+                </Button>
+              </Box>
+            )}
+        </Box>
       </Box>
     </FormPage>
   );

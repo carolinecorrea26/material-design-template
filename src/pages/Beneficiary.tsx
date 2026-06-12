@@ -3,7 +3,7 @@ import {
   Alert,
   Box,
   Button,
-  Card,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
@@ -247,6 +247,16 @@ export default function Beneficiary() {
     number | null
   >(null);
 
+  // "Apply to other coverages" dialog state
+  const [applyToOthersOpen, setApplyToOthersOpen] = useState(false);
+  const [applyToOthersItem, setApplyToOthersItem] =
+    useState<BeneficiaryItem | null>(null);
+  const [applyToOthersSource, setApplyToOthersSource] =
+    useState<ProductContext | null>(null);
+  const [applyToOthersSelected, setApplyToOthersSelected] = useState<string[]>(
+    [],
+  );
+
   const helpItems = beneficiaryHelpItems;
 
   function parseCommittedShare(rawShare: string): number | null {
@@ -449,17 +459,74 @@ export default function Beneficiary() {
       : [...currentList, nextItem];
 
     upsertProductBeneficiaries(activeProduct.productKey, nextList);
+
+    // After saving (not editing), offer to apply to other products
+    if (!editingId) {
+      const applicantId = activeProduct.applicantId;
+      const otherProducts = applicantProducts[
+        applicantId === "member" ? "member" : "spouse"
+      ].filter((p) => p.productKey !== activeProduct.productKey);
+
+      if (otherProducts.length > 0) {
+        setApplyToOthersItem(nextItem);
+        setApplyToOthersSource(activeProduct);
+        setApplyToOthersSelected([]);
+        setApplyToOthersOpen(true);
+        closeModal();
+        return;
+      }
+    }
+
     closeModal();
+  }
+
+  function applyBeneficiaryToSelected() {
+    if (!applyToOthersItem || !applyToOthersSource) return;
+
+    const nextBeneficiaries = { ...beneficiariesByProduct };
+
+    for (const productKey of applyToOthersSelected) {
+      const existing = Array.isArray(nextBeneficiaries[productKey])
+        ? (nextBeneficiaries[productKey] as BeneficiaryItem[])
+        : [];
+      // Add a copy with a new unique ID
+      nextBeneficiaries[productKey] = [
+        ...existing,
+        { ...applyToOthersItem, id: crypto.randomUUID() },
+      ];
+    }
+
+    setPageValues({ beneficiaries: nextBeneficiaries });
+    setApplyToOthersOpen(false);
+    setApplyToOthersItem(null);
+    setApplyToOthersSource(null);
+    setApplyToOthersSelected([]);
+  }
+
+  function closeApplyToOthers() {
+    setApplyToOthersOpen(false);
+    setApplyToOthersItem(null);
+    setApplyToOthersSource(null);
+    setApplyToOthersSelected([]);
   }
 
   function renderProductCard(product: ProductContext) {
     const items = getProductBeneficiaries(product.productKey);
 
     return (
-      <Card
+      <Box
         key={product.productKey}
-        variant="outlined"
-        sx={{ borderRadius: 2, p: 2, backgroundColor: "background.paper" }}
+        sx={{
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: "16px",
+          background:
+            "linear-gradient(135deg, rgb(244, 248, 255) 0%, rgb(255, 255, 255) 52%, rgb(247, 251, 255) 100%)",
+          p: 2.5,
+          display: "flex",
+          flexDirection: "column",
+          gap: 1.5,
+        }}
       >
         <Stack spacing={1.5}>
           <Stack spacing={1}>
@@ -531,7 +598,7 @@ export default function Beneficiary() {
             </Button>
           )}
         </Stack>
-      </Card>
+      </Box>
     );
   }
 
@@ -972,6 +1039,72 @@ export default function Beneficiary() {
             }
           >
             Save Beneficiary
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={applyToOthersOpen}
+        onClose={closeApplyToOthers}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Apply to Other Coverages</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ pt: 0.5 }}>
+            <Typography variant="body2" color="text.secondary">
+              Would you like to apply this beneficiary to other coverages?
+            </Typography>
+            {(() => {
+              if (!applyToOthersSource) return null;
+              const applicantKey =
+                applyToOthersSource.applicantId === "member"
+                  ? "member"
+                  : "spouse";
+              const otherProducts = applicantProducts[applicantKey].filter(
+                (p) => p.productKey !== applyToOthersSource.productKey,
+              );
+              return (
+                <Stack spacing={1}>
+                  {otherProducts.map((product) => (
+                    <Box
+                      key={product.productKey}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <Checkbox
+                        checked={applyToOthersSelected.includes(
+                          product.productKey,
+                        )}
+                        onChange={(_, checked) => {
+                          setApplyToOthersSelected((prev) =>
+                            checked
+                              ? [...prev, product.productKey]
+                              : prev.filter((k) => k !== product.productKey),
+                          );
+                        }}
+                      />
+                      <Typography variant="body2">
+                        {product.coverageName}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Stack>
+              );
+            })()}
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeApplyToOthers}>Skip</Button>
+          <Button
+            variant="contained"
+            onClick={applyBeneficiaryToSelected}
+            disabled={applyToOthersSelected.length === 0}
+          >
+            Apply to Selected
           </Button>
         </DialogActions>
       </Dialog>

@@ -23,14 +23,33 @@ export function FormTransitionHeaderSkeleton({
   );
 }
 
+export function FormTransitionTitleSkeleton() {
+  return (
+    <Box sx={{ mb: "1rem" }}>
+      <Skeleton
+        variant="rounded"
+        width="40%"
+        height={42}
+        sx={{ borderRadius: 1, mb: 2 }}
+      />
+      {/* <Skeleton
+        variant="rounded"
+        width="40%"
+        height={20}
+        sx={{ borderRadius: 1 }}
+      /> */}
+    </Box>
+  );
+}
+
 export default function FormTransitionSkeleton(
   _props: FormTransitionSkeletonProps,
 ) {
   return (
     <Box>
-      <Skeleton variant="rounded" height={42} sx={{ borderRadius: 1, mb: 2 }} />
-      <Skeleton variant="rounded" height={42} sx={{ borderRadius: 1, mb: 2 }} />
-      <Skeleton variant="rounded" height={42} sx={{ borderRadius: 1 }} />
+      <Skeleton variant="rounded" height={50} sx={{ borderRadius: 1, mb: 2 }} />
+      <Skeleton variant="rounded" height={50} sx={{ borderRadius: 1, mb: 2 }} />
+      <Skeleton variant="rounded" height={50} sx={{ borderRadius: 1 }} />
     </Box>
   );
 }

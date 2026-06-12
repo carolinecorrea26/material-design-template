@@ -475,7 +475,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     required: true,
     placeholder: "Select",
     options: usStateOptions,
-    disabled: true,
+    autoComplete: "address-level1",
   },
 
   "zip-code": {
@@ -485,7 +485,6 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     required: true,
     inputMode: "numeric",
     autoComplete: "postal-code",
-    disabled: true,
   },
 
   "correspondence-to": {

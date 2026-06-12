@@ -116,10 +116,10 @@ function getBenefitAmountLabel(categoryId: CoverageCategoryId): string {
 }
 
 const defaultCoverageNotes: Partial<Record<CoverageCategoryId, string>> = {
-  LI: "The maximum available through New York Life Insurance Company for any individual is {maxAmount}, whether coverage is in one or divided among several group policies.",
-  AD: "The maximum available through New York Life Insurance Company for any individual is {maxAmount}, whether coverage is in one or divided among several group policies.",
-  DI: "The maximum monthly benefit available through New York Life Insurance Company for any individual is {maxAmount}, whether coverage is in one or divided among several group policies.",
-  OO: "The maximum monthly benefit available through New York Life Insurance Company for any individual is {maxAmount}, whether coverage is in one or divided among several group policies.",
+  LI: "The maximum aggregate available through New York Life Insurance Company for any individual is $2,000,000, whether coverage is in one or divided among several group policies.",
+  AD: "The maximum aggregate available through New York Life Insurance Company for any individual is $2,000,000, whether coverage is in one or divided among several group policies.",
+  DI: "The maximum monthly benefit aggregate available through New York Life Insurance Company for any individual is $2,000,000, whether coverage is in one or divided among several group policies.",
+  OO: "The maximum monthly benefit aggregate available through New York Life Insurance Company for any individual is $2,000,000, whether coverage is in one or divided among several group policies.",
 };
 
 function resolveCoverageNote(coverage: {
@@ -139,10 +139,10 @@ function resolveCoverageNote(coverage: {
 
 const defaultSpouseCoverageNotes: Partial<Record<CoverageCategoryId, string>> =
   {
-    LI: "The maximum available for spouse through New York Life Insurance Company for any individual is {maxAmount}, whether coverage is in one or divided among several group policies. Spouse coverage cannot exceed member coverage (including in force or requested coverage).",
-    AD: "The maximum available for spouse through New York Life Insurance Company for any individual is {maxAmount}, whether coverage is in one or divided among several group policies. Spouse coverage cannot exceed member coverage (including in force or requested coverage).",
-    DI: "The maximum monthly benefit available for spouse through New York Life Insurance Company for any individual is {maxAmount}, whether coverage is in one or divided among several group policies. Spouse coverage cannot exceed member coverage (including in force or requested coverage).",
-    OO: "The maximum monthly benefit available for spouse through New York Life Insurance Company for any individual is {maxAmount}, whether coverage is in one or divided among several group policies. Spouse coverage cannot exceed member coverage (including in force or requested coverage).",
+    LI: "The maximum aggregate available for spouse through New York Life Insurance Company for any individual is $2,000,000, whether coverage is in one or divided among several group policies. Spouse coverage cannot exceed member coverage (including in force or requested coverage).",
+    AD: "The maximum aggregate available for spouse through New York Life Insurance Company for any individual is $2,000,000, whether coverage is in one or divided among several group policies. Spouse coverage cannot exceed member coverage (including in force or requested coverage).",
+    DI: "The maximum monthly benefit aggregate available for spouse through New York Life Insurance Company for any individual is $2,000,000, whether coverage is in one or divided among several group policies. Spouse coverage cannot exceed member coverage (including in force or requested coverage).",
+    OO: "The maximum monthly benefit aggregate available for spouse through New York Life Insurance Company for any individual is $2,000,000, whether coverage is in one or divided among several group policies. Spouse coverage cannot exceed member coverage (including in force or requested coverage).",
   };
 
 function resolveSpouseCoverageNote(coverage: {

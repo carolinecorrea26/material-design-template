@@ -343,7 +343,8 @@ export default function CostEstimateDrawerContent() {
                 return (
                   <Chip
                     key={category.id}
-                    icon={<Icon sx={{ fontSize: "0.75rem !important" }} />}
+                    className="coverageCategoryChip"
+                    icon={<Icon sx={{ fontSize: "1.25rem !important" }} />}
                     label={
                       "shortLabel" in category
                         ? category.shortLabel
@@ -352,13 +353,6 @@ export default function CostEstimateDrawerContent() {
                     variant={isSelected ? "filled" : "outlined"}
                     color={isSelected ? "primary" : "default"}
                     onClick={() => handleCategoryToggle(category.id)}
-                    sx={{
-                      fontSize: "0.75rem",
-                      fontWeight: 600,
-                      "& .MuiChip-icon": {
-                        marginLeft: "8px",
-                      },
-                    }}
                   />
                 );
               })}

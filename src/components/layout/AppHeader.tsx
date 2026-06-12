@@ -33,6 +33,7 @@ import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { CoverageOptionsDrawerContent } from "../../content/helpContent";
 import CoverageNeedsCalculator from "../coverage/CoverageNeedsCalculator";
+import CostEstimateDrawerContent from "../common/CostEstimateDrawerContent";
 import FormHelpDrawer from "../form/FormHelpDrawer";
 import { pages } from "../../config/pages";
 // import { getActiveClientCoverages } from "../../client/getActiveClientCoverages";
@@ -139,6 +140,8 @@ export default function AppHeader({ client }: AppHeaderProps) {
   >("cart-icon");
   const [isCoverageDrawerOpen, setIsCoverageDrawerOpen] = useState(false);
   const [isNeedsCalcOpen, setIsNeedsCalcOpen] = useState(false);
+  const [isQuoteDrawerOpen, setIsQuoteDrawerOpen] = useState(false);
+  const [_addedSnackbarOpen, setAddedSnackbarOpen] = useState(false);
   const [activeCoverage, setActiveCoverage] =
     useState<CoverageDefinition | null>(null);
   const { values } = useApplicationForm();
@@ -197,8 +200,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
       currentCount > prevCount &&
       prevCount >= 0
     ) {
-      setSummarySource("coverage-page");
-      setIsSummaryOpen(true);
+      setAddedSnackbarOpen(true);
     }
   }, [values.coverageSelections, currentPageId]);
 
@@ -466,8 +468,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
                   startIcon={<RequestQuoteOutlinedIcon />}
                   onClick={() => {
                     setIsMenuOpen(false);
-                    setSummarySource("cart-icon");
-                    setIsSummaryOpen(true);
+                    setIsQuoteDrawerOpen(true);
                   }}
                   sx={{ justifyContent: "flex-start", textTransform: "none" }}
                 >
@@ -581,6 +582,14 @@ export default function AppHeader({ client }: AppHeaderProps) {
         <CoverageNeedsCalculator />
       </FormHelpDrawer>
 
+      <FormHelpDrawer
+        open={isQuoteDrawerOpen}
+        title="How much does it cost?"
+        onClose={() => setIsQuoteDrawerOpen(false)}
+      >
+        <CostEstimateDrawerContent />
+      </FormHelpDrawer>
+
       <Dialog
         open={Boolean(activeCoverage)}
         onClose={() => setActiveCoverage(null)}
@@ -682,6 +691,24 @@ export default function AppHeader({ client }: AppHeaderProps) {
         onClose={() => setIsSummaryOpen(false)}
         source={summarySource}
       />
+
+      {/* <Snackbar
+        open={addedSnackbarOpen}
+        autoHideDuration={2000}
+        onClose={() => setAddedSnackbarOpen(false)}
+        message="Added!"
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            minWidth: "auto",
+            px: 2,
+            py: 0.5,
+            bgcolor: "success.main",
+            fontWeight: 600,
+          },
+          top: { xs: "70px !important", sm: "70px !important" },
+        }}
+      /> */}
     </>
   );
 }

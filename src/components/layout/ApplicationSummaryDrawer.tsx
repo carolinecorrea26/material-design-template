@@ -4,7 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import AdminPanelSettingsRoundedIcon from "@mui/icons-material/AdminPanelSettingsRounded";
+import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {
   Alert,
@@ -357,9 +357,7 @@ export default function ApplicationSummaryDrawer({
           }}
         >
           <Stack spacing={1} alignItems="center">
-            <AdminPanelSettingsRoundedIcon
-              sx={{ fontSize: 48, color: "text.disabled" }}
-            />
+            <PrivacyTipIcon sx={{ fontSize: 48, color: "text.disabled" }} />
             <Typography variant="body1" sx={{ color: "text.secondary" }}>
               No coverage selected yet.
             </Typography>
