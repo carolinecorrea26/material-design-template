@@ -5,7 +5,7 @@ const clientAcronym = getActiveClient().branding.acronym;
 export const STEP_LABELS: Record<string, string> = {
   "getting-started": "Getting started",
   "coverage-options": "Choose your coverage",
-  "about-applicant": "Your application profile",
+  "about-applicant": "Your application details",
   "application-review": "Review your application",
   "esign-submit": "E-sign and submit",
 };

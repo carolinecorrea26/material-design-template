@@ -35,7 +35,7 @@ export default function ApplicantSection({
       >
         <Typography
           variant="formApplicantSectionLabel"
-          sx={{ color: "#4e6d9c", display: "block" }}
+          sx={{ display: "block" }}
         >
           {title}
         </Typography>

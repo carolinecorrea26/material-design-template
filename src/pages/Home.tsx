@@ -440,26 +440,29 @@ export default function Home() {
                 variant="h1"
                 sx={{
                   fontSize: {
-                    xs: "2.25rem",
+                    xs: "2.5rem",
                     sm: "3rem",
                     md: "3.5rem",
                     lg: "4rem",
                   },
                   lineHeight: 1.08,
-                  maxWidth: 500,
+                  // maxWidth: 500,
                   fontWeight: 700,
                 }}
               >
-                Protect what matters most
+                {/* Protect what matters most */}
+                {/* Get covered */}
+                {/* Secure your future */}
+                Safeguard what matters most
               </Typography>
               <Typography
                 variant="body1"
-                color="text.secondary"
-                sx={{ maxWidth: 400 }}
-                fontSize={{ xs: "1.125rem", md: "1.25rem" }}
+                // color="text.secondary"
+                // sx={{ maxWidth: 400 }}
+                // fontSize={{ xs: "1.125rem", md: "1.25rem" }}
               >
                 Coverage designed exclusively for {client.branding.name}{" "}
-                members.
+                members. Get started today!
               </Typography>
             </Stack>
 
@@ -485,7 +488,7 @@ export default function Home() {
                   flexShrink: 0,
                 }}
               >
-                Get started
+                Begin application
               </Button>
 
               <Button
@@ -508,18 +511,18 @@ export default function Home() {
               </Button>
             </Stack>
 
-            <Link
-              component={RouterLink}
-              to={getPagePath("resume")}
-              variant="body2"
-              color="text.secondary"
-              sx={{
-                textDecoration: "underline",
-                textUnderlineOffset: "0.15em",
-              }}
-            >
-              Already have an application started? Continue here
-            </Link>
+            <Typography variant="body2" color="text.secondary">
+              Already have an application started?{" "}
+              <Link
+                component={RouterLink}
+                to={getPagePath("resume")}
+                variant="body2"
+                color="primary"
+                sx={{ textDecoration: "none", fontWeight: 700 }}
+              >
+                Continue here
+              </Link>
+            </Typography>
           </Stack>
 
           {SHOW_QUOTE_TOOL ? <HomeQuoteCard /> : null}

@@ -152,9 +152,10 @@ const theme = createTheme({
     overline: {
       fontSize: "0.75rem",
       lineHeight: 1.66,
-      fontWeight: 600,
+      fontWeight: 700,
       textTransform: "uppercase",
       letterSpacing: "0.5px",
+      color: "rgba(0, 0, 0, 0.6)",
     },
     button: {
       textTransform: "none",
@@ -178,17 +179,19 @@ const theme = createTheme({
     },
     formSectionLabel: {
       fontSize: "0.75rem",
-      fontWeight: 800,
-      lineHeight: 1,
-      letterSpacing: "0.25px",
+      fontWeight: 700,
+      lineHeight: 1.66,
+      letterSpacing: "0.5px",
       textTransform: "uppercase",
+      color: "rgba(0, 0, 0, 0.6)",
     },
     formApplicantSectionLabel: {
       fontSize: "0.75rem",
       fontWeight: 700,
-      lineHeight: 2.66,
-      letterSpacing: "1px",
+      lineHeight: 1.66,
+      letterSpacing: "0.5px",
       textTransform: "uppercase",
+      color: "rgba(0, 0, 0, 0.6)",
     },
     formBackLink: {
       fontSize: "0.8rem",

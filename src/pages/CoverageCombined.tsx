@@ -1289,8 +1289,19 @@ export default function CoverageCombined() {
       <Stack spacing={3}>
         {/* Category chips (multi-select) */}
         <Box>
-          <FormLabel sx={{ mb: 1.5, fontWeight: 600, display: "block" }}>
-            Select a category to see your available coverage options:
+          <FormLabel
+            sx={{
+              mb: 1.5,
+              display: "block",
+              fontSize: "0.75rem",
+              fontWeight: 700,
+              lineHeight: 1.66,
+              textTransform: "uppercase",
+              letterSpacing: "0.5px",
+              color: "rgba(0, 0, 0, 0.6)",
+            }}
+          >
+            Choose coverage category
           </FormLabel>
           <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mt: 1 }}>
             {availableCategories.map((category) => {

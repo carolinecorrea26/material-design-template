@@ -632,11 +632,19 @@ export default function HomeQuoteCard() {
           <Box>
             <Typography
               variant="h4"
-              paddingBottom={1}
-              sx={{ xs: "1.5rem", sm: "1.5rem", md: "1.75rem", lg: "2rem" }}
+              paddingBottom={0.5}
+              //   sx={{ xs: "1.5rem", sm: "1.5rem", md: "1.75rem", lg: "2rem" }}
               fontWeight={600}
             >
               Get an estimate in seconds
+            </Typography>
+            <Typography
+              variant="body2"
+              //   paddingBottom={1}
+              //   sx={{ xs: "1.5rem", sm: "1.5rem", md: "1.75rem", lg: "2rem" }}
+              //   fontWeight={600}
+            >
+              Find a premium and coverage amount that's a good fit for you.
             </Typography>
           </Box>
 
@@ -787,9 +795,17 @@ export default function HomeQuoteCard() {
                 >
                   <FormLabel
                     required
-                    sx={{ mb: 1, fontWeight: 500, color: "text.primary" }}
+                    sx={{
+                      mb: 1,
+                      fontSize: "0.75rem",
+                      fontWeight: 700,
+                      lineHeight: 1.66,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                      color: "rgba(0, 0, 0, 0.6)",
+                    }}
                   >
-                    Select a category to see your available coverage options:
+                    Choose coverage
                   </FormLabel>
                   <Select
                     displayEmpty

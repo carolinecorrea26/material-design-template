@@ -26,12 +26,12 @@ export function FormTransitionHeaderSkeleton({
 export function FormTransitionTitleSkeleton() {
   return (
     <Box sx={{ mb: "1rem" }}>
-      <Skeleton
+      {/* <Skeleton
         variant="rounded"
         width="40%"
         height={42}
         sx={{ borderRadius: 1, mb: 2 }}
-      />
+      /> */}
       {/* <Skeleton
         variant="rounded"
         width="40%"

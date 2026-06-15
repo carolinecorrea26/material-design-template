@@ -32,12 +32,7 @@ export default function FormSectionTitle(props: FormSectionTitleProps) {
           justifyContent: "center",
         }}
       >
-        <Typography
-          variant="formApplicantSectionLabel"
-          sx={{ color: "#4e6d9c" }}
-        >
-          {title}
-        </Typography>
+        <Typography variant="formApplicantSectionLabel">{title}</Typography>
       </Box>
     );
   }
@@ -52,10 +47,7 @@ export default function FormSectionTitle(props: FormSectionTitleProps) {
         </Box>
       ) : null}
 
-      <Typography
-        variant="formSectionLabel"
-        sx={{ color: "#4e6d9c", display: "block" }}
-      >
+      <Typography variant="formSectionLabel" sx={{ display: "block" }}>
         {props.label}
       </Typography>
     </Stack>
