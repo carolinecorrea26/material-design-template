@@ -846,9 +846,7 @@ export default function CoverageCombined() {
         {(showGender || showSmoker) && (
           <>
             <Divider />
-            <Typography variant="overline" color="text.secondary">
-              Personal details
-            </Typography>
+            <Typography variant="overline">Personal details</Typography>
             {showGender && (
               <FormControl fullWidth>
                 <FormLabel sx={{ mb: 1 }}>Gender</FormLabel>
@@ -950,9 +948,7 @@ export default function CoverageCombined() {
         {(showDi || showHours) && (
           <>
             <Divider />
-            <Typography variant="overline" color="text.secondary">
-              Work &amp; income
-            </Typography>
+            <Typography variant="overline">Work &amp; income</Typography>
             {showHours && (
               <TextField
                 label="# Hours You Work/Week"
@@ -986,9 +982,7 @@ export default function CoverageCombined() {
         {showOo && (
           <>
             <Divider />
-            <Typography variant="overline" color="text.secondary">
-              Business expenses
-            </Typography>
+            <Typography variant="overline">Business expenses</Typography>
             <TextField
               label="Average monthly business expenses"
               fullWidth
@@ -1028,26 +1022,23 @@ export default function CoverageCombined() {
       frequencyCalculating ||
       selectionCalculating;
 
-    if (grandTotal <= 0) {
-      return (
-        <Box
-          sx={{
-            p: "16px",
-            borderRadius: "8px",
-            bgcolor: "#f8fafd",
-          }}
-        >
-          <Stack spacing={1.5}>
-            <Typography
-              variant="body2"
-              sx={{
-                color: "text.primary",
-                fontWeight: 600,
-                fontSize: 12,
-              }}
-            >
-              Total estimated cost<sup>1</sup>
-            </Typography>
+    const displayedGrandTotal = getDisplayedPremium(grandTotal, rateFrequency);
+    const rateSuffix = rateFrequency === "annual" ? "/yr" : "/mo";
+
+    return (
+      <Box
+        sx={{
+          p: "16px",
+          borderRadius: "8px",
+          bgcolor: "#f8fafd",
+        }}
+      >
+        <Stack spacing={1.5}>
+          <Typography variant="h6">
+            Estimated cost<sup>1</sup>
+          </Typography>
+
+          {grandTotal <= 0 ? (
             <Box
               sx={{
                 display: "flex",
@@ -1078,77 +1069,92 @@ export default function CoverageCombined() {
                 Added coverage will appear here
               </Typography>
             </Box>
-          </Stack>
-        </Box>
-      );
-    }
+          ) : (
+            <>
+              {categoryProducts
+                .filter((c) => selectedCoverageIds.includes(c.id))
+                .map((coverage) => {
+                  const applicants = productApplicants[coverage.id] ?? [];
+                  const coverageTotal = applicants.reduce(
+                    (sum, applicantId) =>
+                      sum + calcApplicantPremium(coverage, applicantId),
+                    0,
+                  );
+                  const isAnyCalculatingForCoverage =
+                    applicants.some((a) =>
+                      calculatingRateKeys.has(`${coverage.id}:${a}`),
+                    ) || frequencyCalculating;
 
-    const displayedGrandTotal = getDisplayedPremium(grandTotal, rateFrequency);
-    const rateSuffix = rateFrequency === "annual" ? "/yr" : "/mo";
+                  if (coverageTotal <= 0 && !isAnyCalculatingForCoverage)
+                    return null;
 
-    return (
-      <Box
-        sx={{
-          p: "16px",
-          borderRadius: "8px",
-          bgcolor: "#f8fafd",
-        }}
-      >
-        <Stack spacing={1.5}>
-          <Typography
-            variant="body2"
-            sx={{
-              color: "text.primary",
-              fontWeight: 600,
-              fontSize: 12,
-            }}
-          >
-            Total estimated cost<sup>1</sup>
-          </Typography>
+                  const displayedTotal = getDisplayedPremium(
+                    coverageTotal,
+                    rateFrequency,
+                  );
+                  const coverageRateSuffix =
+                    rateFrequency === "annual" ? "/yr" : "/mo";
 
-          {categoryProducts
-            .filter((c) => selectedCoverageIds.includes(c.id))
-            .map((coverage) => {
-              const applicants = productApplicants[coverage.id] ?? [];
-              const coverageTotal = applicants.reduce(
-                (sum, applicantId) =>
-                  sum + calcApplicantPremium(coverage, applicantId),
-                0,
-              );
-              const isAnyCalculatingForCoverage =
-                applicants.some((a) =>
-                  calculatingRateKeys.has(`${coverage.id}:${a}`),
-                ) || frequencyCalculating;
+                  return (
+                    <Stack
+                      key={coverage.id}
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      spacing={1}
+                    >
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontSize: 12,
+                          fontWeight: 500,
+                          color: "text.secondary",
+                        }}
+                      >
+                        {coverage.name}
+                      </Typography>
+                      {isAnyCalculatingForCoverage ? (
+                        <CircularProgress
+                          size={16}
+                          thickness={4}
+                          sx={{ color: "primary.main" }}
+                        />
+                      ) : (
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontWeight: 700,
+                            fontSize: 14,
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {formatUSD(displayedTotal)}
+                          {coverageRateSuffix}
+                        </Typography>
+                      )}
+                    </Stack>
+                  );
+                })}
 
-              if (coverageTotal <= 0 && !isAnyCalculatingForCoverage)
-                return null;
-
-              const displayedTotal = getDisplayedPremium(
-                coverageTotal,
-                rateFrequency,
-              );
-              const coverageRateSuffix =
-                rateFrequency === "annual" ? "/yr" : "/mo";
-
-              return (
+              <Box
+                sx={{
+                  borderTop: "1px solid",
+                  borderColor: "divider",
+                  pt: 1.5,
+                }}
+              >
                 <Stack
-                  key={coverage.id}
                   direction="row"
                   justifyContent="space-between"
-                  alignItems="center"
-                  spacing={1}
+                  alignItems="baseline"
                 >
                   <Typography
                     variant="body2"
-                    sx={{
-                      fontSize: 12,
-                      fontWeight: 500,
-                      color: "text.secondary",
-                    }}
+                    sx={{ fontWeight: 600, fontSize: 12 }}
                   >
-                    {coverage.name}
+                    Total
                   </Typography>
-                  {isAnyCalculatingForCoverage ? (
+                  {isAnyRateCalculating ? (
                     <CircularProgress
                       size={16}
                       thickness={4}
@@ -1156,119 +1162,80 @@ export default function CoverageCombined() {
                     />
                   ) : (
                     <Typography
+                      component="span"
                       variant="body2"
                       sx={{
+                        color: "primary.main",
                         fontWeight: 700,
                         fontSize: 14,
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {formatUSD(displayedTotal)}
-                      {coverageRateSuffix}
+                      {formatUSD(displayedGrandTotal)}
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        sx={{
+                          color: "primary.main",
+                          fontWeight: 700,
+                          fontSize: 14,
+                        }}
+                      >
+                        {rateSuffix}
+                      </Typography>
                     </Typography>
                   )}
                 </Stack>
-              );
-            })}
+              </Box>
 
-          <Box
-            sx={{
-              borderTop: "1px solid",
-              borderColor: "divider",
-              pt: 1.5,
-            }}
-          >
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="baseline"
-            >
-              <Typography
-                variant="body2"
-                sx={{ fontWeight: 600, fontSize: 12 }}
-              >
-                Total
-              </Typography>
-              {isAnyRateCalculating ? (
-                <CircularProgress
-                  size={16}
-                  thickness={4}
-                  sx={{ color: "primary.main" }}
-                />
-              ) : (
-                <Typography
-                  component="span"
-                  variant="body2"
-                  sx={{
-                    color: "primary.main",
-                    fontWeight: 700,
-                    fontSize: 14,
-                    whiteSpace: "nowrap",
-                  }}
+              {showRateFrequencyToggle && (
+                <Stack
+                  direction="row"
+                  spacing={0.75}
+                  alignItems="center"
+                  justifyContent="end"
                 >
-                  {formatUSD(displayedGrandTotal)}
                   <Typography
-                    component="span"
-                    variant="body2"
+                    variant="caption"
                     sx={{
-                      color: "primary.main",
+                      color:
+                        rateFrequency === "monthly"
+                          ? "primary.main"
+                          : "text.secondary",
                       fontWeight: 700,
-                      fontSize: 14,
                     }}
                   >
-                    {rateSuffix}
+                    Monthly
                   </Typography>
-                </Typography>
+                  <RateFrequencySwitch
+                    checked={rateFrequency === "annual"}
+                    onChange={(event) =>
+                      handleFrequencyToggle(
+                        event.target.checked ? "annual" : "monthly",
+                      )
+                    }
+                    slotProps={{
+                      input: {
+                        "aria-label":
+                          "Toggle estimated cost between monthly and annual",
+                      },
+                    }}
+                  />
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color:
+                        rateFrequency === "annual"
+                          ? "primary.main"
+                          : "text.secondary",
+                      fontWeight: 700,
+                    }}
+                  >
+                    Annual
+                  </Typography>
+                </Stack>
               )}
-            </Stack>
-          </Box>
-
-          {showRateFrequencyToggle && (
-            <Stack
-              direction="row"
-              spacing={0.75}
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Typography
-                variant="caption"
-                sx={{
-                  color:
-                    rateFrequency === "monthly"
-                      ? "primary.main"
-                      : "text.secondary",
-                  fontWeight: 700,
-                }}
-              >
-                Monthly
-              </Typography>
-              <RateFrequencySwitch
-                checked={rateFrequency === "annual"}
-                onChange={(event) =>
-                  handleFrequencyToggle(
-                    event.target.checked ? "annual" : "monthly",
-                  )
-                }
-                slotProps={{
-                  input: {
-                    "aria-label":
-                      "Toggle estimated cost between monthly and annual",
-                  },
-                }}
-              />
-              <Typography
-                variant="caption"
-                sx={{
-                  color:
-                    rateFrequency === "annual"
-                      ? "primary.main"
-                      : "text.secondary",
-                  fontWeight: 700,
-                }}
-              >
-                Annual
-              </Typography>
-            </Stack>
+            </>
           )}
         </Stack>
       </Box>
@@ -1289,20 +1256,9 @@ export default function CoverageCombined() {
       <Stack spacing={3}>
         {/* Category chips (multi-select) */}
         <Box>
-          <FormLabel
-            sx={{
-              mb: 1.5,
-              display: "block",
-              fontSize: "0.75rem",
-              fontWeight: 700,
-              lineHeight: 1.66,
-              textTransform: "uppercase",
-              letterSpacing: "0.5px",
-              color: "rgba(0, 0, 0, 0.6)",
-            }}
-          >
-            Choose coverage category
-          </FormLabel>
+          <Typography variant="overline" sx={{ mb: 1.5, display: "block" }}>
+            Choose category
+          </Typography>
           <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mt: 1 }}>
             {availableCategories.map((category) => {
               const Icon = category.icon;
@@ -1368,7 +1324,7 @@ export default function CoverageCombined() {
                 Your coverage options will appear here.
               </Typography>
               <Typography variant="body2" sx={{ color: "text.disabled" }}>
-                Select a coverage category to see available products.
+                Select a coverage category to see available options.
               </Typography>
             </Stack>
           </Box>
@@ -1471,14 +1427,7 @@ export default function CoverageCombined() {
                         return (
                           <Stack spacing={2} key={categoryId}>
                             <Stack>
-                              <Typography
-                                variant="overline"
-                                color="text.secondary"
-                                sx={{
-                                  fontWeight: 700,
-                                  fontSize: "0.875rem",
-                                }}
-                              >
+                              <Typography variant="overline">
                                 {category.label}
                               </Typography>
                               {categoryMaxAggregate[categoryId] && (
@@ -1569,78 +1518,7 @@ export default function CoverageCombined() {
                                     )}
                                   </Stack>
 
-                                  {/* Applicant checkboxes */}
-                                  <Stack spacing={1}>
-                                    {visibleApplicants.map((applicantId) => {
-                                      const isChecked =
-                                        currentApplicants.includes(applicantId);
-                                      return (
-                                        <SelectableOptionRow key={applicantId}>
-                                          <Checkbox
-                                            checked={isChecked}
-                                            onChange={() =>
-                                              toggleApplicantForProduct(
-                                                coverage.id,
-                                                applicantId,
-                                              )
-                                            }
-                                            size="small"
-                                            sx={{
-                                              p: 0,
-                                              pointerEvents: "none",
-                                              color: "text.primary",
-                                              "&.Mui-checked": {
-                                                color: "primary.main",
-                                              },
-                                            }}
-                                          />
-                                          <Typography
-                                            variant="body2"
-                                            sx={{ flex: 1, fontWeight: 600 }}
-                                          >
-                                            {
-                                              applicantCheckboxLabels[
-                                                applicantId
-                                              ]
-                                            }
-                                          </Typography>
-                                          {isChecked ? (
-                                            <Chip
-                                              label="Added"
-                                              size="small"
-                                              color="success"
-                                              sx={{
-                                                height: 22,
-                                                "& .MuiChip-label": {
-                                                  fontSize: "0.7rem",
-                                                  fontWeight: 600,
-                                                  px: 1,
-                                                },
-                                              }}
-                                            />
-                                          ) : (
-                                            <Chip
-                                              label="Add"
-                                              size="small"
-                                              variant="outlined"
-                                              sx={{
-                                                height: 22,
-                                                borderColor: "grey.300",
-                                                color: "text.secondary",
-                                                "& .MuiChip-label": {
-                                                  fontSize: "0.7rem",
-                                                  fontWeight: 600,
-                                                  px: 1,
-                                                },
-                                              }}
-                                            />
-                                          )}
-                                        </SelectableOptionRow>
-                                      );
-                                    })}
-                                  </Stack>
-
-                                  {/* Benefit amount & estimated cost for all visible applicants */}
+                                  {/* Per-applicant sections */}
                                   {(() => {
                                     const choices = generateAmountChoices(
                                       coverage.categoryId,
@@ -1654,13 +1532,16 @@ export default function CoverageCombined() {
                                       rateFrequency === "annual"
                                         ? "/yr"
                                         : "/mo";
-                                    const showHeaders =
+                                    const isMultiApplicant =
                                       visibleApplicants.length > 1;
 
                                     return (
-                                      <Stack spacing={2} sx={{ mt: 1 }}>
+                                      <Stack
+                                        spacing={isMultiApplicant ? 3 : 2}
+                                        sx={{ mt: 1 }}
+                                      >
                                         {visibleApplicants.map(
-                                          (applicantId) => {
+                                          (applicantId, idx) => {
                                             const isSelected =
                                               currentApplicants.includes(
                                                 applicantId,
@@ -1697,15 +1578,94 @@ export default function CoverageCombined() {
 
                                             return (
                                               <Box key={applicantId}>
-                                                {showHeaders && (
-                                                  <Box sx={{ mb: 1 }}>
-                                                    <FormSectionTitle
-                                                      applicant={sectionId}
-                                                    />
-                                                  </Box>
+                                                {/* Applicant header (multi-applicant only) */}
+                                                {isMultiApplicant && (
+                                                  <>
+                                                    {idx > 0 && (
+                                                      <Divider
+                                                        sx={{ mb: 1.5 }}
+                                                      />
+                                                    )}
+                                                    <Box sx={{ mb: 1.5 }}>
+                                                      <FormSectionTitle
+                                                        applicant={sectionId}
+                                                      />
+                                                    </Box>
+                                                  </>
                                                 )}
-                                                <Stack spacing={1.5}>
-                                                  {/* Benefit amount — always visible */}
+
+                                                {/* Select checkbox for this applicant */}
+                                                <SelectableOptionRow>
+                                                  <Checkbox
+                                                    checked={isSelected}
+                                                    onChange={() =>
+                                                      toggleApplicantForProduct(
+                                                        coverage.id,
+                                                        applicantId,
+                                                      )
+                                                    }
+                                                    size="small"
+                                                    sx={{
+                                                      p: 0,
+                                                      pointerEvents: "none",
+                                                      color: "text.primary",
+                                                      "&.Mui-checked": {
+                                                        color: "primary.main",
+                                                      },
+                                                    }}
+                                                  />
+                                                  <Typography
+                                                    variant="body2"
+                                                    sx={{
+                                                      flex: 1,
+                                                      fontWeight: 600,
+                                                    }}
+                                                  >
+                                                    {
+                                                      applicantCheckboxLabels[
+                                                        applicantId
+                                                      ]
+                                                    }
+                                                  </Typography>
+                                                  {isSelected ? (
+                                                    <Chip
+                                                      label="Added"
+                                                      size="small"
+                                                      color="success"
+                                                      sx={{
+                                                        height: 22,
+                                                        "& .MuiChip-label": {
+                                                          fontSize: "0.7rem",
+                                                          fontWeight: 600,
+                                                          px: 1,
+                                                        },
+                                                      }}
+                                                    />
+                                                  ) : (
+                                                    <Chip
+                                                      label="Add"
+                                                      size="small"
+                                                      variant="outlined"
+                                                      sx={{
+                                                        height: 22,
+                                                        borderColor: "grey.300",
+                                                        color: "text.secondary",
+                                                        "& .MuiChip-label": {
+                                                          fontSize: "0.7rem",
+                                                          fontWeight: 600,
+                                                          px: 1,
+                                                        },
+                                                      }}
+                                                    />
+                                                  )}
+                                                </SelectableOptionRow>
+
+                                                {/* Benefit amount & cost for this applicant */}
+                                                <Stack
+                                                  spacing={1.5}
+                                                  sx={{ mt: 1.5 }}
+                                                >
+                                                  {/* Benefit amount select */}
                                                   <FormControl
                                                     fullWidth
                                                     margin="normal"
@@ -1737,7 +1697,7 @@ export default function CoverageCombined() {
                                                     </Select>
                                                   </FormControl>
 
-                                                  {/* Estimated cost — always visible */}
+                                                  {/* Estimated cost */}
                                                   {hasAmountSelection &&
                                                     currentAmount > 0 && (
                                                       <Stack

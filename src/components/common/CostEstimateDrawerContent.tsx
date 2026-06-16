@@ -16,13 +16,11 @@ import {
   Radio,
   Select,
   Stack,
-  Switch,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { coverageCategories } from "../../config/coverageCategories";
 import type {
   CoverageCategoryId,
@@ -36,53 +34,6 @@ import { getActiveClient } from "../../client/getActiveClient";
 import { getActiveClientCoverages } from "../../client/getActiveClientCoverages";
 import type { EstimatedRateFrequency } from "../../config/clients/types";
 import QuickDecisionIndicator from "./QuickDecisionIndicator";
-
-const RateFrequencySwitch = styled(Switch)(({ theme }) => ({
-  width: 48,
-  height: 26,
-  padding: 5,
-  "& .MuiSwitch-switchBase": {
-    margin: 1,
-    padding: 0,
-    transform: "translateX(4px)",
-    "&.Mui-checked": {
-      color: "#fff",
-      transform: "translateX(22px)",
-      "& .MuiSwitch-thumb:before": {
-        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
-          "#fff",
-        )}" d="M7 2v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-2V2h-2v2H9V2H7Zm12 18H5V10h14v10Z"/></svg>')`,
-      },
-      "& + .MuiSwitch-track": {
-        opacity: 1,
-        backgroundColor: theme.palette.primary.main,
-      },
-    },
-  },
-  "& .MuiSwitch-thumb": {
-    backgroundColor: theme.palette.primary.main,
-    width: 24,
-    height: 24,
-    "&::before": {
-      content: "''",
-      position: "absolute",
-      width: "100%",
-      height: "100%",
-      left: 0,
-      top: 0,
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center",
-      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
-        "#fff",
-      )}" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2Zm0 16H5V8h14v11Z"/></svg>')`,
-    },
-  },
-  "& .MuiSwitch-track": {
-    opacity: 1,
-    borderRadius: 13,
-    backgroundColor: "#cdd9ec",
-  },
-}));
 
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
@@ -103,12 +54,9 @@ export default function CostEstimateDrawerContent() {
   const activeClient = useMemo(() => getActiveClient(), []);
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const rateDisplayConfig = activeClient.coverages.estimatedRateDisplay;
-  const showRateFrequencyToggle =
-    rateDisplayConfig?.showFrequencyToggle === true;
   const defaultRateFrequency: EstimatedRateFrequency =
     rateDisplayConfig?.defaultFrequency ?? "monthly";
-  const [rateFrequency, setRateFrequency] =
-    useState<EstimatedRateFrequency>(defaultRateFrequency);
+  const rateFrequency = defaultRateFrequency;
 
   const availableCategories = coverageCategories.filter((category) =>
     coverages.some((coverage) => coverage.categoryId === category.id),
@@ -206,14 +154,6 @@ export default function CostEstimateDrawerContent() {
       return !isNaN(hours) && hours < 40;
     })();
 
-  const selectedProducts = useMemo(
-    () =>
-      categoryProducts.filter(
-        (p) => (productApplicants[p.id] ?? []).length > 0,
-      ),
-    [categoryProducts, productApplicants],
-  );
-
   function handleCategoryToggle(categoryId: CoverageCategoryId) {
     setSelectedCategories((current) =>
       current.includes(categoryId)
@@ -306,24 +246,6 @@ export default function CostEstimateDrawerContent() {
     return estimateMonthlyPremium(product.categoryId, amount);
   }
 
-  const grandTotal = useMemo(() => {
-    return selectedProducts.reduce((total, product) => {
-      const applicants = productApplicants[product.id] ?? [];
-      return (
-        total +
-        applicants.reduce(
-          (sum, applicant) => sum + getApplicantPremium(product, applicant),
-          0,
-        )
-      );
-    }, 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProducts, productApplicants, amountsByKey]);
-
-  const displayedGrandTotal =
-    rateFrequency === "annual"
-      ? Math.round(grandTotal * 12 * 100) / 100
-      : grandTotal;
   const rateSuffix = rateFrequency === "annual" ? "/yr" : "/mo";
 
   return (
@@ -333,20 +255,9 @@ export default function CostEstimateDrawerContent() {
         <Stack spacing={3}>
           {/* Category chips (multi-select) */}
           <Box>
-            <FormLabel
-              sx={{
-                mb: 1,
-                display: "block",
-                fontSize: "0.75rem",
-                fontWeight: 700,
-                lineHeight: 1.66,
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-                color: "rgba(0, 0, 0, 0.6)",
-              }}
-            >
-              Choose coverage
-            </FormLabel>
+            <Typography variant="overline" sx={{ mb: 1, display: "block" }}>
+              Coverage category
+            </Typography>
             <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mt: 1 }}>
               {availableCategories.map((category) => {
                 const Icon = category.icon;
@@ -810,200 +721,6 @@ export default function CostEstimateDrawerContent() {
           )}
         </Stack>
       </Box>
-
-      {/* Estimated cost total section */}
-      {showProducts && selectedCategories.length > 0 && !productsLoading && (
-        <Box
-          sx={{
-            width: "100%",
-          }}
-        >
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: "12px",
-              bgcolor: "#f8fafd",
-              border: "1px solid",
-              borderColor: "divider",
-            }}
-          >
-            <Stack spacing={1.5}>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "text.primary",
-                  fontWeight: 600,
-                  fontSize: 12,
-                }}
-              >
-                Total estimated cost<sup>1</sup>
-              </Typography>
-
-              {selectedProducts.length === 0 ? (
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 0.75,
-                    px: 1.25,
-                    py: 1,
-                    borderRadius: 2,
-                    bgcolor: "#f8fafc",
-                    border: "1px dashed",
-                    borderColor: "divider",
-                    color: "text.secondary",
-                  }}
-                >
-                  <PrivacyTipIcon
-                    sx={{ fontSize: 17, color: "text.disabled" }}
-                  />
-                  <Typography
-                    variant="body2"
-                    sx={{ fontSize: "0.8rem", fontWeight: 600 }}
-                  >
-                    Added coverage will appear here
-                  </Typography>
-                </Box>
-              ) : (
-                <>
-                  {selectedProducts.map((product) => {
-                    const applicants = productApplicants[product.id] ?? [];
-                    const productTotal = applicants.reduce(
-                      (sum, a) => sum + getApplicantPremium(product, a),
-                      0,
-                    );
-                    const displayedProductTotal =
-                      rateFrequency === "annual"
-                        ? Math.round(productTotal * 12 * 100) / 100
-                        : productTotal;
-
-                    return (
-                      <Stack
-                        key={product.id}
-                        direction="row"
-                        justifyContent="space-between"
-                        alignItems="center"
-                        spacing={1}
-                      >
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            fontSize: 12,
-                            fontWeight: 500,
-                            color: "text.secondary",
-                          }}
-                        >
-                          {product.name}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            fontWeight: 700,
-                            fontSize: 13,
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {formatUSD(displayedProductTotal)}
-                          {rateSuffix}
-                        </Typography>
-                      </Stack>
-                    );
-                  })}
-
-                  <Box
-                    sx={{
-                      borderTop: "1px solid",
-                      borderColor: "divider",
-                      pt: 1.5,
-                    }}
-                  >
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="baseline"
-                    >
-                      <Typography
-                        variant="body2"
-                        sx={{ fontWeight: 600, fontSize: 12 }}
-                      >
-                        Total
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: "primary.main",
-                          fontWeight: 700,
-                          fontSize: 14,
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {formatUSD(displayedGrandTotal)}
-                        {rateSuffix}
-                      </Typography>
-                    </Stack>
-                  </Box>
-                </>
-              )}
-
-              {showRateFrequencyToggle && (
-                <Stack
-                  direction="row"
-                  spacing={0.75}
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color:
-                        rateFrequency === "monthly"
-                          ? "primary.main"
-                          : "text.secondary",
-                      fontWeight: 700,
-                    }}
-                  >
-                    Monthly
-                  </Typography>
-                  <RateFrequencySwitch
-                    checked={rateFrequency === "annual"}
-                    onChange={(event) =>
-                      setRateFrequency(
-                        event.target.checked ? "annual" : "monthly",
-                      )
-                    }
-                    slotProps={{
-                      input: {
-                        "aria-label": "Toggle between monthly and annual",
-                      },
-                    }}
-                  />
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color:
-                        rateFrequency === "annual"
-                          ? "primary.main"
-                          : "text.secondary",
-                      fontWeight: 700,
-                    }}
-                  >
-                    Annual
-                  </Typography>
-                </Stack>
-              )}
-            </Stack>
-          </Box>
-
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ display: "block", mt: 1.5, fontStyle: "italic" }}
-          >
-            <sup>1</sup> Quoted cost is the best rate available. Final cost may
-            vary based on gender, health status, and tobacco/nicotine use.
-          </Typography>
-        </Box>
-      )}
     </Stack>
   );
 }

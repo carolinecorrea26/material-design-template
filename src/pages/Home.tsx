@@ -33,12 +33,6 @@ import { formatUSD } from "../utils/formatUSD";
 
 type DrawerId = "application-review" | "quick-decision" | null;
 
-type AboutCardContent = {
-  title: string;
-  subtitle?: string;
-  paragraphs: ReactNode[];
-};
-
 const SHOW_QUOTE_TOOL = true;
 const PAGE_MAX_WIDTH = 1180;
 
@@ -47,17 +41,6 @@ const SURFACE_SX = {
   borderRadius: 4,
   backgroundColor: "#ffffff",
   boxShadow: "0 18px 40px rgba(52, 59, 72, 0.06)",
-};
-
-const SECTION_TITLE_SX = {
-  fontSize: {
-    xs: "1.5rem",
-    sm: "1.5rem",
-    md: "1.75rem",
-    lg: "2rem",
-  },
-  fontWeight: 700,
-  // color: "primary.dark",
 };
 
 const fadeInUp = keyframes`
@@ -84,59 +67,30 @@ const CATEGORY_DESCRIPTIONS: Record<CoverageCategoryId, string> = {
   SH: "Supplemental health coverage can help with out-of-pocket costs tied to covered health events.",
 };
 
-const NYL_ABOUT_CONTENT: AboutCardContent = {
-  title: "New York Life Insurance Company",
-  subtitle: "A trusted name for over 180 years",
-  paragraphs: [
-    "At the heart of New York Life is a commitment to be there for customers when they need us, whether today or decades into the future.",
-    <>
-      As of today, New York Life has received the highest financial strength
-      ratings
-      <Box component="sup" sx={{ fontSize: "0.75em", lineHeight: 1 }}>
-        1
-      </Box>{" "}
-      currently awarded to any U.S. life insurer. For our customers, that means
-      promises kept, and peace of mind for the millions of families and
-      businesses who rely on us.
-    </>,
-  ],
-};
-
-const ASSOCIATION_ABOUT_CONTENT: Partial<Record<string, AboutCardContent>> = {
-  ama: {
-    title: "AMA Insurance",
-    subtitle: "Helping physicians protect what matters most",
-    paragraphs: [
-      "For more than 50 years, AMA-sponsored insurance has helped protect physicians and their families.",
-      "As a subsidiary of the American Medical Association, AMA Insurance uses the group buying power of more than one million physicians to offer specially negotiated rates and tailored benefits from top insurance companies.",
-    ],
-  },
-};
-
 const APPLYING_STEPS = [
   {
     id: 0,
-    // number: "1",
-    title: "Apply online",
-    body: "Complete our online application to apply for coverage that fits your needs. You'll be able to review your options and see your estimated cost.",
+    number: 1,
+    title: "Apply online in minutes",
+    body: "Complete our online application to apply for coverage that fits your needs. Review your options and see your estimated cost.",
     imageSrc: "/1-apply.svg",
     imageAlt: "Apply online",
   },
   {
     id: 1,
-    // number: "2",
+    number: 2,
     title: "Answer health questions",
-    body: "Many types of insurance require health information to provide a decision on your application. We may ask health questions on your application or a representative of New York Life or their medical service provider may contact you to collect your health history. If needed, we will schedule a medical exam at no cost to you and at a time and place convenient to you.",
+    body: "Some coverages require health information. We may ask questions during the application, or a representative may follow up to collect your health history. If a medical exam is needed, it's scheduled at no cost to you.",
     imageSrc: "/2-medical.svg",
     imageAlt: "Answer health questions",
   },
   {
     id: 2,
-    // number: "3",
-    title: "Get a decision",
-    body: "Decisions are made after all information is received and reviewed by New York Life. If approved, you will receive a certificate of insurance and have a 30-day no-obligation free look. Plus, when QuickDecisionSM is available, you can get a faster decision on your application, typically with no medical exam.",
+    number: 3,
+    title: "Get your decision",
+    body: "Once all information is received and reviewed, you'll get a decision from New York Life. If approved, you'll receive a certificate of insurance with a 30-day free look period.",
     imageSrc: "/3-decision.svg",
-    imageAlt: "Get a decision",
+    imageAlt: "Get your decision",
   },
 ] as const;
 
@@ -220,21 +174,18 @@ function HowApplyingWorksSection({
   return (
     <Stack spacing={4}>
       <Stack spacing={1}>
-        <Typography variant="h2" sx={SECTION_TITLE_SX}>
-          What to expect when applying
-        </Typography>
+        <Typography variant="h2">How applying works</Typography>
         <Typography variant="body1" color="text.secondary">
-          This online experience is designed to help you complete your
-          application quickly and easily.
+          Three simple steps from application to coverage.
         </Typography>
       </Stack>
 
-      <Stack spacing={8}>
+      <Stack spacing={6}>
         {APPLYING_STEPS.map((step) => (
           <Box key={step.id} sx={{ padding: { xs: "0 1.5rem", md: "0 2rem" } }}>
             <Stack
               direction={{ xs: "column", md: "row" }}
-              spacing={{ xs: 3, md: 6 }}
+              spacing={{ xs: 3, md: 5 }}
               alignItems={{ xs: "flex-start", md: "center" }}
             >
               <Box
@@ -246,58 +197,63 @@ function HowApplyingWorksSection({
                   alt={step.imageAlt}
                   sx={{
                     display: "block",
-                    width: { xs: "150px", sm: "120px", md: "150px" },
-                    height: { xs: "150px", sm: "120px", md: "150px" },
+                    width: { xs: "120px", sm: "100px", md: "120px" },
+                    height: { xs: "120px", sm: "100px", md: "120px" },
                     objectFit: "contain",
                   }}
                 />
               </Box>
 
               <Box sx={{ width: "100%" }}>
-                <Stack spacing={1.5}>
-                  <Typography
-                    variant="h4"
-                    fontSize={{
-                      xs: "1.25rem",
-                      sm: "1.25rem",
-                      md: "1.5rem",
-                      lg: "1.5rem",
-                    }}
-                    textAlign={{ xs: "center", md: "left" }}
+                <Stack spacing={1}>
+                  <Stack
+                    direction="row"
+                    spacing={1.5}
+                    alignItems="center"
+                    justifyContent={{ xs: "flex-start" }}
                   >
-                    {step.title}
-                  </Typography>
+                    <Box
+                      sx={{
+                        width: 28,
+                        height: 28,
+                        borderRadius: "50%",
+                        bgcolor: "primary.main",
+                        color: "#fff",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "0.85rem",
+                        fontWeight: 700,
+                        flexShrink: 0,
+                      }}
+                    >
+                      {step.number}
+                    </Box>
+                    <Typography variant="h4">{step.title}</Typography>
+                  </Stack>
 
-                  {step.id === 1 ? (
-                    <Typography variant="body1" color="text.secondary">
-                      Many types of insurance require health information to
-                      provide a decision on your application. We may ask health
-                      questions on your application or a representative of New
-                      York Life or their medical service provider may contact
-                      you to collect your health history. If needed, we will
-                      schedule a medical exam at no cost to you and at a time
-                      and place convenient to you.{" "}
-                      <InlineDrawerLink onClick={onOpenApplicationReview}>
-                        Learn more about the application review process.
-                      </InlineDrawerLink>
-                    </Typography>
-                  ) : step.id === 2 ? (
-                    <Typography variant="body1" color="text.secondary">
-                      Decisions are made after all information is received and
-                      reviewed by New York Life. If approved, you will receive a
-                      certificate of insurance and have a 30-day no-obligation
-                      free look. Plus, when{" "}
-                      <InlineDrawerLink onClick={onOpenQuickDecision}>
-                        <QuickDecisionMark />
-                      </InlineDrawerLink>{" "}
-                      is available, you can get a faster decision on your
-                      application, typically with no medical exam.
-                    </Typography>
-                  ) : (
-                    <Typography variant="body1" color="text.secondary">
-                      {step.body}
-                    </Typography>
-                  )}
+                  <Typography variant="body1" color="text.secondary">
+                    {step.body}
+                    {step.id === 1 && (
+                      <>
+                        {" "}
+                        <InlineDrawerLink onClick={onOpenApplicationReview}>
+                          Learn more about the review process.
+                        </InlineDrawerLink>
+                      </>
+                    )}
+                    {step.id === 2 && (
+                      <>
+                        {" "}
+                        When{" "}
+                        <InlineDrawerLink onClick={onOpenQuickDecision}>
+                          <QuickDecisionMark />
+                        </InlineDrawerLink>{" "}
+                        is available, you may get a faster decision with no
+                        medical exam.
+                      </>
+                    )}
+                  </Typography>
                 </Stack>
               </Box>
             </Stack>
@@ -356,8 +312,6 @@ export default function Home() {
     coverageGroups.find(
       (group) => group.category.id === activeCoverageCategory,
     ) ?? coverageGroups[0];
-
-  const associationContent = ASSOCIATION_ABOUT_CONTENT[client.id] ?? null;
 
   const DRAWER_CONFIG: Record<Exclude<DrawerId, null>, { title: ReactNode }> = {
     "application-review": {
@@ -443,10 +397,9 @@ export default function Home() {
                     xs: "2.5rem",
                     sm: "3rem",
                     md: "3.5rem",
-                    lg: "4rem",
+                    // lg: "4rem",
                   },
                   lineHeight: 1.08,
-                  // maxWidth: 500,
                   fontWeight: 700,
                 }}
               >
@@ -457,7 +410,7 @@ export default function Home() {
               </Typography>
               <Typography
                 variant="body1"
-                // color="text.secondary"
+                color="text.secondary"
                 // sx={{ maxWidth: 400 }}
                 // fontSize={{ xs: "1.125rem", md: "1.25rem" }}
               >
@@ -472,6 +425,7 @@ export default function Home() {
               alignItems="center"
               useFlexGap
               sx={{ flexWrap: "wrap" }}
+              mb={1.5}
             >
               <Button
                 component={RouterLink}
@@ -482,7 +436,7 @@ export default function Home() {
                 sx={{
                   width: { xs: "100%", sm: "auto" },
                   px: 3.5,
-                  py: 1.25,
+                  py: "16px",
                   fontWeight: 700,
                   whiteSpace: "nowrap",
                   flexShrink: 0,
@@ -497,7 +451,7 @@ export default function Home() {
                 sx={{
                   width: { xs: "100%", sm: "auto" },
                   px: 3.5,
-                  py: 1.25,
+                  py: "16px",
                   whiteSpace: "nowrap",
                   flexShrink: 0,
                 }}
@@ -512,7 +466,7 @@ export default function Home() {
             </Stack>
 
             <Typography variant="body2" color="text.secondary">
-              Already have an application started?{" "}
+              Already started an application?{" "}
               <Link
                 component={RouterLink}
                 to={getPagePath("resume")}
@@ -539,9 +493,7 @@ export default function Home() {
 
         <Stack spacing={2.5} sx={FADE_IN_SECTION_SX(0.3)}>
           <Stack spacing={1}>
-            <Typography variant="h2" sx={SECTION_TITLE_SX}>
-              About the coverages
-            </Typography>
+            <Typography variant="h2">About the coverages</Typography>
             <Typography variant="body1" color="text.secondary">
               Review the coverage categories available on this site and the
               products offered within each category.
@@ -698,88 +650,88 @@ export default function Home() {
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns:
-                associationContent != null ? { xs: "1fr" } : "1fr",
+              gridTemplateColumns: "1fr",
               gap: { xs: 3, md: 5 },
               alignItems: "start",
             }}
           >
-            {associationContent ? (
+            {client.id === "ama" && (
               <Stack spacing={2}>
-                <Stack spacing={0.75}>
-                  <Typography
-                    variant="h4"
-                    paddingBottom={1}
+                <Stack direction="column" spacing={2} alignItems="start">
+                  <Box
+                    component="img"
+                    src={client.branding.logo}
+                    alt={client.branding.logoAlt}
                     sx={{
-                      xs: "1.5rem",
-                      sm: "1.5rem",
-                      md: "1.75rem",
-                      lg: "2rem",
+                      display: "block",
+                      height: 30,
+                      width: "auto",
+                      objectFit: "contain",
+                      flexShrink: 0,
                     }}
-                    fontWeight={600}
-                  >
-                    {associationContent.title}
+                  />
+                  <Typography variant="body1" color="text.secondary">
+                    Helping physicians protect what matters most
                   </Typography>
-                  {associationContent.subtitle ? (
-                    <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                      {associationContent.subtitle}
-                    </Typography>
-                  ) : null}
                 </Stack>
 
                 <Stack spacing={1.25}>
-                  {associationContent.paragraphs.map((paragraph, index) => (
-                    <Typography
-                      key={index}
-                      variant="body2"
-                      color="text.secondary"
-                    >
-                      {paragraph}
-                    </Typography>
-                  ))}
+                  <Typography variant="body2">
+                    For more than 50 years, AMA-sponsored insurance has helped
+                    protect physicians and their families.
+                  </Typography>
+                  <Typography variant="body2">
+                    As a subsidiary of the American Medical Association, AMA
+                    Insurance uses the group buying power of more than one
+                    million physicians to offer specially negotiated rates and
+                    tailored benefits from top insurance companies.
+                  </Typography>
                 </Stack>
+              </Stack>
+            )}
+            <Stack spacing={2}>
+              <Stack direction="row" spacing={2} alignItems="center">
                 <Box
                   component="img"
-                  src={client.branding.logo}
-                  alt={client.branding.logoAlt}
+                  src="/logo.svg"
+                  alt="New York Life Logo"
                   sx={{
                     display: "block",
-                    height: 30,
+                    height: 40,
                     width: "auto",
                     objectFit: "contain",
-                    objectPosition: "left center",
-                    mb: 0.5,
+                    flexShrink: 0,
                   }}
                 />
-              </Stack>
-            ) : null}
-            <Stack spacing={2}>
-              <Stack spacing={0.75}>
-                <Typography
-                  variant="h4"
-                  paddingBottom={1}
-                  sx={{ xs: "1.5rem", sm: "1.5rem", md: "1.75rem", lg: "2rem" }}
-                  fontWeight={600}
-                >
-                  {NYL_ABOUT_CONTENT.title}
-                </Typography>
-                {NYL_ABOUT_CONTENT.subtitle ? (
-                  <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                    {NYL_ABOUT_CONTENT.subtitle}
+                <Stack spacing={0.25}>
+                  <Typography variant="h5">
+                    New York Life Insurance Company
                   </Typography>
-                ) : null}
+                  <Typography variant="body1" color="text.secondary">
+                    A trusted name for over 180 years
+                  </Typography>
+                </Stack>
               </Stack>
 
               <Stack spacing={1.25}>
-                {NYL_ABOUT_CONTENT.paragraphs.map((paragraph, index) => (
-                  <Typography
-                    key={index}
-                    variant="body2"
-                    color="text.secondary"
+                <Typography variant="body2">
+                  At the heart of New York Life is a commitment to be there for
+                  customers when they need us, whether today or decades into the
+                  future.
+                </Typography>
+                <Typography variant="body2">
+                  As of today, New York Life has received the highest financial
+                  strength ratings
+                  <Box
+                    component="sup"
+                    sx={{ fontSize: "0.75em", lineHeight: 1 }}
                   >
-                    {paragraph}
-                  </Typography>
-                ))}
+                    1
+                  </Box>{" "}
+                  currently awarded to any U.S. life insurer. For our customers,
+                  that means promises kept, and peace of mind for the millions
+                  of families and businesses who rely on us.
+                </Typography>
               </Stack>
 
               <Stack
@@ -820,19 +772,6 @@ export default function Home() {
                 </Box>
                 Third Party Rating Reports as of 09/30/2025.
               </Typography>
-              <Box
-                component="img"
-                src="/logo.svg"
-                alt="New York Life Logo"
-                sx={{
-                  display: "block",
-                  height: 40,
-                  width: "auto",
-                  objectFit: "contain",
-                  objectPosition: "left center",
-                  mb: 0.5,
-                }}
-              />
             </Stack>
           </Box>
         </Stack>

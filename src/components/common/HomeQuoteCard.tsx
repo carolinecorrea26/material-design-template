@@ -631,20 +631,21 @@ export default function HomeQuoteCard() {
         <Stack spacing={2.25} sx={{ p: { xs: 2.5, sm: 3 } }}>
           <Box>
             <Typography
-              variant="h4"
+              variant="h2"
               paddingBottom={0.5}
               //   sx={{ xs: "1.5rem", sm: "1.5rem", md: "1.75rem", lg: "2rem" }}
-              fontWeight={600}
+              // fontWeight={600}
             >
-              Get an estimate in seconds
+              Get an instant quote
             </Typography>
             <Typography
-              variant="body2"
+              variant="body1"
+              color="text.secondary"
               //   paddingBottom={1}
               //   sx={{ xs: "1.5rem", sm: "1.5rem", md: "1.75rem", lg: "2rem" }}
               //   fontWeight={600}
             >
-              Find a premium and coverage amount that's a good fit for you.
+              Find a premium and amount that's a good fit for you.
             </Typography>
           </Box>
 
@@ -729,6 +730,7 @@ export default function HomeQuoteCard() {
             <Button
               variant="outlined"
               size="large"
+              sx={{ py: "16px" }}
               onClick={handleGetEstimate}
               disabled={isEstimateLoading}
             >
@@ -802,10 +804,10 @@ export default function HomeQuoteCard() {
                       lineHeight: 1.66,
                       textTransform: "uppercase",
                       letterSpacing: "0.5px",
-                      color: "rgba(0, 0, 0, 0.6)",
+                      color: "rgba(0, 0, 0, 0.6) !important",
                     }}
                   >
-                    Choose coverage
+                    Coverage category
                   </FormLabel>
                   <Select
                     displayEmpty

@@ -304,8 +304,13 @@ function EligibilityFields({
                       render={({ field: controllerField }) => {
                         const value = (controllerField.value as string) ?? "";
                         const hasError = Boolean(errors[field.id]);
+                        const inputChecksOn = new URLSearchParams(
+                          window.location.search,
+                        ).has("inputChecks");
                         const isComplete =
-                          !hasError && value.trim().length >= 5;
+                          inputChecksOn &&
+                          !hasError &&
+                          value.trim().length >= 5;
 
                         return (
                           <TextField
@@ -346,7 +351,7 @@ function EligibilityFields({
                                     }}
                                   />
                                 </InputAdornment>
-                              ) : hasError ? (
+                              ) : inputChecksOn && hasError ? (
                                 <InputAdornment position="end">
                                   <HighlightOffRoundedIcon
                                     aria-label="Error"

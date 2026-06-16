@@ -1,5 +1,5 @@
 import type React from "react";
-import { createTheme } from "@mui/material/styles";
+import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 
 type ResponsiveCSSProperties = React.CSSProperties & {
   [key: `@media ${string}`]: React.CSSProperties;
@@ -86,7 +86,7 @@ export const sxPresets = {
   },
 } as const;
 
-const theme = createTheme({
+let theme = createTheme({
   spacing: 8,
   shape: {
     borderRadius: 8,
@@ -155,7 +155,7 @@ const theme = createTheme({
       fontWeight: 700,
       textTransform: "uppercase",
       letterSpacing: "0.5px",
-      color: "rgba(0, 0, 0, 0.6)",
+      color: "#5b7090",
     },
     button: {
       textTransform: "none",
@@ -183,7 +183,7 @@ const theme = createTheme({
       lineHeight: 1.66,
       letterSpacing: "0.5px",
       textTransform: "uppercase",
-      color: "rgba(0, 0, 0, 0.6)",
+      color: "#5b7090",
     },
     formApplicantSectionLabel: {
       fontSize: "0.75rem",
@@ -191,7 +191,7 @@ const theme = createTheme({
       lineHeight: 1.66,
       letterSpacing: "0.5px",
       textTransform: "uppercase",
-      color: "rgba(0, 0, 0, 0.6)",
+      color: "#5b7090",
     },
     formBackLink: {
       fontSize: "0.8rem",
@@ -627,6 +627,7 @@ const theme = createTheme({
     MuiToggleButton: {
       styleOverrides: {
         root: ({ theme: activeTheme }) => ({
+          padding: "16.5px 14px",
           backgroundColor: "#ffffff",
           border: `1px solid ${activeTheme.palette.divider}`,
           borderRadius: inputBorderRadius,
@@ -664,21 +665,24 @@ const theme = createTheme({
             marginRight: "-5px",
           },
           "&.coverageCategoryChip": {
-            padding: "12px 8px",
+            padding: "16px 8px",
             height: "auto",
             borderRadius: "16px",
             display: "flex",
             flexDirection: "column",
             minWidth: "100px",
-            fontSize: "1rem",
+            fontSize: "0.875rem",
             fontWeight: 600,
+            border: "1px solid transparent",
+            "&.MuiChip-outlined": {
+              border: "1px solid #bdbdbd",
+            },
             "& .MuiChip-icon": {
               marginLeft: 0,
               marginRight: 0,
             },
             "& .MuiChip-label": {
               paddingTop: 4,
-              paddingBottom: 4,
             },
           },
         },
@@ -686,5 +690,7 @@ const theme = createTheme({
     },
   },
 });
+
+theme = responsiveFontSizes(theme);
 
 export default theme;

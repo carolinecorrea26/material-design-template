@@ -26,8 +26,8 @@ export default function FormSectionTitle(props: FormSectionTitleProps) {
       <Box
         sx={{
           background: "rgb(234 242 255 / 84%)",
-          padding: "0rem 1.25rem",
-          borderRadius: "8px",
+          padding: "0.5rem 1.25rem",
+          borderRadius: "50px",
           display: "flex",
           justifyContent: "center",
         }}

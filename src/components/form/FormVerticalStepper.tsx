@@ -12,7 +12,7 @@ import {
   useTheme,
 } from "@mui/material";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
-import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import { useNavigate } from "react-router-dom";
 import {
   getActiveProgressSteps,
@@ -124,6 +124,10 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
     ? getBreadcrumbEntries(currentStepConfig.pageIds, pageId)
     : [];
 
+  if (breadcrumbEntries.length <= 1) {
+    return null;
+  }
+
   const currentEntryIndex = breadcrumbEntries.findIndex(
     (entry) => entry.containsCurrentPage,
   );
@@ -182,7 +186,7 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
               }}
             >
               <Typography variant="formBreadcrumb">{entry.label}</Typography>
-              <CheckRoundedIcon
+              <CheckCircleRoundedIcon
                 sx={{
                   fontSize: 14,
                   color: "success.main",

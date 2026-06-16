@@ -287,16 +287,22 @@ function hasCompletedValue(field: FieldDefinition, value: unknown) {
   return stringValue.length >= 2;
 }
 
+function inputChecksEnabled() {
+  return new URLSearchParams(window.location.search).has("inputChecks");
+}
+
 function isFieldComplete(
   field: FieldDefinition,
   value: unknown,
   statusState?: FieldStatusState,
 ) {
+  if (!inputChecksEnabled()) return false;
   if (statusState?.hasError) return false;
   return hasCompletedValue(field, value);
 }
 
 function isFieldInError(statusState?: FieldStatusState) {
+  if (!inputChecksEnabled()) return false;
   return Boolean(statusState?.hasError);
 }
 

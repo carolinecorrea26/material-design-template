@@ -522,20 +522,9 @@ export default function ComparisonQuoteModal({
             <Stack spacing={3}>
               {/* Category chips (multi-select) */}
               <Box>
-                <FormLabel
-                  sx={{
-                    mb: 1,
-                    display: "block",
-                    fontSize: "0.75rem",
-                    fontWeight: 700,
-                    lineHeight: 1.66,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.5px",
-                    color: "rgba(0, 0, 0, 0.6)",
-                  }}
-                >
-                  Choose coverage
-                </FormLabel>
+                <Typography variant="overline" sx={{ mb: 1, display: "block" }}>
+                  Coverage category
+                </Typography>
                 <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mt: 2 }}>
                   {availableCategories.map((category) => {
                     const Icon = category.icon;
@@ -1077,15 +1066,8 @@ export default function ComparisonQuoteModal({
                     }}
                   >
                     <Stack spacing={1.5}>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: "text.primary",
-                          fontWeight: 600,
-                          fontSize: 12,
-                        }}
-                      >
-                        Total estimated cost<sup>1</sup>
+                      <Typography variant="h6">
+                        Estimated cost<sup>1</sup>
                       </Typography>
 
                       {selectedProducts.length === 0 ? (

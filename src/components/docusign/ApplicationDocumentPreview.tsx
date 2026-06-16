@@ -512,7 +512,7 @@ export default function ApplicationDocumentPreview({
             <Stack spacing={3}>
               {pageIndex === 0 ? (
                 <Stack spacing={1.5}>
-                  <Typography variant="overline" color="text.secondary">
+                  <Typography variant="overline">
                     Application Preview
                   </Typography>
                   <Stack
