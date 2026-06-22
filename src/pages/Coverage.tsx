@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import { Box, Typography } from "@mui/material";
 import { colors } from "../app/theme";
@@ -7,6 +7,7 @@ import FormRoutePage from "../components/form/FormRoutePage";
 import FormHelpDrawer from "../components/form/FormHelpDrawer";
 import QuickDecisionDrawerContent from "../components/common/QuickDecisionDrawerContent";
 import { QuickDecisionMark } from "../components/common/QuickDecisionDrawerContent";
+import ApplicationSummaryDrawer from "../components/layout/ApplicationSummaryDrawer";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { useApplicationForm } from "../state/ApplicationFormContext";
 import type { CoverageApplicantId } from "../config/coverages/types";
@@ -16,6 +17,8 @@ export default function Coverage() {
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const { values, setPageValues } = useApplicationForm();
   const [qdDrawerOpen, setQdDrawerOpen] = useState(false);
+  const [summaryDrawerOpen, setSummaryDrawerOpen] = useState(false);
+  const prevApplicantsRef = useRef<Record<string, CoverageApplicantId[]>>({});
 
   const hasQdProduct = coverages.some((c) => c.underwritingType === "QD");
 
@@ -39,6 +42,16 @@ export default function Coverage() {
     }
     return {};
   }, [values.productApplicants]);
+
+  // Keep prevApplicantsRef in sync on mount / when applicants load from storage
+  useEffect(() => {
+    if (
+      Object.keys(prevApplicantsRef.current).length === 0 &&
+      Object.keys(productApplicants).length > 0
+    ) {
+      prevApplicantsRef.current = productApplicants;
+    }
+  }, [productApplicants]);
 
   // Normalize productApplicants when dependents change (remove applicants no longer allowed)
   useEffect(() => {
@@ -221,9 +234,22 @@ export default function Coverage() {
         onChangeSelectedCoverageIds={(nextIds) =>
           setPageValues({ coverageSelections: nextIds })
         }
-        onChangeProductApplicants={(nextApplicants) =>
-          setPageValues({ productApplicants: nextApplicants })
-        }
+        onChangeProductApplicants={(nextApplicants) => {
+          // Detect if an applicant was added (total count increased)
+          const prevTotal = Object.values(prevApplicantsRef.current).reduce(
+            (sum, arr) => sum + arr.length,
+            0,
+          );
+          const nextTotal = Object.values(nextApplicants).reduce(
+            (sum, arr) => sum + arr.length,
+            0,
+          );
+          if (nextTotal > prevTotal) {
+            setSummaryDrawerOpen(true);
+          }
+          prevApplicantsRef.current = nextApplicants;
+          setPageValues({ productApplicants: nextApplicants });
+        }}
       />
       <FormHelpDrawer
         open={qdDrawerOpen}
@@ -236,6 +262,12 @@ export default function Coverage() {
       >
         <QuickDecisionDrawerContent />
       </FormHelpDrawer>
+
+      <ApplicationSummaryDrawer
+        open={summaryDrawerOpen}
+        onClose={() => setSummaryDrawerOpen(false)}
+        source="coverage-page"
+      />
     </FormRoutePage>
   );
 }

@@ -1,15 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import FileDownloadRoundedIcon from "@mui/icons-material/FileDownloadRounded";
+import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
 import {
   Alert,
   Box,
   Button,
-  Divider,
   Link,
   Stack,
+  Step,
+  StepLabel,
+  Stepper,
   Typography,
 } from "@mui/material";
+import type { StepIconProps } from "@mui/material/StepIcon";
 import { getActiveClient } from "../client/getActiveClient";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
@@ -43,6 +47,8 @@ type DecisionStatus = {
   label: string;
   color: string;
   description: string;
+  /** Which step the stepper should highlight (0=Submitted, 1=Reviewing, 2=Decision) */
+  activeStep: number;
 };
 
 const APPLICANT_LABELS: Record<CoverageApplicantId, string> = {
@@ -186,6 +192,7 @@ function getDecisionStatus(opts: {
     return {
       label: "Sent for review",
       color: "#0668ff",
+      activeStep: 1,
       description:
         "QuickDecision is not currently available for this product. Your application will continue through the standard review process, and you’ll be contacted if additional information is needed or when a decision is available.",
     };
@@ -194,8 +201,9 @@ function getDecisionStatus(opts: {
   switch (decisionResult) {
     case "conditionally-approved":
       return {
-        label: "Approved",
-        color: "#00a344",
+        label: "Conditionally approved",
+        color: "#0668ff",
+        activeStep: 2,
         description:
           "Congratulations! Your application has been conditionally approved. Once your group plan administrator confirms your eligibility, you’ll receive details about your new coverage.",
       };
@@ -204,6 +212,7 @@ function getDecisionStatus(opts: {
       return {
         label: "Sent for review",
         color: "#0668ff",
+        activeStep: 1,
         description:
           "We need a bit more information before we can make a decision. Your application will continue through the standard review process, and you’ll be contacted if additional information is needed or when a decision is available.",
       };
@@ -211,9 +220,8 @@ function getDecisionStatus(opts: {
     case "soft-declined":
       return {
         label: "Unable to offer",
-        // color: "#ab0b0b",
-        // color: "#55575b",
-        color: "#213967",
+        color: "#0668ff",
+        activeStep: 2,
         description:
           "Based on the information provided and the data securely reviewed, we’re unable to offer this coverage through QuickDecision at this time. Your application will still be reviewed by the plan administrator and carrier, and you’ll be contacted if additional information is needed.",
       };
@@ -222,11 +230,14 @@ function getDecisionStatus(opts: {
       return {
         label: "Sent for review",
         color: "#0668ff",
+        activeStep: 1,
         description:
-          "We couldn’t complete QuickDecision processing for this coverage in real time. Your application will continue through the standard review process, and you’ll be contacted if additional information is needed or when a decision is available.",
+          "We couldn't complete QuickDecision processing for this coverage in real time. Your application will continue through the standard review process, and you'll be contacted if additional information is needed or when a decision is available.",
       };
   }
 }
+
+const DECISION_STEPS = ["Submitted", "Reviewed", "Decision"];
 
 function isQuickDecisionUnderwritingType(underwritingType: string): boolean {
   return QUICK_DECISION_UNDERWRITING_TYPES.has(underwritingType.toUpperCase());
@@ -388,387 +399,494 @@ export default function Receipt() {
   const supportHours = client.support.phoneHours;
   const hasSupportInfo = Boolean(supportPhone || supportEmail || supportHours);
 
-  return (
-    <Stack spacing={2.5} sx={{ flex: 1, alignItems: "center", pb: 2 }}>
-      <Box sx={{ width: "100%", maxWidth: 760 }}>
-        <Stack spacing={2.5}>
-          <Stack
-            alignItems="center"
-            spacing={1.5}
-            sx={{ textAlign: "center", mt: 1 }}
-          >
-            <Box
-              sx={{
-                width: 84,
-                height: 84,
-                borderRadius: "50%",
-                display: "grid",
-                placeItems: "center",
-                backgroundColor: "rgba(33, 150, 83, 0.12)",
-                // border: "2px solid rgba(33, 150, 83, 0.25)",
-                animation: "receipt-ring 750ms ease-out",
-                "@keyframes receipt-ring": {
-                  from: { transform: "scale(0.82)", opacity: 0.2 },
-                  to: { transform: "scale(1)", opacity: 1 },
-                },
-                "& svg": {
-                  animation: "receipt-pop 580ms ease-out",
-                },
-                "@keyframes receipt-pop": {
-                  from: { transform: "scale(0.3)", opacity: 0 },
-                  to: { transform: "scale(1)", opacity: 1 },
-                },
-              }}
-            >
-              <CheckCircleRoundedIcon sx={{ color: "#1E854A", fontSize: 54 }} />
-            </Box>
+  const uniqueApplicants = useMemo(() => {
+    const applicants = new Set(orderedDecisionEntries.map((e) => e.applicant));
+    return Array.from(applicants)
+      .map((a) => APPLICANT_LABELS[a])
+      .join(", ");
+  }, [orderedDecisionEntries]);
 
+  const cardSx = {
+    backgroundColor: "#fff",
+    border: "1px solid #e0e4ea",
+    borderRadius: 2,
+    p: 3,
+  };
+
+  return (
+    <Box
+      sx={{
+        flex: 1,
+        backgroundColor: "#fff",
+        borderRadius: 3,
+        border: "1px solid #e0e4ea",
+        p: { xs: 3, md: 4 },
+      }}
+    >
+      <Stack spacing={3}>
+        {/* Header section */}
+        <Stack direction="row" spacing={2} alignItems="flex-start">
+          <Box
+            sx={{
+              width: 56,
+              height: 56,
+              borderRadius: "50%",
+              display: "grid",
+              placeItems: "center",
+              backgroundColor: "rgba(0, 148, 101, 0.10)",
+              flexShrink: 0,
+              animation: "receipt-ring 750ms ease-out",
+              "@keyframes receipt-ring": {
+                from: { transform: "scale(0.82)", opacity: 0.2 },
+                to: { transform: "scale(1)", opacity: 1 },
+              },
+              "& svg": {
+                animation: "receipt-pop 580ms ease-out",
+              },
+              "@keyframes receipt-pop": {
+                from: { transform: "scale(0.3)", opacity: 0 },
+                to: { transform: "scale(1)", opacity: 1 },
+              },
+            }}
+          >
+            <CheckCircleRoundedIcon sx={{ color: "#009465", fontSize: 36 }} />
+          </Box>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography
               component="h1"
               sx={{
                 fontWeight: 700,
-                fontSize: { xs: "1.25rem", md: "1.75rem" },
-                lineHeight: 1.35,
+                fontSize: { xs: "1.25rem", md: "1.6rem" },
+                lineHeight: 1.3,
+                mb: 1,
               }}
             >
-              Your application has been submitted!
+              Your application has been submitted
             </Typography>
 
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ fontWeight: 500 }}
+            <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
+              <span color="text.secondary">Confirmation number:</span>{" "}
+              <strong>{confirmationNumber || "-"}</strong>
+            </Typography>
+
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Please save a copy of your application documents before leaving
+              this page. For security purposes, a digital copy will not be sent
+              by email.
+            </Typography>
+
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              spacing={1}
+              useFlexGap
+              sx={{ width: { xs: "100%", sm: "auto" } }}
             >
-              Confirmation number: {confirmationNumber || "-"}
-            </Typography>
-          </Stack>
+              <Button
+                variant="contained"
+                startIcon={<FileDownloadRoundedIcon />}
+                disableElevation
+              >
+                Application PDF
+              </Button>
 
-          <Box
-            sx={
-              {
-                // border: "1px solid rgba(0, 22, 57, 0.08)",
-                // borderRadius: 3,
-                // p: { xs: 2.5, sm: 3 },
-                // backgroundColor: "#fff",
-              }
-            }
-          >
-            <Stack spacing={4.5}>
-              <Box>
-                {hasApplicantSelections ? (
-                  <Box
-                    sx={{
-                      border: "1px solid rgba(0, 22, 57, 0.08)",
-                      borderRadius: 2,
-                      overflow: "hidden",
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        display: "grid",
-                        gridTemplateColumns: {
-                          xs: "1fr",
-                          sm: "minmax(0, 1fr) minmax(260px, 1.15fr)",
-                        },
-                        columnGap: 2,
-                        px: { xs: 1.5, sm: 2 },
-                        py: 1,
-                        backgroundColor: "#f6f8fb",
-                        borderBottom: "1px solid rgba(0, 22, 57, 0.08)",
-                      }}
-                    >
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: "#4f678d",
-                          fontWeight: 800,
-                          fontSize: "0.75rem",
-                          letterSpacing: 0.6,
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        Request
-                      </Typography>
+              <Button
+                variant="outlined"
+                startIcon={<FileDownloadRoundedIcon />}
+              >
+                Payment PDF
+              </Button>
 
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: "#4f678d",
-                          fontWeight: 800,
-                          fontSize: "0.75rem",
-                          letterSpacing: 0.6,
-                          textTransform: "uppercase",
-                          display: { xs: "none", sm: "block" },
-                        }}
-                      >
-                        Status
-                      </Typography>
-                    </Box>
-
-                    <Stack
-                      spacing={0}
-                      divider={
-                        <Divider
-                          sx={{ borderColor: "rgba(0, 22, 57, 0.08)" }}
-                        />
-                      }
-                    >
-                      {orderedDecisionEntries.map((entry, index) => {
-                        const decisionResult = getQdDecisionResult(
-                          values,
-                          entry.coverageId,
-                          entry.applicant,
-                          index,
-                        );
-
-                        const status = getDecisionStatus({
-                          underwritingType: entry.coverage.underwritingType,
-                          decisionResult,
-                        });
-
-                        const applicantLabel =
-                          APPLICANT_LABELS[entry.applicant];
-
-                        const coverageAmountRequested =
-                          getCoverageAmountRequested(
-                            values,
-                            entry.coverageId,
-                            entry.applicant,
-                          );
-
-                        return (
-                          <Box
-                            key={`${entry.coverageId}-${entry.applicant}`}
-                            sx={{
-                              display: "grid",
-                              gridTemplateColumns: {
-                                xs: "1fr",
-                                sm: "minmax(0, 1fr) minmax(260px, 1.15fr)",
-                              },
-                              columnGap: 2,
-                              rowGap: 1,
-                              px: { xs: 1.5, sm: 2 },
-                              py: 1.75,
-                              backgroundColor: "#fff",
-                            }}
-                          >
-                            <Stack spacing={0.35}>
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  fontWeight: 700,
-                                  color: "text.primary",
-                                }}
-                              >
-                                {entry.coverage.name} ({applicantLabel})
-                              </Typography>
-
-                              {coverageAmountRequested ? (
-                                <Typography
-                                  variant="caption"
-                                  color="text.secondary"
-                                  sx={{ fontWeight: 600 }}
-                                >
-                                  {" "}
-                                  {formatCurrencyAmount(
-                                    coverageAmountRequested,
-                                  )}
-                                </Typography>
-                              ) : null}
-                            </Stack>
-
-                            <Stack spacing={0.75} alignItems="flex-start">
-                              <Stack
-                                direction="row"
-                                spacing={0.75}
-                                alignItems="center"
-                              >
-                                <Box
-                                  aria-hidden="true"
-                                  sx={{
-                                    width: 10,
-                                    height: 10,
-                                    borderRadius: "50%",
-                                    backgroundColor: status.color,
-                                    boxShadow: `0 0 0 3px ${status.color}22`,
-                                    flexShrink: 0,
-                                  }}
-                                />
-
-                                <Typography
-                                  variant="body2"
-                                  sx={{
-                                    fontWeight: 800,
-                                    color: status.color,
-                                  }}
-                                >
-                                  {status.label}
-                                </Typography>
-                              </Stack>
-
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                sx={{ lineHeight: 1.45 }}
-                              >
-                                {status.description}
-                              </Typography>
-                            </Stack>
-                          </Box>
-                        );
-                      })}
-                    </Stack>
-                  </Box>
-                ) : (
-                  <Alert severity="info" variant="outlined">
-                    No selected coverage details are available for this
-                    application.
-                  </Alert>
-                )}
-              </Box>
-
-              {/* <Divider /> */}
-
-              <Stack spacing={1.5}>
-                <Typography variant="h6" fontWeight={700}>
-                  What happens next?
-                </Typography>
-
-                <Typography variant="body2" color="text.secondary">
-                  Your application is being sent for review by the plan
-                  administrator and carrier. You will be contacted if any
-                  additional information is needed.
-                </Typography>
-
-                <Typography variant="body2" color="text.secondary">
-                  Please save a copy of your application now by using the
-                  download buttons below. For security purposes, a digital copy
-                  will not be sent via email — this is the only opportunity to
-                  download your records.
-                </Typography>
-
-                <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-                  <Button
-                    variant="outlined"
-                    startIcon={<FileDownloadRoundedIcon />}
-                  >
-                    Application PDF
-                  </Button>
-
-                  <Button
-                    variant="outlined"
-                    startIcon={<FileDownloadRoundedIcon />}
-                  >
-                    Payment PDF
-                  </Button>
-
-                  {shouldShowQuickDecisionDownload && (
-                    <Button
-                      variant="outlined"
-                      startIcon={<FileDownloadRoundedIcon />}
-                    >
-                      QuickDecision PDF
-                    </Button>
-                  )}
-                </Stack>
-              </Stack>
-
-              {hasSupportInfo && (
-                <>
-                  {/* <Divider /> */}
-
-                  <Box
-                    sx={{
-                      backgroundColor: "#eff4ff63",
-                      border: "1px solid #e6effa",
-                      borderRadius: 2,
-                      boxShadow: "0 8px 8px rgb(15 23 42 / 5%)",
-                      p: { xs: 2.25, sm: 2.75 },
-                      color: "#12233d",
-                    }}
-                  >
-                    <Stack spacing={1.5}>
-                      <Typography
-                        sx={{
-                          color: "#071b3a",
-                          fontSize: "1.125rem",
-                          lineHeight: 1.25,
-                          fontWeight: 700,
-                        }}
-                      >
-                        Questions? We&rsquo;re here to help.
-                      </Typography>
-
-                      <Typography
-                        sx={{
-                          color: "#12233d",
-                          fontSize: "1rem",
-                          lineHeight: 1.45,
-                          fontWeight: 400,
-                        }}
-                      >
-                        {client.branding.name} Insurance Administrator
-                      </Typography>
-
-                      {supportPhone && (
-                        <Typography
-                          sx={{
-                            color: "#12233d",
-                            fontSize: "1rem",
-                            lineHeight: 1.45,
-                            fontWeight: 700,
-                          }}
-                        >
-                          Call:{" "}
-                          <Link
-                            href={`tel:${getTelHref(supportPhone)}`}
-                            underline="none"
-                            sx={{
-                              color: "#006fff",
-                              fontWeight: 700,
-                            }}
-                          >
-                            {supportPhone}
-                          </Link>
-                          {supportHours ? (
-                            <Box component="span" sx={{ fontWeight: 400 }}>
-                              {" "}
-                              ({supportHours})
-                            </Box>
-                          ) : null}
-                        </Typography>
-                      )}
-
-                      {supportEmail && (
-                        <Typography
-                          sx={{
-                            color: "#12233d",
-                            fontSize: "1rem",
-                            lineHeight: 1.45,
-                            fontWeight: 700,
-                          }}
-                        >
-                          Email:{" "}
-                          <Link
-                            href={`mailto:${supportEmail}`}
-                            underline="none"
-                            sx={{
-                              color: "#006fff",
-                              fontWeight: 700,
-                            }}
-                          >
-                            {supportEmail}
-                          </Link>
-                        </Typography>
-                      )}
-                    </Stack>
-                  </Box>
-                </>
+              {shouldShowQuickDecisionDownload && (
+                <Button
+                  variant="outlined"
+                  startIcon={<FileDownloadRoundedIcon />}
+                >
+                  QuickDecision PDF
+                </Button>
               )}
             </Stack>
           </Box>
         </Stack>
-      </Box>
-    </Stack>
+
+        {/* Summary bar */}
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            border: "1px solid #e0e4ea",
+            borderRadius: 2,
+            backgroundColor: "#fff",
+            "& > *": {
+              flex: 1,
+              minWidth: 140,
+              px: 3,
+              py: 1.5,
+              borderRight: "1px solid #e0e4ea",
+              "&:last-child": { borderRight: "none" },
+            },
+          }}
+        >
+          <Box>
+            <Typography variant="caption" color="text.secondary">
+              Application status
+            </Typography>
+            <Typography sx={{ fontWeight: 600, fontSize: "0.95rem" }}>
+              Submitted
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant="caption" color="text.secondary">
+              Applicant
+            </Typography>
+            <Typography sx={{ fontWeight: 600, fontSize: "0.95rem" }}>
+              {uniqueApplicants || "Member"}
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant="caption" color="text.secondary">
+              Coverages requested
+            </Typography>
+            <Typography sx={{ fontWeight: 600, fontSize: "0.95rem" }}>
+              {orderedDecisionEntries.length} product
+              {orderedDecisionEntries.length !== 1 ? "s" : ""}
+            </Typography>
+          </Box>
+        </Box>
+
+        {/* Two-column layout: main content + sidebar */}
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          spacing={3}
+          alignItems="flex-start"
+        >
+          {/* Main column - Coverage decisions */}
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Typography
+              component="h2"
+              sx={{ fontWeight: 700, fontSize: "1.35rem", mb: 0.5 }}
+            >
+              Coverage decisions
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>
+              Review the current status for each coverage you applied for.
+            </Typography>
+
+            {hasApplicantSelections ? (
+              <Stack spacing={2}>
+                {orderedDecisionEntries.map((entry, index) => {
+                  const decisionResult = getQdDecisionResult(
+                    values,
+                    entry.coverageId,
+                    entry.applicant,
+                    index,
+                  );
+
+                  const status = getDecisionStatus({
+                    underwritingType: entry.coverage.underwritingType,
+                    decisionResult,
+                  });
+
+                  const applicantLabel = APPLICANT_LABELS[entry.applicant];
+
+                  const coverageAmountRequested = getCoverageAmountRequested(
+                    values,
+                    entry.coverageId,
+                    entry.applicant,
+                  );
+
+                  const isApproved = status.label === "Conditionally approved";
+
+                  return (
+                    <Box
+                      key={`${entry.coverageId}-${entry.applicant}`}
+                      sx={cardSx}
+                    >
+                      {/* Header row: name + badge */}
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                        sx={{ mb: 0.5 }}
+                      >
+                        <Typography
+                          sx={{ fontWeight: 700, fontSize: "1.05rem" }}
+                        >
+                          {entry.coverage.name}
+                        </Typography>
+                        <Box
+                          sx={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 0.5,
+                            px: 1.5,
+                            py: 0.25,
+                            borderRadius: 1,
+                            backgroundColor: isApproved
+                              ? "rgba(0, 148, 101, 0.08)"
+                              : "rgba(255, 152, 0, 0.08)",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              width: 8,
+                              height: 8,
+                              borderRadius: "50%",
+                              backgroundColor: isApproved
+                                ? "#009465"
+                                : "#ff9800",
+                            }}
+                          />
+                          <Typography
+                            sx={{
+                              fontSize: "0.78rem",
+                              fontWeight: 600,
+                              color: isApproved ? "#009465" : "#e65100",
+                            }}
+                          >
+                            {status.label}
+                          </Typography>
+                        </Box>
+                      </Stack>
+
+                      {/* Subtitle */}
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mb: 2 }}
+                      >
+                        {applicantLabel} coverage
+                        {coverageAmountRequested
+                          ? ` · Requested: ${formatCurrencyAmount(coverageAmountRequested)}`
+                          : ""}
+                      </Typography>
+
+                      {/* Horizontal stepper */}
+                      <Stepper
+                        activeStep={status.activeStep}
+                        alternativeLabel
+                        sx={{
+                          mb: 2,
+                          "& .MuiStepConnector-root": { marginLeft: 0 },
+                          "& .MuiStepConnector-root.Mui-active .MuiStepConnector-line, & .MuiStepConnector-root.Mui-completed .MuiStepConnector-line":
+                            {
+                              borderColor: "#0668ff",
+                              borderTopWidth: 3,
+                            },
+                          "& .MuiStepConnector-line": {
+                            borderTopWidth: 3,
+                          },
+                        }}
+                      >
+                        {DECISION_STEPS.map((stepLabel, stepIndex) => {
+                          const isCompleted = stepIndex < status.activeStep;
+                          const isActive = stepIndex === status.activeStep;
+                          const isReached = isCompleted || isActive;
+                          const isLastStep =
+                            stepIndex === DECISION_STEPS.length - 1;
+
+                          return (
+                            <Step
+                              key={stepLabel}
+                              completed={
+                                isCompleted || (isLastStep && isActive)
+                              }
+                            >
+                              <StepLabel
+                                StepIconComponent={({
+                                  completed,
+                                  active,
+                                }: StepIconProps) =>
+                                  completed ? (
+                                    <CheckCircleRoundedIcon
+                                      sx={{ fontSize: 22, color: "#0668ff" }}
+                                    />
+                                  ) : (
+                                    <Box
+                                      sx={{
+                                        width: 22,
+                                        height: 22,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                      }}
+                                    >
+                                      <Box
+                                        sx={{
+                                          width: 12,
+                                          height: 12,
+                                          borderRadius: "50%",
+                                          border: "2px solid",
+                                          borderColor: active
+                                            ? "#0668ff"
+                                            : "#c4cdd5",
+                                          backgroundColor: active
+                                            ? "#0668ff"
+                                            : "transparent",
+                                        }}
+                                      />
+                                    </Box>
+                                  )
+                                }
+                                sx={{
+                                  "& .MuiStepLabel-label": {
+                                    fontSize: "0.75rem",
+                                    fontWeight: isReached ? 600 : 400,
+                                    color: isReached
+                                      ? "text.primary"
+                                      : "text.secondary",
+                                  },
+                                }}
+                              >
+                                {stepLabel}
+                              </StepLabel>
+                            </Step>
+                          );
+                        })}
+                      </Stepper>
+
+                      {/* Decision description */}
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ lineHeight: 1.55 }}
+                      >
+                        {status.description}
+                      </Typography>
+                    </Box>
+                  );
+                })}
+              </Stack>
+            ) : (
+              <Box sx={cardSx}>
+                <Alert severity="info" variant="outlined">
+                  No selected coverage details are available for this
+                  application.
+                </Alert>
+              </Box>
+            )}
+          </Box>
+
+          {/* Sidebar */}
+          <Box
+            sx={{
+              width: { xs: "100%", md: 300 },
+              flexShrink: 0,
+            }}
+          >
+            <Stack spacing={2.5}>
+              {/* What happens next */}
+              <Box sx={cardSx}>
+                <Typography
+                  sx={{ fontWeight: 700, fontSize: "1.05rem", mb: 2 }}
+                >
+                  What happens next?
+                </Typography>
+                <Stack spacing={2}>
+                  <Stack direction="row" spacing={1.5} alignItems="flex-start">
+                    <FileDownloadRoundedIcon
+                      sx={{ color: "primary.main", fontSize: 20, mt: 0.25 }}
+                    />
+                    <Box>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontWeight: 600, lineHeight: 1.4 }}
+                      >
+                        Save your documents
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        Download your PDFs before leaving this page.
+                      </Typography>
+                    </Box>
+                  </Stack>
+                  <Stack direction="row" spacing={1.5} alignItems="flex-start">
+                    <CheckCircleRoundedIcon
+                      sx={{ color: "#009465", fontSize: 20, mt: 0.25 }}
+                    />
+                    <Box>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontWeight: 600, lineHeight: 1.4 }}
+                      >
+                        Eligibility is confirmed
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        Your group plan administrator completes final
+                        eligibility review.
+                      </Typography>
+                    </Box>
+                  </Stack>
+                  <Stack direction="row" spacing={1.5} alignItems="flex-start">
+                    <HelpOutlineRoundedIcon
+                      sx={{ color: "primary.main", fontSize: 20, mt: 0.25 }}
+                    />
+                    <Box>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontWeight: 600, lineHeight: 1.4 }}
+                      >
+                        You&rsquo;ll be contacted if needed
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        Additional information may be requested for coverage
+                        sent for review.
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </Stack>
+              </Box>
+
+              {/* Questions / Support */}
+              {hasSupportInfo && (
+                <Box sx={cardSx}>
+                  <Typography
+                    sx={{ fontWeight: 700, fontSize: "1.05rem", mb: 1 }}
+                  >
+                    Questions? We&rsquo;re here to help.
+                  </Typography>
+
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 1.5 }}
+                  >
+                    {client.branding.name} Insurance Administrator
+                  </Typography>
+
+                  {supportPhone && (
+                    <Typography
+                      variant="body2"
+                      sx={{ fontWeight: 600, mb: 0.5 }}
+                    >
+                      Call:{" "}
+                      <Link
+                        href={`tel:${getTelHref(supportPhone)}`}
+                        underline="none"
+                        sx={{ color: "#006fff", fontWeight: 700 }}
+                      >
+                        {supportPhone}
+                      </Link>
+                    </Typography>
+                  )}
+
+                  {supportEmail && (
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                      Email:{" "}
+                      <Link
+                        href={`mailto:${supportEmail}`}
+                        underline="none"
+                        sx={{ color: "#006fff", fontWeight: 700 }}
+                      >
+                        {supportEmail}
+                      </Link>
+                    </Typography>
+                  )}
+                </Box>
+              )}
+            </Stack>
+          </Box>
+        </Stack>
+      </Stack>
+    </Box>
   );
 }

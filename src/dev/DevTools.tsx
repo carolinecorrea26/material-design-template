@@ -21,7 +21,7 @@ import {
 } from "../state/ApplicationFormContext";
 import { pages, getPagePath } from "../config/pages";
 import type { PageId } from "../types/page";
-import { formFlow } from "../config/formFlow";
+import { getResolvedFormFlow } from "../config/formFlow";
 import { generateFormDataUpToPage } from "./utils/generateFormData";
 import { router } from "../app/router";
 
@@ -33,10 +33,12 @@ const FORM_PAGE_PATHS = new Set([
   "/coverage",
   "/coverage-questions",
   "/coverage-options",
+  "/coverage-combined",
   "/beneficiary",
   "/contact",
   "/personal",
   "/financial",
+  "/about-applicant",
   "/review",
   "/docusign",
   "/health-si",
@@ -121,6 +123,16 @@ export default function DevTools() {
     setJumpPageAnchorEl(null);
 
     const pagePath = getPagePath(pageId);
+    void router.navigate(pagePath);
+  };
+
+  const handleSubmitFullApplication = () => {
+    const formData = generateFormDataUpToPage("receipt");
+
+    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+    setPageValues(formData);
+
+    const pagePath = getPagePath("receipt");
     void router.navigate(pagePath);
   };
 
@@ -290,7 +302,7 @@ export default function DevTools() {
                     .filter(
                       (page) =>
                         page.type === "form" &&
-                        formFlow.includes(page.id as PageId),
+                        getResolvedFormFlow().includes(page.id as PageId),
                     )
                     .map((page) => (
                       <MenuItem
@@ -323,6 +335,16 @@ export default function DevTools() {
                     Fill Out Page
                   </Button>
                 ) : null}
+
+                <Button
+                  onClick={handleSubmitFullApplication}
+                  fullWidth
+                  variant="outlined"
+                  color="success"
+                  sx={{ justifyContent: "flex-start" }}
+                >
+                  Submit Full Application
+                </Button>
 
                 <Button
                   onClick={handleResetApp}

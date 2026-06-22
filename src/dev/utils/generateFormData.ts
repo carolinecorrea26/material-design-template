@@ -1,5 +1,5 @@
 import type { PageId } from "../../types/page";
-import { formFlow } from "../../config/formFlow";
+import { getResolvedFormFlow } from "../../config/formFlow";
 import { getClientPageFields } from "../../config/clientFields/getClientPageFields";
 import { getActiveClientCoverages } from "../../client/getActiveClientCoverages";
 import type { ApplicationFormValues } from "../../state/ApplicationFormContext";
@@ -12,13 +12,14 @@ export function generateFormDataUpToPage(
 ): ApplicationFormValues {
   const values: ApplicationFormValues = {};
 
-  // Find the index of the target page in the form flow
-  const targetIndex = formFlow.indexOf(targetPageId as PageId);
+  // Use the resolved form flow (combined or expanded) to find the target page
+  const resolvedFlow = getResolvedFormFlow();
+  const targetIndex = resolvedFlow.indexOf(targetPageId as PageId);
   if (targetIndex === -1) return values;
 
   // Iterate through all pages up to and including the target page
   for (let i = 0; i <= targetIndex; i++) {
-    const pageId = formFlow[i] as PageId;
+    const pageId = resolvedFlow[i] as PageId;
     const fields = getClientPageFields(pageId, values);
 
     for (const field of fields) {
@@ -29,8 +30,11 @@ export function generateFormDataUpToPage(
     }
   }
 
-  const coverageIndex = formFlow.indexOf("coverage");
-  const paymentIndex = formFlow.indexOf("payment");
+  const coverageIndex =
+    resolvedFlow.indexOf("coverage") !== -1
+      ? resolvedFlow.indexOf("coverage")
+      : resolvedFlow.indexOf("coverage-combined");
+  const paymentIndex = resolvedFlow.indexOf("payment");
   const shouldSeedCoverageData = targetIndex >= coverageIndex;
   const shouldSeedPaymentData = targetIndex >= paymentIndex;
 

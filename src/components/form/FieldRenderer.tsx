@@ -199,7 +199,7 @@ function formatSsn(value: string) {
 function maskSsnWithLastVisible(value: string, showLast: boolean) {
   const digits = value.replace(/\D/g, "");
   if (!digits || !showLast) {
-    return value.replace(/\d/g, "\u2B24");
+    return value.replace(/\d/g, "\u2022");
   }
   // Show the last digit, mask the rest
   let result = "";
@@ -210,7 +210,7 @@ function maskSsnWithLastVisible(value: string, showLast: boolean) {
       if (digitsSeen === digits.length) {
         result += value[i]; // Show last digit
       } else {
-        result += "\u2B24";
+        result += "\u2022";
       }
     } else {
       result += value[i];
@@ -439,10 +439,10 @@ function SsnField({
             const existingDigits = realValue.replace(/\D/g, "");
             // Count bullets in display vs input to detect deletion
             const maskedBullets = maskedDisplay.replace(
-              /[^\u2B24]/g,
+              /[^\u2022]/g,
               "",
             ).length;
-            const inputBullets = inputVal.replace(/[^\u2B24]/g, "").length;
+            const inputBullets = inputVal.replace(/[^\u2022]/g, "").length;
 
             if (inputBullets < maskedBullets && newDigits.length === 0) {
               // Deletion: remove last digit(s)
@@ -464,7 +464,6 @@ function SsnField({
           },
           inputProps: {
             autoComplete: "off",
-            style: { letterSpacing: "0.15em", fontSize: "1.1rem" },
           },
         }) as ReactElement;
       }}

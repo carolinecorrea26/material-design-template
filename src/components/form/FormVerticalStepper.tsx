@@ -2,7 +2,6 @@ import { useEffect, useState, type ReactNode } from "react";
 import {
   Box,
   Breadcrumbs,
-  Link,
   Step,
   StepContent,
   StepLabel,
@@ -162,68 +161,41 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
             HEALTH_PAGE_IDS.includes(pendingCompletedPageId));
         const isCompleted =
           index < currentEntryIndex || isPendingCompletedEntry;
+        const isClickable = isCompleted;
 
-        if (isCompleted) {
-          return (
-            <Link
-              key={entry.id}
-              component="button"
-              underline="none"
-              onClick={() => {
-                navigate(`/${entry.navigateTo}`);
-              }}
-              sx={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 0.5,
-                color: "primary.main",
-                cursor: "pointer",
-                paddingBottom: 0.25,
-                textDecoration: "none",
-                "&:hover": {
-                  textDecoration: "none",
-                },
-              }}
-            >
-              <Typography variant="formBreadcrumb">{entry.label}</Typography>
-              <CheckCircleRoundedIcon
-                sx={{
-                  fontSize: 14,
-                  color: "success.main",
-                  opacity: 1,
-                }}
-              />
-            </Link>
-          );
-        }
-
-        if (isCurrentEntry) {
-          return (
+        return (
+          <Box
+            key={entry.id}
+            component={isClickable ? "button" : "span"}
+            onClick={
+              isClickable ? () => navigate(`/${entry.navigateTo}`) : undefined
+            }
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 0.5,
+              background: "none",
+              border: "none",
+              padding: 0,
+              cursor: isClickable ? "pointer" : "default",
+            }}
+          >
             <Typography
-              key={entry.id}
               variant="formBreadcrumb"
               sx={{
-                color: "primary.main",
-                cursor: "default",
+                color:
+                  isCompleted || isCurrentEntry ? "primary.main" : "#94a3b8",
+                fontWeight: isCompleted || isCurrentEntry ? undefined : 500,
               }}
             >
               {entry.label}
             </Typography>
-          );
-        }
-
-        return (
-          <Typography
-            key={entry.id}
-            variant="formBreadcrumb"
-            sx={{
-              fontWeight: 500,
-              color: "#94a3b8",
-              cursor: "default",
-            }}
-          >
-            {entry.label}
-          </Typography>
+            {isCompleted && (
+              <CheckCircleRoundedIcon
+                sx={{ fontSize: 14, color: "success.main" }}
+              />
+            )}
+          </Box>
         );
       })}
     </Breadcrumbs>

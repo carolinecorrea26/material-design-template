@@ -61,6 +61,8 @@ const inputBorderRadius = "16px";
 export const colors = {
   /** Light panel/accordion background */
   panelBg: "#f5f8fd",
+  /** Success/green main color */
+  successMain: "#00a900",
   /** Success/green highlight background */
   successBg: "#eef6ee",
   /** Subtle info box background */
@@ -99,9 +101,9 @@ let theme = createTheme({
       contrastText: "#ffffff",
     },
     success: {
-      main: "#009465",
-      light: "#3ec097",
-      dark: "#00724e",
+      main: "#00a900",
+      light: "#4dd24d",
+      dark: "#008a00",
       contrastText: "#ffffff",
     },
     text: {

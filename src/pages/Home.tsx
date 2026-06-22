@@ -493,10 +493,9 @@ export default function Home() {
 
         <Stack spacing={2.5} sx={FADE_IN_SECTION_SX(0.3)}>
           <Stack spacing={1}>
-            <Typography variant="h2">About the coverages</Typography>
+            <Typography variant="h2">Your coverage options</Typography>
             <Typography variant="body1" color="text.secondary">
-              Review the coverage categories available on this site and the
-              products offered within each category.
+              Learn more about the coverage options available to you.
             </Typography>
           </Stack>
 

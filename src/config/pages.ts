@@ -226,7 +226,7 @@ export const pages = [
     title: "About you",
     subhead:
       "Share the personal and financial details needed to complete your application.",
-    navTitle: "About applicant",
+    navTitle: "Profile",
     groupId: "profile",
   },
 ] as const;

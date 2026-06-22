@@ -38,6 +38,7 @@ import QuickDecisionIndicator from "../components/common/QuickDecisionIndicator"
 import QuickDecisionDrawerContent from "../components/common/QuickDecisionDrawerContent";
 import { QuickDecisionMark } from "../components/common/QuickDecisionDrawerContent";
 import SelectableOptionRow from "../components/form/SelectableOptionRow";
+import ApplicationSummaryDrawer from "../components/layout/ApplicationSummaryDrawer";
 import { getActiveClient } from "../client/getActiveClient";
 import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
@@ -170,6 +171,7 @@ export default function CoverageCombined() {
   const [showProducts, setShowProducts] = useState(false);
   const [productsLoading, setProductsLoading] = useState(false);
   const [qdDrawerOpen, setQdDrawerOpen] = useState(false);
+  const [summaryDrawerOpen, setSummaryDrawerOpen] = useState(false);
   const rateCalculationTimersRef = useRef<Record<string, number>>({});
   const productsLoadingTimerRef = useRef<number | null>(null);
 
@@ -645,6 +647,11 @@ export default function CoverageCombined() {
       },
       coverageAmounts: nextAmounts,
     });
+
+    // Open summary drawer when adding a product
+    if (isAdding) {
+      setSummaryDrawerOpen(true);
+    }
   }
 
   function handleAmountChange(key: string, amount: number) {
@@ -2186,6 +2193,12 @@ export default function CoverageCombined() {
       >
         <QuickDecisionDrawerContent />
       </FormHelpDrawer>
+
+      <ApplicationSummaryDrawer
+        open={summaryDrawerOpen}
+        onClose={() => setSummaryDrawerOpen(false)}
+        source="coverage-page"
+      />
     </FormRoutePage>
   );
 }
