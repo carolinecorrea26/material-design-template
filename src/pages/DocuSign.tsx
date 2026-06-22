@@ -3,7 +3,7 @@ import FormRoutePage from "../components/form/FormRoutePage";
 
 export default function DocuSign() {
   return (
-    <FormRoutePage pageId="docusign" formMaxWidth={1400}>
+    <FormRoutePage pageId="docusign" formMaxWidth={1200}>
       <Box
         sx={{
           display: "flex",

@@ -183,6 +183,12 @@ export default function Beneficiary() {
     coverageId: string,
     applicantId: CoverageApplicantId,
   ): boolean {
+    // If the dependent type is no longer selected on eligibility, never show it
+    if (applicantId === "spouse" && !selectedDependents.includes("spouse"))
+      return false;
+    if (applicantId === "child" && !selectedDependents.includes("child"))
+      return false;
+
     const selectedApplicantsForProduct = productApplicants[coverageId];
 
     if (

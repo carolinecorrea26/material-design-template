@@ -515,7 +515,7 @@ export default function Receipt() {
             flexWrap: "wrap",
             border: "1px solid #e0e4ea",
             borderRadius: 2,
-            backgroundColor: "#fff",
+            backgroundColor: "#f5f6f9",
             "& > *": {
               flex: 1,
               minWidth: 140,

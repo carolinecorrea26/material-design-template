@@ -15,19 +15,37 @@ function getProductApplicantsFromValues(
 }
 
 function hasNonMemberApplicantSelected(values: FormValuesLike): boolean {
+  const selectedDependents = getSelectedDependents(values);
   const productApplicants = getProductApplicantsFromValues(values);
   for (const applicants of Object.values(productApplicants)) {
-    if (Array.isArray(applicants) && applicants.some((a) => a !== "member")) {
+    if (
+      Array.isArray(applicants) &&
+      applicants.some((a) => a !== "member" && selectedDependents.includes(a))
+    ) {
       return true;
     }
   }
   return false;
 }
 
+function getSelectedDependents(values: FormValuesLike): string[] {
+  const dependents = values.dependents;
+  return Array.isArray(dependents) ? dependents : [];
+}
+
 function isApplicantInProductSelections(
   applicant: CoverageApplicantId,
   values: FormValuesLike,
 ): boolean {
+  // If the dependent type is no longer selected on eligibility, it's not applying
+  if (
+    applicant === "spouse" &&
+    !getSelectedDependents(values).includes("spouse")
+  )
+    return false;
+  if (applicant === "child" && !getSelectedDependents(values).includes("child"))
+    return false;
+
   const productApplicants = getProductApplicantsFromValues(values);
   for (const applicants of Object.values(productApplicants)) {
     if (Array.isArray(applicants) && applicants.includes(applicant)) {

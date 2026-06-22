@@ -67,7 +67,7 @@ export default function AppBody({ children }: AppBodyProps) {
       component="main"
       sx={{
         width: "100%",
-        maxWidth: { lg: 1400 },
+        maxWidth: { lg: 1200 },
         marginLeft: "auto",
         marginRight: "auto",
         px: { xs: 2, sm: 3, md: 4 },

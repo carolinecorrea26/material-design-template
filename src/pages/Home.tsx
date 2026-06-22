@@ -34,7 +34,7 @@ import { formatUSD } from "../utils/formatUSD";
 type DrawerId = "application-review" | "quick-decision" | null;
 
 const SHOW_QUOTE_TOOL = true;
-const PAGE_MAX_WIDTH = 1180;
+const PAGE_MAX_WIDTH = 1200;
 
 const SURFACE_SX = {
   border: "1px solid rgba(52, 59, 72, 0.10)",

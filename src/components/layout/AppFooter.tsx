@@ -25,7 +25,7 @@ export default function AppFooter({ client }: AppFooterProps) {
       <Box
         sx={{
           width: "100%",
-          maxWidth: 1400,
+          maxWidth: 1200,
           marginLeft: "auto",
           marginRight: "auto",
           display: "grid",

@@ -74,14 +74,21 @@ export function generateFormDataUpToPage(
     for (let i = 0; i < coverageSelections.length; i++) {
       const coverageId = coverageSelections[i];
       const memberKey = `${coverageId}:member`;
-      const spouseKey = `${coverageId}:spouse`;
 
       if (!(memberKey in coverageAmounts)) {
         (coverageAmounts as Record<string, number>)[memberKey] = 100000;
       }
 
-      if (!(spouseKey in coverageAmounts)) {
-        (coverageAmounts as Record<string, number>)[spouseKey] = 50000;
+      // Only set spouse amounts if spouse is selected for this coverage
+      const productApplicants = values.productApplicants as
+        | Record<string, string[]>
+        | undefined;
+      const applicants = productApplicants?.[coverageId];
+      if (applicants && applicants.includes("spouse")) {
+        const spouseKey = `${coverageId}:spouse`;
+        if (!(spouseKey in coverageAmounts)) {
+          (coverageAmounts as Record<string, number>)[spouseKey] = 50000;
+        }
       }
 
       if (shouldSeedPaymentData) {

@@ -171,6 +171,11 @@ function getApplicantsFromCoverageSelections(
 
   const productApplicants = getProductApplicants(values);
 
+  const allowedApplicantIds = new Set<CoverageApplicantId>([
+    "member",
+    ...selectedDependents,
+  ]);
+
   const applicants = uniqueApplicants(
     selectedCoverageIds.flatMap((coverageId) => {
       const applicantsForProduct = productApplicants[coverageId];
@@ -181,7 +186,7 @@ function getApplicantsFromCoverageSelections(
 
       return applicantsForProduct;
     }),
-  );
+  ).filter((a) => allowedApplicantIds.has(a));
 
   // If no dependent was selected for any product, only member is applying.
   return applicants.length > 0 ? applicants : ["member"];

@@ -62,9 +62,9 @@ export const colors = {
   /** Light panel/accordion background */
   panelBg: "#f5f8fd",
   /** Success/green main color */
-  successMain: "#00a900",
+  successMain: "#009465",
   /** Success/green highlight background */
-  successBg: "#eef6ee",
+  successBg: "#e6f4ee",
   /** Subtle info box background */
   infoBoxBg: "rgba(0, 22, 57, 0.04)",
   /** Subtle info box/divider border */
@@ -101,9 +101,9 @@ let theme = createTheme({
       contrastText: "#ffffff",
     },
     success: {
-      main: "#00a900",
-      light: "#4dd24d",
-      dark: "#008a00",
+      main: "#009465",
+      light: "#33b88d",
+      dark: "#007a53",
       contrastText: "#ffffff",
     },
     text: {
