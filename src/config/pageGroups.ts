@@ -1,18 +1,13 @@
-import type { PageId } from "../types/page";
-import type { PageGroupId } from "../types/pageGroup";
+import type { PageId } from "../types";
+import type { PageGroupId } from "../types";
 
 export const pageGroups = [
   { id: "get-started", pages: ["membership", "eligibility"] },
   {
     id: "coverage",
-    pages: [
-      "coverage",
-      "coverage-questions",
-      "coverage-options",
-      "beneficiary",
-    ],
+    pages: ["coverage", "beneficiary"],
   },
-  { id: "profile", pages: ["contact", "personal", "financial"] },
+  { id: "profile", pages: ["contact", "profile"] },
   { id: "review", pages: ["review", "docusign"] },
   {
     id: "health",

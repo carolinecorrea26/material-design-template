@@ -113,5 +113,4 @@ export const abeClient: ClientConfig = {
       },
     },
   },
-  content: {},
 };

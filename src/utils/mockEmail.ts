@@ -1,5 +1,6 @@
-import type { ApplicationFormValues } from "../state/ApplicationFormContext";
-import { getActiveClient } from "../client/getActiveClient";
+import type { ApplicationFormValues } from "../app/ApplicationFormContext";
+import { getActiveClient } from "../config/client/getActiveClient";
+import theme from "../app/theme";
 
 type MockEmailType =
   | "autosave"
@@ -216,7 +217,7 @@ function getTelHref(phone: string) {
 function getSupportHtml(tpaName: string, tpaPhone: string, tpaEmail: string) {
   const phoneHref = getTelHref(tpaPhone);
 
-  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:28px 0 0; background-color:#eef5ff; border:1px solid #d6dfeb; border-radius:16px;">
+  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:28px 0 0; background-color:${theme.palette.support.main}; border:1px solid ${theme.palette.support.border}; border-radius:16px;">
     <tr>
       <td style="padding:22px 22px 20px; color:#12233d;">
         <p style="margin:0 0 18px; color:#071b3a; font-size:18px; line-height:1.25; font-weight:700;">
@@ -246,7 +247,7 @@ function getSupportHtml(tpaName: string, tpaPhone: string, tpaEmail: string) {
 }
 
 function getNoticeHtml(title: string, body: string) {
-  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:20px 0 0; background-color:#fff7e8; border:1px solid #f1e2d1; border-radius:16px;">
+  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:20px 0 0; background-color:${theme.palette.notice.main}; border:1px solid ${theme.palette.notice.border}; border-radius:16px;">
     <tr>
       <td style="padding:22px 22px 20px; color:#7a2e0c;">
         <p style="margin:0 0 18px; color:#7a2e0c; font-size:18px; line-height:1.25; font-weight:700;">

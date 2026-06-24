@@ -1,14 +1,7 @@
-import { getActiveClient } from "../client/getActiveClient";
+import { getActiveClient } from "./client/getActiveClient";
+import { getContent, resolveTemplate } from "../content";
 
 const clientAcronym = getActiveClient().branding.acronym;
-
-export const STEP_LABELS: Record<string, string> = {
-  "getting-started": "Getting started",
-  "coverage-options": "Choose your coverage",
-  "about-applicant": "Your application details",
-  "application-review": "Review your application",
-  "esign-submit": "E-sign and submit",
-};
 
 export const pages = [
   { id: "home", path: "/", type: "home", title: "Home", navTitle: "Home" },
@@ -35,29 +28,9 @@ export const pages = [
     id: "coverage",
     path: "/coverage",
     type: "form",
-    title: "Choose your coverage",
-    subhead:
-      "Explore the coverage options available to you based on your eligibility.",
-    navTitle: "Add coverage",
-    groupId: "coverage",
-  },
-  {
-    id: "coverage-questions",
-    path: "/coverage-questions",
-    type: "form",
-    title: "Some follow-up questions",
-    subhead: "We need a few more details based on the coverage you selected.",
-    navTitle: "Follow-up questions",
-    groupId: "coverage",
-  },
-  {
-    id: "coverage-options",
-    path: "/coverage-options",
-    type: "form",
-    title: "Customize your coverage",
-    subhead:
-      "Tailor your coverage to enhance your protection based on your needs.",
-    navTitle: "Customize coverage",
+    title: "Your coverage options",
+    subhead: "Explore and customize the coverage options available to you.",
+    navTitle: "Choose coverage",
     groupId: "coverage",
   },
   {
@@ -76,25 +49,6 @@ export const pages = [
     title: "Your preferred contact",
     subhead: "Provide the best way for us to reach you about your application.",
     navTitle: "Contact",
-    groupId: "profile",
-  },
-  {
-    id: "personal",
-    path: "/personal",
-    type: "form",
-    title: "About you",
-    subhead: "Share the personal details needed to complete your application.",
-    navTitle: "Personal information",
-    groupId: "profile",
-  },
-  {
-    id: "financial",
-    path: "/financial",
-    type: "form",
-    title: "Your financial information",
-    subhead:
-      "Provide income and financial details required for your selected coverage.",
-    navTitle: "Financial information",
     groupId: "profile",
   },
   {
@@ -211,17 +165,8 @@ export const pages = [
     navTitle: "Information architecture",
   },
   {
-    id: "coverage-combined",
-    path: "/coverage-combined",
-    type: "form",
-    title: "Your coverage options",
-    subhead: "Explore and customize the coverage options available to you.",
-    navTitle: "Choose coverage",
-    groupId: "coverage",
-  },
-  {
-    id: "about-applicant",
-    path: "/about-applicant",
+    id: "profile",
+    path: "/profile",
     type: "form",
     title: "About you",
     subhead:
@@ -248,6 +193,10 @@ export function getPageTitle(id: (typeof pages)[number]["id"]) {
   const clientOverride = client.pages?.overrides?.[id]?.title;
   if (clientOverride) return clientOverride;
 
+  // Check content system
+  const contentPage = getContent().pages[id];
+  if (contentPage?.title) return resolveTemplate(contentPage.title);
+
   const page = pages.find((page) => page.id === id);
 
   if (!page) {
@@ -265,6 +214,10 @@ export function getPageSubhead(id: (typeof pages)[number]["id"]) {
   if (clientOverride?.subhead !== undefined) return clientOverride.subhead;
   if (clientOverride?.showSubhead === false) return undefined;
 
+  // Check content system
+  const contentPage = getContent().pages[id];
+  if (contentPage?.subhead) return resolveTemplate(contentPage.subhead);
+
   const page = pages.find((page) => page.id === id);
 
   if (!page) {
@@ -273,8 +226,9 @@ export function getPageSubhead(id: (typeof pages)[number]["id"]) {
 
   if (!("subhead" in page)) return undefined;
 
-  // showSubhead must be explicitly true on the page to display
-  return "showSubhead" in page && page.showSubhead ? page.subhead : undefined;
+  // Show subhead by default; only hide if showSubhead is explicitly false
+  if ("showSubhead" in page && page.showSubhead === false) return undefined;
+  return page.subhead;
 }
 
 export function getPageNavTitle(id: (typeof pages)[number]["id"]) {

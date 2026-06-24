@@ -1,4 +1,4 @@
-import type { PageId } from "../../types/page";
+import type { PageId } from "../../types";
 import type { FieldId } from "../fields/types";
 import type { ApplicantSectionId } from "../formSectionTitle";
 
@@ -13,20 +13,18 @@ export type PageSectionId =
   | "contactResidentialAddress"
   | "contactBusinessInfo"
   | "contactSpouse"
-  | "personalSelf"
-  | "personalSelfDriversLicense"
-  | "personalSelfOutsideUs"
-  | "personalSelfTravelOutsideUs"
-  | "personalSelfPhysician"
-  | "personalSpouse"
-  | "personalSpouseDriversLicense"
-  | "personalSpouseOutsideUs"
-  | "personalSpouseTravelOutsideUs"
-  | "personalSpousePhysician"
-  | "financialSelfOtherCoverage"
-  | "financialSelfFinancialProfile"
-  | "financialSelfEmploymentDetails"
-  | "financialSpouseOtherCoverage"
+  | "profilePersonalSelf"
+  | "profilePersonalSelfDriversLicense"
+  | "profilePersonalSelfOutsideUs"
+  | "profilePersonalSelfTravelOutsideUs"
+  | "profilePersonalSelfPhysician"
+  | "profilePersonalSpouse"
+  | "profilePersonalSpouseDriversLicense"
+  | "profilePersonalSpouseOutsideUs"
+  | "profilePersonalSpouseTravelOutsideUs"
+  | "profilePersonalSpousePhysician"
+  | "profileFinancialSelf"
+  | "profileFinancialSpouse"
   | "advisorLoginNew"
   | "advisorLoginSaved";
 

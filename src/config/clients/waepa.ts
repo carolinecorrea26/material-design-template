@@ -40,5 +40,4 @@ export const waepaClient: ClientConfig = {
     allCategoriesExpanded: true,
   },
   fields: {},
-  content: {},
 };

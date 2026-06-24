@@ -1,7 +1,7 @@
 import type { CoverageCategoryId } from "../coverageCategories";
-import type { CoverageId } from "../../types/coverage";
-import type { PageId } from "../../types/page";
-import type { ClientId } from "../../types/client";
+import type { CoverageId } from "../../types";
+import type { PageId } from "../../types";
+import type { ClientId } from "../../types";
 import type { FieldDefinition } from "../fields/types";
 
 export type FieldId = string;
@@ -129,6 +129,7 @@ export type ClientConfig = {
   pages: ClientPages;
   coverages: ClientCoverages;
   fields: ClientFields;
-  content: ClientContent;
+  /** @deprecated Content is now managed in src/content/. This field is unused. */
+  content?: ClientContent;
   features?: ClientFeatures;
 };

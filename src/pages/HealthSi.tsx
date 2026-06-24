@@ -1,14 +1,14 @@
 import { Box, FormLabel, Stack } from "@mui/material";
 import FormRoutePage, {
   type FormRouteRenderProps,
-} from "../components/form/FormRoutePage";
-import ApplicantSection from "../components/form/ApplicantSection";
+} from "../components/page/RoutePage";
+import ApplicantSection from "../components/fields/ApplicantSection";
 import {
   isApplicantApplying,
   shouldShowApplicantLabel,
-} from "../components/form/applicantVisibility";
-import FieldRenderer from "../components/form/FieldRenderer";
-import SubQuestionContainer from "../components/form/SubQuestionContainer";
+} from "../utils/applicantVisibility";
+import FieldRenderer from "../components/fields/FieldRenderer";
+import SubQuestionContainer from "../components/fields/ConditionalGroup";
 import type { FieldDefinition } from "../config/fields/types";
 
 const HEALTH_QUESTIONS = [
@@ -251,16 +251,6 @@ export default function HealthSi() {
         const hasSelf = isApplicantApplying("self", watchedValues);
         const hasSpouse = isApplicantApplying("spouse", watchedValues);
 
-        // Get or create field definitions
-        const selfFields = createHealthQuestionFields("self");
-        const spouseFields = createHealthQuestionFields("spouse");
-        const combinedFields = [...selfFields, ...spouseFields];
-
-        // Merge with allFields, preferring allFields if they exist
-        const fieldMap = new Map(combinedFields.map((f) => [f.id, f]));
-        const mergedFields = Array.from(fieldMap.values());
-        const finalFields = allFields.length > 0 ? allFields : mergedFields;
-
         return (
           <Stack spacing={3}>
             {hasSelf && (
@@ -273,7 +263,7 @@ export default function HealthSi() {
                   control={control}
                   errors={errors}
                   watchedValues={watchedValues}
-                  allFields={finalFields}
+                  allFields={allFields}
                 />
               </ApplicantSection>
             )}
@@ -288,7 +278,7 @@ export default function HealthSi() {
                   control={control}
                   errors={errors}
                   watchedValues={watchedValues}
-                  allFields={finalFields}
+                  allFields={allFields}
                 />
               </ApplicantSection>
             )}

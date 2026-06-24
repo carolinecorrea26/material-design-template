@@ -1,4 +1,4 @@
-import type { PageId } from "../../types/page";
+import type { PageId } from "../../types";
 import { fieldCatalog } from "./index";
 import { pageFields } from "./pageFields";
 import type { FieldDefinition } from "./types";

@@ -15,14 +15,15 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import CreditCardOffOutlinedIcon from "@mui/icons-material/CreditCardOffOutlined";
 import LoopRoundedIcon from "@mui/icons-material/LoopRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
-import CoverageNeedsCalculator from "../components/coverage/CoverageNeedsCalculator";
-import FormHelpDrawer from "../components/form/FormHelpDrawer";
-import type { FormPageHelpItem } from "../components/form/FormPageHelp";
-import QuickDecisionDrawerContent from "../components/common/QuickDecisionDrawerContent";
-import { QuickDecisionMark } from "../components/common/QuickDecisionDrawerContent";
-import QuickDecisionIndicator from "../components/common/QuickDecisionIndicator";
-import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
+import CoverageNeedsCalculator from "../components/overlays/CoverageCalculator";
+import FormHelpDrawer from "../components/help/Drawer";
+import type { FormPageHelpItem } from "../components/help/Panel";
+import QuickDecisionDrawerContent from "../components/overlays/QuickDecisionInfo";
+import { QuickDecisionMark } from "../components/overlays/QuickDecisionInfo";
+import QuickDecisionIndicator from "../components/coverage/QuickDecisionBadge";
+import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
+import { getContent, resolveTemplate } from "./index";
 import type {
   CoverageApplicantId,
   CoverageCategoryId,
@@ -34,18 +35,8 @@ type CoverageProductGroup = {
   products: CoverageDefinition[];
 };
 
-const CATEGORY_DESCRIPTIONS: Record<CoverageCategoryId, string> = {
-  LI: "Life coverage can help provide financial protection for the people who depend on you.",
-  AD: "Accidental death and dismemberment coverage can help protect against covered accidental loss or injury.",
-  DI: "Disability coverage can help replace income if a covered disability affects your ability to work.",
-  OO: "Office overhead coverage can help keep eligible business expenses paid during a covered disability.",
-  SH: "Supplemental health coverage can help with out-of-pocket costs tied to covered health events.",
-};
-
 function getApplicantLabel(applicant: CoverageApplicantId): string {
-  if (applicant === "member") return "Member";
-  if (applicant === "spouse") return "Spouse";
-  return "Child";
+  return getContent().shared.applicantLabels[applicant];
 }
 
 function InlineDrawerLink({
@@ -82,74 +73,47 @@ function InlineDrawerLink({
   );
 }
 
-const APPLYING_STEPS = [
-  {
-    id: 0,
-    title: "Apply online",
-    body: "Complete our online application to apply for coverage that fits your needs. You'll be able to review your options and see your estimated cost.",
-    imageSrc: "/1-apply.svg",
-    imageAlt: "Apply online",
-  },
-  {
-    id: 1,
-    title: "Answer health questions",
-    body: "Many types of insurance require health information to provide a decision on your application. We may ask health questions on your application or a representative of New York Life or their medical service provider may contact you to collect your health history. If needed, we will schedule a medical exam at no cost to you and at a time and place convenient to you.",
-    imageSrc: "/2-medical.svg",
-    imageAlt: "Answer health questions",
-  },
-  {
-    id: 2,
-    title: "Get a decision",
-    body: "Decisions are made after all information is received and reviewed by New York Life. If approved, you will receive a certificate of insurance and have a 30-day no-obligation free look. Plus, when QuickDecision SM is available, you can get a faster decision on your application, typically with no medical exam.",
-    imageSrc: "/3-decision.svg",
-    imageAlt: "Get a decision",
-  },
-] as const;
+const helpSteps = getContent().help.howApplyingWorks.steps;
 
 export function ApplicationReviewDrawerContent({
   onOpenQuickDecision,
 }: {
   onOpenQuickDecision: () => void;
 }) {
+  const reviewHelp = getContent().help.applicationReview;
   return (
     <Stack spacing={2}>
       <Typography variant="body2" color="text.secondary">
-        During the application review process, also known as underwriting, our
-        team will review your application to provide a decision on your
-        application.
+        {reviewHelp.intro}
       </Typography>
 
       <Box>
         <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-          What to expect
+          {reviewHelp.whatToExpectTitle}
         </Typography>
         <Stack component="ul" spacing={1} sx={{ m: 0, pl: 2.5 }}>
-          <Typography component="li" variant="body2" color="text.secondary">
-            A medical service provider may contact you to confirm details about
-            your health.
-          </Typography>
-          <Typography component="li" variant="body2" color="text.secondary">
-            A medical exam may be scheduled if needed at no cost to you and at a
-            time and place convenient to you.
-          </Typography>
-          <Typography component="li" variant="body2" color="text.secondary">
-            We may also request additional information, such as prescription
-            history, financial information, medical records from your
-            physician(s), and/or medical claims history.
-          </Typography>
-          <Typography component="li" variant="body2" color="text.secondary">
-            Any forms needing your signature will be sent securely via DocuSign.
-          </Typography>
+          {reviewHelp.whatToExpectItems.map((item, i) => (
+            <Typography
+              key={i}
+              component="li"
+              variant="body2"
+              color="text.secondary"
+            >
+              {item}
+            </Typography>
+          ))}
         </Stack>
       </Box>
 
       <Typography variant="body2" color="text.secondary">
-        The review process typically takes a few business days, but with{" "}
+        {reviewHelp.closingNote.split("QuickDecision")[0]}
         <InlineDrawerLink onClick={onOpenQuickDecision}>
           <QuickDecisionMark />
         </InlineDrawerLink>
-        , many applications can get a real-time decision, often without
-        requiring a medical exam.
+        {reviewHelp.closingNote
+          .split("QuickDecision")
+          .slice(1)
+          .join("QuickDecision")}
       </Typography>
     </Stack>
   );
@@ -158,18 +122,18 @@ export function ApplicationReviewDrawerContent({
 export function HowApplyingWorksDrawerContent() {
   type SubDrawerId = "application-review" | "quick-decision" | null;
   const [subDrawer, setSubDrawer] = useState<SubDrawerId>(null);
+  const helpContent = getContent().help.howApplyingWorks;
 
   return (
     <>
       <Stack spacing={3}>
         <Typography variant="body2" color="text.secondary">
-          This online experience is designed to help you complete your
-          application quickly and easily.
+          {helpContent.intro}
         </Typography>
 
-        {APPLYING_STEPS.map((step) => (
+        {helpSteps.map((step, index) => (
           <Stack
-            key={step.id}
+            key={index}
             direction="row"
             spacing={2}
             alignItems="flex-start"
@@ -178,26 +142,18 @@ export function HowApplyingWorksDrawerContent() {
               <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
                 {step.title}
               </Typography>
-              {step.id === 1 ? (
+              {index === 1 ? (
                 <Typography variant="body2" color="text.secondary">
-                  Many types of insurance require health information to provide
-                  a decision on your application. We may ask health questions on
-                  your application or a representative of New York Life or their
-                  medical service provider may contact you to collect your
-                  health history. If needed, we will schedule a medical exam at
-                  no cost to you and at a time and place convenient to you.{" "}
+                  {step.body}{" "}
                   <InlineDrawerLink
                     onClick={() => setSubDrawer("application-review")}
                   >
                     Learn more about the application review process.
                   </InlineDrawerLink>
                 </Typography>
-              ) : step.id === 2 ? (
+              ) : index === 2 ? (
                 <Typography variant="body2" color="text.secondary">
-                  Decisions are made after all information is received and
-                  reviewed by New York Life. If approved, you will receive a
-                  certificate of insurance and have a 30-day no-obligation free
-                  look. Plus, when{" "}
+                  {step.body} When{" "}
                   <InlineDrawerLink
                     onClick={() => setSubDrawer("quick-decision")}
                   >
@@ -238,40 +194,33 @@ export function HowApplyingWorksDrawerContent() {
 }
 
 export function GroupInsuranceDrawerContent({
-  associationName,
+  associationName: _associationName,
 }: {
   associationName: string;
 }) {
+  const groupHelp = getContent().help.groupInsurance;
   return (
     <Stack spacing={2}>
       <Typography variant="body2" color="text.secondary">
-        With group insurance through {associationName}, eligible applicants can
-        take advantage of specially negotiated rates made available through the
-        group.
+        {resolveTemplate(groupHelp.intro)}
       </Typography>
 
       <Box>
         <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-          Explore available group insurance options
+          {groupHelp.exploreTitle}
         </Typography>
 
         <Stack component="ul" spacing={1} sx={{ m: 0, pl: 2.5 }}>
-          <Typography component="li" variant="body2" color="text.secondary">
-            Group rates may be available to eligible applicants through their
-            association or sponsoring organization.
-          </Typography>
-
-          <Typography component="li" variant="body2" color="text.secondary">
-            Because eligibility and coverage needs can vary, the application
-            helps confirm which products, coverage amounts, and rates are
-            available for each applicant.
-          </Typography>
-
-          <Typography component="li" variant="body2" color="text.secondary">
-            Availability and rates may vary based on state, eligibility,
-            underwriting requirements, coverage selected, and other application
-            details.{" "}
-          </Typography>
+          {groupHelp.exploreItems.map((item, i) => (
+            <Typography
+              key={i}
+              component="li"
+              variant="body2"
+              color="text.secondary"
+            >
+              {item}
+            </Typography>
+          ))}
         </Stack>
       </Box>
     </Stack>
@@ -432,7 +381,11 @@ export function CoverageOptionsDrawerContent({
                     {activeGroup.category.label}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {CATEGORY_DESCRIPTIONS[activeGroup.category.id]}
+                    {
+                      getContent().coverage.categoryDescriptions[
+                        activeGroup.category.id
+                      ]
+                    }
                   </Typography>
                 </Stack>
 
@@ -508,235 +461,127 @@ export const coverageNeedsHelpItem: FormPageHelpItem = {
   content: <CoverageNeedsCalculator />,
 };
 
-export const beneficiaryHelpItems: FormPageHelpItem[] = [
-  {
-    id: "beneficiary-basics",
-    label: "What is a beneficiary?",
-    title: "What is a beneficiary?",
+export const beneficiaryHelpItems: FormPageHelpItem[] = (() => {
+  const { whatIs, percentageShare } = getContent().help.beneficiary;
+  return [
+    {
+      id: "beneficiary-basics",
+      label: "What is a beneficiary?",
+      title: "What is a beneficiary?",
+      content: (
+        <Stack spacing={2}>
+          {whatIs.paragraphs.map((p, i) => (
+            <Typography key={i} variant="body2">
+              {p}
+            </Typography>
+          ))}
+        </Stack>
+      ),
+    },
+    {
+      id: "beneficiary-share",
+      label: "What is the % share?",
+      title: "What is the % share?",
+      content: (
+        <Stack spacing={2}>
+          {percentageShare.paragraphs.map((p, i) => (
+            <Typography key={i} variant="body2">
+              {p}
+            </Typography>
+          ))}
+        </Stack>
+      ),
+    },
+  ];
+})();
+
+export const coverageQuestionsWhyAskedHelpItem: FormPageHelpItem = (() => {
+  const whyAsked = getContent().help.whyAsked;
+  const icons = [CalculateOutlinedIcon, TuneRoundedIcon, InfoOutlinedIcon];
+  return {
+    id: "why-asked",
+    label: "Why is this information being asked?",
+    title: "Why is this information being asked?",
     content: (
-      <Stack spacing={2}>
-        <Typography variant="body2">
-          A beneficiary is the person, people, or trust you choose to receive
-          the money from your policy when you pass away.
+      <Stack spacing={3}>
+        <Typography variant="body2" color="text.secondary">
+          {whyAsked.intro}
         </Typography>
-        <Typography variant="body2">
-          This can be a family member, friend, or trust, and you can update your
-          beneficiary choices if your situation changes.
-        </Typography>
-        <Typography variant="body2">
-          A <strong>primary beneficiary</strong> is the person or entity who
-          would receive the policy proceeds first.
-        </Typography>
-        <Typography variant="body2">
-          A <strong>contingent beneficiary</strong> would receive the policy
-          proceeds if the primary beneficiary is unable to receive them.
-        </Typography>
-        <Typography variant="body2">
-          You may add up to ten primary and ten contingent beneficiaries online.
-          If no beneficiary is named, proceeds will be paid according to the
-          policy provisions.
-        </Typography>
-        <Typography variant="body2">
-          For dependent child coverage, the beneficiary is the member.
-        </Typography>
+
+        {whyAsked.sections.map((section, i) => {
+          const IconComponent = icons[i] ?? InfoOutlinedIcon;
+          return (
+            <Box key={i} sx={{ display: "flex", gap: 2 }}>
+              <IconComponent
+                sx={{
+                  color: "primary.main",
+                  fontSize: "2.5rem",
+                  flexShrink: 0,
+                }}
+              />
+              <Box sx={{ flex: 1 }}>
+                <Typography
+                  variant="subtitle1"
+                  sx={{ fontWeight: 600, mb: 0.5 }}
+                >
+                  {section.title}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {section.description}
+                </Typography>
+              </Box>
+            </Box>
+          );
+        })}
       </Stack>
     ),
-  },
-  {
-    id: "beneficiary-share",
-    label: "What is the % share?",
-    title: "What is the % share?",
+  };
+})();
+
+export const paymentHandlingHelpItem: FormPageHelpItem = (() => {
+  const payment = getContent().help.paymentHandling;
+  const icons = [
+    CreditCardOffOutlinedIcon,
+    LockOutlinedIcon,
+    LoopRoundedIcon,
+    DeleteOutlineRoundedIcon,
+  ];
+  return {
+    id: "payment-handling",
+    label: "How is my payment information handled?",
+    title: "How is my payment information handled?",
     content: (
-      <Stack spacing={2}>
-        <Typography variant="body2">
-          The percentage share determines how much of the policy payout each
-          beneficiary will receive.
+      <Stack spacing={3}>
+        <Typography variant="body2" color="text.secondary">
+          {payment.intro}
         </Typography>
-        <Typography variant="body2">
-          You assign a percentage to each individual beneficiary, and the
-          percentages for that designation must add up to 100%.
-        </Typography>
-        <Typography variant="body2">
-          For example, if one beneficiary is assigned 60% and another is
-          assigned 40%, they would receive those portions of the total benefit.
-        </Typography>
-        <Typography variant="body2">
-          If you name a trust as beneficiary, 100% of the proceeds will be paid
-          to the trust.
-        </Typography>
+
+        {payment.sections.map((section, i) => {
+          const IconComponent = icons[i] ?? InfoOutlinedIcon;
+          return (
+            <Box key={i} sx={{ display: "flex", gap: 2 }}>
+              <IconComponent
+                sx={{
+                  color: "primary.main",
+                  fontSize: "2.5rem",
+                  flexShrink: 0,
+                }}
+              />
+              <Box sx={{ flex: 1 }}>
+                <Typography
+                  variant="subtitle1"
+                  sx={{ fontWeight: 600, mb: 0.5 }}
+                >
+                  {section.title}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {section.description}
+                </Typography>
+              </Box>
+            </Box>
+          );
+        })}
       </Stack>
     ),
-  },
-];
-
-export const coverageQuestionsWhyAskedHelpItem: FormPageHelpItem = {
-  id: "why-asked",
-  label: "Why is this information being asked?",
-  title: "Why is this information being asked?",
-  content: (
-    <Stack spacing={3}>
-      <Typography variant="body2" color="text.secondary">
-        We understand these questions can feel personal. Here&apos;s how this
-        information is used in your application.
-      </Typography>
-
-      <Box sx={{ display: "flex", gap: 2 }}>
-        <CalculateOutlinedIcon
-          sx={{
-            color: "primary.main",
-            fontSize: "2.5rem",
-            flexShrink: 0,
-          }}
-        />
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-            Determining your coverage options
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Your answers help us identify the coverage types and amounts
-            available to you. Different products have different eligibility
-            requirements, and this information ensures we show you the right
-            options.
-          </Typography>
-        </Box>
-      </Box>
-
-      <Box sx={{ display: "flex", gap: 2 }}>
-        <TuneRoundedIcon
-          sx={{
-            color: "primary.main",
-            fontSize: "2.5rem",
-            flexShrink: 0,
-          }}
-        />
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-            Calculating your estimated cost
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Health and lifestyle information is used to calculate personalized
-            premium estimates. The more accurate your answers, the more accurate
-            your quoted rate will be.
-          </Typography>
-        </Box>
-      </Box>
-
-      <Box sx={{ display: "flex", gap: 2 }}>
-        <InfoOutlinedIcon
-          sx={{
-            color: "primary.main",
-            fontSize: "2.5rem",
-            flexShrink: 0,
-          }}
-        />
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-            Your information is protected
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            All information you provide is transmitted securely and used only
-            for the purpose of evaluating your application. It is never sold or
-            shared for marketing purposes.
-          </Typography>
-        </Box>
-      </Box>
-    </Stack>
-  ),
-};
-
-export const paymentHandlingHelpItem: FormPageHelpItem = {
-  id: "payment-handling",
-  label: "How is my payment information handled?",
-  title: "How is my payment information handled?",
-  content: (
-    <Stack spacing={3}>
-      <Typography variant="body2" color="text.secondary">
-        We take the security of your payment information seriously. Here's how
-        we handle it throughout the application process.
-      </Typography>
-
-      <Box sx={{ display: "flex", gap: 2 }}>
-        <CreditCardOffOutlinedIcon
-          sx={{
-            color: "primary.main",
-            fontSize: "2.5rem",
-            flexShrink: 0,
-          }}
-        />
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-            Payment is not collected now
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Your payment information is collected as part of the application but
-            you will not be charged until and unless you are approved for
-            coverage. No money leaves your account during the application
-            process.
-          </Typography>
-        </Box>
-      </Box>
-
-      <Box sx={{ display: "flex", gap: 2 }}>
-        <LockOutlinedIcon
-          sx={{
-            color: "primary.main",
-            fontSize: "2.5rem",
-            flexShrink: 0,
-          }}
-        />
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-            Stored securely
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            All payment data is encrypted in transit and at rest using
-            industry-standard security protocols. Your information is stored in
-            PCI-compliant systems and is never accessible in plain text.
-          </Typography>
-        </Box>
-      </Box>
-
-      <Box sx={{ display: "flex", gap: 2 }}>
-        <LoopRoundedIcon
-          sx={{
-            color: "primary.main",
-            fontSize: "2.5rem",
-            flexShrink: 0,
-          }}
-        />
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-            How payment is processed
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            If your application is approved, payment will be processed according
-            to the frequency you select (monthly, quarterly, semiannually, or
-            annually). You&apos;ll receive confirmation before any charge is
-            made.
-          </Typography>
-        </Box>
-      </Box>
-
-      <Box sx={{ display: "flex", gap: 2 }}>
-        <DeleteOutlineRoundedIcon
-          sx={{
-            color: "primary.main",
-            fontSize: "2.5rem",
-            flexShrink: 0,
-          }}
-        />
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-            Cancellation &amp; data purge
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            You can cancel your application at any time before approval with no
-            obligation. All payment and application information is purged from
-            our systems 10 days after submission if no action is taken or the
-            application is not approved.
-          </Typography>
-        </Box>
-      </Box>
-    </Stack>
-  ),
-};
+  };
+})();

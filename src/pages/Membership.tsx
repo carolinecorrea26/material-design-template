@@ -1,10 +1,10 @@
 import { Alert, Box, Stack, Typography } from "@mui/material";
 
-import { getActiveClient } from "../client/getActiveClient";
-import FieldRenderer from "../components/form/FieldRenderer";
-import FormRoutePage from "../components/form/FormRoutePage";
-import FormPageHelp from "../components/form/FormPageHelp";
-import CostEstimateDrawerContent from "../components/common/CostEstimateDrawerContent";
+import { getActiveClient } from "../config/client/getActiveClient";
+import FieldRenderer from "../components/fields/FieldRenderer";
+import FormRoutePage from "../components/page/RoutePage";
+import FormPageHelp from "../components/help/Panel";
+import CostEstimateDrawerContent from "../components/overlays/CostEstimate";
 import {
   coverageOptionsAvailableHelpItem,
   // groupInsuranceHelpItem,

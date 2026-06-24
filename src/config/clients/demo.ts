@@ -59,7 +59,6 @@ export const demoClient: ClientConfig = {
     },
   },
   fields: {},
-  content: {},
   features: {
     chat: true,
   },

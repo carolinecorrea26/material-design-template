@@ -18,13 +18,13 @@ import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CheckIcon from "@mui/icons-material/Check";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getActiveClient } from "../client/getActiveClient";
+import { getActiveClient } from "../config/client/getActiveClient";
 import { getPagePath } from "../config/pages";
 import {
   useApplicationForm,
   type ApplicationFormValues,
-} from "../state/ApplicationFormContext";
-import type { ClientId } from "../types/client";
+} from "../app/ApplicationFormContext";
+import type { ClientId } from "../types";
 import { sendResumeMagicLinkMockEmail } from "../utils/mockEmail";
 
 type DeliveryMode = "text" | "voice";

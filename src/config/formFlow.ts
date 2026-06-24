@@ -1,20 +1,16 @@
-import type { PageId } from "../types/page";
-import type { ApplicationFormValues } from "../state/ApplicationFormContext";
+import type { PageId } from "../types";
+import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import type { CoverageCategoryId } from "./coverages/types";
-import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
-import { getActiveClient } from "../client/getActiveClient";
-import { isCombinedFlow } from "./testFlow";
+import { getActiveClientCoverages } from "./client/getActiveClientCoverages";
+import { getActiveClient } from "./client/getActiveClient";
 
 export const formFlow: PageId[] = [
   "membership",
   "eligibility",
   "coverage",
-  "coverage-questions",
-  "coverage-options",
   "beneficiary",
   "contact",
-  "personal",
-  "financial",
+  "profile",
   "review",
   "health-si",
   "health-qd",
@@ -25,29 +21,12 @@ export const formFlow: PageId[] = [
   "receipt",
 ];
 
-export const combinedFormFlow: PageId[] = [
-  "membership",
-  "eligibility",
-  "coverage-combined",
-  "beneficiary",
-  "contact",
-  "about-applicant",
-  "review",
-  "health-si",
-  "health-qd",
-  "health-di",
-  "health-cir",
-  "payment",
-  "docusign",
-  "receipt",
-];
-
-/** Returns the active form flow based on the testFlow URL parameter. */
+/** Returns the active form flow. */
 export function getResolvedFormFlow(): PageId[] {
-  return isCombinedFlow() ? combinedFormFlow : formFlow;
+  return formFlow;
 }
 
-/** Coverage-category IDs that require the coverage-questions page. */
+/** Coverage-category IDs that require follow-up questions. */
 export const categoriesRequiringQuestions: CoverageCategoryId[] = [
   "LI",
   "DI",
@@ -55,7 +34,7 @@ export const categoriesRequiringQuestions: CoverageCategoryId[] = [
 ];
 
 /**
- * Field IDs shown on coverage-questions keyed by the coverage category
+ * Field IDs for category-level questions keyed by the coverage category
  * that triggers them. Only categories that actually require questions are listed.
  */
 export const categoryQuestionFields: Partial<
@@ -146,41 +125,9 @@ export function shouldSkipPage(
     return true;
   }
 
-  // In combined flow, skip expanded-only pages
-  if (isCombinedFlow()) {
-    if (
-      pageId === "coverage" ||
-      pageId === "coverage-questions" ||
-      pageId === "coverage-options" ||
-      pageId === "personal" ||
-      pageId === "financial"
-    ) {
-      return true;
-    }
-  } else {
-    // In expanded flow, skip combined-only pages
-    if (pageId === "coverage-combined" || pageId === "about-applicant") {
-      return true;
-    }
-  }
-
-  if (pageId === "coverage-questions") {
-    // Always show coverage-questions (gender is always asked)
-    return false;
-  }
-
   if (pageId === "beneficiary") {
     const selectedCategories = getSelectedCategoryIds(values);
     return !selectedCategories.some((cat) => cat === "LI" || cat === "AD");
-  }
-
-  if (pageId === "financial" || pageId === "about-applicant") {
-    const selectedCategories = getSelectedCategoryIds(values);
-    if (pageId === "about-applicant") {
-      // about-applicant is never skipped in combined flow (personal is always needed)
-      return false;
-    }
-    return !selectedCategories.some((cat) => cat === "LI" || cat === "DI");
   }
 
   if (pageId === "health-si") {

@@ -1,0 +1,9 @@
+export { homeDefaults } from "./home";
+export { coverageDefaults } from "./coverage";
+export { navigationDefaults } from "./navigation";
+export { footerDefaults } from "./footer";
+export { reviewDefaults } from "./review";
+export { receiptDefaults } from "./receipt";
+export { helpDefaults } from "./help";
+export { sharedDefaults } from "./shared";
+export { pagesDefaults } from "./pages";

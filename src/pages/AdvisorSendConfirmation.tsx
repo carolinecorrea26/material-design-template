@@ -1,6 +1,6 @@
 import { Alert, Stack, Typography } from "@mui/material";
-import FormPage from "../components/form/FormPage";
-import { useApplicationForm } from "../state/ApplicationFormContext";
+import FormPage from "../components/page/Page";
+import { useApplicationForm } from "../app/ApplicationFormContext";
 
 export default function AdvisorSendConfirmation() {
   const { values } = useApplicationForm();

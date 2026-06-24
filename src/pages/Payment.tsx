@@ -1,28 +1,13 @@
-import {
-  Alert,
-  Autocomplete,
-  Box,
-  Card,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Radio,
-  Stack,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, Card, Stack, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { Controller } from "react-hook-form";
 import { formatUSD as formatCurrency } from "../utils/formatUSD";
 import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
-import FormRoutePage from "../components/form/FormRoutePage";
-import FormPageHelp from "../components/form/FormPageHelp";
-import FieldRenderer from "../components/form/FieldRenderer";
+import FormRoutePage from "../components/page/RoutePage";
+import FormPageHelp from "../components/help/Panel";
+import FieldRenderer from "../components/fields/FieldRenderer";
 import { coverageCategories } from "../config/coverageCategories";
 import type { CoverageCategoryId } from "../config/coverages/types";
-import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
+import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { fieldCatalog } from "../config/fields";
 import type { FieldDefinition, FieldId } from "../config/fields/types";
 import { paymentHandlingHelpItem } from "../content/helpContent";
@@ -49,21 +34,6 @@ const paymentFrequencyOptions = [
   { value: "semiannually", label: "Semiannually", multiplier: 6 },
   { value: "annually", label: "Annually", multiplier: 12 },
 ] as const;
-
-const COMMON_BANKS = [
-  "Chase Bank",
-  "Bank of America",
-  "Wells Fargo",
-  "American Express",
-  "Key Bank",
-  "Citibank",
-  "Capital One",
-  "US Bank",
-  "PNC Bank",
-  "TD Bank",
-] as const;
-
-const BANK_OPTIONS: string[] = [...COMMON_BANKS, "Other"];
 
 const BANK_FIELD_IDS: FieldId[] = [
   "bank-name-on-account",
@@ -355,73 +325,21 @@ export default function Payment() {
                               errors={errors}
                             />
 
-                            <Controller
-                              name={paymentFrequencyFieldId}
-                              control={control}
-                              rules={{
-                                required: "Payment frequency is required",
+                            <FieldRenderer
+                              field={{
+                                id: paymentFrequencyFieldId,
+                                label: "Payment Frequency",
+                                inputType: "radio",
+                                required: true,
+                                options: paymentFrequencyOptions.map(
+                                  (option) => ({
+                                    value: option.value,
+                                    label: option.label,
+                                  }),
+                                ),
                               }}
-                              render={({ field: freqField }) => (
-                                <FormControl
-                                  fullWidth
-                                  error={Boolean(
-                                    errors[paymentFrequencyFieldId],
-                                  )}
-                                >
-                                  <FormLabel
-                                    required
-                                    sx={{ display: "block", mb: 1 }}
-                                  >
-                                    Payment Frequency
-                                  </FormLabel>
-                                  <ToggleButtonGroup
-                                    exclusive
-                                    value={(freqField.value as string) ?? ""}
-                                    onChange={(_, value) => {
-                                      if (value !== null)
-                                        freqField.onChange(value);
-                                    }}
-                                    sx={{
-                                      display: "flex",
-                                      flexDirection: "column",
-                                      width: "100%",
-                                      gap: 1,
-                                      mt: 1,
-                                    }}
-                                  >
-                                    {paymentFrequencyOptions.map((option) => (
-                                      <ToggleButton
-                                        key={option.value}
-                                        value={option.value}
-                                        sx={{
-                                          width: "100%",
-                                          display: "flex",
-                                          alignItems: "center",
-                                          justifyContent: "flex-start",
-                                          gap: 1.5,
-                                          py: 1.5,
-                                          textTransform: "none",
-                                        }}
-                                      >
-                                        <Radio
-                                          checked={
-                                            freqField.value === option.value
-                                          }
-                                          size="small"
-                                          sx={{ pointerEvents: "none" }}
-                                        />
-                                        <Typography variant="body2">
-                                          {option.label}
-                                        </Typography>
-                                      </ToggleButton>
-                                    ))}
-                                  </ToggleButtonGroup>
-                                  <FormHelperText>
-                                    {(errors[paymentFrequencyFieldId]
-                                      ?.message as string) ?? ""}
-                                  </FormHelperText>
-                                </FormControl>
-                              )}
+                              control={control}
+                              errors={errors}
                             />
 
                             {/* Estimated cost styled like coverage cart total */}
@@ -535,44 +453,7 @@ export default function Payment() {
                     Bank Account Information
                   </Typography>
 
-                  {/* Bank institution autocomplete — at the top */}
-                  <Controller
-                    name="bank-institution"
-                    control={control}
-                    rules={{ required: "Bank institution is required" }}
-                    render={({ field: controllerField }) => (
-                      <Autocomplete
-                        freeSolo
-                        options={BANK_OPTIONS}
-                        value={(controllerField.value as string) || null}
-                        onChange={(_, newValue) => {
-                          controllerField.onChange(newValue ?? "");
-                        }}
-                        onInputChange={(_, newInputValue) => {
-                          controllerField.onChange(newInputValue);
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Bank / Institution"
-                            required
-                            error={Boolean(errors["bank-institution"])}
-                            helperText={
-                              errors["bank-institution"]
-                                ? String(
-                                    errors["bank-institution"]?.message ?? "",
-                                  )
-                                : "Search or select your bank"
-                            }
-                          />
-                        )}
-                      />
-                    )}
-                  />
-
-                  {BANK_FIELD_IDS.filter(
-                    (fieldId) => fieldId !== "bank-institution",
-                  ).map((fieldId) => (
+                  {BANK_FIELD_IDS.map((fieldId) => (
                     <FieldRenderer
                       key={fieldId}
                       field={fieldCatalog[fieldId]}

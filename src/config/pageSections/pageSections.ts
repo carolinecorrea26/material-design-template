@@ -1,4 +1,4 @@
-import type { PageId } from "../../types/page";
+import type { PageId } from "../../types";
 import type { PageSectionConfig } from "./types";
 import { applicantSectionTitles } from "../formSectionTitle";
 
@@ -54,40 +54,6 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
     },
   ],
 
-  "coverage-questions": [
-    {
-      id: "selfCoverageQuestions",
-      pageId: "coverage-questions",
-      title: applicantSectionTitles.self,
-      applicant: "self",
-      fieldIds: [
-        "gender",
-        "smoker",
-        "tobacco-last-used",
-        "tobacco-products",
-        "average-monthly-income",
-        "hours-worked-per-week",
-        "monthly-business-expenses",
-        "business-expense-responsibility",
-      ],
-    },
-    {
-      id: "spouseCoverageQuestions",
-      pageId: "coverage-questions",
-      title: applicantSectionTitles.spouse,
-      applicant: "spouse",
-      fieldIds: [
-        "spouse-gender",
-        "spouse-smoker",
-        "spouse-tobacco-last-used",
-        "spouse-tobacco-products",
-        "spouse-average-monthly-income",
-        "spouse-hours-worked-per-week",
-      ],
-      visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
-    },
-  ],
-
   contact: [
     {
       id: "contactResidentialAddress",
@@ -129,11 +95,11 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
     },
   ],
 
-  personal: [
+  profile: [
     {
-      id: "personalSelf",
-      pageId: "personal",
-      title: applicantSectionTitles.self,
+      id: "profilePersonalSelf",
+      pageId: "profile",
+      description: "Personal information",
       applicant: "self",
       fieldIds: [
         "height-feet",
@@ -148,29 +114,29 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       ],
     },
     {
-      id: "personalSelfDriversLicense",
-      pageId: "personal",
+      id: "profilePersonalSelfDriversLicense",
+      pageId: "profile",
       applicant: "self",
       fieldIds: ["drivers-license-number", "drivers-license-state"],
       visibleWhen: [{ fieldId: "has-drivers-license", equals: "yes" }],
     },
     {
-      id: "personalSelfOutsideUs",
-      pageId: "personal",
+      id: "profilePersonalSelfOutsideUs",
+      pageId: "profile",
       applicant: "self",
       fieldIds: ["outside-us-months", "outside-us-country"],
       visibleWhen: [{ fieldId: "intend-live-outside-us", equals: "yes" }],
     },
     {
-      id: "personalSelfTravelOutsideUs",
-      pageId: "personal",
+      id: "profilePersonalSelfTravelOutsideUs",
+      pageId: "profile",
       applicant: "self",
       fieldIds: ["travel-outside-us-country"],
       visibleWhen: [{ fieldId: "travel-outside-us-six-months", equals: "yes" }],
     },
     {
-      id: "personalSelfPhysician",
-      pageId: "personal",
+      id: "profilePersonalSelfPhysician",
+      pageId: "profile",
       applicant: "self",
       fieldIds: [
         "physician-first-name",
@@ -185,9 +151,8 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       ],
     },
     {
-      id: "personalSpouse",
-      pageId: "personal",
-      title: applicantSectionTitles.spouse,
+      id: "profilePersonalSpouse",
+      pageId: "profile",
       applicant: "spouse",
       fieldIds: [
         "spouse-height-feet",
@@ -202,8 +167,8 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
     },
     {
-      id: "personalSpouseDriversLicense",
-      pageId: "personal",
+      id: "profilePersonalSpouseDriversLicense",
+      pageId: "profile",
       applicant: "spouse",
       fieldIds: [
         "spouse-drivers-license-number",
@@ -215,8 +180,8 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       ],
     },
     {
-      id: "personalSpouseOutsideUs",
-      pageId: "personal",
+      id: "profilePersonalSpouseOutsideUs",
+      pageId: "profile",
       applicant: "spouse",
       fieldIds: ["spouse-outside-us-months", "spouse-outside-us-country"],
       visibleWhen: [
@@ -225,8 +190,8 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       ],
     },
     {
-      id: "personalSpouseTravelOutsideUs",
-      pageId: "personal",
+      id: "profilePersonalSpouseTravelOutsideUs",
+      pageId: "profile",
       applicant: "spouse",
       fieldIds: ["spouse-travel-outside-us-country"],
       visibleWhen: [
@@ -235,8 +200,8 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       ],
     },
     {
-      id: "personalSpousePhysician",
-      pageId: "personal",
+      id: "profilePersonalSpousePhysician",
+      pageId: "profile",
       applicant: "spouse",
       fieldIds: [
         "spouse-physician-first-name",
@@ -251,14 +216,11 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       ],
       visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
     },
-  ],
-
-  financial: [
     {
-      id: "financialSelfOtherCoverage",
-      pageId: "financial",
+      id: "profileFinancialSelf",
+      pageId: "profile",
+      description: "Financial information",
       applicant: "self",
-      description: "Other Coverage",
       fieldIds: [
         "has-other-life-insurance",
         "existing-life-insurance-amount",
@@ -267,56 +229,14 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
         "pending-life-insurance-amount",
         "pending-life-insurance-company",
         "has-disability-insurance",
-        "disability-carrier",
-        "disability-monthly-benefit",
-        "disability-benefit-period",
-        "disability-waiting-period",
         "is-replacing-disability-insurance",
         "disability-replacement-amount",
       ],
     },
     {
-      id: "financialSelfFinancialProfile",
-      pageId: "financial",
-      applicant: "self",
-      description: "Financial Profile",
-      fieldIds: [
-        "total-net-worth",
-        "total-annual-unearned-income",
-        "is-self-employed",
-      ],
-    },
-    {
-      id: "financialSelfEmploymentDetails",
-      pageId: "financial",
-      applicant: "self",
-      description: "Self-Employment Details",
-      fieldIds: [
-        "is-sole-proprietor",
-        "is-professional-corporation",
-        "sole-proprietor-gross-income",
-        "sole-proprietor-gross-earnings",
-        "sole-proprietor-business-expenses",
-        "professional-corporation-annual-salary",
-        "professional-corporation-s-corp-distribution",
-        "professional-corporation-dividends",
-        "professional-corporation-bonus",
-        "bonus-payment-frequency",
-        "professional-corporation-commission",
-        "commission-payment-frequency",
-        "professional-corporation-benefits-cost",
-        "years-self-employed",
-        "work-from-home",
-        "has-work-location-outside-home",
-        "work-location-details",
-      ],
-      visibleWhen: [{ fieldId: "is-self-employed", equals: "yes" }],
-    },
-    {
-      id: "financialSpouseOtherCoverage",
-      pageId: "financial",
+      id: "profileFinancialSpouse",
+      pageId: "profile",
       applicant: "spouse",
-      description: "Other Coverage",
       fieldIds: [
         "spouse-has-other-life-insurance",
         "spouse-existing-life-insurance-amount",
@@ -325,10 +245,6 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
         "spouse-pending-life-insurance-amount",
         "spouse-pending-life-insurance-company",
         "spouse-has-disability-insurance",
-        "spouse-disability-carrier",
-        "spouse-monthly-benefit",
-        "spouse-benefit-period",
-        "spouse-waiting-period",
         "spouse-is-replacing-disability-insurance",
         "spouse-disability-replacement-amount",
       ],

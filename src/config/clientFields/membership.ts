@@ -1,5 +1,5 @@
 import type { ClientPageFieldConfig } from "../fields/types";
-import type { ClientId } from "../../types/client";
+import type { ClientId } from "../../types";
 
 export type MembershipClientFieldConfig = ClientPageFieldConfig & {
   showTitleField?: boolean;

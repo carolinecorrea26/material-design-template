@@ -1,13 +1,11 @@
 import { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
-import FormRoutePage, {
-  isSectionVisible,
-} from "../components/form/FormRoutePage";
-import FieldRenderer from "../components/form/FieldRenderer";
-import ApplicantSection from "../components/form/ApplicantSection";
-import { shouldShowApplicantLabel } from "../components/form/applicantVisibility";
-import FormSectionTitle from "../components/form/FormSectionTitle";
-import { useApplicationForm } from "../state/ApplicationFormContext";
+import FormRoutePage, { isSectionVisible } from "../components/page/RoutePage";
+import FieldRenderer from "../components/fields/FieldRenderer";
+import ApplicantSection from "../components/fields/ApplicantSection";
+import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
+import FormSectionTitle from "../components/page/SectionTitle";
+import { useApplicationForm } from "../app/ApplicationFormContext";
 import { getSelectedCategoryIds } from "../config/formFlow";
 
 const streetRow = new Set(["street-address", "apt-suite"]);

@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import FileDownloadRoundedIcon from "@mui/icons-material/FileDownloadRounded";
-import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
+import HeadsetMicIcon from "@mui/icons-material/HeadsetMic";
+import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import {
   Alert,
   Box,
@@ -14,9 +16,10 @@ import {
   Typography,
 } from "@mui/material";
 import type { StepIconProps } from "@mui/material/StepIcon";
-import { getActiveClient } from "../client/getActiveClient";
-import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
+import { getActiveClient } from "../config/client/getActiveClient";
+import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
+import { getContent } from "../content";
 import type {
   CoverageApplicantId,
   CoverageDefinition,
@@ -25,8 +28,9 @@ import type {
 import {
   useApplicationForm,
   type ApplicationFormValues,
-} from "../state/ApplicationFormContext";
+} from "../app/ApplicationFormContext";
 import { sendReceiptMockEmail } from "../utils/mockEmail";
+import theme from "../app/theme";
 
 const RECEIPT_CONFIRMATION_KEY = "receiptConfirmationNumber";
 const QUICK_DECISION_UNDERWRITING_TYPES = new Set(["SI", "GI", "NA", "QD"]);
@@ -51,11 +55,10 @@ type DecisionStatus = {
   activeStep: number;
 };
 
-const APPLICANT_LABELS: Record<CoverageApplicantId, string> = {
-  member: "Member",
-  spouse: "Spouse",
-  child: "Child",
-};
+const receiptContent = getContent().receipt;
+
+const APPLICANT_LABELS: Record<CoverageApplicantId, string> =
+  getContent().shared.applicantLabels;
 
 const APPLICANT_SORT_ORDER: Record<CoverageApplicantId, number> = {
   member: 0,
@@ -190,54 +193,52 @@ function getDecisionStatus(opts: {
 
   if (!QUICK_DECISION_UNDERWRITING_TYPES.has(type)) {
     return {
-      label: "Sent for review",
+      label: receiptContent.decisionStatuses.fullyUnderwritten.label,
       color: "#0668ff",
       activeStep: 1,
       description:
-        "QuickDecision is not currently available for this product. Your application will continue through the standard review process, and you’ll be contacted if additional information is needed or when a decision is available.",
+        receiptContent.decisionStatuses.fullyUnderwritten.description,
     };
   }
 
   switch (decisionResult) {
     case "conditionally-approved":
       return {
-        label: "Conditionally approved",
+        label: receiptContent.decisionStatuses.conditionallyApproved.label,
         color: "#0668ff",
         activeStep: 2,
         description:
-          "Congratulations! Your application has been conditionally approved. Once your group plan administrator confirms your eligibility, you’ll receive details about your new coverage.",
+          receiptContent.decisionStatuses.conditionallyApproved.description,
       };
 
     case "referred":
       return {
-        label: "Sent for review",
+        label: receiptContent.decisionStatuses.referred.label,
         color: "#0668ff",
         activeStep: 1,
-        description:
-          "We need a bit more information before we can make a decision. Your application will continue through the standard review process, and you’ll be contacted if additional information is needed or when a decision is available.",
+        description: receiptContent.decisionStatuses.referred.description,
       };
 
     case "soft-declined":
       return {
-        label: "Unable to offer",
+        label: receiptContent.decisionStatuses.softDeclined.label,
         color: "#0668ff",
         activeStep: 2,
-        description:
-          "Based on the information provided and the data securely reviewed, we’re unable to offer this coverage through QuickDecision at this time. Your application will still be reviewed by the plan administrator and carrier, and you’ll be contacted if additional information is needed.",
+        description: receiptContent.decisionStatuses.softDeclined.description,
       };
 
     case "database-unavailable":
       return {
-        label: "Sent for review",
+        label: receiptContent.decisionStatuses.databaseUnavailable.label,
         color: "#0668ff",
         activeStep: 1,
         description:
-          "We couldn't complete QuickDecision processing for this coverage in real time. Your application will continue through the standard review process, and you'll be contacted if additional information is needed or when a decision is available.",
+          receiptContent.decisionStatuses.databaseUnavailable.description,
       };
   }
 }
 
-const DECISION_STEPS = ["Submitted", "Reviewed", "Decision"];
+const DECISION_STEPS = receiptContent.decisionSteps;
 
 function isQuickDecisionUnderwritingType(underwritingType: string): boolean {
   return QUICK_DECISION_UNDERWRITING_TYPES.has(underwritingType.toUpperCase());
@@ -419,14 +420,20 @@ export default function Receipt() {
         flex: 1,
         backgroundColor: "#fff",
         borderRadius: 3,
-        border: "1px solid #e0e4ea",
+        // border: "1px solid #e0e4ea",
+        boxShadow: "rgba(52, 59, 72, 0.06) 0px 8px 16px",
         p: { xs: 3, md: 4 },
       }}
     >
       <Stack spacing={3}>
         {/* Header section */}
-        <Stack direction="row" spacing={2} alignItems="flex-start">
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2}
+          alignItems={{ xs: "flex-start", sm: "flex-start" }}
+        >
           <Box
+            alignSelf={{ xs: "center", sm: "flex-start" }}
             sx={{
               width: 56,
               height: 56,
@@ -449,18 +456,12 @@ export default function Receipt() {
               },
             }}
           >
-            <CheckCircleRoundedIcon sx={{ color: "#009465", fontSize: 36 }} />
+            <CheckCircleRoundedIcon
+              sx={{ color: "success.main", fontSize: 36 }}
+            />
           </Box>
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography
-              component="h1"
-              sx={{
-                fontWeight: 700,
-                fontSize: { xs: "1.25rem", md: "1.6rem" },
-                lineHeight: 1.3,
-                mb: 1,
-              }}
-            >
+            <Typography variant="h4" component="h1" sx={{ mb: 1 }}>
               Your application has been submitted
             </Typography>
 
@@ -518,8 +519,8 @@ export default function Receipt() {
             backgroundColor: "#f5f6f9",
             "& > *": {
               flex: 1,
-              minWidth: 140,
-              px: 3,
+              minWidth: { xs: 0, sm: 140 },
+              px: { xs: 1.5, sm: 3 },
               py: 1.5,
               borderRight: "1px solid #e0e4ea",
               "&:last-child": { borderRight: "none" },
@@ -527,26 +528,44 @@ export default function Receipt() {
           }}
         >
           <Box>
-            <Typography variant="caption" color="text.secondary">
-              Application status
+            <Typography variant="caption" color="text.secondary" noWrap>
+              Status
             </Typography>
-            <Typography sx={{ fontWeight: 600, fontSize: "0.95rem" }}>
+            <Typography
+              sx={{
+                fontWeight: 600,
+                fontSize: { xs: "0.8rem", sm: "0.95rem" },
+              }}
+              noWrap
+            >
               Submitted
             </Typography>
           </Box>
           <Box>
-            <Typography variant="caption" color="text.secondary">
-              Applicant
+            <Typography variant="caption" color="text.secondary" noWrap>
+              Applying
             </Typography>
-            <Typography sx={{ fontWeight: 600, fontSize: "0.95rem" }}>
+            <Typography
+              sx={{
+                fontWeight: 600,
+                fontSize: { xs: "0.8rem", sm: "0.95rem" },
+              }}
+              noWrap
+            >
               {uniqueApplicants || "Member"}
             </Typography>
           </Box>
           <Box>
-            <Typography variant="caption" color="text.secondary">
-              Coverages requested
+            <Typography variant="caption" color="text.secondary" noWrap>
+              Requested
             </Typography>
-            <Typography sx={{ fontWeight: 600, fontSize: "0.95rem" }}>
+            <Typography
+              sx={{
+                fontWeight: 600,
+                fontSize: { xs: "0.8rem", sm: "0.95rem" },
+              }}
+              noWrap
+            >
               {orderedDecisionEntries.length} product
               {orderedDecisionEntries.length !== 1 ? "s" : ""}
             </Typography>
@@ -561,10 +580,7 @@ export default function Receipt() {
         >
           {/* Main column - Coverage decisions */}
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography
-              component="h2"
-              sx={{ fontWeight: 700, fontSize: "1.35rem", mb: 0.5 }}
-            >
+            <Typography variant="h5" component="h2" sx={{ mb: 0.5 }}>
               Coverage decisions
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>
@@ -595,6 +611,7 @@ export default function Receipt() {
                   );
 
                   const isApproved = status.label === "Conditionally approved";
+                  const isSentForReview = status.label === "Sent for review";
 
                   return (
                     <Box
@@ -608,9 +625,7 @@ export default function Receipt() {
                         alignItems="flex-start"
                         sx={{ mb: 0.5 }}
                       >
-                        <Typography
-                          sx={{ fontWeight: 700, fontSize: "1.05rem" }}
-                        >
+                        <Typography variant="h6">
                           {entry.coverage.name}
                         </Typography>
                         <Box
@@ -623,7 +638,9 @@ export default function Receipt() {
                             borderRadius: 1,
                             backgroundColor: isApproved
                               ? "rgba(0, 148, 101, 0.08)"
-                              : "rgba(255, 152, 0, 0.08)",
+                              : isSentForReview
+                                ? "rgba(6, 104, 255, 0.08)"
+                                : "rgba(255, 152, 0, 0.08)",
                             whiteSpace: "nowrap",
                           }}
                         >
@@ -633,15 +650,21 @@ export default function Receipt() {
                               height: 8,
                               borderRadius: "50%",
                               backgroundColor: isApproved
-                                ? "#009465"
-                                : "#ff9800",
+                                ? "success.main"
+                                : isSentForReview
+                                  ? "primary.main"
+                                  : "#ff9800",
                             }}
                           />
                           <Typography
                             sx={{
                               fontSize: "0.78rem",
                               fontWeight: 600,
-                              color: isApproved ? "#009465" : "#e65100",
+                              color: isApproved
+                                ? "success.main"
+                                : isSentForReview
+                                  ? "primary.main"
+                                  : "#e65100",
                             }}
                           >
                             {status.label}
@@ -670,7 +693,7 @@ export default function Receipt() {
                           "& .MuiStepConnector-root": { marginLeft: 0 },
                           "& .MuiStepConnector-root.Mui-active .MuiStepConnector-line, & .MuiStepConnector-root.Mui-completed .MuiStepConnector-line":
                             {
-                              borderColor: "#0668ff",
+                              borderColor: "primary.main",
                               borderTopWidth: 3,
                             },
                           "& .MuiStepConnector-line": {
@@ -699,33 +722,22 @@ export default function Receipt() {
                                 }: StepIconProps) =>
                                   completed ? (
                                     <CheckCircleRoundedIcon
-                                      sx={{ fontSize: 22, color: "#0668ff" }}
+                                      sx={{
+                                        fontSize: 22,
+                                        color: "primary.main",
+                                      }}
+                                    />
+                                  ) : active ? (
+                                    <RadioButtonCheckedIcon
+                                      sx={{
+                                        fontSize: 22,
+                                        color: "primary.main",
+                                      }}
                                     />
                                   ) : (
-                                    <Box
-                                      sx={{
-                                        width: 22,
-                                        height: 22,
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                      }}
-                                    >
-                                      <Box
-                                        sx={{
-                                          width: 12,
-                                          height: 12,
-                                          borderRadius: "50%",
-                                          border: "2px solid",
-                                          borderColor: active
-                                            ? "#0668ff"
-                                            : "#c4cdd5",
-                                          backgroundColor: active
-                                            ? "#0668ff"
-                                            : "transparent",
-                                        }}
-                                      />
-                                    </Box>
+                                    <CircleOutlinedIcon
+                                      sx={{ fontSize: 22, color: "#c4cdd5" }}
+                                    />
                                   )
                                 }
                                 sx={{
@@ -776,10 +788,14 @@ export default function Receipt() {
           >
             <Stack spacing={2.5}>
               {/* What happens next */}
-              <Box sx={cardSx}>
-                <Typography
-                  sx={{ fontWeight: 700, fontSize: "1.05rem", mb: 2 }}
-                >
+              <Box
+                sx={{
+                  ...cardSx,
+                  backgroundColor: theme.palette.notice.main,
+                  border: `1px solid ${theme.palette.notice.border}`,
+                }}
+              >
+                <Typography variant="h6" sx={{ mb: 2 }}>
                   What happens next?
                 </Typography>
                 <Stack spacing={2}>
@@ -801,7 +817,7 @@ export default function Receipt() {
                   </Stack>
                   <Stack direction="row" spacing={1.5} alignItems="flex-start">
                     <CheckCircleRoundedIcon
-                      sx={{ color: "#009465", fontSize: 20, mt: 0.25 }}
+                      sx={{ color: "primary.main", fontSize: 20, mt: 0.25 }}
                     />
                     <Box>
                       <Typography
@@ -817,7 +833,7 @@ export default function Receipt() {
                     </Box>
                   </Stack>
                   <Stack direction="row" spacing={1.5} alignItems="flex-start">
-                    <HelpOutlineRoundedIcon
+                    <HeadsetMicIcon
                       sx={{ color: "primary.main", fontSize: 20, mt: 0.25 }}
                     />
                     <Box>
@@ -838,10 +854,14 @@ export default function Receipt() {
 
               {/* Questions / Support */}
               {hasSupportInfo && (
-                <Box sx={cardSx}>
-                  <Typography
-                    sx={{ fontWeight: 700, fontSize: "1.05rem", mb: 1 }}
-                  >
+                <Box
+                  sx={{
+                    ...cardSx,
+                    backgroundColor: theme.palette.support.main,
+                    border: `1px solid ${theme.palette.support.border}`,
+                  }}
+                >
+                  <Typography variant="h6" sx={{ mb: 1 }}>
                     Questions? We&rsquo;re here to help.
                   </Typography>
 
@@ -862,7 +882,7 @@ export default function Receipt() {
                       <Link
                         href={`tel:${getTelHref(supportPhone)}`}
                         underline="none"
-                        sx={{ color: "#006fff", fontWeight: 700 }}
+                        sx={{ color: "primary.main", fontWeight: 700 }}
                       >
                         {supportPhone}
                       </Link>
@@ -875,7 +895,7 @@ export default function Receipt() {
                       <Link
                         href={`mailto:${supportEmail}`}
                         underline="none"
-                        sx={{ color: "#006fff", fontWeight: 700 }}
+                        sx={{ color: "primary.main", fontWeight: 700 }}
                       >
                         {supportEmail}
                       </Link>

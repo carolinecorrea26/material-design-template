@@ -16,10 +16,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import FormRoutePage, {
   type FormRouteRenderProps,
   isSectionVisible,
-} from "../components/form/FormRoutePage";
-import FieldRenderer from "../components/form/FieldRenderer";
-import AddList from "../components/form/AddList";
-import ApplicantSection from "../components/form/ApplicantSection";
+} from "../components/page/RoutePage";
+import FieldRenderer from "../components/fields/FieldRenderer";
+import AddList from "../components/fields/DynamicList";
+import ApplicantSection from "../components/fields/ApplicantSection";
 import { fieldCatalog } from "../config/fields";
 import {
   deriveStateProvinceFromZipOrPostalCode,

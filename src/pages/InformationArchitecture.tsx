@@ -25,7 +25,7 @@ import { formFlow } from "../config/formFlow";
 import { pages } from "../config/pages";
 import { pageSections } from "../config/pageSections";
 import type { SectionVisibilityRule } from "../config/pageSections/types";
-import type { PageId } from "../types/page";
+import type { PageId } from "../types";
 
 const tableOfContents = [
   { id: "page-flow", label: "Page flow" },
@@ -99,16 +99,8 @@ function getPageGroup(pageId: PageId) {
 }
 
 function getRoutingRule(pageId: PageId) {
-  if (pageId === "coverage-questions") {
-    return "Always shown. Gender is always asked; additional questions depend on selected coverage categories.";
-  }
-
   if (pageId === "beneficiary") {
     return "Shown when selected coverage includes Life Insurance or Accidental Death.";
-  }
-
-  if (pageId === "financial") {
-    return "Shown when selected coverage includes Life Insurance or Disability.";
   }
 
   if (pageId === "health-si") {

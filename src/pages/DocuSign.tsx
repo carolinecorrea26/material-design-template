@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
-import FormRoutePage from "../components/form/FormRoutePage";
+import FormRoutePage from "../components/page/RoutePage";
 
 export default function DocuSign() {
   return (

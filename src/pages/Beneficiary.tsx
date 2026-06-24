@@ -21,15 +21,15 @@ import {
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import AddListItem from "../components/form/AddListItem";
-import ApplicantSection from "../components/form/ApplicantSection";
-import { shouldShowApplicantLabel } from "../components/form/applicantVisibility";
-import FormRoutePage from "../components/form/FormRoutePage";
-import FormPageHelp from "../components/form/FormPageHelp";
-import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
+import AddListItem from "../components/fields/DynamicListItem";
+import ApplicantSection from "../components/fields/ApplicantSection";
+import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
+import FormRoutePage from "../components/page/RoutePage";
+import FormPageHelp from "../components/help/Panel";
+import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
 import type { CoverageApplicantId } from "../config/coverages/types";
-import { useApplicationForm } from "../state/ApplicationFormContext";
+import { useApplicationForm } from "../app/ApplicationFormContext";
 import { beneficiaryHelpItems } from "../content/helpContent";
 
 type BeneficiaryDesignation = "primary" | "contingent";

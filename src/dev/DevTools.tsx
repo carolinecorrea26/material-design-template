@@ -13,14 +13,14 @@ import {
 } from "@mui/material";
 import { Check, Settings, SwapHoriz } from "@mui/icons-material";
 import { clients } from "../config/clients";
-import { getActiveClient } from "../client/getActiveClient";
-import type { ClientId } from "../types/client";
+import { getActiveClient } from "../config/client/getActiveClient";
+import type { ClientId } from "../types";
 import {
   useApplicationForm,
   STORAGE_KEY,
-} from "../state/ApplicationFormContext";
+} from "../app/ApplicationFormContext";
 import { pages, getPagePath } from "../config/pages";
-import type { PageId } from "../types/page";
+import type { PageId } from "../types";
 import { getResolvedFormFlow } from "../config/formFlow";
 import { generateFormDataUpToPage } from "./utils/generateFormData";
 import { router } from "../app/router";
@@ -31,14 +31,9 @@ const FORM_PAGE_PATHS = new Set([
   "/membership",
   "/eligibility",
   "/coverage",
-  "/coverage-questions",
-  "/coverage-options",
-  "/coverage-combined",
   "/beneficiary",
   "/contact",
-  "/personal",
-  "/financial",
-  "/about-applicant",
+  "/profile",
   "/review",
   "/docusign",
   "/health-si",

@@ -74,5 +74,4 @@ export const amaClient: ClientConfig = {
     },
   },
   fields: {},
-  content: {},
 };

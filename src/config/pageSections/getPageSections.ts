@@ -1,4 +1,4 @@
-import type { PageId } from "../../types/page";
+import type { PageId } from "../../types";
 import { pageSections } from "./pageSections";
 import type { PageSectionConfig } from "./types";
 

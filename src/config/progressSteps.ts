@@ -1,4 +1,4 @@
-import type { PageId } from "../types/page";
+import type { PageId } from "../types";
 import {
   HowToReg,
   HealthAndSafety,
@@ -7,9 +7,9 @@ import {
   Draw,
 } from "@mui/icons-material";
 import type { SvgIconComponent } from "@mui/icons-material";
-import type { ApplicationFormValues } from "../state/ApplicationFormContext";
+import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import { shouldSkipPage } from "./formFlow";
-import { isCombinedFlow } from "./testFlow";
+import { getContent } from "../content";
 
 export type ProgressStep = {
   id: string;
@@ -26,95 +26,51 @@ export const HEALTH_PAGE_IDS: PageId[] = [
   "health-cir",
 ];
 
-const expandedProgressSteps: ProgressStep[] = [
-  {
-    id: "getting-started",
-    label: "Eligibility",
-    icon: HowToReg,
-    pageIds: ["membership", "eligibility"],
-  },
-  {
-    id: "coverage-options",
-    label: "Coverage",
-    icon: HealthAndSafety,
-    pageIds: ["coverage", "coverage-questions", "coverage-options"],
-  },
-  {
-    id: "about-applicant",
-    label: "Profile",
-    icon: Badge,
-    pageIds: ["beneficiary", "contact", "personal", "financial"],
-  },
-  {
-    id: "application-review",
-    label: "Review",
-    icon: FactCheck,
-    pageIds: [
-      "review",
-      "health-si",
-      "health-qd",
-      "health-di",
-      "health-cir",
-      "payment",
-    ],
-  },
-  {
-    id: "esign-submit",
-    label: "E-sign",
-    icon: Draw,
-    pageIds: ["docusign"],
-  },
-];
-
-const combinedProgressSteps: ProgressStep[] = [
-  {
-    id: "getting-started",
-    label: "Eligibility",
-    icon: HowToReg,
-    pageIds: ["membership", "eligibility"],
-  },
-  {
-    id: "coverage-options",
-    label: "Coverage",
-    icon: HealthAndSafety,
-    pageIds: ["coverage-combined"],
-  },
-  {
-    id: "about-applicant",
-    label: "Profile",
-    icon: Badge,
-    pageIds: ["beneficiary", "contact", "about-applicant"],
-  },
-  {
-    id: "application-review",
-    label: "Review",
-    icon: FactCheck,
-    pageIds: [
-      "review",
-      "health-si",
-      "health-qd",
-      "health-di",
-      "health-cir",
-      "payment",
-    ],
-  },
-  {
-    id: "esign-submit",
-    label: "E-sign",
-    icon: Draw,
-    pageIds: ["docusign"],
-  },
-];
-
-export const progressSteps: ProgressStep[] = expandedProgressSteps;
-
-function getResolvedProgressSteps(): ProgressStep[] {
-  return isCombinedFlow() ? combinedProgressSteps : expandedProgressSteps;
-}
+const progressSteps: ProgressStep[] = (() => {
+  const labels = getContent().navigation.progressStepLabels;
+  return [
+    {
+      id: "getting-started",
+      label: labels["getting-started"] ?? "Eligibility",
+      icon: HowToReg,
+      pageIds: ["membership", "eligibility"],
+    },
+    {
+      id: "coverage-options",
+      label: labels["coverage-options"] ?? "Coverage",
+      icon: HealthAndSafety,
+      pageIds: ["coverage"],
+    },
+    {
+      id: "profile",
+      label: labels["profile"] ?? "Profile",
+      icon: Badge,
+      pageIds: ["beneficiary", "contact", "profile"],
+    },
+    {
+      id: "application-review",
+      label: labels["application-review"] ?? "Review",
+      icon: FactCheck,
+      pageIds: [
+        "review",
+        "health-si",
+        "health-qd",
+        "health-di",
+        "health-cir",
+        "payment",
+      ],
+    },
+    {
+      id: "esign-submit",
+      label: labels["esign-submit"] ?? "E-sign",
+      icon: Draw,
+      pageIds: ["docusign"],
+    },
+  ];
+})();
 
 export function getProgressStepIndex(pageId: PageId) {
-  const steps = getResolvedProgressSteps();
-  return steps.findIndex((step) => step.pageIds.includes(pageId));
+  return progressSteps.findIndex((step) => step.pageIds.includes(pageId));
 }
 
 /**
@@ -124,8 +80,7 @@ export function getProgressStepIndex(pageId: PageId) {
 export function getActiveProgressSteps(
   values: ApplicationFormValues,
 ): ProgressStep[] {
-  const steps = getResolvedProgressSteps();
-  return steps
+  return progressSteps
     .map((step) => ({
       ...step,
       pageIds: step.pageIds.filter((id) => !shouldSkipPage(id, values)),

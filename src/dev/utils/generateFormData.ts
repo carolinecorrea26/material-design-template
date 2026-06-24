@@ -1,8 +1,8 @@
-import type { PageId } from "../../types/page";
+import type { PageId } from "../../types";
 import { getResolvedFormFlow } from "../../config/formFlow";
 import { getClientPageFields } from "../../config/clientFields/getClientPageFields";
-import { getActiveClientCoverages } from "../../client/getActiveClientCoverages";
-import type { ApplicationFormValues } from "../../state/ApplicationFormContext";
+import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
+import type { ApplicationFormValues } from "../../app/ApplicationFormContext";
 
 /**
  * Generate default/sample values for all fields up to and including a specific page
@@ -12,7 +12,7 @@ export function generateFormDataUpToPage(
 ): ApplicationFormValues {
   const values: ApplicationFormValues = {};
 
-  // Use the resolved form flow (combined or expanded) to find the target page
+  // Use the resolved form flow to find the target page
   const resolvedFlow = getResolvedFormFlow();
   const targetIndex = resolvedFlow.indexOf(targetPageId as PageId);
   if (targetIndex === -1) return values;
@@ -30,10 +30,7 @@ export function generateFormDataUpToPage(
     }
   }
 
-  const coverageIndex =
-    resolvedFlow.indexOf("coverage") !== -1
-      ? resolvedFlow.indexOf("coverage")
-      : resolvedFlow.indexOf("coverage-combined");
+  const coverageIndex = resolvedFlow.indexOf("coverage");
   const paymentIndex = resolvedFlow.indexOf("payment");
   const shouldSeedCoverageData = targetIndex >= coverageIndex;
   const shouldSeedPaymentData = targetIndex >= paymentIndex;

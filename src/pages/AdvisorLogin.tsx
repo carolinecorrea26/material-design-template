@@ -3,8 +3,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import FormRoutePage, {
   isSectionVisible,
   type FormRouteRenderProps,
-} from "../components/form/FormRoutePage";
-import FieldRenderer from "../components/form/FieldRenderer";
+} from "../components/page/RoutePage";
+import FieldRenderer from "../components/fields/FieldRenderer";
 
 export default function AdvisorLogin() {
   return (

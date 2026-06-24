@@ -15,13 +15,14 @@ import {
   Typography,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
-import HomeQuoteCard from "../components/common/HomeQuoteCard";
-import FormHelpDrawer from "../components/form/FormHelpDrawer";
-import QuickDecisionIndicator from "../components/common/QuickDecisionIndicator";
-import QuickDecisionDrawerContent from "../components/common/QuickDecisionDrawerContent";
+import HomeQuoteCard from "../components/coverage/QuoteCard";
+import FormHelpDrawer from "../components/help/Drawer";
+import QuickDecisionIndicator from "../components/coverage/QuickDecisionBadge";
+import QuickDecisionDrawerContent from "../components/overlays/QuickDecisionInfo";
 import { ApplicationReviewDrawerContent } from "../content/helpContent";
-import { getActiveClient } from "../client/getActiveClient";
-import { getActiveClientCoverages } from "../client/getActiveClientCoverages";
+import { getContent, resolveTemplate } from "../content";
+import { getActiveClient } from "../config/client/getActiveClient";
+import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
 import type {
   CoverageApplicantId,
@@ -59,40 +60,7 @@ const FADE_IN_SECTION_SX = (delay: number) => ({
   animation: `${fadeInUp} 0.7s ease-out ${delay}s forwards`,
 });
 
-const CATEGORY_DESCRIPTIONS: Record<CoverageCategoryId, string> = {
-  LI: "Life coverage can help provide financial protection for the people who depend on you.",
-  AD: "Accidental death and dismemberment coverage can help protect against covered accidental loss or injury.",
-  DI: "Disability coverage can help replace income if a covered disability affects your ability to work.",
-  OO: "Office overhead coverage can help keep eligible business expenses paid during a covered disability.",
-  SH: "Supplemental health coverage can help with out-of-pocket costs tied to covered health events.",
-};
-
-const APPLYING_STEPS = [
-  {
-    id: 0,
-    number: 1,
-    title: "Apply online in minutes",
-    body: "Complete our online application to apply for coverage that fits your needs. Review your options and see your estimated cost.",
-    imageSrc: "/1-apply.svg",
-    imageAlt: "Apply online",
-  },
-  {
-    id: 1,
-    number: 2,
-    title: "Answer health questions",
-    body: "Some coverages require health information. We may ask questions during the application, or a representative may follow up to collect your health history. If a medical exam is needed, it's scheduled at no cost to you.",
-    imageSrc: "/2-medical.svg",
-    imageAlt: "Answer health questions",
-  },
-  {
-    id: 2,
-    number: 3,
-    title: "Get your decision",
-    body: "Once all information is received and reviewed, you'll get a decision from New York Life. If approved, you'll receive a certificate of insurance with a 30-day free look period.",
-    imageSrc: "/3-decision.svg",
-    imageAlt: "Get your decision",
-  },
-] as const;
+const content = getContent();
 
 function formatCoverageRange(coverage: CoverageDefinition) {
   if (coverage.minAmount == null && coverage.maxAmount == null) {
@@ -114,9 +82,7 @@ function formatCoverageRange(coverage: CoverageDefinition) {
 }
 
 function getApplicantLabel(applicant: CoverageApplicantId): string {
-  if (applicant === "member") return "Member";
-  if (applicant === "spouse") return "Spouse";
-  return "Child";
+  return content.shared.applicantLabels[applicant];
 }
 
 function InlineDrawerLink({
@@ -171,18 +137,21 @@ function HowApplyingWorksSection({
   onOpenApplicationReview: () => void;
   onOpenQuickDecision: () => void;
 }) {
+  const applyingSteps = content.home.applyingSteps;
   return (
     <Stack spacing={4}>
       <Stack spacing={1}>
-        <Typography variant="h2">How applying works</Typography>
+        <Typography variant="h2">
+          {content.home.howApplyingWorks.title}
+        </Typography>
         <Typography variant="body1" color="text.secondary">
-          Three simple steps from application to coverage.
+          {content.home.howApplyingWorks.description}
         </Typography>
       </Stack>
 
       <Stack spacing={6}>
-        {APPLYING_STEPS.map((step) => (
-          <Box key={step.id} sx={{ padding: { xs: "0 1.5rem", md: "0 2rem" } }}>
+        {applyingSteps.map((step, index) => (
+          <Box key={index} sx={{ padding: { xs: "0 1.5rem", md: "0 2rem" } }}>
             <Stack
               direction={{ xs: "column", md: "row" }}
               spacing={{ xs: 3, md: 5 }}
@@ -227,14 +196,14 @@ function HowApplyingWorksSection({
                         flexShrink: 0,
                       }}
                     >
-                      {step.number}
+                      {index + 1}
                     </Box>
                     <Typography variant="h4">{step.title}</Typography>
                   </Stack>
 
                   <Typography variant="body1" color="text.secondary">
                     {step.body}
-                    {step.id === 1 && (
+                    {index === 1 && (
                       <>
                         {" "}
                         <InlineDrawerLink onClick={onOpenApplicationReview}>
@@ -242,7 +211,7 @@ function HowApplyingWorksSection({
                         </InlineDrawerLink>
                       </>
                     )}
-                    {step.id === 2 && (
+                    {index === 2 && (
                       <>
                         {" "}
                         When{" "}
@@ -375,7 +344,7 @@ export default function Home() {
                   sx={{ fontSize: "1rem !important" }}
                 />
               }
-              label="Simple • Secure • Member-only rates"
+              label={content.home.hero.tagline}
               variant="outlined"
               sx={{
                 borderColor: "divider",
@@ -397,25 +366,15 @@ export default function Home() {
                     xs: "2.5rem",
                     sm: "3rem",
                     md: "3.5rem",
-                    // lg: "4rem",
                   },
                   lineHeight: 1.08,
                   fontWeight: 700,
                 }}
               >
-                {/* Protect what matters most */}
-                {/* Get covered */}
-                {/* Secure your future */}
-                Safeguard what matters most
+                {content.home.hero.title}
               </Typography>
-              <Typography
-                variant="body1"
-                color="text.secondary"
-                // sx={{ maxWidth: 400 }}
-                // fontSize={{ xs: "1.125rem", md: "1.25rem" }}
-              >
-                Coverage designed exclusively for {client.branding.name}{" "}
-                members. Get started today!
+              <Typography variant="body1" color="text.secondary">
+                {resolveTemplate(content.home.hero.description)}
               </Typography>
             </Stack>
 
@@ -442,7 +401,7 @@ export default function Home() {
                   flexShrink: 0,
                 }}
               >
-                Begin application
+                {content.home.hero.ctaLabel}
               </Button>
 
               <Button
@@ -461,12 +420,12 @@ export default function Home() {
                   });
                 }}
               >
-                Learn more
+                {content.home.hero.secondaryCtaLabel}
               </Button>
             </Stack>
 
             <Typography variant="body2" color="text.secondary">
-              Already started an application?{" "}
+              {content.home.hero.resumePrompt}{" "}
               <Link
                 component={RouterLink}
                 to={getPagePath("resume")}
@@ -474,7 +433,7 @@ export default function Home() {
                 color="primary"
                 sx={{ textDecoration: "none", fontWeight: 700 }}
               >
-                Continue here
+                {content.home.hero.resumeLinkLabel}
               </Link>
             </Typography>
           </Stack>
@@ -493,9 +452,11 @@ export default function Home() {
 
         <Stack spacing={2.5} sx={FADE_IN_SECTION_SX(0.3)}>
           <Stack spacing={1}>
-            <Typography variant="h2">Your coverage options</Typography>
+            <Typography variant="h2">
+              {content.home.coverageOptions.title}
+            </Typography>
             <Typography variant="body1" color="text.secondary">
-              Learn more about the coverage options available to you.
+              {content.home.coverageOptions.description}
             </Typography>
           </Stack>
 
@@ -589,7 +550,7 @@ export default function Home() {
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                           {
-                            CATEGORY_DESCRIPTIONS[
+                            content.coverage.categoryDescriptions[
                               activeCoverageGroup.category.id
                             ]
                           }
@@ -654,7 +615,7 @@ export default function Home() {
               alignItems: "start",
             }}
           >
-            {client.id === "ama" && (
+            {content.home.clientSection && (
               <Stack spacing={2}>
                 <Stack direction="column" spacing={2} alignItems="start">
                   <Box
@@ -670,21 +631,16 @@ export default function Home() {
                     }}
                   />
                   <Typography variant="body1" color="text.secondary">
-                    Helping physicians protect what matters most
+                    {content.home.clientSection.tagline}
                   </Typography>
                 </Stack>
 
                 <Stack spacing={1.25}>
-                  <Typography variant="body2">
-                    For more than 50 years, AMA-sponsored insurance has helped
-                    protect physicians and their families.
-                  </Typography>
-                  <Typography variant="body2">
-                    As a subsidiary of the American Medical Association, AMA
-                    Insurance uses the group buying power of more than one
-                    million physicians to offer specially negotiated rates and
-                    tailored benefits from top insurance companies.
-                  </Typography>
+                  {content.home.clientSection.paragraphs.map((paragraph, i) => (
+                    <Typography key={i} variant="body2">
+                      {paragraph}
+                    </Typography>
+                  ))}
                 </Stack>
               </Stack>
             )}
@@ -704,32 +660,17 @@ export default function Home() {
                 />
                 <Stack spacing={0.25}>
                   <Typography variant="h5">
-                    New York Life Insurance Company
+                    {content.home.nylCredentials.name}
                   </Typography>
                   <Typography variant="body1" color="text.secondary">
-                    A trusted name for over 180 years
+                    {content.home.nylCredentials.tagline}
                   </Typography>
                 </Stack>
               </Stack>
 
               <Stack spacing={1.25}>
                 <Typography variant="body2">
-                  At the heart of New York Life is a commitment to be there for
-                  customers when they need us, whether today or decades into the
-                  future.
-                </Typography>
-                <Typography variant="body2">
-                  As of today, New York Life has received the highest financial
-                  strength ratings
-                  <Box
-                    component="sup"
-                    sx={{ fontSize: "0.75em", lineHeight: 1 }}
-                  >
-                    1
-                  </Box>{" "}
-                  currently awarded to any U.S. life insurer. For our customers,
-                  that means promises kept, and peace of mind for the millions
-                  of families and businesses who rely on us.
+                  {content.home.nylCredentials.description}
                 </Typography>
               </Stack>
 
@@ -740,36 +681,33 @@ export default function Home() {
                 useFlexGap
                 sx={{ rowGap: 1 }}
               >
-                {[
-                  ["A++", "A.M. Best"],
-                  ["AAA", "Fitch Ratings"],
-                  ["Aa1", "Moody's Investors Service"],
-                  ["AA+", "Standard & Poor's"],
-                ].map(([grade, source]) => (
-                  <Stack
-                    key={grade + source}
-                    direction="row"
-                    spacing={0.75}
-                    alignItems="baseline"
-                  >
-                    <Typography
-                      variant="body2"
-                      sx={{ fontWeight: 700, color: "primary.main" }}
+                {content.home.nylCredentials.ratings.map(
+                  ({ grade, source }) => (
+                    <Stack
+                      key={grade + source}
+                      direction="row"
+                      spacing={0.75}
+                      alignItems="baseline"
                     >
-                      {grade}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {source}
-                    </Typography>
-                  </Stack>
-                ))}
+                      <Typography
+                        variant="body2"
+                        sx={{ fontWeight: 700, color: "primary.main" }}
+                      >
+                        {grade}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {source}
+                      </Typography>
+                    </Stack>
+                  ),
+                )}
               </Stack>
 
               <Typography variant="caption" color="text.secondary">
                 <Box component="sup" sx={{ fontSize: "0.85em", lineHeight: 1 }}>
                   1
                 </Box>
-                Third Party Rating Reports as of 09/30/2025.
+                {content.home.nylCredentials.ratingsNote}
               </Typography>
             </Stack>
           </Box>
