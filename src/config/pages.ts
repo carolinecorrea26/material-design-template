@@ -1,179 +1,49 @@
-import { getActiveClient } from "./client/getActiveClient";
 import { getContent, resolveTemplate } from "../content";
 
-const clientAcronym = getActiveClient().branding.acronym;
-
 export const pages = [
-  { id: "home", path: "/", type: "home", title: "Home", navTitle: "Home" },
+  { id: "home", path: "/", type: "home" },
   {
     id: "membership",
     path: "/membership",
     type: "form",
-    title: `Starting your application for ${clientAcronym}-sponsored insurance`,
-    subhead: `This application is for ${clientAcronym}-sponsored group insurance.`,
-    navTitle: "Membership",
     groupId: "get-started",
   },
   {
     id: "eligibility",
     path: "/eligibility",
     type: "form",
-    title: "Check your eligibility",
-    subhead:
-      "Answer a few questions to confirm which coverage options are available to you.",
-    navTitle: "Check eligibility",
     groupId: "get-started",
   },
-  {
-    id: "coverage",
-    path: "/coverage",
-    type: "form",
-    title: "Your coverage options",
-    subhead: "Explore and customize the coverage options available to you.",
-    navTitle: "Choose coverage",
-    groupId: "coverage",
-  },
+  { id: "coverage", path: "/coverage", type: "form", groupId: "coverage" },
   {
     id: "beneficiary",
     path: "/beneficiary",
     type: "form",
-    title: "Add your beneficiaries",
-    subhead: "Tell us who should receive benefits if a claim is paid.",
-    navTitle: "Beneficiary",
     groupId: "coverage",
   },
-  {
-    id: "contact",
-    path: "/contact",
-    type: "form",
-    title: "Your preferred contact",
-    subhead: "Provide the best way for us to reach you about your application.",
-    navTitle: "Contact",
-    groupId: "profile",
-  },
-  {
-    id: "review",
-    path: "/review",
-    type: "form",
-    title: "Review your application",
-    subhead: "Check your answers before submitting your application.",
-    navTitle: "Review",
-    groupId: "review",
-  },
-  {
-    id: "docusign",
-    path: "/docusign",
-    type: "form",
-    title: "Review and sign your application.",
-    subhead: "Review and sign your application documents electronically.",
-    navTitle: "E-sign",
-    groupId: "review",
-  },
-  {
-    id: "health-si",
-    path: "/health-si",
-    type: "form",
-    title:
-      "Please answer the following health questions to the best of your ability.",
-    subhead: "Answer health questions required for your selected coverage.",
-    navTitle: "Health",
-    groupId: "health",
-  },
-  {
-    id: "health-qd",
-    path: "/health-qd",
-    type: "form",
-    title: "About your health",
-    subhead: "Answer health questions required for your selected coverage.",
-    navTitle: "Health",
-    groupId: "health",
-  },
-  {
-    id: "health-di",
-    path: "/health-di",
-    type: "form",
-    title: "About your health",
-    subhead: "Answer health questions required for your selected coverage.",
-    navTitle: "Health",
-    groupId: "health",
-  },
-  {
-    id: "health-cir",
-    path: "/health-cir",
-    type: "form",
-    title: "About your health",
-    subhead: "Answer health questions required for your selected coverage.",
-    navTitle: "Health",
-    groupId: "health",
-  },
-  {
-    id: "payment",
-    path: "/payment",
-    type: "form",
-    title: "Choose your payment method",
-    subhead: "Select how you would like to pay for your coverage.",
-    navTitle: "Payment",
-    groupId: "payment",
-  },
-  {
-    id: "receipt",
-    path: "/receipt",
-    type: "receipt",
-    title: "Your application has been submitted!",
-    subhead:
-      "Your application has been received, and we'll guide you through any next steps.",
-    navTitle: "Receipt",
-  },
-  {
-    id: "resume",
-    path: "/resume",
-    type: "resume",
-    title: "Already started an application?",
-    subhead: "Enter your information to continue a saved application.",
-    navTitle: "Resume application",
-  },
-  {
-    id: "advisor-login",
-    path: "/advisor-login",
-    type: "form",
-    title: "Advisor Login",
-    subhead:
-      "Enter your advisor code to start or resume an application for a client.",
-    navTitle: "Advisor login",
-  },
+  { id: "contact", path: "/contact", type: "form", groupId: "profile" },
+  { id: "review", path: "/review", type: "form", groupId: "review" },
+  { id: "docusign", path: "/docusign", type: "form", groupId: "review" },
+  { id: "health-si", path: "/health-si", type: "form", groupId: "health" },
+  { id: "health-qd", path: "/health-qd", type: "form", groupId: "health" },
+  { id: "health-di", path: "/health-di", type: "form", groupId: "health" },
+  { id: "health-cir", path: "/health-cir", type: "form", groupId: "health" },
+  { id: "payment", path: "/payment", type: "form", groupId: "payment" },
+  { id: "receipt", path: "/receipt", type: "receipt" },
+  { id: "resume", path: "/resume", type: "resume" },
+  { id: "advisor-login", path: "/advisor-login", type: "form" },
   {
     id: "advisor-send-confirmation",
     path: "/advisor-send-confirmation",
     type: "form",
-    title: "Application Sent Successfully!",
-    subhead:
-      "The applicant can now review, sign, and submit their application.",
-    navTitle: "Sent confirmation",
   },
-  {
-    id: "mock-email-preview",
-    path: "/mock-email-preview",
-    type: "receipt",
-    title: "Mock Email Preview",
-    navTitle: "Mock email preview",
-  },
+  { id: "mock-email-preview", path: "/mock-email-preview", type: "receipt" },
   {
     id: "information-architecture",
     path: "/information-architecture",
     type: "internal",
-    title: "Information Architecture",
-    navTitle: "Information architecture",
   },
-  {
-    id: "profile",
-    path: "/profile",
-    type: "form",
-    title: "About you",
-    subhead:
-      "Share the personal and financial details needed to complete your application.",
-    navTitle: "Profile",
-    groupId: "profile",
-  },
+  { id: "profile", path: "/profile", type: "form", groupId: "profile" },
 ] as const;
 
 export type PageType = "home" | "form" | "receipt" | "resume" | "internal";
@@ -189,54 +59,22 @@ export function getPagePath(id: (typeof pages)[number]["id"]) {
 }
 
 export function getPageTitle(id: (typeof pages)[number]["id"]) {
-  const client = getActiveClient();
-  const clientOverride = client.pages?.overrides?.[id]?.title;
-  if (clientOverride) return clientOverride;
-
-  // Check content system
   const contentPage = getContent().pages[id];
   if (contentPage?.title) return resolveTemplate(contentPage.title);
 
-  const page = pages.find((page) => page.id === id);
-
-  if (!page) {
-    throw new Error(`Missing page title for page id: ${id}`);
-  }
-
-  return page.title;
+  return id;
 }
 
 export function getPageSubhead(id: (typeof pages)[number]["id"]) {
-  const client = getActiveClient();
-  const clientOverride = client.pages?.overrides?.[id];
-
-  // Client can override subhead or explicitly show/hide it
-  if (clientOverride?.subhead !== undefined) return clientOverride.subhead;
-  if (clientOverride?.showSubhead === false) return undefined;
-
-  // Check content system
   const contentPage = getContent().pages[id];
   if (contentPage?.subhead) return resolveTemplate(contentPage.subhead);
 
-  const page = pages.find((page) => page.id === id);
-
-  if (!page) {
-    throw new Error(`Missing page subhead for page id: ${id}`);
-  }
-
-  if (!("subhead" in page)) return undefined;
-
-  // Show subhead by default; only hide if showSubhead is explicitly false
-  if ("showSubhead" in page && page.showSubhead === false) return undefined;
-  return page.subhead;
+  return undefined;
 }
 
 export function getPageNavTitle(id: (typeof pages)[number]["id"]) {
-  const page = pages.find((page) => page.id === id);
+  const contentPage = getContent().pages[id];
+  if (contentPage?.navTitle) return resolveTemplate(contentPage.navTitle);
 
-  if (!page) {
-    throw new Error(`Missing page nav title for page id: ${id}`);
-  }
-
-  return page.navTitle;
+  return id;
 }

@@ -27,16 +27,9 @@ export type ClientSupport = {
   };
 };
 
-export type ClientPageOverride = {
-  title?: string;
-  subhead?: string;
-  showSubhead?: boolean;
-};
-
 export type ClientPages = {
   excluded?: PageId[];
   optional?: PageId[];
-  overrides?: Partial<Record<PageId, ClientPageOverride>>;
 };
 
 export type ClientRiderConfig = {

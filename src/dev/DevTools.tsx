@@ -15,11 +15,8 @@ import { Check, Settings, SwapHoriz } from "@mui/icons-material";
 import { clients } from "../config/clients";
 import { getActiveClient } from "../config/client/getActiveClient";
 import type { ClientId } from "../types";
-import {
-  useApplicationForm,
-  STORAGE_KEY,
-} from "../app/ApplicationFormContext";
-import { pages, getPagePath } from "../config/pages";
+import { useApplicationForm, STORAGE_KEY } from "../app/ApplicationFormContext";
+import { pages, getPagePath, getPageTitle } from "../config/pages";
 import type { PageId } from "../types";
 import { getResolvedFormFlow } from "../config/formFlow";
 import { generateFormDataUpToPage } from "./utils/generateFormData";
@@ -311,7 +308,9 @@ export default function DevTools() {
                             gap: 0.5,
                           }}
                         >
-                          <Typography variant="body2">{page.title}</Typography>
+                          <Typography variant="body2">
+                            {getPageTitle(page.id as PageId)}
+                          </Typography>
                           <Typography variant="caption" color="text.secondary">
                             {page.id}
                           </Typography>

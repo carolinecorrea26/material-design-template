@@ -82,18 +82,25 @@ export const pagesDefaults: Partial<PagesContent> = {
     navTitle: "Resume application",
   },
   "advisor-login": {
-    title: "Advisor Login",
-    subhead:
-      "Enter your advisor code to start or resume an application for a client.",
+    title: "Welcome!",
+    subhead: "Start or continue an application below.",
     navTitle: "Advisor login",
   },
   "advisor-send-confirmation": {
-    title: "Application Sent Successfully!",
+    title: "Application sent successfully!",
     subhead:
       "The applicant can now review, sign, and submit their application.",
     navTitle: "Sent confirmation",
   },
-  "profile": {
+  "mock-email-preview": {
+    title: "Mock Email Preview",
+    navTitle: "Mock email preview",
+  },
+  "information-architecture": {
+    title: "Information Architecture",
+    navTitle: "Information architecture",
+  },
+  profile: {
     title: "About you",
     subhead:
       "Share the personal and financial details needed to complete your application.",

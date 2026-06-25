@@ -523,19 +523,15 @@ export default function FormRoutePage({
           </Box>
         )}
         <Box
-          sx={
-            hasVerticalStepper
-              ? {
-                  width: "100%",
-                  borderRadius: "16px",
-                  backgroundColor: "#ffffff",
-                  boxShadow: "0 8px 16px rgba(52, 59, 72, 0.06)",
-                  px: { xs: 2, sm: 3 },
-                  py: 2,
-                  mb: 1,
-                }
-              : undefined
-          }
+          sx={{
+            width: "100%",
+            borderRadius: "16px",
+            backgroundColor: "#ffffff",
+            boxShadow: "0 8px 16px rgba(52, 59, 72, 0.06)",
+            px: { xs: 2, sm: 3 },
+            py: 2,
+            mb: hasVerticalStepper ? 1 : 0,
+          }}
         >
           {isTransitioning ? (
             <>
@@ -549,7 +545,7 @@ export default function FormRoutePage({
                   </Typography>
                 ) : null}
               </Box>
-              {!noTitle && <Box sx={{ mb: "1rem" }} />}
+              <Box sx={{ mb: "1rem" }} />
               <Box>
                 <Skeleton
                   variant="rounded"

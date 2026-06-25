@@ -22,7 +22,12 @@ import {
 } from "@mui/material";
 import { fieldCatalog } from "../config/fields";
 import { formFlow } from "../config/formFlow";
-import { pages } from "../config/pages";
+import {
+  pages,
+  getPageTitle,
+  getPageSubhead,
+  getPageNavTitle,
+} from "../config/pages";
 import { pageSections } from "../config/pageSections";
 import type { SectionVisibilityRule } from "../config/pageSections/types";
 import type { PageId } from "../types";
@@ -76,17 +81,7 @@ function getPage(pageId: PageId) {
   return pages.find((page) => page.id === pageId);
 }
 
-function getPageTitle(pageId: PageId) {
-  return getPage(pageId)?.title ?? pageId;
-}
-
-function getPageSubhead(pageId: PageId) {
-  const page = getPage(pageId);
-
-  return page && "subhead" in page ? page.subhead : "—";
-}
-
-function getPagePath(pageId: PageId) {
+function getPagePathLocal(pageId: PageId) {
   return getPage(pageId)?.path ?? "—";
 }
 
@@ -238,7 +233,7 @@ export default function InformationArchitecture() {
     id: pageId,
     title: getPageTitle(pageId),
     subhead: getPageSubhead(pageId),
-    path: getPagePath(pageId),
+    path: getPagePathLocal(pageId),
     group: getPageGroup(pageId),
   }));
 
@@ -366,11 +361,11 @@ export default function InformationArchitecture() {
                       <Link href={page.path}>{page.path}</Link>
                     </TableCell>
                     <TableCell>{page.type}</TableCell>
-                    <TableCell>{page.title}</TableCell>
+                    <TableCell>{getPageTitle(page.id as PageId)}</TableCell>
                     <TableCell>
-                      {"subhead" in page ? page.subhead : "—"}
+                      {getPageSubhead(page.id as PageId) ?? "—"}
                     </TableCell>
-                    <TableCell>{page.navTitle}</TableCell>
+                    <TableCell>{getPageNavTitle(page.id as PageId)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
