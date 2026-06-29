@@ -15,9 +15,14 @@ import { Check, Settings, SwapHoriz } from "@mui/icons-material";
 import { clients } from "../config/clients";
 import { getActiveClient } from "../config/client/getActiveClient";
 import type { ClientId } from "../types";
-import { useApplicationForm, STORAGE_KEY } from "../app/ApplicationFormContext";
+import {
+  type ApplicationFormValues,
+  useApplicationForm,
+  STORAGE_KEY,
+} from "../app/ApplicationFormContext";
 import { pages, getPagePath, getPageTitle } from "../config/pages";
 import type { PageId } from "../types";
+import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import { getResolvedFormFlow } from "../config/formFlow";
 import { generateFormDataUpToPage } from "./utils/generateFormData";
 import { router } from "../app/router";
@@ -98,6 +103,29 @@ export default function DevTools() {
 
   const handleFillOutPage = () => {
     window.dispatchEvent(new CustomEvent("devtools:fillform"));
+  };
+
+  const handleResetPage = () => {
+    const currentPage = pages.find((p) => p.path === window.location.pathname);
+    if (!currentPage) return;
+
+    const current = JSON.parse(
+      window.sessionStorage.getItem(STORAGE_KEY) ?? "{}",
+    ) as Record<string, unknown>;
+
+    const pageFieldIds = new Set(
+      getClientPageFields(
+        currentPage.id as PageId,
+        current as Parameters<typeof getClientPageFields>[1],
+      ).map((f) => f.id),
+    );
+
+    const nextValues = Object.fromEntries(
+      Object.entries(current).filter(([key]) => !pageFieldIds.has(key)),
+    ) as ApplicationFormValues;
+
+    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(nextValues));
+    setPageValues(nextValues);
   };
 
   const handleJumpToPage = (pageId: PageId) => {
@@ -327,6 +355,18 @@ export default function DevTools() {
                     sx={{ justifyContent: "flex-start" }}
                   >
                     Fill Out Page
+                  </Button>
+                ) : null}
+
+                {isFormPage ? (
+                  <Button
+                    onClick={handleResetPage}
+                    fullWidth
+                    variant="outlined"
+                    color="warning"
+                    sx={{ justifyContent: "flex-start" }}
+                  >
+                    Reset Page
                   </Button>
                 ) : null}
 

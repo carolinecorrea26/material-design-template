@@ -30,7 +30,7 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import { CoverageOptionsDrawerContent } from "../../content/helpContent";
 import CoverageNeedsCalculator from "../overlays/CoverageCalculator";
 import CostEstimateDrawerContent from "../overlays/CostEstimate";
@@ -512,14 +512,23 @@ export default function AppHeader({ client }: AppHeaderProps) {
                 Contact Us
               </Typography>
               <Stack spacing={1}>
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <PersonOutlineIcon
-                    sx={{ fontSize: 18, color: "text.secondary" }}
-                  />
-                  <Typography variant="body2">
-                    {client.branding.name}
-                  </Typography>
-                </Stack>
+                <Typography variant="body2">{client.branding.name}</Typography>
+                {client.support.website && (
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <LanguageOutlinedIcon
+                      sx={{ fontSize: 18, color: "text.secondary" }}
+                    />
+                    <Link
+                      href={`https://${client.support.website}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      underline="hover"
+                      variant="body2"
+                    >
+                      {client.support.website}
+                    </Link>
+                  </Stack>
+                )}
                 {client.support.email && (
                   <Stack direction="row" spacing={1} alignItems="center">
                     <EmailOutlinedIcon

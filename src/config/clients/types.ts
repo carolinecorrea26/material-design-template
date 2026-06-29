@@ -111,8 +111,11 @@ export type ClientContent = {
   >;
 };
 
+export type HomePageVariant = "default" | "hero-image" | "welcome-back";
+
 export type ClientFeatures = {
   chat?: boolean;
+  homePageVariant?: HomePageVariant;
 };
 
 export type ClientConfig = {
@@ -125,4 +128,5 @@ export type ClientConfig = {
   /** @deprecated Content is now managed in src/content/. This field is unused. */
   content?: ClientContent;
   features?: ClientFeatures;
+  licenseInfo?: string[];
 };

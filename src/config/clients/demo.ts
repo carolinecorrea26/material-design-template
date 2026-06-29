@@ -61,5 +61,10 @@ export const demoClient: ClientConfig = {
   fields: {},
   features: {
     chat: true,
+    homePageVariant: "hero-image",
   },
+  licenseInfo: [
+    "CA Insurance License: #OH62489",
+    "AR Insurance License: #94726",
+  ],
 };

@@ -74,4 +74,8 @@ export const amaClient: ClientConfig = {
     },
   },
   fields: {},
+  licenseInfo: [
+    "CA Insurance License: #0754707",
+    "AR Insurance License: #100105975",
+  ],
 };

@@ -44,6 +44,7 @@ type FieldRendererProps = {
   errors: FieldErrors<FormValues>;
   hideLabel?: boolean;
   margin?: "none" | "dense" | "normal";
+  onValueChange?: () => void;
 };
 
 type FieldStatusState = {
@@ -477,6 +478,7 @@ export default function FieldRenderer({
   errors,
   hideLabel = false,
   margin = "normal",
+  onValueChange,
 }: FieldRendererProps) {
   const validationRules = getValidationRules(field);
   const fieldError = errors[field.id]?.message as string | undefined;
@@ -525,6 +527,7 @@ export default function FieldRenderer({
       options.onChange ??
       ((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         controllerField.onChange(event.target.value);
+        onValueChange?.();
       });
 
     const textField = (
@@ -607,6 +610,7 @@ export default function FieldRenderer({
                 onChange={(_, value) => {
                   if (value !== null) {
                     controllerField.onChange(value);
+                    onValueChange?.();
                   }
                 }}
                 onBlur={controllerField.onBlur}
@@ -689,9 +693,10 @@ export default function FieldRenderer({
                       fullWidth
                       name={field.id}
                       value={value}
-                      onChange={(event) =>
-                        controllerField.onChange(event.target.value)
-                      }
+                      onChange={(event) => {
+                        controllerField.onChange(event.target.value);
+                        onValueChange?.();
+                      }}
                       onBlur={controllerField.onBlur}
                       displayEmpty
                       disabled={field.disabled}
@@ -730,9 +735,10 @@ export default function FieldRenderer({
                       labelId={labelId}
                       label={field.label}
                       value={value}
-                      onChange={(event) =>
-                        controllerField.onChange(event.target.value)
-                      }
+                      onChange={(event) => {
+                        controllerField.onChange(event.target.value);
+                        onValueChange?.();
+                      }}
                       onBlur={controllerField.onBlur}
                       disabled={field.disabled}
                       inputProps={{ autoComplete: field.autoComplete ?? "off" }}
@@ -812,6 +818,7 @@ export default function FieldRenderer({
                     controllerField.onChange(
                       typeof value === "string" ? value.split(",") : value,
                     );
+                    onValueChange?.();
                   }}
                   onBlur={controllerField.onBlur}
                   renderValue={(selected) => selected.join(", ")}
@@ -1009,6 +1016,7 @@ export default function FieldRenderer({
                 } else {
                   controllerField.onChange(formatted);
                 }
+                onValueChange?.();
               }}
               onBlur={controllerField.onBlur}
               disabled={field.disabled}
@@ -1063,6 +1071,7 @@ export default function FieldRenderer({
             inputProps: { inputMode: field.inputMode ?? "numeric" },
             onChange: (event) => {
               controllerField.onChange(formatCurrency(event.target.value));
+              onValueChange?.();
             },
           })
         }
@@ -1117,6 +1126,7 @@ export default function FieldRenderer({
             },
             onChange: (event) => {
               controllerField.onChange(sanitizeDigits(event.target.value));
+              onValueChange?.();
             },
           })
         }

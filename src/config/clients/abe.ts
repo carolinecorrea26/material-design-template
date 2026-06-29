@@ -113,4 +113,5 @@ export const abeClient: ClientConfig = {
       },
     },
   },
+  licenseInfo: [],
 };

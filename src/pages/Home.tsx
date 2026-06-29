@@ -31,10 +31,9 @@ import type {
 } from "../config/coverages/types";
 import { getPagePath } from "../config/pages";
 import { formatUSD } from "../utils/formatUSD";
+import type { HomePageVariant } from "../config/clients/types";
 
 type DrawerId = "application-review" | "quick-decision" | null;
-
-const SHOW_QUOTE_TOOL = true;
 const PAGE_MAX_WIDTH = 1200;
 
 const SURFACE_SX = {
@@ -235,6 +234,12 @@ function HowApplyingWorksSection({
 
 export default function Home() {
   const client = getActiveClient();
+  const variant: HomePageVariant =
+    client.features?.homePageVariant ?? "default";
+  const showQuoteTool = variant === "default";
+  const showHeroImage = variant === "hero-image" || variant === "welcome-back";
+  const showHowApplyingWorks = variant !== "welcome-back";
+  const showCoverageOptions = variant !== "welcome-back";
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const [activeDrawer, setActiveDrawer] = useState<DrawerId>(null);
   const [activeCoverageCategory, setActiveCoverageCategory] =
@@ -314,9 +319,10 @@ export default function Home() {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: SHOW_QUOTE_TOOL
-              ? { xs: "1fr", md: "minmax(0, 500px) minmax(0, 500px)" }
-              : "1fr",
+            gridTemplateColumns:
+              showQuoteTool || showHeroImage
+                ? { xs: "1fr", md: "minmax(0, 500px) minmax(0, 500px)" }
+                : "1fr",
             gap: { xs: 2.5, md: 3.5 },
             alignItems: "start",
             ...FADE_IN_SECTION_SX(0),
@@ -326,14 +332,17 @@ export default function Home() {
             spacing={2}
             sx={{
               alignSelf: "flex-start",
-              maxWidth: SHOW_QUOTE_TOOL ? 600 : 760,
-              justifySelf: SHOW_QUOTE_TOOL ? "stretch" : "center",
-              textAlign: SHOW_QUOTE_TOOL
-                ? "left"
-                : { xs: "left", md: "center" },
-              alignItems: SHOW_QUOTE_TOOL
-                ? "flex-start"
-                : { xs: "flex-start", md: "center" },
+              maxWidth: showQuoteTool || showHeroImage ? 600 : 760,
+              justifySelf:
+                showQuoteTool || showHeroImage ? "stretch" : "center",
+              textAlign:
+                showQuoteTool || showHeroImage
+                  ? "left"
+                  : { xs: "left", md: "center" },
+              alignItems:
+                showQuoteTool || showHeroImage
+                  ? "flex-start"
+                  : { xs: "flex-start", md: "center" },
               px: { xs: 1.5, sm: 3, md: 0 },
               pb: 2,
             }}
@@ -371,10 +380,14 @@ export default function Home() {
                   fontWeight: 700,
                 }}
               >
-                {content.home.hero.title}
+                {variant === "welcome-back"
+                  ? "Welcome back!"
+                  : content.home.hero.title}
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                {resolveTemplate(content.home.hero.description)}
+                {variant === "welcome-back"
+                  ? "Resume your saved application or begin a new application below."
+                  : resolveTemplate(content.home.hero.description)}
               </Typography>
             </Stack>
 
@@ -388,7 +401,9 @@ export default function Home() {
             >
               <Button
                 component={RouterLink}
-                to={getPagePath("membership")}
+                to={getPagePath(
+                  variant === "welcome-back" ? "resume" : "membership",
+                )}
                 variant="contained"
                 size="large"
                 endIcon={<ArrowRightAltRoundedIcon />}
@@ -401,210 +416,255 @@ export default function Home() {
                   flexShrink: 0,
                 }}
               >
-                {content.home.hero.ctaLabel}
+                {variant === "welcome-back"
+                  ? "Resume Application"
+                  : content.home.hero.ctaLabel}
               </Button>
 
-              <Button
-                variant="outlined"
-                size="large"
-                sx={{
-                  width: { xs: "100%", sm: "auto" },
-                  px: 3.5,
-                  py: "16px",
-                  whiteSpace: "nowrap",
-                  flexShrink: 0,
-                }}
-                onClick={() => {
-                  howApplyingWorksRef.current?.scrollIntoView({
-                    behavior: "smooth",
-                  });
-                }}
-              >
-                {content.home.hero.secondaryCtaLabel}
-              </Button>
-            </Stack>
-
-            <Typography variant="body2" color="text.secondary">
-              {content.home.hero.resumePrompt}{" "}
-              <Link
-                component={RouterLink}
-                to={getPagePath("resume")}
-                variant="body2"
-                color="primary"
-                sx={{ textDecoration: "none", fontWeight: 700 }}
-              >
-                {content.home.hero.resumeLinkLabel}
-              </Link>
-            </Typography>
-          </Stack>
-
-          {SHOW_QUOTE_TOOL ? <HomeQuoteCard /> : null}
-        </Box>
-
-        <Box ref={howApplyingWorksRef} sx={FADE_IN_SECTION_SX(0.15)}>
-          <HowApplyingWorksSection
-            onOpenApplicationReview={() =>
-              setActiveDrawer("application-review")
-            }
-            onOpenQuickDecision={() => setActiveDrawer("quick-decision")}
-          />
-        </Box>
-
-        <Stack spacing={2.5} sx={FADE_IN_SECTION_SX(0.3)}>
-          <Stack spacing={1}>
-            <Typography variant="h2">
-              {content.home.coverageOptions.title}
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              {content.home.coverageOptions.description}
-            </Typography>
-          </Stack>
-
-          <Box
-            sx={{
-              ...SURFACE_SX,
-              overflow: "hidden",
-              background:
-                "linear-gradient(135deg, #f4f8ff 0%, #ffffff 52%, #f7fbff 100%)",
-            }}
-          >
-            {coverageGroups.length === 0 ? (
-              <Box sx={{ p: { xs: 2.5, md: 3 } }}>
-                <Alert severity="info">
-                  No coverage categories are currently available for this site.
-                </Alert>
-              </Box>
-            ) : (
-              <Stack
-                direction="row"
-                divider={<Divider flexItem orientation="vertical" />}
-              >
-                <Box
+              {variant === "welcome-back" ? (
+                <Button
+                  component={RouterLink}
+                  to={getPagePath("membership")}
+                  variant="outlined"
+                  size="large"
                   sx={{
-                    width: { xs: 56, md: 260 },
+                    width: { xs: "100%", sm: "auto" },
+                    px: 3.5,
+                    py: "16px",
+                    whiteSpace: "nowrap",
                     flexShrink: 0,
-                    backgroundColor: { xs: "transparent", md: "#fbfcff" },
                   }}
                 >
-                  <Tabs
-                    value={activeCoverageGroup?.category.id ?? false}
-                    onChange={(_, value: CoverageCategoryId) =>
-                      setActiveCoverageCategory(value)
-                    }
-                    orientation="vertical"
-                    variant="standard"
+                  New Application
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  size="large"
+                  sx={{
+                    width: { xs: "100%", sm: "auto" },
+                    px: 3.5,
+                    py: "16px",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                  }}
+                  onClick={() => {
+                    howApplyingWorksRef.current?.scrollIntoView({
+                      behavior: "smooth",
+                    });
+                  }}
+                >
+                  {content.home.hero.secondaryCtaLabel}
+                </Button>
+              )}
+            </Stack>
+
+            {(variant === "default" || variant === "hero-image") && (
+              <Typography variant="body2" color="text.secondary">
+                {content.home.hero.resumePrompt}{" "}
+                <Link
+                  component={RouterLink}
+                  to={getPagePath("resume")}
+                  variant="body2"
+                  color="primary"
+                  sx={{ textDecoration: "none", fontWeight: 700 }}
+                >
+                  {content.home.hero.resumeLinkLabel}
+                </Link>
+              </Typography>
+            )}
+          </Stack>
+
+          {showQuoteTool && <HomeQuoteCard />}
+          {showHeroImage && (
+            <Box
+              component="img"
+              src={`/client/${client.id}/hero.png`}
+              alt={`${client.branding.name} hero`}
+              sx={{
+                display: "block",
+                width: "100%",
+                maxWidth: 500,
+                height: "auto",
+                borderRadius: 4,
+                objectFit: "cover",
+              }}
+            />
+          )}
+        </Box>
+
+        {showHowApplyingWorks && (
+          <Box ref={howApplyingWorksRef} sx={FADE_IN_SECTION_SX(0.15)}>
+            <HowApplyingWorksSection
+              onOpenApplicationReview={() =>
+                setActiveDrawer("application-review")
+              }
+              onOpenQuickDecision={() => setActiveDrawer("quick-decision")}
+            />
+          </Box>
+        )}
+
+        {showCoverageOptions && (
+          <Stack spacing={2.5} sx={FADE_IN_SECTION_SX(0.3)}>
+            <Stack spacing={1}>
+              <Typography variant="h2">
+                {content.home.coverageOptions.title}
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                {content.home.coverageOptions.description}
+              </Typography>
+            </Stack>
+
+            <Box
+              sx={{
+                ...SURFACE_SX,
+                overflow: "hidden",
+                background:
+                  "linear-gradient(135deg, #f4f8ff 0%, #ffffff 52%, #f7fbff 100%)",
+              }}
+            >
+              {coverageGroups.length === 0 ? (
+                <Box sx={{ p: { xs: 2.5, md: 3 } }}>
+                  <Alert severity="info">
+                    No coverage categories are currently available for this
+                    site.
+                  </Alert>
+                </Box>
+              ) : (
+                <Stack
+                  direction="row"
+                  divider={<Divider flexItem orientation="vertical" />}
+                >
+                  <Box
                     sx={{
-                      px: { xs: 0, md: 0 },
-                      py: { xs: 1, md: 2 },
-                      minHeight: "100%",
-                      "& .MuiTabs-indicator": {
-                        backgroundColor: "primary.main",
-                      },
-                      "& .MuiTab-root": {
-                        alignItems: "center",
-                        justifyContent: { xs: "center", md: "flex-start" },
-                        textAlign: "left",
-                        textTransform: "none",
-                        fontWeight: 600,
-                        fontSize: "0.95rem",
-                        minHeight: 52,
-                        minWidth: { xs: 56, md: "auto" },
-                        px: { xs: 0, md: 2 },
-                      },
+                      width: { xs: 56, md: 260 },
+                      flexShrink: 0,
+                      backgroundColor: { xs: "transparent", md: "#fbfcff" },
                     }}
                   >
-                    {coverageGroups.map(({ category }) => {
-                      const IconComponent = category.icon;
-                      return (
-                        <Tab
-                          key={category.id}
-                          value={category.id}
-                          icon={<IconComponent sx={{ fontSize: "1.25rem" }} />}
-                          iconPosition="start"
-                          label={
-                            <Box
-                              component="span"
-                              sx={{ display: { xs: "none", md: "inline" } }}
-                            >
-                              {category.label}
+                    <Tabs
+                      value={activeCoverageGroup?.category.id ?? false}
+                      onChange={(_, value: CoverageCategoryId) =>
+                        setActiveCoverageCategory(value)
+                      }
+                      orientation="vertical"
+                      variant="standard"
+                      sx={{
+                        px: { xs: 0, md: 0 },
+                        py: { xs: 1, md: 2 },
+                        minHeight: "100%",
+                        "& .MuiTabs-indicator": {
+                          backgroundColor: "primary.main",
+                        },
+                        "& .MuiTab-root": {
+                          alignItems: "center",
+                          justifyContent: { xs: "center", md: "flex-start" },
+                          textAlign: "left",
+                          textTransform: "none",
+                          fontWeight: 600,
+                          fontSize: "0.95rem",
+                          minHeight: 52,
+                          minWidth: { xs: 56, md: "auto" },
+                          px: { xs: 0, md: 2 },
+                        },
+                      }}
+                    >
+                      {coverageGroups.map(({ category }) => {
+                        const IconComponent = category.icon;
+                        return (
+                          <Tab
+                            key={category.id}
+                            value={category.id}
+                            icon={
+                              <IconComponent sx={{ fontSize: "1.25rem" }} />
+                            }
+                            iconPosition="start"
+                            label={
+                              <Box
+                                component="span"
+                                sx={{ display: { xs: "none", md: "inline" } }}
+                              >
+                                {category.label}
+                              </Box>
+                            }
+                            sx={{
+                              gap: 1,
+                              "& .MuiTab-iconWrapper": {
+                                mr: { xs: 0, md: 1 },
+                              },
+                            }}
+                          />
+                        );
+                      })}
+                    </Tabs>
+                  </Box>
+
+                  <Box sx={{ flex: 1, p: { xs: 2.5, md: 3 } }}>
+                    {activeCoverageGroup ? (
+                      <Stack spacing={2}>
+                        <Stack spacing={0.75}>
+                          <Typography variant="h4">
+                            {activeCoverageGroup.category.label}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {
+                              content.coverage.categoryDescriptions[
+                                activeCoverageGroup.category.id
+                              ]
+                            }
+                          </Typography>
+                        </Stack>
+
+                        <Divider />
+
+                        <Stack spacing={1.5}>
+                          {activeCoverageGroup.products.map((product) => (
+                            <Box key={product.id}>
+                              <Stack spacing={0.4}>
+                                <Link
+                                  href="#"
+                                  underline="hover"
+                                  onClick={(event) => event.preventDefault()}
+                                  sx={{
+                                    fontWeight: 700,
+                                    color: "primary.main",
+                                    cursor: "pointer",
+                                    width: "fit-content",
+                                  }}
+                                >
+                                  {product.name}
+                                  {product.underwritingType === "QD" && (
+                                    <QuickDecisionIndicator />
+                                  )}
+                                </Link>
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  {product.description ?? product.definition}
+                                </Typography>
+                                <Typography
+                                  variant="caption"
+                                  color="text.secondary"
+                                >
+                                  {formatCoverageRange(product)} · Available
+                                  for:{" "}
+                                  {product.applicants
+                                    .map(getApplicantLabel)
+                                    .join(", ")}
+                                </Typography>
+                              </Stack>
                             </Box>
-                          }
-                          sx={{
-                            gap: 1,
-                            "& .MuiTab-iconWrapper": {
-                              mr: { xs: 0, md: 1 },
-                            },
-                          }}
-                        />
-                      );
-                    })}
-                  </Tabs>
-                </Box>
-
-                <Box sx={{ flex: 1, p: { xs: 2.5, md: 3 } }}>
-                  {activeCoverageGroup ? (
-                    <Stack spacing={2}>
-                      <Stack spacing={0.75}>
-                        <Typography variant="h4">
-                          {activeCoverageGroup.category.label}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {
-                            content.coverage.categoryDescriptions[
-                              activeCoverageGroup.category.id
-                            ]
-                          }
-                        </Typography>
+                          ))}
+                        </Stack>
                       </Stack>
-
-                      <Divider />
-
-                      <Stack spacing={1.5}>
-                        {activeCoverageGroup.products.map((product) => (
-                          <Box key={product.id}>
-                            <Stack spacing={0.4}>
-                              <Link
-                                href="#"
-                                underline="hover"
-                                onClick={(event) => event.preventDefault()}
-                                sx={{
-                                  fontWeight: 700,
-                                  color: "primary.main",
-                                  cursor: "pointer",
-                                  width: "fit-content",
-                                }}
-                              >
-                                {product.name}
-                                {product.underwritingType === "QD" && (
-                                  <QuickDecisionIndicator />
-                                )}
-                              </Link>
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                              >
-                                {product.description ?? product.definition}
-                              </Typography>
-                              <Typography
-                                variant="caption"
-                                color="text.secondary"
-                              >
-                                {formatCoverageRange(product)} · Available for:{" "}
-                                {product.applicants
-                                  .map(getApplicantLabel)
-                                  .join(", ")}
-                              </Typography>
-                            </Stack>
-                          </Box>
-                        ))}
-                      </Stack>
-                    </Stack>
-                  ) : null}
-                </Box>
-              </Stack>
-            )}
-          </Box>
-        </Stack>
+                    ) : null}
+                  </Box>
+                </Stack>
+              )}
+            </Box>
+          </Stack>
+        )}
 
         <Stack spacing={2.5} sx={FADE_IN_SECTION_SX(0.45)}>
           <Box

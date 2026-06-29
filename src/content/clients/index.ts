@@ -4,6 +4,7 @@ import type { SiteContent } from "../types";
 import { abeContentOverrides } from "./abe";
 import { amaContentOverrides } from "./ama";
 import { demoContentOverrides } from "./demo";
+import { nsoContentOverrides } from "./nso";
 import { waepaContentOverrides } from "./waepa";
 
 export const clientContentOverrides: Record<
@@ -13,5 +14,6 @@ export const clientContentOverrides: Record<
   abe: abeContentOverrides,
   ama: amaContentOverrides,
   demo: demoContentOverrides,
+  nso: nsoContentOverrides,
   waepa: waepaContentOverrides,
 };

@@ -1,0 +1,871 @@
+import {
+  Alert,
+  Box,
+  Checkbox,
+  Chip,
+  CircularProgress,
+  Collapse,
+  Divider,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
+import FormSectionTitle from "../../components/page/SectionTitle";
+import SelectableOptionRow from "../../components/fields/OptionRow";
+import QuickDecisionIndicator from "../../components/coverage/QuickDecisionBadge";
+import { QuickDecisionMark } from "../../components/overlays/QuickDecisionInfo";
+import { coverageApplicantToSection } from "../../config/formSectionTitle";
+import type {
+  CoverageCategoryId,
+  CoverageApplicantId,
+} from "../../config/coverages/types";
+import type { EstimatedRateFrequency } from "../../config/clients/types";
+import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
+import { getContent } from "../../content";
+import { formatUSD } from "../../utils/formatUSD";
+import EstimatedCostPanel from "./EstimatedCostPanel";
+import { getDisplayedPremium, getBenefitAmountLabel } from "./useCoverageState";
+
+type ResolvedCoverage = ReturnType<typeof getActiveClientCoverages>[number];
+import {
+  categoryMaxAggregate,
+  categoryFootnotes,
+} from "../../config/coverageConstants";
+
+const applicantCheckboxLabels: Record<CoverageApplicantId, string> =
+  getContent().coverage.applicantCheckboxLabels;
+
+type ProductCatalogProps = {
+  availableCategories: Array<{
+    id: CoverageCategoryId;
+    label: string;
+    icon: React.ElementType;
+    shortLabel?: string;
+  }>;
+  selectedCategories: CoverageCategoryId[];
+  categoryProducts: ResolvedCoverage[];
+  categoryEligibility: Partial<Record<CoverageCategoryId, boolean>>;
+  allCategoriesIneligible: boolean;
+  hasQdCategorySelected: boolean;
+  selectedCoverageIds: string[];
+  productApplicants: Record<string, CoverageApplicantId[]>;
+  storedAmounts: Record<string, number>;
+  storedRiders: Record<string, boolean>;
+  storedRiderAmounts: Record<string, number>;
+  storedWaitingPeriods: Record<string, string>;
+  storedMaxBenefitPeriods: Record<string, string>;
+  calculatingRateKeys: Set<string>;
+  rateFrequency: EstimatedRateFrequency;
+  frequencyCalculating: boolean;
+  selectionCalculating: boolean;
+  showRateFrequencyToggle: boolean;
+  showProducts: boolean;
+  productsLoading: boolean;
+  grandTotal: number;
+  activeClient: { support: { phoneDisplay?: string; email?: string } };
+  onToggleApplicant: (
+    coverageId: string,
+    applicant: CoverageApplicantId,
+  ) => void;
+  onAmountChange: (key: string, amount: number) => void;
+  onFrequencyToggle: (freq: EstimatedRateFrequency) => void;
+  onRiderToggle: (
+    coverageId: string,
+    riderId: string,
+    applicantId: CoverageApplicantId,
+  ) => void;
+  onRiderAmountChange: (
+    coverageId: string,
+    riderId: string,
+    applicantId: CoverageApplicantId,
+    amount: number,
+  ) => void;
+  onWaitingPeriodChange: (coverageId: string, value: string) => void;
+  onMaxBenefitPeriodChange: (coverageId: string, value: string) => void;
+  onQdDrawerOpen: () => void;
+  getVisibleApplicants: (
+    applicants: CoverageApplicantId[],
+    coverageId?: string,
+  ) => CoverageApplicantId[];
+  calcApplicantPremium: (
+    coverage: ResolvedCoverage,
+    applicantId: CoverageApplicantId,
+  ) => number;
+  generateAmountChoices: (
+    categoryId: CoverageCategoryId,
+    minAmount?: number,
+    maxAmount?: number,
+  ) => number[];
+};
+
+export default function ProductCatalog(props: ProductCatalogProps) {
+  const {
+    availableCategories,
+    selectedCategories,
+    categoryProducts,
+    categoryEligibility,
+    allCategoriesIneligible,
+    hasQdCategorySelected,
+    selectedCoverageIds,
+    productApplicants,
+    storedAmounts,
+    storedRiders,
+    storedRiderAmounts,
+    storedWaitingPeriods,
+    storedMaxBenefitPeriods,
+    calculatingRateKeys,
+    rateFrequency,
+    frequencyCalculating,
+    selectionCalculating,
+    showRateFrequencyToggle,
+    showProducts,
+    productsLoading,
+    grandTotal,
+    activeClient,
+    onToggleApplicant,
+    onAmountChange,
+    onFrequencyToggle,
+    onRiderToggle,
+    onRiderAmountChange,
+    onWaitingPeriodChange,
+    onMaxBenefitPeriodChange,
+    onQdDrawerOpen,
+    getVisibleApplicants,
+    calcApplicantPremium,
+    generateAmountChoices,
+  } = props;
+
+  const theme = useTheme();
+  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+
+  if (selectedCategories.length === 0 || !showProducts) return null;
+
+  if (productsLoading) {
+    return (
+      <Stack spacing={2} alignItems="center" sx={{ py: 6 }}>
+        <CircularProgress size={32} />
+        <Typography variant="body2" color="text.secondary">
+          Loading your coverage options…
+        </Typography>
+      </Stack>
+    );
+  }
+
+  const calcCoveragePremium = (coverageId: string) => {
+    const coverage = categoryProducts.find((c) => c.id === coverageId);
+    if (!coverage) return 0;
+    const applicants = productApplicants[coverageId] ?? [];
+    return applicants.reduce(
+      (sum, applicantId) => sum + calcApplicantPremium(coverage, applicantId),
+      0,
+    );
+  };
+
+  const isCoverageCalculating = (coverageId: string) => {
+    const applicants = productApplicants[coverageId] ?? [];
+    return (
+      applicants.some((a) => calculatingRateKeys.has(`${coverageId}:${a}`)) ||
+      frequencyCalculating
+    );
+  };
+
+  return (
+    <>
+      {/* QuickDecision note */}
+      {hasQdCategorySelected && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 1,
+            p: 2,
+            mb: 2,
+            borderRadius: 2,
+            backgroundColor: "#e6f4ee",
+          }}
+        >
+          <OfflineBoltIcon color="success" sx={{ mt: 0.25, flexShrink: 0 }} />
+          <Typography variant="body2" color="text.secondary">
+            <Typography
+              component="span"
+              variant="body2"
+              sx={{ fontWeight: 700, color: "success.main" }}
+            >
+              <QuickDecisionMark />
+            </Typography>{" "}
+            helps many applicants receive a decision instantly or within a few
+            days without a medical exam. This starts with health questions you
+            answer online to reduce time needed with phone calls or other follow
+            up.{" "}
+            <Typography
+              component="span"
+              role="button"
+              tabIndex={0}
+              onClick={onQdDrawerOpen}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  onQdDrawerOpen();
+                }
+              }}
+              sx={{
+                color: "primary.main",
+                textDecoration: "underline",
+                textUnderlineOffset: "0.12em",
+                cursor: "pointer",
+                font: "inherit",
+                lineHeight: "inherit",
+              }}
+            >
+              Learn more about this process.
+            </Typography>
+          </Typography>
+        </Box>
+      )}
+
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          alignItems: { md: "flex-start" },
+          gap: 3,
+        }}
+      >
+        {/* Product boxes column */}
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Collapse in={showProducts}>
+            <Stack spacing={3}>
+              {selectedCategories.map((categoryId) => {
+                const category = availableCategories.find(
+                  (c) => c.id === categoryId,
+                );
+                if (!category) return null;
+
+                if (categoryEligibility[categoryId] === false) {
+                  return (
+                    <Stack spacing={2} key={categoryId}>
+                      <Typography variant="overline">
+                        {category.label}
+                      </Typography>
+                      <Alert severity="warning" sx={{ borderRadius: 2 }}>
+                        Based on your answers, you are not eligible for{" "}
+                        {category.label} coverage at this time.
+                      </Alert>
+                    </Stack>
+                  );
+                }
+
+                const productsInCategory = categoryProducts.filter(
+                  (c) => c.categoryId === categoryId,
+                );
+                if (productsInCategory.length === 0) return null;
+
+                return (
+                  <Stack spacing={2} key={categoryId}>
+                    <Stack>
+                      <Typography variant="overline">
+                        {category.label}
+                      </Typography>
+                      {categoryMaxAggregate[categoryId] && (
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          sx={{ fontSize: "0.75rem" }}
+                        >
+                          Max aggregate: {categoryMaxAggregate[categoryId]}
+                        </Typography>
+                      )}
+                    </Stack>
+                    {productsInCategory.map((coverage) => (
+                      <ProductCard
+                        key={coverage.id}
+                        coverage={coverage}
+                        productApplicants={productApplicants}
+                        storedAmounts={storedAmounts}
+                        storedRiders={storedRiders}
+                        storedRiderAmounts={storedRiderAmounts}
+                        storedWaitingPeriods={storedWaitingPeriods}
+                        storedMaxBenefitPeriods={storedMaxBenefitPeriods}
+                        calculatingRateKeys={calculatingRateKeys}
+                        rateFrequency={rateFrequency}
+                        frequencyCalculating={frequencyCalculating}
+                        onToggleApplicant={onToggleApplicant}
+                        onAmountChange={onAmountChange}
+                        onRiderToggle={onRiderToggle}
+                        onRiderAmountChange={onRiderAmountChange}
+                        onWaitingPeriodChange={onWaitingPeriodChange}
+                        onMaxBenefitPeriodChange={onMaxBenefitPeriodChange}
+                        getVisibleApplicants={getVisibleApplicants}
+                        calcApplicantPremium={calcApplicantPremium}
+                        generateAmountChoices={generateAmountChoices}
+                      />
+                    ))}
+                    {categoryFootnotes[categoryId] && (
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{
+                          display: "block",
+                          mt: 1,
+                          fontStyle: "italic",
+                          fontSize: "0.7rem",
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        {categoryFootnotes[categoryId]}
+                      </Typography>
+                    )}
+                  </Stack>
+                );
+              })}
+              {allCategoriesIneligible && (
+                <Alert
+                  severity="error"
+                  sx={{
+                    borderRadius: 2,
+                    "& .MuiAlert-message": { width: "100%" },
+                  }}
+                >
+                  <Typography variant="body2" sx={{ fontWeight: 700, mb: 1 }}>
+                    You are not eligible for any coverage options
+                  </Typography>
+                  <Typography variant="body2" sx={{ mb: 1 }}>
+                    Based on your answers, you are not currently eligible for
+                    any available coverage. Please contact us for assistance.
+                  </Typography>
+                  {activeClient.support.phoneDisplay && (
+                    <Typography variant="body2">
+                      Phone: {activeClient.support.phoneDisplay}
+                    </Typography>
+                  )}
+                  {activeClient.support.email && (
+                    <Typography variant="body2">
+                      Email: {activeClient.support.email}
+                    </Typography>
+                  )}
+                </Alert>
+              )}
+            </Stack>
+          </Collapse>
+        </Box>
+
+        {/* Right column: sticky estimated cost panel (md+ only) */}
+        {isMdUp && (
+          <Box
+            sx={{
+              position: "sticky",
+              top: 24,
+              alignSelf: "flex-start",
+              width: "40%",
+              minWidth: 240,
+              maxWidth: 290,
+              flexShrink: 0,
+            }}
+          >
+            <EstimatedCostPanel
+              categoryProducts={categoryProducts}
+              selectedCoverageIds={selectedCoverageIds}
+              productApplicants={productApplicants}
+              calculatingRateKeys={calculatingRateKeys}
+              frequencyCalculating={frequencyCalculating}
+              selectionCalculating={selectionCalculating}
+              rateFrequency={rateFrequency}
+              showRateFrequencyToggle={showRateFrequencyToggle}
+              grandTotal={grandTotal}
+              onFrequencyToggle={onFrequencyToggle}
+              calcCoveragePremium={calcCoveragePremium}
+              isCoverageCalculating={isCoverageCalculating}
+            />
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: "block", mt: 1.5, fontStyle: "italic" }}
+            >
+              <sup>1</sup> Quoted cost is the best rate available. Final cost
+              may vary based on gender, health status, and tobacco/nicotine use.
+            </Typography>
+          </Box>
+        )}
+      </Box>
+
+      {/* Estimated cost section on mobile (below products) */}
+      {!isMdUp && (
+        <Box sx={{ mt: 3 }}>
+          <EstimatedCostPanel
+            categoryProducts={categoryProducts}
+            selectedCoverageIds={selectedCoverageIds}
+            productApplicants={productApplicants}
+            calculatingRateKeys={calculatingRateKeys}
+            frequencyCalculating={frequencyCalculating}
+            selectionCalculating={selectionCalculating}
+            rateFrequency={rateFrequency}
+            showRateFrequencyToggle={showRateFrequencyToggle}
+            grandTotal={grandTotal}
+            onFrequencyToggle={onFrequencyToggle}
+            calcCoveragePremium={calcCoveragePremium}
+            isCoverageCalculating={isCoverageCalculating}
+          />
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ display: "block", mt: 1.5, fontStyle: "italic" }}
+          >
+            <sup>1</sup> Quoted cost is the best rate available. Final cost may
+            vary based on gender, health status, and tobacco/nicotine use.
+          </Typography>
+        </Box>
+      )}
+    </>
+  );
+}
+
+// ── Product Card ──────────────────────────────────────────────────────────────
+
+type ProductCardProps = {
+  coverage: ProductCatalogProps["categoryProducts"][number];
+  productApplicants: Record<string, CoverageApplicantId[]>;
+  storedAmounts: Record<string, number>;
+  storedRiders: Record<string, boolean>;
+  storedRiderAmounts: Record<string, number>;
+  storedWaitingPeriods: Record<string, string>;
+  storedMaxBenefitPeriods: Record<string, string>;
+  calculatingRateKeys: Set<string>;
+  rateFrequency: EstimatedRateFrequency;
+  frequencyCalculating: boolean;
+  onToggleApplicant: ProductCatalogProps["onToggleApplicant"];
+  onAmountChange: ProductCatalogProps["onAmountChange"];
+  onRiderToggle: ProductCatalogProps["onRiderToggle"];
+  onRiderAmountChange: ProductCatalogProps["onRiderAmountChange"];
+  onWaitingPeriodChange: ProductCatalogProps["onWaitingPeriodChange"];
+  onMaxBenefitPeriodChange: ProductCatalogProps["onMaxBenefitPeriodChange"];
+  getVisibleApplicants: ProductCatalogProps["getVisibleApplicants"];
+  calcApplicantPremium: ProductCatalogProps["calcApplicantPremium"];
+  generateAmountChoices: ProductCatalogProps["generateAmountChoices"];
+};
+
+function ProductCard({
+  coverage,
+  productApplicants,
+  storedAmounts,
+  storedRiders,
+  storedRiderAmounts,
+  storedWaitingPeriods,
+  storedMaxBenefitPeriods,
+  calculatingRateKeys,
+  rateFrequency,
+  frequencyCalculating,
+  onToggleApplicant,
+  onAmountChange,
+  onRiderToggle,
+  onRiderAmountChange,
+  onWaitingPeriodChange,
+  onMaxBenefitPeriodChange,
+  getVisibleApplicants,
+  calcApplicantPremium,
+  generateAmountChoices,
+}: ProductCardProps) {
+  const visibleApplicants = getVisibleApplicants(
+    coverage.applicants,
+    coverage.id,
+  );
+  const currentApplicants = productApplicants[coverage.id] ?? [];
+  const hasAnyApplicantSelected = currentApplicants.length > 0;
+  const choices = generateAmountChoices(
+    coverage.categoryId,
+    coverage.minAmount,
+    coverage.maxAmount,
+  );
+  const amountLabel = getBenefitAmountLabel(coverage.categoryId);
+  const rateSuffix = rateFrequency === "annual" ? "/yr" : "/mo";
+  const isMultiApplicant = visibleApplicants.length > 1;
+
+  return (
+    <Box
+      sx={{
+        border: "1px solid",
+        borderColor: hasAnyApplicantSelected ? "primary.main" : "divider",
+        borderRadius: "16px",
+        background:
+          "linear-gradient(135deg, rgb(244, 248, 255) 0%, rgb(255, 255, 255) 52%, rgb(247, 251, 255) 100%)",
+        p: 2.5,
+        display: "flex",
+        flexDirection: "column",
+        gap: 1.5,
+      }}
+    >
+      {/* Product title / subtitle */}
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="flex-start"
+        spacing={1}
+      >
+        <Stack spacing={0.25} sx={{ minWidth: 0 }}>
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: 700,
+              fontSize: "1rem",
+              letterSpacing: "-0.25px",
+            }}
+          >
+            {coverage.name}
+            {coverage.underwritingType === "QD" && <QuickDecisionIndicator />}
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ fontSize: "12px" }}
+          >
+            {coverage.description ?? coverage.definition}
+          </Typography>
+        </Stack>
+        {coverage.featured && (
+          <Chip
+            icon={<AutoAwesomeIcon />}
+            label="Featured"
+            size="small"
+            color="primary"
+            sx={{
+              flexShrink: 0,
+              "& .MuiChip-label": { fontSize: "0.675rem", fontWeight: 700 },
+              "& .MuiChip-icon": { fontSize: "0.875rem" },
+            }}
+          />
+        )}
+      </Stack>
+
+      {/* Per-applicant sections */}
+      <Stack spacing={isMultiApplicant ? 3 : 2} sx={{ mt: 1 }}>
+        {visibleApplicants.map((applicantId, idx) => {
+          const isSelected = currentApplicants.includes(applicantId);
+          const sectionId = coverageApplicantToSection[applicantId];
+          const key = `${coverage.id}:${applicantId}`;
+          const currentAmount = storedAmounts[key] ?? 0;
+          const hasAmountSelection = storedAmounts[key] != null;
+          const selectValue = hasAmountSelection ? currentAmount : "";
+          const isCalculatingRate = calculatingRateKeys.has(key);
+          const premium = isSelected
+            ? calcApplicantPremium(coverage, applicantId)
+            : 0;
+          const displayedPremium = getDisplayedPremium(premium, rateFrequency);
+
+          return (
+            <Box key={applicantId}>
+              {isMultiApplicant && (
+                <>
+                  {idx > 0 && <Divider sx={{ mb: 1.5 }} />}
+                  <Box sx={{ mb: 1.5 }}>
+                    <FormSectionTitle applicant={sectionId} />
+                  </Box>
+                </>
+              )}
+
+              <SelectableOptionRow>
+                <Checkbox
+                  checked={isSelected}
+                  onChange={() => onToggleApplicant(coverage.id, applicantId)}
+                  size="small"
+                  sx={{
+                    p: 0,
+                    pointerEvents: "none",
+                    color: "text.primary",
+                    "&.Mui-checked": { color: "primary.main" },
+                  }}
+                />
+                <Typography variant="body2" sx={{ flex: 1, fontWeight: 600 }}>
+                  {applicantCheckboxLabels[applicantId]}
+                </Typography>
+                {isSelected ? (
+                  <Chip
+                    label="Added"
+                    size="small"
+                    color="success"
+                    sx={{
+                      height: 22,
+                      "& .MuiChip-label": {
+                        fontSize: "0.7rem",
+                        fontWeight: 600,
+                        px: 1,
+                      },
+                    }}
+                  />
+                ) : (
+                  <Chip
+                    label="Add"
+                    size="small"
+                    variant="outlined"
+                    sx={{
+                      height: 22,
+                      borderColor: "grey.300",
+                      color: "text.secondary",
+                      "& .MuiChip-label": {
+                        fontSize: "0.7rem",
+                        fontWeight: 600,
+                        px: 1,
+                      },
+                    }}
+                  />
+                )}
+              </SelectableOptionRow>
+
+              {/* Benefit amount & cost */}
+              <Stack spacing={1.5} sx={{ mt: 1.5 }}>
+                <FormControl fullWidth margin="normal">
+                  <InputLabel>{amountLabel}</InputLabel>
+                  <Select
+                    label={amountLabel}
+                    value={selectValue}
+                    displayEmpty={false}
+                    onChange={(e) =>
+                      onAmountChange(key, Number(e.target.value))
+                    }
+                  >
+                    {choices.map((amt) => (
+                      <MenuItem key={amt} value={amt}>
+                        {formatUSD(amt, 0)}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                {/* Estimated cost */}
+                {hasAmountSelection && currentAmount > 0 && (
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    justifyContent="flex-end"
+                    alignItems="center"
+                    sx={{ minHeight: 21 }}
+                  >
+                    {isCalculatingRate || frequencyCalculating ? (
+                      <CircularProgress
+                        size={16}
+                        thickness={4}
+                        sx={{ color: "primary.main" }}
+                      />
+                    ) : (
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "text.secondary",
+                          fontSize: 12,
+                          lineHeight: "21px",
+                        }}
+                      >
+                        Est. cost<sup>1</sup>:{" "}
+                        <Typography
+                          component="span"
+                          sx={{
+                            color: "primary.main",
+                            fontSize: 14,
+                            fontWeight: 700,
+                            lineHeight: "21px",
+                          }}
+                        >
+                          {formatUSD(displayedPremium)}
+                          {rateSuffix}
+                        </Typography>
+                      </Typography>
+                    )}
+                  </Stack>
+                )}
+
+                {/* Additional fields when applicant is selected */}
+                {isSelected && currentAmount > 0 && (
+                  <>
+                    {/* Waiting Period (DI and OO) */}
+                    {coverage.waitingPeriodOptions &&
+                      (coverage.categoryId === "DI" ||
+                        coverage.categoryId === "OO") && (
+                        <FormControl fullWidth margin="normal">
+                          <InputLabel>Waiting Period</InputLabel>
+                          <Select
+                            label="Waiting Period"
+                            value={
+                              storedWaitingPeriods[coverage.id] ??
+                              coverage.waitingPeriodOptions[0].value
+                            }
+                            onChange={(e) =>
+                              onWaitingPeriodChange(
+                                coverage.id,
+                                e.target.value as string,
+                              )
+                            }
+                          >
+                            {coverage.waitingPeriodOptions.map((opt) => (
+                              <MenuItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          <FormHelperText>
+                            The number of consecutive days you must be totally
+                            disabled by a covered illness or injury and not
+                            gainfully employed in any occupation before benefits
+                            commence. Coverage with a longer waiting period is
+                            less expensive.
+                          </FormHelperText>
+                        </FormControl>
+                      )}
+
+                    {/* Maximum Benefit Period (OO only) */}
+                    {coverage.categoryId === "OO" &&
+                      coverage.maxBenefitPeriodOptions && (
+                        <FormControl fullWidth margin="normal">
+                          <InputLabel>Maximum Benefit Period</InputLabel>
+                          <Select
+                            label="Maximum Benefit Period"
+                            value={
+                              storedMaxBenefitPeriods[coverage.id] ??
+                              coverage.maxBenefitPeriodOptions[0].value
+                            }
+                            onChange={(e) =>
+                              onMaxBenefitPeriodChange(
+                                coverage.id,
+                                e.target.value as string,
+                              )
+                            }
+                          >
+                            {coverage.maxBenefitPeriodOptions.map((opt) => (
+                              <MenuItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          <FormHelperText>
+                            The maximum length of time Office Overhead benefits
+                            will be paid for eligible business expenses while
+                            disabled.
+                          </FormHelperText>
+                        </FormControl>
+                      )}
+
+                    {/* Optional Benefit(s) — riders */}
+                    {coverage.riders && coverage.riders.length > 0 && (
+                      <Box>
+                        <Typography
+                          variant="body2"
+                          sx={{ fontWeight: 700, mb: 1 }}
+                        >
+                          Optional Benefit(s)
+                        </Typography>
+                        <Stack spacing={1}>
+                          {coverage.riders.map((rider) => {
+                            const riderKey = `${coverage.id}:${rider.id}:${applicantId}`;
+                            const isChecked = !!storedRiders[riderKey];
+
+                            return (
+                              <Box key={rider.id}>
+                                <SelectableOptionRow>
+                                  <Checkbox
+                                    checked={isChecked}
+                                    onChange={() =>
+                                      onRiderToggle(
+                                        coverage.id,
+                                        rider.id,
+                                        applicantId,
+                                      )
+                                    }
+                                    inputProps={{
+                                      "aria-label": `${rider.name} selection`,
+                                    }}
+                                    size="small"
+                                    sx={{
+                                      p: 0,
+                                      pointerEvents: "none",
+                                      color: "text.primary",
+                                      "&.Mui-checked": {
+                                        color: "primary.main",
+                                      },
+                                    }}
+                                  />
+                                  <Stack
+                                    spacing={0.5}
+                                    sx={{ flex: 1, minWidth: 0 }}
+                                  >
+                                    <Typography
+                                      variant="body2"
+                                      sx={{ fontWeight: 700 }}
+                                    >
+                                      {rider.name}
+                                    </Typography>
+                                    <Typography
+                                      variant="body2"
+                                      color="text.secondary"
+                                    >
+                                      {rider.description}
+                                    </Typography>
+                                  </Stack>
+                                </SelectableOptionRow>
+
+                                {rider.hasAmount &&
+                                  isChecked &&
+                                  rider.minAmount != null &&
+                                  rider.maxAmount != null && (
+                                    <FormControl
+                                      margin="normal"
+                                      sx={{ ml: 4, minWidth: 250 }}
+                                    >
+                                      <InputLabel>
+                                        Rider Benefit Amount
+                                      </InputLabel>
+                                      <Select
+                                        label="Rider Benefit Amount"
+                                        value={
+                                          storedRiderAmounts[riderKey] ?? 0
+                                        }
+                                        onChange={(e) =>
+                                          onRiderAmountChange(
+                                            coverage.id,
+                                            rider.id,
+                                            applicantId,
+                                            Number(e.target.value),
+                                          )
+                                        }
+                                      >
+                                        {generateAmountChoices(
+                                          coverage.categoryId,
+                                          rider.minAmount,
+                                          rider.maxAmount,
+                                        ).map((amt) => (
+                                          <MenuItem key={amt} value={amt}>
+                                            {formatUSD(amt, 0)}
+                                          </MenuItem>
+                                        ))}
+                                      </Select>
+                                    </FormControl>
+                                  )}
+                              </Box>
+                            );
+                          })}
+                        </Stack>
+                      </Box>
+                    )}
+                  </>
+                )}
+
+                {/* Message when amount is $0 */}
+                {isSelected && hasAmountSelection && currentAmount === 0 && (
+                  <Alert severity="info" icon={false} sx={{ mt: 1 }}>
+                    You have selected $0 for this coverage. This means you are
+                    not applying for this product. Please ensure your selections
+                    look correct.
+                  </Alert>
+                )}
+              </Stack>
+            </Box>
+          );
+        })}
+      </Stack>
+    </Box>
+  );
+}

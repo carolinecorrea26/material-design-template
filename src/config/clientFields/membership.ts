@@ -46,6 +46,15 @@ export const membershipClientFields: Partial<
     },
     extraFields: [],
   },
+  nso: {
+    showTitleField: false,
+    overrides: {
+      membership: {
+        label: "Are you a nurse?",
+      },
+    },
+    extraFields: [],
+  },
   waepa: {
     showTitleField: false,
     overrides: {

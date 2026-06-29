@@ -3,6 +3,69 @@ import type { PageSectionConfig } from "./types";
 import { applicantSectionTitles } from "../formSectionTitle";
 
 export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
+  coverage: [
+    {
+      id: "selfCoverageQuestions",
+      pageId: "coverage",
+      description: "Personal details",
+      applicant: "self",
+      fieldIds: ["gender", "smoker"],
+    },
+    {
+      id: "selfCoverageTobacco",
+      pageId: "coverage",
+      applicant: "self",
+      fieldIds: ["tobacco-last-used", "tobacco-products"],
+      visibleWhen: [{ fieldId: "smoker", equals: "yes" }],
+    },
+    {
+      id: "selfCoverageWorkIncome",
+      pageId: "coverage",
+      description: "Work & income",
+      applicant: "self",
+      fieldIds: ["hours-worked-per-week", "average-monthly-income"],
+    },
+    {
+      id: "selfCoverageBusinessExpenses",
+      pageId: "coverage",
+      description: "Business expenses",
+      applicant: "self",
+      fieldIds: [
+        "monthly-business-expenses",
+        "business-expense-responsibility",
+      ],
+    },
+    {
+      id: "spouseCoverageQuestions",
+      pageId: "coverage",
+      description: "Personal details",
+      applicant: "spouse",
+      fieldIds: ["spouse-gender", "spouse-smoker"],
+      visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
+    },
+    {
+      id: "spouseCoverageTobacco",
+      pageId: "coverage",
+      applicant: "spouse",
+      fieldIds: ["spouse-tobacco-last-used", "spouse-tobacco-products"],
+      visibleWhen: [
+        { fieldId: "dependents", includes: "spouse" },
+        { fieldId: "spouse-smoker", equals: "yes" },
+      ],
+    },
+    {
+      id: "spouseCoverageWorkIncome",
+      pageId: "coverage",
+      description: "Work & income",
+      applicant: "spouse",
+      fieldIds: [
+        "spouse-hours-worked-per-week",
+        "spouse-average-monthly-income",
+      ],
+      visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
+    },
+  ],
+
   membership: [
     {
       id: "default",

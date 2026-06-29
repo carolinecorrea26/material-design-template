@@ -7,16 +7,14 @@ import type { PagesContent } from "../types";
 export const pagesDefaults: Partial<PagesContent> = {
   home: { title: "Home", navTitle: "Home" },
   membership: {
-    title:
-      "Starting your application for {{clientAcronym}}-sponsored insurance",
+    title: "Your application for {{clientAcronym}}-sponsored insurance",
     subhead:
-      "This application is for {{clientAcronym}}-sponsored group insurance.",
+      "Apply for {{clientAcronym}}-sponsored insurance online in a few guided steps. We need the following information to review your eligibility and coverage options.",
     navTitle: "Membership",
   },
   eligibility: {
     title: "Check your eligibility",
-    subhead:
-      "Answer a few questions to confirm which coverage options are available to you.",
+    subhead: "Answer a few questions to confirm your coverage options.",
     navTitle: "Check eligibility",
   },
   coverage: {

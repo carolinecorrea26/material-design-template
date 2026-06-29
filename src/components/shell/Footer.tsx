@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { Box, Link, Stack, Typography } from "@mui/material";
+import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
+import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
+import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import type { ClientConfig } from "../../config/clients/types";
 import { getContent } from "../../content";
 
@@ -62,38 +66,76 @@ export default function AppFooter({ client }: AppFooterProps) {
               )}
             </Typography>
 
-            <Box sx={{ mt: 2 }}>
+            <Stack sx={{ mt: 2 }} spacing={0.75}>
               {client.support.website && (
-                <Typography variant="caption" color="text.secondary">
-                  <strong>Website:</strong>{" "}
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <LanguageOutlinedIcon
+                    sx={{ fontSize: 16, color: "text.secondary" }}
+                  />
                   <Link
                     href={`https://${client.support.website}`}
                     target="_blank"
                     rel="noopener noreferrer"
+                    underline="hover"
+                    variant="caption"
                   >
                     {client.support.website}
                   </Link>
-                </Typography>
-              )}
-
-              {(client.support.phoneDisplay ?? client.support.phone) && (
-                <Typography variant="caption" color="text.secondary">
-                  <strong>Phone:</strong>{" "}
-                  <Link href={`tel:${client.support.phone}`}>
-                    {client.support.phoneDisplay ?? client.support.phone}
-                  </Link>
-                </Typography>
+                </Stack>
               )}
 
               {client.support.email && (
-                <Typography variant="caption" color="text.secondary">
-                  <strong>Email:</strong>{" "}
-                  <Link href={`mailto:${client.support.email}`}>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <EmailOutlinedIcon
+                    sx={{ fontSize: 16, color: "text.secondary" }}
+                  />
+                  <Link
+                    href={`mailto:${client.support.email}`}
+                    underline="hover"
+                    variant="caption"
+                  >
                     {client.support.email}
                   </Link>
-                </Typography>
+                </Stack>
               )}
-            </Box>
+
+              {(client.support.phoneDisplay ?? client.support.phone) && (
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <PhoneOutlinedIcon
+                    sx={{ fontSize: 16, color: "text.secondary" }}
+                  />
+                  <Link
+                    href={`tel:${client.support.phone}`}
+                    underline="hover"
+                    variant="caption"
+                  >
+                    {client.support.phoneDisplay ?? client.support.phone}
+                  </Link>
+                </Stack>
+              )}
+
+              {client.support.phoneHours && (
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <AccessTimeOutlinedIcon
+                    sx={{ fontSize: 16, color: "text.secondary" }}
+                  />
+                  <Typography variant="caption" color="text.secondary">
+                    {client.support.phoneHours}
+                  </Typography>
+                </Stack>
+              )}
+            </Stack>
+
+            {client.licenseInfo && client.licenseInfo.length > 0 && (
+              <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
+                {client.licenseInfo.map((line, i) => (
+                  <span key={i}>
+                    {line}
+                    {i < client.licenseInfo!.length - 1 && <br />}
+                  </span>
+                ))}
+              </Typography>
+            )}
           </Stack>
         </Box>
 
@@ -121,7 +163,11 @@ export default function AppFooter({ client }: AppFooterProps) {
             </Typography>
 
             <Box sx={{ mt: 2 }}>
-              <Typography variant="caption" color="text.secondary">
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ whiteSpace: "nowrap" }}
+              >
                 <Link
                   href="#"
                   onClick={(event) => {
@@ -178,9 +224,10 @@ export default function AppFooter({ client }: AppFooterProps) {
 
                 <Typography
                   variant="caption"
-                  sx={{ display: "block", mt: 1, fontSize: "0.625rem" }}
+                  sx={{ display: "block", mt: 1, fontSize: "0.75rem" }}
                 >
-                  {footerContent.ratingsAsOf}
+                  <sup>{footerContent.ratingsAsOf.split(" ")[0]}</sup>{" "}
+                  {footerContent.ratingsAsOf.split(" ").slice(1).join(" ")}
                 </Typography>
               </Box>
             </Box>
