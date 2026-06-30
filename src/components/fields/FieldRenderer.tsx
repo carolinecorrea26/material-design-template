@@ -7,6 +7,7 @@ import {
 } from "react";
 import { Controller, type Control, type FieldErrors } from "react-hook-form";
 import {
+  Autocomplete,
   Box,
   Checkbox,
   FormControl,
@@ -28,7 +29,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
-import type { FieldDefinition } from "../../config/fields/types";
+import type { FieldDefinition, FieldOption } from "../../config/fields/types";
 import SelectableOptionRow from "./OptionRow";
 import {
   parseStoredDate,
@@ -766,6 +767,101 @@ export default function FieldRenderer({
                 </>
               )}
 
+              <FormHelperText>{resolvedHelperText}</FormHelperText>
+            </FormControl>
+          );
+        }}
+      />
+    );
+  }
+
+  if (field.inputType === "searchable-select") {
+    const labelVariant = getLabelVariant(field);
+
+    return (
+      <Controller
+        key={field.id}
+        name={field.id}
+        control={control}
+        rules={validationRules}
+        render={({ field: controllerField }) => {
+          const value = (controllerField.value as string) ?? "";
+          const selectedOption =
+            (field.options ?? []).find((option) => option.value === value) ??
+            null;
+          const isComplete = isFieldComplete(field, value, statusState);
+          const showError = isFieldInError(statusState);
+          const statusAdornment = isComplete
+            ? renderCompletedAdornment()
+            : showError
+              ? renderErrorAdornment()
+              : null;
+
+          const autocomplete = (
+            <Autocomplete<FieldOption, false, false, false>
+              fullWidth
+              options={field.options ?? []}
+              value={selectedOption}
+              getOptionLabel={(option) => option.label}
+              isOptionEqualToValue={(option, selected) =>
+                option.value === selected.value
+              }
+              onChange={(_, option) => {
+                controllerField.onChange(option?.value ?? "");
+                onValueChange?.();
+              }}
+              onBlur={controllerField.onBlur}
+              disabled={field.disabled}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  name={field.id}
+                  label={
+                    labelVariant === "floating"
+                      ? renderFieldLabel(field)
+                      : undefined
+                  }
+                  required={field.required}
+                  margin={labelVariant === "floating" ? "normal" : "none"}
+                  placeholder={field.placeholder}
+                  error={Boolean(errors[field.id])}
+                  helperText={
+                    labelVariant === "floating" ? resolvedHelperText : undefined
+                  }
+                  inputProps={{
+                    ...params.inputProps,
+                    autoComplete: field.autoComplete ?? "off",
+                  }}
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <>
+                        {statusAdornment}
+                        {params.InputProps.endAdornment}
+                      </>
+                    ),
+                  }}
+                />
+              )}
+            />
+          );
+
+          if (labelVariant === "floating") {
+            return autocomplete;
+          }
+
+          return (
+            <FormControl
+              fullWidth
+              margin={margin}
+              error={Boolean(errors[field.id])}
+            >
+              {!hideLabel ? (
+                <FormLabel required={field.required} sx={{ mb: 1 }}>
+                  {renderFieldLabel(field)}
+                </FormLabel>
+              ) : null}
+              {autocomplete}
               <FormHelperText>{resolvedHelperText}</FormHelperText>
             </FormControl>
           );

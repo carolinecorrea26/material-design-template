@@ -9,6 +9,7 @@ export type FieldInputType =
   | "date"
   | "radio"
   | "dropdown"
+  | "searchable-select"
   | "checkbox"
   | "checkbox-group"
   | "multi-select";
@@ -169,7 +170,16 @@ export type FieldId =
   | "advisor-code"
   | "applicant-email"
   | "resume-email"
-  | "resume-security-code";
+  | "resume-security-code"
+  | "waepa-declaration"
+  | "waepa-attestation"
+  | "waepa-employer"
+  | "waepa-start-date"
+  | "waepa-retired-employer"
+  | "waepa-retirement-date"
+  | "waepa-member-first-name"
+  | "waepa-member-last-name"
+  | "waepa-member-id";
 
 export type FieldDefinition = {
   id: string;

@@ -428,8 +428,8 @@ function getDefaultValueForField(field: {
   }
 
   // Dropdown/select fields default to first option value
-  if (inputType === "dropdown") {
-    return "yes";
+  if (inputType === "dropdown" || inputType === "searchable-select") {
+    return options?.[0]?.value ?? "yes";
   }
 
   // Default text/input values

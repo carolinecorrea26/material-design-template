@@ -1,4 +1,5 @@
 import type { FieldDefinition, FieldId } from "./types";
+import { waepaFederalAgencyOptions } from "./waepaFederalAgencyOptions";
 
 const usStateOptions = [
   { value: "AL", label: "Alabama" },
@@ -151,6 +152,104 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     format: "phone",
     autoComplete: "tel",
     inputMode: "tel",
+  },
+
+  "waepa-declaration": {
+    id: "waepa-declaration",
+    inputType: "checkbox",
+    label:
+      "By submitting this application, I attest that the answers to the questions herein are true.",
+    required: true,
+  },
+
+  "waepa-attestation": {
+    id: "waepa-attestation",
+    inputType: "dropdown",
+    labelVariant: "standard",
+    label:
+      "I hereby attest that I am a U.S. citizen and meet one of the following qualifications:",
+    placeholder: "Select one",
+    required: true,
+    options: [
+      {
+        label:
+          "I am a civilian federal employee of the U.S. government actively at work",
+        value: "federal-active",
+      },
+      {
+        label: "I am a retired civilian federal annuitant",
+        value: "federal-annuitant",
+      },
+      {
+        label: "I am a former federal employee",
+        value: "former-federal",
+      },
+      {
+        label:
+          "I am a spouse of a WAEPA member and want to apply as an Associate member",
+        value: "spouse-associate",
+      },
+      {
+        label:
+          "I am an adult child of a WAEPA member and want to apply as an Associate member",
+        value: "child-associate",
+      },
+    ],
+  },
+
+  "waepa-employer": {
+    id: "waepa-employer",
+    inputType: "searchable-select",
+    label: "I am employed by",
+    placeholder: "Search or select agency",
+    required: true,
+    options: waepaFederalAgencyOptions,
+  },
+
+  "waepa-start-date": {
+    id: "waepa-start-date",
+    inputType: "date",
+    label: "Start Date",
+    required: true,
+  },
+
+  "waepa-retired-employer": {
+    id: "waepa-retired-employer",
+    inputType: "searchable-select",
+    label: "I was employed by",
+    placeholder: "Search or select agency",
+    required: true,
+    options: waepaFederalAgencyOptions,
+  },
+
+  "waepa-retirement-date": {
+    id: "waepa-retirement-date",
+    inputType: "date",
+    label: "Retirement Date",
+    required: true,
+  },
+
+  "waepa-member-first-name": {
+    id: "waepa-member-first-name",
+    label: "Member First Name",
+    inputType: "text",
+    required: true,
+    autoComplete: "given-name",
+  },
+
+  "waepa-member-last-name": {
+    id: "waepa-member-last-name",
+    label: "Member Last Name",
+    inputType: "text",
+    required: true,
+    autoComplete: "family-name",
+  },
+
+  "waepa-member-id": {
+    id: "waepa-member-id",
+    label: "WAEPA Member ID",
+    inputType: "text",
+    required: false,
   },
 
   "phone-type": {

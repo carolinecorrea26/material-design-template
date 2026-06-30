@@ -1,9 +1,22 @@
 import type { ClientPageFieldConfig } from "../fields/types";
+import { fieldCatalog } from "../fields";
 import type { ClientId } from "../../types";
 
 export type MembershipClientFieldConfig = ClientPageFieldConfig & {
   showTitleField?: boolean;
 };
+
+const waepaExtraFields = [
+  fieldCatalog["waepa-declaration"],
+  fieldCatalog["waepa-attestation"],
+  fieldCatalog["waepa-employer"],
+  fieldCatalog["waepa-start-date"],
+  fieldCatalog["waepa-retired-employer"],
+  fieldCatalog["waepa-retirement-date"],
+  fieldCatalog["waepa-member-first-name"],
+  fieldCatalog["waepa-member-last-name"],
+  fieldCatalog["waepa-member-id"],
+];
 
 export const membershipClientFields: Partial<
   Record<ClientId, MembershipClientFieldConfig>
@@ -79,81 +92,6 @@ export const membershipClientFields: Partial<
         ],
       },
     },
-    extraFields: [
-      {
-        id: "waepa-attestation",
-        inputType: "dropdown",
-        labelVariant: "standard",
-        label:
-          "I hereby attest that I am a U.S. citizen and meet one of the following qualifications:",
-        required: true,
-        options: [
-          {
-            label:
-              "I am a civilian federal employee of the U.S. government actively at work",
-            value: "federal-active",
-          },
-          {
-            label: "I am a retired civilian federal annuitant",
-            value: "federal-annuitant",
-          },
-          {
-            label: "I am a former federal employee",
-            value: "former-federal",
-          },
-          {
-            label:
-              "I am a spouse of a WAEPA member and want to apply as an Associate member",
-            value: "spouse-associate",
-          },
-          {
-            label:
-              "I am an adult child of a WAEPA member and want to apply as an Associate member",
-            value: "child-associate",
-          },
-        ],
-      },
-      {
-        id: "waepa-employer",
-        inputType: "dropdown",
-        label: "Employed By",
-        required: true,
-        options: [
-          {
-            label: "Administration for Children and Families",
-            value: "Administration for Children and Families",
-          },
-          {
-            label: "Administrative Conference of the United States",
-            value: "Administrative Conference of the United States",
-          },
-          {
-            label: "Administrative Review Board",
-            value: "Administrative Review Board",
-          },
-          {
-            label: "Agricultural Marketing Service",
-            value: "Agricultural Marketing Service",
-          },
-          {
-            label: "Federal Bureau of Investigation",
-            value: "Federal Bureau of Investigation",
-          },
-        ],
-      },
-      {
-        id: "waepa-start-date",
-        inputType: "date",
-        label: "Start Date",
-        required: true,
-      },
-      {
-        id: "waepa-declaration",
-        inputType: "checkbox",
-        label:
-          "By submitting this application, I attest that the answers to the questions herein are true.",
-        required: true,
-      },
-    ],
+    extraFields: waepaExtraFields,
   },
 };

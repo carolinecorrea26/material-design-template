@@ -1,15 +1,172 @@
 import { Alert, Box, Stack, Typography } from "@mui/material";
+import type { UseFormSetValue } from "react-hook-form";
 
 import { getActiveClient } from "../config/client/getActiveClient";
+import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import FieldRenderer from "../components/fields/FieldRenderer";
 import FormRoutePage from "../components/page/RoutePage";
+import FormSectionTitle from "../components/page/SectionTitle";
 import FormPageHelp from "../components/help/Panel";
 import CostEstimateDrawerContent from "../components/overlays/CostEstimate";
+import type { FieldDefinition } from "../config/fields/types";
 import {
   coverageOptionsAvailableHelpItem,
   // groupInsuranceHelpItem,
   howApplyingWorksHelpItem,
 } from "../content/helpContent";
+
+type MembershipFormValue = string | boolean | string[];
+type MembershipSetValue = UseFormSetValue<Record<string, MembershipFormValue>>;
+
+const defaultMemberInformationFieldIds = new Set([
+  "title",
+  "first-name",
+  "last-name",
+  "email",
+  "phone",
+]);
+
+const waepaConditionalFieldIds = [
+  "waepa-employer",
+  "waepa-start-date",
+  "waepa-retired-employer",
+  "waepa-retirement-date",
+  "waepa-member-first-name",
+  "waepa-member-last-name",
+  "waepa-member-id",
+];
+
+const clearFieldOptions = {
+  shouldDirty: true,
+  shouldTouch: false,
+  shouldValidate: false,
+};
+
+function clearFields(setValue: MembershipSetValue, fieldIds: string[]) {
+  fieldIds.forEach((fieldId) => {
+    setValue(fieldId, "", clearFieldOptions);
+  });
+}
+
+function clearWAEPAFields(setValue: MembershipSetValue) {
+  setValue("waepa-declaration", false, clearFieldOptions);
+  clearFields(setValue, ["waepa-attestation", ...waepaConditionalFieldIds]);
+}
+
+function fieldById(fields: FieldDefinition[], id: string) {
+  return fields.find((field) => field.id === id);
+}
+
+function renderField(
+  field: FieldDefinition | undefined,
+  control: Parameters<typeof FieldRenderer>[0]["control"],
+  errors: Parameters<typeof FieldRenderer>[0]["errors"],
+  onValueChange?: () => void,
+) {
+  if (!field) return null;
+
+  return (
+    <FieldRenderer
+      key={field.id}
+      field={field}
+      control={control}
+      errors={errors}
+      onValueChange={onValueChange}
+    />
+  );
+}
+
+function renderFieldGrid(
+  fields: FieldDefinition[],
+  control: Parameters<typeof FieldRenderer>[0]["control"],
+  errors: Parameters<typeof FieldRenderer>[0]["errors"],
+) {
+  return (
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+        gap: { xs: 0, sm: 2 },
+      }}
+    >
+      {fields.map((field) => renderField(field, control, errors))}
+    </Box>
+  );
+}
+
+function WAEPAAdditionalFields({
+  fields,
+  control,
+  errors,
+  qualificationValue,
+  setValue,
+}: {
+  fields: FieldDefinition[];
+  control: Parameters<typeof FieldRenderer>[0]["control"];
+  errors: Parameters<typeof FieldRenderer>[0]["errors"];
+  qualificationValue: ApplicationFormValues[string] | undefined;
+  setValue: MembershipSetValue;
+}) {
+  const selectedQualification = String(qualificationValue ?? "");
+  const declarationField = fieldById(fields, "waepa-declaration");
+  const attestationField = fieldById(fields, "waepa-attestation");
+  const employerField = fieldById(fields, "waepa-employer");
+  const startDateField = fieldById(fields, "waepa-start-date");
+  const retiredEmployerField = fieldById(fields, "waepa-retired-employer");
+  const retirementDateField = fieldById(fields, "waepa-retirement-date");
+  const memberFirstNameField = fieldById(fields, "waepa-member-first-name");
+  const memberLastNameField = fieldById(fields, "waepa-member-last-name");
+  const memberIdField = fieldById(fields, "waepa-member-id");
+
+  const associateMembershipAlert =
+    selectedQualification === "spouse-associate"
+      ? "To apply as an Associate Member, please include your spouse's current WAEPA membership information."
+      : selectedQualification === "child-associate"
+        ? "To apply as an Associate Member, please include your parent's current WAEPA membership information."
+        : undefined;
+
+  return (
+    <Stack spacing={2} sx={{ mt: 1 }}>
+      <Alert severity="info">
+        Applying for coverage will make you a WAEPA member. Please provide the
+        following information to complete your membership.
+      </Alert>
+
+      {renderField(declarationField, control, errors)}
+      {renderField(attestationField, control, errors, () =>
+        clearFields(setValue, waepaConditionalFieldIds),
+      )}
+
+      {selectedQualification === "federal-active" && (
+        <>
+          {renderField(employerField, control, errors)}
+          {renderField(startDateField, control, errors)}
+        </>
+      )}
+
+      {selectedQualification === "federal-annuitant" && (
+        <>
+          {renderField(retiredEmployerField, control, errors)}
+          {renderField(retirementDateField, control, errors)}
+        </>
+      )}
+
+      {associateMembershipAlert && (
+        <>
+          <Alert severity="info">{associateMembershipAlert}</Alert>
+          {renderFieldGrid(
+            [memberFirstNameField, memberLastNameField].filter(
+              (field): field is FieldDefinition => Boolean(field),
+            ),
+            control,
+            errors,
+          )}
+          {renderField(memberIdField, control, errors)}
+        </>
+      )}
+    </Stack>
+  );
+}
 
 export default function Membership() {
   const client = getActiveClient();
@@ -33,7 +190,7 @@ export default function Membership() {
       help={<FormPageHelp items={helpItems} />}
       initialTransitionMessage="Loading your membership application..."
     >
-      {({ control, errors, watchedValues, allFields }) => {
+      {({ control, errors, watchedValues, allFields, setValue }) => {
         const membershipField = allFields.find(
           (field) => field.id === "membership",
         );
@@ -58,6 +215,16 @@ export default function Membership() {
         const hasTitleField = remainingFields.some(
           (field) => field.id === "title",
         );
+        const nameFields = remainingFields.filter((field) =>
+          ["title", "first-name", "last-name"].includes(field.id),
+        );
+        const contactFields = remainingFields.filter((field) =>
+          ["email", "phone"].includes(field.id),
+        );
+        const additionalFields = remainingFields.filter(
+          (field) => !defaultMemberInformationFieldIds.has(field.id),
+        );
+        const hasAdditionalFields = additionalFields.length > 0;
 
         return (
           <>
@@ -67,6 +234,11 @@ export default function Membership() {
                 field={membershipField}
                 control={control}
                 errors={errors}
+                onValueChange={() => {
+                  if (client.id === "waepa") {
+                    clearWAEPAFields(setValue);
+                  }
+                }}
               />
             )}
 
@@ -153,33 +325,35 @@ export default function Membership() {
                     gap: { xs: 0, sm: 2 },
                   }}
                 >
-                  {remainingFields
-                    .filter((field) =>
-                      ["title", "first-name", "last-name"].includes(field.id),
-                    )
-                    .map((field) => (
-                      <FieldRenderer
-                        key={field.id}
-                        field={field}
-                        control={control}
-                        errors={errors}
-                      />
-                    ))}
+                  {nameFields.map((field) =>
+                    renderField(field, control, errors),
+                  )}
                 </Box>
 
-                {remainingFields
-                  .filter(
-                    (field) =>
-                      !["title", "first-name", "last-name"].includes(field.id),
-                  )
-                  .map((field) => (
-                    <FieldRenderer
-                      key={field.id}
-                      field={field}
-                      control={control}
-                      errors={errors}
-                    />
-                  ))}
+                {contactFields.map((field) =>
+                  renderField(field, control, errors),
+                )}
+
+                {hasAdditionalFields && (
+                  <Box sx={{ mt: 3 }}>
+                    <FormSectionTitle label="Membership Information" />
+                    {client.id === "waepa" ? (
+                      <WAEPAAdditionalFields
+                        fields={additionalFields}
+                        control={control}
+                        errors={errors}
+                        qualificationValue={watchedValues["waepa-attestation"]}
+                        setValue={setValue}
+                      />
+                    ) : (
+                      <Stack spacing={2} sx={{ mt: 1 }}>
+                        {additionalFields.map((field) =>
+                          renderField(field, control, errors),
+                        )}
+                      </Stack>
+                    )}
+                  </Box>
+                )}
               </>
             )}
           </>

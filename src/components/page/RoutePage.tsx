@@ -187,7 +187,11 @@ function getDevValue(field: {
   if (field.inputType === "multi-select") {
     return field.options?.[0]?.value ? [field.options[0].value] : [];
   }
-  if (field.inputType === "radio" || field.inputType === "dropdown") {
+  if (
+    field.inputType === "radio" ||
+    field.inputType === "dropdown" ||
+    field.inputType === "searchable-select"
+  ) {
     return field.options?.[0]?.value ?? "";
   }
   if (field.inputType === "date") return "1990-01-01";
