@@ -167,7 +167,9 @@ export type FieldId =
   | "advisor-email"
   | "advisor-phone"
   | "advisor-code"
-  | "applicant-email";
+  | "applicant-email"
+  | "resume-email"
+  | "resume-security-code";
 
 export type FieldDefinition = {
   id: string;

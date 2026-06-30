@@ -1,108 +1,50 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   Alert,
   Box,
   Button,
   CircularProgress,
-  Link,
-  Snackbar,
   Stack,
-  Step,
-  StepContent,
-  StepLabel,
-  Stepper,
   TextField,
   Typography,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import CheckIcon from "@mui/icons-material/Check";
-import { useLocation, useNavigate } from "react-router-dom";
-import { getActiveClient } from "../config/client/getActiveClient";
-import { getPagePath } from "../config/pages";
-import {
-  useApplicationForm,
-  type ApplicationFormValues,
-} from "../app/ApplicationFormContext";
-import type { ClientId } from "../types";
+import MailLockRounded from "@mui/icons-material/MailLockRounded";
+import FormPageTitle from "../components/page/Title";
+import { getPageSubhead, getPageTitle } from "../config/pages";
+import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import { sendResumeMagicLinkMockEmail } from "../utils/mockEmail";
 
-type DeliveryMode = "text" | "voice";
-
-const MOCK_SAVED_APPLICATIONS: Record<string, ApplicationFormValues> = {
-  "returning.user@example.com": {
-    membership: "yes",
-    "first-name": "Taylor",
-    "last-name": "Morgan",
-    "email-address": "returning.user@example.com",
-    "phone-number": "(555) 555-0133",
-  },
-};
-
-function getMembershipPrefill(clientId: ClientId): string {
-  if (clientId === "ama") return "physician";
-  if (clientId === "waepa") return "current";
-  return "yes";
-}
-
-function getSavedApplicationForEmail(
-  emailAddress: string,
-  clientId: ClientId,
-): ApplicationFormValues {
-  const normalizedEmail = emailAddress.trim().toLowerCase();
-  const savedValues = MOCK_SAVED_APPLICATIONS[normalizedEmail] ?? {
-    "first-name": "Taylor",
-    "last-name": "Morgan",
-    "email-address": normalizedEmail,
-    "phone-number": "(555) 555-0133",
-  };
-
-  return {
-    ...savedValues,
-    membership: getMembershipPrefill(clientId),
-  };
-}
-
 export default function Resume() {
-  const location = useLocation();
   const navigate = useNavigate();
-  const client = getActiveClient();
-  const { setPageValues } = useApplicationForm();
-
-  const resumeFlow = new URLSearchParams(location.search).get("resumeFlow");
-  const startAtStep2 = resumeFlow === "code";
-
-  const [activeStep] = useState(startAtStep2 ? 1 : 0);
-  const [emailCompleted] = useState(startAtStep2);
+  const fields = getClientPageFields("resume");
+  const emailField = fields.find((f) => f.id === "resume-email");
 
   const [emailAddress, setEmailAddress] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
   const [isEmailSending, setIsEmailSending] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
-
-  const [phoneCode, setPhoneCode] = useState("");
-  const [phoneCodeError, setPhoneCodeError] = useState<string | null>(null);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [verifySuccess, setVerifySuccess] = useState(false);
-  const [deliveryMode, setDeliveryMode] = useState<DeliveryMode>("text");
-
-  const [snackAlert, setSnackAlert] = useState<{
-    key: number;
-    deliveryMode: DeliveryMode;
-  } | null>(null);
-
-  function showPhoneCodeSuccess(nextDeliveryMode: DeliveryMode) {
-    setSnackAlert({
-      key: Date.now(),
-      deliveryMode: nextDeliveryMode,
-    });
-  }
+  const [secondsLeft, setSecondsLeft] = useState(600);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    if (!startAtStep2) return;
-
-    showPhoneCodeSuccess("text");
-  }, [startAtStep2]);
+    if (emailSent) {
+      setSecondsLeft(600);
+      timerRef.current = setInterval(() => {
+        setSecondsLeft((prev) => {
+          if (prev <= 1) {
+            if (timerRef.current) clearInterval(timerRef.current);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [emailSent]);
 
   function handleEmailSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -115,7 +57,6 @@ export default function Resume() {
     setEmailError(null);
     setIsEmailSending(true);
 
-    // Simulate sending, then show success message
     window.setTimeout(() => {
       void sendResumeMagicLinkMockEmail(emailAddress.trim());
 
@@ -124,282 +65,130 @@ export default function Resume() {
     }, 1500);
   }
 
-  function handleVerifySubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    if (!phoneCode.trim()) {
-      setPhoneCodeError("Enter your phone code.");
-      return;
-    }
-
-    setPhoneCodeError(null);
-    setIsVerifying(true);
-
-    window.setTimeout(() => {
-      setIsVerifying(false);
-      setVerifySuccess(true);
-
-      window.setTimeout(() => {
-        const savedApplication = getSavedApplicationForEmail(
-          emailAddress,
-          client.id,
-        );
-
-        setPageValues(savedApplication);
-
-        navigate(getPagePath("eligibility"), {
-          state: { resumeLoaded: true },
-        });
-      }, 2000);
-    }, 700);
-  }
-
   return (
-    <Box
+    <Stack
+      spacing={2}
       sx={{
-        width: "100%",
-        maxWidth: 800,
-        mx: "auto",
-        py: 4,
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "flex-start",
         px: { xs: 2, sm: 3 },
+        py: { xs: 4, sm: 6 },
       }}
     >
-      <Button
-        type="button"
-        onClick={() => navigate(-1)}
-        startIcon={<ArrowBackIcon />}
-        sx={{
-          color: "text.secondary",
-          fontSize: "0.8125rem",
-          textTransform: "none",
-          mb: 2,
-          pl: 0,
-        }}
-      >
-        Back
-      </Button>
+      <Box sx={{ width: "100%", maxWidth: 600 }}>
+        <Box
+          sx={{
+            width: "100%",
+            borderRadius: "16px",
+            backgroundColor: "#ffffff",
+            boxShadow: "0 8px 16px rgba(52, 59, 72, 0.06)",
+            px: { xs: 2, sm: 4 },
+            py: 6,
+          }}
+        >
+          <Box sx={{ mb: 2 }}>
+            <FormPageTitle
+              title={getPageTitle("resume")}
+              subhead={getPageSubhead("resume")}
+              onBack={() => navigate(-1)}
+            />
+          </Box>
 
-      <Stepper activeStep={activeStep} orientation="vertical">
-        {/* Step 1: Enter your email */}
-        <Step completed={emailCompleted}>
-          <StepLabel>
-            <Typography
+          {isEmailSending ? (
+            <Box
               sx={{
-                fontWeight: activeStep === 0 ? 700 : 500,
-                fontSize: "1rem",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                py: 4,
               }}
             >
-              Enter your email address
-            </Typography>
-          </StepLabel>
-          <StepContent>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              A secure link will be sent to your email with next steps to resume
-              your saved application.
-            </Typography>
-            {isEmailSending ? (
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  py: 4,
-                }}
-              >
-                <Stack spacing={2} alignItems="center">
-                  <CircularProgress size={40} thickness={4} />
-                  <Typography variant="body2" color="text.secondary">
-                    Sending secure link…
-                  </Typography>
-                </Stack>
-              </Box>
-            ) : emailSent ? (
-              <Stack spacing={2} sx={{ py: 1 }}>
-                <Alert severity="success">
-                  A secure link has been sent to your email. Open your email and
-                  click the link to continue with your saved application.
-                </Alert>
+              <Stack spacing={2} alignItems="center">
+                <CircularProgress size={40} thickness={4} />
+                <Typography variant="body2" color="text.secondary">
+                  Sending secure link…
+                </Typography>
               </Stack>
-            ) : (
-              <Box
-                component="form"
-                onSubmit={handleEmailSubmit}
-                noValidate
-                sx={{ py: 1 }}
-              >
-                <TextField
-                  fullWidth
-                  label="Email address"
-                  type="email"
-                  required
-                  value={emailAddress}
-                  onChange={(event) => {
-                    setEmailAddress(event.target.value);
-                    if (emailError) setEmailError(null);
-                  }}
-                  error={Boolean(emailError)}
-                  helperText={emailError ?? undefined}
-                  sx={{ mb: 2 }}
-                />
-                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                  <Button type="submit" variant="contained">
-                    Next
-                  </Button>
+            </Box>
+          ) : emailSent ? (
+            <Stack spacing={2} sx={{ py: 1 }}>
+              <Alert severity="success" icon={<MailLockRounded />}>
+                A secure link has been sent to{" "}
+                <Box component="span" sx={{ fontWeight: 700 }}>
+                  {emailAddress}
                 </Box>
-              </Box>
-            )}
-          </StepContent>
-        </Step>
-
-        {/* Step 2: Enter phone code */}
-        <Step completed={false}>
-          <StepLabel>
-            <Typography
-              sx={{
-                fontWeight: activeStep === 1 ? 700 : 500,
-                fontSize: "1rem",
-              }}
-            >
-              Enter security code
-            </Typography>
-          </StepLabel>
-          <StepContent>
+                . Open your email and click the link to continue.
+              </Alert>
+              <Stack
+                direction="row"
+                spacing={0.5}
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{ px: 0.5 }}
+              >
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ fontSize: "0.8125rem" }}
+                >
+                  Link expires in{" "}
+                  <Box component="span" sx={{ fontWeight: 700 }}>
+                    {Math.floor(secondsLeft / 60)}:
+                    {String(secondsLeft % 60).padStart(2, "0")}
+                  </Box>
+                </Typography>
+                <Button
+                  variant="text"
+                  size="small"
+                  startIcon={<RefreshRoundedIcon />}
+                  onClick={() => setEmailSent(false)}
+                  sx={{ textTransform: "none", fontSize: "0.8125rem" }}
+                >
+                  Resend secure link
+                </Button>
+              </Stack>
+            </Stack>
+          ) : (
             <Box
               component="form"
-              onSubmit={handleVerifySubmit}
+              onSubmit={handleEmailSubmit}
               noValidate
               sx={{ py: 1 }}
             >
               <TextField
                 fullWidth
-                type="text"
-                required
-                value={phoneCode}
-                label="Security Code"
+                label={emailField?.label}
+                type="email"
+                required={emailField?.required}
+                value={emailAddress}
                 onChange={(event) => {
-                  setPhoneCode(event.target.value);
-                  if (phoneCodeError) setPhoneCodeError(null);
+                  setEmailAddress(event.target.value);
+                  if (emailError) setEmailError(null);
                 }}
-                inputProps={{
-                  inputMode: "numeric",
-                  pattern: "[0-9]*",
-                }}
-                error={Boolean(phoneCodeError)}
-                helperText={phoneCodeError ?? undefined}
+                error={Boolean(emailError)}
+                helperText={emailError ?? emailField?.helperText}
+                sx={{ mb: 3 }}
               />
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-                sx={{ mt: 1 }}
-              >
-                <Button
-                  variant="text"
-                  size="small"
-                  startIcon={<RefreshRoundedIcon />}
-                  onClick={() => {
-                    showPhoneCodeSuccess(deliveryMode);
-                  }}
-                >
-                  Resend code
-                </Button>
-                <Link
-                  component="button"
-                  type="button"
-                  variant="body2"
-                  underline="hover"
-                  onClick={() => {
-                    const nextMode = deliveryMode === "text" ? "voice" : "text";
-
-                    setDeliveryMode(nextMode);
-                    showPhoneCodeSuccess(nextMode);
-                  }}
-                  sx={{ fontSize: "0.8125rem" }}
-                >
-                  {deliveryMode === "text"
-                    ? "Send with voice call"
-                    : "Send with text message"}
-                </Link>
-              </Stack>
-              <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
+              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                 <Button
                   type="submit"
                   variant="contained"
-                  disabled={isVerifying || verifySuccess}
+                  fullWidth
                   sx={{
-                    ...(verifySuccess && {
-                      bgcolor: "success.main",
-                      "&:hover": { bgcolor: "success.main" },
-                      "&.Mui-disabled": {
-                        bgcolor: "success.main",
-                        color: "#fff",
-                      },
-                    }),
+                    fontWeight: 700,
+                    padding: "16px",
+                    boxShadow: "0 8px 18px #0668ff3d",
+                    "&:hover": { boxShadow: "0 8px 18px #0668ff3d" },
                   }}
                 >
-                  {verifySuccess ? (
-                    <CheckIcon sx={{ color: "#fff" }} />
-                  ) : isVerifying ? (
-                    "Verifying..."
-                  ) : (
-                    "Next"
-                  )}
+                  Next
                 </Button>
               </Box>
             </Box>
-          </StepContent>
-        </Step>
-      </Stepper>
-
-      <Snackbar
-        key={snackAlert?.key}
-        open={Boolean(snackAlert)}
-        autoHideDuration={null}
-        onClose={(_, reason) => {
-          if (reason === "clickaway") return;
-          setSnackAlert(null);
-        }}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert onClose={() => setSnackAlert(null)} severity="success">
-          Code sent with{" "}
-          {snackAlert?.deliveryMode === "voice" ? "voice call" : "text message"}{" "}
-          to phone number{" "}
-          <Box
-            component="span"
-            sx={{
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              whiteSpace: "nowrap",
-            }}
-          >
-            (•••)•••1111
-          </Box>
-          . This code expires in{" "}
-          <Box component="span" sx={{ fontWeight: 700 }}>
-            5
-          </Box>{" "}
-          minutes.{" "}
-          <Link
-            component="button"
-            type="button"
-            variant="body2"
-            underline="hover"
-            onClick={() => {
-              const nextMode =
-                snackAlert?.deliveryMode === "text" ? "voice" : "text";
-
-              setDeliveryMode(nextMode);
-              showPhoneCodeSuccess(nextMode);
-            }}
-            sx={{ fontSize: "0.8125rem" }}
-          >
-            {snackAlert?.deliveryMode === "text"
-              ? "Send with voice call"
-              : "Send with text message"}
-          </Link>
-        </Alert>
-      </Snackbar>
-    </Box>
+          )}
+        </Box>
+      </Box>
+    </Stack>
   );
 }

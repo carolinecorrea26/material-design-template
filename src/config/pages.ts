@@ -31,6 +31,7 @@ export const pages = [
   { id: "payment", path: "/payment", type: "form", groupId: "payment" },
   { id: "receipt", path: "/receipt", type: "receipt" },
   { id: "resume", path: "/resume", type: "resume" },
+  { id: "resume-code", path: "/resume-code", type: "resume" },
   { id: "advisor-login", path: "/advisor-login", type: "form" },
   {
     id: "advisor-send-confirmation",

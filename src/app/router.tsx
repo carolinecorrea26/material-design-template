@@ -21,6 +21,7 @@ import HealthCir from "../pages/HealthCir";
 import Payment from "../pages/Payment";
 import Receipt from "../pages/Receipt";
 import Resume from "../pages/Resume";
+import ResumeCode from "../pages/ResumeCode";
 import AdvisorLogin from "../pages/AdvisorLogin";
 import AdvisorSendConfirmation from "../pages/AdvisorSendConfirmation";
 import MockEmailPreview from "../pages/MockEmailPreview";
@@ -47,6 +48,7 @@ const pageComponents: Record<PageId, ComponentType> = {
   payment: Payment,
   receipt: Receipt,
   resume: Resume,
+  "resume-code": ResumeCode,
   "advisor-login": AdvisorLogin,
   "advisor-send-confirmation": AdvisorSendConfirmation,
   "mock-email-preview": MockEmailPreview,
@@ -71,6 +73,7 @@ const routedPageIds: PageId[] = [
   "payment",
   "receipt",
   "resume",
+  "resume-code",
   "advisor-login",
   "advisor-send-confirmation",
   "mock-email-preview",

@@ -15,7 +15,7 @@ export default function FormPageTitle({
 }: FormPageTitleProps) {
   return (
     <Box>
-      <Stack direction="row" alignItems="center" spacing={0.5}>
+      <Stack direction="row" alignItems="center" spacing={1}>
         {onBack && (
           <IconButton
             onClick={onBack}
@@ -28,7 +28,12 @@ export default function FormPageTitle({
         <Typography variant="formPageTitle">{title}</Typography>
       </Stack>
       {subhead ? (
-        <Typography component="p" variant="subtitle2">
+        <Typography
+          component="p"
+          variant="subtitle1"
+          // color="text.secondary"
+          // mt={0.5}
+        >
           {subhead}
         </Typography>
       ) : null}

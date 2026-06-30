@@ -12,7 +12,7 @@ export const coverageCategories = [
   {
     id: "AD",
     label: "Accidental Death and Dismemberment",
-    shortLabel: "Accident",
+    shortLabel: "AD&D",
     icon: PersonalInjuryOutlinedIcon,
   },
   { id: "DI", label: "Disability", icon: AccessibleOutlinedIcon },
@@ -25,7 +25,7 @@ export const coverageCategories = [
   {
     id: "SH",
     label: "Supplemental Health",
-    shortLabel: "Health",
+    shortLabel: "Supp. Health",
     icon: LocalHospitalOutlinedIcon,
   },
 ] as const;

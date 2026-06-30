@@ -269,7 +269,7 @@ export default function FormVerticalStepper({
               const stepLabelColor = isActive
                 ? "text.primary"
                 : isCompleted
-                  ? "#62748e"
+                  ? "#49596f"
                   : "#94a3b8";
 
               return (

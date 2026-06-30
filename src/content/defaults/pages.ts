@@ -7,10 +7,10 @@ import type { PagesContent } from "../types";
 export const pagesDefaults: Partial<PagesContent> = {
   home: { title: "Home", navTitle: "Home" },
   membership: {
-    title: "Your application for {{clientAcronym}}-sponsored insurance",
+    title: "Applying for {{clientAcronym}}-sponsored insurance",
     subhead:
-      "Apply for {{clientAcronym}}-sponsored insurance online in a few guided steps. We need the following information to review your eligibility and coverage options.",
-    navTitle: "Membership",
+      "This is an online application for DEMO-sponsored insurance. It only takes a few minutes to get started, and we'll guide you through each step.",
+    navTitle: "Start",
   },
   eligibility: {
     title: "Check your eligibility",
@@ -75,12 +75,19 @@ export const pagesDefaults: Partial<PagesContent> = {
     navTitle: "Receipt",
   },
   resume: {
-    title: "Already started an application?",
-    subhead: "Enter your information to continue a saved application.",
+    title: "Continue saved application",
+    subhead:
+      "Before proceeding, we need to confirm your identity. Please enter your email and we'll send a secure link for verification.",
     navTitle: "Resume application",
   },
+  "resume-code": {
+    title: "Enter security code",
+    subhead:
+      "Enter the security code sent to your phone number that was used to begin an application.",
+    navTitle: "Security code",
+  },
   "advisor-login": {
-    title: "Welcome!",
+    title: "Advisor Portal",
     subhead: "Start or continue an application below.",
     navTitle: "Advisor login",
   },

@@ -111,25 +111,25 @@ export default function EstimatedCostPanel({
         {grandTotal <= 0 ? (
           <Box
             sx={{
+              flex: 1,
               display: "flex",
               alignItems: "center",
-              gap: 0.75,
-              px: 1.25,
-              py: 1,
+              justifyContent: "center",
+              textAlign: "center",
+              px: 4,
+              py: 4,
               borderRadius: 2,
               bgcolor: "#f8fafc",
               border: "1px dashed",
               borderColor: "divider",
-              color: "text.secondary",
             }}
           >
-            <PrivacyTipIcon sx={{ fontSize: 17, color: "text.disabled" }} />
-            <Typography
-              variant="body2"
-              sx={{ fontSize: "0.8rem", fontWeight: 600 }}
-            >
-              Added coverage will appear here
-            </Typography>
+            <Stack spacing={1} alignItems="center">
+              <PrivacyTipIcon sx={{ fontSize: 24, color: "text.disabled" }} />
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                No coverage selected yet.
+              </Typography>
+            </Stack>
           </Box>
         ) : (
           <>

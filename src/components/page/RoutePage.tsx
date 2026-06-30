@@ -517,22 +517,22 @@ export default function FormRoutePage({
       actions={undefined}
     >
       <Box>
-        {hasVerticalStepper && (
-          <Box sx={{ pl: "16px", mb: 1.5 }}>
-            <VerticalStepperBreadcrumbs pageId={pageId} />
-          </Box>
-        )}
         <Box
           sx={{
             width: "100%",
             borderRadius: "16px",
             backgroundColor: "#ffffff",
             boxShadow: "0 8px 16px rgba(52, 59, 72, 0.06)",
-            px: { xs: 2, sm: 3 },
-            py: 2,
+            px: { xs: 2, sm: "48px" },
+            py: { xs: 2, sm: "32px" },
             mb: hasVerticalStepper ? 1 : 0,
           }}
         >
+          {hasVerticalStepper && (
+            <Box sx={{ mb: 1.5 }}>
+              <VerticalStepperBreadcrumbs pageId={pageId} />
+            </Box>
+          )}
           {isTransitioning ? (
             <>
               <Box sx={{ padding: "0 0.5rem" }}>

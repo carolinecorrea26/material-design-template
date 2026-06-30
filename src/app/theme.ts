@@ -102,7 +102,8 @@ let theme = createTheme({
     error: { main: "#ed0a0a" },
     text: {
       primary: "#343b48",
-      secondary: "#62748e",
+      secondary: "#49596f",
+      disabled: "#99a4b5",
       tertiary: "#5b7090",
     },
     background: {
@@ -128,29 +129,32 @@ let theme = createTheme({
     h6: { fontSize: "1rem", fontWeight: 700, lineHeight: 1.6 },
     body1: { fontSize: "1rem", fontWeight: 400 },
     body2: { fontSize: "0.875rem", fontWeight: 400 },
-    caption: { fontSize: "0.875rem", fontWeight: 400 },
+    caption: { fontSize: "0.825rem", fontWeight: 400 },
     overline: {
-      fontSize: "0.875rem",
+      fontSize: "0.75rem",
       lineHeight: 1.66,
       fontWeight: 700,
       textTransform: "uppercase",
       letterSpacing: "0.5px",
+      color: "#00388c",
     },
     button: { textTransform: "none", fontWeight: 700 },
 
     // -- Form-specific variants --
     formPageTitle: {
       fontSize: "1.25rem",
-      fontWeight: 700,
+      fontWeight: 800,
       letterSpacing: "-0.025em",
+      // lineHeight: 1.66,
       "@media (min-width:900px)": { fontSize: "1.5rem" },
     },
     formSectionLabel: {
-      fontSize: "0.875rem",
-      fontWeight: 700,
+      fontSize: "0.75rem",
       lineHeight: 1.66,
-      letterSpacing: "0.5px",
+      fontWeight: 700,
       textTransform: "uppercase",
+      letterSpacing: "0.5px",
+      color: "#00388c",
     },
     formBackLink: { fontSize: "0.875rem", fontWeight: 700, lineHeight: 1.5 },
     formTransitionStatus: {
@@ -237,7 +241,7 @@ let theme = createTheme({
       styleOverrides: {
         root: {
           padding: "8px 0",
-          color: "#62748e",
+          color: "#49596f",
           "@media (min-width:900px)": { padding: 3 },
         },
       },
@@ -320,6 +324,11 @@ let theme = createTheme({
           "&.Mui-focused": { color: t.palette.primary.main },
         }),
         asterisk: ({ theme: t }) => ({ color: t.palette.error.main }),
+      },
+    },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: { fontSize: ".825rem" },
       },
     },
     MuiButton: {

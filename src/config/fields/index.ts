@@ -1470,7 +1470,8 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     format: "email",
     autoComplete: "email",
     inputMode: "email",
-    // helperText: "Your advisor email",
+    // helperText:
+    //   "Receives status updates and verifies your identity when resuming a saved application.",
   },
 
   "advisor-phone": {
@@ -1483,7 +1484,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     autoComplete: "tel",
     inputMode: "tel",
     showPhoneTypeSelector: false,
-    // helperText: "Your advisor phone number",
+    // helperText: "Verifies your identity when resuming a saved application.",
   },
 
   "advisor-code": {
@@ -1491,8 +1492,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "Code",
     inputType: "text",
     required: true,
-    helperText:
-      "Enter the code assigned to you. This tracks your submitted applications.",
+    // helperText: "Your assigned advisor code.",
   },
 
   "applicant-email": {
@@ -1503,6 +1503,24 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     format: "email",
     autoComplete: "email",
     inputMode: "email",
-    helperText: "Enter the applicant email used to start the application.",
+    helperText: "The applicant's email that was used to begin the application.",
+  },
+
+  "resume-email": {
+    id: "resume-email",
+    label: "Email",
+    inputType: "text",
+    required: true,
+    format: "email",
+    autoComplete: "email",
+    inputMode: "email",
+  },
+
+  "resume-security-code": {
+    id: "resume-security-code",
+    label: "Security Code",
+    inputType: "text",
+    required: true,
+    inputMode: "numeric",
   },
 };

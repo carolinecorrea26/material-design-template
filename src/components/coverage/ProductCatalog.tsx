@@ -553,9 +553,7 @@ function ProductCard({
           const hasAmountSelection = storedAmounts[key] != null;
           const selectValue = hasAmountSelection ? currentAmount : "";
           const isCalculatingRate = calculatingRateKeys.has(key);
-          const premium = isSelected
-            ? calcApplicantPremium(coverage, applicantId)
-            : 0;
+          const premium = calcApplicantPremium(coverage, applicantId);
           const displayedPremium = getDisplayedPremium(premium, rateFrequency);
 
           return (

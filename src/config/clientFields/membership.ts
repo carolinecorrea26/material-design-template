@@ -46,6 +46,16 @@ export const membershipClientFields: Partial<
     },
     extraFields: [],
   },
+  avma: {
+    showTitleField: false,
+    overrides: {
+      membership: {
+        label:
+          "Are you a member of the American Veterinary Medical Association?",
+      },
+    },
+    extraFields: [],
+  },
   nso: {
     showTitleField: false,
     overrides: {

@@ -23,10 +23,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ChatIcon from "@mui/icons-material/Chat";
 import CloseIcon from "@mui/icons-material/Close";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
-import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
+import RequestQuoteRoundedIcon from "@mui/icons-material/RequestQuoteRounded";
+import CalculateRoundedIcon from "@mui/icons-material/CalculateRounded";
+import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
@@ -416,21 +416,23 @@ export default function AppHeader({ client }: AppHeaderProps) {
               bgcolor: "background.subtle",
             }}
           >
-            <Stack spacing={2}>
+            <Stack spacing={1}>
               <Typography variant="subtitle1" sx={APP_MENU_SECTION_TITLE_SX}>
-                Resume Application
+                Continue Saved Application
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                If you started an earlier application, you can resume it below.
+                You can continue your saved application below. Applications are
+                only saved for 10 days from starting.
               </Typography>
-              <Button
-                variant="contained"
-                fullWidth
-                onClick={() => handleNavigate("/resume")}
-              >
-                Resume Application
-              </Button>
             </Stack>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => handleNavigate("/resume")}
+              sx={{ margin: "1.25rem 0" }}
+            >
+              Continue Application
+            </Button>
           </Box>
 
           <Box
@@ -448,52 +450,92 @@ export default function AppHeader({ client }: AppHeaderProps) {
               <Box
                 sx={{
                   display: "grid",
-                  gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                  gridTemplateColumns: "1fr 1fr",
                   gap: 1.5,
                 }}
               >
                 <Button
                   variant="outlined"
-                  startIcon={<InfoOutlinedIcon />}
                   onClick={() => {
                     setIsMenuOpen(false);
                     setIsCoverageDrawerOpen(true);
                   }}
-                  sx={{ justifyContent: "flex-start", textTransform: "none" }}
+                  sx={{
+                    flexDirection: "column",
+                    textTransform: "none",
+                    py: 2,
+                    px: 1,
+                    gap: 0.5,
+                    borderRadius: 2,
+                    minHeight: 80,
+                  }}
                 >
-                  About Coverage
+                  <PrivacyTipIcon />
+                  <Typography variant="caption" fontWeight={600}>
+                    About Coverage
+                  </Typography>
                 </Button>
                 <Button
                   variant="outlined"
-                  startIcon={<RequestQuoteOutlinedIcon />}
                   onClick={() => {
                     setIsMenuOpen(false);
                     setIsQuoteDrawerOpen(true);
                   }}
-                  sx={{ justifyContent: "flex-start", textTransform: "none" }}
+                  sx={{
+                    flexDirection: "column",
+                    textTransform: "none",
+                    py: 2,
+                    px: 1,
+                    gap: 0.5,
+                    borderRadius: 2,
+                    minHeight: 80,
+                  }}
                 >
-                  Get Quote
+                  <RequestQuoteRoundedIcon />
+                  <Typography variant="caption" fontWeight={600}>
+                    Get Quote
+                  </Typography>
                 </Button>
                 <Button
                   variant="outlined"
-                  startIcon={<CalculateOutlinedIcon />}
                   onClick={() => {
                     setIsMenuOpen(false);
                     setIsNeedsCalcOpen(true);
                   }}
-                  sx={{ justifyContent: "flex-start", textTransform: "none" }}
+                  sx={{
+                    flexDirection: "column",
+                    textTransform: "none",
+                    py: 2,
+                    px: 1,
+                    gap: 0.5,
+                    borderRadius: 2,
+                    minHeight: 80,
+                  }}
                 >
-                  Needs Calculator
+                  <CalculateRoundedIcon />
+                  <Typography variant="caption" fontWeight={600}>
+                    Needs Calculator
+                  </Typography>
                 </Button>
                 <Button
                   variant="outlined"
-                  startIcon={<HelpOutlineIcon />}
                   onClick={() => {
                     setIsMenuOpen(false);
                   }}
-                  sx={{ justifyContent: "flex-start", textTransform: "none" }}
+                  sx={{
+                    flexDirection: "column",
+                    textTransform: "none",
+                    py: 2,
+                    px: 1,
+                    gap: 0.5,
+                    borderRadius: 2,
+                    minHeight: 80,
+                  }}
                 >
-                  FAQ
+                  <HelpRoundedIcon />
+                  <Typography variant="caption" fontWeight={600}>
+                    FAQ
+                  </Typography>
                 </Button>
               </Box>
             </Stack>

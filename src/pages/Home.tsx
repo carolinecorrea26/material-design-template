@@ -381,7 +381,7 @@ export default function Home() {
                 }}
               >
                 {variant === "welcome-back"
-                  ? "Welcome back!"
+                  ? "Welcome!"
                   : content.home.hero.title}
               </Typography>
               <Typography variant="body1" color="text.secondary">
