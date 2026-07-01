@@ -14,7 +14,7 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import HomeQuoteCard from "../components/coverage/QuoteCard";
 import FormHelpDrawer from "../components/help/Drawer";
 import QuickDecisionIndicator from "../components/coverage/QuickDecisionBadge";
@@ -232,10 +232,20 @@ function HowApplyingWorksSection({
   );
 }
 
+const VALID_VARIANTS: HomePageVariant[] = [
+  "default",
+  "hero-image",
+  "welcome-back",
+];
+
 export default function Home() {
   const client = getActiveClient();
+  const [searchParams] = useSearchParams();
+  const urlVariant = searchParams.get("variant") as HomePageVariant | null;
   const variant: HomePageVariant =
-    client.features?.homePageVariant ?? "default";
+    urlVariant && VALID_VARIANTS.includes(urlVariant)
+      ? urlVariant
+      : (client.features?.homePageVariant ?? "default");
   const showQuoteTool = variant === "default";
   const showHeroImage = variant === "hero-image" || variant === "welcome-back";
   const showHowApplyingWorks = variant !== "welcome-back";
@@ -492,7 +502,6 @@ export default function Home() {
             />
           )}
         </Box>
-
         {showHowApplyingWorks && (
           <Box ref={howApplyingWorksRef} sx={FADE_IN_SECTION_SX(0.15)}>
             <HowApplyingWorksSection

@@ -104,9 +104,7 @@ export default function EstimatedCostPanel({
       }}
     >
       <Stack spacing={1.5}>
-        <Typography variant="h6">
-          Estimated cost<sup>1</sup>
-        </Typography>
+        <Typography variant="h6">Your requested coverage</Typography>
 
         {grandTotal <= 0 ? (
           <Box

@@ -308,10 +308,10 @@ export function CoverageOptionsDrawerContent({
 
   return (
     <Stack spacing={0}>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+      {/* <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         Review the coverage categories available and the products offered within
         each category.
-      </Typography>
+      </Typography> */}
 
       <Box
         sx={{

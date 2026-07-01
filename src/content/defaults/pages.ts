@@ -9,19 +9,19 @@ export const pagesDefaults: Partial<PagesContent> = {
   membership: {
     title: "Applying for {{clientAcronym}}-sponsored insurance",
     subhead:
-      "This is an online application for {{clientAcronym}}-sponsored insurance. It only takes a few minutes to get started, and we'll guide you through each step.",
-    navTitle: "Start",
+      "This is an online application for insurance. It only takes a minute to get started, and we'll guide you through each step.",
+    navTitle: "Membership",
   },
   eligibility: {
     title: "Confirm your eligibility",
     subhead:
       "Answer a few questions to check eligibility and see your coverage options.",
-    navTitle: "Check eligibility",
+    navTitle: "Eligibility",
   },
   coverage: {
     title: "Your coverage options",
     subhead: "Explore and customize the coverage options available to you.",
-    navTitle: "Choose coverage",
+    navTitle: "Coverage",
   },
   beneficiary: {
     title: "Add your beneficiaries",

@@ -37,7 +37,7 @@ export const homeDefaults: HomeContent = {
   ],
   coverageOptions: {
     title: "Your coverage options",
-    description: "Learn more about the coverage options available to you.",
+    description: "Learn more about the coverage available to you.",
   },
   nylCredentials: {
     name: "New York Life Insurance Company",
