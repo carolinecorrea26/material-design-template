@@ -182,7 +182,8 @@ export type FieldId =
   | "waepa-member-id"
   | "avma-vet-college"
   | "avma-graduation-year"
-  | "avma-occupation";
+  | "avma-occupation"
+  | "average-employees-6-months";
 
 export type FieldDefinition = {
   id: string;

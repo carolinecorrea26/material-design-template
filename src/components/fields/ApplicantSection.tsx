@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Box, Typography } from "@mui/material";
+import { Alert, Box, Typography } from "@mui/material";
 import {
   applicantSectionTitles,
   type ApplicantSectionId,
@@ -9,17 +9,29 @@ type ApplicantSectionProps = {
   applicant: ApplicantSectionId;
   children: ReactNode;
   showLabel?: boolean;
+  /** Optional info note displayed below the applicant title and above the children */
+  note?: string;
 };
 
 export default function ApplicantSection({
   applicant,
   children,
   showLabel = true,
+  note,
 }: ApplicantSectionProps) {
   const title = applicantSectionTitles[applicant];
 
   if (!showLabel) {
-    return <>{children}</>;
+    return (
+      <>
+        {note && (
+          <Alert severity="info" sx={{ mb: 2 }}>
+            {note}
+          </Alert>
+        )}
+        {children}
+      </>
+    );
   }
 
   return (
@@ -37,6 +49,12 @@ export default function ApplicantSection({
           {title}
         </Typography>
       </Box>
+
+      {note && (
+        <Alert severity="info" sx={{ mt: 2 }}>
+          {note}
+        </Alert>
+      )}
 
       <Box sx={{ mt: 2 }}>{children}</Box>
     </Box>

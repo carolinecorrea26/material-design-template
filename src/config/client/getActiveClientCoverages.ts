@@ -17,11 +17,16 @@ export function getActiveClientCoverages() {
 
       return {
         ...coverage,
+        name: override?.name ?? coverage.name,
+        categoryId: override?.categoryId ?? coverage.categoryId,
         minAmount: range?.min ?? coverage.minAmount,
         maxAmount: range?.max ?? coverage.maxAmount,
         description: description ?? coverage.description,
         featured: override?.featured ?? coverage.featured,
         coverageNote: override?.coverageNote ?? coverage.coverageNote,
+        applicantNotes: override?.applicantNotes ?? coverage.applicantNotes,
+        productWarning: override?.productWarning ?? coverage.productWarning,
+        productContent: override?.productContent ?? coverage.productContent,
         riders: override?.riders ?? coverage.riders,
         waitingPeriodOptions:
           override?.waitingPeriodOptions ?? coverage.waitingPeriodOptions,

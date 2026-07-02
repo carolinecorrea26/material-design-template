@@ -464,6 +464,15 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     inputMode: "numeric",
   },
 
+  "average-employees-6-months": {
+    id: "average-employees-6-months",
+    label: "What was your average number of employees in the past 6 months?",
+    inputType: "number",
+    labelVariant: "standard",
+    required: true,
+    inputMode: "numeric",
+  },
+
   "spouse-membership": {
     id: "spouse-membership",
     label: "Is your spouse also an active member?",

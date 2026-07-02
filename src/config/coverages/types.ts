@@ -38,6 +38,21 @@ export type CoverageDefinition = {
   description?: string;
   /** Note displayed per-applicant inside the product card (supports {maxAmount} placeholder) */
   coverageNote?: string;
+  /** Per-applicant info notes displayed above the applicant fields */
+  applicantNotes?: Partial<Record<CoverageApplicantId, string>>;
+  /** Product-level alert displayed below the product description */
+  productWarning?: {
+    severity: "warning" | "info";
+    title?: string;
+    message: string;
+  };
+  /** Structured content block displayed below the product warning */
+  productContent?: Array<
+    | { type: "heading"; text: string }
+    | { type: "paragraph"; text: string }
+    | { type: "list"; items: string[] }
+    | { type: "section"; heading: string; body: string[] }
+  >;
   applicants: CoverageApplicantId[];
   minAmount?: number;
   maxAmount?: number;

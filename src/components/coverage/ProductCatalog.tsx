@@ -35,10 +35,8 @@ import EstimatedCostPanel from "./EstimatedCostPanel";
 import { getDisplayedPremium, getBenefitAmountLabel } from "./useCoverageState";
 
 type ResolvedCoverage = ReturnType<typeof getActiveClientCoverages>[number];
-import {
-  categoryMaxAggregate,
-  categoryFootnotes,
-} from "../../config/coverageConstants";
+import { getMaxAggregateNotes } from "../../config/coverageConstants";
+import { resolveClientId } from "../../config/client/resolveClientId";
 
 const applicantCheckboxLabels: Record<CoverageApplicantId, string> =
   getContent().coverage.applicantCheckboxLabels;
@@ -104,6 +102,7 @@ type ProductCatalogProps = {
     minAmount?: number,
     maxAmount?: number,
   ) => number[];
+  hasSpouse: boolean;
 };
 
 export default function ProductCatalog(props: ProductCatalogProps) {
@@ -141,10 +140,24 @@ export default function ProductCatalog(props: ProductCatalogProps) {
     getVisibleApplicants,
     calcApplicantPremium,
     generateAmountChoices,
+    hasSpouse,
   } = props;
 
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+  const clientId = resolveClientId();
+
+  // Canonical display order for coverage sections
+  const categoryDisplayOrder: CoverageCategoryId[] = [
+    "LI",
+    "AD",
+    "DI",
+    "OO",
+    "SH",
+  ];
+  const orderedCategories = [...selectedCategories].sort(
+    (a, b) => categoryDisplayOrder.indexOf(a) - categoryDisplayOrder.indexOf(b),
+  );
 
   if (selectedCategories.length === 0 || !showProducts) return null;
 
@@ -179,6 +192,13 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 
   return (
     <>
+      {/* Coverage increase warning */}
+      <Alert severity="warning" sx={{ borderRadius: 2, mb: 2 }}>
+        If you already have any of the following Insurance and wish to increase
+        your current level of coverage, apply only for the additional coverage
+        you want.
+      </Alert>
+
       {/* QuickDecision note */}
       {hasQdCategorySelected && (
         <Box
@@ -243,7 +263,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Collapse in={showProducts}>
             <Stack spacing={3}>
-              {selectedCategories.map((categoryId) => {
+              {orderedCategories.map((categoryId) => {
                 const category = availableCategories.find(
                   (c) => c.id === categoryId,
                 );
@@ -270,20 +290,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 
                 return (
                   <Stack spacing={2} key={categoryId}>
-                    <Stack>
-                      <Typography variant="overline">
-                        {category.label}
-                      </Typography>
-                      {categoryMaxAggregate[categoryId] && (
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                          sx={{ fontSize: "0.75rem" }}
-                        >
-                          Max aggregate: {categoryMaxAggregate[categoryId]}
-                        </Typography>
-                      )}
-                    </Stack>
+                    <Typography variant="overline">{category.label}</Typography>
                     {productsInCategory.map((coverage) => (
                       <ProductCard
                         key={coverage.id}
@@ -308,21 +315,25 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                         generateAmountChoices={generateAmountChoices}
                       />
                     ))}
-                    {categoryFootnotes[categoryId] && (
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        sx={{
-                          display: "block",
-                          mt: 1,
-                          fontStyle: "italic",
-                          fontSize: "0.7rem",
-                          lineHeight: 1.4,
-                        }}
-                      >
-                        {categoryFootnotes[categoryId]}
-                      </Typography>
-                    )}
+                    {(() => {
+                      const notes = getMaxAggregateNotes(categoryId, clientId);
+                      if (!notes) return null;
+                      return (
+                        <Alert severity="warning" sx={{ borderRadius: 2 }}>
+                          <Typography
+                            variant="body2"
+                            sx={{ mb: hasSpouse ? 1 : 0 }}
+                          >
+                            {notes.member}
+                          </Typography>
+                          {hasSpouse && (
+                            <Typography variant="body2">
+                              {notes.spouse}
+                            </Typography>
+                          )}
+                        </Alert>
+                      );
+                    })()}
                   </Stack>
                 );
               })}
@@ -502,46 +513,155 @@ function ProductCard({
       }}
     >
       {/* Product title / subtitle */}
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="flex-start"
-        spacing={1}
-      >
-        <Stack spacing={0.25} sx={{ minWidth: 0 }}>
+      <Stack spacing={0.25}>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          spacing={1}
+        >
           <Typography
             variant="body2"
             sx={{
               fontWeight: 700,
-              fontSize: "1rem",
+              fontSize: "0.875rem",
               letterSpacing: "-0.25px",
             }}
           >
             {coverage.name}
             {coverage.underwritingType === "QD" && <QuickDecisionIndicator />}
           </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ fontSize: "12px" }}
-          >
-            {coverage.description ?? coverage.definition}
-          </Typography>
+          {coverage.featured && (
+            <Chip
+              icon={<AutoAwesomeIcon />}
+              label="Featured"
+              size="small"
+              color="primary"
+              sx={{
+                flexShrink: 0,
+                "& .MuiChip-label": { fontSize: "0.675rem", fontWeight: 700 },
+                "& .MuiChip-icon": { fontSize: "0.875rem" },
+              }}
+            />
+          )}
         </Stack>
-        {coverage.featured && (
-          <Chip
-            icon={<AutoAwesomeIcon />}
-            label="Featured"
-            size="small"
-            color="primary"
-            sx={{
-              flexShrink: 0,
-              "& .MuiChip-label": { fontSize: "0.675rem", fontWeight: 700 },
-              "& .MuiChip-icon": { fontSize: "0.875rem" },
-            }}
-          />
-        )}
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ fontSize: "0.875rem" }}
+        >
+          {coverage.description ?? coverage.definition}
+        </Typography>
       </Stack>
+
+      {/* Product-level warning alert */}
+      {coverage.productWarning && (
+        <Alert
+          severity={coverage.productWarning.severity}
+          sx={{ borderRadius: 2 }}
+        >
+          {coverage.productWarning.title && (
+            <Typography
+              variant="body2"
+              sx={{ fontWeight: 700, fontSize: "1rem", mb: 1 }}
+            >
+              {coverage.productWarning.title}
+            </Typography>
+          )}
+          {coverage.productWarning.message}
+        </Alert>
+      )}
+
+      {/* Product-level additional content */}
+      {coverage.productContent && coverage.productContent.length > 0 && (
+        <Box
+          sx={{
+            backgroundColor: "#fff",
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: 2,
+            p: 2,
+          }}
+        >
+          {coverage.productContent.map((block, i) => {
+            if (typeof block === "string") {
+              return (
+                <Typography
+                  key={i}
+                  variant="body2"
+                  sx={{ fontSize: "0.75rem", mb: 1 }}
+                >
+                  {block}
+                </Typography>
+              );
+            }
+            switch (block.type) {
+              case "heading":
+                return (
+                  <Typography
+                    key={i}
+                    variant="body2"
+                    sx={{
+                      fontSize: "1rem",
+                      fontWeight: 700,
+                      textAlign: "center",
+                      mb: 0.5,
+                    }}
+                  >
+                    {block.text}
+                  </Typography>
+                );
+              case "paragraph":
+                return (
+                  <Typography
+                    key={i}
+                    variant="body2"
+                    sx={{ fontSize: "1rem", mb: 1.5 }}
+                  >
+                    {block.text}
+                  </Typography>
+                );
+              case "list":
+                return (
+                  <Box key={i} component="ul" sx={{ pl: 2.5, mb: 1.5, mt: 0 }}>
+                    {block.items.map((item, j) => (
+                      <Typography
+                        key={j}
+                        component="li"
+                        variant="body2"
+                        sx={{ fontSize: "1rem", mb: 0.5 }}
+                      >
+                        {item}
+                      </Typography>
+                    ))}
+                  </Box>
+                );
+              case "section":
+                return (
+                  <Box key={i} sx={{ mb: 1.5 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{ fontSize: "1rem", fontWeight: 700, mb: 0.5 }}
+                    >
+                      {block.heading}
+                    </Typography>
+                    {block.body.map((line, j) => (
+                      <Typography
+                        key={j}
+                        variant="body2"
+                        sx={{ fontSize: "1rem", mb: 0.5 }}
+                      >
+                        {line}
+                      </Typography>
+                    ))}
+                  </Box>
+                );
+              default:
+                return null;
+            }
+          })}
+        </Box>
+      )}
 
       {/* Per-applicant sections */}
       <Stack spacing={isMultiApplicant ? 3 : 2} sx={{ mt: 1 }}>
@@ -555,6 +675,7 @@ function ProductCard({
           const isCalculatingRate = calculatingRateKeys.has(key);
           const premium = calcApplicantPremium(coverage, applicantId);
           const displayedPremium = getDisplayedPremium(premium, rateFrequency);
+          const applicantNote = coverage.applicantNotes?.[applicantId];
 
           return (
             <Box key={applicantId}>
@@ -565,6 +686,13 @@ function ProductCard({
                     <FormSectionTitle applicant={sectionId} />
                   </Box>
                 </>
+              )}
+
+              {/* Applicant-level info note */}
+              {applicantNote && (
+                <Alert severity="info" sx={{ borderRadius: 2, mb: 1.5 }}>
+                  {applicantNote}
+                </Alert>
               )}
 
               <SelectableOptionRow>

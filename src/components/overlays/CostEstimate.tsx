@@ -569,7 +569,7 @@ export default function CostEstimateDrawerContent() {
                             <Typography
                               variant="body2"
                               color="text.secondary"
-                              sx={{ fontSize: "12px" }}
+                              sx={{ fontSize: "0.875rem" }}
                             >
                               {product.description ?? product.definition}
                             </Typography>

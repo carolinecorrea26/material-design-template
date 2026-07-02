@@ -3,6 +3,7 @@ import type { CoverageId } from "../../types";
 import type { PageId } from "../../types";
 import type { ClientId } from "../../types";
 import type { FieldDefinition } from "../fields/types";
+import type { PageSectionId } from "../pageSections/types";
 
 export type FieldId = string;
 
@@ -53,7 +54,26 @@ export type ClientMaxBenefitPeriodConfig = {
   value: string;
 };
 
+export type CoverageApplicantNotes = Partial<
+  Record<"member" | "spouse" | "child", string>
+>;
+
+export type CoverageProductWarning = {
+  severity: "warning" | "info";
+  /** Bold title line (rendered separately, 16px bold) */
+  title?: string;
+  message: string;
+};
+
+export type ProductContentBlock =
+  | { type: "heading"; text: string }
+  | { type: "paragraph"; text: string }
+  | { type: "list"; items: string[] }
+  | { type: "section"; heading: string; body: string[] };
+
 export type ClientCoverageOverrides = {
+  name?: string;
+  categoryId?: CoverageCategoryId;
   riders?: ClientRiderConfig[];
   waitingPeriodOptions?: ClientWaitingPeriodConfig[];
   maxBenefitPeriodOptions?: ClientMaxBenefitPeriodConfig[];
@@ -61,6 +81,12 @@ export type ClientCoverageOverrides = {
   coverageNote?: string;
   featured?: boolean;
   underwritingType?: "FUW" | "GI" | "NA" | "QD" | "SI";
+  /** Per-applicant info notes displayed above the applicant fields */
+  applicantNotes?: CoverageApplicantNotes;
+  /** Product-level alert displayed below the product description */
+  productWarning?: CoverageProductWarning;
+  /** Structured content block displayed below the product warning */
+  productContent?: ProductContentBlock[];
 };
 
 export type EstimatedRateFrequency = "monthly" | "annual";
@@ -118,6 +144,19 @@ export type ClientFeatures = {
   homePageVariant?: HomePageVariant;
 };
 
+/**
+ * Defines which coverage question sections are visible for each category.
+ * If a client provides this, it overrides the default hardcoded mapping
+ * in CoverageQuestions. Categories not listed fall back to showing no
+ * category-specific sections (i.e. only "always" sections are shown).
+ *
+ * - `always`: sections shown regardless of category selection
+ * - Per-category arrays: additional sections shown when that category is selected
+ */
+export type ClientCoverageQuestions = {
+  always?: PageSectionId[];
+} & Partial<Record<CoverageCategoryId, PageSectionId[]>>;
+
 export type ClientConfig = {
   id: ClientId;
   branding: ClientBranding;
@@ -129,4 +168,5 @@ export type ClientConfig = {
   content?: ClientContent;
   features?: ClientFeatures;
   licenseInfo?: string[];
+  coverageQuestions?: ClientCoverageQuestions;
 };

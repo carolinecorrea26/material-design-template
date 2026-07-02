@@ -1150,7 +1150,7 @@ export default function HomeQuoteCard() {
                       <Typography
                         variant="body2"
                         color="text.secondary"
-                        sx={{ fontSize: "12px" }}
+                        sx={{ fontSize: "0.875rem" }}
                       >
                         {modalProduct.description ?? modalProduct.definition}
                       </Typography>
@@ -1231,7 +1231,7 @@ export default function HomeQuoteCard() {
                             sx={{
                               color: "text.secondary",
                               fontWeight: 500,
-                              fontSize: "12px",
+                              fontSize: "0.875rem",
                             }}
                           >
                             Estimated cost<sup>1</sup>

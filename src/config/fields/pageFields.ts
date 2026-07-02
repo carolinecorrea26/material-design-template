@@ -59,6 +59,7 @@ export const pageFields: Partial<Record<PageId, FieldId[]>> = {
     "hours-worked-per-week",
     "monthly-business-expenses",
     "business-expense-responsibility",
+    "average-employees-6-months",
     "spouse-gender",
     "spouse-smoker",
     "spouse-tobacco-last-used",

@@ -23,6 +23,8 @@ export const coverages: CoverageDefinition[] = [
     categoryId: "LI",
     name: "10-Year Level Term",
     definition: "Provides level term life coverage for 10 years.",
+    description:
+      "This coverage helps you plan today for the next decade, with no scheduled increases in premium for the initial 10 years of coverage.",
     applicants: ["member", "spouse", "child"],
     underwritingType: "FUW",
     minAmount: 25000,
@@ -55,6 +57,8 @@ export const coverages: CoverageDefinition[] = [
     categoryId: "LI",
     name: "20-Year Level Term",
     definition: "Provides level term life coverage for 20 years.",
+    description:
+      "A good fit for those in their 30s and 40s with premiums that are expected to remain level for the initial 20 years you are insured.",
     applicants: ["member", "spouse", "child"],
     underwritingType: "FUW",
     minAmount: 25000,
@@ -135,6 +139,8 @@ export const coverages: CoverageDefinition[] = [
     categoryId: "LI",
     name: "Group Term Life",
     definition: "Provides group term life coverage for eligible applicants.",
+    description:
+      "Annually renewable coverage designed to provide protection for both you and your family.",
     applicants: ["member", "spouse", "child"],
     underwritingType: "GI",
     minAmount: 10000,
@@ -165,6 +171,8 @@ export const coverages: CoverageDefinition[] = [
     categoryId: "DI",
     name: "Long-Term Disability",
     definition: "Provides long-term disability income protection.",
+    description:
+      "Protection for your income if you are disabled from a covered accident or illness.",
     applicants: ["member"],
     underwritingType: "FUW",
     options: [
@@ -300,6 +308,8 @@ export const coverages: CoverageDefinition[] = [
     categoryId: "SH",
     name: "Hospital Income",
     definition: "Provides benefits related to covered hospital confinement.",
+    description:
+      "Helps provide extra financial support if you're hospitalized due to a covered illness or injury.",
     applicants: ["member", "spouse", "child"],
     underwritingType: "FUW",
     minAmount: 500,

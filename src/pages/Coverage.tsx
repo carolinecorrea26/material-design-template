@@ -115,6 +115,7 @@ function CoveragePageContent({
           categoryNeedsHours={state.categoryNeedsHours}
           hasSpouse={state.hasSpouse}
           onFieldChange={handleCoverageQuestionChange}
+          coverageQuestions={state.clientCoverageQuestions}
         />
 
         {/* Empty state when no categories selected */}
@@ -186,6 +187,7 @@ function CoveragePageContent({
             getVisibleApplicants={state.getVisibleApplicants}
             calcApplicantPremium={state.calcApplicantPremium}
             generateAmountChoices={state.generateAmountChoices}
+            hasSpouse={state.hasSpouse}
           />
         </Box>
       )}

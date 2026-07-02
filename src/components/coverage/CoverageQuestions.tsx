@@ -6,6 +6,7 @@ import type { FormRouteRenderProps } from "../../components/page/RoutePage";
 import type { CoverageCategoryId } from "../../config/coverages/types";
 import type { PageSectionConfig } from "../../config/pageSections/types";
 import type { SectionVisibilityRule } from "../../config/pageSections/types";
+import type { ClientCoverageQuestions } from "../../config/clients/types";
 
 /**
  * Check visibleWhen rules only (skip the applicant coverage gate
@@ -29,18 +30,19 @@ function isSectionRulesVisible(
   });
 }
 
-/** Section IDs that require specific category selections to be visible */
-const personalSections = new Set([
+/** Default section-to-category mapping (used when no client override) */
+const defaultPersonalSections = new Set([
   "selfCoverageQuestions",
   "selfCoverageTobacco",
   "spouseCoverageQuestions",
   "spouseCoverageTobacco",
 ]);
-const workIncomeSections = new Set([
+const defaultWorkIncomeSections = new Set([
   "selfCoverageWorkIncome",
   "spouseCoverageWorkIncome",
 ]);
-const businessSections = new Set(["selfCoverageBusinessExpenses"]);
+const defaultBusinessSections = new Set(["selfCoverageBusinessExpenses"]);
+const defaultOfficeSections = new Set(["selfCoverageOfficeEmployees"]);
 
 type CoverageQuestionsProps = Pick<
   FormRouteRenderProps,
@@ -54,6 +56,7 @@ type CoverageQuestionsProps = Pick<
   categoryNeedsHours: boolean;
   hasSpouse: boolean;
   onFieldChange?: () => void;
+  coverageQuestions?: ClientCoverageQuestions;
 };
 
 function isCategorySectionVisible(
@@ -61,6 +64,8 @@ function isCategorySectionVisible(
   props: CoverageQuestionsProps,
 ): boolean {
   const {
+    selectedCategories,
+    coverageQuestions,
     categoryNeedsGender,
     categoryNeedsSmoker,
     categoryNeedsDi,
@@ -68,13 +73,29 @@ function isCategorySectionVisible(
     categoryNeedsHours,
   } = props;
 
-  if (personalSections.has(section.id)) {
+  // If client provides a coverageQuestions mapping, use it
+  if (coverageQuestions) {
+    // "always" sections are always visible when any category is selected
+    if (coverageQuestions.always?.includes(section.id)) {
+      return selectedCategories.length > 0;
+    }
+    // Check if any selected category lists this section
+    return selectedCategories.some((catId) =>
+      coverageQuestions[catId]?.includes(section.id),
+    );
+  }
+
+  // Default behavior
+  if (defaultPersonalSections.has(section.id)) {
     return categoryNeedsGender || categoryNeedsSmoker;
   }
-  if (workIncomeSections.has(section.id)) {
+  if (defaultWorkIncomeSections.has(section.id)) {
     return categoryNeedsHours || categoryNeedsDi;
   }
-  if (businessSections.has(section.id)) {
+  if (defaultBusinessSections.has(section.id)) {
+    return categoryNeedsOo;
+  }
+  if (defaultOfficeSections.has(section.id)) {
     return categoryNeedsOo;
   }
   return true;

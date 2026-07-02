@@ -114,11 +114,19 @@ export function useCoverageState() {
   const categoryNeedsDi = selectedCategories.includes("DI");
   const categoryNeedsOo = selectedCategories.includes("OO");
   const categoryNeedsHours = categoryNeedsDi || categoryNeedsOo;
-  const needsAdditionalQuestions =
-    categoryNeedsGender ||
-    categoryNeedsSmoker ||
-    categoryNeedsDi ||
-    categoryNeedsOo;
+
+  const clientCoverageQuestions = activeClient.coverageQuestions;
+
+  const needsAdditionalQuestions = clientCoverageQuestions
+    ? selectedCategories.some(
+        (catId) =>
+          (clientCoverageQuestions[catId]?.length ?? 0) > 0 ||
+          (clientCoverageQuestions.always?.length ?? 0) > 0,
+      )
+    : categoryNeedsGender ||
+      categoryNeedsSmoker ||
+      categoryNeedsDi ||
+      categoryNeedsOo;
 
   // ── Dependents ─────────────────────────────────────────────────────────
   const selectedDependents = useMemo<string[]>(
@@ -363,11 +371,13 @@ export function useCoverageState() {
 
   function handleCategoryToggle(categoryId: CoverageCategoryId) {
     const isAdding = !selectedCategories.includes(categoryId);
-    const categoryRequiresQuestions =
-      categoryId === "LI" ||
-      categoryId === "DI" ||
-      categoryId === "OO" ||
-      categoryId === "SH";
+    const categoryRequiresQuestions = clientCoverageQuestions
+      ? (clientCoverageQuestions[categoryId]?.length ?? 0) > 0 ||
+        (clientCoverageQuestions.always?.length ?? 0) > 0
+      : categoryId === "LI" ||
+        categoryId === "DI" ||
+        categoryId === "OO" ||
+        categoryId === "SH";
 
     if (isAdding && categoryRequiresQuestions && showProducts) {
       setShowProducts(false);
@@ -659,6 +669,7 @@ export function useCoverageState() {
     categoryNeedsOo,
     categoryNeedsHours,
     needsAdditionalQuestions,
+    clientCoverageQuestions,
     hasSpouse,
 
     // Product state

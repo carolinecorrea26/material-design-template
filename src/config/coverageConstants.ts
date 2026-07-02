@@ -1,17 +1,65 @@
 import type { CoverageCategoryId } from "./coverages/types";
+import type { ClientId } from "../types";
 
 export const RATE_CALCULATION_DELAY_MS = 900;
 
 export const categoryMaxAggregate: Record<CoverageCategoryId, string | null> = {
   LI: "$2,000,000",
-  AD: "$2,000,000",
-  DI: "$12,000",
+  AD: null,
+  DI: null,
   OO: null,
   SH: null,
 };
 
-export const categoryFootnotes: Partial<Record<CoverageCategoryId, string>> = {
-  LI: "The maximum available through New York Life Insurance Company for any individual is $2,000,000, whether coverage is in one or divided among several group policies.",
-  AD: "The maximum available through New York Life Insurance Company for any individual is $2,000,000, whether coverage is in one or divided among several group policies.",
-  DI: "The maximum available through all ABE group insurance underwritten by New York Life Insurance Company is $12,000 for a member whether coverage is in one or divided among several group policies.",
+/**
+ * Max aggregate note messages displayed in a warning alert at the end of a category section.
+ * Only categories with non-null entries will display the alert. Currently only LI applies.
+ */
+export type MaxAggregateNote = {
+  member: string;
+  spouse: string;
 };
+
+const defaultLifeMaxAggregateNote: MaxAggregateNote = {
+  member:
+    "The maximum Life Insurance amount available for a member through this Insurance Program underwritten by New York Life is $2,000,000 whether coverage is in one or divided among several group policies.",
+  spouse:
+    "The maximum Life Insurance amount available for a spouse through this Insurance Program underwritten by New York Life is $2,000,000 whether coverage is in one or divided among several group policies.",
+};
+
+export const categoryMaxAggregateNotes: Partial<
+  Record<CoverageCategoryId, MaxAggregateNote>
+> = {
+  LI: defaultLifeMaxAggregateNote,
+};
+
+/**
+ * Client-specific overrides for max aggregate notes.
+ * Only clients that differ from default need entries here.
+ */
+export const clientMaxAggregateNoteOverrides: Partial<
+  Record<ClientId, Partial<Record<CoverageCategoryId, MaxAggregateNote>>>
+> = {
+  avma: {
+    LI: {
+      member:
+        "The maximum Life Insurance amount available for a member through this Insurance Program underwritten by New York Life is $2,000,000 whether coverage is in one or divided among several group policies. The Basic Protection Package is not included in this aggregate maximum.",
+      spouse:
+        "The maximum Life Insurance amount available for a spouse through this Insurance Program underwritten by New York Life is $1,000,000 whether coverage is in one or divided among several group policies.",
+    },
+  },
+};
+
+/**
+ * Returns the max aggregate notes for a given category and client.
+ * Returns null if the category has no max aggregate note.
+ */
+export function getMaxAggregateNotes(
+  categoryId: CoverageCategoryId,
+  clientId: ClientId,
+): MaxAggregateNote | null {
+  const clientOverride =
+    clientMaxAggregateNoteOverrides[clientId]?.[categoryId];
+  if (clientOverride) return clientOverride;
+  return categoryMaxAggregateNotes[categoryId] ?? null;
+}
