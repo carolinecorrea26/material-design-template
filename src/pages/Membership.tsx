@@ -2,6 +2,7 @@ import { Alert, Box, Stack, Typography } from "@mui/material";
 import type { UseFormSetValue } from "react-hook-form";
 
 import { getActiveClient } from "../config/client/getActiveClient";
+import { getPageSectionNote } from "../config/pages";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import FieldRenderer from "../components/fields/FieldRenderer";
 import FormRoutePage from "../components/page/RoutePage";
@@ -127,11 +128,6 @@ function WAEPAAdditionalFields({
 
   return (
     <Stack spacing={2} sx={{ mt: 1 }}>
-      <Alert severity="info">
-        Applying for coverage will make you a WAEPA member. Please provide the
-        following information to complete your membership.
-      </Alert>
-
       {renderField(declarationField, control, errors)}
       {renderField(attestationField, control, errors, () =>
         clearFields(setValue, waepaConditionalFieldIds),
@@ -337,6 +333,11 @@ export default function Membership() {
                 {hasAdditionalFields && (
                   <Box sx={{ mt: 3 }}>
                     <FormSectionTitle label="Membership Information" />
+                    {getPageSectionNote(pageId, "membershipInformation") && (
+                      <Alert severity="info" sx={{ mt: 1 }}>
+                        {getPageSectionNote(pageId, "membershipInformation")}
+                      </Alert>
+                    )}
                     {client.id === "waepa" ? (
                       <WAEPAAdditionalFields
                         fields={additionalFields}

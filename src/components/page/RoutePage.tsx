@@ -23,7 +23,11 @@ import {
   getNextFormPageId,
   getPreviousFormPageId,
 } from "../../config/formFlow";
-import { getPageSubhead, getPageTitle } from "../../config/pages";
+import {
+  getPageInfoNote,
+  getPageSubhead,
+  getPageTitle,
+} from "../../config/pages";
 import { getPageSections } from "../../config/pageSections";
 import type { PageSectionConfig } from "../../config/pageSections/types";
 import type { FieldDefinition } from "../../config/fields/types";
@@ -511,6 +515,7 @@ export default function FormRoutePage({
 
   const resolvedTitle = title ?? getPageTitle(pageId);
   const resolvedSubhead = subhead ?? getPageSubhead(pageId);
+  const resolvedInfoNote = getPageInfoNote(pageId);
 
   const formPageElement = (
     <FormPage
@@ -582,6 +587,13 @@ export default function FormRoutePage({
                     }
                   />
                   {renderedHelp}
+                </Box>
+              )}
+              {resolvedInfoNote && (
+                <Box sx={{ mb: 2 }}>
+                  <Alert severity="info" sx={{ width: "100%" }}>
+                    {resolvedInfoNote}
+                  </Alert>
                 </Box>
               )}
               {pageError && (

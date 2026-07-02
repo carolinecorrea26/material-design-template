@@ -18,6 +18,12 @@ const waepaExtraFields = [
   fieldCatalog["waepa-member-id"],
 ];
 
+const avmaExtraFields = [
+  fieldCatalog["avma-vet-college"],
+  fieldCatalog["avma-graduation-year"],
+  fieldCatalog["avma-occupation"],
+];
+
 export const membershipClientFields: Partial<
   Record<ClientId, MembershipClientFieldConfig>
 > = {
@@ -67,7 +73,7 @@ export const membershipClientFields: Partial<
           "Are you a member of the American Veterinary Medical Association?",
       },
     },
-    extraFields: [],
+    extraFields: avmaExtraFields,
   },
   nso: {
     showTitleField: false,

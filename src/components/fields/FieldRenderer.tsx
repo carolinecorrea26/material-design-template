@@ -236,7 +236,14 @@ function formatPercent(value: string) {
   return sanitizeDigits(value, 3);
 }
 
+function labelStandardEnabled() {
+  return new URLSearchParams(window.location.search).has("labelStandard");
+}
+
 function getLabelVariant(field: FieldDefinition) {
+  if (labelStandardEnabled() && !field.labelVariant) {
+    return "standard";
+  }
   return field.labelVariant ?? "floating";
 }
 

@@ -71,6 +71,10 @@ export type PageContent = {
   title: string;
   subhead?: string;
   navTitle: string;
+  /** Optional info note displayed below page title/subhead/help and above form questions. */
+  infoNote?: string;
+  /** Optional info notes for specific sections, keyed by section id. Displayed below section titles. */
+  sectionNotes?: Partial<Record<string, string>>;
 };
 
 export type PagesContent = Record<PageId, PageContent>;

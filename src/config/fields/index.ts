@@ -252,6 +252,32 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     required: false,
   },
 
+  "avma-vet-college": {
+    id: "avma-vet-college",
+    label: "What veterinary college did you attend?",
+    // labelVariant: "standard",
+    inputType: "text",
+    required: true,
+  },
+
+  "avma-graduation-year": {
+    id: "avma-graduation-year",
+    label: "Year of Graduation",
+    inputType: "text",
+    required: true,
+    placeholder: "YYYY",
+    inputMode: "numeric",
+  },
+
+  "avma-occupation": {
+    id: "avma-occupation",
+    label: "Occupation",
+    inputType: "text",
+    required: true,
+    helperText:
+      "Please specify type of practice or other occupation if not practicing.",
+  },
+
   "phone-type": {
     id: "phone-type",
     label: "Phone Type",

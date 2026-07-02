@@ -179,7 +179,10 @@ export type FieldId =
   | "waepa-retirement-date"
   | "waepa-member-first-name"
   | "waepa-member-last-name"
-  | "waepa-member-id";
+  | "waepa-member-id"
+  | "avma-vet-college"
+  | "avma-graduation-year"
+  | "avma-occupation";
 
 export type FieldDefinition = {
   id: string;

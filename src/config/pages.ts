@@ -73,6 +73,24 @@ export function getPageSubhead(id: (typeof pages)[number]["id"]) {
   return undefined;
 }
 
+export function getPageInfoNote(id: (typeof pages)[number]["id"]) {
+  const contentPage = getContent().pages[id];
+  if (contentPage?.infoNote) return resolveTemplate(contentPage.infoNote);
+
+  return undefined;
+}
+
+export function getPageSectionNote(
+  pageId: (typeof pages)[number]["id"],
+  sectionId: string,
+) {
+  const contentPage = getContent().pages[pageId];
+  const note = contentPage?.sectionNotes?.[sectionId];
+  if (note) return resolveTemplate(note);
+
+  return undefined;
+}
+
 export function getPageNavTitle(id: (typeof pages)[number]["id"]) {
   const contentPage = getContent().pages[id];
   if (contentPage?.navTitle) return resolveTemplate(contentPage.navTitle);
