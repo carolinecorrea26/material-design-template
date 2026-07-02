@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Link,
   Stack,
   TextField,
   Typography,
@@ -30,7 +31,6 @@ export default function Resume() {
 
   useEffect(() => {
     if (emailSent) {
-      setSecondsLeft(600);
       timerRef.current = setInterval(() => {
         setSecondsLeft((prev) => {
           if (prev <= 1) {
@@ -61,6 +61,7 @@ export default function Resume() {
       void sendResumeMagicLinkMockEmail(emailAddress.trim());
 
       setIsEmailSending(false);
+      setSecondsLeft(600);
       setEmailSent(true);
     }, 1500);
   }
@@ -113,13 +114,30 @@ export default function Resume() {
             </Box>
           ) : emailSent ? (
             <Stack spacing={2} sx={{ py: 1 }}>
-              <Alert severity="success" icon={<MailLockRounded />}>
-                A secure link has been sent to{" "}
-                <Box component="span" sx={{ fontWeight: 700 }}>
-                  {emailAddress}
-                </Box>
-                . Open your email and click the link to continue.
-              </Alert>
+              {secondsLeft === 0 ? (
+                <Alert severity="error">
+                  Your secure link has expired.{" "}
+                  <Link
+                    href="#"
+                    underline="hover"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setEmailSent(false);
+                    }}
+                    sx={{ fontSize: "inherit", verticalAlign: "baseline" }}
+                  >
+                    Resend link
+                  </Link>
+                </Alert>
+              ) : (
+                <Alert severity="success" icon={<MailLockRounded />}>
+                  A secure link has been sent to{" "}
+                  <Box component="span" sx={{ fontWeight: 700 }}>
+                    {emailAddress}
+                  </Box>
+                  . Open your email and click the link to continue.
+                </Alert>
+              )}
               <Stack
                 direction="row"
                 spacing={0.5}
@@ -129,14 +147,20 @@ export default function Resume() {
               >
                 <Typography
                   variant="body2"
-                  color="text.secondary"
+                  color={secondsLeft === 0 ? "error" : "text.secondary"}
                   sx={{ fontSize: "0.8125rem" }}
                 >
-                  Link expires in{" "}
-                  <Box component="span" sx={{ fontWeight: 700 }}>
-                    {Math.floor(secondsLeft / 60)}:
-                    {String(secondsLeft % 60).padStart(2, "0")}
-                  </Box>
+                  {secondsLeft === 0 ? (
+                    "Link expired"
+                  ) : (
+                    <>
+                      Link expires in{" "}
+                      <Box component="span" sx={{ fontWeight: 700 }}>
+                        {Math.floor(secondsLeft / 60)}:
+                        {String(secondsLeft % 60).padStart(2, "0")}
+                      </Box>
+                    </>
+                  )}
                 </Typography>
                 <Button
                   variant="text"
@@ -145,7 +169,7 @@ export default function Resume() {
                   onClick={() => setEmailSent(false)}
                   sx={{ textTransform: "none", fontSize: "0.8125rem" }}
                 >
-                  Resend secure link
+                  Resend link
                 </Button>
               </Stack>
             </Stack>

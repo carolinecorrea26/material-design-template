@@ -139,7 +139,7 @@ function HowApplyingWorksSection({
   const applyingSteps = content.home.applyingSteps;
   return (
     <Stack spacing={4}>
-      <Stack spacing={1}>
+      <Stack spacing={1} sx={{ textAlign: { xs: "center", md: "left" } }}>
         <Typography variant="h2">
           {content.home.howApplyingWorks.title}
         </Typography>
@@ -152,12 +152,12 @@ function HowApplyingWorksSection({
         {applyingSteps.map((step, index) => (
           <Box key={index} sx={{ padding: { xs: "0 1.5rem", md: "0 2rem" } }}>
             <Stack
-              direction={{ xs: "column", md: "row" }}
-              spacing={{ xs: 3, md: 5 }}
-              alignItems={{ xs: "flex-start", md: "center" }}
+              direction={{ xs: "column", sm: "row" }}
+              spacing={{ xs: 3, sm: 5 }}
+              alignItems={{ xs: "flex-start", sm: "center" }}
             >
               <Box
-                sx={{ flexShrink: 0, alignSelf: { xs: "center", md: "auto" } }}
+                sx={{ flexShrink: 0, alignSelf: { xs: "center", sm: "auto" } }}
               >
                 <Box
                   component="img"
@@ -344,7 +344,9 @@ export default function Home() {
               alignSelf: "flex-start",
               maxWidth: showQuoteTool || showHeroImage ? 600 : 760,
               justifySelf:
-                showQuoteTool || showHeroImage ? "stretch" : "center",
+                showQuoteTool || showHeroImage
+                  ? { xs: "center", md: "stretch" }
+                  : "center",
               textAlign:
                 showQuoteTool || showHeroImage
                   ? "left"
@@ -383,8 +385,9 @@ export default function Home() {
                 sx={{
                   fontSize: {
                     xs: "2.5rem",
-                    sm: "3rem",
-                    md: "3.5rem",
+                    sm: "2.5rem",
+                    md: "3rem",
+                    lg: "3.5rem",
                   },
                   lineHeight: 1.08,
                   fontWeight: 700,
@@ -498,6 +501,7 @@ export default function Home() {
                 height: "auto",
                 borderRadius: 4,
                 objectFit: "cover",
+                mx: { xs: "auto", md: 0 },
               }}
             />
           )}
@@ -515,7 +519,7 @@ export default function Home() {
 
         {showCoverageOptions && (
           <Stack spacing={2.5} sx={FADE_IN_SECTION_SX(0.3)}>
-            <Stack spacing={1}>
+            <Stack spacing={1} sx={{ textAlign: { xs: "center", md: "left" } }}>
               <Typography variant="h2">
                 {content.home.coverageOptions.title}
               </Typography>

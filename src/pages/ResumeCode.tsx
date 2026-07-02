@@ -1,7 +1,16 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Link,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
+// import ErrorRoundedIcon from "@mui/icons-material/ErrorRounded";
 import { useNavigate } from "react-router-dom";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getPagePath, getPageTitle } from "../config/pages";
@@ -177,11 +186,29 @@ export default function ResumeCode() {
             noValidate
             sx={{ py: 1 }}
           >
+            {secondsLeft === 0 && (
+              <Alert
+                severity="error"
+                // icon={<ErrorRoundedIcon />}
+                sx={{ mb: 2 }}
+              >
+                Your security code has expired.{" "}
+                <Link
+                  href="#"
+                  underline="hover"
+                  onClick={() => {}}
+                  sx={{ fontSize: "inherit", verticalAlign: "baseline" }}
+                >
+                  Resend Code
+                </Link>
+              </Alert>
+            )}
             <TextField
               fullWidth
               type="text"
               required={codeField?.required}
               value={phoneCode}
+              disabled={secondsLeft === 0}
               label={codeField?.label ?? "Security Code"}
               onChange={(event) => {
                 setPhoneCode(event.target.value);
@@ -203,14 +230,20 @@ export default function ResumeCode() {
             >
               <Typography
                 variant="body2"
-                color="text.secondary"
+                color={secondsLeft === 0 ? "error" : "text.secondary"}
                 sx={{ fontSize: "0.8125rem" }}
               >
-                Code expires in{" "}
-                <Box component="span" sx={{ fontWeight: 700 }}>
-                  {Math.floor(secondsLeft / 60)}:
-                  {String(secondsLeft % 60).padStart(2, "0")}
-                </Box>
+                {secondsLeft === 0 ? (
+                  "Code expired"
+                ) : (
+                  <>
+                    Code expires in{" "}
+                    <Box component="span" sx={{ fontWeight: 700 }}>
+                      {Math.floor(secondsLeft / 60)}:
+                      {String(secondsLeft % 60).padStart(2, "0")}
+                    </Box>
+                  </>
+                )}
               </Typography>
               <Button
                 variant="text"
@@ -227,7 +260,7 @@ export default function ResumeCode() {
                 type="submit"
                 variant="contained"
                 fullWidth
-                disabled={isVerifying || verifySuccess}
+                disabled={isVerifying || verifySuccess || secondsLeft === 0}
                 sx={{
                   fontWeight: 700,
                   padding: "16px",

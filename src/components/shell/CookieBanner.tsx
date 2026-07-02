@@ -68,6 +68,7 @@ export default function CookieBanner({ onClose }: CookieBannerProps) {
               minWidth: 0,
               color: "common.white",
               lineHeight: 1.5,
+              textAlign: "justify",
             }}
           >
             New York Life uses cookies to enhance your experience and analyze
