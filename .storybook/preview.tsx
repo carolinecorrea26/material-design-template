@@ -1,13 +1,24 @@
-import type { Preview } from '@storybook/react-vite'
+import type { Preview } from "@storybook/react-vite";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { MemoryRouter } from "react-router-dom";
+import theme from "../src/app/theme";
 
 const preview: Preview = {
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Story />
+        </ThemeProvider>
+      </MemoryRouter>
+    ),
+  ],
   parameters: {
     controls: {
-      matchers: {
-       color: /(background|color)$/i,
-       date: /Date$/i,
-      },
+      expanded: true,
     },
+    layout: "centered",
   },
 };
 
