@@ -115,7 +115,7 @@ const newMagicLink = `function buildResumeMagicLinkEmailHtml() {
   const payload = getClientEmailPayload();
 
   return getBaseEmailHtml({
-    title: "Your requested link to resume your application",
+    title: "Your requested link to continue your application",
     bodyHtml: \`
       <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
         A request has been made to return to an insurance application in progress through <strong>\${escapeHtml(
@@ -273,13 +273,13 @@ content = content.replace(
 );
 content = content.replace(
   'subject:\n        "[DO NOT REPLY] Confirm your email to continue your insurance application"',
-  'subject:\n        "[DO NOT REPLY] Your requested link to resume your application"'
+  'subject:\n        "[DO NOT REPLY] Your requested link to continue your application"'
 );
 content = content.replace(
   `subject:
         "[DO NOT REPLY] Confirm your email to continue your insurance application"`,
   `subject:
-        "[DO NOT REPLY] Your requested link to resume your application"`
+        "[DO NOT REPLY] Your requested link to continue your application"`
 );
 content = content.replace(
   'subject:\n        "[DO NOT REPLY] Don\'t forget to complete your insurance application"',
@@ -308,7 +308,7 @@ content = content.replace(
   `subject:
       "[DO NOT REPLY] Confirm your email to continue your saved insurance application"`,
   `subject:
-      "[DO NOT REPLY] Your requested link to resume your application"`
+      "[DO NOT REPLY] Your requested link to continue your application"`
 );
 
 fs.writeFileSync('src/utils/mockEmail.ts', content);

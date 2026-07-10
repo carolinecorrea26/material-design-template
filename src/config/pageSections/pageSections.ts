@@ -28,19 +28,13 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
     {
       id: "selfCoverageBusinessExpenses",
       pageId: "coverage",
-      description: "Business expenses",
+      description: "Business Details",
       applicant: "self",
       fieldIds: [
         "monthly-business-expenses",
         "business-expense-responsibility",
+        "average-employees-6-months",
       ],
-    },
-    {
-      id: "selfCoverageOfficeEmployees",
-      pageId: "coverage",
-      description: "Office details",
-      applicant: "self",
-      fieldIds: ["average-employees-6-months"],
     },
     {
       id: "spouseCoverageQuestions",

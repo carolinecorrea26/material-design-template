@@ -293,11 +293,10 @@ export default function AppHeader({ client }: AppHeaderProps) {
                     >
                       <ChatIcon sx={{ color: "primary.main" }} />
                       <Typography
-                        variant="body2"
+                        variant="caption"
+                        fontWeight="bold"
                         sx={{
                           color: "primary.main",
-                          fontWeight: 700,
-                          fontSize: "0.75rem",
                           display: { xs: "none", sm: "block" },
                         }}
                       >
@@ -396,7 +395,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
               gap: 1,
             }}
           >
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            <Typography variant="subtitle1" fontWeight="bold">
               Menu
             </Typography>
 
@@ -657,7 +656,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
 
             <Typography variant="body2">
               <Box component="span" sx={{ fontWeight: 700 }}>
-                Coverage amount:
+                Benefit amount:
               </Box>
               {activeCoverage ? formatCoverageRange(activeCoverage) : "-"}
             </Typography>

@@ -64,7 +64,11 @@ export function getClientPageFields(
   });
 
   const visibleExtraFields =
-    client.id === "waepa" && values?.membership !== "new" ? [] : extraFields;
+    client.id === "waepa" && values?.membership !== "new"
+      ? []
+      : client.id === "ama" && values?.membership !== "spouse"
+        ? []
+        : extraFields;
 
   return [...visibleFields, ...visibleExtraFields];
 }

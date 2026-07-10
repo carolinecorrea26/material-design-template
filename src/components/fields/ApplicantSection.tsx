@@ -40,7 +40,7 @@ export default function ApplicantSection({
         sx={{
           background: "rgb(234 242 255 / 84%)",
           padding: "0.5rem 1.25rem",
-          borderRadius: "50px",
+          borderRadius: "8px",
           display: "flex",
           justifyContent: "center",
         }}

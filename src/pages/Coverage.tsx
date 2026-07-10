@@ -1,5 +1,13 @@
-import { useCallback, useRef } from "react";
-import { Box, Button, Chip, Divider, Stack, Typography } from "@mui/material";
+import { useCallback, useRef, useState } from "react";
+import {
+  Alert,
+  Box,
+  Button,
+  Chip,
+  Divider,
+  Stack,
+  Typography,
+} from "@mui/material";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import FormRoutePage from "../components/page/RoutePage";
@@ -29,13 +37,21 @@ export default function Coverage() {
       help={<FormPageHelp items={helpItems} />}
       hideNextButton={() => !state.showProducts || state.productsLoading}
     >
-      {({ control, errors, watchedValues, allFields, pageSections }) => (
+      {({
+        control,
+        errors,
+        watchedValues,
+        allFields,
+        pageSections,
+        trigger,
+      }) => (
         <CoveragePageContent
           control={control}
           errors={errors}
           watchedValues={watchedValues}
           allFields={allFields}
           pageSections={pageSections}
+          trigger={trigger}
           state={state}
         />
       )}
@@ -49,6 +65,7 @@ function CoveragePageContent({
   watchedValues,
   allFields,
   pageSections,
+  trigger,
   state,
 }: {
   control: any;
@@ -56,21 +73,31 @@ function CoveragePageContent({
   watchedValues: any;
   allFields: any[];
   pageSections: any[];
+  trigger: () => Promise<boolean>;
   state: ReturnType<typeof useCoverageState>;
 }) {
   // Use a ref so the callback always has the latest showProducts value
   const showProductsRef = useRef(state.showProducts);
   showProductsRef.current = state.showProducts;
+  const [pageError, setPageError] = useState<string | null>(null);
 
   const handleCoverageQuestionChange = useCallback(() => {
     if (showProductsRef.current) {
       state.setShowProducts(false);
     }
+    setPageError(null);
   }, [state.setShowProducts]);
 
   return (
     <>
       {/* Section 1: Category chips + coverage questions */}
+      {pageError && (
+        <Box sx={{ mb: 2 }}>
+          <Alert severity="error" sx={{ width: "100%" }}>
+            {pageError}
+          </Alert>
+        </Box>
+      )}
       <Stack spacing={3}>
         {/* Category chips (multi-select) */}
         <Box>
@@ -200,7 +227,27 @@ function CoveragePageContent({
             <Button
               variant="contained"
               fullWidth
-              onClick={() => {
+              onClick={async () => {
+                const isValid = await trigger();
+                if (!isValid) {
+                  setPageError(
+                    "Please correct the errors below before continuing.",
+                  );
+                  // Scroll to first invalid field
+                  requestAnimationFrame(() => {
+                    const firstErrorField = document.querySelector(
+                      '[aria-invalid="true"], .Mui-error input, .Mui-error textarea, .Mui-error .MuiSelect-select',
+                    );
+                    if (firstErrorField) {
+                      firstErrorField.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                      });
+                    }
+                  });
+                  return;
+                }
+                setPageError(null);
                 // Save current form answers to context before revealing products,
                 // so the RoutePage reset effect doesn't clobber them.
                 state.setPageValues(watchedValues as Record<string, any>);

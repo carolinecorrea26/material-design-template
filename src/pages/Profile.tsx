@@ -219,7 +219,7 @@ export default function Profile() {
                     <Typography
                       variant="overline"
                       color="text.secondary"
-                      sx={{ fontWeight: 700, mb: 1, display: "block" }}
+                      sx={{ mb: 1, display: "block" }}
                     >
                       {section.description}
                     </Typography>
@@ -395,7 +395,7 @@ export default function Profile() {
                     <Typography
                       variant="overline"
                       color="text.secondary"
-                      sx={{ fontWeight: 700, mb: 1, display: "block" }}
+                      sx={{ mb: 1, display: "block" }}
                     >
                       {section.description}
                     </Typography>
@@ -734,9 +734,7 @@ function renderFinancialFields(
   function renderDisabilityCompanySummary(item: Record<string, string>) {
     return (
       <>
-        <Typography variant="body2" sx={{ fontWeight: 600 }}>
-          {item.company || "Company"}
-        </Typography>
+        <Typography variant="subtitle2">{item.company || "Company"}</Typography>
         <Typography variant="caption" color="text.secondary">
           {`${item.monthlyBenefitAmount || "$0"} | ${item.benefitPeriod || "Benefit period not provided"} | ${item.waitingPeriod || "Waiting period not provided"}`}
         </Typography>

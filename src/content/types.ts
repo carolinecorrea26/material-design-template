@@ -9,6 +9,8 @@ export type HomeContent = {
     tagline: string;
     title: string;
     description: string;
+    welcomeBackTitle: string;
+    welcomeBackDescription: string;
     ctaLabel: string;
     secondaryCtaLabel: string;
     resumePrompt: string;

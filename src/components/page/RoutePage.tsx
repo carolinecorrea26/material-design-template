@@ -82,6 +82,7 @@ type FormRoutePageProps = {
   noContainer?: boolean;
   hideActions?: boolean;
   hideNextButton?: boolean | ((values: FormRoutePageValues) => boolean);
+  disableNextButton?: boolean | ((values: FormRoutePageValues) => boolean);
   help?: ReactNode | ((props: FormRouteRenderProps) => ReactNode);
   children: ReactNode | ((props: FormRouteRenderProps) => ReactNode);
   validate?: (values: FormRoutePageValues) => string | undefined;
@@ -235,6 +236,7 @@ export default function FormRoutePage({
   noContainer,
   hideActions,
   hideNextButton,
+  disableNextButton,
   help,
   children,
   validate,
@@ -624,7 +626,12 @@ export default function FormRoutePage({
                   form={`${pageId}-form`}
                   variant="contained"
                   fullWidth
-                  disabled={isTransitioning}
+                  disabled={
+                    isTransitioning ||
+                    (typeof disableNextButton === "function"
+                      ? disableNextButton(watchedValues)
+                      : Boolean(disableNextButton))
+                  }
                   endIcon={
                     !isTransitioning ? <ArrowForwardRoundedIcon /> : undefined
                   }

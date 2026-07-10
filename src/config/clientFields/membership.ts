@@ -24,6 +24,15 @@ const avmaExtraFields = [
   fieldCatalog["avma-occupation"],
 ];
 
+const amaExtraFields = [
+  fieldCatalog["ama-physician-type"],
+  fieldCatalog["ama-physician-title"],
+  fieldCatalog["ama-physician-first-name"],
+  fieldCatalog["ama-physician-last-name"],
+  fieldCatalog["ama-physician-birth-date"],
+  fieldCatalog["ama-physician-email"],
+];
+
 export const membershipClientFields: Partial<
   Record<ClientId, MembershipClientFieldConfig>
 > = {
@@ -63,7 +72,7 @@ export const membershipClientFields: Partial<
         ],
       },
     },
-    extraFields: [],
+    extraFields: amaExtraFields,
   },
   avma: {
     showTitleField: false,

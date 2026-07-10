@@ -2,6 +2,7 @@ import type { ClientConfig } from "./types";
 
 export const waepaClient: ClientConfig = {
   id: "waepa",
+  themeColor: "dark-blue",
   branding: {
     name: "Worldwide Assurance for Employees of Public Agencies",
     acronym: "WAEPA",
@@ -32,9 +33,39 @@ export const waepaClient: ClientConfig = {
       "li-group-term": { min: 50000, max: 500000 },
       "di-short-term": { min: 1000, max: 4000 },
     },
+    descriptions: {
+      "li-group-term":
+        "Coverage designed to provide protection for both you and your family.",
+      "di-short-term":
+        "This coverage can help safeguard against the potentially devastating consequences an illness or injury could have on your life.",
+    },
     overrides: {
       "li-group-term": {
-        featured: true,
+        underwritingType: "QD",
+        productWarning: {
+          severity: "info",
+          title: "",
+          message: "Optional Chronic Illness Rider available.",
+        },
+        riders: [
+          {
+            id: "cir",
+            name: "Chronic Illness Rider (CIR)",
+            description:
+              "Accelerate up to 50% of the portion of your life insurance subject to the Chronic Illness Rider should you be permanently unable to perform 2 out of 6 activities of daily living or require substantial care due to permanent cognitive impairment.",
+            premiumFactor: 0.05,
+          },
+          {
+            id: "abi",
+            name: "Automatic Benefit Increase Rider (ABI)",
+            description:
+              "Automatic benefit increase of $25,000 per year for up to 10 years, with no additional medical underwriting required. Subject to increased premium due with each annual increase.",
+            premiumFactor: 0.05,
+          },
+        ],
+      },
+      "di-short-term": {
+        underwritingType: "QD",
       },
     },
     allCategoriesExpanded: true,

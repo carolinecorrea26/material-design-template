@@ -100,7 +100,7 @@ function saveEstimateValues(
 function getEstimateAmountLabel(categoryId: CoverageCategoryId): string {
   return categoryId === "DI" || categoryId === "OO"
     ? "Monthly benefit amount"
-    : "Coverage amount";
+    : "Benefit amount";
 }
 
 function getStateOptions() {
@@ -765,9 +765,7 @@ export default function HomeQuoteCard() {
             pb: 1,
           }}
         >
-          <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            Your coverage estimate
-          </Typography>
+          <Typography variant="h6">Your coverage estimate</Typography>
           <IconButton
             onClick={() => setQuoteModalOpen(false)}
             aria-label="Close"
@@ -799,11 +797,7 @@ export default function HomeQuoteCard() {
                     required
                     sx={{
                       mb: 1,
-                      fontSize: "0.75rem",
-                      fontWeight: 700,
-                      lineHeight: 1.66,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
+                      typography: "overline",
                       color: "rgba(0, 0, 0, 0.6) !important",
                     }}
                   >
@@ -828,7 +822,6 @@ export default function HomeQuoteCard() {
                         sx={{
                           color: "text.primary",
                           fontWeight: 700,
-                          lineHeight: 1.6,
                           backgroundColor: "#ffffff",
                         }}
                       >
@@ -1134,24 +1127,13 @@ export default function HomeQuoteCard() {
                     spacing={1}
                   >
                     <Stack spacing={0.25} sx={{ minWidth: 0 }}>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontWeight: 700,
-                          fontSize: "1rem",
-                          letterSpacing: "-0.25px",
-                        }}
-                      >
+                      <Typography variant="subtitle1" fontWeight="bold">
                         {modalProduct.name}
                         {modalProduct.underwritingType === "QD" && (
                           <QuickDecisionIndicator />
                         )}
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ fontSize: "0.875rem" }}
-                      >
+                      <Typography variant="body2" color="text.secondary">
                         {modalProduct.description ?? modalProduct.definition}
                       </Typography>
                     </Stack>
@@ -1227,22 +1209,15 @@ export default function HomeQuoteCard() {
                           }}
                         >
                           <Typography
-                            variant="body2"
-                            sx={{
-                              color: "text.secondary",
-                              fontWeight: 500,
-                              fontSize: "0.875rem",
-                            }}
+                            variant="subtitle2"
+                            color="text.secondary"
                           >
                             Estimated cost<sup>1</sup>
                           </Typography>
                           <Typography
-                            variant="body2"
-                            sx={{
-                              color: "primary.main",
-                              fontWeight: 700,
-                              fontSize: "0.75rem",
-                            }}
+                            variant="caption"
+                            fontWeight="bold"
+                            color="primary.main"
                           >
                             {formatUSD(modalEstimatedRate)}/mo
                           </Typography>

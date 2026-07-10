@@ -185,6 +185,11 @@ export default function Membership() {
       pageId={pageId}
       help={<FormPageHelp items={helpItems} />}
       initialTransitionMessage="Loading your membership application..."
+      disableNextButton={(values) =>
+        client.id !== "ama" &&
+        client.id !== "waepa" &&
+        values.membership === "no"
+      }
     >
       {({ control, errors, watchedValues, allFields, setValue }) => {
         const membershipField = allFields.find(
@@ -242,12 +247,11 @@ export default function Membership() {
               <Alert severity="warning" sx={{ mt: 2 }}>
                 <Stack spacing={2}>
                   <Typography variant="body2">
-                    Membership is required to apply for coverage through{" "}
-                    {client.branding.name}. If you&apos;re unsure of your
-                    membership status, here are some ways to confirm:
+                    We're sorry, but only members are eligible to apply for this
+                    coverage.
                   </Typography>
 
-                  <Box>
+                  {/* <Box>
                     <Typography
                       variant="subtitle2"
                       sx={{ fontWeight: 700, mb: 1 }}
@@ -268,7 +272,7 @@ export default function Membership() {
                         verify your status.
                       </Typography>
                     </Stack>
-                  </Box>
+                  </Box> */}
 
                   <Box>
                     <Typography
@@ -280,9 +284,8 @@ export default function Membership() {
                     <Typography variant="body2">
                       You can apply for membership with your association to
                       become eligible for coverage. Contact{" "}
-                      {client.branding.name}
-                      or visit your association&apos;s website to learn about
-                      membership options and how to join.
+                      {client.branding.name} or visit your association&apos;s
+                      website to learn about membership options and how to join.
                     </Typography>
                   </Box>
 
@@ -332,7 +335,19 @@ export default function Membership() {
 
                 {hasAdditionalFields && (
                   <Box sx={{ mt: 3 }}>
-                    <FormSectionTitle label="Membership Information" />
+                    <FormSectionTitle
+                      label={
+                        client.id === "ama" && membershipValue === "spouse"
+                          ? "Physician Information"
+                          : "Membership Information"
+                      }
+                    />
+                    {client.id === "ama" && membershipValue === "spouse" && (
+                      <Alert severity="info" sx={{ mt: 1 }}>
+                        To apply as a spouse of a physician, please include the
+                        physician&apos;s information below.
+                      </Alert>
+                    )}
                     {getPageSectionNote(pageId, "membershipInformation") && (
                       <Alert severity="info" sx={{ mt: 1 }}>
                         {getPageSectionNote(pageId, "membershipInformation")}
@@ -346,6 +361,59 @@ export default function Membership() {
                         qualificationValue={watchedValues["waepa-attestation"]}
                         setValue={setValue}
                       />
+                    ) : client.id === "ama" ? (
+                      <Stack spacing={0} sx={{ mt: 1 }}>
+                        {renderField(
+                          fieldById(additionalFields, "ama-physician-type"),
+                          control,
+                          errors,
+                        )}
+                        <Box
+                          sx={{
+                            display: "grid",
+                            gridTemplateColumns: {
+                              xs: "1fr",
+                              sm: "120px 1fr 1fr",
+                            },
+                            gap: { xs: 0, sm: 2 },
+                          }}
+                        >
+                          {renderField(
+                            fieldById(additionalFields, "ama-physician-title"),
+                            control,
+                            errors,
+                          )}
+                          {renderField(
+                            fieldById(
+                              additionalFields,
+                              "ama-physician-first-name",
+                            ),
+                            control,
+                            errors,
+                          )}
+                          {renderField(
+                            fieldById(
+                              additionalFields,
+                              "ama-physician-last-name",
+                            ),
+                            control,
+                            errors,
+                          )}
+                        </Box>
+                        {renderField(
+                          fieldById(
+                            additionalFields,
+                            "ama-physician-birth-date",
+                          ),
+                          control,
+                          errors,
+                        )}
+                        {renderField(
+                          fieldById(additionalFields, "ama-physician-email"),
+                          control,
+                          errors,
+                        )}
+                      </Stack>
                     ) : (
                       <Stack spacing={2} sx={{ mt: 1 }}>
                         {additionalFields.map((field) =>

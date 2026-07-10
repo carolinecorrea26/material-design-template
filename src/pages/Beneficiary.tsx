@@ -536,12 +536,7 @@ export default function Beneficiary() {
       >
         <Stack spacing={1.5}>
           <Stack spacing={1}>
-            <Typography
-              variant="body2"
-              sx={{ fontWeight: 600, fontSize: "1rem" }}
-            >
-              {product.coverageName}
-            </Typography>
+            <Typography variant="subtitle1">{product.coverageName}</Typography>
           </Stack>
 
           {(["primary", "contingent"] as const).map((designation) => {
@@ -551,15 +546,7 @@ export default function Beneficiary() {
             if (designationItems.length === 0) return null;
             return (
               <Stack spacing={0.75} key={designation}>
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{
-                    fontWeight: 600,
-                    fontSize: "0.6875rem",
-                    textTransform: "uppercase",
-                  }}
-                >
+                <Typography variant="overline" color="text.secondary">
                   {getDesignationLabel(designation)}
                 </Typography>
                 {designationItems.map((item) => (
@@ -570,14 +557,10 @@ export default function Beneficiary() {
                       removeBeneficiary(product.productKey, item.id)
                     }
                   >
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    <Typography variant="subtitle2">
                       {getBeneficiaryDisplayName(item)}
                     </Typography>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{ fontSize: "0.6875rem" }}
-                    >
+                    <Typography variant="caption" color="text.secondary">
                       {getRelationshipLabel(item)}
                       {item.beneficiaryType === "individual"
                         ? ` | ${item.share}%`

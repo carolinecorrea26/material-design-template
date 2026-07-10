@@ -178,7 +178,7 @@ function HowApplyingWorksSection({
                     direction="row"
                     spacing={1.5}
                     alignItems="center"
-                    justifyContent={{ xs: "flex-start" }}
+                    justifyContent={{ xs: "center", sm: "flex-start" }}
                   >
                     <Box
                       sx={{
@@ -200,7 +200,11 @@ function HowApplyingWorksSection({
                     <Typography variant="h4">{step.title}</Typography>
                   </Stack>
 
-                  <Typography variant="body1" color="text.secondary">
+                  <Typography
+                    variant="body1"
+                    color="text.secondary"
+                    sx={{ textAlign: { xs: "justify", sm: "left" } }}
+                  >
                     {step.body}
                     {index === 1 && (
                       <>
@@ -331,7 +335,7 @@ export default function Home() {
             display: "grid",
             gridTemplateColumns:
               showQuoteTool || showHeroImage
-                ? { xs: "1fr", md: "minmax(0, 500px) minmax(0, 500px)" }
+                ? { xs: "1fr", md: "minmax(0, 450px) minmax(0, 500px)" }
                 : "1fr",
             gap: { xs: 2.5, md: 3.5 },
             alignItems: "start",
@@ -382,24 +386,24 @@ export default function Home() {
             <Stack spacing={1.5}>
               <Typography
                 variant="h1"
-                sx={{
-                  fontSize: {
-                    xs: "2.5rem",
-                    sm: "2.5rem",
-                    md: "3rem",
-                    lg: "3.5rem",
-                  },
-                  lineHeight: 1.08,
-                  fontWeight: 700,
-                }}
+                // sx={{
+                //   fontSize: {
+                //     xs: "2.5rem",
+                //     sm: "2.5rem",
+                //     md: "3rem",
+                //     lg: "3rem",
+                //   },
+                //   lineHeight: 1.08,
+                //   fontWeight: 700,
+                // }}
               >
                 {variant === "welcome-back"
-                  ? "Welcome!"
+                  ? content.home.hero.welcomeBackTitle
                   : content.home.hero.title}
               </Typography>
               <Typography variant="body1" color="text.secondary">
                 {variant === "welcome-back"
-                  ? "Resume your saved application or begin a new application below."
+                  ? content.home.hero.welcomeBackDescription
                   : resolveTemplate(content.home.hero.description)}
               </Typography>
             </Stack>
@@ -430,7 +434,7 @@ export default function Home() {
                 }}
               >
                 {variant === "welcome-back"
-                  ? "Resume Application"
+                  ? "Continue Application"
                   : content.home.hero.ctaLabel}
               </Button>
 

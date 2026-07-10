@@ -139,6 +139,8 @@ export type ClientContent = {
 
 export type HomePageVariant = "default" | "hero-image" | "welcome-back";
 
+export type ThemeColorId = "default" | "teal" | "purple" | "dark-blue";
+
 export type ClientFeatures = {
   chat?: boolean;
   homePageVariant?: HomePageVariant;
@@ -167,6 +169,7 @@ export type ClientConfig = {
   /** @deprecated Content is now managed in src/content/. This field is unused. */
   content?: ClientContent;
   features?: ClientFeatures;
+  themeColor?: ThemeColorId;
   licenseInfo?: string[];
   coverageQuestions?: ClientCoverageQuestions;
 };

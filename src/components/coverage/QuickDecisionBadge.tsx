@@ -5,7 +5,7 @@ export default function QuickDecisionIndicator() {
     <OfflineBoltIcon
       color="success"
       titleAccess="QuickDecision"
-      sx={{ fontSize: "1.1em", verticalAlign: "middle", ml: 0.5 }}
+      sx={{ fontSize: "1.25rem", verticalAlign: "middle", pl: 0.5 }}
     />
   );
 }

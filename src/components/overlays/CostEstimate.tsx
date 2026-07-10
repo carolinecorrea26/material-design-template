@@ -47,7 +47,7 @@ function formatCurrencyInput(value: string): string {
 function getEstimateAmountLabel(categoryId: CoverageCategoryId): string {
   return categoryId === "DI" || categoryId === "OO"
     ? "Monthly benefit amount"
-    : "Coverage amount";
+    : "Benefit amount";
 }
 
 export default function CostEstimateDrawerContent() {
@@ -553,24 +553,13 @@ export default function CostEstimateDrawerContent() {
                           spacing={1}
                         >
                           <Stack spacing={0.25} sx={{ minWidth: 0 }}>
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                fontWeight: 700,
-                                fontSize: "1rem",
-                                letterSpacing: "-0.25px",
-                              }}
-                            >
+                            <Typography variant="subtitle1" fontWeight="bold">
                               {product.name}
                               {product.underwritingType === "QD" && (
                                 <QuickDecisionIndicator />
                               )}
                             </Typography>
-                            <Typography
-                              variant="body2"
-                              color="text.secondary"
-                              sx={{ fontSize: "0.875rem" }}
-                            >
+                            <Typography variant="body2" color="text.secondary">
                               {product.description ?? product.definition}
                             </Typography>
                           </Stack>
@@ -647,20 +636,15 @@ export default function CostEstimateDrawerContent() {
                                     <CircularProgress size={14} thickness={4} />
                                   ) : (
                                     <Typography
-                                      variant="body2"
-                                      sx={{
-                                        color: "text.secondary",
-                                        fontSize: 12,
-                                      }}
+                                      variant="caption"
+                                      color="text.secondary"
                                     >
                                       Est. cost:{" "}
                                       <Typography
                                         component="span"
-                                        sx={{
-                                          color: "primary.main",
-                                          fontSize: 13,
-                                          fontWeight: 700,
-                                        }}
+                                        variant="caption"
+                                        fontWeight="bold"
+                                        sx={{ color: "primary.main" }}
                                       >
                                         {formatUSD(displayedPremium)}
                                         {rateSuffix}

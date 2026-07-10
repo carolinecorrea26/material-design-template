@@ -242,7 +242,7 @@ export default function Payment() {
               icon={<InfoOutlinedIcon fontSize="inherit" />}
               sx={{ alignItems: "flex-start" }}
             >
-              <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+              <Typography variant="subtitle2" fontWeight="bold">
                 You will not be charged yet.
               </Typography>
               <Typography variant="body2" sx={{ mt: 0.5 }}>
@@ -303,10 +303,7 @@ export default function Payment() {
                           sx={{ p: 2 }}
                         >
                           <Stack spacing={1.5}>
-                            <Typography
-                              fontWeight={600}
-                              sx={{ fontSize: "1rem" }}
-                            >
+                            <Typography variant="subtitle1">
                               {product.coverageName}
                             </Typography>
 
@@ -352,12 +349,9 @@ export default function Payment() {
                             >
                               <Stack spacing={1.5}>
                                 <Typography
-                                  variant="body2"
-                                  sx={{
-                                    color: "text.primary",
-                                    fontWeight: 600,
-                                    fontSize: 12,
-                                  }}
+                                  variant="caption"
+                                  fontWeight="bold"
+                                  color="text.primary"
                                 >
                                   Estimated {frequencyLabel.toLowerCase()} cost
                                   <sup>1</sup>
@@ -373,22 +367,15 @@ export default function Payment() {
                                       spacing={1}
                                     >
                                       <Typography
-                                        variant="body2"
-                                        sx={{
-                                          fontSize: 12,
-                                          fontWeight: 500,
-                                          color: "text.secondary",
-                                        }}
+                                        variant="caption"
+                                        color="text.secondary"
                                       >
                                         {getApplicantLabel(entry.applicant)}
                                       </Typography>
                                       <Typography
                                         variant="body2"
-                                        sx={{
-                                          fontWeight: 700,
-                                          fontSize: 14,
-                                          whiteSpace: "nowrap",
-                                        }}
+                                        fontWeight="bold"
+                                        sx={{ whiteSpace: "nowrap" }}
                                       >
                                         {formatCurrency(
                                           entry.monthlyPremium *
@@ -413,21 +400,17 @@ export default function Payment() {
                                     alignItems="baseline"
                                   >
                                     <Typography
-                                      variant="body2"
-                                      sx={{
-                                        fontWeight: 600,
-                                        fontSize: 12,
-                                      }}
+                                      variant="caption"
+                                      fontWeight="bold"
                                     >
                                       Total
                                     </Typography>
                                     <Typography
                                       component="span"
                                       variant="body2"
+                                      fontWeight="bold"
                                       sx={{
                                         color: "primary.main",
-                                        fontWeight: 700,
-                                        fontSize: 14,
                                         whiteSpace: "nowrap",
                                       }}
                                     >
@@ -449,7 +432,7 @@ export default function Payment() {
             {hasAnyBankAccountSelected && (
               <Card variant="outlined" sx={{ p: 2 }}>
                 <Stack spacing={1.5}>
-                  <Typography variant="h6" sx={{ fontSize: "1rem" }}>
+                  <Typography variant="subtitle1">
                     Bank Account Information
                   </Typography>
 
@@ -465,7 +448,7 @@ export default function Payment() {
               </Card>
             )}
 
-            <Box sx={{ mt: 3, fontSize: "0.875rem", color: "text.secondary" }}>
+            <Box sx={{ mt: 3, color: "text.secondary" }}>
               <Typography
                 variant="caption"
                 sx={{

@@ -2,6 +2,7 @@ import type { ClientConfig } from "./types";
 
 export const abeClient: ClientConfig = {
   id: "abe",
+  themeColor: "default",
   branding: {
     name: "American Bar Endowment",
     acronym: "ABE",

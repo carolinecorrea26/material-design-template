@@ -42,7 +42,6 @@ const defaultWorkIncomeSections = new Set([
   "spouseCoverageWorkIncome",
 ]);
 const defaultBusinessSections = new Set(["selfCoverageBusinessExpenses"]);
-const defaultOfficeSections = new Set(["selfCoverageOfficeEmployees"]);
 
 type CoverageQuestionsProps = Pick<
   FormRouteRenderProps,
@@ -95,9 +94,6 @@ function isCategorySectionVisible(
   if (defaultBusinessSections.has(section.id)) {
     return categoryNeedsOo;
   }
-  if (defaultOfficeSections.has(section.id)) {
-    return categoryNeedsOo;
-  }
   return true;
 }
 
@@ -141,7 +137,15 @@ export default function CoverageQuestions(props: CoverageQuestionsProps) {
       if (!isCategorySectionVisible(section, props)) return null;
       if (!isSectionRulesVisible(section, watchedValues)) return null;
 
-      const isConditional = !!section.visibleWhen;
+      // A section is "conditional" (gets blue left border) only if its
+      // visibleWhen contains rules beyond just the dependents-includes check
+      // (which is a structural visibility gate, not a follow-up indicator).
+      const isConditional =
+        !!section.visibleWhen &&
+        section.visibleWhen.some(
+          (rule: SectionVisibilityRule) =>
+            !("includes" in rule && rule.fieldId === "dependents"),
+        );
 
       const content = (
         <Stack spacing={2}>

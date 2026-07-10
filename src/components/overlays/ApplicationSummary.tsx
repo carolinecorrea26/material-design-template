@@ -321,7 +321,6 @@ export default function ApplicationSummaryDrawer({
               <Typography
                 variant="h6"
                 sx={{
-                  fontWeight: 600,
                   color: isEmpty ? "text.primary" : "success.main",
                 }}
               >
@@ -331,10 +330,7 @@ export default function ApplicationSummaryDrawer({
           ) : (
             <>
               <ShoppingCartOutlinedIcon sx={{ color: "primary.main" }} />
-              <Typography
-                variant="h6"
-                sx={{ fontWeight: 600, color: "text.primary" }}
-              >
+              <Typography variant="h6" color="text.primary">
                 Your requested coverage
               </Typography>
             </>
@@ -405,10 +401,7 @@ export default function ApplicationSummaryDrawer({
                                 justifyContent="space-between"
                                 alignItems="flex-start"
                               >
-                                <Typography
-                                  variant="body2"
-                                  sx={{ fontWeight: 600, fontSize: "1rem" }}
-                                >
+                                <Typography variant="subtitle1">
                                   {coverage.name}
                                   {coverage.underwritingType === "QD" && (
                                     <QuickDecisionIndicator />
@@ -469,11 +462,8 @@ export default function ApplicationSummaryDrawer({
                                       <Stack spacing={0.5}>
                                         {!isMemberOnly && (
                                           <Typography
-                                            variant="body2"
-                                            sx={{
-                                              fontWeight: 600,
-                                              fontSize: "0.8rem",
-                                            }}
+                                            variant="caption"
+                                            fontWeight="bold"
                                           >
                                             {applicantLabels[applicantId]}
                                           </Typography>
@@ -482,11 +472,8 @@ export default function ApplicationSummaryDrawer({
                                         {hasSelectedAmount ? (
                                           <>
                                             <Typography
-                                              variant="body2"
-                                              sx={{
-                                                color: "text.secondary",
-                                                fontSize: "0.8rem",
-                                              }}
+                                              variant="caption"
+                                              color="text.secondary"
                                             >
                                               Requested: {formatUSD(amount, 0)}
                                             </Typography>
@@ -516,11 +503,8 @@ export default function ApplicationSummaryDrawer({
 
                                             {monthlyEstimate != null && (
                                               <Typography
-                                                variant="body2"
-                                                sx={{
-                                                  color: "text.secondary",
-                                                  fontSize: "0.8rem",
-                                                }}
+                                                variant="caption"
+                                                color="text.secondary"
                                               >
                                                 Est. cost<sup>1</sup>:{" "}
                                                 {formatUSD(monthlyEstimate)}
@@ -550,11 +534,8 @@ export default function ApplicationSummaryDrawer({
                                               }}
                                             />
                                             <Typography
-                                              variant="body2"
-                                              sx={{
-                                                fontSize: "0.8rem",
-                                                fontWeight: 600,
-                                              }}
+                                              variant="caption"
+                                              fontWeight="bold"
                                             >
                                               Cost calculated after amount
                                               selection
@@ -582,9 +563,7 @@ export default function ApplicationSummaryDrawer({
                 variant="outlined"
                 sx={{ backgroundColor: "rgba(255, 152, 0, 0.04)" }}
               >
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  Eligibility concern
-                </Typography>
+                <Typography variant="subtitle2">Eligibility concern</Typography>
                 <Typography variant="body2" sx={{ mt: 0.5 }}>
                   Based on your answers, you may not be eligible for:{" "}
                   {ineligibleProducts.join(", ")}. You may still continue with
@@ -609,47 +588,27 @@ export default function ApplicationSummaryDrawer({
                   sx={{ mb: 2 }}
                 >
                   <Stack direction="column" spacing={0.5}>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "text.primary",
-                        fontWeight: 600,
-                        fontSize: 12,
-                      }}
-                    >
+                    <Typography variant="subtitle2" color="text.primary">
                       Total estimated cost<sup>1</sup>
                     </Typography>
                   </Stack>
 
                   <Typography
                     component="span"
-                    variant="body2"
-                    sx={{
-                      color: "primary.main",
-                      fontWeight: 800,
-                      fontSize: "1.25rem",
-                      whiteSpace: "nowrap",
-                    }}
+                    variant="h5"
+                    sx={{ color: "primary.main", whiteSpace: "nowrap" }}
                   >
                     {formatUSD(totalMonthly)}
                     <Typography
                       component="span"
-                      variant="body2"
-                      sx={{
-                        color: "primary.main",
-                        fontWeight: 800,
-                        fontSize: "1rem",
-                      }}
+                      variant="h6"
+                      sx={{ color: "primary.main" }}
                     >
                       /mo
                     </Typography>
                   </Typography>
                 </Stack>
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ fontStyle: "italic" }}
-                >
+                <Typography variant="caption" color="text.secondary">
                   <sup>1</sup>Quoted cost is the best rate available. Final cost
                   may vary based on health status, gender, and tobacco/nicotine
                   use.
@@ -679,7 +638,7 @@ export default function ApplicationSummaryDrawer({
           disableSwipeToOpen
           sx={{
             "& .MuiDrawer-paper": {
-              minHeight: "75vh",
+              minHeight: "30vh",
               borderTopLeftRadius: 16,
               borderTopRightRadius: 16,
             },

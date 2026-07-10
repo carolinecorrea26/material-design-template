@@ -647,7 +647,7 @@ export function useCoverageState() {
 
     const hasAmount = Object.values(nextAmounts).some((v) => v > 0);
     if (!hasAmount) {
-      return "Select at least one coverage amount before continuing.";
+      return "Select at least one benefit amount before continuing.";
     }
 
     return undefined;

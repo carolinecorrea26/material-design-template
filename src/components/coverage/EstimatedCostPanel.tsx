@@ -7,6 +7,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+
 import type { CoverageApplicantId } from "../../config/coverages/types";
 import type { EstimatedRateFrequency } from "../../config/clients/types";
 import { formatUSD } from "../../utils/formatUSD";
@@ -104,7 +106,12 @@ export default function EstimatedCostPanel({
       }}
     >
       <Stack spacing={1.5}>
-        <Typography variant="h6">Your requested coverage</Typography>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <ShoppingCartOutlinedIcon sx={{ color: "primary.main" }} />
+          <Typography variant="subtitle1" fontWeight="bold">
+            Your requested coverage
+          </Typography>
+        </Stack>
 
         {grandTotal <= 0 ? (
           <Box
@@ -154,14 +161,7 @@ export default function EstimatedCostPanel({
                     alignItems="center"
                     spacing={1}
                   >
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontSize: 12,
-                        fontWeight: 500,
-                        color: "text.secondary",
-                      }}
-                    >
+                    <Typography variant="subtitle2" color="text.secondary">
                       {coverage.name}
                     </Typography>
                     {isCalculating ? (
@@ -172,12 +172,9 @@ export default function EstimatedCostPanel({
                       />
                     ) : (
                       <Typography
-                        variant="body2"
-                        sx={{
-                          fontWeight: 700,
-                          fontSize: 14,
-                          whiteSpace: "nowrap",
-                        }}
+                        variant="subtitle2"
+                        fontWeight="bold"
+                        sx={{ whiteSpace: "nowrap" }}
                       >
                         {formatUSD(displayedTotal)}
                         {coverageRateSuffix}
@@ -199,11 +196,8 @@ export default function EstimatedCostPanel({
                 justifyContent="space-between"
                 alignItems="baseline"
               >
-                <Typography
-                  variant="body2"
-                  sx={{ fontWeight: 600, fontSize: 12 }}
-                >
-                  Total
+                <Typography variant="subtitle2">
+                  Total estimated cost<sup>1</sup>
                 </Typography>
                 {isAnyRateCalculating ? (
                   <CircularProgress
@@ -214,26 +208,12 @@ export default function EstimatedCostPanel({
                 ) : (
                   <Typography
                     component="span"
-                    variant="body2"
-                    sx={{
-                      color: "primary.main",
-                      fontWeight: 700,
-                      fontSize: 14,
-                      whiteSpace: "nowrap",
-                    }}
+                    variant="subtitle2"
+                    fontWeight="bold"
+                    sx={{ color: "primary.main", whiteSpace: "nowrap" }}
                   >
                     {formatUSD(displayedGrandTotal)}
-                    <Typography
-                      component="span"
-                      variant="body2"
-                      sx={{
-                        color: "primary.main",
-                        fontWeight: 700,
-                        fontSize: 14,
-                      }}
-                    >
-                      {rateSuffix}
-                    </Typography>
+                    {rateSuffix}
                   </Typography>
                 )}
               </Stack>
@@ -248,13 +228,12 @@ export default function EstimatedCostPanel({
               >
                 <Typography
                   variant="caption"
-                  sx={{
-                    color:
-                      rateFrequency === "monthly"
-                        ? "primary.main"
-                        : "text.secondary",
-                    fontWeight: 700,
-                  }}
+                  fontWeight="bold"
+                  color={
+                    rateFrequency === "monthly"
+                      ? "primary.main"
+                      : "text.secondary"
+                  }
                 >
                   Monthly
                 </Typography>
@@ -274,13 +253,12 @@ export default function EstimatedCostPanel({
                 />
                 <Typography
                   variant="caption"
-                  sx={{
-                    color:
-                      rateFrequency === "annual"
-                        ? "primary.main"
-                        : "text.secondary",
-                    fontWeight: 700,
-                  }}
+                  fontWeight="bold"
+                  color={
+                    rateFrequency === "annual"
+                      ? "primary.main"
+                      : "text.secondary"
+                  }
                 >
                   Annual
                 </Typography>

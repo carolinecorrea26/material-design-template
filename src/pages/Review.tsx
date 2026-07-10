@@ -75,7 +75,7 @@ export default function Review() {
                   {reviewContent.alertItems.map((item) => (
                     <li key={item.title}>
                       <Box>
-                        <Typography variant="body2" fontWeight={600}>
+                        <Typography variant="subtitle2">
                           {item.title}
                         </Typography>
                         <Typography variant="body2">
@@ -88,7 +88,7 @@ export default function Review() {
                   {showHealthQuestionsNote ? (
                     <li>
                       <Box>
-                        <Typography variant="body2" fontWeight={600}>
+                        <Typography variant="subtitle2">
                           {reviewContent.healthQuestionsNote.title}
                         </Typography>
                         <Typography variant="body2">
@@ -117,7 +117,8 @@ export default function Review() {
             <Box>
               <Typography
                 variant="subtitle1"
-                sx={{ mb: 1, fontWeight: 700, textAlign: "center" }}
+                fontWeight="bold"
+                sx={{ mb: 1, textAlign: "center" }}
               >
                 {reviewContent.readAndSignTitle}
               </Typography>
@@ -131,12 +132,8 @@ export default function Review() {
                 }}
               >
                 <Typography
-                  variant="body2"
-                  sx={{
-                    whiteSpace: "pre-wrap",
-                    fontSize: "0.8125rem",
-                    lineHeight: 1.5,
-                  }}
+                  variant="caption"
+                  sx={{ whiteSpace: "pre-wrap", lineHeight: 1.5 }}
                 >
                   {reviewContent.readAndSignContent}
                 </Typography>
@@ -154,7 +151,8 @@ export default function Review() {
             <Box>
               <Typography
                 variant="subtitle1"
-                sx={{ mb: 1, fontWeight: 700, textAlign: "center" }}
+                fontWeight="bold"
+                sx={{ mb: 1, textAlign: "center" }}
               >
                 {reviewContent.electronicConsentTitle}
               </Typography>
@@ -169,12 +167,8 @@ export default function Review() {
                 }}
               >
                 <Typography
-                  variant="body2"
-                  sx={{
-                    whiteSpace: "pre-wrap",
-                    fontSize: "0.8125rem",
-                    lineHeight: 1.5,
-                  }}
+                  variant="caption"
+                  sx={{ whiteSpace: "pre-wrap", lineHeight: 1.5 }}
                 >
                   {reviewContent.electronicConsentContent}
                 </Typography>

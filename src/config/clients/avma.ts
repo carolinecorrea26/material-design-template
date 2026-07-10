@@ -2,6 +2,7 @@ import type { ClientConfig } from "./types";
 
 export const avmaClient: ClientConfig = {
   id: "avma",
+  themeColor: "dark-blue",
   branding: {
     name: "American Veterinary Medical Association",
     acronym: "AVMA",
@@ -59,8 +60,10 @@ export const avmaClient: ClientConfig = {
         name: "Family Group Life Insurance",
         featured: true,
         underwritingType: "QD",
-        applicantNotes: {
-          member:
+        productWarning: {
+          severity: "info",
+          title: "",
+          message:
             "New applicants must apply for a minimum of $100,000 in Family Group Life (FGL) coverage. Lower benefit amounts are available to existing FGL insureds only.",
         },
       },
@@ -87,9 +90,15 @@ export const avmaClient: ClientConfig = {
           { label: "90 days", value: "90", days: 90 },
           { label: "180 days", value: "180", days: 180 },
         ],
+        productWarning: {
+          severity: "info",
+          title: "",
+          message:
+            "Your cost is based on your age when coverage is approved. Renewal charges do not increase with age.",
+        },
         applicantNotes: {
           member:
-            "Your cost is based on your age when coverage is approved. Renewal charges do not increase with age.",
+            "If you are increasing your coverage, premium for the additional monthly benefit (if approved) will be based on your attained age on the effective date as determined by New York Life.",
         },
       },
       "di-short-term": {
@@ -99,6 +108,12 @@ export const avmaClient: ClientConfig = {
           { label: "30 days", value: "30", days: 30 },
           { label: "60 days", value: "60", days: 60 },
         ],
+        productWarning: {
+          severity: "info",
+          title: "",
+          message:
+            "Includes coverage for disabilities resulting from routine pregnancy and delivery after you have been continuously insured for 12 months.",
+        },
       },
       "di-ltd-plus": {
         name: "Student Loan Disability Insurance (Supplemental Disability)",
@@ -114,6 +129,7 @@ export const avmaClient: ClientConfig = {
       },
       "li-term": {
         name: "Basic Protection Package",
+        applicants: ["member"],
         categoryId: "DI",
         applicantNotes: {
           member:
@@ -133,7 +149,7 @@ export const avmaClient: ClientConfig = {
         ],
         applicantNotes: {
           member:
-            'The maximum monthly benefit available through New York Life is based on your attained age on the effective date after New York Life approves your request for coverage: $45,000 for members under age 50; $30,000 for members age 50 through age 59; and $10,000 for members age 60 through age 69. The maximum monthly benefit shown below is the lesser of the policy maximum or the maximum available based on your personal share of eligible expenses. (See coverage details for a listing of eligible expenses.) "Personal share" is defined as (a) your percentage of ownership of the business, or (b) your share of the office space if a joint tenant. Benefits payable from this coverage will not exceed the lesser of the average eligible expenses incurred or the monthly benefit level in force.',
+            'The maximum monthly benefit available through New York Life is based on your attained age on the effective date after New York Life approves your request for coverage. The maximum monthly benefit shown below is the lesser of the policy maximum or the maximum available based on your personal share of eligible expenses. (See coverage details for a listing of eligible expenses.) "Personal share" is defined as (a) your percentage of ownership of the business, or (b) your share of the office space if a joint tenant. Benefits payable from this coverage will not exceed the lesser of the average eligible expenses incurred or the monthly benefit level in force.',
         },
       },
       "sh-hospital-income": {
@@ -142,11 +158,13 @@ export const avmaClient: ClientConfig = {
           severity: "warning",
           title:
             "THIS COVERAGE IS A SUPPLEMENT TO HEALTH INSURANCE AND IS NOT A SUBSTITUTE FOR MAJOR MEDICAL COVERAGE.",
-          message:
-            "Daily Benefits for hospitalizations due to pregnancy, childbirth, or related medical condition (except complications of pregnancy), will not be payable unless such confinement begins after the proposed insured has been continuously insured for 12 months.",
+          message: "",
         },
         productContent: [
-          { type: "heading", text: "IMPORTANT: This is a fixed indemnity policy," },
+          {
+            type: "heading",
+            text: "IMPORTANT: This is a fixed indemnity policy,",
+          },
           { type: "heading", text: "NOT health insurance" },
           {
             type: "paragraph",
@@ -173,7 +191,7 @@ export const avmaClient: ClientConfig = {
             type: "section",
             heading: "Questions about this policy?",
             body: [
-              "For questions or complaints about this policy, contact your State Department of Insurance. Find their number on the National Association of Insurance Commissioners' website (naic.org) under \"Insurance Departments.\"",
+              'For questions or complaints about this policy, contact your State Department of Insurance. Find their number on the National Association of Insurance Commissioners\' website (naic.org) under "Insurance Departments."',
               "If you have this policy through your job, or a family member's job, contact the employer.",
             ],
           },
@@ -195,7 +213,7 @@ export const avmaClient: ClientConfig = {
       "di-ltd":
         "Protection for your income if you are disabled from a covered accident or illness.",
       "di-short-term":
-        "Disabilities that last less than six months can cause a severe financial hardship. This coverage can protect you for up to six months if you are out of work due to a covered disability. Includes coverage for disabilities resulting from routine pregnancy and delivery after you have been continuously insured for 12 months.",
+        "Disabilities that last less than six months can cause a severe financial hardship. This coverage can protect you for up to six months if you are out of work due to a covered disability.",
       "di-ltd-plus":
         "Can help you pay for your student loans if you suffer a covered disability. Payments are made directly to you.",
       "li-term":
@@ -203,7 +221,7 @@ export const avmaClient: ClientConfig = {
       "oo-professional":
         "As a veterinarian, you may elect to own your own business or work independently. This coverage can help keep your business open while you are unable to work due to a covered disability.",
       "sh-hospital-income":
-        "Helps provide extra financial support if you're hospitalized due to a covered illness or injury.",
+        "Helps provide extra financial support if you're hospitalized due to a covered illness or injury. Daily Benefits for hospitalizations due to pregnancy, childbirth, or related medical condition (except complications of pregnancy), will not be payable unless such confinement begins after the proposed insured has been continuously insured for 12 months.",
     },
   },
   fields: {},
@@ -219,7 +237,7 @@ export const avmaClient: ClientConfig = {
       "spouseCoverageTobacco",
       "spouseCoverageWorkIncome",
     ],
-    OO: ["selfCoverageBusinessExpenses", "selfCoverageOfficeEmployees"],
+    OO: ["selfCoverageBusinessExpenses"],
   },
   licenseInfo: [
     "Arkansas Insurance License: #1322",

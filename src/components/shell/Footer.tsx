@@ -34,8 +34,9 @@ export default function AppFooter({ client }: AppFooterProps) {
           marginRight: "auto",
           display: "grid",
           gridTemplateColumns: {
-            xs: "1fr",
-            sm: "minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr)",
+            sm: "1fr",
+            md: "1fr minmax(0, 1fr)",
+            lg: "minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr)",
           },
           gap: 2,
         }}

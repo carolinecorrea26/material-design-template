@@ -183,7 +183,13 @@ export type FieldId =
   | "avma-vet-college"
   | "avma-graduation-year"
   | "avma-occupation"
-  | "average-employees-6-months";
+  | "average-employees-6-months"
+  | "ama-physician-type"
+  | "ama-physician-title"
+  | "ama-physician-first-name"
+  | "ama-physician-last-name"
+  | "ama-physician-birth-date"
+  | "ama-physician-email";
 
 export type FieldDefinition = {
   id: string;

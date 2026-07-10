@@ -254,6 +254,7 @@ export default function FormVerticalStepper({
                     "& .MuiStepContent-root": {
                       marginLeft: 0,
                       paddingLeft: 0,
+                      paddingRight: 0,
                       borderLeft: "none",
                     },
                     "& .MuiStep-root": {

@@ -12,7 +12,6 @@ export type PageSectionId =
   | "selfCoverageTobacco"
   | "selfCoverageWorkIncome"
   | "selfCoverageBusinessExpenses"
-  | "selfCoverageOfficeEmployees"
   | "spouseCoverageQuestions"
   | "spouseCoverageTobacco"
   | "spouseCoverageWorkIncome"

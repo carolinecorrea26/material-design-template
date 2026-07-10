@@ -117,7 +117,7 @@ function formatCurrencyInput(value: string): string {
 function getEstimateAmountLabel(categoryId: CoverageCategoryId): string {
   return categoryId === "DI" || categoryId === "OO"
     ? "Monthly benefit amount"
-    : "Coverage amount";
+    : "Benefit amount";
 }
 
 export default function ComparisonQuoteModal({
@@ -508,9 +508,7 @@ export default function ComparisonQuoteModal({
           pb: 1,
         }}
       >
-        <Typography variant="h6" sx={{ fontWeight: 700 }}>
-          Your coverage estimate
-        </Typography>
+        <Typography variant="h6">Your coverage estimate</Typography>
         <IconButton onClick={onClose} aria-label="Close" size="small">
           <CloseIcon />
         </IconButton>
@@ -843,12 +841,8 @@ export default function ComparisonQuoteModal({
                             >
                               <Stack spacing={0.25} sx={{ minWidth: 0 }}>
                                 <Typography
-                                  variant="body2"
-                                  sx={{
-                                    fontWeight: 700,
-                                    fontSize: "1rem",
-                                    letterSpacing: "-0.25px",
-                                  }}
+                                  variant="subtitle1"
+                                  fontWeight="bold"
                                 >
                                   {product.name}
                                   {product.underwritingType === "QD" && (
@@ -858,7 +852,6 @@ export default function ComparisonQuoteModal({
                                 <Typography
                                   variant="body2"
                                   color="text.secondary"
-                                  sx={{ fontSize: "0.875rem" }}
                                 >
                                   {product.description ?? product.definition}
                                 </Typography>
@@ -901,10 +894,7 @@ export default function ComparisonQuoteModal({
                                   },
                                 }}
                               />
-                              <Typography
-                                variant="body2"
-                                sx={{ flex: 1, fontWeight: 600 }}
-                              >
+                              <Typography variant="subtitle2" sx={{ flex: 1 }}>
                                 Select for myself
                               </Typography>
                               {hasAnyApplicantSelected ? (
@@ -997,20 +987,15 @@ export default function ComparisonQuoteModal({
                                         />
                                       ) : (
                                         <Typography
-                                          variant="body2"
-                                          sx={{
-                                            color: "text.secondary",
-                                            fontSize: 12,
-                                          }}
+                                          variant="caption"
+                                          color="text.secondary"
                                         >
                                           Est. cost:{" "}
                                           <Typography
                                             component="span"
-                                            sx={{
-                                              color: "primary.main",
-                                              fontSize: 13,
-                                              fontWeight: 700,
-                                            }}
+                                            variant="caption"
+                                            fontWeight="bold"
+                                            sx={{ color: "primary.main" }}
                                           >
                                             {formatUSD(displayedPremium)}
                                             {rateSuffix}
@@ -1088,10 +1073,7 @@ export default function ComparisonQuoteModal({
                           <PrivacyTipIcon
                             sx={{ fontSize: 17, color: "text.disabled" }}
                           />
-                          <Typography
-                            variant="body2"
-                            sx={{ fontSize: "0.8rem", fontWeight: 600 }}
-                          >
+                          <Typography variant="caption" fontWeight="bold">
                             Added coverage will appear here
                           </Typography>
                         </Box>
@@ -1118,22 +1100,15 @@ export default function ComparisonQuoteModal({
                                 spacing={1}
                               >
                                 <Typography
-                                  variant="body2"
-                                  sx={{
-                                    fontSize: 12,
-                                    fontWeight: 500,
-                                    color: "text.secondary",
-                                  }}
+                                  variant="caption"
+                                  color="text.secondary"
                                 >
                                   {product.name}
                                 </Typography>
                                 <Typography
-                                  variant="body2"
-                                  sx={{
-                                    fontWeight: 700,
-                                    fontSize: 13,
-                                    whiteSpace: "nowrap",
-                                  }}
+                                  variant="caption"
+                                  fontWeight="bold"
+                                  sx={{ whiteSpace: "nowrap" }}
                                 >
                                   {formatUSD(displayedProductTotal)}
                                   {rateSuffix}
@@ -1154,18 +1129,14 @@ export default function ComparisonQuoteModal({
                               justifyContent="space-between"
                               alignItems="baseline"
                             >
-                              <Typography
-                                variant="body2"
-                                sx={{ fontWeight: 600, fontSize: 12 }}
-                              >
+                              <Typography variant="caption" fontWeight="bold">
                                 Total
                               </Typography>
                               <Typography
                                 variant="body2"
+                                fontWeight="bold"
                                 sx={{
                                   color: "primary.main",
-                                  fontWeight: 700,
-                                  fontSize: 14,
                                   whiteSpace: "nowrap",
                                 }}
                               >
@@ -1186,13 +1157,12 @@ export default function ComparisonQuoteModal({
                         >
                           <Typography
                             variant="caption"
-                            sx={{
-                              color:
-                                rateFrequency === "monthly"
-                                  ? "primary.main"
-                                  : "text.secondary",
-                              fontWeight: 700,
-                            }}
+                            fontWeight="bold"
+                            color={
+                              rateFrequency === "monthly"
+                                ? "primary.main"
+                                : "text.secondary"
+                            }
                           >
                             Monthly
                           </Typography>
@@ -1212,13 +1182,12 @@ export default function ComparisonQuoteModal({
                           />
                           <Typography
                             variant="caption"
-                            sx={{
-                              color:
-                                rateFrequency === "annual"
-                                  ? "primary.main"
-                                  : "text.secondary",
-                              fontWeight: 700,
-                            }}
+                            fontWeight="bold"
+                            color={
+                              rateFrequency === "annual"
+                                ? "primary.main"
+                                : "text.secondary"
+                            }
                           >
                             Annual
                           </Typography>
@@ -1233,7 +1202,7 @@ export default function ComparisonQuoteModal({
                         endIcon={<ArrowRightAltRoundedIcon />}
                         onClick={handleApplyForCoverage}
                         disabled={selectedProducts.length === 0}
-                        sx={{ mt: 1, fontWeight: 700 }}
+                        sx={{ mt: 1 }}
                       >
                         Apply for coverage
                       </Button>

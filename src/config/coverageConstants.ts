@@ -18,6 +18,7 @@ export const categoryMaxAggregate: Record<CoverageCategoryId, string | null> = {
 export type MaxAggregateNote = {
   member: string;
   spouse: string;
+  child?: string;
 };
 
 const defaultLifeMaxAggregateNote: MaxAggregateNote = {
@@ -38,7 +39,7 @@ export const categoryMaxAggregateNotes: Partial<
  * Only clients that differ from default need entries here.
  */
 export const clientMaxAggregateNoteOverrides: Partial<
-  Record<ClientId, Partial<Record<CoverageCategoryId, MaxAggregateNote>>>
+  Record<ClientId, Partial<Record<CoverageCategoryId, MaxAggregateNote | null>>>
 > = {
   avma: {
     LI: {
@@ -46,7 +47,12 @@ export const clientMaxAggregateNoteOverrides: Partial<
         "The maximum Life Insurance amount available for a member through this Insurance Program underwritten by New York Life is $2,000,000 whether coverage is in one or divided among several group policies. The Basic Protection Package is not included in this aggregate maximum.",
       spouse:
         "The maximum Life Insurance amount available for a spouse through this Insurance Program underwritten by New York Life is $1,000,000 whether coverage is in one or divided among several group policies.",
+      child:
+        "Child(ren) can only be covered by one parent and under one group policy.",
     },
+  },
+  waepa: {
+    LI: null,
   },
 };
 
@@ -58,8 +64,9 @@ export function getMaxAggregateNotes(
   categoryId: CoverageCategoryId,
   clientId: ClientId,
 ): MaxAggregateNote | null {
-  const clientOverride =
-    clientMaxAggregateNoteOverrides[clientId]?.[categoryId];
-  if (clientOverride) return clientOverride;
+  const clientOverrides = clientMaxAggregateNoteOverrides[clientId];
+  if (clientOverrides && categoryId in clientOverrides) {
+    return clientOverrides[categoryId] ?? null;
+  }
   return categoryMaxAggregateNotes[categoryId] ?? null;
 }

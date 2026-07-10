@@ -2,6 +2,7 @@ import type { ClientConfig } from "./types";
 
 export const amaClient: ClientConfig = {
   id: "ama",
+  themeColor: "dark-blue",
   branding: {
     name: "American Medical Association",
     acronym: "AMA",
@@ -64,8 +65,36 @@ export const amaClient: ClientConfig = {
       "sh-hospital-income": "Hospital income coverage for qualifying stays.",
     },
     overrides: {
+      "li-20yr": {
+        name: "20-Year Level Term Life Insurance",
+      },
+      "li-15yr": {
+        name: "15-Year Level Term Life Insurance",
+      },
+      "li-10yr": {
+        name: "10-Year Level Term Life Insurance",
+      },
       "li-term": {
+        name: "Term Life Insurance",
         featured: true,
+      },
+      "li-preferred": {
+        name: "Preferred Term Life Insurance",
+      },
+      "li-premier-accident": {
+        name: "Premier Accident Insurance",
+      },
+      "di-step-rated": {
+        name: "Disability Insurance with Step Rated Premiums",
+      },
+      "di-level-rated": {
+        name: "Disability Insurance with Level Rated Premiums",
+      },
+      "oo-office-overhead": {
+        name: "Office Overhead Expense Insurance",
+      },
+      "sh-hospital-income": {
+        name: "Hospital Income Insurance",
       },
     },
     estimatedRateDisplay: {

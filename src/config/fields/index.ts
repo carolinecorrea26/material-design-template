@@ -142,6 +142,8 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     format: "email",
     autoComplete: "email",
     inputMode: "email",
+    helperText:
+      "Provide a valid email address where you can receive important updates about your application.",
   },
 
   phone: {
@@ -1656,5 +1658,66 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     inputType: "text",
     required: true,
     inputMode: "numeric",
+  },
+
+  "ama-physician-type": {
+    id: "ama-physician-type",
+    label: "I am a (select one)",
+    inputType: "dropdown",
+    labelVariant: "standard",
+    placeholder: "Select one",
+    required: true,
+    options: [
+      { label: "Physician", value: "physician" },
+      { label: "Resident", value: "resident" },
+      { label: "Student", value: "student" },
+      { label: "Retired Physician", value: "retired" },
+    ],
+  },
+
+  "ama-physician-title": {
+    id: "ama-physician-title",
+    label: "Title",
+    inputType: "dropdown",
+    placeholder: "Select",
+    options: [
+      { value: "mr", label: "Mr." },
+      { value: "mrs", label: "Mrs." },
+      { value: "ms", label: "Ms." },
+      { value: "dr", label: "Dr." },
+    ],
+  },
+
+  "ama-physician-first-name": {
+    id: "ama-physician-first-name",
+    label: "First Name",
+    inputType: "text",
+    required: true,
+    autoComplete: "given-name",
+  },
+
+  "ama-physician-last-name": {
+    id: "ama-physician-last-name",
+    label: "Last Name",
+    inputType: "text",
+    required: true,
+    autoComplete: "family-name",
+  },
+
+  "ama-physician-birth-date": {
+    id: "ama-physician-birth-date",
+    label: "Date of Birth",
+    inputType: "date",
+    required: true,
+  },
+
+  "ama-physician-email": {
+    id: "ama-physician-email",
+    label: "Email",
+    inputType: "text",
+    required: true,
+    format: "email",
+    autoComplete: "email",
+    inputMode: "email",
   },
 };

@@ -25,6 +25,8 @@ import {
   deriveStateProvinceFromZipOrPostalCode,
   formatZipOrPostalCode,
 } from "../utils/zipToStateProvince";
+import { useApplicationForm } from "../app/ApplicationFormContext";
+import { getActiveClient } from "../config/client/getActiveClient";
 
 const childMapping = {
   fields: [
@@ -124,14 +126,32 @@ function EligibilityFields({
   control,
   errors,
   watchedValues,
-  allFields,
+  allFields: rawAllFields,
   pageSections,
   setValue,
   trigger,
 }: FormRouteRenderProps) {
+  const { values: appValues } = useApplicationForm();
+  const client = getActiveClient();
   const [showAutoSetMessage, setShowAutoSetMessage] = useState(false);
   const showMessageFrameRef = useRef<number | null>(null);
   const hideMessageTimeoutRef = useRef<number | null>(null);
+
+  // For AMA spouse-of-physician, remove "Spouse" from dependent options
+  const allFields = useMemo(() => {
+    if (client.id === "ama" && appValues.membership === "spouse") {
+      return rawAllFields.map((field) => {
+        if (field.id === "dependents" && field.options) {
+          return {
+            ...field,
+            options: field.options.filter((opt) => opt.value !== "spouse"),
+          };
+        }
+        return field;
+      });
+    }
+    return rawAllFields;
+  }, [rawAllFields, client.id, appValues.membership]);
 
   useEffect(() => {
     return () => {

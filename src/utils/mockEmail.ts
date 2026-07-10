@@ -424,7 +424,7 @@ function buildResumeMagicLinkEmailHtml() {
   const payload = getClientEmailPayload();
 
   return getBaseEmailHtml({
-    title: "Your requested link to resume your application",
+    title: "Your requested link to continue your application",
     bodyHtml: `
       <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
         A request has been made to return to an insurance application in progress through <strong>${escapeHtml(
@@ -674,7 +674,7 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
       fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
-      subject: "Your requested link to resume your application",
+      subject: "Your requested link to continue your application",
       createdAt: now,
       html: buildResumeMagicLinkEmailHtml(),
     },
@@ -843,7 +843,7 @@ export async function sendResumeMagicLinkMockEmail(emailAddress: string) {
     fromName: getInsuranceAdministratorFromName(payload),
     fromEmail: MOCK_FROM_EMAIL,
     toEmail: trimmedEmailAddress,
-    subject: "Your requested link to resume your application",
+    subject: "Your requested link to continue your application",
     createdAt: new Date().toISOString(),
     html: buildResumeMagicLinkEmailHtml(),
   });
