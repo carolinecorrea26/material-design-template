@@ -4,7 +4,7 @@ import type { UseFormSetValue } from "react-hook-form";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getPageSectionNote } from "../config/pages";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
-import FieldRenderer from "../components/fields/FieldRenderer";
+import FieldRenderer from "../components/forms/FieldRenderer";
 import FormRoutePage from "../components/page/RoutePage";
 import FormSectionTitle from "../components/page/SectionTitle";
 import FormPageHelp from "../components/help/Panel";

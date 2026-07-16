@@ -4,19 +4,21 @@ export function generateAmountChoices(
   categoryId: CoverageCategoryId,
   minAmount?: number,
   maxAmount?: number,
-  options?: { includeZero?: boolean },
+  options?: { includeZero?: boolean; step?: number },
 ): number[] {
   const includeZero = options?.includeZero ?? false;
 
   if (minAmount != null && maxAmount != null) {
-    let step: number;
+    let step = options?.step;
 
-    if (categoryId === "LI" || categoryId === "AD") {
-      step = 25000;
-    } else if (categoryId === "DI" || categoryId === "OO") {
-      step = 500;
-    } else {
-      step = maxAmount <= 1000 ? 50 : 500;
+    if (step == null) {
+      if (categoryId === "LI" || categoryId === "AD") {
+        step = 25000;
+      } else if (categoryId === "DI" || categoryId === "OO") {
+        step = 500;
+      } else {
+        step = maxAmount <= 1000 ? 50 : 500;
+      }
     }
 
     const choices = new Set<number>(

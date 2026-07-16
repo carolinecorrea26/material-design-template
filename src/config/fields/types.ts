@@ -189,7 +189,9 @@ export type FieldId =
   | "ama-physician-first-name"
   | "ama-physician-last-name"
   | "ama-physician-birth-date"
-  | "ama-physician-email";
+  | "ama-physician-email"
+  | "csea-performing-duties"
+  | "csea-occupation-group";
 
 export type FieldDefinition = {
   id: string;

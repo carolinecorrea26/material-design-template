@@ -57,7 +57,11 @@ export const nsoClient: ClientConfig = {
       },
     },
   },
-  fields: {},
+  fields: {
+    coverage: {
+      hidden: ["average-employees-6-months"],
+    },
+  },
   features: {
     homePageVariant: "welcome-back",
   },

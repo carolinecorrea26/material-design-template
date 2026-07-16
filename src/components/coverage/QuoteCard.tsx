@@ -324,6 +324,7 @@ export default function HomeQuoteCard() {
           nextProduct.categoryId,
           nextProduct.minAmount,
           nextProduct.maxAmount,
+          { step: nextProduct.amountStep },
         );
 
         // If switching within the same category, try to keep the previous amount
@@ -435,6 +436,7 @@ export default function HomeQuoteCard() {
           preselectedProduct.categoryId,
           preselectedProduct.minAmount,
           preselectedProduct.maxAmount,
+          { step: preselectedProduct.amountStep },
         );
         const initialAmount = choices[0] ?? 0;
         const initialRate = estimateMonthlyPremium(
@@ -509,6 +511,7 @@ export default function HomeQuoteCard() {
         product.categoryId,
         product.minAmount,
         product.maxAmount,
+        { step: product.amountStep },
       );
       const initialAmount = choices[0] ?? 0;
       const initialRate = estimateMonthlyPremium(
@@ -545,6 +548,7 @@ export default function HomeQuoteCard() {
         modalProduct.categoryId,
         modalProduct.minAmount,
         modalProduct.maxAmount,
+        { step: modalProduct.amountStep },
       )
     : [];
   const modalSelectedAmount = modalProduct
@@ -737,7 +741,7 @@ export default function HomeQuoteCard() {
               {isEstimateLoading ? (
                 <CircularProgress size={20} color="inherit" />
               ) : (
-                "Get estimate"
+                "Get an instant quote"
               )}
             </Button>
             {ageError ? (
@@ -1091,7 +1095,7 @@ export default function HomeQuoteCard() {
                     {isQuoteLoading ? (
                       <CircularProgress size={20} color="inherit" />
                     ) : (
-                      "Get estimate"
+                      "Get an instant quote"
                     )}
                   </Button>
                 ) : null}
@@ -1294,7 +1298,7 @@ export default function HomeQuoteCard() {
                     >
                       <Typography variant="body2" color="text.secondary">
                         Your estimated cost will appear here once you click
-                        &ldquo;Get estimate&rdquo;.
+                        &ldquo;Get an instant quote&rdquo;.
                       </Typography>
                     </Box>
                   )}
@@ -1313,7 +1317,7 @@ export default function HomeQuoteCard() {
                 >
                   <Typography variant="body2" color="text.secondary">
                     Your estimated cost will appear here once you click
-                    &ldquo;Get estimate&rdquo;.
+                    &ldquo;Get an instant quote&rdquo;.
                   </Typography>
                 </Box>
               )}

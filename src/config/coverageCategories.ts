@@ -32,3 +32,18 @@ export const coverageCategories = [
 
 export type CoverageCategory = (typeof coverageCategories)[number];
 export type CoverageCategoryId = CoverageCategory["id"];
+
+export const coverageCategorySectionLabels: Record<CoverageCategoryId, string> =
+  {
+    LI: "Group Life Insurance",
+    AD: "Group Accidental Death and Dismemberment Insurance",
+    DI: "Group Disability Insurance",
+    OO: "Group Office Overhead Insurance",
+    SH: "Group Supplemental Health Insurance",
+  };
+
+export function getCoverageCategorySectionLabel(
+  categoryId: CoverageCategoryId,
+) {
+  return coverageCategorySectionLabels[categoryId];
+}

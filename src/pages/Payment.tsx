@@ -3,8 +3,10 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { formatUSD as formatCurrency } from "../utils/formatUSD";
 import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
 import FormRoutePage from "../components/page/RoutePage";
+import FormSectionTitle from "../components/page/SectionTitle";
 import FormPageHelp from "../components/help/Panel";
-import FieldRenderer from "../components/fields/FieldRenderer";
+import FieldRenderer from "../components/forms/FieldRenderer";
+import { getCoverageCategorySectionLabel } from "../config/coverageCategories";
 import { coverageCategories } from "../config/coverageCategories";
 import type { CoverageCategoryId } from "../config/coverages/types";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
@@ -192,7 +194,7 @@ function getPaymentDevFields(
     fields.push({
       id: `payment-frequency:${product.coverageId}`,
       label: "Payment Frequency",
-      inputType: "radio",
+      inputType: "dropdown",
       required: true,
       options: paymentFrequencyOptions.map((option) => ({
         value: option.value,
@@ -261,10 +263,17 @@ export default function Payment() {
             ) : (
               groupedCategories.map(({ category, products }) => {
                 return (
-                  <Stack key={category.id} spacing={1.25}>
+                  <Stack key={category.id} spacing={1.5}>
+                    <FormSectionTitle
+                      label={getCoverageCategorySectionLabel(category.id)}
+                    />
+
                     {products.map((product) => {
                       const paymentMethodFieldId = `payment-method:${product.coverageId}`;
                       const paymentFrequencyFieldId = `payment-frequency:${product.coverageId}`;
+                      const selectedPaymentMethod = values[
+                        paymentMethodFieldId
+                      ] as string | undefined;
 
                       const selectedFrequency =
                         (values[paymentFrequencyFieldId] as string) ||
@@ -300,10 +309,16 @@ export default function Payment() {
                         <Card
                           key={product.coverageId}
                           variant="outlined"
-                          sx={{ p: 2 }}
+                          sx={{
+                            p: 2.5,
+                            borderRadius: "16px",
+                            borderColor: "divider",
+                            background:
+                              "linear-gradient(135deg, rgb(244, 248, 255) 0%, rgb(255, 255, 255) 52%, rgb(247, 251, 255) 100%)",
+                          }}
                         >
-                          <Stack spacing={1.5}>
-                            <Typography variant="subtitle1">
+                          <Stack spacing={2}>
+                            <Typography variant="subtitle1" fontWeight="bold">
                               {product.coverageName}
                             </Typography>
 
@@ -326,8 +341,10 @@ export default function Payment() {
                               field={{
                                 id: paymentFrequencyFieldId,
                                 label: "Payment Frequency",
-                                inputType: "radio",
+                                inputType: "dropdown",
                                 required: true,
+                                placeholder: "Select frequency",
+                                disabled: !selectedPaymentMethod,
                                 options: paymentFrequencyOptions.map(
                                   (option) => ({
                                     value: option.value,
@@ -339,23 +356,24 @@ export default function Payment() {
                               errors={errors}
                             />
 
-                            {/* Estimated cost styled like coverage cart total */}
                             <Box
                               sx={{
-                                p: "16px",
-                                borderRadius: "8px",
-                                bgcolor: "#f5f8fd",
+                                mt: 0.5,
+                                pt: 1.5,
+                                borderTop: "1px solid",
+                                borderColor: "divider",
                               }}
                             >
-                              <Stack spacing={1.5}>
-                                <Typography
-                                  variant="caption"
-                                  fontWeight="bold"
-                                  color="text.primary"
-                                >
-                                  Estimated {frequencyLabel.toLowerCase()} cost
-                                  <sup>1</sup>
-                                </Typography>
+                              <Stack spacing={1.25}>
+                                {hasDependentBreakdown && (
+                                  <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                  >
+                                    Estimated {frequencyLabel.toLowerCase()}{" "}
+                                    cost
+                                  </Typography>
+                                )}
 
                                 {hasDependentBreakdown &&
                                   applicantPremiums.map((entry) => (
@@ -367,13 +385,13 @@ export default function Payment() {
                                       spacing={1}
                                     >
                                       <Typography
-                                        variant="caption"
+                                        variant="subtitle2"
                                         color="text.secondary"
                                       >
                                         {getApplicantLabel(entry.applicant)}
                                       </Typography>
                                       <Typography
-                                        variant="body2"
+                                        variant="subtitle2"
                                         fontWeight="bold"
                                         sx={{ whiteSpace: "nowrap" }}
                                       >
@@ -391,7 +409,7 @@ export default function Payment() {
                                       ? "1px solid"
                                       : "none",
                                     borderColor: "divider",
-                                    pt: hasDependentBreakdown ? 1.5 : 0,
+                                    pt: hasDependentBreakdown ? 1.25 : 0,
                                   }}
                                 >
                                   <Stack
@@ -399,15 +417,15 @@ export default function Payment() {
                                     justifyContent="space-between"
                                     alignItems="baseline"
                                   >
-                                    <Typography
-                                      variant="caption"
-                                      fontWeight="bold"
-                                    >
-                                      Total
+                                    <Typography variant="subtitle2">
+                                      {hasDependentBreakdown
+                                        ? "Total estimated cost"
+                                        : `Estimated ${frequencyLabel.toLowerCase()} cost`}
+                                      <sup>1</sup>
                                     </Typography>
                                     <Typography
                                       component="span"
-                                      variant="body2"
+                                      variant="subtitle2"
                                       fontWeight="bold"
                                       sx={{
                                         color: "primary.main",
@@ -430,22 +448,18 @@ export default function Payment() {
             )}
 
             {hasAnyBankAccountSelected && (
-              <Card variant="outlined" sx={{ p: 2 }}>
-                <Stack spacing={1.5}>
-                  <Typography variant="subtitle1">
-                    Bank Account Information
-                  </Typography>
+              <Stack spacing={1.5} sx={{ pt: 1 }}>
+                <FormSectionTitle label="Banking Information" />
 
-                  {BANK_FIELD_IDS.map((fieldId) => (
-                    <FieldRenderer
-                      key={fieldId}
-                      field={fieldCatalog[fieldId]}
-                      control={control}
-                      errors={errors}
-                    />
-                  ))}
-                </Stack>
-              </Card>
+                {BANK_FIELD_IDS.map((fieldId) => (
+                  <FieldRenderer
+                    key={fieldId}
+                    field={fieldCatalog[fieldId]}
+                    control={control}
+                    errors={errors}
+                  />
+                ))}
+              </Stack>
             )}
 
             <Box sx={{ mt: 3, color: "text.secondary" }}>

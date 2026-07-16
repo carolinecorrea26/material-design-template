@@ -17,9 +17,9 @@ import FormRoutePage, {
   type FormRouteRenderProps,
   isSectionVisible,
 } from "../components/page/RoutePage";
-import FieldRenderer from "../components/fields/FieldRenderer";
-import AddList from "../components/fields/DynamicList";
-import ApplicantSection from "../components/fields/ApplicantSection";
+import FieldRenderer from "../components/forms/FieldRenderer";
+import AddList from "../components/forms/DynamicList";
+import ApplicantSection from "../components/forms/ApplicantSection";
 import { fieldCatalog } from "../config/fields";
 import {
   deriveStateProvinceFromZipOrPostalCode,

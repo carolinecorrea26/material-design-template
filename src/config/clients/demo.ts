@@ -59,7 +59,11 @@ export const demoClient: ClientConfig = {
       },
     },
   },
-  fields: {},
+  fields: {
+    coverage: {
+      hidden: ["average-employees-6-months"],
+    },
+  },
   features: {
     chat: true,
     homePageVariant: "hero-image",

@@ -9,7 +9,15 @@ export type PageId = Page["id"];
 export type PageType = Page["type"];
 
 // Client types
-export type ClientId = "demo" | "abe" | "ama" | "avma" | "nso" | "waepa";
+export type ClientId =
+  | "demo"
+  | "abe"
+  | "ama"
+  | "avma"
+  | "csea"
+  | "isitrust"
+  | "nso"
+  | "waepa";
 
 export type ClientConfig = {
   id: ClientId;

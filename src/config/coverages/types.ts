@@ -56,10 +56,13 @@ export type CoverageDefinition = {
   applicants: CoverageApplicantId[];
   minAmount?: number;
   maxAmount?: number;
+  amountStep?: number;
   spouseMinAmount?: number;
   spouseMaxAmount?: number;
+  spouseAmountStep?: number;
   childMinAmount?: number;
   childMaxAmount?: number;
+  childAmountStep?: number;
   options: {
     id: string;
     type: string;

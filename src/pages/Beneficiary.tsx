@@ -21,8 +21,8 @@ import {
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import AddListItem from "../components/fields/DynamicListItem";
-import ApplicantSection from "../components/fields/ApplicantSection";
+import AddListItem from "../components/forms/DynamicListItem";
+import ApplicantSection from "../components/forms/ApplicantSection";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
 import FormRoutePage from "../components/page/RoutePage";
 import FormPageHelp from "../components/help/Panel";

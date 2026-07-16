@@ -1,13 +1,13 @@
 import { useMemo, useState } from "react";
 import { Alert, Box, Button, Divider, Typography } from "@mui/material";
 import FormRoutePage, { isSectionVisible } from "../components/page/RoutePage";
-import FieldRenderer from "../components/fields/FieldRenderer";
-import ApplicantSection from "../components/fields/ApplicantSection";
+import FieldRenderer from "../components/forms/FieldRenderer";
+import ApplicantSection from "../components/forms/ApplicantSection";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
 import { SECTION_SURFACE_BG } from "../app/theme";
-import SubQuestionContainer from "../components/fields/ConditionalGroup";
+import SubQuestionContainer from "../components/forms/ConditionalGroup";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
-import AddList from "../components/fields/DynamicList";
+import AddList from "../components/forms/DynamicList";
 import type { FieldDefinition } from "../config/fields/types";
 
 // Layout groupings — fields that render side-by-side in grids

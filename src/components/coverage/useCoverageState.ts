@@ -7,16 +7,33 @@ import type { CoverageApplicantId } from "../../config/coverages/types";
 import type { EstimatedRateFrequency } from "../../config/clients/types";
 import { useApplicationForm } from "../../app/ApplicationFormContext";
 import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
+import { getCoverageAmountRange } from "../../utils/coverageAmounts";
 import { generateAmountChoices as generateAmountChoicesBase } from "../../utils/generateAmountChoices";
 import { RATE_CALCULATION_DELAY_MS } from "../../config/coverageConstants";
 
 function generateAmountChoices(
-  categoryId: CoverageCategoryId,
-  minAmount?: number,
-  maxAmount?: number,
+  coverage: {
+    categoryId: CoverageCategoryId;
+    minAmount?: number;
+    maxAmount?: number;
+    amountStep?: number;
+    spouseMinAmount?: number;
+    spouseMaxAmount?: number;
+    spouseAmountStep?: number;
+    childMinAmount?: number;
+    childMaxAmount?: number;
+    childAmountStep?: number;
+  },
+  applicantId: CoverageApplicantId = "member",
 ): number[] {
-  return generateAmountChoicesBase(categoryId, minAmount, maxAmount, {
+  const { minAmount, maxAmount, step } = getCoverageAmountRange(
+    coverage,
+    applicantId,
+  );
+
+  return generateAmountChoicesBase(coverage.categoryId, minAmount, maxAmount, {
     includeZero: true,
+    step,
   });
 }
 
@@ -347,11 +364,7 @@ export function useCoverageState() {
       for (const applicantId of visibleApplicants) {
         const key = `${coverage.id}:${applicantId}`;
         if (nextAmounts[key] == null) {
-          const choices = generateAmountChoices(
-            coverage.categoryId,
-            coverage.minAmount,
-            coverage.maxAmount,
-          );
+          const choices = generateAmountChoices(coverage, applicantId);
           const firstNonZero = choices.find((amt) => amt > 0);
           if (firstNonZero != null) {
             nextAmounts[key] = firstNonZero;
@@ -452,11 +465,7 @@ export function useCoverageState() {
       if (coverage) {
         const key = `${coverageId}:${applicant}`;
         if (nextAmounts[key] == null || nextAmounts[key] === 0) {
-          const choices = generateAmountChoices(
-            coverage.categoryId,
-            coverage.minAmount,
-            coverage.maxAmount,
-          );
+          const choices = generateAmountChoices(coverage, applicant);
           const firstNonZero = choices.find((amt) => amt > 0);
           if (firstNonZero != null) {
             nextAmounts[key] = firstNonZero;

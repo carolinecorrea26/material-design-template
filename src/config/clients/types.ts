@@ -54,6 +54,18 @@ export type ClientMaxBenefitPeriodConfig = {
   value: string;
 };
 
+export type ClientCoverageRangeConfig = {
+  min?: number;
+  max?: number;
+  amountStep?: number;
+  spouseMin?: number;
+  spouseMax?: number;
+  spouseAmountStep?: number;
+  childMin?: number;
+  childMax?: number;
+  childAmountStep?: number;
+};
+
 export type CoverageApplicantNotes = Partial<
   Record<"member" | "spouse" | "child", string>
 >;
@@ -99,7 +111,7 @@ export type ClientEstimatedRateDisplay = {
 export type ClientCoverages = {
   categories?: CoverageCategoryId[];
   enabled?: CoverageId[];
-  ranges?: Partial<Record<CoverageId, { min: number; max: number }>>;
+  ranges?: Partial<Record<CoverageId, ClientCoverageRangeConfig>>;
   descriptions?: Partial<Record<CoverageId, string>>;
   overrides?: Partial<Record<CoverageId, ClientCoverageOverrides>>;
   /** When true, all coverage category accordions are expanded by default. Otherwise only the first is expanded. */

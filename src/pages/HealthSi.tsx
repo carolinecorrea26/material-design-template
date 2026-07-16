@@ -2,13 +2,13 @@ import { Box, FormLabel, Stack } from "@mui/material";
 import FormRoutePage, {
   type FormRouteRenderProps,
 } from "../components/page/RoutePage";
-import ApplicantSection from "../components/fields/ApplicantSection";
+import ApplicantSection from "../components/forms/ApplicantSection";
 import {
   isApplicantApplying,
   shouldShowApplicantLabel,
 } from "../utils/applicantVisibility";
-import FieldRenderer from "../components/fields/FieldRenderer";
-import SubQuestionContainer from "../components/fields/ConditionalGroup";
+import FieldRenderer from "../components/forms/FieldRenderer";
+import SubQuestionContainer from "../components/forms/ConditionalGroup";
 import type { FieldDefinition } from "../config/fields/types";
 
 const HEALTH_QUESTIONS = [

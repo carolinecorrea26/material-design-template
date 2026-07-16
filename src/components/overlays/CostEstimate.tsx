@@ -29,6 +29,7 @@ import type {
 } from "../../config/coverages/types";
 import { formatUSD } from "../../utils/formatUSD";
 import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
+import { getCoverageAmountRange } from "../../utils/coverageAmounts";
 import { generateAmountChoices } from "../../utils/generateAmountChoices";
 import { getActiveClient } from "../../config/client/getActiveClient";
 import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
@@ -173,10 +174,15 @@ export default function CostEstimateDrawerContent() {
     categoryProducts.forEach((product) => {
       const key = `${product.id}:member`;
       if (newAmounts[key] == null) {
+        const { minAmount, maxAmount, step } = getCoverageAmountRange(
+          product,
+          "member",
+        );
         const choices = generateAmountChoices(
           product.categoryId,
-          product.minAmount,
-          product.maxAmount,
+          minAmount,
+          maxAmount,
+          { step },
         );
         newAmounts[key] = choices[0] ?? 0;
       }
@@ -204,10 +210,15 @@ export default function CostEstimateDrawerContent() {
       prods.forEach((product) => {
         const key = `${product.id}:member`;
         if (newAmounts[key] == null) {
+          const { minAmount, maxAmount, step } = getCoverageAmountRange(
+            product,
+            "member",
+          );
           const choices = generateAmountChoices(
             product.categoryId,
-            product.minAmount,
-            product.maxAmount,
+            minAmount,
+            maxAmount,
+            { step },
           );
           newAmounts[key] = choices[0] ?? 0;
         }
@@ -520,8 +531,11 @@ export default function CostEstimateDrawerContent() {
                   {categoryProducts.map((product) => {
                     const choices = generateAmountChoices(
                       product.categoryId,
-                      product.minAmount,
-                      product.maxAmount,
+                      ...(() => {
+                        const { minAmount, maxAmount, step } =
+                          getCoverageAmountRange(product, "member");
+                        return [minAmount, maxAmount, { step }] as const;
+                      })(),
                     );
                     const currentApplicants =
                       productApplicants[product.id] ?? [];

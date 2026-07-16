@@ -21,9 +21,10 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import FormSectionTitle from "../../components/page/SectionTitle";
-import SelectableOptionRow from "../../components/fields/OptionRow";
+import SelectableOptionRow from "../../components/forms/OptionRow";
 import QuickDecisionIndicator from "../../components/coverage/QuickDecisionBadge";
 import { QuickDecisionMark } from "../../components/overlays/QuickDecisionInfo";
+import { getCoverageCategorySectionLabel } from "../../config/coverageCategories";
 import { coverageApplicantToSection } from "../../config/formSectionTitle";
 import type {
   CoverageCategoryId,
@@ -42,15 +43,6 @@ import { resolveClientId } from "../../config/client/resolveClientId";
 
 const applicantCheckboxLabels: Record<CoverageApplicantId, string> =
   getContent().coverage.applicantCheckboxLabels;
-
-/** Full display names for coverage category section headers */
-const categorySectionLabels: Record<CoverageCategoryId, string> = {
-  LI: "Group Life Insurance",
-  AD: "Group Accidental Death and Dismemberment Insurance",
-  DI: "Group Disability Insurance",
-  OO: "Group Office Overhead Insurance",
-  SH: "Group Supplemental Health Insurance",
-};
 
 type ProductCatalogProps = {
   availableCategories: Array<{
@@ -109,9 +101,8 @@ type ProductCatalogProps = {
     applicantId: CoverageApplicantId,
   ) => number;
   generateAmountChoices: (
-    categoryId: CoverageCategoryId,
-    minAmount?: number,
-    maxAmount?: number,
+    coverage: ProductCatalogProps["categoryProducts"][number],
+    applicantId?: CoverageApplicantId,
   ) => number[];
   hasSpouse: boolean;
 };
@@ -307,7 +298,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                         gap={2}
                       >
                         <Typography variant="overline">
-                          {categorySectionLabels[categoryId]}
+                          {getCoverageCategorySectionLabel(categoryId)}
                         </Typography>
                         <Link
                           component="button"
@@ -360,7 +351,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                       gap={2}
                     >
                       <Typography variant="overline">
-                        {categorySectionLabels[categoryId]}
+                        {getCoverageCategorySectionLabel(categoryId)}
                       </Typography>
                       <Link
                         component="button"
@@ -556,11 +547,6 @@ function ProductCard({
   );
   const currentApplicants = productApplicants[coverage.id] ?? [];
   const hasAnyApplicantSelected = currentApplicants.length > 0;
-  const choices = generateAmountChoices(
-    coverage.categoryId,
-    coverage.minAmount,
-    coverage.maxAmount,
-  );
   const amountLabel = getBenefitAmountLabel(coverage.categoryId);
   const rateSuffix = rateFrequency === "annual" ? "/yr" : "/mo";
   const isMultiApplicant = visibleApplicants.length > 1;
@@ -707,6 +693,7 @@ function ProductCard({
           const isSelected = currentApplicants.includes(applicantId);
           const sectionId = coverageApplicantToSection[applicantId];
           const key = `${coverage.id}:${applicantId}`;
+          const choices = generateAmountChoices(coverage, applicantId);
           const currentAmount = storedAmounts[key] ?? 0;
           const hasAmountSelection = storedAmounts[key] != null;
           const selectValue = hasAmountSelection ? currentAmount : "";
@@ -987,9 +974,13 @@ function ProductCard({
                                         }
                                       >
                                         {generateAmountChoices(
-                                          coverage.categoryId,
-                                          rider.minAmount,
-                                          rider.maxAmount,
+                                          {
+                                            ...coverage,
+                                            minAmount: rider.minAmount,
+                                            maxAmount: rider.maxAmount,
+                                            amountStep: coverage.amountStep,
+                                          },
+                                          applicantId,
                                         ).map((amt) => (
                                           <MenuItem key={amt} value={amt}>
                                             {formatUSD(amt, 0)}

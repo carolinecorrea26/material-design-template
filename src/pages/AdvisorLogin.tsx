@@ -13,7 +13,7 @@ import FormRoutePage, {
   isSectionVisible,
   type FormRouteRenderProps,
 } from "../components/page/RoutePage";
-import FieldRenderer from "../components/fields/FieldRenderer";
+import FieldRenderer from "../components/forms/FieldRenderer";
 import { getPageTitle, getPageSubhead } from "../config/pages";
 
 export default function AdvisorLogin() {

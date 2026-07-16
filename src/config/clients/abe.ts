@@ -104,6 +104,9 @@ export const abeClient: ClientConfig = {
     },
   },
   fields: {
+    coverage: {
+      hidden: ["average-employees-6-months"],
+    },
     eligibility: {
       extra: ["spouse-membership"],
       overrides: {

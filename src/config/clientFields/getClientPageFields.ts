@@ -15,7 +15,11 @@ export function getClientPageFields(
 
   if (pageId !== "membership") {
     const clientPageConfig = client.fields[pageId];
-    if (!clientPageConfig?.extra?.length && !clientPageConfig?.overrides) {
+    if (
+      !clientPageConfig?.extra?.length &&
+      !clientPageConfig?.overrides &&
+      !clientPageConfig?.hidden?.length
+    ) {
       return baseFields;
     }
 
@@ -34,7 +38,10 @@ export function getClientPageFields(
       })
       .filter((f): f is FieldDefinition => Boolean(f));
 
-    return [...mergedBase, ...extraFields];
+    const hidden = new Set<string>(clientPageConfig?.hidden ?? []);
+    return [...mergedBase, ...extraFields].filter(
+      (field) => !hidden.has(field.id),
+    );
   }
 
   const clientConfig = membershipClientFields[client.id];

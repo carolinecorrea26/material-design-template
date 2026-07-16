@@ -3,13 +3,13 @@ import PrintOutlinedIcon from "@mui/icons-material/PrintOutlined";
 import { Alert, Box, Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import FormRoutePage from "../components/page/RoutePage";
-import ApplicantSection from "../components/fields/ApplicantSection";
+import ApplicantSection from "../components/forms/ApplicantSection";
 import {
   isApplicantApplying,
   shouldShowApplicantLabel,
 } from "../utils/applicantVisibility";
 import { SECTION_SURFACE_BG } from "../app/theme";
-import FieldRenderer from "../components/fields/FieldRenderer";
+import FieldRenderer from "../components/forms/FieldRenderer";
 import type { PageId } from "../types";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { fieldCatalog } from "../config/fields";

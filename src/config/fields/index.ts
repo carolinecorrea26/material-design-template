@@ -1720,4 +1720,27 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     autoComplete: "email",
     inputMode: "email",
   },
+
+  "csea-performing-duties": {
+    id: "csea-performing-duties",
+    inputType: "radio",
+    label:
+      "Are you presently performing all the duties of your occupation according to your regular schedule?",
+    required: true,
+    options: [
+      { label: "Yes", value: "yes" },
+      { label: "No", value: "no" },
+    ],
+  },
+
+  "csea-occupation-group": {
+    id: "csea-occupation-group",
+    inputType: "radio",
+    label: "Are you solely engaged in office or clerical work?",
+    required: true,
+    options: [
+      { label: "Yes (Group 1 Clerical)", value: "group-1-clerical" },
+      { label: "No (Group 2 Non-Clerical)", value: "group-2-non-clerical" },
+    ],
+  },
 };

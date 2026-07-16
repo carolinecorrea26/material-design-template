@@ -40,13 +40,14 @@ import type {
   CoverageDefinition,
 } from "../../config/coverages/types";
 import { formatUSD } from "../../utils/formatUSD";
+import { getCoverageAmountRange } from "../../utils/coverageAmounts";
 import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
 import { generateAmountChoices } from "../../utils/generateAmountChoices";
 import { getPagePath } from "../../config/pages";
 import { STORAGE_KEY } from "../../app/ApplicationFormContext";
 import { getActiveClient } from "../../config/client/getActiveClient";
 import type { EstimatedRateFrequency } from "../../config/clients/types";
-import SelectableOptionRow from "../fields/OptionRow";
+import SelectableOptionRow from "../forms/OptionRow";
 import QuickDecisionIndicator from "../coverage/QuickDecisionBadge";
 
 const RateFrequencySwitch = styled(Switch)(({ theme }) => ({
@@ -303,10 +304,15 @@ export default function ComparisonQuoteModal({
     categoryProducts.forEach((product) => {
       const key = `${product.id}:member`;
       if (newAmounts[key] == null) {
+        const { minAmount, maxAmount, step } = getCoverageAmountRange(
+          product,
+          "member",
+        );
         const choices = generateAmountChoices(
           product.categoryId,
-          product.minAmount,
-          product.maxAmount,
+          minAmount,
+          maxAmount,
+          { step },
         );
         newAmounts[key] = choices[0] ?? 0;
       }
@@ -335,10 +341,15 @@ export default function ComparisonQuoteModal({
       prods.forEach((product) => {
         const key = `${product.id}:member`;
         if (newAmounts[key] == null) {
+          const { minAmount, maxAmount, step } = getCoverageAmountRange(
+            product,
+            "member",
+          );
           const choices = generateAmountChoices(
             product.categoryId,
-            product.minAmount,
-            product.maxAmount,
+            minAmount,
+            maxAmount,
+            { step },
           );
           newAmounts[key] = choices[0] ?? 0;
         }
@@ -385,10 +396,15 @@ export default function ComparisonQuoteModal({
     if (isAdding) {
       const key = `${product.id}:${applicant}`;
       if (amountsByKey[key] == null) {
+        const { minAmount, maxAmount, step } = getCoverageAmountRange(
+          product,
+          applicant,
+        );
         const choices = generateAmountChoices(
           product.categoryId,
-          product.minAmount,
-          product.maxAmount,
+          minAmount,
+          maxAmount,
+          { step },
         );
         setAmountsByKey((prev) => ({
           ...prev,
@@ -807,8 +823,11 @@ export default function ComparisonQuoteModal({
                       {categoryProducts.map((product) => {
                         const choices = generateAmountChoices(
                           product.categoryId,
-                          product.minAmount,
-                          product.maxAmount,
+                          ...(() => {
+                            const { minAmount, maxAmount, step } =
+                              getCoverageAmountRange(product, "member");
+                            return [minAmount, maxAmount, { step }] as const;
+                          })(),
                         );
                         const currentApplicants =
                           productApplicants[product.id] ?? [];
