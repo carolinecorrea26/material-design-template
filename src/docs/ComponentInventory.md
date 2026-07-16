@@ -30,12 +30,11 @@ No files should be moved based on this document alone. Use this as the review ba
 | `src/components/content` | Empty target folder | Contains `.gitkeep`. Intended for reusable content display patterns. |
 | `src/components/coverage` | Existing populated folder | Current app-specific coverage/quote components. Do not move in the first generic cleanup pass. |
 | `src/components/feedback` | Empty target folder | Contains `.gitkeep`. Intended for alerts/status/validation/empty/loading patterns. |
-| `src/components/fields` | Existing populated folder | Current reusable form field and form-section patterns. Strong candidate to become `components/forms`. |
-| `src/components/forms` | Empty target folder | Contains `.gitkeep`. Intended destination for reusable form patterns. |
+| `src/components/forms` | Populated | Reusable form patterns. Moved from `fields/` and `page/`. Contains `ApplicantSection`, `ConditionalGroup`, `DynamicList`, `DynamicListItem`, `FieldRenderer`, `OptionRow`, `SectionTitle`. |
 | `src/components/help` | Existing populated folder | Current reusable help-chip/help-drawer/help-panel system. Likely split between `content` and `overlays`, but review before moving. |
-| `src/components/layout` | Empty target folder | Contains `.gitkeep`. Intended for page/page-section/layout wrappers. |
+| `src/components/layout` | Populated | Layout wrappers. Moved from `page/`. Contains `Page`, `Title`. |
 | `src/components/overlays` | Existing populated folder | Contains overlay components, but several are feature-level rather than generic overlay primitives. |
-| `src/components/page` | Existing populated folder | Mixed folder: layout components, form-section component, stepper/breadcrumbs, and route-flow controller. Should be split carefully. |
+| `src/components/page` | Partially split | `Page.tsx` and `Title.tsx` moved to `layout/`. `SectionTitle.tsx` moved to `forms/`. Remaining: `RoutePage.tsx` (application-flow) and `Stepper.tsx` (navigation, needs review). |
 | `src/components/shell` | Existing populated folder | App shell/chrome. Current folder name is generic and reasonable; do not move in the first pass. |
 
 ## Detailed inventory
@@ -51,16 +50,17 @@ No files should be moved based on this document alone. Use this as the review ba
 | `QuoteCard.tsx` | Landing-page quote tool with stored estimate values, category selection, eligibility/estimate inputs, quote calculation, and comparison modal behavior. | Feature-level/application-specific | Needs review | Large composite quote feature. Do not move in the generic component cleanup pass. |
 | `useCoverageState.ts` | Hook/helper for coverage selection state, benefit amounts, riders, waiting periods, selected applicants, premium calculations, and displayed premium frequency. | Feature-level/application-specific logic | Needs review | This is business/application state logic, not a UI component. It may eventually belong under a feature or utility area, but requires a feature-boundary decision first. |
 
-### `src/components/fields`
+### `src/components/forms` (moved from `fields/` and `page/`)
 
-| File | What it does | Classification | Suggested future destination | Reason |
+| File | What it does | Classification | Status | Reason |
 |---|---|---|---|---|
-| `ApplicantSection.tsx` | Wraps applicant-specific sections with an optional applicant label banner and optional info note. | Form pattern | `src/components/forms/ApplicantSection.tsx` | Reusable form-section pattern. Also contains repeated section-banner styling that may later be extracted. |
-| `ConditionalGroup.tsx` | Wraps conditional/follow-up questions with a left primary border and inset spacing. | Form pattern | `src/components/forms/ConditionalGroup.tsx` | Generic conditional form-group display pattern. |
-| `DynamicList.tsx` | Reusable add/edit/remove list component using `react-hook-form`, a dialog form, `FieldRenderer`, and `DynamicListItem`. | Form pattern; overlay behavior inside | `src/components/forms/DynamicList.tsx` | Generic dynamic form-list pattern. Contains dialog behavior, but the primary purpose is a form pattern. |
-| `DynamicListItem.tsx` | Renders a list item surface with edit/remove actions. | Form pattern | `src/components/forms/DynamicListItem.tsx` | Generic reusable item row used by dynamic list patterns. |
-| `FieldRenderer.tsx` | Main field-rendering engine for configured fields. Handles text, date, select, autocomplete, checkbox, checkbox group, radio, toggle, multi-select, SSN masking, validation, formatting, labels, and completion/error indicators. | Form pattern | `src/components/forms/FieldRenderer.tsx` | Core reusable form renderer driven by field configuration. Strong candidate for Storybook documentation later. |
-| `OptionRow.tsx` | Label-like selectable surface used around checkbox/radio option content. | Form pattern; generic reusable UI | `src/components/forms/OptionRow.tsx` | Reusable selectable form-row pattern. Could later use a generic `SelectableSurface` primitive if repeated elsewhere. |
+| `ApplicantSection.tsx` | Wraps applicant-specific sections with an optional applicant label banner and optional info note. | Form pattern | ✅ Moved from `fields/` | Reusable form-section pattern. Also contains repeated section-banner styling that may later be extracted. |
+| `ConditionalGroup.tsx` | Wraps conditional/follow-up questions with a left primary border and inset spacing. | Form pattern | ✅ Moved from `fields/` | Generic conditional form-group display pattern. |
+| `DynamicList.tsx` | Reusable add/edit/remove list component using `react-hook-form`, a dialog form, `FieldRenderer`, and `DynamicListItem`. | Form pattern; overlay behavior inside | ✅ Moved from `fields/` | Generic dynamic form-list pattern. Contains dialog behavior, but the primary purpose is a form pattern. |
+| `DynamicListItem.tsx` | Renders a list item surface with edit/remove actions. | Form pattern | ✅ Moved from `fields/` | Generic reusable item row used by dynamic list patterns. |
+| `FieldRenderer.tsx` | Main field-rendering engine for configured fields. Handles text, date, select, autocomplete, checkbox, checkbox group, radio, toggle, multi-select, SSN masking, validation, formatting, labels, and completion/error indicators. | Form pattern | ✅ Moved from `fields/` | Core reusable form renderer driven by field configuration. Strong candidate for Storybook documentation later. |
+| `OptionRow.tsx` | Label-like selectable surface used around checkbox/radio option content. | Form pattern; generic reusable UI | ✅ Moved from `fields/` | Reusable selectable form-row pattern. Could later use a generic `SelectableSurface` primitive if repeated elsewhere. |
+| `SectionTitle.tsx` | Renders applicant-based form section title banner or custom section title with optional icon. Uses `formSectionTitle` config. | Form pattern | ✅ Moved from `page/` | Form-section title pattern, not generic page layout. Contains repeated banner styling also seen in `ApplicantSection`. |
 
 ### `src/components/help`
 
@@ -81,15 +81,19 @@ No files should be moved based on this document alone. Use this as the review ba
 | `QuickDecisionInfo.tsx` | Renders QuickDecision explanatory drawer content and exports `QuickDecisionMark` text/superscript mark. | Content/help pattern; feature-level/application-specific | Needs review | Mostly content display, but product-specific. Could later live near related feature/content, not generic components. |
 | `QuoteComparison.tsx` | Modal quote comparison flow with category/product selection, validation, amount choices, rate frequency switch, quote estimates, and navigation into application. | Overlay pattern; feature-level/application-specific | Needs review | It is a modal, but the logic is quote/coverage-specific. Do not move in generic cleanup. |
 
-### `src/components/page`
+### `src/components/layout` (moved from `page/`)
 
-| File | What it does | Classification | Suggested future destination | Reason |
+| File | What it does | Classification | Status | Reason |
 |---|---|---|---|---|
-| `Page.tsx` | Generic page wrapper with title/subhead/help/error/actions slots and centered max-width content layout. | Generic reusable UI; layout pattern | `src/components/layout/Page.tsx` | Clear generic layout wrapper. Safe candidate for a later small move. |
+| `Page.tsx` | Generic page wrapper with title/subhead/help/error/actions slots and centered max-width content layout. | Generic reusable UI; layout pattern | ✅ Moved from `page/` | Clear generic layout wrapper. |
+| `Title.tsx` | Renders page title, optional subhead, and optional back icon button. | Generic reusable UI; layout pattern | ✅ Moved from `page/` | Clear page-title layout pattern. |
+
+### `src/components/page` (partially split)
+
+| File | What it does | Classification | Status | Reason |
+|---|---|---|---|---|
 | `RoutePage.tsx` | Large route-level form controller. Loads fields/sections/content, initializes `react-hook-form`, merges stored values, evaluates visibility, handles validation, autosave messages, dev-fill behavior, progress snapshots, back/next navigation, and renders page content. | Routing/application-flow logic | Needs review | Not layout. Not a generic component. Keep in place until an intentional `app` or `features/application-flow` destination is chosen. |
-| `SectionTitle.tsx` | Renders applicant-based form section title banner or custom section title with optional icon. Uses `formSectionTitle` config. | Form pattern | `src/components/forms/SectionTitle.tsx` | Form-section title pattern, not generic page layout. Contains repeated banner styling also seen in `ApplicantSection`. |
 | `Stepper.tsx` | Renders vertical stepper and breadcrumb navigation based on active progress steps, page IDs, application values, and pending breadcrumb completion event. | Navigation/progress pattern with application-flow coupling | Needs review | It is navigation/progress UI, but tied to page IDs, progress config, and app form values. Could move later, but not before deciding whether it belongs in `components/navigation` or application-flow feature. |
-| `Title.tsx` | Renders page title, optional subhead, and optional back icon button. | Generic reusable UI; layout pattern | `src/components/layout/Title.tsx` or `src/components/layout/PageTitle.tsx` | Clear page-title layout pattern. Safe candidate for a later small move/rename if desired. |
 
 ### `src/components/shell`
 
@@ -108,8 +112,6 @@ These folders exist as targets but currently contain only `.gitkeep`:
 - `src/components/common`
 - `src/components/content`
 - `src/components/feedback`
-- `src/components/forms`
-- `src/components/layout`
 - `src/features`
 - `src/app/providers`
 - `src/utils/formatting`
@@ -136,36 +138,24 @@ These files should not be moved yet without a separate feature-boundary decision
 - `src/components/page/Stepper.tsx`
 - `src/components/shell/Header.tsx`
 
-## Obvious first-pass candidates
+## Completed first-pass moves
 
-These are the safest candidates for a later small move because their role is clear and generic:
+All obvious first-pass candidates have been moved:
 
-| Current file | Candidate destination |
-|---|---|
-| `src/components/fields/ApplicantSection.tsx` | `src/components/forms/ApplicantSection.tsx` |
-| `src/components/fields/ConditionalGroup.tsx` | `src/components/forms/ConditionalGroup.tsx` |
-| `src/components/fields/DynamicList.tsx` | `src/components/forms/DynamicList.tsx` |
-| `src/components/fields/DynamicListItem.tsx` | `src/components/forms/DynamicListItem.tsx` |
-| `src/components/fields/FieldRenderer.tsx` | `src/components/forms/FieldRenderer.tsx` |
-| `src/components/fields/OptionRow.tsx` | `src/components/forms/OptionRow.tsx` |
-| `src/components/page/SectionTitle.tsx` | `src/components/forms/SectionTitle.tsx` |
-| `src/components/page/Page.tsx` | `src/components/layout/Page.tsx` |
-| `src/components/page/Title.tsx` | `src/components/layout/Title.tsx` or `src/components/layout/PageTitle.tsx` |
+| Original file | New location | Status |
+|---|---|---|
+| `src/components/fields/ApplicantSection.tsx` | `src/components/forms/ApplicantSection.tsx` | ✅ Done |
+| `src/components/fields/ConditionalGroup.tsx` | `src/components/forms/ConditionalGroup.tsx` | ✅ Done |
+| `src/components/fields/DynamicList.tsx` | `src/components/forms/DynamicList.tsx` | ✅ Done |
+| `src/components/fields/DynamicListItem.tsx` | `src/components/forms/DynamicListItem.tsx` | ✅ Done |
+| `src/components/fields/FieldRenderer.tsx` | `src/components/forms/FieldRenderer.tsx` | ✅ Done |
+| `src/components/fields/OptionRow.tsx` | `src/components/forms/OptionRow.tsx` | ✅ Done |
+| `src/components/page/SectionTitle.tsx` | `src/components/forms/SectionTitle.tsx` | ✅ Done |
+| `src/components/page/Page.tsx` | `src/components/layout/Page.tsx` | ✅ Done |
+| `src/components/page/Title.tsx` | `src/components/layout/Title.tsx` | ✅ Done |
+
+The `src/components/fields/` folder has been removed.
 
 ## Recommended next step
 
-Do not move everything at once.
-
-Recommended next commit after this inventory:
-
-1. Move only `src/components/fields/*` to `src/components/forms/*`.
-2. Update imports.
-3. Run the app.
-4. Run Storybook.
-5. Commit if clean.
-
-Suggested commit message:
-
-```text
-refactor: move reusable field components to forms
-```
+Consider the `help/` folder split or begin adding Storybook stories for the moved form and layout components.

@@ -20,7 +20,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import FormSectionTitle from "../../components/page/SectionTitle";
+import FormSectionTitle from "../forms/SectionTitle";
 import SelectableOptionRow from "../../components/forms/OptionRow";
 import QuickDecisionIndicator from "../../components/coverage/QuickDecisionBadge";
 import { QuickDecisionMark } from "../../components/overlays/QuickDecisionInfo";

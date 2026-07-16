@@ -3,7 +3,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { formatUSD as formatCurrency } from "../utils/formatUSD";
 import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
 import FormRoutePage from "../components/page/RoutePage";
-import FormSectionTitle from "../components/page/SectionTitle";
+import FormSectionTitle from "../components/forms/SectionTitle";
 import FormPageHelp from "../components/help/Panel";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import { getCoverageCategorySectionLabel } from "../config/coverageCategories";

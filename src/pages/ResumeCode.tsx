@@ -20,7 +20,7 @@ import {
   type ApplicationFormValues,
 } from "../app/ApplicationFormContext";
 import type { ClientId } from "../types";
-import FormPageTitle from "../components/page/Title";
+import FormPageTitle from "../components/layout/Title";
 
 type DeliveryMode = "text" | "voice";
 

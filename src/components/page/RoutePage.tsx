@@ -36,8 +36,8 @@ import {
   useApplicationForm,
 } from "../../app/ApplicationFormContext";
 import { isApplicantApplying } from "../../utils/applicantVisibility";
-import FormPage from "./Page";
-import FormPageTitle from "./Title";
+import FormPage from "../layout/Page";
+import FormPageTitle from "../layout/Title";
 import FormVerticalStepper, { VerticalStepperBreadcrumbs } from "./Stepper";
 import { getActiveProgressStepIndex } from "../../config/progressSteps";
 import { generateFormDataUpToPage } from "../../dev/utils/generateFormData";

@@ -4,7 +4,7 @@ import FormRoutePage, { isSectionVisible } from "../components/page/RoutePage";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import ApplicantSection from "../components/forms/ApplicantSection";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
-import FormSectionTitle from "../components/page/SectionTitle";
+import FormSectionTitle from "../components/forms/SectionTitle";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { getSelectedCategoryIds } from "../config/formFlow";
 

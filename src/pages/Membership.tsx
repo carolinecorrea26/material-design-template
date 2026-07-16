@@ -6,7 +6,7 @@ import { getPageSectionNote } from "../config/pages";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import FormRoutePage from "../components/page/RoutePage";
-import FormSectionTitle from "../components/page/SectionTitle";
+import FormSectionTitle from "../components/forms/SectionTitle";
 import FormPageHelp from "../components/help/Panel";
 import CostEstimateDrawerContent from "../components/overlays/CostEstimate";
 import type { FieldDefinition } from "../config/fields/types";

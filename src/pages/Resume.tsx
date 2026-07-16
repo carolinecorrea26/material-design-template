@@ -12,7 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import MailLockRounded from "@mui/icons-material/MailLockRounded";
-import FormPageTitle from "../components/page/Title";
+import FormPageTitle from "../components/layout/Title";
 import { getPageSubhead, getPageTitle } from "../config/pages";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import { sendResumeMagicLinkMockEmail } from "../utils/mockEmail";
