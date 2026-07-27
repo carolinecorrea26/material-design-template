@@ -13,7 +13,7 @@ import {
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import { useNavigate } from "react-router-dom";
-import FormRoutePage from "../components/page/RoutePage";
+import FormRoutePage from "../app/RoutePage";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { getPagePath } from "../config/pages";
 

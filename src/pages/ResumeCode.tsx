@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
-// import ErrorRoundedIcon from "@mui/icons-material/ErrorRounded";
 import { useNavigate } from "react-router-dom";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getPagePath, getPageTitle } from "../config/pages";
@@ -20,7 +19,8 @@ import {
   type ApplicationFormValues,
 } from "../app/ApplicationFormContext";
 import type { ClientId } from "../types";
-import FormPageTitle from "../components/layout/Title";
+import PageTitle from "../components/layout/Title";
+import PageCard from "../components/layout/PageCard";
 
 type DeliveryMode = "text" | "voice";
 
@@ -45,6 +45,7 @@ function getSavedApplicationForEmail(
   clientId: ClientId,
 ): ApplicationFormValues {
   const normalizedEmail = emailAddress.trim().toLowerCase();
+
   const savedValues = MOCK_SAVED_APPLICATIONS[normalizedEmail] ?? {
     "first-name": "Taylor",
     "last-name": "Morgan",
@@ -62,8 +63,9 @@ export default function ResumeCode() {
   const navigate = useNavigate();
   const client = getActiveClient();
   const { setPageValues } = useApplicationForm();
+
   const fields = getClientPageFields("resume-code");
-  const codeField = fields.find((f) => f.id === "resume-security-code");
+  const codeField = fields.find((field) => field.id === "resume-security-code");
 
   const [phoneCode, setPhoneCode] = useState("");
   const [phoneCodeError, setPhoneCodeError] = useState<string | null>(null);
@@ -71,20 +73,28 @@ export default function ResumeCode() {
   const [verifySuccess, setVerifySuccess] = useState(false);
   const [deliveryMode, setDeliveryMode] = useState<DeliveryMode>("text");
   const [secondsLeft, setSecondsLeft] = useState(300);
+
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
-      setSecondsLeft((prev) => {
-        if (prev <= 1) {
-          if (timerRef.current) clearInterval(timerRef.current);
+      setSecondsLeft((previousSeconds) => {
+        if (previousSeconds <= 1) {
+          if (timerRef.current) {
+            clearInterval(timerRef.current);
+          }
+
           return 0;
         }
-        return prev - 1;
+
+        return previousSeconds - 1;
       });
     }, 1000);
+
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
     };
   }, []);
 
@@ -112,7 +122,9 @@ export default function ResumeCode() {
         setPageValues(savedApplication);
 
         navigate(getPagePath("eligibility"), {
-          state: { resumeLoaded: true },
+          state: {
+            resumeLoaded: true,
+          },
         });
       }, 2000);
     }, 700);
@@ -130,18 +142,14 @@ export default function ResumeCode() {
       }}
     >
       <Box sx={{ width: "100%", maxWidth: 600 }}>
-        <Box
+        <PageCard
           sx={{
-            width: "100%",
-            borderRadius: "16px",
-            backgroundColor: "#ffffff",
-            boxShadow: "0 8px 16px rgba(52, 59, 72, 0.06)",
             px: { xs: 2, sm: 4 },
             py: 6,
           }}
         >
           <Box sx={{ mb: 2 }}>
-            <FormPageTitle
+            <PageTitle
               title={getPageTitle("resume-code")}
               subhead={
                 <>
@@ -165,11 +173,14 @@ export default function ResumeCode() {
                     variant="body2"
                     underline="hover"
                     onClick={() => {
-                      const nextMode =
-                        deliveryMode === "text" ? "voice" : "text";
-                      setDeliveryMode(nextMode);
+                      setDeliveryMode((currentMode) =>
+                        currentMode === "text" ? "voice" : "text",
+                      );
                     }}
-                    sx={{ fontSize: "inherit", verticalAlign: "baseline" }}
+                    sx={{
+                      fontSize: "inherit",
+                      verticalAlign: "baseline",
+                    }}
                   >
                     {deliveryMode === "text"
                       ? "Get security code with voice call instead."
@@ -187,22 +198,24 @@ export default function ResumeCode() {
             sx={{ py: 1 }}
           >
             {secondsLeft === 0 && (
-              <Alert
-                severity="error"
-                // icon={<ErrorRoundedIcon />}
-                sx={{ mb: 2 }}
-              >
+              <Alert severity="error" sx={{ mb: 2 }}>
                 Your security code has expired.{" "}
                 <Link
                   href="#"
                   underline="hover"
-                  onClick={() => {}}
-                  sx={{ fontSize: "inherit", verticalAlign: "baseline" }}
+                  onClick={(event) => {
+                    event.preventDefault();
+                  }}
+                  sx={{
+                    fontSize: "inherit",
+                    verticalAlign: "baseline",
+                  }}
                 >
                   Resend Code
                 </Link>
               </Alert>
             )}
+
             <TextField
               fullWidth
               type="text"
@@ -212,7 +225,10 @@ export default function ResumeCode() {
               label={codeField?.label ?? "Security Code"}
               onChange={(event) => {
                 setPhoneCode(event.target.value);
-                if (phoneCodeError) setPhoneCodeError(null);
+
+                if (phoneCodeError) {
+                  setPhoneCodeError(null);
+                }
               }}
               inputProps={{
                 inputMode: "numeric",
@@ -221,12 +237,17 @@ export default function ResumeCode() {
               error={Boolean(phoneCodeError)}
               helperText={phoneCodeError ?? undefined}
             />
+
             <Stack
               direction="row"
               spacing={0.5}
               justifyContent="space-between"
               alignItems="center"
-              sx={{ mt: 1, px: 0.5, mb: 3 }}
+              sx={{
+                mt: 1,
+                px: 0.5,
+                mb: 3,
+              }}
             >
               <Typography
                 variant="body2"
@@ -245,6 +266,7 @@ export default function ResumeCode() {
                   </>
                 )}
               </Typography>
+
               <Button
                 variant="text"
                 size="small"
@@ -255,29 +277,37 @@ export default function ResumeCode() {
                 Resend code
               </Button>
             </Stack>
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            >
               <Button
                 type="submit"
                 variant="contained"
                 fullWidth
                 disabled={isVerifying || verifySuccess || secondsLeft === 0}
-                sx={{
-                  fontWeight: 700,
-                  padding: "16px",
-                  boxShadow: "0 8px 18px #0668ff3d",
-                  "&:hover": { boxShadow: "0 8px 18px #0668ff3d" },
+                sx={(theme) => ({
                   ...(verifySuccess && {
-                    bgcolor: "success.main",
-                    "&:hover": { bgcolor: "success.main" },
+                    backgroundColor: theme.palette.success.main,
+
+                    "&:hover": {
+                      backgroundColor: theme.palette.success.main,
+                    },
+
                     "&.Mui-disabled": {
-                      bgcolor: "success.main",
-                      color: "#fff",
+                      color: theme.palette.success.contrastText,
+                      backgroundColor: theme.palette.success.main,
+                      boxShadow: "none",
+                      opacity: 1,
                     },
                   }),
-                }}
+                })}
               >
                 {verifySuccess ? (
-                  <CheckIcon sx={{ color: "#fff" }} />
+                  <CheckIcon />
                 ) : isVerifying ? (
                   "Verifying..."
                 ) : (
@@ -286,7 +316,7 @@ export default function ResumeCode() {
               </Button>
             </Box>
           </Box>
-        </Box>
+        </PageCard>
       </Box>
     </Stack>
   );

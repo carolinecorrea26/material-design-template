@@ -16,7 +16,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import FormRoutePage, {
   type FormRouteRenderProps,
   isSectionVisible,
-} from "../components/page/RoutePage";
+} from "../app/RoutePage";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import AddList from "../components/forms/DynamicList";
 import ApplicantSection from "../components/forms/ApplicantSection";

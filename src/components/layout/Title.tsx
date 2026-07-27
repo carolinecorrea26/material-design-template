@@ -2,17 +2,13 @@ import { Box, IconButton, Stack, Typography } from "@mui/material";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import type { ReactNode } from "react";
 
-type FormPageTitleProps = {
+type PageTitleProps = {
   title: ReactNode;
   subhead?: ReactNode;
   onBack?: () => void;
 };
 
-export default function FormPageTitle({
-  title,
-  subhead,
-  onBack,
-}: FormPageTitleProps) {
+export default function PageTitle({ title, subhead, onBack }: PageTitleProps) {
   return (
     <Box>
       <Stack direction="row" alignItems="center" spacing={1}>

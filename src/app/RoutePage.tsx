@@ -5,49 +5,43 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  Skeleton,
-  Snackbar,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, Button, CircularProgress } from "@mui/material";
 import { useForm, type FieldErrors } from "react-hook-form";
 import { useNavigate, useLocation } from "react-router-dom";
-import type { PageId } from "../../types";
-import { getClientPageFields } from "../../config/clientFields/getClientPageFields";
+import type { PageId } from "../types";
+import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import {
   getResolvedFormFlow,
   getNextFormPageId,
   getPreviousFormPageId,
-} from "../../config/formFlow";
-import {
-  getPageInfoNote,
-  getPageSubhead,
-  getPageTitle,
-} from "../../config/pages";
-import { getPageSections } from "../../config/pageSections";
-import type { PageSectionConfig } from "../../config/pageSections/types";
-import type { FieldDefinition } from "../../config/fields/types";
+} from "../config/formFlow";
+import { getPageInfoNote, getPageSubhead, getPageTitle } from "../config/pages";
+import { getPageSections } from "../config/pageSections";
+import type { PageSectionConfig } from "../config/pageSections/types";
+import type { FieldDefinition } from "../config/fields/types";
 import {
   type ApplicationFormValues,
   useApplicationForm,
-} from "../../app/ApplicationFormContext";
-import { isApplicantApplying } from "../../utils/applicantVisibility";
-import FormPage from "../layout/Page";
-import FormPageTitle from "../layout/Title";
-import FormVerticalStepper, { VerticalStepperBreadcrumbs } from "./Stepper";
-import { getActiveProgressStepIndex } from "../../config/progressSteps";
-import { generateFormDataUpToPage } from "../../dev/utils/generateFormData";
+} from "./ApplicationFormContext";
+import { isApplicantApplying } from "../utils/applicantVisibility";
+import PageLayout from "../components/layout/Page";
+import PageTitle from "../components/layout/Title";
+import PageCard from "../components/layout/PageCard";
+import FormVerticalStepper, {
+  VerticalStepperBreadcrumbs,
+} from "../components/navigation/Stepper";
+import { getActiveProgressStepIndex } from "../config/progressSteps";
+import { generateFormDataUpToPage } from "../dev/utils/generateFormData";
 import {
   getForwardMessages,
   BACK_MESSAGE,
   MESSAGE_DURATION,
-} from "../../config/transitionMessages";
-import { sendAutosaveMockEmail } from "../../utils/mockEmail";
+} from "../config/transitionMessages";
+import { sendAutosaveMockEmail } from "../utils/mockEmail";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import PageTransitionSkeleton from "../components/feedback/PageTransitionSkeleton";
+import ProgressSavedSnackbar from "../components/feedback/ProgressSavedSnackbar";
+import PageErrorAlert from "../components/feedback/PageErrorAlert";
 
 type FormRouteFieldValue = string | boolean | string[];
 type FormRoutePageFormValues = Record<string, FormRouteFieldValue>;
@@ -520,7 +514,7 @@ export default function FormRoutePage({
   const resolvedInfoNote = getPageInfoNote(pageId);
 
   const formPageElement = (
-    <FormPage
+    <PageLayout
       title={resolvedTitle}
       maxWidth={hasVerticalStepper ? "100%" : formMaxWidth}
       noTitle
@@ -528,12 +522,8 @@ export default function FormRoutePage({
       actions={undefined}
     >
       <Box>
-        <Box
+        <PageCard
           sx={{
-            width: "100%",
-            borderRadius: "16px",
-            backgroundColor: "#ffffff",
-            boxShadow: "0 8px 16px rgba(52, 59, 72, 0.06)",
             px: { xs: 2, sm: "48px" },
             py: { xs: 2, sm: "32px" },
             mb: hasVerticalStepper ? 1 : 0,
@@ -545,41 +535,12 @@ export default function FormRoutePage({
             </Box>
           )}
           {isTransitioning ? (
-            <>
-              <Box sx={{ padding: "0 0.5rem" }}>
-                {transitionMessage ? (
-                  <Typography
-                    variant="formTransitionStatus"
-                    sx={{ mt: 1.5, mb: 1.5, color: "text.secondary" }}
-                  >
-                    {transitionMessage}
-                  </Typography>
-                ) : null}
-              </Box>
-              <Box sx={{ mb: "1rem" }} />
-              <Box>
-                <Skeleton
-                  variant="rounded"
-                  height={50}
-                  sx={{ borderRadius: 1, mb: 2 }}
-                />
-                <Skeleton
-                  variant="rounded"
-                  height={50}
-                  sx={{ borderRadius: 1, mb: 2 }}
-                />
-                <Skeleton
-                  variant="rounded"
-                  height={50}
-                  sx={{ borderRadius: 1 }}
-                />
-              </Box>
-            </>
+            <PageTransitionSkeleton message={transitionMessage} />
           ) : (
             <>
               {!noTitle && (
                 <Box sx={{ mb: "1rem" }}>
-                  <FormPageTitle
+                  <PageTitle
                     title={resolvedTitle}
                     subhead={resolvedSubhead}
                     onBack={
@@ -598,13 +559,7 @@ export default function FormRoutePage({
                   </Alert>
                 </Box>
               )}
-              {pageError && (
-                <Box sx={{ mb: 2 }}>
-                  <Alert severity="error" sx={{ width: "100%" }}>
-                    {pageError}
-                  </Alert>
-                </Box>
-              )}
+              <PageErrorAlert error={pageError} />
               <form
                 id={`${pageId}-form`}
                 noValidate
@@ -636,16 +591,10 @@ export default function FormRoutePage({
                     !isTransitioning ? <ArrowForwardRoundedIcon /> : undefined
                   }
                   sx={(theme) => ({
-                    fontWeight: 700,
-                    padding: "16px",
-                    boxShadow: "0 8px 18px #0668ff3d",
-                    "&:hover": {
-                      boxShadow: "0 8px 18px #0668ff3d",
-                    },
                     "&.Mui-disabled": {
                       color: theme.palette.primary.contrastText,
                       backgroundColor: theme.palette.primary.main,
-                      boxShadow: "0 8px 18px #0668ff3d",
+                      boxShadow: `0 8px 18px ${theme.palette.primary.main}3d`,
                       opacity: 1,
                     },
                   })}
@@ -658,27 +607,17 @@ export default function FormRoutePage({
                 </Button>
               </Box>
             )}
-        </Box>
+        </PageCard>
       </Box>
-    </FormPage>
+    </PageLayout>
   );
 
   return (
     <>
-      <Snackbar
+      <ProgressSavedSnackbar
         open={showProgressSaved}
-        autoHideDuration={2000}
         onClose={() => setShowProgressSaved(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setShowProgressSaved(false)}
-          severity="success"
-          variant="filled"
-        >
-          Progress saved
-        </Alert>
-      </Snackbar>
+      />
 
       {hasVerticalStepper ? (
         <FormVerticalStepper pageId={pageId}>

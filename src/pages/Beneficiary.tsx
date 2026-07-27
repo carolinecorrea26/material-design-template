@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import CoverageCard from "../components/layout/CoverageCard";
 import {
   Alert,
   Box,
@@ -24,8 +25,8 @@ import AddIcon from "@mui/icons-material/Add";
 import AddListItem from "../components/forms/DynamicListItem";
 import ApplicantSection from "../components/forms/ApplicantSection";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
-import FormRoutePage from "../components/page/RoutePage";
-import FormPageHelp from "../components/help/Panel";
+import FormRoutePage from "../app/RoutePage";
+import FormPageHelp from "../components/content/HelpPanel";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
 import type { CoverageApplicantId } from "../config/coverages/types";
@@ -520,19 +521,9 @@ export default function Beneficiary() {
     const items = getProductBeneficiaries(product.productKey);
 
     return (
-      <Box
+      <CoverageCard
         key={product.productKey}
-        sx={{
-          border: "1px solid",
-          borderColor: "divider",
-          borderRadius: "16px",
-          background:
-            "linear-gradient(135deg, rgb(244, 248, 255) 0%, rgb(255, 255, 255) 52%, rgb(247, 251, 255) 100%)",
-          p: 2.5,
-          display: "flex",
-          flexDirection: "column",
-          gap: 1.5,
-        }}
+        sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}
       >
         <Stack spacing={1.5}>
           <Stack spacing={1}>
@@ -587,7 +578,7 @@ export default function Beneficiary() {
             </Button>
           )}
         </Stack>
-      </Box>
+      </CoverageCard>
     );
   }
 

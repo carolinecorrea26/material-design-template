@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import FormRoutePage from "../components/page/RoutePage";
+import FormRoutePage from "../app/RoutePage";
 
 export default function HealthCir() {
   return (

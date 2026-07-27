@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import CoverageCard from "../components/layout/CoverageCard";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import FileDownloadRoundedIcon from "@mui/icons-material/FileDownloadRounded";
@@ -614,9 +615,9 @@ export default function Receipt() {
                   const isSentForReview = status.label === "Sent for review";
 
                   return (
-                    <Box
+                    <CoverageCard
                       key={`${entry.coverageId}-${entry.applicant}`}
-                      sx={cardSx}
+                      sx={{ p: 3 }}
                     >
                       {/* Header row: name + badge */}
                       <Stack
@@ -765,17 +766,17 @@ export default function Receipt() {
                       >
                         {status.description}
                       </Typography>
-                    </Box>
+                    </CoverageCard>
                   );
                 })}
               </Stack>
             ) : (
-              <Box sx={cardSx}>
+              <CoverageCard sx={{ p: 3 }}>
                 <Alert severity="info" variant="outlined">
                   No selected coverage details are available for this
                   application.
                 </Alert>
-              </Box>
+              </CoverageCard>
             )}
           </Box>
 

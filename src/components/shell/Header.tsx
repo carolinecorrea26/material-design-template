@@ -33,8 +33,8 @@ import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import { CoverageOptionsDrawerContent } from "../../content/helpContent";
 import CoverageNeedsCalculator from "../overlays/CoverageCalculator";
-import CostEstimateDrawerContent from "../overlays/CostEstimate";
-import FormHelpDrawer from "../help/Drawer";
+import CostEstimateDrawerContent from "../overlays/CostEstimateDrawer";
+import FormHelpDrawer from "../overlays/HelpDrawer";
 import { pages } from "../../config/pages";
 // import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
 // import { coverageCategories } from "../../config/coverageCategories";
@@ -47,7 +47,7 @@ import { router } from "../../app/router";
 import { APP_MENU_SECTION_TITLE_SX } from "../../app/theme";
 import ApplicationSummaryDrawer, {
   useApplicationSummaryBadge,
-} from "../overlays/ApplicationSummary";
+} from "../overlays/CoverageSummaryDrawer";
 
 type AppHeaderProps = {
   client: ClientConfig;

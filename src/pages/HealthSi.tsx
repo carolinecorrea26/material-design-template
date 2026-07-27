@@ -1,7 +1,5 @@
 import { Box, FormLabel, Stack } from "@mui/material";
-import FormRoutePage, {
-  type FormRouteRenderProps,
-} from "../components/page/RoutePage";
+import FormRoutePage, { type FormRouteRenderProps } from "../app/RoutePage";
 import ApplicantSection from "../components/forms/ApplicantSection";
 import {
   isApplicantApplying,

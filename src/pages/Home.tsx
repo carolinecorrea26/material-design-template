@@ -15,10 +15,10 @@ import {
   Typography,
 } from "@mui/material";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
-import HomeQuoteCard from "../components/coverage/QuoteCard";
-import FormHelpDrawer from "../components/help/Drawer";
-import QuickDecisionIndicator from "../components/coverage/QuickDecisionBadge";
-import QuickDecisionDrawerContent from "../components/overlays/QuickDecisionInfo";
+import HomeQuoteCard from "../components/overlays/HomeQuoteEntry";
+import FormHelpDrawer from "../components/overlays/HelpDrawer";
+import QuickDecisionIndicator from "../components/common/QuickDecisionIndicator";
+import QuickDecisionDrawerContent from "../components/content/QuickDecisionExplainer";
 import { ApplicationReviewDrawerContent } from "../content/helpContent";
 import { getContent, resolveTemplate } from "../content";
 import { getActiveClient } from "../config/client/getActiveClient";

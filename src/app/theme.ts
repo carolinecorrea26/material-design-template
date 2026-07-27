@@ -373,8 +373,20 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
             fontWeight: 600,
             textTransform: "none",
             transition: "transform 180ms ease, box-shadow 180ms ease",
-            "&:hover": { transform: "translateY(-2px)" },
+            "&:hover": {
+              transform: "translateY(-2px)",
+            },
           },
+
+          contained: ({ theme: t }) => ({
+            padding: "16px",
+            fontWeight: 700,
+            boxShadow: `0 8px 18px ${t.palette.primary.main}3d`,
+
+            "&:hover": {
+              boxShadow: `0 8px 18px ${t.palette.primary.main}3d`,
+            },
+          }),
         },
       },
       MuiCard: {

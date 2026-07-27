@@ -2,7 +2,7 @@
 
 import type { ComponentType } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import AppShell from "../components/shell/App";
+import AppShell from "../components/shell/AppShell";
 import { getPagePath } from "../config/pages";
 import type { PageId } from "../types";
 import Home from "../pages/Home";

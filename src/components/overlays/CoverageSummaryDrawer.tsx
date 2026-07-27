@@ -32,7 +32,7 @@ import type {
   CoverageApplicantId,
   CoverageDefinition,
 } from "../../config/coverages/types";
-import QuickDecisionIndicator from "../coverage/QuickDecisionBadge";
+import QuickDecisionIndicator from "../common/QuickDecisionIndicator";
 import { formatUSD } from "../../utils/formatUSD";
 import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
 import { getResolvedFormFlow } from "../../config/formFlow";

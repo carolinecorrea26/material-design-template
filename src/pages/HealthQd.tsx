@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import FormRoutePage from "../components/page/RoutePage";
+import FormRoutePage from "../app/RoutePage";
 
 export default function HealthQd() {
   return (

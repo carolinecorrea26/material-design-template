@@ -16,11 +16,11 @@ import CreditCardOffOutlinedIcon from "@mui/icons-material/CreditCardOffOutlined
 import LoopRoundedIcon from "@mui/icons-material/LoopRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import CoverageNeedsCalculator from "../components/overlays/CoverageCalculator";
-import FormHelpDrawer from "../components/help/Drawer";
-import type { FormPageHelpItem } from "../components/help/Panel";
-import QuickDecisionDrawerContent from "../components/overlays/QuickDecisionInfo";
-import { QuickDecisionMark } from "../components/overlays/QuickDecisionInfo";
-import QuickDecisionIndicator from "../components/coverage/QuickDecisionBadge";
+import FormHelpDrawer from "../components/overlays/HelpDrawer";
+import type { FormPageHelpItem } from "../components/content/HelpPanel";
+import QuickDecisionDrawerContent from "../components/content/QuickDecisionExplainer";
+import { QuickDecisionMark } from "../components/content/QuickDecisionExplainer";
+import QuickDecisionIndicator from "../components/common/QuickDecisionIndicator";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
 import { getContent, resolveTemplate } from "./index";

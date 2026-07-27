@@ -18,14 +18,18 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import FeaturedBadge from "../common/FeaturedBadge";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import FormSectionTitle from "../forms/SectionTitle";
-import SelectableOptionRow from "../../components/forms/OptionRow";
-import QuickDecisionIndicator from "../../components/coverage/QuickDecisionBadge";
-import { QuickDecisionMark } from "../../components/overlays/QuickDecisionInfo";
+import SelectableOptionRow from "../forms/OptionRow";
+import CoverageCard from "../layout/CoverageCard";
+import QuickDecisionIndicator from "../common/QuickDecisionIndicator";
+import { QuickDecisionMark } from "../content/QuickDecisionExplainer";
 import { getCoverageCategorySectionLabel } from "../../config/coverageCategories";
-import { coverageApplicantToSection } from "../../config/formSectionTitle";
+import {
+  applicantSectionTitles,
+  coverageApplicantToSection,
+} from "../../config/formSectionTitle";
 import type {
   CoverageCategoryId,
   CoverageApplicantId,
@@ -34,8 +38,11 @@ import type { EstimatedRateFrequency } from "../../config/clients/types";
 import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
 import { getContent } from "../../content";
 import { formatUSD } from "../../utils/formatUSD";
-import EstimatedCostPanel from "./EstimatedCostPanel";
-import { getDisplayedPremium, getBenefitAmountLabel } from "./useCoverageState";
+import EstimatedCostPanel from "../common/CostSummaryPanel";
+import {
+  getDisplayedPremium,
+  getBenefitAmountLabel,
+} from "../../app/useCoverageState";
 
 type ResolvedCoverage = ReturnType<typeof getActiveClientCoverages>[number];
 import { getMaxAggregateNotes } from "../../config/coverageConstants";
@@ -552,18 +559,9 @@ function ProductCard({
   const isMultiApplicant = visibleApplicants.length > 1;
 
   return (
-    <Box
-      sx={{
-        border: "1px solid",
-        borderColor: hasAnyApplicantSelected ? "primary.main" : "divider",
-        borderRadius: "16px",
-        background:
-          "linear-gradient(135deg, rgb(244, 248, 255) 0%, rgb(255, 255, 255) 52%, rgb(247, 251, 255) 100%)",
-        p: 2.5,
-        display: "flex",
-        flexDirection: "column",
-        gap: 1.5,
-      }}
+    <CoverageCard
+      selected={hasAnyApplicantSelected}
+      sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}
     >
       {/* Product title / subtitle */}
       <Stack spacing={0.25}>
@@ -577,19 +575,7 @@ function ProductCard({
             {coverage.name}
             {coverage.underwritingType === "QD" && <QuickDecisionIndicator />}
           </Typography>
-          {coverage.featured && (
-            <Chip
-              icon={<AutoAwesomeIcon />}
-              label="Featured"
-              size="small"
-              color="primary"
-              sx={{
-                flexShrink: 0,
-                "& .MuiChip-label": { fontSize: "0.675rem", fontWeight: 700 },
-                "& .MuiChip-icon": { fontSize: "0.875rem" },
-              }}
-            />
-          )}
+          {coverage.featured && <FeaturedBadge />}
         </Stack>
         <Typography variant="body2" color="text.secondary">
           {coverage.description ?? coverage.definition}
@@ -708,7 +694,9 @@ function ProductCard({
                 <>
                   {idx > 0 && <Divider sx={{ mb: 1.5 }} />}
                   <Box sx={{ mb: 1.5 }}>
-                    <FormSectionTitle applicant={sectionId} />
+                    <FormSectionTitle
+                      label={applicantSectionTitles[sectionId]}
+                    />
                   </Box>
                 </>
               )}
@@ -1011,6 +999,6 @@ function ProductCard({
           );
         })}
       </Stack>
-    </Box>
+    </CoverageCard>
   );
 }

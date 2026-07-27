@@ -3,6 +3,42 @@ import type { ClientId } from "../types";
 
 export const RATE_CALCULATION_DELAY_MS = 900;
 
+/**
+ * Determines which additional fields are required based on selected coverage categories.
+ * Used by quote tools, cost estimators, and coverage pages to show/hide category-level questions.
+ */
+export function getCategoryRequirements(
+  selectedCategories: CoverageCategoryId[],
+) {
+  const needsGender = selectedCategories.some((c) => c === "LI" || c === "DI");
+  const needsSmoker = selectedCategories.some((c) => c === "LI" || c === "SH");
+  const needsDi = selectedCategories.includes("DI");
+  const needsOo = selectedCategories.includes("OO");
+  const needsHours = needsDi || needsOo;
+  const needsAdditionalFields =
+    needsGender || needsSmoker || needsDi || needsOo || needsHours;
+
+  return {
+    needsGender,
+    needsSmoker,
+    needsDi,
+    needsOo,
+    needsHours,
+    needsAdditionalFields,
+  };
+}
+
+export type CategoryRequirements = ReturnType<typeof getCategoryRequirements>;
+
+/**
+ * Returns the appropriate benefit amount label for a coverage category.
+ */
+export function getBenefitAmountLabel(categoryId: CoverageCategoryId): string {
+  return categoryId === "DI" || categoryId === "OO"
+    ? "Monthly benefit amount"
+    : "Benefit amount";
+}
+
 export const categoryMaxAggregate: Record<CoverageCategoryId, string | null> = {
   LI: "$2,000,000",
   AD: null,

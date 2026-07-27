@@ -1,15 +1,20 @@
 import type { ReactNode } from "react";
-import { Alert, Box, Typography } from "@mui/material";
+import type { SvgIconComponent } from "@mui/icons-material";
+import { Alert, Box } from "@mui/material";
 import {
   applicantSectionTitles,
+  applicantSectionBannerSx,
   type ApplicantSectionId,
 } from "../../config/formSectionTitle";
+import FormSectionTitle from "./SectionTitle";
 
 type ApplicantSectionProps = {
   applicant: ApplicantSectionId;
   children: ReactNode;
   showLabel?: boolean;
-  /** Optional info note displayed below the applicant title and above the children */
+  /** Optional icon rendered beside the applicant label in the banner. */
+  icon?: SvgIconComponent;
+  /** Optional info note displayed below the applicant banner and above the children. */
   note?: string;
 };
 
@@ -17,6 +22,7 @@ export default function ApplicantSection({
   applicant,
   children,
   showLabel = true,
+  icon,
   note,
 }: ApplicantSectionProps) {
   const title = applicantSectionTitles[applicant];
@@ -36,18 +42,8 @@ export default function ApplicantSection({
 
   return (
     <Box sx={{ mb: 4, mt: 3 }}>
-      <Box
-        sx={{
-          background: "rgb(234 242 255 / 84%)",
-          padding: "0.5rem 1.25rem",
-          borderRadius: "8px",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Typography variant="formSectionLabel" sx={{ display: "block" }}>
-          {title}
-        </Typography>
+      <Box sx={applicantSectionBannerSx}>
+        <FormSectionTitle label={title} icon={icon} />
       </Box>
 
       {note && (

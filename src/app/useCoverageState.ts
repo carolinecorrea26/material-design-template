@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { getActiveClient } from "../../config/client/getActiveClient";
-import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
-import { coverageCategories } from "../../config/coverageCategories";
-import type { CoverageCategoryId } from "../../config/coverages/types";
-import type { CoverageApplicantId } from "../../config/coverages/types";
-import type { EstimatedRateFrequency } from "../../config/clients/types";
-import { useApplicationForm } from "../../app/ApplicationFormContext";
-import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
-import { getCoverageAmountRange } from "../../utils/coverageAmounts";
-import { generateAmountChoices as generateAmountChoicesBase } from "../../utils/generateAmountChoices";
-import { RATE_CALCULATION_DELAY_MS } from "../../config/coverageConstants";
+import { getActiveClient } from "../config/client/getActiveClient";
+import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
+import { coverageCategories } from "../config/coverageCategories";
+import type { CoverageCategoryId } from "../config/coverages/types";
+import type { CoverageApplicantId } from "../config/coverages/types";
+import type { EstimatedRateFrequency } from "../config/clients/types";
+import { useApplicationForm } from "./ApplicationFormContext";
+import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
+import { getCoverageAmountRange } from "../utils/coverageAmounts";
+import { generateAmountChoices as generateAmountChoicesBase } from "../utils/generateAmountChoices";
+import { RATE_CALCULATION_DELAY_MS } from "../config/coverageConstants";
 
 function generateAmountChoices(
   coverage: {

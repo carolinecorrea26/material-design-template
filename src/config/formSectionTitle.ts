@@ -77,6 +77,15 @@ export function shouldShowSectionLabelIcon(
   return showIcon;
 }
 
+/** Shared banner style used by ApplicantSection to visually group fields by applicant. */
+export const applicantSectionBannerSx: SxProps<Theme> = {
+  backgroundColor: "rgb(234 242 255 / 84%)",
+  padding: "0.5rem 1.25rem",
+  borderRadius: "8px",
+  display: "flex",
+  justifyContent: "center",
+};
+
 export const sectionTitleIconSx: SxProps<Theme> = {
   width: 28,
   height: 28,

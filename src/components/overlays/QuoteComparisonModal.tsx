@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
+import CoverageCard from "../layout/CoverageCard";
 import {
   Box,
   Button,
@@ -21,7 +21,6 @@ import {
   Radio,
   Select,
   Stack,
-  Switch,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
@@ -31,14 +30,16 @@ import {
   Alert,
   CircularProgress,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import { coverageCategories } from "../../config/coverageCategories";
 import type {
   CoverageCategoryId,
   CoverageApplicantId,
   CoverageDefinition,
 } from "../../config/coverages/types";
+import {
+  getCategoryRequirements,
+  getBenefitAmountLabel,
+} from "../../config/coverageConstants";
 import { formatUSD } from "../../utils/formatUSD";
 import { getCoverageAmountRange } from "../../utils/coverageAmounts";
 import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
@@ -48,54 +49,10 @@ import { STORAGE_KEY } from "../../app/ApplicationFormContext";
 import { getActiveClient } from "../../config/client/getActiveClient";
 import type { EstimatedRateFrequency } from "../../config/clients/types";
 import SelectableOptionRow from "../forms/OptionRow";
-import QuickDecisionIndicator from "../coverage/QuickDecisionBadge";
-
-const RateFrequencySwitch = styled(Switch)(({ theme }) => ({
-  width: 48,
-  height: 26,
-  padding: 5,
-  "& .MuiSwitch-switchBase": {
-    margin: 1,
-    padding: 0,
-    transform: "translateX(4px)",
-    "&.Mui-checked": {
-      color: "#fff",
-      transform: "translateX(22px)",
-      "& .MuiSwitch-thumb:before": {
-        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
-          "#fff",
-        )}" d="M7 2v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-2V2h-2v2H9V2H7Zm12 18H5V10h14v10Z"/></svg>')`,
-      },
-      "& + .MuiSwitch-track": {
-        opacity: 1,
-        backgroundColor: theme.palette.primary.main,
-      },
-    },
-  },
-  "& .MuiSwitch-thumb": {
-    backgroundColor: theme.palette.primary.main,
-    width: 24,
-    height: 24,
-    "&::before": {
-      content: "''",
-      position: "absolute",
-      width: "100%",
-      height: "100%",
-      left: 0,
-      top: 0,
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center",
-      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
-        "#fff",
-      )}" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2Zm0 16H5V8h14v11Z"/></svg>')`,
-    },
-  },
-  "& .MuiSwitch-track": {
-    opacity: 1,
-    borderRadius: 13,
-    backgroundColor: "#cdd9ec",
-  },
-}));
+import QuickDecisionIndicator from "../common/QuickDecisionIndicator";
+import CoverageCategoryChips from "../common/CoverageCategoryChips";
+import RateFrequencyToggle from "../common/RateFrequencyToggle";
+import FeaturedBadge from "../common/FeaturedBadge";
 
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
@@ -109,17 +66,7 @@ type ComparisonQuoteModalProps = {
   state: string;
 };
 
-function formatCurrencyInput(value: string): string {
-  const digits = value.replace(/[^0-9]/g, "").slice(0, 12);
-  if (!digits) return "";
-  return `$${Number(digits).toLocaleString("en-US")}`;
-}
-
-function getEstimateAmountLabel(categoryId: CoverageCategoryId): string {
-  return categoryId === "DI" || categoryId === "OO"
-    ? "Monthly benefit amount"
-    : "Benefit amount";
-}
+import { formatCurrencyInput } from "../../utils/formatting/currency";
 
 export default function ComparisonQuoteModal({
   open,
@@ -140,11 +87,6 @@ export default function ComparisonQuoteModal({
     rateDisplayConfig?.defaultFrequency ?? "monthly";
   const [rateFrequency, setRateFrequency] =
     useState<EstimatedRateFrequency>(defaultRateFrequency);
-
-  // Category chip selection (multi-select)
-  const availableCategories = coverageCategories.filter((category) =>
-    coverages.some((coverage) => coverage.categoryId === category.id),
-  );
 
   const [selectedCategories, setSelectedCategories] = useState<
     CoverageCategoryId[]
@@ -177,23 +119,15 @@ export default function ComparisonQuoteModal({
   );
   const rateTimersRef = useRef<Record<string, number>>({});
 
-  // Category needs assessment (based on all selected categories)
-  const categoryNeedsGender = selectedCategories.some(
-    (c) => c === "LI" || c === "DI",
-  );
-  const categoryNeedsSmoker = selectedCategories.some(
-    (c) => c === "LI" || c === "SH",
-  );
-  const categoryNeedsDi = selectedCategories.includes("DI");
-  const categoryNeedsOo = selectedCategories.includes("OO");
-  const categoryNeedsHours = categoryNeedsDi || categoryNeedsOo;
-
-  const needsAdditionalFields =
-    categoryNeedsGender ||
-    categoryNeedsSmoker ||
-    categoryNeedsDi ||
-    categoryNeedsOo ||
-    categoryNeedsHours;
+  // Category needs assessment
+  const {
+    needsGender: categoryNeedsGender,
+    needsSmoker: categoryNeedsSmoker,
+    needsDi: categoryNeedsDi,
+    needsOo: categoryNeedsOo,
+    needsHours: categoryNeedsHours,
+    needsAdditionalFields,
+  } = getCategoryRequirements(selectedCategories);
 
   // Validation for category fields
   const fieldErrors = useMemo(() => {
@@ -535,32 +469,11 @@ export default function ComparisonQuoteModal({
           <Box>
             <Stack spacing={3}>
               {/* Category chips (multi-select) */}
-              <Box>
-                <Typography variant="overline" sx={{ mb: 1, display: "block" }}>
-                  Coverage category
-                </Typography>
-                <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mt: 2 }}>
-                  {availableCategories.map((category) => {
-                    const Icon = category.icon;
-                    const isSelected = selectedCategories.includes(category.id);
-                    return (
-                      <Chip
-                        key={category.id}
-                        className="coverageCategoryChip"
-                        icon={<Icon sx={{ fontSize: "1.25rem !important" }} />}
-                        label={
-                          "shortLabel" in category
-                            ? category.shortLabel
-                            : category.label
-                        }
-                        variant={isSelected ? "filled" : "outlined"}
-                        color={isSelected ? "primary" : "default"}
-                        onClick={() => handleCategoryToggle(category.id)}
-                      />
-                    );
-                  })}
-                </Stack>
-              </Box>
+              <CoverageCategoryChips
+                coverages={coverages}
+                selectedCategories={selectedCategories}
+                onToggle={handleCategoryToggle}
+              />
 
               {/* Category-level additional fields */}
               {needsAdditionalFields && selectedCategories.length > 0 && (
@@ -835,17 +748,10 @@ export default function ComparisonQuoteModal({
                           currentApplicants.length > 0;
 
                         return (
-                          <Box
+                          <CoverageCard
                             key={product.id}
+                            selected={hasAnyApplicantSelected}
                             sx={{
-                              border: "1px solid",
-                              borderColor: hasAnyApplicantSelected
-                                ? "primary.main"
-                                : "divider",
-                              borderRadius: "16px",
-                              background:
-                                "linear-gradient(135deg, rgb(244, 248, 255) 0%, rgb(255, 255, 255) 52%, rgb(247, 251, 255) 100%)",
-                              p: 2.5,
                               display: "flex",
                               flexDirection: "column",
                               gap: 1.5,
@@ -876,24 +782,7 @@ export default function ComparisonQuoteModal({
                                 </Typography>
                               </Stack>
 
-                              {product.featured && (
-                                <Chip
-                                  icon={<AutoAwesomeIcon />}
-                                  label="Featured"
-                                  size="small"
-                                  color="primary"
-                                  sx={{
-                                    flexShrink: 0,
-                                    "& .MuiChip-label": {
-                                      fontSize: "0.675rem",
-                                      fontWeight: 700,
-                                    },
-                                    "& .MuiChip-icon": {
-                                      fontSize: "0.875rem",
-                                    },
-                                  }}
-                                />
-                              )}
+                              {product.featured && <FeaturedBadge />}
                             </Stack>
 
                             {/* Select for myself */}
@@ -968,13 +857,13 @@ export default function ComparisonQuoteModal({
                                 <Box>
                                   <FormControl fullWidth>
                                     <InputLabel id={`${key}-amount-label`}>
-                                      {getEstimateAmountLabel(
+                                      {getBenefitAmountLabel(
                                         product.categoryId,
                                       )}
                                     </InputLabel>
                                     <Select
                                       labelId={`${key}-amount-label`}
-                                      label={getEstimateAmountLabel(
+                                      label={getBenefitAmountLabel(
                                         product.categoryId,
                                       )}
                                       value={currentAmount}
@@ -1026,7 +915,7 @@ export default function ComparisonQuoteModal({
                                 </Box>
                               );
                             })()}
-                          </Box>
+                          </CoverageCard>
                         );
                       })}
 
@@ -1185,7 +1074,7 @@ export default function ComparisonQuoteModal({
                           >
                             Monthly
                           </Typography>
-                          <RateFrequencySwitch
+                          <RateFrequencyToggle
                             checked={rateFrequency === "annual"}
                             onChange={(event) =>
                               setRateFrequency(

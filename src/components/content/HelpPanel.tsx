@@ -1,6 +1,6 @@
 import { useMemo, useState, type ReactNode } from "react";
-import FormHelpChips, { type HelpChipItem } from "./Chips";
-import FormHelpDrawer from "./Drawer";
+import FormHelpChips, { type HelpChipItem } from "./HelpChips";
+import FormHelpDrawer from "../overlays/HelpDrawer";
 
 export type FormPageHelpItem = HelpChipItem & {
   title: ReactNode;

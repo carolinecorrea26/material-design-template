@@ -2,7 +2,7 @@ import ReportRoundedIcon from "@mui/icons-material/ReportRounded";
 import PrintOutlinedIcon from "@mui/icons-material/PrintOutlined";
 import { Alert, Box, Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import FormRoutePage from "../components/page/RoutePage";
+import FormRoutePage from "../app/RoutePage";
 import ApplicantSection from "../components/forms/ApplicantSection";
 import {
   isApplicantApplying,

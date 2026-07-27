@@ -5,10 +5,10 @@ import { getActiveClient } from "../config/client/getActiveClient";
 import { getPageSectionNote } from "../config/pages";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import FieldRenderer from "../components/forms/FieldRenderer";
-import FormRoutePage from "../components/page/RoutePage";
+import FormRoutePage from "../app/RoutePage";
 import FormSectionTitle from "../components/forms/SectionTitle";
-import FormPageHelp from "../components/help/Panel";
-import CostEstimateDrawerContent from "../components/overlays/CostEstimate";
+import FormPageHelp from "../components/content/HelpPanel";
+import CostEstimateDrawerContent from "../components/overlays/CostEstimateDrawer";
 import type { FieldDefinition } from "../config/fields/types";
 import {
   coverageOptionsAvailableHelpItem,

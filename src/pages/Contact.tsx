@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
-import FormRoutePage, { isSectionVisible } from "../components/page/RoutePage";
+import FormRoutePage, { isSectionVisible } from "../app/RoutePage";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import ApplicantSection from "../components/forms/ApplicantSection";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";

@@ -10,15 +10,15 @@ import {
 } from "@mui/material";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
-import FormRoutePage from "../components/page/RoutePage";
-import FormPageHelp from "../components/help/Panel";
-import FormHelpDrawer from "../components/help/Drawer";
-import QuickDecisionDrawerContent from "../components/overlays/QuickDecisionInfo";
-import { QuickDecisionMark } from "../components/overlays/QuickDecisionInfo";
-import ApplicationSummaryDrawer from "../components/overlays/ApplicationSummary";
-import CoverageQuestions from "../components/coverage/CoverageQuestions";
-import ProductCatalog from "../components/coverage/ProductCatalog";
-import { useCoverageState } from "../components/coverage/useCoverageState";
+import FormRoutePage from "../app/RoutePage";
+import FormPageHelp from "../components/content/HelpPanel";
+import FormHelpDrawer from "../components/overlays/HelpDrawer";
+import QuickDecisionDrawerContent from "../components/content/QuickDecisionExplainer";
+import { QuickDecisionMark } from "../components/content/QuickDecisionExplainer";
+import ApplicationSummaryDrawer from "../components/overlays/CoverageSummaryDrawer";
+import CoverageQuestions from "../components/forms/CategoryQuestionFields";
+import ProductCatalog from "../components/overlays/CoverageProductList";
+import { useCoverageState } from "../app/useCoverageState";
 
 export default function Coverage() {
   const state = useCoverageState();
@@ -254,14 +254,6 @@ function CoveragePageContent({
                 state.revealProducts();
               }}
               endIcon={<ArrowForwardRoundedIcon />}
-              sx={() => ({
-                fontWeight: 700,
-                padding: "16px",
-                boxShadow: "0 8px 18px #0668ff3d",
-                "&:hover": {
-                  boxShadow: "0 8px 18px #0668ff3d",
-                },
-              })}
             >
               See my coverage options
             </Button>

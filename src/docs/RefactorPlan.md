@@ -593,7 +593,6 @@ The refactor is successful when:
 
 - Storybook runs locally.
 - The prototype still runs locally.
-- Developers can understand the template structure from Storybook.
 - Reusable components are organized by generic UI purpose.
 - Components are not organized by business area.
 - Route-level pages remain focused on composition.

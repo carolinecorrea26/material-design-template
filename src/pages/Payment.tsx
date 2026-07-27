@@ -1,10 +1,11 @@
-import { Alert, Box, Card, Stack, Typography } from "@mui/material";
+import { Alert, Box, Stack, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { formatUSD as formatCurrency } from "../utils/formatUSD";
+import CoverageCard from "../components/layout/CoverageCard";
 import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
-import FormRoutePage from "../components/page/RoutePage";
+import FormRoutePage from "../app/RoutePage";
 import FormSectionTitle from "../components/forms/SectionTitle";
-import FormPageHelp from "../components/help/Panel";
+import FormPageHelp from "../components/content/HelpPanel";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import { getCoverageCategorySectionLabel } from "../config/coverageCategories";
 import { coverageCategories } from "../config/coverageCategories";
@@ -306,17 +307,7 @@ export default function Payment() {
                       );
 
                       return (
-                        <Card
-                          key={product.coverageId}
-                          variant="outlined"
-                          sx={{
-                            p: 2.5,
-                            borderRadius: "16px",
-                            borderColor: "divider",
-                            background:
-                              "linear-gradient(135deg, rgb(244, 248, 255) 0%, rgb(255, 255, 255) 52%, rgb(247, 251, 255) 100%)",
-                          }}
-                        >
+                        <CoverageCard key={product.coverageId}>
                           <Stack spacing={2}>
                             <Typography variant="subtitle1" fontWeight="bold">
                               {product.coverageName}
@@ -439,7 +430,7 @@ export default function Payment() {
                               </Stack>
                             </Box>
                           </Stack>
-                        </Card>
+                        </CoverageCard>
                       );
                     })}
                   </Stack>

@@ -2,7 +2,7 @@ import { Box, Divider, Stack, Typography } from "@mui/material";
 import FieldRenderer from "../../components/forms/FieldRenderer";
 import ApplicantSection from "../../components/forms/ApplicantSection";
 import SubQuestionContainer from "../../components/forms/ConditionalGroup";
-import type { FormRouteRenderProps } from "../../components/page/RoutePage";
+import type { FormRouteRenderProps } from "../../app/RoutePage";
 import type { CoverageCategoryId } from "../../config/coverages/types";
 import type { PageSectionConfig } from "../../config/pageSections/types";
 import type { SectionVisibilityRule } from "../../config/pageSections/types";

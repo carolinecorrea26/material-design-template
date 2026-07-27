@@ -9,10 +9,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import MailLockRounded from "@mui/icons-material/MailLockRounded";
-import FormPageTitle from "../components/layout/Title";
+import { useNavigate } from "react-router-dom";
+import PageTitle from "../components/layout/Title";
+import PageCard from "../components/layout/PageCard";
 import { getPageSubhead, getPageTitle } from "../config/pages";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import { sendResumeMagicLinkMockEmail } from "../utils/mockEmail";
@@ -20,36 +21,48 @@ import { sendResumeMagicLinkMockEmail } from "../utils/mockEmail";
 export default function Resume() {
   const navigate = useNavigate();
   const fields = getClientPageFields("resume");
-  const emailField = fields.find((f) => f.id === "resume-email");
+  const emailField = fields.find((field) => field.id === "resume-email");
 
   const [emailAddress, setEmailAddress] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
   const [isEmailSending, setIsEmailSending] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(600);
+
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    if (emailSent) {
-      timerRef.current = setInterval(() => {
-        setSecondsLeft((prev) => {
-          if (prev <= 1) {
-            if (timerRef.current) clearInterval(timerRef.current);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
+    if (!emailSent) {
+      return undefined;
     }
+
+    timerRef.current = setInterval(() => {
+      setSecondsLeft((previousSeconds) => {
+        if (previousSeconds <= 1) {
+          if (timerRef.current) {
+            clearInterval(timerRef.current);
+          }
+
+          return 0;
+        }
+
+        return previousSeconds - 1;
+      });
+    }, 1000);
+
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
     };
   }, [emailSent]);
 
   function handleEmailSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!emailAddress.trim()) {
+    const trimmedEmailAddress = emailAddress.trim();
+
+    if (!trimmedEmailAddress) {
       setEmailError("Enter your email address.");
       return;
     }
@@ -58,12 +71,17 @@ export default function Resume() {
     setIsEmailSending(true);
 
     window.setTimeout(() => {
-      void sendResumeMagicLinkMockEmail(emailAddress.trim());
+      void sendResumeMagicLinkMockEmail(trimmedEmailAddress);
 
       setIsEmailSending(false);
       setSecondsLeft(600);
       setEmailSent(true);
     }, 1500);
+  }
+
+  function handleResendLink() {
+    setEmailSent(false);
+    setSecondsLeft(600);
   }
 
   return (
@@ -78,18 +96,14 @@ export default function Resume() {
       }}
     >
       <Box sx={{ width: "100%", maxWidth: 600 }}>
-        <Box
+        <PageCard
           sx={{
-            width: "100%",
-            borderRadius: "16px",
-            backgroundColor: "#ffffff",
-            boxShadow: "0 8px 16px rgba(52, 59, 72, 0.06)",
             px: { xs: 2, sm: 4 },
             py: 6,
           }}
         >
           <Box sx={{ mb: 2 }}>
-            <FormPageTitle
+            <PageTitle
               title={getPageTitle("resume")}
               subhead={getPageSubhead("resume")}
               onBack={() => navigate(-1)}
@@ -107,6 +121,7 @@ export default function Resume() {
             >
               <Stack spacing={2} alignItems="center">
                 <CircularProgress size={40} thickness={4} />
+
                 <Typography variant="body2" color="text.secondary">
                   Sending secure link…
                 </Typography>
@@ -120,11 +135,14 @@ export default function Resume() {
                   <Link
                     href="#"
                     underline="hover"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setEmailSent(false);
+                    onClick={(event) => {
+                      event.preventDefault();
+                      handleResendLink();
                     }}
-                    sx={{ fontSize: "inherit", verticalAlign: "baseline" }}
+                    sx={{
+                      fontSize: "inherit",
+                      verticalAlign: "baseline",
+                    }}
                   >
                     Resend link
                   </Link>
@@ -138,6 +156,7 @@ export default function Resume() {
                   . Open your email and click the link to continue.
                 </Alert>
               )}
+
               <Stack
                 direction="row"
                 spacing={0.5}
@@ -162,12 +181,16 @@ export default function Resume() {
                     </>
                   )}
                 </Typography>
+
                 <Button
                   variant="text"
                   size="small"
                   startIcon={<RefreshRoundedIcon />}
-                  onClick={() => setEmailSent(false)}
-                  sx={{ textTransform: "none", fontSize: "0.8125rem" }}
+                  onClick={handleResendLink}
+                  sx={{
+                    textTransform: "none",
+                    fontSize: "0.8125rem",
+                  }}
                 >
                   Resend link
                 </Button>
@@ -188,30 +211,29 @@ export default function Resume() {
                 value={emailAddress}
                 onChange={(event) => {
                   setEmailAddress(event.target.value);
-                  if (emailError) setEmailError(null);
+
+                  if (emailError) {
+                    setEmailError(null);
+                  }
                 }}
                 error={Boolean(emailError)}
                 helperText={emailError ?? emailField?.helperText}
                 sx={{ mb: 3 }}
               />
-              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  fullWidth
-                  sx={{
-                    fontWeight: 700,
-                    padding: "16px",
-                    boxShadow: "0 8px 18px #0668ff3d",
-                    "&:hover": { boxShadow: "0 8px 18px #0668ff3d" },
-                  }}
-                >
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <Button type="submit" variant="contained" fullWidth>
                   Next
                 </Button>
               </Box>
             </Box>
           )}
-        </Box>
+        </PageCard>
       </Box>
     </Stack>
   );

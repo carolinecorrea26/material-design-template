@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import FeaturedBadge from "../common/FeaturedBadge";
+import CoverageCard from "../layout/CoverageCard";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import {
   Alert,
   Box,
   Button,
-  Chip,
   CircularProgress,
   Divider,
   FormControl,
@@ -21,12 +21,15 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import { coverageCategories } from "../../config/coverageCategories";
 import type {
   CoverageCategoryId,
   CoverageApplicantId,
   CoverageDefinition,
 } from "../../config/coverages/types";
+import {
+  getCategoryRequirements,
+  getBenefitAmountLabel,
+} from "../../config/coverageConstants";
 import { formatUSD } from "../../utils/formatUSD";
 import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
 import { getCoverageAmountRange } from "../../utils/coverageAmounts";
@@ -34,22 +37,13 @@ import { generateAmountChoices } from "../../utils/generateAmountChoices";
 import { getActiveClient } from "../../config/client/getActiveClient";
 import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
 import type { EstimatedRateFrequency } from "../../config/clients/types";
-import QuickDecisionIndicator from "../coverage/QuickDecisionBadge";
+import QuickDecisionIndicator from "../common/QuickDecisionIndicator";
+import CoverageCategoryChips from "../common/CoverageCategoryChips";
+
+import { formatCurrencyInput } from "../../utils/formatting/currency";
 
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
-
-function formatCurrencyInput(value: string): string {
-  const digits = value.replace(/[^0-9]/g, "").slice(0, 12);
-  if (!digits) return "";
-  return `$${Number(digits).toLocaleString("en-US")}`;
-}
-
-function getEstimateAmountLabel(categoryId: CoverageCategoryId): string {
-  return categoryId === "DI" || categoryId === "OO"
-    ? "Monthly benefit amount"
-    : "Benefit amount";
-}
 
 export default function CostEstimateDrawerContent() {
   const activeClient = useMemo(() => getActiveClient(), []);
@@ -59,13 +53,11 @@ export default function CostEstimateDrawerContent() {
     rateDisplayConfig?.defaultFrequency ?? "monthly";
   const rateFrequency = defaultRateFrequency;
 
-  const availableCategories = coverageCategories.filter((category) =>
-    coverages.some((coverage) => coverage.categoryId === category.id),
-  );
-
   const [selectedCategories, setSelectedCategories] = useState<
     CoverageCategoryId[]
   >([]);
+
+  const requirements = getCategoryRequirements(selectedCategories);
 
   const [gender, setGender] = useState<EstimateGender>("");
   const [smoker, setSmoker] = useState<EstimateYesNo>("");
@@ -88,22 +80,14 @@ export default function CostEstimateDrawerContent() {
   );
   const rateTimersRef = useRef<Record<string, number>>({});
 
-  const categoryNeedsGender = selectedCategories.some(
-    (c) => c === "LI" || c === "DI",
-  );
-  const categoryNeedsSmoker = selectedCategories.some(
-    (c) => c === "LI" || c === "SH",
-  );
-  const categoryNeedsDi = selectedCategories.includes("DI");
-  const categoryNeedsOo = selectedCategories.includes("OO");
-  const categoryNeedsHours = categoryNeedsDi || categoryNeedsOo;
-
-  const needsAdditionalFields =
-    categoryNeedsGender ||
-    categoryNeedsSmoker ||
-    categoryNeedsDi ||
-    categoryNeedsOo ||
-    categoryNeedsHours;
+  const {
+    needsGender: categoryNeedsGender,
+    needsSmoker: categoryNeedsSmoker,
+    needsDi: categoryNeedsDi,
+    needsOo: categoryNeedsOo,
+    needsHours: categoryNeedsHours,
+    needsAdditionalFields,
+  } = requirements;
 
   const fieldErrors = useMemo(() => {
     const errors: Record<string, string> = {};
@@ -265,32 +249,11 @@ export default function CostEstimateDrawerContent() {
       <Box>
         <Stack spacing={3}>
           {/* Category chips (multi-select) */}
-          <Box>
-            <Typography variant="overline" sx={{ mb: 1, display: "block" }}>
-              Coverage category
-            </Typography>
-            <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mt: 1 }}>
-              {availableCategories.map((category) => {
-                const Icon = category.icon;
-                const isSelected = selectedCategories.includes(category.id);
-                return (
-                  <Chip
-                    key={category.id}
-                    className="coverageCategoryChip"
-                    icon={<Icon sx={{ fontSize: "1.25rem !important" }} />}
-                    label={
-                      "shortLabel" in category
-                        ? category.shortLabel
-                        : category.label
-                    }
-                    variant={isSelected ? "filled" : "outlined"}
-                    color={isSelected ? "primary" : "default"}
-                    onClick={() => handleCategoryToggle(category.id)}
-                  />
-                );
-              })}
-            </Stack>
-          </Box>
+          <CoverageCategoryChips
+            coverages={coverages}
+            selectedCategories={selectedCategories}
+            onToggle={handleCategoryToggle}
+          />
 
           {/* Category-level additional fields */}
           {needsAdditionalFields && selectedCategories.length > 0 && (
@@ -543,17 +506,10 @@ export default function CostEstimateDrawerContent() {
                       currentApplicants.length > 0;
 
                     return (
-                      <Box
+                      <CoverageCard
                         key={product.id}
+                        selected={hasAnyApplicantSelected}
                         sx={{
-                          border: "1px solid",
-                          borderColor: hasAnyApplicantSelected
-                            ? "primary.main"
-                            : "divider",
-                          borderRadius: "16px",
-                          background:
-                            "linear-gradient(135deg, rgb(244, 248, 255) 0%, rgb(255, 255, 255) 52%, rgb(247, 251, 255) 100%)",
-                          p: 2.5,
                           display: "flex",
                           flexDirection: "column",
                           gap: 1.5,
@@ -578,24 +534,7 @@ export default function CostEstimateDrawerContent() {
                             </Typography>
                           </Stack>
 
-                          {product.featured && (
-                            <Chip
-                              icon={<AutoAwesomeIcon />}
-                              label="Featured"
-                              size="small"
-                              color="primary"
-                              sx={{
-                                flexShrink: 0,
-                                "& .MuiChip-label": {
-                                  fontSize: "0.675rem",
-                                  fontWeight: 700,
-                                },
-                                "& .MuiChip-icon": {
-                                  fontSize: "0.875rem",
-                                },
-                              }}
-                            />
-                          )}
+                          {product.featured && <FeaturedBadge />}
                         </Stack>
 
                         {/* Benefit amount & estimated cost (always visible) */}
@@ -617,11 +556,11 @@ export default function CostEstimateDrawerContent() {
                             <Box>
                               <FormControl fullWidth>
                                 <InputLabel id={`${key}-amount-label`}>
-                                  {getEstimateAmountLabel(product.categoryId)}
+                                  {getBenefitAmountLabel(product.categoryId)}
                                 </InputLabel>
                                 <Select
                                   labelId={`${key}-amount-label`}
-                                  label={getEstimateAmountLabel(
+                                  label={getBenefitAmountLabel(
                                     product.categoryId,
                                   )}
                                   value={currentAmount}
@@ -670,7 +609,7 @@ export default function CostEstimateDrawerContent() {
                             </Box>
                           );
                         })()}
-                      </Box>
+                      </CoverageCard>
                     );
                   })}
 

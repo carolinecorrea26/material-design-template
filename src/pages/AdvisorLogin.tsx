@@ -12,7 +12,7 @@ import SupportAgentRoundedIcon from "@mui/icons-material/SupportAgentRounded";
 import FormRoutePage, {
   isSectionVisible,
   type FormRouteRenderProps,
-} from "../components/page/RoutePage";
+} from "../app/RoutePage";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import { getPageTitle, getPageSubhead } from "../config/pages";
 

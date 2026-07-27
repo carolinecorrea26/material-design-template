@@ -1,8 +1,8 @@
 import { type ReactNode } from "react";
 import { Alert, Box, Stack } from "@mui/material";
-import FormPageTitle from "./Title";
+import PageTitle from "./Title";
 
-type FormPageProps = {
+type PageLayoutProps = {
   title: ReactNode;
   subhead?: ReactNode;
   children?: ReactNode;
@@ -17,7 +17,7 @@ type FormPageProps = {
   noContainer?: boolean;
 };
 
-export default function FormPage({
+export default function PageLayout({
   title,
   subhead,
   children,
@@ -29,7 +29,7 @@ export default function FormPage({
   aboveHeader,
   headerOverride,
   noTitle,
-}: FormPageProps) {
+}: PageLayoutProps) {
   return (
     <Stack
       spacing={2}
@@ -42,11 +42,7 @@ export default function FormPage({
             {headerOverride ??
               (!noTitle && title ? (
                 <Stack spacing={1} sx={{ padding: "0 0.5rem" }}>
-                  <FormPageTitle
-                    title={title}
-                    subhead={subhead}
-                    onBack={onBack}
-                  />
+                  <PageTitle title={title} subhead={subhead} onBack={onBack} />
                   {error && (
                     <Alert severity="error" sx={{ width: "100%" }}>
                       {error}

@@ -5,7 +5,7 @@ import { getActiveClientCoverages } from "../../config/client/getActiveClientCov
 import { fieldCatalog } from "../../config/fields";
 import type { FieldDefinition } from "../../config/fields/types";
 import { pageSections } from "../../config/pageSections/pageSections";
-import { isSectionVisible } from "../page/RoutePage";
+import { isSectionVisible } from "../../app/RoutePage";
 import type { ApplicationFormValues } from "../../app/ApplicationFormContext";
 import type { PageId } from "../../types";
 
