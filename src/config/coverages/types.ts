@@ -2,7 +2,13 @@ export type CoverageCategoryId = "LI" | "AD" | "DI" | "OO" | "SH";
 
 export type CoverageApplicantId = "member" | "spouse" | "child";
 
-export type CoverageUnderwritingType = "FUW" | "GI" | "NA" | "QD" | "SI";
+export type CoverageUnderwritingType =
+  | "FUW"
+  | "GI"
+  | "NA"
+  | "QD"
+  | "SI"
+  | "TELE";
 
 export type RiderDefinition = {
   id: string;

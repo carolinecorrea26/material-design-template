@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import AppDrawer from "../ui/AppDrawer";
 import SelectionGroup from "./SelectionGroup";
 import SectionHeader from "./SectionHeader";
+import CategoryHeader from "../CategoryHeader";
 import FeaturedBadge from "../ui/FeaturedBadge";
 import ProductCardSurface from "../ui/ProductCard";
 import QuickDecisionIndicator from "../ui/QuickDecisionIndicator";
@@ -668,10 +669,9 @@ export default function QuoteCalculator({
                     const CatIcon = cat.icon;
                     return (
                       <Stack spacing={2} key={cat.id}>
-                        <SectionHeader
+                        <CategoryHeader
                           label={cat.label}
                           icon={CatIcon}
-                          chipVariant="outlined"
                         />
                         {products.map((product) => {
                           const choices = generateAmountChoices(

@@ -17,6 +17,7 @@ import Profile from "../pages/Profile";
 import Review from "../pages/Review";
 import DocuSign from "../pages/DocuSign";
 import HealthSi from "../pages/HealthSi";
+import HealthLi from "../pages/HealthLi";
 import HealthQd from "../pages/HealthQd";
 import HealthDi from "../pages/HealthDi";
 import HealthCir from "../pages/HealthCir";
@@ -44,6 +45,7 @@ const pageComponents: Record<PageId, ComponentType> = {
   review: Review,
   docusign: DocuSign,
   "health-si": HealthSi,
+  "health-li": HealthLi,
   "health-qd": HealthQd,
   "health-di": HealthDi,
   "health-cir": HealthCir,
@@ -69,6 +71,7 @@ const routedPageIds: PageId[] = [
   "review",
   "docusign",
   "health-si",
+  "health-li",
   "health-qd",
   "health-di",
   "health-cir",

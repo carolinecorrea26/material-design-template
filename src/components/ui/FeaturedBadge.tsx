@@ -1,4 +1,4 @@
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import StarsRoundedIcon from "@mui/icons-material/StarsRounded";
 import { Chip } from "@mui/material";
 
 /**
@@ -7,7 +7,7 @@ import { Chip } from "@mui/material";
 export default function FeaturedBadge() {
   return (
     <Chip
-      icon={<AutoAwesomeIcon />}
+      icon={<StarsRoundedIcon />}
       label="Featured"
       size="small"
       color="primary"

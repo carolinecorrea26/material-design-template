@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import FeaturedBadge from "./ui/FeaturedBadge";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
+import CategoryHeader from "./CategoryHeader";
 import SectionHeader from "./forms/SectionHeader";
 import SelectionGroup from "./forms/SelectionGroup";
 import ProductCardSurface from "./ui/ProductCard";
@@ -152,7 +153,8 @@ export default function ProductCatalog(props: ProductCatalogProps) {
   const clientId = resolveClientId();
 
   const additionalCoverageWarningMode =
-    getActiveClient().coverages.additionalCoverageWarning ?? "applyForAdditional";
+    getActiveClient().coverages.additionalCoverageWarning ??
+    "applyForAdditional";
 
   const additionalCoverageWarningText =
     additionalCoverageWarningMode === "applyForTotal"
@@ -288,10 +290,9 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                 if (categoryEligibility[categoryId] === false) {
                   return (
                     <Stack spacing={2} key={categoryId}>
-                      <SectionHeader
+                      <CategoryHeader
                         label={getCoverageCategorySectionLabel(categoryId)}
                         icon={CategoryIcon as any}
-                        chipVariant="outlined"
                       />
                       <Alert severity="warning" sx={{ borderRadius: 2 }}>
                         Based on your answers, you are not eligible for{" "}
@@ -310,19 +311,18 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 
                 return (
                   <Stack spacing={2} key={categoryId}>
-                    <SectionHeader
-                      label={getCoverageCategorySectionLabel(categoryId)}
-                      icon={CategoryIcon as any}
-                      chipVariant="outlined"
-                    />
                     <Box
                       sx={{
                         p: "1rem",
-                        background: "#cadfff",
-                        borderRadius: "24px",
+                        background: "#f9fafd",
+                        borderRadius: "16px",
                       }}
                     >
-                      <Stack spacing={2}>
+                      <CategoryHeader
+                        label={getCoverageCategorySectionLabel(categoryId)}
+                        icon={CategoryIcon as any}
+                      />
+                      <Stack spacing={2} sx={{ mt: 2 }}>
                         {notes && (
                           <Alert severity="info" sx={{ borderRadius: 2 }}>
                             <Typography

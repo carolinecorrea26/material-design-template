@@ -3,7 +3,7 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { fieldCatalog } from "../config/fields";
-import type { FieldDefinition } from "../config/fields/types";
+import type { FieldDefinition, FieldId } from "../config/fields/types";
 import { pageSections } from "../config/pageSections/pageSections";
 import { isSectionVisible } from "../app/RoutePage";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
@@ -46,19 +46,13 @@ type ApplicationDocumentPreviewProps = {
 const PLACEHOLDER = "\u2014";
 
 const documentPages: Array<{ pageId: PageId; title: string }> = [
-  { pageId: "membership", title: "Applicant Information" },
+  { pageId: "membership", title: "Membership" },
   { pageId: "eligibility", title: "Eligibility" },
-  { pageId: "coverage", title: "Coverage Selections" },
-  { pageId: "beneficiary", title: "Beneficiaries" },
-  { pageId: "contact", title: "Contact Information" },
-  { pageId: "profile", title: "Personal & Financial Information" },
-  { pageId: "review", title: "Review and Consent" },
+  { pageId: "coverage", title: "Coverage" },
+  { pageId: "beneficiary", title: "Beneficiary" },
+  { pageId: "contact", title: "Contact" },
+  { pageId: "profile", title: "Profile" },
 ];
-
-const reviewConsentLabels: Record<string, string> = {
-  "review-self-consent": "Applicant electronic consent",
-  "review-spouse-consent": "Spouse electronic consent",
-};
 
 function formatLabel(value: string) {
   return value
@@ -135,19 +129,65 @@ function formatFieldValue(fieldId: string, rawValue: unknown) {
   return String(rawValue);
 }
 
-function getNameFieldPair(fieldId: string): string | null {
-  if (fieldId === "first-name" || fieldId === "last-name") return "name";
-  if (fieldId === "spouse-first-name" || fieldId === "spouse-last-name") {
+/** Returns a group key if this field should be merged into a combined Name entry, null otherwise. */
+function getNameGroupKey(fieldId: string): string | null {
+  if (
+    fieldId === "title" ||
+    fieldId === "first-name" ||
+    fieldId === "last-name"
+  )
+    return "name";
+  if (fieldId === "spouse-first-name" || fieldId === "spouse-last-name")
     return "spouse-name";
-  }
-  if (fieldId === "child-first-name" || fieldId === "child-last-name") {
+  if (fieldId === "child-first-name" || fieldId === "child-last-name")
     return "child-name";
-  }
-  if (fieldId === "physician-first-name" || fieldId === "physician-last-name") {
+  if (fieldId === "physician-first-name" || fieldId === "physician-last-name")
     return "physician-name";
-  }
-
+  if (
+    fieldId === "ama-physician-first-name" ||
+    fieldId === "ama-physician-last-name" ||
+    fieldId === "ama-physician-title"
+  )
+    return "ama-physician-name";
   return null;
+}
+
+/** Returns all field IDs that belong to the same name group. */
+function getNameGroupFieldIds(groupKey: string): string[] {
+  switch (groupKey) {
+    case "name":
+      return ["title", "first-name", "last-name"];
+    case "spouse-name":
+      return ["spouse-first-name", "spouse-last-name"];
+    case "child-name":
+      return ["child-first-name", "child-last-name"];
+    case "physician-name":
+      return ["physician-first-name", "physician-last-name"];
+    case "ama-physician-name":
+      return [
+        "ama-physician-title",
+        "ama-physician-first-name",
+        "ama-physician-last-name",
+      ];
+    default:
+      return [];
+  }
+}
+
+function buildNameValue(
+  groupKey: string,
+  values: ApplicationFormValues,
+): string {
+  const fieldIds = getNameGroupFieldIds(groupKey);
+  const parts = fieldIds
+    .map((id) => {
+      const raw = values[id];
+      if (!raw) return "";
+      const field = fieldCatalog[id as keyof typeof fieldCatalog];
+      return resolveOptionLabel(field, String(raw)).trim();
+    })
+    .filter(Boolean);
+  return parts.join(" ") || PLACEHOLDER;
 }
 
 function getApplicantLabel(applicant: string) {
@@ -171,29 +211,27 @@ function buildSectionEntries(values: ApplicationFormValues, pageId: PageId) {
           continue;
         }
 
-        const pairKey = getNameFieldPair(fieldId);
-        if (pairKey) {
-          const otherFieldId = fieldId.includes("first")
-            ? fieldId.replace("-first-", "-last-")
-            : fieldId.replace("-last-", "-first-");
+        const groupKey = getNameGroupKey(fieldId);
+        if (groupKey) {
+          // Only emit the combined entry once — when we hit the first field in the group
+          const groupFieldIds = getNameGroupFieldIds(groupKey);
+          const isFirstInGroup =
+            groupFieldIds[0] === fieldId ||
+            !groupFieldIds
+              .slice(0, groupFieldIds.indexOf(fieldId))
+              .some((id) => section.fieldIds.includes(id as FieldId));
 
-          const firstName = fieldId.includes("first")
-            ? values[fieldId]
-            : values[otherFieldId];
-          const lastName = fieldId.includes("last")
-            ? values[fieldId]
-            : values[otherFieldId];
+          if (isFirstInGroup) {
+            entries.push({
+              label: "Name",
+              value: buildNameValue(groupKey, values),
+            });
+          }
 
-          entries.push({
-            label: formatLabel(pairKey),
-            value:
-              [String(firstName ?? "").trim(), String(lastName ?? "").trim()]
-                .filter(Boolean)
-                .join(" ") || PLACEHOLDER,
-          });
-
-          processed.add(fieldId);
-          processed.add(otherFieldId);
+          // Mark all group fields as processed
+          for (const id of groupFieldIds) {
+            processed.add(id);
+          }
           continue;
         }
 
@@ -292,20 +330,6 @@ function buildBeneficiariesSection(
   };
 }
 
-function buildReviewSection(values: ApplicationFormValues): DisplaySection {
-  const entries = Object.entries(reviewConsentLabels)
-    .filter(([fieldId]) => fieldId in values)
-    .map(([fieldId, label]) => ({
-      label,
-      value: formatFieldValue(fieldId, values[fieldId]),
-    }));
-
-  return {
-    title: "Review and Consent",
-    groups: entries.length ? [{ entries }] : [],
-  };
-}
-
 function buildDocumentSections(values: ApplicationFormValues) {
   return documentPages
     .map((entry) => {
@@ -315,10 +339,6 @@ function buildDocumentSections(values: ApplicationFormValues) {
 
       if (entry.pageId === "beneficiary") {
         return buildBeneficiariesSection(values);
-      }
-
-      if (entry.pageId === "review") {
-        return buildReviewSection(values);
       }
 
       return {

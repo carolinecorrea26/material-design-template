@@ -33,6 +33,9 @@ import {
   parseStoredDate,
   formatDateForStorage,
   formatDateDisplay,
+  parseStoredMonthYear,
+  formatMonthYearForStorage,
+  formatMonthYearDisplay,
 } from "../../utils/dateFormatting";
 
 type FormValues = Record<string, string | boolean | string[]>;
@@ -147,6 +150,14 @@ function getValidationRules(field: FieldDefinition) {
       return digits.length <= 3
         ? true
         : "Enter a percent value with up to 3 digits.";
+    };
+  }
+
+  if (field.format === "month-year") {
+    rules.validate = (value) => {
+      if (!value) return true;
+      const digits = String(value).replace(/\D/g, "");
+      return digits.length === 6 ? true : "Enter a valid month and year (MM/YYYY).";
     };
   }
 
@@ -284,6 +295,13 @@ function hasCompletedValue(field: FieldDefinition, value: unknown) {
     return (
       /^\d{2}\/\d{2}\/\d{4}$/.test(stringValue) ||
       /^\d{4}-\d{2}-\d{2}$/.test(stringValue)
+    );
+  }
+
+  if (field.format === "month-year") {
+    return (
+      /^\d{2}\/\d{4}$/.test(stringValue) ||
+      /^\d{4}-\d{2}$/.test(stringValue)
     );
   }
 
@@ -1169,6 +1187,83 @@ export default function FieldRenderer({
               ) : null}
               {textField}
               <FormHelperText>{dateHelperText}</FormHelperText>
+            </FormControl>
+          );
+        }}
+      />
+    );
+  }
+
+  if (field.format === "month-year") {
+    const myHelperText = fieldError ?? field.helperText ?? "MM/YYYY";
+    return (
+      <Controller
+        key={field.id}
+        name={field.id}
+        control={control}
+        rules={validationRules}
+        render={({ field: controllerField }) => {
+          const labelVariant = getLabelVariant(field);
+          const displayValue = parseStoredMonthYear(
+            (controllerField.value as string) ?? "",
+          );
+          const isComplete = isFieldComplete(field, displayValue, statusState);
+          const showError = isFieldInError(statusState);
+          const textField = (
+            <TextField
+              label={
+                labelVariant === "floating"
+                  ? renderFieldLabel(field)
+                  : undefined
+              }
+              required={field.required}
+              fullWidth
+              margin={labelVariant === "floating" ? "normal" : "none"}
+              inputProps={{ inputMode: "numeric" }}
+              value={displayValue}
+              onChange={(event) => {
+                const formatted = formatMonthYearDisplay(event.target.value);
+                const digits = formatted.replace(/\D/g, "");
+                if (digits.length === 6) {
+                  controllerField.onChange(formatMonthYearForStorage(formatted));
+                } else {
+                  controllerField.onChange(formatted);
+                }
+                onValueChange?.();
+              }}
+              onBlur={controllerField.onBlur}
+              disabled={field.disabled}
+              error={Boolean(errors[field.id])}
+              helperText={
+                labelVariant === "floating" ? myHelperText : undefined
+              }
+              InputProps={{
+                endAdornment: isComplete
+                  ? renderCompletedAdornment()
+                  : showError
+                    ? renderErrorAdornment()
+                    : undefined,
+              }}
+            />
+          );
+
+          if (labelVariant === "floating") {
+            return textField;
+          }
+
+          return (
+            <FormControl
+              fullWidth
+              margin={margin}
+              error={Boolean(errors[field.id])}
+            >
+              {!hideLabel ? (
+                <FormLabel required={field.required} sx={{ mb: 1 }}>
+                  {renderFieldLabel(field)}
+                </FormLabel>
+              ) : null}
+              {textField}
+              <FormHelperText>{myHelperText}</FormHelperText>
             </FormControl>
           );
         }}

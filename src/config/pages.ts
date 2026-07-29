@@ -25,6 +25,7 @@ export const pages = [
   { id: "review", path: "/review", type: "form", groupId: "review" },
   { id: "docusign", path: "/docusign", type: "form", groupId: "review" },
   { id: "health-si", path: "/health-si", type: "form", groupId: "health" },
+  { id: "health-li", path: "/health-li", type: "form", groupId: "health" },
   { id: "health-qd", path: "/health-qd", type: "form", groupId: "health" },
   { id: "health-di", path: "/health-di", type: "form", groupId: "health" },
   { id: "health-cir", path: "/health-cir", type: "form", groupId: "health" },

@@ -248,7 +248,7 @@ function ContactFields({
               {/* Business / Employer Info inside Self container */}
               {showBusinessSection && businessSection && (
                 <Box sx={{ mt: 2 }}>
-                  <SectionHeader label="Business / Employer Information" chipVariant="outlined" size="small" />
+                  <SectionHeader label="Business / Employer Information" chipVariant="filled" chipColor="default" size="small" />
 
                   {renderBusinessFields(
                     businessSection,

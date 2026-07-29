@@ -30,9 +30,8 @@ type SectionHeaderProps = {
  * Full-width divider with a centered label chip.
  *
  * Assignments:
- *  Applicant + category headers  → chipVariant="outlined" chipColor="primary"  size="default"
  *  Coverage question sub-sections → chipVariant="filled"  chipColor="default"  size="small"
- *  Standalone page sections       → chipVariant="outlined" chipColor="primary" size="small"
+ *  Standalone page sections       → chipVariant="filled"  chipColor="default"  size="small"
  */
 export default function SectionHeader({
   label,
@@ -67,7 +66,6 @@ export default function SectionHeader({
           sx={{
             fontWeight: 600,
             fontSize: isSmall ? "0.75rem" : "0.875rem",
-            // letterSpacing: "0.05em",
             color: "text.secondary",
             textTransform: "uppercase",
             px: 1,

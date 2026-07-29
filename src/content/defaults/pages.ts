@@ -49,14 +49,21 @@ export const pagesDefaults: Partial<PagesContent> = {
     subhead: "Answer health questions required for your selected coverage.",
     navTitle: "Health",
   },
+  "health-li": {
+    title:
+      "Please answer the following health questions to the best of your ability.",
+    subhead: "Answer health questions required for your selected coverage.",
+    navTitle: "Health",
+  },
   "health-qd": {
     title: "About your health",
     subhead: "Answer health questions required for your selected coverage.",
     navTitle: "Health",
   },
   "health-di": {
-    title: "About your health",
-    subhead: "Answer health questions required for your selected coverage.",
+    title: "About your health history",
+    subhead:
+      "Please answer the following questions about your health as accurately as you can.",
     navTitle: "Health",
   },
   "health-cir": {

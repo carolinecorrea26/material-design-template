@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Alert, Box, Button, Divider, Typography } from "@mui/material";
+import { Alert, Box, Button, Typography } from "@mui/material";
 import FormRoutePage, { isSectionVisible } from "../app/RoutePage";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import ApplicantSection from "../components/forms/ApplicantSection";
@@ -8,6 +8,7 @@ import { SECTION_SURFACE_BG } from "../app/theme";
 import ConditionalGroup from "../components/forms/ConditionalGroup";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import DynamicList from "../components/forms/DynamicList";
+import SectionHeader from "../components/forms/SectionHeader";
 import type { FieldDefinition } from "../config/fields/types";
 
 // Layout groupings — fields that render side-by-side in grids
@@ -216,13 +217,13 @@ export default function Profile() {
               if (section.id === "profilePersonalSelf") {
                 return (
                   <div key={section.id}>
-                    <Typography
-                      variant="overline"
-                      color="text.secondary"
-                      sx={{ mb: 1, display: "block" }}
-                    >
-                      {section.description}
-                    </Typography>
+                    <SectionHeader
+                      label={section.description ?? ""}
+                      chipVariant="filled"
+                      chipColor="default"
+                      size="small"
+                      sx={{ mb: 1 }}
+                    />
                     <ApplicantSection
                       applicant="self"
                       showLabel={shouldShowApplicantLabel(
@@ -391,14 +392,13 @@ export default function Profile() {
                 if (!showFinancial) return null;
                 return (
                   <div key={section.id}>
-                    <Divider sx={{ my: 3 }} />
-                    <Typography
-                      variant="overline"
-                      color="text.secondary"
-                      sx={{ mb: 1, display: "block" }}
-                    >
-                      {section.description}
-                    </Typography>
+                    <SectionHeader
+                      label={section.description ?? ""}
+                      chipVariant="filled"
+                      chipColor="default"
+                      size="small"
+                      sx={{ mb: 1 }}
+                    />
                     <ApplicantSection
                       applicant="self"
                       showLabel={shouldShowApplicantLabel(

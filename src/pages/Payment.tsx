@@ -6,6 +6,7 @@ import ProductCard from "../components/ui/ProductCard";
 import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
 import FormRoutePage from "../app/RoutePage";
 import SectionHeader from "../components/forms/SectionHeader";
+import CategoryHeader from "../components/CategoryHeader";
 
 import FieldRenderer from "../components/forms/FieldRenderer";
 import { getCoverageCategorySectionLabel } from "../config/coverageCategories";
@@ -282,19 +283,18 @@ export default function Payment() {
               groupedCategories.map(({ category, products }) => {
                 return (
                   <Stack key={category.id} spacing={1.5}>
-                    <SectionHeader
-                      label={getCoverageCategorySectionLabel(category.id)}
-                      icon={category.icon as any}
-                      chipVariant="outlined"
-                    />
                     <Box
                       sx={{
                         p: "1rem",
-                        background: "#cadfff",
-                        borderRadius: "24px",
+                        background: "#f9fafd",
+                        borderRadius: "16px",
                       }}
                     >
-                      <Stack spacing={2}>
+                      <CategoryHeader
+                        label={getCoverageCategorySectionLabel(category.id)}
+                        icon={category.icon as any}
+                      />
+                      <Stack spacing={2} sx={{ mt: 2 }}>
                         {products.map((product) => {
                           const paymentMethodFieldId = `payment-method:${product.coverageId}`;
                           const paymentFrequencyFieldId = `payment-frequency:${product.coverageId}`;
@@ -472,7 +472,11 @@ export default function Payment() {
 
             {hasAnyBankAccountSelected && (
               <Stack spacing={1.5} sx={{ pt: 1 }}>
-                <SectionHeader label="Banking Information" chipVariant="outlined" size="small" />
+                <SectionHeader
+                  label="Banking Information"
+                  chipVariant="outlined"
+                  size="small"
+                />
 
                 {BANK_FIELD_IDS.map((fieldId) => (
                   <FieldRenderer

@@ -205,7 +205,7 @@ export type FieldDefinition = {
   options?: FieldOption[];
   autoComplete?: string;
   inputMode?: "text" | "email" | "tel" | "numeric";
-  format?: "email" | "phone" | "ssn" | "currency" | "percent";
+  format?: "email" | "phone" | "ssn" | "currency" | "percent" | "month-year";
   labelVariant?: "floating" | "standard";
   multiline?: boolean;
   minRows?: number;

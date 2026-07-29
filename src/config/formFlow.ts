@@ -13,6 +13,7 @@ export const formFlow: PageId[] = [
   "profile",
   "review",
   "health-si",
+  "health-li",
   "health-qd",
   "health-di",
   "health-cir",
@@ -131,7 +132,15 @@ export function shouldSkipPage(
   }
 
   if (pageId === "health-si") {
-    return !hasSelectedUnderwritingType(values, ["FUW", "SI"]);
+    return !hasSelectedUnderwritingType(values, ["SI"]);
+  }
+
+  if (pageId === "health-li") {
+    // Show when LI coverage with underwriting type TELE is selected
+    const selectedCoverages = getSelectedCoverages(values);
+    return !selectedCoverages.some(
+      (c) => c.categoryId === "LI" && c.underwritingType === "TELE",
+    );
   }
 
   if (pageId === "health-qd") {
@@ -139,8 +148,11 @@ export function shouldSkipPage(
   }
 
   if (pageId === "health-di") {
-    const selectedCategories = getSelectedCategoryIds(values);
-    return !selectedCategories.some((cat) => cat === "DI");
+    // Show when DI coverage with underwriting type TELE is selected
+    const selectedCoverages = getSelectedCoverages(values);
+    return !selectedCoverages.some(
+      (c) => c.categoryId === "DI" && c.underwritingType === "TELE",
+    );
   }
 
   if (pageId === "health-cir") {

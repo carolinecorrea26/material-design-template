@@ -24,7 +24,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import DynamicListItem from "../components/forms/DynamicListItem";
 import ApplicantSection from "../components/forms/ApplicantSection";
-import SectionHeader from "../components/forms/SectionHeader";
+import CategoryHeader from "../components/CategoryHeader";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
 import FormRoutePage from "../app/RoutePage";
 import AppDrawer from "../components/ui/AppDrawer";
@@ -612,22 +612,26 @@ export default function Beneficiary() {
       >
         <Stack spacing={3}>
           {groupedByCategory.map((group) => {
-              const CatIcon = group.category.icon as any;
-              return (
-                <Stack spacing={1.5} key={group.category.id}>
-                  <SectionHeader
-                    label={group.category.label}
-                    icon={CatIcon}
-                    chipVariant="outlined"
-                  />
-                  <Box sx={{ p: "1rem", background: "#cadfff", borderRadius: "24px" }}>
-                    <Stack spacing={1.25}>
-                      {group.products.map((product) => renderProductCard(product))}
-                    </Stack>
-                  </Box>
-                </Stack>
-              );
-            })}
+            const CatIcon = group.category.icon as any;
+            return (
+              <Stack spacing={1.5} key={group.category.id}>
+                <Box
+                  sx={{
+                    p: "1rem",
+                    background: "#f9fafd",
+                    borderRadius: "16px",
+                  }}
+                >
+                  <CategoryHeader label={group.category.label} icon={CatIcon} />
+                  <Stack spacing={1.25} sx={{ mt: 2 }}>
+                    {group.products.map((product) =>
+                      renderProductCard(product),
+                    )}
+                  </Stack>
+                </Box>
+              </Stack>
+            );
+          })}
         </Stack>
       </ApplicantSection>
     );

@@ -39,6 +39,7 @@ export const waepaClient: ClientConfig = {
       "di-short-term":
         "This coverage can help safeguard against the potentially devastating consequences an illness or injury could have on your life.",
     },
+    additionalCoverageWarning: "applyForTotal",
     overrides: {
       "li-group-term": {
         underwritingType: "QD",
