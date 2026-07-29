@@ -1,11 +1,12 @@
+import { useState } from "react";
 import { Alert, Box, Stack, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { formatUSD as formatCurrency } from "../utils/formatUSD";
-import CoverageCard from "../components/layout/CoverageCard";
+import ProductCard from "../components/ui/ProductCard";
 import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
 import FormRoutePage from "../app/RoutePage";
-import FormSectionTitle from "../components/forms/SectionTitle";
-import FormPageHelp from "../components/content/HelpPanel";
+import SectionTitle from "../components/forms/SectionTitle";
+
 import FieldRenderer from "../components/forms/FieldRenderer";
 import { getCoverageCategorySectionLabel } from "../config/coverageCategories";
 import { coverageCategories } from "../config/coverageCategories";
@@ -14,6 +15,8 @@ import { getActiveClientCoverages } from "../config/client/getActiveClientCovera
 import { fieldCatalog } from "../config/fields";
 import type { FieldDefinition, FieldId } from "../config/fields/types";
 import { paymentHandlingHelpItem } from "../content/helpContent";
+import FormHelpChips from "../components/content/HelpChips";
+import AppDrawer from "../components/ui/AppDrawer";
 
 type AppliedProduct = {
   coverageId: string;
@@ -213,12 +216,26 @@ function getPaymentDevFields(
 
 export default function Payment() {
   const helpItems = [paymentHandlingHelpItem];
+  const [activeHelpId, setActiveHelpId] = useState<string | null>(null);
+  const activeHelpItem =
+    helpItems.find((item) => item.id === activeHelpId) ?? null;
 
   return (
     <FormRoutePage
       pageId="payment"
       devFillFields={getPaymentDevFields}
-      help={<FormPageHelp items={helpItems} />}
+      help={
+        <>
+          <FormHelpChips items={helpItems} onSelect={setActiveHelpId} />
+          <AppDrawer
+            open={!!activeHelpItem}
+            title={activeHelpItem?.title ?? ""}
+            onClose={() => setActiveHelpId(null)}
+          >
+            {activeHelpItem?.content}
+          </AppDrawer>
+        </>
+      }
     >
       {({ control, errors, watchedValues }) => {
         const values = watchedValues as Record<string, unknown>;
@@ -265,11 +282,12 @@ export default function Payment() {
               groupedCategories.map(({ category, products }) => {
                 return (
                   <Stack key={category.id} spacing={1.5}>
-                    <FormSectionTitle
+                    <SectionTitle
                       label={getCoverageCategorySectionLabel(category.id)}
                     />
-
-                    {products.map((product) => {
+                    <Box sx={{ p: "1rem", background: "#cadfff", borderRadius: "24px" }}>
+                      <Stack spacing={2}>
+                        {products.map((product) => {
                       const paymentMethodFieldId = `payment-method:${product.coverageId}`;
                       const paymentFrequencyFieldId = `payment-frequency:${product.coverageId}`;
                       const selectedPaymentMethod = values[
@@ -307,9 +325,9 @@ export default function Payment() {
                       );
 
                       return (
-                        <CoverageCard key={product.coverageId}>
+                        <ProductCard key={product.coverageId}>
                           <Stack spacing={2}>
-                            <Typography variant="subtitle1" fontWeight="bold">
+                            <Typography sx={{ fontSize: "1rem", fontWeight: 700 }}>
                               {product.coverageName}
                             </Typography>
 
@@ -430,9 +448,11 @@ export default function Payment() {
                               </Stack>
                             </Box>
                           </Stack>
-                        </CoverageCard>
+                        </ProductCard>
                       );
                     })}
+                      </Stack>
+                    </Box>
                   </Stack>
                 );
               })
@@ -440,7 +460,7 @@ export default function Payment() {
 
             {hasAnyBankAccountSelected && (
               <Stack spacing={1.5} sx={{ pt: 1 }}>
-                <FormSectionTitle label="Banking Information" />
+                <SectionTitle label="Banking Information" />
 
                 {BANK_FIELD_IDS.map((fieldId) => (
                   <FieldRenderer

@@ -5,7 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { Alert, Box, Button, CircularProgress } from "@mui/material";
+import { Alert, Box } from "@mui/material";
 import { useForm, type FieldErrors } from "react-hook-form";
 import { useNavigate, useLocation } from "react-router-dom";
 import type { PageId } from "../types";
@@ -25,8 +25,9 @@ import {
 } from "./ApplicationFormContext";
 import { isApplicantApplying } from "../utils/applicantVisibility";
 import PageLayout from "../components/layout/Page";
-import PageTitle from "../components/layout/Title";
+import PageHeader from "../components/layout/PageHeader";
 import PageCard from "../components/layout/PageCard";
+import PageActions from "../components/layout/PageActions";
 import FormVerticalStepper, {
   VerticalStepperBreadcrumbs,
 } from "../components/navigation/Stepper";
@@ -38,10 +39,10 @@ import {
   MESSAGE_DURATION,
 } from "../config/transitionMessages";
 import { sendAutosaveMockEmail } from "../utils/mockEmail";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+
 import PageTransitionSkeleton from "../components/feedback/PageTransitionSkeleton";
 import ProgressSavedSnackbar from "../components/feedback/ProgressSavedSnackbar";
-import PageErrorAlert from "../components/feedback/PageErrorAlert";
+import PageAlert from "../components/feedback/PageAlert";
 
 type FormRouteFieldValue = string | boolean | string[];
 type FormRoutePageFormValues = Record<string, FormRouteFieldValue>;
@@ -539,18 +540,16 @@ export default function FormRoutePage({
           ) : (
             <>
               {!noTitle && (
-                <Box sx={{ mb: "1rem" }}>
-                  <PageTitle
-                    title={resolvedTitle}
-                    subhead={resolvedSubhead}
-                    onBack={
-                      getPreviousFormPageId(pageId, watchedValues)
-                        ? handleBack
-                        : undefined
-                    }
-                  />
-                  {renderedHelp}
-                </Box>
+                <PageHeader
+                  title={resolvedTitle}
+                  subhead={resolvedSubhead}
+                  onBack={
+                    getPreviousFormPageId(pageId, watchedValues)
+                      ? handleBack
+                      : undefined
+                  }
+                  help={renderedHelp}
+                />
               )}
               {resolvedInfoNote && (
                 <Box sx={{ mb: 2 }}>
@@ -559,7 +558,7 @@ export default function FormRoutePage({
                   </Alert>
                 </Box>
               )}
-              <PageErrorAlert error={pageError} />
+              <PageAlert severity="error" message={pageError} />
               <form
                 id={`${pageId}-form`}
                 noValidate
@@ -575,37 +574,15 @@ export default function FormRoutePage({
             !(typeof hideNextButton === "function"
               ? hideNextButton(watchedValues)
               : hideNextButton) && (
-              <Box sx={{ mt: "1rem", mb: "1rem" }}>
-                <Button
-                  type="submit"
-                  form={`${pageId}-form`}
-                  variant="contained"
-                  fullWidth
-                  disabled={
-                    isTransitioning ||
-                    (typeof disableNextButton === "function"
-                      ? disableNextButton(watchedValues)
-                      : Boolean(disableNextButton))
-                  }
-                  endIcon={
-                    !isTransitioning ? <ArrowForwardRoundedIcon /> : undefined
-                  }
-                  sx={(theme) => ({
-                    "&.Mui-disabled": {
-                      color: theme.palette.primary.contrastText,
-                      backgroundColor: theme.palette.primary.main,
-                      boxShadow: `0 8px 18px ${theme.palette.primary.main}3d`,
-                      opacity: 1,
-                    },
-                  })}
-                >
-                  {isTransitioning ? (
-                    <CircularProgress size={20} color="inherit" />
-                  ) : (
-                    "Next"
-                  )}
-                </Button>
-              </Box>
+              <PageActions
+                formId={`${pageId}-form`}
+                isTransitioning={isTransitioning}
+                disabled={
+                  typeof disableNextButton === "function"
+                    ? disableNextButton(watchedValues)
+                    : Boolean(disableNextButton)
+                }
+              />
             )}
         </PageCard>
       </Box>

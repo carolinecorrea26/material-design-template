@@ -159,16 +159,21 @@ export type ClientFeatures = {
 };
 
 /**
- * Defines which coverage question sections are visible for each category.
- * If a client provides this, it overrides the default hardcoded mapping
- * in CoverageQuestions. Categories not listed fall back to showing no
- * category-specific sections (i.e. only "always" sections are shown).
+ * Defines how coverage question sections are shown per category.
  *
- * - `always`: sections shown regardless of category selection
- * - Per-category arrays: additional sections shown when that category is selected
+ * The default behavior uses hardcoded section sets in CoverageQuestions
+ * (defaultPersonalSections, defaultWorkIncomeSections, defaultBusinessSections).
+ * Clients can layer on top of defaults in three ways:
+ *
+ * - `always`: sections always shown when any category is selected (additive)
+ * - `removeDefaults`: section IDs to suppress from the default sets entirely
+ * - Per-category arrays: additional sections shown when that category is selected (additive)
  */
 export type ClientCoverageQuestions = {
+  /** Sections always shown when any category is selected. */
   always?: PageSectionId[];
+  /** Section IDs to remove from the default section sets for all categories. */
+  removeDefaults?: PageSectionId[];
 } & Partial<Record<CoverageCategoryId, PageSectionId[]>>;
 
 export type ClientConfig = {

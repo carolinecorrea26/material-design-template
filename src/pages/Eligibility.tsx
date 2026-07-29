@@ -18,7 +18,7 @@ import FormRoutePage, {
   isSectionVisible,
 } from "../app/RoutePage";
 import FieldRenderer from "../components/forms/FieldRenderer";
-import AddList from "../components/forms/DynamicList";
+import DynamicList from "../components/forms/DynamicList";
 import ApplicantSection from "../components/forms/ApplicantSection";
 import { fieldCatalog } from "../config/fields";
 import {
@@ -225,7 +225,7 @@ function EligibilityFields({
 
         const content =
           section.id === "childSection" ? (
-            <AddList
+            <DynamicList
               control={control}
               name="children"
               label="Child"

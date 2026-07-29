@@ -13,18 +13,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import ComparisonQuoteModal from "./QuoteComparisonModal";
-import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
-import { fieldCatalog } from "../../config/fields";
+import AppModal from "./ui/AppModal";
+import QuoteModal from "./QuoteModal";
+import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
+import { fieldCatalog } from "../config/fields";
 import {
   deriveStateProvinceFromZipOrPostalCode,
   formatZipOrPostalCode,
-} from "../../utils/zipToStateProvince";
+} from "../utils/zipToStateProvince";
 import {
   parseStoredDate,
   formatDateForStorage,
   formatDateDisplay,
-} from "../../utils/dateFormatting";
+} from "../utils/dateFormatting";
 
 type EligibilityValues = {
   birthday: string;
@@ -254,14 +255,19 @@ export default function HomeQuoteCard() {
         </Stack>
       </Box>
 
-      <ComparisonQuoteModal
+      <AppModal
         open={quoteModalOpen}
         onClose={() => setQuoteModalOpen(false)}
-        coverages={coverages}
-        birthday={values.birthday}
-        zipCode={values.zipCode}
-        state={values.state}
-      />
+        title="Your coverage estimate"
+      >
+        <QuoteModal
+          onClose={() => setQuoteModalOpen(false)}
+          coverages={coverages}
+          birthday={values.birthday}
+          zipCode={values.zipCode}
+          state={values.state}
+        />
+      </AppModal>
     </>
   );
 }

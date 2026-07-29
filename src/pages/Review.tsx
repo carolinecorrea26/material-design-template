@@ -13,7 +13,7 @@ import FieldRenderer from "../components/forms/FieldRenderer";
 import type { PageId } from "../types";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { fieldCatalog } from "../config/fields";
-import ApplicationDocumentPreview from "../components/overlays/DocumentPreview";
+import ApplicationDocumentPreview from "../components/ApplicationDocumentPreview";
 import { getContent } from "../content";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 

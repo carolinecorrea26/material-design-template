@@ -3,10 +3,9 @@ import type { SvgIconComponent } from "@mui/icons-material";
 import { Alert, Box } from "@mui/material";
 import {
   applicantSectionTitles,
-  applicantSectionBannerSx,
   type ApplicantSectionId,
 } from "../../config/formSectionTitle";
-import FormSectionTitle from "./SectionTitle";
+import SectionTitle from "./SectionTitle";
 
 type ApplicantSectionProps = {
   applicant: ApplicantSectionId;
@@ -42,9 +41,7 @@ export default function ApplicantSection({
 
   return (
     <Box sx={{ mb: 4, mt: 3 }}>
-      <Box sx={applicantSectionBannerSx}>
-        <FormSectionTitle label={title} icon={icon} />
-      </Box>
+      <SectionTitle label={title} icon={icon} variant="applicant" />
 
       {note && (
         <Alert severity="info" sx={{ mt: 2 }}>

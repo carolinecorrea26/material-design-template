@@ -42,7 +42,11 @@ export default function PageLayout({
             {headerOverride ??
               (!noTitle && title ? (
                 <Stack spacing={1} sx={{ padding: "0 0.5rem" }}>
-                  <PageTitle title={title} subhead={subhead} onBack={onBack} />
+                  <PageTitle
+                    title={title}
+                    subhead={subhead}
+                    onBack={onBack}
+                  />
                   {error && (
                     <Alert severity="error" sx={{ width: "100%" }}>
                       {error}

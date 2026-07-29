@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import CoverageCard from "../components/layout/CoverageCard";
+import ProductCard from "../components/ui/ProductCard";
 import {
   Alert,
   Box,
@@ -22,16 +22,17 @@ import {
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import AddListItem from "../components/forms/DynamicListItem";
+import DynamicListItem from "../components/forms/DynamicListItem";
 import ApplicantSection from "../components/forms/ApplicantSection";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
 import FormRoutePage from "../app/RoutePage";
-import FormPageHelp from "../components/content/HelpPanel";
+import AppDrawer from "../components/ui/AppDrawer";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
 import type { CoverageApplicantId } from "../config/coverages/types";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { beneficiaryHelpItems } from "../content/helpContent";
+import FormHelpChips from "../components/content/HelpChips";
 
 type BeneficiaryDesignation = "primary" | "contingent";
 type BeneficiaryType = "individual" | "trust";
@@ -265,6 +266,10 @@ export default function Beneficiary() {
   );
 
   const helpItems = beneficiaryHelpItems;
+
+  const [activeHelpId, setActiveHelpId] = useState<string | null>(null);
+  const activeHelpItem =
+    helpItems.find((item) => item.id === activeHelpId) ?? null;
 
   function parseCommittedShare(rawShare: string): number | null {
     const parsed = Number(rawShare);
@@ -521,7 +526,7 @@ export default function Beneficiary() {
     const items = getProductBeneficiaries(product.productKey);
 
     return (
-      <CoverageCard
+      <ProductCard
         key={product.productKey}
         sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}
       >
@@ -541,7 +546,7 @@ export default function Beneficiary() {
                   {getDesignationLabel(designation)}
                 </Typography>
                 {designationItems.map((item) => (
-                  <AddListItem
+                  <DynamicListItem
                     key={item.id}
                     onEdit={() => openEditModal(product, item)}
                     onRemove={() =>
@@ -557,7 +562,7 @@ export default function Beneficiary() {
                         ? ` | ${item.share}%`
                         : ""}
                     </Typography>
-                  </AddListItem>
+                  </DynamicListItem>
                 ))}
               </Stack>
             );
@@ -578,7 +583,7 @@ export default function Beneficiary() {
             </Button>
           )}
         </Stack>
-      </CoverageCard>
+      </ProductCard>
     );
   }
 
@@ -604,12 +609,15 @@ export default function Beneficiary() {
         applicant={applicant === "member" ? "self" : "spouse"}
         showLabel={shouldShowApplicantLabel(applicant, values)}
       >
-        <Stack spacing={2}>
+        <Stack spacing={3}>
           {groupedByCategory.map((group) => (
-            <Stack spacing={1.25} key={group.category.id}>
-              <Stack spacing={1.25}>
-                {group.products.map((product) => renderProductCard(product))}
-              </Stack>
+            <Stack spacing={1.5} key={group.category.id}>
+              <Typography variant="overline">{group.category.label}</Typography>
+              <Box sx={{ p: "1rem", background: "#cadfff", borderRadius: "24px" }}>
+                <Stack spacing={1.25}>
+                  {group.products.map((product) => renderProductCard(product))}
+                </Stack>
+              </Box>
             </Stack>
           ))}
         </Stack>
@@ -707,7 +715,18 @@ export default function Beneficiary() {
   return (
     <FormRoutePage
       pageId="beneficiary"
-      help={<FormPageHelp items={helpItems} />}
+      help={
+        <>
+          <FormHelpChips items={helpItems} onSelect={setActiveHelpId} />
+          <AppDrawer
+            open={!!activeHelpItem}
+            title={activeHelpItem?.title ?? ""}
+            onClose={() => setActiveHelpId(null)}
+          >
+            {activeHelpItem?.content}
+          </AppDrawer>
+        </>
+      }
     >
       {!hasAnyApplicantProducts ? (
         <Alert severity="info">

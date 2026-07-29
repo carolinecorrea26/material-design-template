@@ -9,7 +9,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Drawer,
   IconButton,
   LinearProgress,
   Link,
@@ -22,35 +21,24 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ChatIcon from "@mui/icons-material/Chat";
-import CloseIcon from "@mui/icons-material/Close";
-import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
-import RequestQuoteRoundedIcon from "@mui/icons-material/RequestQuoteRounded";
-import CalculateRoundedIcon from "@mui/icons-material/CalculateRounded";
-import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
-import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
-import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
-import { CoverageOptionsDrawerContent } from "../../content/helpContent";
-import CoverageNeedsCalculator from "../overlays/CoverageCalculator";
-import CostEstimateDrawerContent from "../overlays/CostEstimateDrawer";
-import FormHelpDrawer from "../overlays/HelpDrawer";
+import AppMenuDrawer from "./AppMenuDrawer";
+import AppDrawer from "../ui/AppDrawer";
 import { pages } from "../../config/pages";
-// import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
-// import { coverageCategories } from "../../config/coverageCategories";
 import type { CoverageDefinition } from "../../config/coverages/types";
 import { getFormProgressPercent, isFormPage } from "../../config/formFlow";
 import type { ClientConfig } from "../../config/clients/types";
 import type { PageId } from "../../types";
 import { useApplicationForm } from "../../app/ApplicationFormContext";
 import { router } from "../../app/router";
-import { APP_MENU_SECTION_TITLE_SX } from "../../app/theme";
-import ApplicationSummaryDrawer, {
+import CoverageSummary, {
   useApplicationSummaryBadge,
-} from "../overlays/CoverageSummaryDrawer";
+} from "../CoverageSummary";
+import type { AppLayoutVariant } from "./AppLayout";
 
 type AppHeaderProps = {
   client: ClientConfig;
+  /** Controls which header actions are shown. Defaults to "applicationForm". */
+  variant?: AppLayoutVariant;
 };
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
@@ -63,15 +51,12 @@ function formatCoverageRange(coverage: CoverageDefinition) {
   if (coverage.minAmount == null && coverage.maxAmount == null) {
     return "Amount varies by selection.";
   }
-
   if (coverage.minAmount != null && coverage.maxAmount != null) {
     return `${currencyFormatter.format(coverage.minAmount)} - ${currencyFormatter.format(coverage.maxAmount)}`;
   }
-
   if (coverage.minAmount != null) {
     return `Starting at ${currencyFormatter.format(coverage.minAmount)}`;
   }
-
   return `Up to ${currencyFormatter.format(coverage.maxAmount ?? 0)}`;
 }
 
@@ -81,7 +66,6 @@ function formatApplicants(applicants: CoverageDefinition["applicants"]) {
     spouse: "Spouse",
     child: "Child",
   };
-
   return applicants.map((applicant) => labels[applicant]).join(", ");
 }
 
@@ -114,12 +98,9 @@ function patchHistoryForLocationChangeEvents() {
 
 function subscribeToPathname(callback: () => void) {
   if (typeof window === "undefined") return () => {};
-
   patchHistoryForLocationChangeEvents();
-
   window.addEventListener("popstate", callback);
   window.addEventListener("locationchange", callback);
-
   return () => {
     window.removeEventListener("popstate", callback);
     window.removeEventListener("locationchange", callback);
@@ -131,16 +112,21 @@ function getPathnameSnapshot() {
   return window.location.pathname;
 }
 
-export default function AppHeader({ client }: AppHeaderProps) {
+export default function AppHeader({
+  client,
+  variant = "applicationForm",
+}: AppHeaderProps) {
+  // "applicationForm" and "homepage" both show the menu icon.
+  // Utility variants (advisorLogin, advisorSend, resumeEmailCode) show logo only.
+  const showMenu =
+    variant === "applicationForm" || variant === "homepage";
+
   const [imageError, setImageError] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
   const [summarySource, setSummarySource] = useState<
     "cart-icon" | "coverage-page"
   >("cart-icon");
-  const [isCoverageDrawerOpen, setIsCoverageDrawerOpen] = useState(false);
-  const [isNeedsCalcOpen, setIsNeedsCalcOpen] = useState(false);
-  const [isQuoteDrawerOpen, setIsQuoteDrawerOpen] = useState(false);
   const [_addedSnackbarOpen, setAddedSnackbarOpen] = useState(false);
   const [activeCoverage, setActiveCoverage] =
     useState<CoverageDefinition | null>(null);
@@ -153,10 +139,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
     () => "/",
   );
 
-  const trigger = useScrollTrigger({
-    // disableHysteresis: true,
-    threshold: 8,
-  });
+  const trigger = useScrollTrigger({ threshold: 8 });
 
   const normalizedPath =
     pathname.length > 1 && pathname.endsWith("/")
@@ -164,10 +147,11 @@ export default function AppHeader({ client }: AppHeaderProps) {
       : pathname;
 
   const currentPage = pages.find((page) => page.path === normalizedPath);
-
   const currentPageId = currentPage?.id as PageId | undefined;
 
+  // Progress bar only on applicationForm variant, not homepage
   const showProgress =
+    variant === "applicationForm" &&
     !!currentPage &&
     isFormPage(currentPage.id as PageId) &&
     currentPage.id !== "receipt";
@@ -178,6 +162,7 @@ export default function AppHeader({ client }: AppHeaderProps) {
       : 0;
 
   const showSummaryIcon =
+    variant === "applicationForm" &&
     currentPageId !== undefined &&
     currentPageId !== "home" &&
     currentPageId !== "receipt";
@@ -204,13 +189,6 @@ export default function AppHeader({ client }: AppHeaderProps) {
     }
   }, [values.coverageSelections, currentPageId]);
 
-  const phone = client.support.phone;
-
-  function handleNavigate(path: string) {
-    setIsMenuOpen(false);
-    void router.navigate(path);
-  }
-
   return (
     <>
       <Slide appear={false} direction="down" in={!trigger}>
@@ -223,13 +201,11 @@ export default function AppHeader({ client }: AppHeaderProps) {
             borderBottom: "none",
             boxShadow: "none",
             pt: 2,
-            // pb: 2,
           }}
         >
           <Toolbar
             sx={{
               width: "100%",
-              // maxWidth: 1400,
               marginLeft: "auto",
               marginRight: "auto",
               minHeight: "40px !important",
@@ -277,15 +253,9 @@ export default function AppHeader({ client }: AppHeaderProps) {
                 )}
               </Box>
 
-              <Box
-                sx={{
-                  ml: "auto",
-                  minWidth: 0,
-                  textAlign: "right",
-                }}
-              >
+              <Box sx={{ ml: "auto", minWidth: 0, textAlign: "right" }}>
                 <Stack direction="row" spacing={0.75} alignItems="center">
-                  {client.features?.chat && showSummaryIcon && (
+                  {showMenu && client.features?.chat && showSummaryIcon && (
                     <IconButton
                       aria-label="Open chat"
                       size="small"
@@ -322,27 +292,18 @@ export default function AppHeader({ client }: AppHeaderProps) {
                       >
                         <ShoppingCartIcon sx={{ color: "primary.main" }} />
                       </Badge>
-                      {/* <Typography
-                        variant="body2"
-                        sx={{
-                          color: "primary.main",
-                          fontWeight: 700,
-                          fontSize: "0.75rem",
-                          display: { xs: "none", sm: "block" },
-                        }}
-                      >
-                        Cart
-                      </Typography> */}
                     </IconButton>
                   )}
 
-                  <IconButton
-                    aria-label="Open application navigation menu"
-                    onClick={() => setIsMenuOpen(true)}
-                    size="small"
-                  >
-                    <MenuIcon />
-                  </IconButton>
+                  {showMenu && (
+                    <IconButton
+                      aria-label="Open application navigation menu"
+                      onClick={() => setIsMenuOpen(true)}
+                      size="small"
+                    >
+                      <MenuIcon />
+                    </IconButton>
+                  )}
                 </Stack>
               </Box>
             </Box>
@@ -359,10 +320,8 @@ export default function AppHeader({ client }: AppHeaderProps) {
                       sm: "calc(100% + 48px)",
                       md: "calc(100% + 64px)",
                     },
-                    // height: 8,
                     mx: { xs: -2, sm: -3, md: -4 },
                     mt: 2,
-                    // bgcolor: "rgb(0 0 0 / 6%)",
                     "& .MuiLinearProgress-bar": {
                       bgcolor: "primary.main",
                     },
@@ -374,272 +333,15 @@ export default function AppHeader({ client }: AppHeaderProps) {
         </AppBar>
       </Slide>
 
-      <Drawer
-        anchor="right"
-        open={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        sx={{
-          "& .MuiDrawer-paper": {
-            width: { xs: "80vw", sm: 420 },
-            maxWidth: "100%",
-            p: 2,
-          },
-        }}
-      >
-        <Stack spacing={2} sx={{ height: "100%" }}>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 1,
-            }}
-          >
-            <Typography variant="subtitle1" fontWeight="bold">
-              Menu
-            </Typography>
+      {showMenu && (
+        <AppMenuDrawer
+          open={isMenuOpen}
+          onClose={() => setIsMenuOpen(false)}
+          client={client}
+        />
+      )}
 
-            <IconButton
-              aria-label="Close application navigation menu"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <CloseIcon />
-            </IconButton>
-          </Box>
-
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: 1,
-
-              bgcolor: "background.subtle",
-            }}
-          >
-            <Stack spacing={1}>
-              <Typography variant="subtitle1" sx={APP_MENU_SECTION_TITLE_SX}>
-                Continue Saved Application
-              </Typography>
-              <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                You can continue your saved application below. Applications are
-                only saved for 10 days from starting.
-              </Typography>
-            </Stack>
-            <Button
-              variant="contained"
-              fullWidth
-              onClick={() => handleNavigate("/resume")}
-              sx={{ margin: "1.25rem 0" }}
-            >
-              Continue Application
-            </Button>
-          </Box>
-
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: 1,
-
-              bgcolor: "background.subtle",
-            }}
-          >
-            <Stack spacing={2}>
-              <Typography variant="subtitle1" sx={APP_MENU_SECTION_TITLE_SX}>
-                Application Tools
-              </Typography>
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: 1.5,
-                }}
-              >
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                    setIsCoverageDrawerOpen(true);
-                  }}
-                  sx={{
-                    flexDirection: "column",
-                    textTransform: "none",
-                    py: 2,
-                    px: 1,
-                    gap: 0.5,
-                    borderRadius: 2,
-                    minHeight: 80,
-                  }}
-                >
-                  <PrivacyTipIcon />
-                  <Typography variant="caption" fontWeight={600}>
-                    About Coverage
-                  </Typography>
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                    setIsQuoteDrawerOpen(true);
-                  }}
-                  sx={{
-                    flexDirection: "column",
-                    textTransform: "none",
-                    py: 2,
-                    px: 1,
-                    gap: 0.5,
-                    borderRadius: 2,
-                    minHeight: 80,
-                  }}
-                >
-                  <RequestQuoteRoundedIcon />
-                  <Typography variant="caption" fontWeight={600}>
-                    Get Quote
-                  </Typography>
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                    setIsNeedsCalcOpen(true);
-                  }}
-                  sx={{
-                    flexDirection: "column",
-                    textTransform: "none",
-                    py: 2,
-                    px: 1,
-                    gap: 0.5,
-                    borderRadius: 2,
-                    minHeight: 80,
-                  }}
-                >
-                  <CalculateRoundedIcon />
-                  <Typography variant="caption" fontWeight={600}>
-                    Needs Calculator
-                  </Typography>
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                  }}
-                  sx={{
-                    flexDirection: "column",
-                    textTransform: "none",
-                    py: 2,
-                    px: 1,
-                    gap: 0.5,
-                    borderRadius: 2,
-                    minHeight: 80,
-                  }}
-                >
-                  <HelpRoundedIcon />
-                  <Typography variant="caption" fontWeight={600}>
-                    FAQ
-                  </Typography>
-                </Button>
-              </Box>
-            </Stack>
-          </Box>
-
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: 1,
-
-              bgcolor: "background.subtle",
-            }}
-          >
-            <Stack spacing={1.5}>
-              <Typography variant="subtitle1" sx={APP_MENU_SECTION_TITLE_SX}>
-                Contact Us
-              </Typography>
-              <Stack spacing={1}>
-                <Typography variant="body2">{client.branding.name}</Typography>
-                {client.support.website && (
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <LanguageOutlinedIcon
-                      sx={{ fontSize: 18, color: "text.secondary" }}
-                    />
-                    <Link
-                      href={`https://${client.support.website}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      underline="hover"
-                      variant="body2"
-                    >
-                      {client.support.website}
-                    </Link>
-                  </Stack>
-                )}
-                {client.support.email && (
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <EmailOutlinedIcon
-                      sx={{ fontSize: 18, color: "text.secondary" }}
-                    />
-                    <Link
-                      href={`mailto:${client.support.email}`}
-                      underline="hover"
-                      variant="body2"
-                    >
-                      {client.support.email}
-                    </Link>
-                  </Stack>
-                )}
-                {phone && (
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <PhoneOutlinedIcon
-                      sx={{ fontSize: 18, color: "text.secondary" }}
-                    />
-                    <Link
-                      href={`tel:${phone}`}
-                      underline="hover"
-                      variant="body2"
-                    >
-                      {client.support.phoneDisplay ?? phone}
-                    </Link>
-                  </Stack>
-                )}
-                {client.support.phoneHours && (
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <AccessTimeOutlinedIcon
-                      sx={{ fontSize: 18, color: "text.secondary" }}
-                    />
-                    <Typography variant="body2" color="text.secondary">
-                      {client.support.phoneHours}
-                    </Typography>
-                  </Stack>
-                )}
-              </Stack>
-            </Stack>
-          </Box>
-
-          <Box sx={{ mt: "auto" }} />
-        </Stack>
-      </Drawer>
-
-      <FormHelpDrawer
-        open={isCoverageDrawerOpen}
-        title="What are my coverage options?"
-        onClose={() => setIsCoverageDrawerOpen(false)}
-      >
-        <CoverageOptionsDrawerContent />
-      </FormHelpDrawer>
-
-      <FormHelpDrawer
-        open={isNeedsCalcOpen}
-        title="How much coverage do I need?"
-        onClose={() => setIsNeedsCalcOpen(false)}
-      >
-        <CoverageNeedsCalculator />
-      </FormHelpDrawer>
-
-      <FormHelpDrawer
-        open={isQuoteDrawerOpen}
-        title="How much does it cost?"
-        onClose={() => setIsQuoteDrawerOpen(false)}
-      >
-        <CostEstimateDrawerContent />
-      </FormHelpDrawer>
-
+      {/* Coverage details dialog (triggered from CoverageSummary or ProductCatalog) */}
       <Dialog
         open={Boolean(activeCoverage)}
         onClose={() => setActiveCoverage(null)}
@@ -647,66 +349,58 @@ export default function AppHeader({ client }: AppHeaderProps) {
         fullWidth
       >
         <DialogTitle>{activeCoverage?.name ?? "Coverage Details"}</DialogTitle>
-
         <DialogContent dividers>
           <Stack spacing={1.5}>
             <Typography variant="body2" color="text.secondary">
               {activeCoverage?.description ?? activeCoverage?.definition}
             </Typography>
-
             <Typography variant="body2">
               <Box component="span" sx={{ fontWeight: 700 }}>
                 Benefit amount:
-              </Box>
+              </Box>{" "}
               {activeCoverage ? formatCoverageRange(activeCoverage) : "-"}
             </Typography>
-
             {activeCoverage?.coverageNote ? (
               <Typography variant="body2">
                 <Box component="span" sx={{ fontWeight: 700 }}>
                   Coverage note:
-                </Box>
+                </Box>{" "}
                 {activeCoverage.coverageNote}
               </Typography>
             ) : null}
-
             {activeCoverage ? (
               <Typography variant="body2">
                 <Box component="span" sx={{ fontWeight: 700 }}>
                   Eligible applicants:
-                </Box>
+                </Box>{" "}
                 {formatApplicants(activeCoverage.applicants)}
               </Typography>
             ) : null}
-
             {activeCoverage?.waitingPeriodOptions?.length ? (
               <Typography variant="body2">
                 <Box component="span" sx={{ fontWeight: 700 }}>
                   Waiting periods:
-                </Box>
+                </Box>{" "}
                 {activeCoverage.waitingPeriodOptions
                   .map((option) => option.label)
                   .join(", ")}
               </Typography>
             ) : null}
-
             {activeCoverage?.maxBenefitPeriodOptions?.length ? (
               <Typography variant="body2">
                 <Box component="span" sx={{ fontWeight: 700 }}>
                   Max benefit periods:
-                </Box>
+                </Box>{" "}
                 {activeCoverage.maxBenefitPeriodOptions
                   .map((option) => option.label)
                   .join(", ")}
               </Typography>
             ) : null}
-
             {activeCoverage?.riders?.length ? (
               <Stack spacing={0.75}>
                 <Typography variant="body2" sx={{ fontWeight: 700 }}>
                   Available riders
                 </Typography>
-
                 {activeCoverage.riders.map((rider) => (
                   <Typography
                     key={rider.id}
@@ -718,7 +412,6 @@ export default function AppHeader({ client }: AppHeaderProps) {
                 ))}
               </Stack>
             ) : null}
-
             <Link
               component="button"
               type="button"
@@ -730,35 +423,21 @@ export default function AppHeader({ client }: AppHeaderProps) {
             </Link>
           </Stack>
         </DialogContent>
-
         <DialogActions>
           <Button onClick={() => setActiveCoverage(null)}>Close</Button>
         </DialogActions>
       </Dialog>
 
-      <ApplicationSummaryDrawer
+      <AppDrawer
         open={isSummaryOpen}
         onClose={() => setIsSummaryOpen(false)}
-        source={summarySource}
-      />
-
-      {/* <Snackbar
-        open={addedSnackbarOpen}
-        autoHideDuration={2000}
-        onClose={() => setAddedSnackbarOpen(false)}
-        message="Added!"
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        sx={{
-          "& .MuiSnackbarContent-root": {
-            minWidth: "auto",
-            px: 2,
-            py: 0.5,
-            bgcolor: "success.main",
-            fontWeight: 600,
-          },
-          top: { xs: "70px !important", sm: "70px !important" },
-        }}
-      /> */}
+        swipeable
+      >
+        <CoverageSummary
+          onClose={() => setIsSummaryOpen(false)}
+          source={summarySource}
+        />
+      </AppDrawer>
     </>
   );
 }

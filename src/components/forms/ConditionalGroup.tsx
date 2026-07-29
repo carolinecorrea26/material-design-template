@@ -1,13 +1,18 @@
 import type { ReactNode } from "react";
 import { Box } from "@mui/material";
 
-type SubQuestionContainerProps = {
+type ConditionalGroupProps = {
   children: ReactNode;
 };
 
-export default function SubQuestionContainer({
-  children,
-}: SubQuestionContainerProps) {
+/**
+ * ConditionalGroup renders a left-bordered, indented container that visually
+ * groups follow-up questions which are conditional on a prior answer.
+ *
+ * This is a pure visual wrapper — the parent is responsible for deciding
+ * when to render it. It does not own show/hide logic.
+ */
+export default function ConditionalGroup({ children }: ConditionalGroupProps) {
   return (
     <Box
       sx={{

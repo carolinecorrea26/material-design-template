@@ -20,8 +20,6 @@ import {
   Stack,
   TextField,
   Tooltip,
-  ToggleButton,
-  ToggleButtonGroup,
   Typography,
   type TextFieldProps,
 } from "@mui/material";
@@ -30,7 +28,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import type { FieldDefinition, FieldOption } from "../../config/fields/types";
-import SelectableOptionRow from "./OptionRow";
+import SelectionGroup from "./SelectionGroup";
 import {
   parseStoredDate,
   formatDateForStorage,
@@ -236,15 +234,11 @@ function formatPercent(value: string) {
   return sanitizeDigits(value, 3);
 }
 
-function labelStandardEnabled() {
-  return new URLSearchParams(window.location.search).has("labelStandard");
-}
-
 function getLabelVariant(field: FieldDefinition) {
-  if (labelStandardEnabled() && !field.labelVariant) {
-    return "standard";
-  }
-  return field.labelVariant ?? "floating";
+  if (field.labelVariant) return field.labelVariant;
+  // Auto-switch to standard (external) label for long labels to prevent clipping
+  if (field.label && field.label.length >= 40) return "standard";
+  return "floating";
 }
 
 function hasCompletedValue(field: FieldDefinition, value: unknown) {
@@ -473,6 +467,7 @@ function SsnField({
           },
           inputProps: {
             autoComplete: "off",
+            "aria-label": field.label || "Social Security Number",
           },
         }) as ReactElement;
       }}
@@ -607,20 +602,15 @@ export default function FieldRenderer({
                 <FormLabel
                   required={field.required}
                   sx={{ display: "block", mb: 1 }}
+                  id={`${field.id}-label`}
                 >
                   {renderFieldLabel(field)}
                 </FormLabel>
               ) : null}
 
-              <ToggleButtonGroup
-                exclusive
-                value={(controllerField.value as string) ?? ""}
-                onChange={(_, value) => {
-                  if (value !== null) {
-                    controllerField.onChange(value);
-                    onValueChange?.();
-                  }
-                }}
+              <Box
+                role="radiogroup"
+                aria-labelledby={`${field.id}-label`}
                 onBlur={controllerField.onBlur}
                 sx={{
                   display: "flex",
@@ -634,30 +624,46 @@ export default function FieldRenderer({
                   const checked = controllerField.value === option.value;
 
                   return (
-                    <ToggleButton
+                    <SelectionGroup
                       key={option.value}
-                      value={option.value}
-                      sx={{
-                        width: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        gap: 1.5,
-                        py: 1.5,
-                        textTransform: "none",
+                      role="radio"
+                      aria-checked={checked}
+                      tabIndex={checked ? 0 : -1}
+                      onClick={() => {
+                        controllerField.onChange(option.value);
+                        onValueChange?.();
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === " " || e.key === "Enter") {
+                          e.preventDefault();
+                          controllerField.onChange(option.value);
+                          onValueChange?.();
+                        }
                       }}
                     >
-                      <Radio checked={checked} size="small" sx={controlSx} />
-                      {option.label}
+                      <Radio
+                        checked={checked}
+                        size="small"
+                        sx={controlSx}
+                        tabIndex={-1}
+                        aria-hidden
+                      />
+                      <Box
+                        component="span"
+                        className="SelectionGroup-label"
+                        sx={{ fontSize: "0.875rem", flex: 1 }}
+                      >
+                        {option.label}
+                      </Box>
                       {isComplete && checked
                         ? renderCompletedIcon({ ml: "auto" })
                         : showError && checked
                           ? renderErrorIcon({ ml: "auto" })
                           : null}
-                    </ToggleButton>
+                    </SelectionGroup>
                   );
                 })}
-              </ToggleButtonGroup>
+              </Box>
 
               <FormHelperText>{resolvedHelperText}</FormHelperText>
             </FormControl>
@@ -976,7 +982,7 @@ export default function FieldRenderer({
               margin="normal"
               error={Boolean(errors[field.id])}
             >
-              <SelectableOptionRow>
+              <SelectionGroup>
                 <Checkbox
                   checked={Boolean(controllerField.value)}
                   onChange={(event) => {
@@ -986,7 +992,11 @@ export default function FieldRenderer({
                   onBlur={controllerField.onBlur}
                   sx={controlSx}
                 />
-                <Typography variant="body2">
+                <Box
+                  component="span"
+                  className="SelectionGroup-label"
+                  sx={{ flex: 1 }}
+                >
                   {field.label}
                   {field.required ? (
                     <Typography
@@ -996,13 +1006,13 @@ export default function FieldRenderer({
                       *
                     </Typography>
                   ) : null}
-                </Typography>
+                </Box>
                 {isComplete
                   ? renderCompletedIcon({ ml: "auto" })
                   : showError
                     ? renderErrorIcon({ ml: "auto" })
                     : null}
-              </SelectableOptionRow>
+              </SelectionGroup>
 
               <FormHelperText>{resolvedHelperText}</FormHelperText>
             </FormControl>
@@ -1048,7 +1058,7 @@ export default function FieldRenderer({
                   const checked = selectedValues.includes(option.value);
 
                   return (
-                    <SelectableOptionRow key={option.value}>
+                    <SelectionGroup key={option.value}>
                       <Checkbox
                         checked={checked}
                         onChange={(event) => {
@@ -1064,13 +1074,18 @@ export default function FieldRenderer({
                         onBlur={controllerField.onBlur}
                         sx={controlSx}
                       />
-                      <Typography variant="body2">{option.label}</Typography>
+                      <Typography
+                        component="span"
+                        className="SelectionGroup-label"
+                      >
+                        {option.label}
+                      </Typography>
                       {isComplete && checked
                         ? renderCompletedIcon({ ml: "auto" })
                         : showError
                           ? renderErrorIcon({ ml: "auto" })
                           : null}
-                    </SelectableOptionRow>
+                    </SelectionGroup>
                   );
                 })}
               </Stack>

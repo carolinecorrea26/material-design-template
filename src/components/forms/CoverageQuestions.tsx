@@ -1,11 +1,10 @@
 import { Box, Divider, Stack, Typography } from "@mui/material";
-import FieldRenderer from "../../components/forms/FieldRenderer";
-import ApplicantSection from "../../components/forms/ApplicantSection";
-import SubQuestionContainer from "../../components/forms/ConditionalGroup";
+import FieldRenderer from "./FieldRenderer";
+import ApplicantSection from "./ApplicantSection";
+import ConditionalGroup from "./ConditionalGroup";
 import type { FormRouteRenderProps } from "../../app/RoutePage";
 import type { CoverageCategoryId } from "../../config/coverages/types";
-import type { PageSectionConfig } from "../../config/pageSections/types";
-import type { SectionVisibilityRule } from "../../config/pageSections/types";
+import type { PageSectionConfig, PageSectionId, SectionVisibilityRule } from "../../config/pageSections/types";
 import type { ClientCoverageQuestions } from "../../config/clients/types";
 
 /**
@@ -30,18 +29,18 @@ function isSectionRulesVisible(
   });
 }
 
-/** Default section-to-category mapping (used when no client override) */
-const defaultPersonalSections = new Set([
+/** Default section-to-category mapping (used as base; clients can add/remove via coverageQuestions config) */
+const defaultPersonalSections = new Set<PageSectionId>([
   "selfCoverageQuestions",
   "selfCoverageTobacco",
   "spouseCoverageQuestions",
   "spouseCoverageTobacco",
 ]);
-const defaultWorkIncomeSections = new Set([
+const defaultWorkIncomeSections = new Set<PageSectionId>([
   "selfCoverageWorkIncome",
   "spouseCoverageWorkIncome",
 ]);
-const defaultBusinessSections = new Set(["selfCoverageBusinessExpenses"]);
+const defaultBusinessSections = new Set<PageSectionId>(["selfCoverageBusinessExpenses"]);
 
 type CoverageQuestionsProps = Pick<
   FormRouteRenderProps,
@@ -72,26 +71,40 @@ function isCategorySectionVisible(
     categoryNeedsHours,
   } = props;
 
-  // If client provides a coverageQuestions mapping, use it
-  if (coverageQuestions) {
-    // "always" sections are always visible when any category is selected
-    if (coverageQuestions.always?.includes(section.id)) {
-      return selectedCategories.length > 0;
-    }
-    // Check if any selected category lists this section
-    return selectedCategories.some((catId) =>
-      coverageQuestions[catId]?.includes(section.id),
-    );
+  // Build the effective default sets, minus any client removals
+  const removed = new Set(coverageQuestions?.removeDefaults ?? []);
+
+  const personalSections = new Set(
+    [...defaultPersonalSections].filter((s) => !removed.has(s)),
+  );
+  const workIncomeSections = new Set(
+    [...defaultWorkIncomeSections].filter((s) => !removed.has(s)),
+  );
+  const businessSections = new Set(
+    [...defaultBusinessSections].filter((s) => !removed.has(s)),
+  );
+
+  // "always" sections: shown when any category is selected
+  if (coverageQuestions?.always?.includes(section.id)) {
+    return selectedCategories.length > 0;
   }
 
-  // Default behavior
-  if (defaultPersonalSections.has(section.id)) {
+  // Per-category client additions: shown when the matching category is selected
+  if (coverageQuestions) {
+    const isClientAddition = selectedCategories.some((catId) =>
+      coverageQuestions[catId]?.includes(section.id),
+    );
+    if (isClientAddition) return true;
+  }
+
+  // Default section-to-category mapping
+  if (personalSections.has(section.id)) {
     return categoryNeedsGender || categoryNeedsSmoker;
   }
-  if (defaultWorkIncomeSections.has(section.id)) {
+  if (workIncomeSections.has(section.id)) {
     return categoryNeedsHours || categoryNeedsDi;
   }
-  if (defaultBusinessSections.has(section.id)) {
+  if (businessSections.has(section.id)) {
     return categoryNeedsOo;
   }
   return true;
@@ -176,7 +189,7 @@ export default function CoverageQuestions(props: CoverageQuestionsProps) {
             </>
           )}
           {isConditional ? (
-            <SubQuestionContainer>{content}</SubQuestionContainer>
+            <ConditionalGroup>{content}</ConditionalGroup>
           ) : (
             content
           )}

@@ -120,3 +120,9 @@ export default function FormHelpChips({
     </Stack>
   );
 }
+
+/** A help item that includes drawer content and title, extending the chip definition. */
+export type FormPageHelpItem = HelpChipItem & {
+  title: React.ReactNode;
+  content: React.ReactNode;
+};

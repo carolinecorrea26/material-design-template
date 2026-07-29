@@ -2,10 +2,6 @@ import type React from "react";
 import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 import type { ThemeColorId } from "../config/clients/types";
 
-// ---------------------------------------------------------------------------
-// Type augmentations
-// ---------------------------------------------------------------------------
-
 type ResponsiveCSSProperties = React.CSSProperties & {
   [key: `@media ${string}`]: React.CSSProperties;
 };
@@ -21,15 +17,12 @@ declare module "@mui/material/styles" {
     notice?: { main: string; border: string };
     support?: { main: string; border: string };
   }
-
   interface TypeBackground {
     subtle: string;
   }
-
   interface TypeText {
     tertiary: string;
   }
-
   interface TypographyVariants {
     formPageTitle: ResponsiveCSSProperties;
     formSectionLabel: React.CSSProperties;
@@ -42,7 +35,6 @@ declare module "@mui/material/styles" {
     formProgressStepLabel: React.CSSProperties;
     formProgressPercent: React.CSSProperties;
   }
-
   interface TypographyVariantsOptions {
     formPageTitle?: ResponsiveCSSProperties;
     formSectionLabel?: React.CSSProperties;
@@ -72,15 +64,16 @@ declare module "@mui/material/Typography" {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Tokens
-// ---------------------------------------------------------------------------
-
 const INPUT_RADIUS = "16px";
 
-// ---------------------------------------------------------------------------
-// Client theme color palettes
-// ---------------------------------------------------------------------------
+/** Single source-of-truth body/header/input text color. */
+export const TEXT_PRIMARY = "#353b48";
+
+/** Single source-of-truth border color for all field inputs. */
+export const FIELD_BORDER_COLOR = "rgba(52, 59, 72, 0.23)";
+
+/** Unselected label/floating-label color. */
+export const LABEL_COLOR = "rgb(52, 59, 72)";
 
 const themeColorPalettes: Record<
   ThemeColorId,
@@ -112,10 +105,6 @@ const themeColorPalettes: Record<
   },
 };
 
-// ---------------------------------------------------------------------------
-// Theme definition
-// ---------------------------------------------------------------------------
-
 export function createAppTheme(colorId: ThemeColorId = "default") {
   const primaryPalette =
     themeColorPalettes[colorId] ?? themeColorPalettes.default;
@@ -124,7 +113,6 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
     spacing: 8,
     shape: { borderRadius: 8 },
 
-    // -- Palette --
     palette: {
       primary: primaryPalette,
       success: {
@@ -135,57 +123,76 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
       },
       error: { main: "#ed0a0a" },
       text: {
-        primary: "#343b48",
+        primary: TEXT_PRIMARY,
         secondary: "#49596f",
         disabled: "#99a4b5",
         tertiary: "#5b7090",
       },
-      background: {
-        default: "#f9fafc",
-        paper: "#ffffff",
-        subtle: "#f5f8fd",
-      },
+      background: { default: "#f9fafc", paper: "#ffffff", subtle: "#f5f8fd" },
       divider: "rgba(52, 59, 72, 0.12)",
       panel: { main: "#f5f8fd", border: "rgba(0, 22, 57, 0.08)" },
       notice: { main: "#fffcf0", border: "#e9e3cb" },
       support: { main: "#ecf3ff", border: "#c8d5ea" },
     },
 
-    // -- Typography --
     typography: {
       fontFamily:
         'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-      h1: { fontSize: "2.25rem", fontWeight: 800, lineHeight: 1.167 },
+      h1: {
+        fontSize: "2.25rem",
+        fontWeight: 800,
+        // lineHeight: 1.167,
+        color: TEXT_PRIMARY,
+      },
       h2: {
         fontSize: "1.75rem",
         fontWeight: 800,
-        lineHeight: 1.2,
+        // lineHeight: 1.2,
         letterSpacing: "-0.025em",
+        color: TEXT_PRIMARY,
       },
-      h3: { fontSize: "1.5rem", fontWeight: 800, lineHeight: 1.167 },
-      h4: { fontSize: "1.375rem", fontWeight: 800, lineHeight: 1.235 },
-      h5: { fontSize: "1.125rem", fontWeight: 800, lineHeight: 1.334 },
-      h6: { fontSize: "1rem", fontWeight: 800, lineHeight: 1.6 },
-      subtitle1: { fontWeight: 500 },
-      subtitle2: { fontWeight: 600 },
-      overline: {
-        fontWeight: 700,
-        letterSpacing: "0.5px",
-        color: "#00388c",
+      h3: {
+        fontSize: "1.5rem",
+        fontWeight: 800,
+        // lineHeight: 1.167,
+        color: TEXT_PRIMARY,
       },
+      h4: {
+        fontSize: "1.375rem",
+        fontWeight: 800,
+        // lineHeight: 1.235,
+        color: TEXT_PRIMARY,
+      },
+      h5: {
+        fontSize: "1.125rem",
+        fontWeight: 800,
+        // lineHeight: 1.334,
+        color: TEXT_PRIMARY,
+      },
+      h6: {
+        fontSize: "1rem",
+        fontWeight: 800,
+        // lineHeight: 1.6,
+        color: TEXT_PRIMARY,
+      },
+      body1: { color: TEXT_PRIMARY },
+      body2: { color: TEXT_PRIMARY },
+      subtitle1: { fontWeight: 500, color: TEXT_PRIMARY },
+      subtitle2: { fontWeight: 600, color: TEXT_PRIMARY },
+      overline: { fontWeight: 700, letterSpacing: "0.5px", color: "#00388c" },
       button: { textTransform: "none", fontWeight: 700 },
 
-      // -- Form-specific variants (section headers / navigation) --
       formPageTitle: {
         fontSize: "1.25rem",
         fontWeight: 800,
         letterSpacing: "-0.025em",
         lineHeight: 1.3,
+        color: TEXT_PRIMARY,
         "@media (min-width:900px)": { fontSize: "1.5rem" },
       },
       formSectionLabel: {
         fontSize: "0.75rem",
-        lineHeight: 1.66,
+        lineHeight: "1.66",
         fontWeight: 700,
         textTransform: "uppercase",
         letterSpacing: "0.5px",
@@ -234,7 +241,6 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
       },
     },
 
-    // -- Components --
     components: {
       MuiSkeleton: {
         styleOverrides: {
@@ -249,7 +255,7 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
       },
       MuiLinearProgress: {
         styleOverrides: {
-          root: { height: 4, backgroundColor: "rgb(241 245 249)" },
+          root: { height: 6, backgroundColor: "rgb(241 245 249)" },
         },
       },
       MuiBadge: {
@@ -288,22 +294,17 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
         },
       },
       MuiStepContent: {
-        styleOverrides: {
-          root: { marginLeft: 15, borderColor: "#d7dee8" },
-        },
+        styleOverrides: { root: { marginLeft: 15, borderColor: "#d7dee8" } },
       },
-      MuiAlert: {
-        styleOverrides: { root: { borderRadius: INPUT_RADIUS } },
-      },
+      MuiAlert: { styleOverrides: { root: { borderRadius: INPUT_RADIUS } } },
 
-      // Input styling — single source of truth via MuiOutlinedInput
       MuiOutlinedInput: {
         styleOverrides: {
           root: ({ theme: t }) => ({
             backgroundColor: t.palette.background.paper,
             borderRadius: INPUT_RADIUS,
             "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: "rgba(52, 59, 72, 0.23)",
+              borderColor: FIELD_BORDER_COLOR,
               borderWidth: "1px",
             },
             "&:hover .MuiOutlinedInput-notchedOutline": {
@@ -317,6 +318,10 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
               borderColor: t.palette.error.main,
             },
           }),
+          // Entered text is bold; empty/placeholder stays at default weight
+          input: {
+            "&:not(:placeholder-shown)": { fontWeight: 900 },
+          },
         },
       },
       MuiSelect: {
@@ -343,8 +348,13 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
       MuiInputLabel: {
         styleOverrides: {
           root: ({ theme: t }) => ({
-            fontWeight: 400,
+            color: LABEL_COLOR,
+            fontWeight: 500,
             "&.Mui-focused": { color: t.palette.primary.main },
+            "&.MuiInputLabel-shrink": { color: LABEL_COLOR, fontWeight: 500 },
+            "&.MuiInputLabel-shrink.Mui-focused": {
+              color: t.palette.primary.main,
+            },
           }),
           asterisk: ({ theme: t }) => ({ color: t.palette.error.main }),
         },
@@ -352,7 +362,7 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
       MuiFormLabel: {
         styleOverrides: {
           root: ({ theme: t }) => ({
-            color: t.palette.text.primary,
+            color: LABEL_COLOR,
             fontWeight: 500,
             marginBottom: "8px",
             display: "block",
@@ -361,11 +371,7 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
           asterisk: ({ theme: t }) => ({ color: t.palette.error.main }),
         },
       },
-      MuiFormHelperText: {
-        styleOverrides: {
-          root: { fontSize: ".825rem" },
-        },
-      },
+      MuiFormHelperText: { styleOverrides: { root: { fontSize: ".825rem" } } },
       MuiButton: {
         styleOverrides: {
           root: {
@@ -373,25 +379,17 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
             fontWeight: 600,
             textTransform: "none",
             transition: "transform 180ms ease, box-shadow 180ms ease",
-            "&:hover": {
-              transform: "translateY(-2px)",
-            },
+            "&:hover": { transform: "translateY(-2px)" },
           },
-
           contained: ({ theme: t }) => ({
             padding: "16px",
             fontWeight: 700,
             boxShadow: `0 8px 18px ${t.palette.primary.main}3d`,
-
-            "&:hover": {
-              boxShadow: `0 8px 18px ${t.palette.primary.main}3d`,
-            },
+            "&:hover": { boxShadow: `0 8px 18px ${t.palette.primary.main}3d` },
           }),
         },
       },
-      MuiCard: {
-        styleOverrides: { root: { borderRadius: INPUT_RADIUS } },
-      },
+      MuiCard: { styleOverrides: { root: { borderRadius: INPUT_RADIUS } } },
       MuiCardContent: {
         styleOverrides: {
           root: { padding: 24, "&:last-child": { paddingBottom: 24 } },
@@ -426,9 +424,7 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
           }),
         },
       },
-      MuiToolbar: {
-        styleOverrides: { root: { gap: 16 } },
-      },
+      MuiToolbar: { styleOverrides: { root: { gap: 16 } } },
       MuiBreadcrumbs: {
         styleOverrides: {
           root: {
@@ -465,9 +461,32 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
           },
         },
       },
+      MuiCssBaseline: {
+        styleOverrides: {
+          // SelectionGroup: custom radio/checkbox row component
+          ".SelectionGroup-root .SelectionGroup-label": {
+            fontWeight: 700,
+          },
+          ".SelectionGroup-root:has(:checked) .SelectionGroup-label": {
+            fontWeight: 900,
+          },
+        },
+      },
       MuiFormControlLabel: {
         styleOverrides: {
-          root: { width: "100%", marginLeft: 0, marginRight: 0, gap: 8 },
+          root: {
+            width: "100%",
+            marginLeft: 0,
+            marginRight: 0,
+            gap: 8,
+            // When the child input is checked, bold the label
+            "&:has(.Mui-checked) .MuiFormControlLabel-label": {
+              fontWeight: 900,
+            },
+          },
+          label: {
+            fontWeight: 700,
+          },
         },
       },
       MuiFormGroup: {
@@ -485,13 +504,16 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
           root: ({ theme: t }) => ({
             padding: "16.5px 14px",
             backgroundColor: t.palette.background.paper,
-            border: `1px solid ${t.palette.divider}`,
+            border: `1px solid ${FIELD_BORDER_COLOR}`,
             borderRadius: INPUT_RADIUS,
             textTransform: "none",
+            fontWeight: 500,
+            color: TEXT_PRIMARY,
             "&:hover": { backgroundColor: t.palette.action.hover },
             "&.Mui-selected": {
               backgroundColor: t.palette.background.paper,
-              color: t.palette.text.primary,
+              color: TEXT_PRIMARY,
+              fontWeight: 900,
             },
             "&.Mui-selected:hover": { backgroundColor: t.palette.action.hover },
           }),
@@ -503,7 +525,7 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
             backgroundColor: "transparent",
             gap: t.spacing(1.5),
             "& .MuiToggleButtonGroup-grouped": {
-              border: `1px solid ${t.palette.divider}`,
+              border: `1px solid ${FIELD_BORDER_COLOR}`,
               borderRadius: `${INPUT_RADIUS} !important`,
             },
           }),
@@ -522,8 +544,7 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
               minWidth: "100px",
               fontSize: "0.875rem",
               fontWeight: 600,
-              border: "1px solid transparent",
-              "&.MuiChip-outlined": { border: "1px solid #bdbdbd" },
+              border: `1px solid ${FIELD_BORDER_COLOR}`,
               "& .MuiChip-icon": { marginLeft: 0, marginRight: 0 },
               "& .MuiChip-label": { paddingTop: 4 },
             },
@@ -537,15 +558,9 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
 }
 
 const theme = createAppTheme();
-
 export default theme;
 
-// ---------------------------------------------------------------------------
-// Shared style tokens (previously in components/utils/sectionStyles)
-// ---------------------------------------------------------------------------
-
 export const SECTION_SURFACE_BG = "rgb(0 22 57 / 4%)";
-
 export const APP_MENU_SECTION_TITLE_SX = {
   typography: "subtitle2",
   color: "text.primary",

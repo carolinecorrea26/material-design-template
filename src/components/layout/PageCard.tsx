@@ -1,7 +1,12 @@
 import { type ReactNode } from "react";
-import { Box, type BoxProps, type SxProps, type Theme } from "@mui/material";
+import {
+  Paper,
+  type PaperProps,
+  type SxProps,
+  type Theme,
+} from "@mui/material";
 
-type PageCardProps = Omit<BoxProps, "children" | "sx"> & {
+type PageCardProps = Omit<PaperProps, "children" | "sx" | "elevation"> & {
   children: ReactNode;
   sx?: SxProps<Theme>;
 };
@@ -9,17 +14,21 @@ type PageCardProps = Omit<BoxProps, "children" | "sx"> & {
 const baseStyles: SxProps<Theme> = {
   width: "100%",
   borderRadius: "16px",
-  backgroundColor: "background.paper",
   boxShadow: "0 8px 16px rgba(52, 59, 72, 0.06)",
 };
 
-export default function PageCard({ children, sx, ...boxProps }: PageCardProps) {
+export default function PageCard({
+  children,
+  sx,
+  ...paperProps
+}: PageCardProps) {
   return (
-    <Box
-      {...boxProps}
+    <Paper
+      elevation={0}
+      {...paperProps}
       sx={[baseStyles, ...(sx ? (Array.isArray(sx) ? sx : [sx]) : [])]}
     >
       {children}
-    </Box>
+    </Paper>
   );
 }

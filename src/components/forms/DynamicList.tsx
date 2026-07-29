@@ -5,6 +5,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -15,30 +16,42 @@ import {
   type FieldErrors,
 } from "react-hook-form";
 import FieldRenderer from "./FieldRenderer";
-import AddListItem from "./DynamicListItem";
+import DynamicListItem from "./DynamicListItem";
 import type { FieldDefinition } from "../../config/fields/types";
 
-type AddListFieldMapping<T extends Record<string, string>> = {
+type DynamicListFieldMapping<T extends Record<string, string>> = {
   fields: FieldDefinition[];
   fieldToKey: T;
+  /** Field IDs to render side-by-side in a 2-column grid inside the dialog. */
   gridFields?: string[];
 };
 
-type AddListProps<T extends Record<string, string>> = {
+type DynamicListProps<T extends Record<string, string>> = {
   control: Control<Record<string, any>>;
   name: string;
   label: string;
-  mapping: AddListFieldMapping<T>;
+  mapping: DynamicListFieldMapping<T>;
   renderItem: (item: Record<string, string>) => React.ReactNode;
+  /** Accessible label for each item used in Edit/Remove button aria-labels.
+   *  Receives the item data and returns a string, e.g. (item) => item.name. */
+  getItemLabel?: (item: Record<string, string>) => string;
+  /** Minimum number of items. Add button is always shown; page-level validation
+   *  enforces the minimum on submit. Default: 0. */
+  minItems?: number;
+  /** Maximum number of items. Add button is hidden when count reaches max. Default: 10. */
+  maxItems?: number;
 };
 
-export default function AddList<T extends Record<string, string>>({
+export default function DynamicList<T extends Record<string, string>>({
   control,
   name,
   label,
   mapping,
   renderItem,
-}: AddListProps<T>) {
+  getItemLabel,
+  minItems: _minItems = 0,
+  maxItems = 10,
+}: DynamicListProps<T>) {
   const { fields, append, remove, update } = useFieldArray({
     control,
     name,
@@ -46,6 +59,7 @@ export default function AddList<T extends Record<string, string>>({
 
   const [showForm, setShowForm] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [removeIndex, setRemoveIndex] = useState<number | null>(null);
 
   const defaultFormValues = Object.fromEntries(
     mapping.fields.map((f) => [f.id, ""]),
@@ -67,11 +81,9 @@ export default function AddList<T extends Record<string, string>>({
   const handleEdit = (index: number) => {
     const item = fields[index] as unknown as Record<string, string>;
     const restored: Record<string, string> = {};
-
     for (const [fieldId, key] of Object.entries(mapping.fieldToKey)) {
       restored[fieldId] = item[key] ?? "";
     }
-
     reset(restored);
     setEditingIndex(index);
     setShowForm(true);
@@ -79,17 +91,14 @@ export default function AddList<T extends Record<string, string>>({
 
   const handleSave = (data: Record<string, string>) => {
     const item: Record<string, string> = {};
-
     for (const [fieldId, key] of Object.entries(mapping.fieldToKey)) {
       item[key] = data[fieldId] ?? "";
     }
-
     if (editingIndex !== null) {
       update(editingIndex, item);
     } else {
       append(item);
     }
-
     setShowForm(false);
     reset(defaultFormValues);
     setEditingIndex(null);
@@ -101,6 +110,21 @@ export default function AddList<T extends Record<string, string>>({
     setEditingIndex(null);
   };
 
+  const handleRemoveRequest = (index: number) => {
+    setRemoveIndex(index);
+  };
+
+  const handleRemoveConfirm = () => {
+    if (removeIndex !== null) {
+      remove(removeIndex);
+    }
+    setRemoveIndex(null);
+  };
+
+  const handleRemoveCancel = () => {
+    setRemoveIndex(null);
+  };
+
   const formId = `${name}-add-form`;
   const gridFieldIds = mapping.gridFields ?? [];
   const gridFields = mapping.fields.filter((f) => gridFieldIds.includes(f.id));
@@ -108,30 +132,43 @@ export default function AddList<T extends Record<string, string>>({
     (f) => !gridFieldIds.includes(f.id),
   );
 
+  const removeItem =
+    removeIndex !== null
+      ? (fields[removeIndex] as unknown as Record<string, string>)
+      : null;
+  const removeItemLabel =
+    removeItem && getItemLabel ? getItemLabel(removeItem) : undefined;
+
   return (
     <div>
       {fields.map((field, index) => {
         const item = field as unknown as Record<string, string>;
+        const itemLabel = getItemLabel ? getItemLabel(item) : undefined;
+
         return (
-          <AddListItem
+          <DynamicListItem
             key={field.id}
             onEdit={() => handleEdit(index)}
-            onRemove={() => remove(index)}
+            onRemove={() => handleRemoveRequest(index)}
+            itemLabel={itemLabel}
           >
             {renderItem(item)}
-          </AddListItem>
+          </DynamicListItem>
         );
       })}
 
-      <Button
-        onClick={handleAdd}
-        variant="outlined"
-        fullWidth
-        startIcon={<AddIcon />}
-      >
-        Add {label}
-      </Button>
+      {fields.length < maxItems && (
+        <Button
+          onClick={handleAdd}
+          variant="outlined"
+          fullWidth
+          startIcon={<AddIcon />}
+        >
+          Add {label}
+        </Button>
+      )}
 
+      {/* Add / Edit dialog */}
       <Dialog open={showForm} onClose={handleCancel} maxWidth="sm" fullWidth>
         <DialogTitle>
           {editingIndex !== null ? `Edit ${label}` : `Add ${label}`}
@@ -153,10 +190,10 @@ export default function AddList<T extends Record<string, string>>({
                   gap: { xs: 0, sm: 2 },
                 }}
               >
-                {gridFields.map((field) => (
+                {gridFields.map((f) => (
                   <FieldRenderer
-                    key={field.id}
-                    field={field}
+                    key={f.id}
+                    field={f}
                     control={
                       itemControl as unknown as Control<
                         Record<string, string | boolean | string[]>
@@ -171,11 +208,10 @@ export default function AddList<T extends Record<string, string>>({
                 ))}
               </Box>
             )}
-
-            {remainingFields.map((field) => (
+            {remainingFields.map((f) => (
               <FieldRenderer
-                key={field.id}
-                field={field}
+                key={f.id}
+                field={f}
                 control={
                   itemControl as unknown as Control<
                     Record<string, string | boolean | string[]>
@@ -194,6 +230,33 @@ export default function AddList<T extends Record<string, string>>({
           <Button onClick={handleCancel}>Cancel</Button>
           <Button type="submit" form={formId} variant="contained">
             Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Remove confirmation dialog */}
+      <Dialog
+        open={removeIndex !== null}
+        onClose={handleRemoveCancel}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>Remove {label}?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {removeItemLabel
+              ? `Remove ${removeItemLabel}? This cannot be undone.`
+              : `Are you sure you want to remove this ${label.toLowerCase()}? This cannot be undone.`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleRemoveCancel}>Cancel</Button>
+          <Button
+            onClick={handleRemoveConfirm}
+            color="error"
+            variant="contained"
+          >
+            Remove
           </Button>
         </DialogActions>
       </Dialog>

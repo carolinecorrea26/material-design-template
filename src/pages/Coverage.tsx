@@ -11,13 +11,14 @@ import {
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import FormRoutePage from "../app/RoutePage";
-import FormPageHelp from "../components/content/HelpPanel";
-import FormHelpDrawer from "../components/overlays/HelpDrawer";
+
+import AppDrawer from "../components/ui/AppDrawer";
+import FormHelpChips from "../components/content/HelpChips";
 import QuickDecisionDrawerContent from "../components/content/QuickDecisionExplainer";
 import { QuickDecisionMark } from "../components/content/QuickDecisionExplainer";
-import ApplicationSummaryDrawer from "../components/overlays/CoverageSummaryDrawer";
-import CoverageQuestions from "../components/forms/CategoryQuestionFields";
-import ProductCatalog from "../components/overlays/CoverageProductList";
+import CoverageSummary from "../components/CoverageSummary";
+import CoverageQuestions from "../components/forms/CoverageQuestions";
+import ProductCatalog from "../components/ProductCatalog";
 import { useCoverageState } from "../app/useCoverageState";
 
 export default function Coverage() {
@@ -30,11 +31,26 @@ export default function Coverage() {
     content: React.ReactNode;
   }[] = [];
 
+  const [activeHelpId, setActiveHelpId] = useState<string | null>(null);
+  const activeHelpItem =
+    helpItems.find((item) => item.id === activeHelpId) ?? null;
+
   return (
     <FormRoutePage
       pageId="coverage"
       validate={state.validate}
-      help={<FormPageHelp items={helpItems} />}
+      help={
+        <>
+          <FormHelpChips items={helpItems} onSelect={setActiveHelpId} />
+          <AppDrawer
+            open={!!activeHelpItem}
+            title={activeHelpItem?.title ?? ""}
+            onClose={() => setActiveHelpId(null)}
+          >
+            {activeHelpItem?.content}
+          </AppDrawer>
+        </>
+      }
       hideNextButton={() => !state.showProducts || state.productsLoading}
     >
       {({
@@ -260,7 +276,7 @@ function CoveragePageContent({
           </Box>
         )}
 
-      <FormHelpDrawer
+      <AppDrawer
         open={state.qdDrawerOpen}
         title={
           <>
@@ -270,13 +286,18 @@ function CoveragePageContent({
         onClose={() => state.setQdDrawerOpen(false)}
       >
         <QuickDecisionDrawerContent />
-      </FormHelpDrawer>
+      </AppDrawer>
 
-      <ApplicationSummaryDrawer
+      <AppDrawer
         open={state.summaryDrawerOpen}
         onClose={() => state.setSummaryDrawerOpen(false)}
-        source="coverage-page"
-      />
+        swipeable
+      >
+        <CoverageSummary
+          onClose={() => state.setSummaryDrawerOpen(false)}
+          source="coverage-page"
+        />
+      </AppDrawer>
     </>
   );
 }

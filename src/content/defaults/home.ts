@@ -6,9 +6,9 @@ export const homeDefaults: HomeContent = {
     title: "Safeguard your financial future",
     description:
       "Coverage designed exclusively for {{clientName}} members. Get started today!",
-    welcomeBackTitle: "Welcome back!",
+    welcomeBackTitle: "Welcome!",
     welcomeBackDescription:
-      "Continue your saved application or begin a new application below.",
+      "Continue your saved application or begin a new one below.",
     ctaLabel: "Begin application",
     secondaryCtaLabel: "Learn more",
     resumePrompt: "Already started an application?",

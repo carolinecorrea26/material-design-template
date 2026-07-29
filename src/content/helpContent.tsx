@@ -15,12 +15,12 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import CreditCardOffOutlinedIcon from "@mui/icons-material/CreditCardOffOutlined";
 import LoopRoundedIcon from "@mui/icons-material/LoopRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
-import CoverageNeedsCalculator from "../components/overlays/CoverageCalculator";
-import FormHelpDrawer from "../components/overlays/HelpDrawer";
-import type { FormPageHelpItem } from "../components/content/HelpPanel";
+import CoverageNeedsCalculator from "../components/CoverageNeedsCalculator";
+import AppDrawer from "../components/ui/AppDrawer";
+import type { FormPageHelpItem } from "../components/content/HelpChips";
 import QuickDecisionDrawerContent from "../components/content/QuickDecisionExplainer";
 import { QuickDecisionMark } from "../components/content/QuickDecisionExplainer";
-import QuickDecisionIndicator from "../components/common/QuickDecisionIndicator";
+import QuickDecisionIndicator from "../components/ui/QuickDecisionIndicator";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
 import { getContent, resolveTemplate } from "./index";
@@ -172,7 +172,7 @@ export function HowApplyingWorksDrawerContent() {
         ))}
       </Stack>
 
-      <FormHelpDrawer
+      <AppDrawer
         open={subDrawer !== null}
         title={
           subDrawer === "application-review"
@@ -188,7 +188,7 @@ export function HowApplyingWorksDrawerContent() {
         ) : (
           <QuickDecisionDrawerContent />
         )}
-      </FormHelpDrawer>
+      </AppDrawer>
     </>
   );
 }

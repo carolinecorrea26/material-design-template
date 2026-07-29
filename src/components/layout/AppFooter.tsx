@@ -6,6 +6,8 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import type { ClientConfig } from "../../config/clients/types";
 import { getContent } from "../../content";
+import AppModal from "../ui/AppModal";
+import LegalDocViewer from "../ui/LegalDocViewer";
 
 type AppFooterProps = {
   client: ClientConfig;
@@ -41,6 +43,7 @@ export default function AppFooter({ client }: AppFooterProps) {
           gap: 2,
         }}
       >
+        {/* Column 1: Administered by (client-specific) */}
         <Box>
           <Stack spacing={1}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -140,6 +143,7 @@ export default function AppFooter({ client }: AppFooterProps) {
           </Stack>
         </Box>
 
+        {/* Column 2: Underwritten by (global NYL content) */}
         <Box>
           <Stack spacing={1}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -193,6 +197,7 @@ export default function AppFooter({ client }: AppFooterProps) {
               </Typography>
             </Box>
 
+            {/* NYL ratings logo — global, not client-configurable */}
             <Box
               sx={{
                 mt: 2,
@@ -235,6 +240,7 @@ export default function AppFooter({ client }: AppFooterProps) {
           </Stack>
         </Box>
 
+        {/* Column 3: Legal disclosures */}
         <Box>
           <Stack spacing={2}>
             {footerContent.legal.map((text, i) => (
@@ -246,17 +252,31 @@ export default function AppFooter({ client }: AppFooterProps) {
         </Box>
       </Box>
 
-      {showTermsOfUse && (
-        <Box sx={{ display: "none" }} aria-hidden>
-          Terms of Use modal placeholder
-        </Box>
-      )}
+      {/* Terms of Use modal */}
+      <AppModal
+        open={showTermsOfUse}
+        onClose={() => setShowTermsOfUse(false)}
+        title={footerContent.termsOfUseContent.title}
+        maxWidth={700}
+        actions={[
+          { label: "Close", onClick: () => setShowTermsOfUse(false), variant: "contained" },
+        ]}
+      >
+        <LegalDocViewer doc={footerContent.termsOfUseContent} />
+      </AppModal>
 
-      {showPrivacyNotice && (
-        <Box sx={{ display: "none" }} aria-hidden>
-          Privacy Notice modal placeholder
-        </Box>
-      )}
+      {/* Privacy Notice modal */}
+      <AppModal
+        open={showPrivacyNotice}
+        onClose={() => setShowPrivacyNotice(false)}
+        title={footerContent.privacyNoticeContent.title}
+        maxWidth={700}
+        actions={[
+          { label: "Close", onClick: () => setShowPrivacyNotice(false), variant: "contained" },
+        ]}
+      >
+        <LegalDocViewer doc={footerContent.privacyNoticeContent} />
+      </AppModal>
     </Box>
   );
 }

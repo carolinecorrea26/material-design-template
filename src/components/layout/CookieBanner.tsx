@@ -1,11 +1,15 @@
 import { Alert, Box, IconButton, Link, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { getContent } from "../../content";
 
 type CookieBannerProps = {
   onClose: () => void;
 };
 
 export default function CookieBanner({ onClose }: CookieBannerProps) {
+  const { message, learnMoreLabel, learnMoreHref } =
+    getContent().shared.cookieBanner;
+
   return (
     <Alert
       severity="info"
@@ -34,11 +38,7 @@ export default function CookieBanner({ onClose }: CookieBannerProps) {
         },
       }}
     >
-      <Box
-        sx={{
-          width: "100%",
-        }}
-      >
+      <Box sx={{ width: "100%" }}>
         <Box
           sx={{
             display: "flex",
@@ -71,17 +71,16 @@ export default function CookieBanner({ onClose }: CookieBannerProps) {
               textAlign: "justify",
             }}
           >
-            New York Life uses cookies to enhance your experience and analyze
-            site performance. By continuing, you agree to our use of cookies.{" "}
+            {message}{" "}
             <Link
-              href="https://www.newyorklife.com/privacy"
+              href={learnMoreHref}
               target="_blank"
               rel="noreferrer"
               underline="always"
               color="inherit"
               sx={{ fontWeight: 500 }}
             >
-              Privacy Notice
+              {learnMoreLabel}
             </Link>
           </Typography>
 

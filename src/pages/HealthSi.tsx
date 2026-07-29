@@ -6,7 +6,7 @@ import {
   shouldShowApplicantLabel,
 } from "../utils/applicantVisibility";
 import FieldRenderer from "../components/forms/FieldRenderer";
-import SubQuestionContainer from "../components/forms/ConditionalGroup";
+import ConditionalGroup from "../components/forms/ConditionalGroup";
 import type { FieldDefinition } from "../config/fields/types";
 
 const HEALTH_QUESTIONS = [
@@ -166,7 +166,7 @@ function HealthQuestionSet({
               </Box>
 
               {showDetails && (
-                <SubQuestionContainer>
+                <ConditionalGroup>
                   <Stack spacing={2}>
                     {/* Onset date field */}
                     {(() => {
@@ -222,7 +222,7 @@ function HealthQuestionSet({
                       );
                     })()}
                   </Stack>
-                </SubQuestionContainer>
+                </ConditionalGroup>
               )}
             </Stack>
           </Box>

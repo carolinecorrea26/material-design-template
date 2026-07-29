@@ -1,9 +1,9 @@
 import { type ReactNode } from "react";
 import { Box, type BoxProps, type SxProps, type Theme } from "@mui/material";
 
-type CoverageCardProps = Omit<BoxProps, "children" | "sx"> & {
+type ProductCardProps = Omit<BoxProps, "children" | "sx"> & {
   children: ReactNode;
-  /** Highlights the card border when a product or applicant is selected. */
+  /** Green border + tinted bg when any applicant is selected. */
   selected?: boolean;
   sx?: SxProps<Theme>;
 };
@@ -12,23 +12,22 @@ const baseStyles: SxProps<Theme> = {
   borderRadius: "16px",
   border: "1px solid",
   borderColor: "divider",
-  background:
-    "linear-gradient(135deg, rgb(244, 248, 255) 0%, rgb(255, 255, 255) 52%, rgb(247, 251, 255) 100%)",
+  backgroundColor: "#ffffff",
   p: 2.5,
 };
 
-export default function CoverageCard({
-  children,
-  selected,
-  sx,
-  ...boxProps
-}: CoverageCardProps) {
+const selectedStyles: SxProps<Theme> = {
+  borderColor: "#009465",
+  backgroundColor: "#e6f4ee",
+};
+
+export default function ProductCard({ children, selected, sx, ...boxProps }: ProductCardProps) {
   return (
     <Box
       {...boxProps}
       sx={[
         baseStyles,
-        selected ? { borderColor: "primary.main" } : {},
+        selected ? selectedStyles : {},
         ...(sx ? (Array.isArray(sx) ? sx : [sx]) : []),
       ]}
     >

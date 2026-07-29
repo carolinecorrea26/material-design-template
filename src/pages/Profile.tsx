@@ -5,9 +5,9 @@ import FieldRenderer from "../components/forms/FieldRenderer";
 import ApplicantSection from "../components/forms/ApplicantSection";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
 import { SECTION_SURFACE_BG } from "../app/theme";
-import SubQuestionContainer from "../components/forms/ConditionalGroup";
+import ConditionalGroup from "../components/forms/ConditionalGroup";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
-import AddList from "../components/forms/DynamicList";
+import DynamicList from "../components/forms/DynamicList";
 import type { FieldDefinition } from "../config/fields/types";
 
 // Layout groupings — fields that render side-by-side in grids
@@ -249,7 +249,7 @@ export default function Profile() {
                 section.id === "profilePersonalSelfTravelOutsideUs"
               ) {
                 return (
-                  <SubQuestionContainer key={section.id}>
+                  <ConditionalGroup key={section.id}>
                     {section.fieldIds.map((fieldId: string) => {
                       const field = allFields.find(
                         (f: any) => f.id === fieldId,
@@ -264,7 +264,7 @@ export default function Profile() {
                         />
                       );
                     })}
-                  </SubQuestionContainer>
+                  </ConditionalGroup>
                 );
               }
 
@@ -340,7 +340,7 @@ export default function Profile() {
                 section.id === "profilePersonalSpouseTravelOutsideUs"
               ) {
                 return (
-                  <SubQuestionContainer key={section.id}>
+                  <ConditionalGroup key={section.id}>
                     {section.fieldIds.map((fieldId: string) => {
                       const field = allFields.find(
                         (f: any) => f.id === fieldId,
@@ -355,7 +355,7 @@ export default function Profile() {
                         />
                       );
                     })}
-                  </SubQuestionContainer>
+                  </ConditionalGroup>
                 );
               }
 
@@ -752,19 +752,19 @@ function renderFinancialFields(
         <>
           {renderField(hasOtherLifeId)}
           {watchedValues[hasOtherLifeId] === "yes" && (
-            <SubQuestionContainer>
+            <ConditionalGroup>
               {fieldIds
                 .filter((id) => followupSet.has(id))
                 .map((id) => renderField(id))}
-            </SubQuestionContainer>
+            </ConditionalGroup>
           )}
           {renderField(pendingLifeAppsId)}
           {watchedValues[pendingLifeAppsId] === "yes" && (
-            <SubQuestionContainer>
+            <ConditionalGroup>
               {fieldIds
                 .filter((id) => pendingFollowupSet.has(id))
                 .map((id) => renderField(id))}
-            </SubQuestionContainer>
+            </ConditionalGroup>
           )}
         </>
       )}
@@ -773,9 +773,9 @@ function renderFinancialFields(
         <Box sx={{ mt: hasLife ? 2 : 0 }}>
           {renderField(hasDiId)}
           {watchedValues[hasDiId] === "yes" && (
-            <SubQuestionContainer>
+            <ConditionalGroup>
               <Box sx={{ mt: 1, mb: 2 }}>
-                <AddList
+                <DynamicList
                   control={control}
                   name={disabilityListName}
                   label="Company"
@@ -786,7 +786,7 @@ function renderFinancialFields(
               {renderField(replacingDiId)}
               {watchedValues[replacingDiId] === "yes" &&
                 renderField(replacingDiAmountId)}
-            </SubQuestionContainer>
+            </ConditionalGroup>
           )}
         </Box>
       )}

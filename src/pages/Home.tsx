@@ -15,9 +15,9 @@ import {
   Typography,
 } from "@mui/material";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
-import HomeQuoteCard from "../components/overlays/HomeQuoteEntry";
-import FormHelpDrawer from "../components/overlays/HelpDrawer";
-import QuickDecisionIndicator from "../components/common/QuickDecisionIndicator";
+import HomeQuoteCard from "../components/HomeQuoteCard";
+import AppDrawer from "../components/ui/AppDrawer";
+import QuickDecisionIndicator from "../components/ui/QuickDecisionIndicator";
 import QuickDecisionDrawerContent from "../components/content/QuickDecisionExplainer";
 import { ApplicationReviewDrawerContent } from "../content/helpContent";
 import { getContent, resolveTemplate } from "../content";
@@ -346,7 +346,7 @@ export default function Home() {
             spacing={2}
             sx={{
               alignSelf: "flex-start",
-              maxWidth: showQuoteTool || showHeroImage ? 600 : 760,
+              maxWidth: showQuoteTool || showHeroImage ? 800 : 760,
               justifySelf:
                 showQuoteTool || showHeroImage
                   ? { xs: "center", md: "stretch" }
@@ -791,7 +791,7 @@ export default function Home() {
         </Stack>
       </Stack>
 
-      <FormHelpDrawer
+      <AppDrawer
         open={activeDrawer !== null}
         title={drawerTitle}
         onClose={() => setActiveDrawer(null)}
@@ -803,7 +803,7 @@ export default function Home() {
         ) : (
           <QuickDecisionDrawerContent />
         )}
-      </FormHelpDrawer>
+      </AppDrawer>
     </Box>
   );
 }

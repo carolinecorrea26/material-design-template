@@ -8,7 +8,11 @@ type PageTitleProps = {
   onBack?: () => void;
 };
 
-export default function PageTitle({ title, subhead, onBack }: PageTitleProps) {
+export default function PageTitle({
+  title,
+  subhead,
+  onBack,
+}: PageTitleProps) {
   return (
     <Box>
       <Stack direction="row" alignItems="center" spacing={1}>

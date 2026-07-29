@@ -1,17 +1,22 @@
 import type { ReactNode } from "react";
 import { Box, Button, Stack } from "@mui/material";
 
-type AddListItemProps = {
+type DynamicListItemProps = {
   children: ReactNode;
   onEdit: () => void;
   onRemove: () => void;
+  /** Used in the accessible label for the Remove button, e.g. "John Smith (50%)".
+   *  Results in aria-label "Remove John Smith (50%)" so screen readers distinguish
+   *  items when multiple are present. */
+  itemLabel?: string;
 };
 
-export default function AddListItem({
+export default function DynamicListItem({
   children,
   onEdit,
   onRemove,
-}: AddListItemProps) {
+  itemLabel,
+}: DynamicListItemProps) {
   return (
     <Box
       sx={{
@@ -31,10 +36,19 @@ export default function AddListItem({
         <Box sx={{ flex: 1, minWidth: 0 }}>{children}</Box>
 
         <Stack direction="row" spacing={0.5} sx={{ flexShrink: 0 }}>
-          <Button size="small" onClick={onEdit}>
+          <Button
+            size="small"
+            onClick={onEdit}
+            aria-label={itemLabel ? `Edit ${itemLabel}` : undefined}
+          >
             Edit
           </Button>
-          <Button size="small" onClick={onRemove} color="error">
+          <Button
+            size="small"
+            onClick={onRemove}
+            color="error"
+            aria-label={itemLabel ? `Remove ${itemLabel}` : undefined}
+          >
             Remove
           </Button>
         </Stack>

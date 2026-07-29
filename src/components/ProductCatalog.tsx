@@ -18,35 +18,35 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import FeaturedBadge from "../common/FeaturedBadge";
+import FeaturedBadge from "./ui/FeaturedBadge";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import FormSectionTitle from "../forms/SectionTitle";
-import SelectableOptionRow from "../forms/OptionRow";
-import CoverageCard from "../layout/CoverageCard";
-import QuickDecisionIndicator from "../common/QuickDecisionIndicator";
-import { QuickDecisionMark } from "../content/QuickDecisionExplainer";
-import { getCoverageCategorySectionLabel } from "../../config/coverageCategories";
+import SectionTitle from "./forms/SectionTitle";
+import SelectionGroup from "./forms/SelectionGroup";
+import ProductCardSurface from "./ui/ProductCard";
+import QuickDecisionIndicator from "./ui/QuickDecisionIndicator";
+import { QuickDecisionMark } from "./content/QuickDecisionExplainer";
+import { getCoverageCategorySectionLabel } from "../config/coverageCategories";
 import {
   applicantSectionTitles,
   coverageApplicantToSection,
-} from "../../config/formSectionTitle";
+} from "../config/formSectionTitle";
 import type {
   CoverageCategoryId,
   CoverageApplicantId,
-} from "../../config/coverages/types";
-import type { EstimatedRateFrequency } from "../../config/clients/types";
-import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
-import { getContent } from "../../content";
-import { formatUSD } from "../../utils/formatUSD";
-import EstimatedCostPanel from "../common/CostSummaryPanel";
+} from "../config/coverages/types";
+import type { EstimatedRateFrequency } from "../config/clients/types";
+import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
+import { getContent } from "../content";
+import { formatUSD } from "../utils/formatUSD";
+import EstimatedCostPanel from "./ui/EstimatedCostPanel";
 import {
   getDisplayedPremium,
   getBenefitAmountLabel,
-} from "../../app/useCoverageState";
+} from "../app/useCoverageState";
 
 type ResolvedCoverage = ReturnType<typeof getActiveClientCoverages>[number];
-import { getMaxAggregateNotes } from "../../config/coverageConstants";
-import { resolveClientId } from "../../config/client/resolveClientId";
+import { getMaxAggregateNotes } from "../config/coverageConstants";
+import { resolveClientId } from "../config/client/resolveClientId";
 
 const applicantCheckboxLabels: Record<CoverageApplicantId, string> =
   getContent().coverage.applicantCheckboxLabels;
@@ -387,57 +387,47 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                       </Link>
                     </Stack>
                     <Collapse in={isCategoryExpanded(categoryId)}>
-                      <Stack spacing={2}>
-                        {notes && (
-                          <Alert severity="info" sx={{ borderRadius: 2 }}>
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                mb: hasSpouse || notes.child ? 1 : 0,
-                              }}
-                            >
-                              {notes.member}
-                            </Typography>
-                            {hasSpouse && (
-                              <Typography
-                                variant="body2"
-                                sx={{ mb: notes.child ? 1 : 0 }}
-                              >
-                                {notes.spouse}
+                      <Box sx={{ p: "1rem", background: "#cadfff", borderRadius: "24px" }}>
+                        <Stack spacing={2}>
+                          {notes && (
+                            <Alert severity="info" sx={{ borderRadius: 2 }}>
+                              <Typography variant="body2" sx={{ mb: hasSpouse || notes.child ? 1 : 0 }}>
+                                {notes.member}
                               </Typography>
-                            )}
-                            {notes.child && (
-                              <Typography variant="body2">
-                                {notes.child}
-                              </Typography>
-                            )}
-                          </Alert>
-                        )}
-                        {productsInCategory.map((coverage) => (
-                          <ProductCard
-                            key={coverage.id}
-                            coverage={coverage}
-                            productApplicants={productApplicants}
-                            storedAmounts={storedAmounts}
-                            storedRiders={storedRiders}
-                            storedRiderAmounts={storedRiderAmounts}
-                            storedWaitingPeriods={storedWaitingPeriods}
-                            storedMaxBenefitPeriods={storedMaxBenefitPeriods}
-                            calculatingRateKeys={calculatingRateKeys}
-                            rateFrequency={rateFrequency}
-                            frequencyCalculating={frequencyCalculating}
-                            onToggleApplicant={onToggleApplicant}
-                            onAmountChange={onAmountChange}
-                            onRiderToggle={onRiderToggle}
-                            onRiderAmountChange={onRiderAmountChange}
-                            onWaitingPeriodChange={onWaitingPeriodChange}
-                            onMaxBenefitPeriodChange={onMaxBenefitPeriodChange}
-                            getVisibleApplicants={getVisibleApplicants}
-                            calcApplicantPremium={calcApplicantPremium}
-                            generateAmountChoices={generateAmountChoices}
-                          />
-                        ))}
-                      </Stack>
+                              {hasSpouse && (
+                                <Typography variant="body2" sx={{ mb: notes.child ? 1 : 0 }}>
+                                  {notes.spouse}
+                                </Typography>
+                              )}
+                              {notes.child && <Typography variant="body2">{notes.child}</Typography>}
+                            </Alert>
+                          )}
+                          {productsInCategory.map((coverage) => (
+                            <ProductCard
+                              key={coverage.id}
+                              coverage={coverage}
+                              productApplicants={productApplicants}
+                              storedAmounts={storedAmounts}
+                              storedRiders={storedRiders}
+                              storedRiderAmounts={storedRiderAmounts}
+                              storedWaitingPeriods={storedWaitingPeriods}
+                              storedMaxBenefitPeriods={storedMaxBenefitPeriods}
+                              calculatingRateKeys={calculatingRateKeys}
+                              rateFrequency={rateFrequency}
+                              frequencyCalculating={frequencyCalculating}
+                              onToggleApplicant={onToggleApplicant}
+                              onAmountChange={onAmountChange}
+                              onRiderToggle={onRiderToggle}
+                              onRiderAmountChange={onRiderAmountChange}
+                              onWaitingPeriodChange={onWaitingPeriodChange}
+                              onMaxBenefitPeriodChange={onMaxBenefitPeriodChange}
+                              getVisibleApplicants={getVisibleApplicants}
+                              calcApplicantPremium={calcApplicantPremium}
+                              generateAmountChoices={generateAmountChoices}
+                            />
+                          ))}
+                        </Stack>
+                      </Box>
                     </Collapse>
                   </Stack>
                 );
@@ -559,7 +549,7 @@ function ProductCard({
   const isMultiApplicant = visibleApplicants.length > 1;
 
   return (
-    <CoverageCard
+    <ProductCardSurface
       selected={hasAnyApplicantSelected}
       sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}
     >
@@ -571,7 +561,7 @@ function ProductCard({
           alignItems="center"
           spacing={1}
         >
-          <Typography variant="subtitle1" fontWeight="bold">
+          <Typography sx={{ fontSize: "1rem", fontWeight: 700 }}>
             {coverage.name}
             {coverage.underwritingType === "QD" && <QuickDecisionIndicator />}
           </Typography>
@@ -693,11 +683,11 @@ function ProductCard({
               {isMultiApplicant && (
                 <>
                   {idx > 0 && <Divider sx={{ mb: 1.5 }} />}
-                  <Box sx={{ mb: 1.5 }}>
-                    <FormSectionTitle
-                      label={applicantSectionTitles[sectionId]}
-                    />
-                  </Box>
+                  <SectionTitle
+                    label={applicantSectionTitles[sectionId]}
+                    variant="applicant"
+                    sx={{ mb: 1.5 }}
+                  />
                 </>
               )}
 
@@ -708,7 +698,7 @@ function ProductCard({
                 </Alert>
               )}
 
-              <SelectableOptionRow>
+              <SelectionGroup>
                 <Checkbox
                   checked={isSelected}
                   onChange={() => onToggleApplicant(coverage.id, applicantId)}
@@ -754,7 +744,7 @@ function ProductCard({
                     }}
                   />
                 )}
-              </SelectableOptionRow>
+              </SelectionGroup>
 
               {/* Benefit amount & cost */}
               <Stack spacing={1.5} sx={{ mt: 1.5 }}>
@@ -894,7 +884,7 @@ function ProductCard({
 
                             return (
                               <Box key={rider.id}>
-                                <SelectableOptionRow>
+                                <SelectionGroup>
                                   <Checkbox
                                     checked={isChecked}
                                     onChange={() =>
@@ -934,7 +924,7 @@ function ProductCard({
                                       {rider.description}
                                     </Typography>
                                   </Stack>
-                                </SelectableOptionRow>
+                                </SelectionGroup>
 
                                 {rider.hasAmount &&
                                   isChecked &&
@@ -999,6 +989,6 @@ function ProductCard({
           );
         })}
       </Stack>
-    </CoverageCard>
+    </ProductCardSurface>
   );
 }

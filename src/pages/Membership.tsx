@@ -1,4 +1,7 @@
+import { useState } from "react";
 import { Alert, Box, Stack, Typography } from "@mui/material";
+import FormHelpChips from "../components/content/HelpChips";
+import AppDrawer from "../components/ui/AppDrawer";
 import type { UseFormSetValue } from "react-hook-form";
 
 import { getActiveClient } from "../config/client/getActiveClient";
@@ -6,9 +9,9 @@ import { getPageSectionNote } from "../config/pages";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import FormRoutePage from "../app/RoutePage";
-import FormSectionTitle from "../components/forms/SectionTitle";
-import FormPageHelp from "../components/content/HelpPanel";
-import CostEstimateDrawerContent from "../components/overlays/CostEstimateDrawer";
+import SectionTitle from "../components/forms/SectionTitle";
+
+import QuoteEstimator from "../components/QuoteEstimator";
 import type { FieldDefinition } from "../config/fields/types";
 import {
   coverageOptionsAvailableHelpItem,
@@ -175,15 +178,29 @@ export default function Membership() {
       id: "estimate-cost",
       label: "How much does it cost?",
       title: "How much does it cost?",
-      content: <CostEstimateDrawerContent />,
+      content: <QuoteEstimator />,
     },
     // groupInsuranceHelpItem(client.branding.name),
   ];
+  const [activeHelpId, setActiveHelpId] = useState<string | null>(null);
+  const activeHelpItem =
+    helpItems.find((item) => item.id === activeHelpId) ?? null;
 
   return (
     <FormRoutePage
       pageId={pageId}
-      help={<FormPageHelp items={helpItems} />}
+      help={
+        <>
+          <FormHelpChips items={helpItems} onSelect={setActiveHelpId} />
+          <AppDrawer
+            open={!!activeHelpItem}
+            title={activeHelpItem?.title ?? ""}
+            onClose={() => setActiveHelpId(null)}
+          >
+            {activeHelpItem?.content}
+          </AppDrawer>
+        </>
+      }
       initialTransitionMessage="Loading your membership application..."
       disableNextButton={(values) =>
         client.id !== "ama" &&
@@ -335,7 +352,7 @@ export default function Membership() {
 
                 {hasAdditionalFields && (
                   <Box sx={{ mt: 3 }}>
-                    <FormSectionTitle
+                    <SectionTitle
                       label={
                         client.id === "ama" && membershipValue === "spouse"
                           ? "Physician Information"

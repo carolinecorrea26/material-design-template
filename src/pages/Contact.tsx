@@ -4,7 +4,7 @@ import FormRoutePage, { isSectionVisible } from "../app/RoutePage";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import ApplicantSection from "../components/forms/ApplicantSection";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
-import FormSectionTitle from "../components/forms/SectionTitle";
+import SectionTitle from "../components/forms/SectionTitle";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { getSelectedCategoryIds } from "../config/formFlow";
 
@@ -176,7 +176,7 @@ function ContactFields({
           const content = (
             <>
               {/* Residential Address sub-section label */}
-              {/* <FormSectionTitle label="Home Address" /> */}
+              {/* <SectionTitle label="Home Address" /> */}
 
               {/* Street address + Apt/Suite row */}
               <Box
@@ -248,7 +248,7 @@ function ContactFields({
               {/* Business / Employer Info inside Self container */}
               {showBusinessSection && businessSection && (
                 <Box sx={{ mt: 2 }}>
-                  <FormSectionTitle label="Business / Employer Information" />
+                  <SectionTitle label="Business / Employer Information" />
 
                   {renderBusinessFields(
                     businessSection,

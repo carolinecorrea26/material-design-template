@@ -1,16 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import FeaturedBadge from "../common/FeaturedBadge";
-import CoverageCard from "../layout/CoverageCard";
+import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
+import ProductCardSurface from "./ui/ProductCard";
 import {
-  Alert,
   Box,
   Button,
-  CircularProgress,
+  Checkbox,
+  Chip,
   Divider,
   FormControl,
   FormHelperText,
   FormLabel,
+  // IconButton,
   InputLabel,
   MenuItem,
   Radio,
@@ -20,45 +21,68 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import type {
   CoverageCategoryId,
   CoverageApplicantId,
   CoverageDefinition,
-} from "../../config/coverages/types";
+} from "../config/coverages/types";
 import {
   getCategoryRequirements,
   getBenefitAmountLabel,
-} from "../../config/coverageConstants";
-import { formatUSD } from "../../utils/formatUSD";
-import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
-import { getCoverageAmountRange } from "../../utils/coverageAmounts";
-import { generateAmountChoices } from "../../utils/generateAmountChoices";
-import { getActiveClient } from "../../config/client/getActiveClient";
-import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
-import type { EstimatedRateFrequency } from "../../config/clients/types";
-import QuickDecisionIndicator from "../common/QuickDecisionIndicator";
-import CoverageCategoryChips from "../common/CoverageCategoryChips";
-
-import { formatCurrencyInput } from "../../utils/formatting/currency";
+} from "../config/coverageConstants";
+import { formatUSD } from "../utils/formatUSD";
+import { getCoverageAmountRange } from "../utils/coverageAmounts";
+import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
+import { generateAmountChoices } from "../utils/generateAmountChoices";
+import { getPagePath } from "../config/pages";
+import { STORAGE_KEY } from "../app/ApplicationFormContext";
+import { getActiveClient } from "../config/client/getActiveClient";
+import type { EstimatedRateFrequency } from "../config/clients/types";
+import SelectionGroup from "./forms/SelectionGroup";
+import QuickDecisionIndicator from "./ui/QuickDecisionIndicator";
+import CoverageCategoryChips from "./ui/CoverageCategoryChips";
+import RateFrequencyToggle from "./ui/RateFrequencyToggle";
+import FeaturedBadge from "./ui/FeaturedBadge";
 
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
 
-export default function CostEstimateDrawerContent() {
+type QuoteModalProps = {
+  onClose: () => void;
+  coverages: CoverageDefinition[];
+  birthday: string;
+  zipCode: string;
+  state: string;
+};
+
+import { formatCurrencyInput } from "../utils/formatting/currency";
+
+export default function QuoteModal({
+  onClose,
+  coverages,
+  birthday,
+  zipCode,
+  state,
+}: QuoteModalProps) {
+  const navigate = useNavigate();
   const activeClient = useMemo(() => getActiveClient(), []);
-  const coverages = useMemo(() => getActiveClientCoverages(), []);
   const rateDisplayConfig = activeClient.coverages.estimatedRateDisplay;
+  const showRateFrequencyToggle =
+    rateDisplayConfig?.showFrequencyToggle === true;
   const defaultRateFrequency: EstimatedRateFrequency =
     rateDisplayConfig?.defaultFrequency ?? "monthly";
-  const rateFrequency = defaultRateFrequency;
+  const [rateFrequency, setRateFrequency] =
+    useState<EstimatedRateFrequency>(defaultRateFrequency);
 
   const [selectedCategories, setSelectedCategories] = useState<
     CoverageCategoryId[]
   >([]);
 
-  const requirements = getCategoryRequirements(selectedCategories);
-
+  // Category-level additional info fields
   const [gender, setGender] = useState<EstimateGender>("");
   const [smoker, setSmoker] = useState<EstimateYesNo>("");
   const [avgIncome, setAvgIncome] = useState("");
@@ -67,19 +91,25 @@ export default function CostEstimateDrawerContent() {
   const [responsibilityPct, setResponsibilityPct] = useState("");
   const [fieldsAttempted, setFieldsAttempted] = useState(false);
 
+  // Per-product amounts (keyed by "productId:applicantId")
   const [amountsByKey, setAmountsByKey] = useState<Record<string, number>>({});
-  const [productApplicants] = useState<Record<string, CoverageApplicantId[]>>(
-    {},
-  );
 
+  // Per-product applicant selections
+  const [productApplicants, setProductApplicants] = useState<
+    Record<string, CoverageApplicantId[]>
+  >({});
+
+  // Products revealed (after "See my quote")
   const [showProducts, setShowProducts] = useState(false);
   const [productsLoading, setProductsLoading] = useState(false);
 
+  // Rate calculating states (per key, triggered on amount change)
   const [calculatingRates, setCalculatingRates] = useState<Set<string>>(
     new Set(),
   );
   const rateTimersRef = useRef<Record<string, number>>({});
 
+  // Category needs assessment
   const {
     needsGender: categoryNeedsGender,
     needsSmoker: categoryNeedsSmoker,
@@ -87,8 +117,9 @@ export default function CostEstimateDrawerContent() {
     needsOo: categoryNeedsOo,
     needsHours: categoryNeedsHours,
     needsAdditionalFields,
-  } = requirements;
+  } = getCategoryRequirements(selectedCategories);
 
+  // Validation for category fields
   const fieldErrors = useMemo(() => {
     const errors: Record<string, string> = {};
     if (categoryNeedsGender && !gender) errors.gender = "Gender is required.";
@@ -119,6 +150,7 @@ export default function CostEstimateDrawerContent() {
 
   const isFieldsValid = Object.keys(fieldErrors).length === 0;
 
+  // Products filtered by selected categories
   const categoryProducts = useMemo(
     () =>
       coverages
@@ -132,6 +164,7 @@ export default function CostEstimateDrawerContent() {
     [coverages, selectedCategories],
   );
 
+  // Hours ineligibility check
   const isHoursIneligible =
     categoryNeedsHours &&
     (() => {
@@ -139,12 +172,48 @@ export default function CostEstimateDrawerContent() {
       return !isNaN(hours) && hours < 40;
     })();
 
+  // Selected products (those with at least one applicant checked)
+  const selectedProducts = useMemo(
+    () =>
+      categoryProducts.filter(
+        (p) => (productApplicants[p.id] ?? []).length > 0,
+      ),
+    [categoryProducts, productApplicants],
+  );
+
   function handleCategoryToggle(categoryId: CoverageCategoryId) {
-    setSelectedCategories((current) =>
-      current.includes(categoryId)
-        ? current.filter((id) => id !== categoryId)
-        : [...current, categoryId],
-    );
+    const isAdding = !selectedCategories.includes(categoryId);
+    const nextCategories = isAdding
+      ? [...selectedCategories, categoryId]
+      : selectedCategories.filter((id) => id !== categoryId);
+
+    setSelectedCategories(nextCategories);
+
+    // If adding a new category after products are revealed, check if the new
+    // combined set needs additional fields. If so, hide products so the user
+    // must answer the new questions before seeing the updated product list.
+    if (isAdding && showProducts) {
+      const nextNeedsGender = nextCategories.some(
+        (c) => c === "LI" || c === "DI",
+      );
+      const nextNeedsSmoker = nextCategories.some(
+        (c) => c === "LI" || c === "SH",
+      );
+      const nextNeedsDi = nextCategories.includes("DI");
+      const nextNeedsOo = nextCategories.includes("OO");
+      const nextNeedsHours = nextNeedsDi || nextNeedsOo;
+      const nextNeedsAdditionalFields =
+        nextNeedsGender ||
+        nextNeedsSmoker ||
+        nextNeedsDi ||
+        nextNeedsOo ||
+        nextNeedsHours;
+
+      if (nextNeedsAdditionalFields) {
+        setShowProducts(false);
+        setFieldsAttempted(false);
+      }
+    }
   }
 
   function handleGetEstimates() {
@@ -154,6 +223,7 @@ export default function CostEstimateDrawerContent() {
     setProductsLoading(true);
     setShowProducts(true);
 
+    // Initialize amounts for products that don't have one yet
     const newAmounts = { ...amountsByKey };
     categoryProducts.forEach((product) => {
       const key = `${product.id}:member`;
@@ -173,6 +243,7 @@ export default function CostEstimateDrawerContent() {
     });
     setAmountsByKey(newAmounts);
 
+    // Simulate loading
     setTimeout(() => {
       setProductsLoading(false);
     }, 1000);
@@ -219,6 +290,7 @@ export default function CostEstimateDrawerContent() {
       [key]: amount,
     }));
 
+    // Show rate calculating spinner briefly
     setCalculatingRates((current) => new Set(current).add(key));
     if (rateTimersRef.current[key]) {
       window.clearTimeout(rateTimersRef.current[key]);
@@ -232,6 +304,40 @@ export default function CostEstimateDrawerContent() {
     }, 600);
   }
 
+  function toggleApplicantForProduct(
+    product: CoverageDefinition,
+    applicant: CoverageApplicantId,
+  ) {
+    const current = productApplicants[product.id] ?? [];
+    const isAdding = !current.includes(applicant);
+    const next = isAdding
+      ? [...current, applicant]
+      : current.filter((a) => a !== applicant);
+
+    setProductApplicants((prev) => ({ ...prev, [product.id]: next }));
+
+    // Auto-set amount for newly added applicant
+    if (isAdding) {
+      const key = `${product.id}:${applicant}`;
+      if (amountsByKey[key] == null) {
+        const { minAmount, maxAmount, step } = getCoverageAmountRange(
+          product,
+          applicant,
+        );
+        const choices = generateAmountChoices(
+          product.categoryId,
+          minAmount,
+          maxAmount,
+          { step },
+        );
+        setAmountsByKey((prev) => ({
+          ...prev,
+          [key]: choices[0] ?? 0,
+        }));
+      }
+    }
+  }
+
   function getApplicantPremium(
     product: CoverageDefinition,
     applicant: CoverageApplicantId,
@@ -241,11 +347,89 @@ export default function CostEstimateDrawerContent() {
     return estimateMonthlyPremium(product.categoryId, amount);
   }
 
+  // Grand total of all selected products and applicants
+  const grandTotal = useMemo(() => {
+    return selectedProducts.reduce((total, product) => {
+      const applicants = productApplicants[product.id] ?? [];
+      return (
+        total +
+        applicants.reduce(
+          (sum, applicant) => sum + getApplicantPremium(product, applicant),
+          0,
+        )
+      );
+    }, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedProducts, productApplicants, amountsByKey]);
+
+  function handleApplyForCoverage() {
+    // Build preset form values from all selected products
+    const formValues: Record<string, unknown> = {};
+
+    if (birthday) formValues["birth-date"] = birthday;
+    if (zipCode) formValues["zip-postal-code"] = zipCode;
+    if (state) formValues["state-province"] = state;
+
+    // Preset category-specific fields
+    if (categoryNeedsGender && gender) formValues["gender"] = gender;
+    if (categoryNeedsSmoker && smoker) formValues["smoker"] = smoker;
+    if (categoryNeedsDi) {
+      if (avgIncome) formValues["average-monthly-income"] = avgIncome;
+      if (hoursPerWeek) formValues["hours-worked-per-week"] = hoursPerWeek;
+    }
+    if (categoryNeedsOo) {
+      if (hoursPerWeek) formValues["hours-worked-per-week"] = hoursPerWeek;
+      if (monthlyExpenses)
+        formValues["monthly-business-expenses"] = monthlyExpenses;
+      if (responsibilityPct)
+        formValues["business-expense-responsibility"] = responsibilityPct;
+    }
+
+    // Preset coverage selections, applicants, amounts, and category chips
+    const coverageSelections = selectedProducts.map((p) => p.id);
+    formValues["coverageSelections"] = coverageSelections;
+    formValues["selectedCategoryChips"] = selectedCategories;
+
+    const applicantsMap: Record<string, CoverageApplicantId[]> = {};
+    const amountsMap: Record<string, number> = {};
+    for (const product of selectedProducts) {
+      const applicants = productApplicants[product.id] ?? [];
+      applicantsMap[product.id] = applicants;
+      for (const applicant of applicants) {
+        const key = `${product.id}:${applicant}`;
+        amountsMap[key] = amountsByKey[key] ?? 0;
+      }
+    }
+    formValues["productApplicants"] = applicantsMap;
+    formValues["coverageAmounts"] = amountsMap;
+
+    // Store into sessionStorage so ApplicationFormContext picks it up
+    const existing = window.sessionStorage.getItem(STORAGE_KEY);
+    let existingValues: Record<string, unknown> = {};
+    if (existing) {
+      try {
+        existingValues = JSON.parse(existing);
+      } catch {
+        // ignore
+      }
+    }
+
+    const merged = { ...existingValues, ...formValues };
+    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+
+    onClose();
+    navigate(getPagePath("eligibility"));
+  }
+
+  const displayedGrandTotal =
+    rateFrequency === "annual"
+      ? Math.round(grandTotal * 12 * 100) / 100
+      : grandTotal;
   const rateSuffix = rateFrequency === "annual" ? "/yr" : "/mo";
 
   return (
-    <Stack direction="column" spacing={3}>
-      {/* Category chips + questions + products */}
+    <Stack spacing={3}>
+      {/* Category chips + questions (full width) */}
       <Box>
         <Stack spacing={3}>
           {/* Category chips (multi-select) */}
@@ -278,16 +462,11 @@ export default function CostEstimateDrawerContent() {
                     onChange={(_, value) => {
                       if (value !== null) setGender(value as EstimateGender);
                     }}
-                    sx={{ display: "flex", gap: 1 }}
+                    sx={{ display: "flex", flexDirection: "column", gap: 1 }}
                   >
                     <ToggleButton
                       value="male"
-                      sx={{
-                        flex: 1,
-                        textTransform: "none",
-                        gap: 1,
-                        justifyContent: "flex-start",
-                      }}
+                      sx={{ textTransform: "none", gap: 1, justifyContent: "flex-start" }}
                     >
                       <Radio
                         checked={gender === "male"}
@@ -298,12 +477,7 @@ export default function CostEstimateDrawerContent() {
                     </ToggleButton>
                     <ToggleButton
                       value="female"
-                      sx={{
-                        flex: 1,
-                        textTransform: "none",
-                        gap: 1,
-                        justifyContent: "flex-start",
-                      }}
+                      sx={{ textTransform: "none", gap: 1, justifyContent: "flex-start" }}
                     >
                       <Radio
                         checked={gender === "female"}
@@ -334,16 +508,11 @@ export default function CostEstimateDrawerContent() {
                     onChange={(_, value) => {
                       if (value !== null) setSmoker(value as EstimateYesNo);
                     }}
-                    sx={{ display: "flex", gap: 1 }}
+                    sx={{ display: "flex", flexDirection: "column", gap: 1 }}
                   >
                     <ToggleButton
                       value="yes"
-                      sx={{
-                        flex: 1,
-                        textTransform: "none",
-                        gap: 1,
-                        justifyContent: "flex-start",
-                      }}
+                      sx={{ textTransform: "none", gap: 1, justifyContent: "flex-start" }}
                     >
                       <Radio
                         checked={smoker === "yes"}
@@ -354,12 +523,7 @@ export default function CostEstimateDrawerContent() {
                     </ToggleButton>
                     <ToggleButton
                       value="no"
-                      sx={{
-                        flex: 1,
-                        textTransform: "none",
-                        gap: 1,
-                        justifyContent: "flex-start",
-                      }}
+                      sx={{ textTransform: "none", gap: 1, justifyContent: "flex-start" }}
                     >
                       <Radio
                         checked={smoker === "no"}
@@ -472,10 +636,18 @@ export default function CostEstimateDrawerContent() {
               </Button>
             </Stack>
           )}
+        </Stack>
+      </Box>
 
-          {/* Products section (revealed below category questions) */}
-          {showProducts && selectedCategories.length > 0 && (
-            <>
+      {/* Products + estimated cost side by side */}
+      {showProducts && selectedCategories.length > 0 && (
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          spacing={{ xs: 3, md: 4 }}
+          alignItems="flex-start"
+        >
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Stack spacing={2}>
               <Divider />
               {productsLoading ? (
                 <Stack spacing={2} alignItems="center" sx={{ py: 4 }}>
@@ -506,7 +678,7 @@ export default function CostEstimateDrawerContent() {
                       currentApplicants.length > 0;
 
                     return (
-                      <CoverageCard
+                      <ProductCardSurface
                         key={product.id}
                         selected={hasAnyApplicantSelected}
                         sx={{
@@ -536,6 +708,59 @@ export default function CostEstimateDrawerContent() {
 
                           {product.featured && <FeaturedBadge />}
                         </Stack>
+
+                        {/* Select for myself */}
+                        <SelectionGroup>
+                          <Checkbox
+                            checked={hasAnyApplicantSelected}
+                            onChange={() =>
+                              toggleApplicantForProduct(product, "member")
+                            }
+                            size="small"
+                            sx={{
+                              p: 0,
+                              pointerEvents: "none",
+                              color: "text.primary",
+                              "&.Mui-checked": {
+                                color: "primary.main",
+                              },
+                            }}
+                          />
+                          <Typography variant="subtitle2" sx={{ flex: 1 }}>
+                            Select for myself
+                          </Typography>
+                          {hasAnyApplicantSelected ? (
+                            <Chip
+                              label="Added"
+                              size="small"
+                              color="success"
+                              sx={{
+                                height: 22,
+                                "& .MuiChip-label": {
+                                  fontSize: "0.7rem",
+                                  fontWeight: 600,
+                                  px: 1,
+                                },
+                              }}
+                            />
+                          ) : (
+                            <Chip
+                              label="Add"
+                              size="small"
+                              variant="outlined"
+                              sx={{
+                                height: 22,
+                                borderColor: "grey.300",
+                                color: "text.secondary",
+                                "& .MuiChip-label": {
+                                  fontSize: "0.7rem",
+                                  fontWeight: 600,
+                                  px: 1,
+                                },
+                              }}
+                            />
+                          )}
+                        </SelectionGroup>
 
                         {/* Benefit amount & estimated cost (always visible) */}
                         {(() => {
@@ -609,7 +834,7 @@ export default function CostEstimateDrawerContent() {
                             </Box>
                           );
                         })()}
-                      </CoverageCard>
+                      </ProductCardSurface>
                     );
                   })}
 
@@ -628,36 +853,226 @@ export default function CostEstimateDrawerContent() {
                   </Typography>
                 </Stack>
               )}
-            </>
-          )}
+            </Stack>
+          </Box>
 
-          {/* Empty state when no categories selected */}
-          {selectedCategories.length === 0 && (
+          {/* Sticky estimated cost total section */}
+          {!productsLoading && (
             <Box
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "start",
-                textAlign: "center",
-                minHeight: 200,
-                py: 6,
-                px: 4,
+                position: { md: "sticky" },
+                top: { md: 24 },
+                alignSelf: { md: "flex-start" },
+                width: { xs: "100%", md: 280 },
+                minWidth: { md: 240 },
+                flexShrink: 0,
               }}
             >
-              <Stack spacing={1} alignItems="center">
-                <PrivacyTipIcon sx={{ fontSize: 40, color: "text.disabled" }} />
-                <Typography variant="body1" sx={{ color: "text.secondary" }}>
-                  Your estimated cost will appear here
-                </Typography>
-                <Typography variant="body2" sx={{ color: "text.disabled" }}>
-                  Select a coverage category to see your estimated cost.
-                </Typography>
-              </Stack>
+              <Box
+                sx={{
+                  p: 2,
+                  borderRadius: "12px",
+                  bgcolor: "#f8fafd",
+                  border: "1px solid",
+                  borderColor: "divider",
+                }}
+              >
+                <Stack spacing={1.5}>
+                  <Typography variant="h6">
+                    Estimated cost<sup>1</sup>
+                  </Typography>
+
+                  {selectedProducts.length === 0 ? (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 0.75,
+                        px: 1.25,
+                        py: 1,
+                        borderRadius: 2,
+                        bgcolor: "#f8fafc",
+                        border: "1px dashed",
+                        borderColor: "divider",
+                        color: "text.secondary",
+                      }}
+                    >
+                      <PrivacyTipIcon
+                        sx={{ fontSize: 17, color: "text.disabled" }}
+                      />
+                      <Typography variant="caption" fontWeight="bold">
+                        Added coverage will appear here
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <>
+                      {selectedProducts.map((product) => {
+                        const applicants = productApplicants[product.id] ?? [];
+                        const productTotal = applicants.reduce(
+                          (sum, a) => sum + getApplicantPremium(product, a),
+                          0,
+                        );
+                        const displayedProductTotal =
+                          rateFrequency === "annual"
+                            ? Math.round(productTotal * 12 * 100) / 100
+                            : productTotal;
+
+                        return (
+                          <Stack
+                            key={product.id}
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            spacing={1}
+                          >
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
+                              {product.name}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              fontWeight="bold"
+                              sx={{ whiteSpace: "nowrap" }}
+                            >
+                              {formatUSD(displayedProductTotal)}
+                              {rateSuffix}
+                            </Typography>
+                          </Stack>
+                        );
+                      })}
+
+                      <Box
+                        sx={{
+                          borderTop: "1px solid",
+                          borderColor: "divider",
+                          pt: 1.5,
+                        }}
+                      >
+                        <Stack
+                          direction="row"
+                          justifyContent="space-between"
+                          alignItems="baseline"
+                        >
+                          <Typography variant="caption" fontWeight="bold">
+                            Total
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            fontWeight="bold"
+                            sx={{
+                              color: "primary.main",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {formatUSD(displayedGrandTotal)}
+                            {rateSuffix}
+                          </Typography>
+                        </Stack>
+                      </Box>
+                    </>
+                  )}
+
+                  {showRateFrequencyToggle && (
+                    <Stack
+                      direction="row"
+                      spacing={0.75}
+                      alignItems="center"
+                      justifyContent="center"
+                    >
+                      <Typography
+                        variant="caption"
+                        fontWeight="bold"
+                        color={
+                          rateFrequency === "monthly"
+                            ? "primary.main"
+                            : "text.secondary"
+                        }
+                      >
+                        Monthly
+                      </Typography>
+                      <RateFrequencyToggle
+                        checked={rateFrequency === "annual"}
+                        onChange={(event) =>
+                          setRateFrequency(
+                            event.target.checked ? "annual" : "monthly",
+                          )
+                        }
+                        slotProps={{
+                          input: {
+                            "aria-label": "Toggle between monthly and annual",
+                          },
+                        }}
+                      />
+                      <Typography
+                        variant="caption"
+                        fontWeight="bold"
+                        color={
+                          rateFrequency === "annual"
+                            ? "primary.main"
+                            : "text.secondary"
+                        }
+                      >
+                        Annual
+                      </Typography>
+                    </Stack>
+                  )}
+
+                  {/* Apply for coverage button */}
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    endIcon={<ArrowRightAltRoundedIcon />}
+                    onClick={handleApplyForCoverage}
+                    disabled={selectedProducts.length === 0}
+                    sx={{ mt: 1 }}
+                  >
+                    Apply for coverage
+                  </Button>
+                </Stack>
+              </Box>
+
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ display: "block", mt: 1.5, fontStyle: "italic" }}
+              >
+                <sup>1</sup> Quoted cost is the best rate available. Final cost
+                may vary based on gender, health status, and tobacco/nicotine
+                use.
+              </Typography>
             </Box>
           )}
         </Stack>
-      </Box>
+      )}
+
+      {/* Empty state when no categories selected */}
+      {selectedCategories.length === 0 && (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "start",
+            textAlign: "center",
+            minHeight: 200,
+            py: 6,
+            px: 4,
+          }}
+        >
+          <Stack spacing={1} alignItems="center">
+            <PrivacyTipIcon sx={{ fontSize: 40, color: "text.disabled" }} />
+            <Typography variant="body1" sx={{ color: "text.secondary" }}>
+              Your estimated cost will appear here
+            </Typography>
+            <Typography variant="body2" sx={{ color: "text.disabled" }}>
+              Select a coverage category to see your estimated cost.
+            </Typography>
+          </Stack>
+        </Box>
+      )}
     </Stack>
   );
 }

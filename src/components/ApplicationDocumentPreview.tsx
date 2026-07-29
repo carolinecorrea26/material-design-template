@@ -1,13 +1,13 @@
 import { Box, Divider, IconButton, Stack, Typography } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import { getActiveClient } from "../../config/client/getActiveClient";
-import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
-import { fieldCatalog } from "../../config/fields";
-import type { FieldDefinition } from "../../config/fields/types";
-import { pageSections } from "../../config/pageSections/pageSections";
-import { isSectionVisible } from "../../app/RoutePage";
-import type { ApplicationFormValues } from "../../app/ApplicationFormContext";
-import type { PageId } from "../../types";
+import { getActiveClient } from "../config/client/getActiveClient";
+import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
+import { fieldCatalog } from "../config/fields";
+import type { FieldDefinition } from "../config/fields/types";
+import { pageSections } from "../config/pageSections/pageSections";
+import { isSectionVisible } from "../app/RoutePage";
+import type { ApplicationFormValues } from "../app/ApplicationFormContext";
+import type { PageId } from "../types";
 
 type DisplayEntry = {
   label: string;

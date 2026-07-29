@@ -167,6 +167,7 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
           <Box
             key={entry.id}
             component={isClickable ? "button" : "span"}
+            aria-current={isCurrentEntry ? "page" : undefined}
             onClick={
               isClickable ? () => navigate(`/${entry.navigateTo}`) : undefined
             }
@@ -270,7 +271,7 @@ export default function FormVerticalStepper({
               const stepLabelColor = isActive
                 ? "text.primary"
                 : isCompleted
-                  ? "#49596f"
+                  ? "text.secondary"
                   : "#94a3b8";
 
               return (

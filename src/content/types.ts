@@ -83,6 +83,19 @@ export type PagesContent = Record<PageId, PageContent>;
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
 
+export type LegalDocSection =
+  | { type: "heading"; level: 1 | 2; text: string }
+  | { type: "paragraph"; text: string }
+  | { type: "list"; items: string[] }
+  | { type: "address"; lines: string[] }
+  | { type: "note"; text: string };
+
+export type LegalDocContent = {
+  title: string;
+  sections: LegalDocSection[];
+  revision?: string;
+};
+
 export type FooterContent = {
   administeredByLabel: string;
   underwrittenBy: {
@@ -95,6 +108,9 @@ export type FooterContent = {
   ratingsAsOf: string;
   legal: string[];
   links: { termsOfUse: string; privacyNotice: string };
+  /** Global legal documents — not client-configurable. */
+  termsOfUseContent: LegalDocContent;
+  privacyNoticeContent: LegalDocContent;
 };
 
 // ─── Review ───────────────────────────────────────────────────────────────────
@@ -177,6 +193,11 @@ export type HelpContent = {
 export type SharedContent = {
   applicantLabels: Record<CoverageApplicantId, string>;
   applicantSectionTitles: Record<"self" | "spouse" | "child", string>;
+  cookieBanner: {
+    message: string;
+    learnMoreLabel: string;
+    learnMoreHref: string;
+  };
 };
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
