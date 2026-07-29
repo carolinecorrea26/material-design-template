@@ -114,9 +114,15 @@ export type ClientCoverages = {
   ranges?: Partial<Record<CoverageId, ClientCoverageRangeConfig>>;
   descriptions?: Partial<Record<CoverageId, string>>;
   overrides?: Partial<Record<CoverageId, ClientCoverageOverrides>>;
-  /** When true, all coverage category accordions are expanded by default. Otherwise only the first is expanded. */
+  /** When true, all coverage category accordions are expanded by default. */
   allCategoriesExpanded?: boolean;
   estimatedRateDisplay?: ClientEstimatedRateDisplay;
+  /**
+   * Controls the wording of the "apply for additional coverage" warning on the Coverage page.
+   * "applyForAdditional" (default): "...apply only for the additional coverage you want."
+   * "applyForTotal": "...apply for the total amount of coverage you want (amount you currently have + amount you're requesting)."
+   */
+  additionalCoverageWarning?: "applyForAdditional" | "applyForTotal";
 };
 
 export type ClientFields = Partial<

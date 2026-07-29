@@ -188,7 +188,7 @@ export default function CoverageQuestions(props: CoverageQuestionsProps) {
       return (
         <Box key={section.id}>
           {section.description && (
-            <SectionHeader label={section.description} sx={{ mb: 2 }} />
+            <SectionHeader label={section.description} chipVariant="filled" chipColor="default" size="small" sx={{ mb: 2 }} />
           )}
           {isConditional ? (
             <ConditionalGroup>{content}</ConditionalGroup>

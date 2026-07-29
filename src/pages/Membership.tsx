@@ -11,7 +11,7 @@ import FieldRenderer from "../components/forms/FieldRenderer";
 import FormRoutePage from "../app/RoutePage";
 import SectionHeader from "../components/forms/SectionHeader";
 
-import QuoteEstimator from "../components/QuoteEstimator";
+import QuoteCalculator from "../components/forms/QuoteCalculator";
 import type { FieldDefinition } from "../config/fields/types";
 import {
   coverageOptionsAvailableHelpItem,
@@ -170,28 +170,34 @@ function WAEPAAdditionalFields({
 export default function Membership() {
   const client = getActiveClient();
   const pageId = "membership";
+  const [quoteOpen, setQuoteOpen] = useState(false);
 
-  const helpItems = [
+  const drawerHelpItems = [
     coverageOptionsAvailableHelpItem,
     howApplyingWorksHelpItem,
-    {
-      id: "estimate-cost",
-      label: "How much does it cost?",
-      title: "How much does it cost?",
-      content: <QuoteEstimator />,
-    },
+  ];
+  const chipItems = [
+    ...drawerHelpItems,
+    { id: "estimate-cost", label: "How much does it cost?" },
     // groupInsuranceHelpItem(client.branding.name),
   ];
   const [activeHelpId, setActiveHelpId] = useState<string | null>(null);
-  const activeHelpItem =
-    helpItems.find((item) => item.id === activeHelpId) ?? null;
+  const activeHelpItem = drawerHelpItems.find((item) => item.id === activeHelpId) ?? null;
+
+  function handleHelpSelect(id: string) {
+    if (id === "estimate-cost") {
+      setQuoteOpen(true);
+    } else {
+      setActiveHelpId(id);
+    }
+  }
 
   return (
     <FormRoutePage
       pageId={pageId}
       help={
         <>
-          <FormHelpChips items={helpItems} onSelect={setActiveHelpId} />
+          <FormHelpChips items={chipItems} onSelect={handleHelpSelect} />
           <AppDrawer
             open={!!activeHelpItem}
             title={activeHelpItem?.title ?? ""}
@@ -199,6 +205,11 @@ export default function Membership() {
           >
             {activeHelpItem?.content}
           </AppDrawer>
+          <QuoteCalculator
+            open={quoteOpen}
+            onClose={() => setQuoteOpen(false)}
+            collectEligibility
+          />
         </>
       }
       initialTransitionMessage="Loading your membership application..."
@@ -358,6 +369,8 @@ export default function Membership() {
                           ? "Physician Information"
                           : "Membership Information"
                       }
+                      chipVariant="outlined"
+                      size="small"
                     />
                     {client.id === "ama" && membershipValue === "spouse" && (
                       <Alert severity="info" sx={{ mt: 1 }}>

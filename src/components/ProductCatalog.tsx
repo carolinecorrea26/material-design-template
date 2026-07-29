@@ -32,6 +32,7 @@ import type {
 } from "../config/coverages/types";
 import type { EstimatedRateFrequency } from "../config/clients/types";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
+import { getActiveClient } from "../config/client/getActiveClient";
 import { getContent } from "../content";
 import { formatUSD } from "../utils/formatUSD";
 import EstimatedCostPanel from "./ui/EstimatedCostPanel";
@@ -150,6 +151,14 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 
   const clientId = resolveClientId();
 
+  const additionalCoverageWarningMode =
+    getActiveClient().coverages.additionalCoverageWarning ?? "applyForAdditional";
+
+  const additionalCoverageWarningText =
+    additionalCoverageWarningMode === "applyForTotal"
+      ? "If you already have any of the following Insurance and wish to increase your current level of coverage, apply for the total amount of coverage you want (amount you currently have + amount you're requesting)."
+      : "If you already have any of the following Insurance and wish to increase your current level of coverage, apply only for the additional coverage you want.";
+
   // Canonical display order for coverage sections
   const categoryDisplayOrder: CoverageCategoryId[] = [
     "LI",
@@ -254,9 +263,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 
       {/* Coverage increase warning */}
       <Alert severity="warning" sx={{ borderRadius: 2, mb: 2 }}>
-        If you already have any of the following Insurance and wish to increase
-        your current level of coverage, apply only for the additional coverage
-        you want.
+        {additionalCoverageWarningText}
       </Alert>
 
       <Box
@@ -284,6 +291,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                       <SectionHeader
                         label={getCoverageCategorySectionLabel(categoryId)}
                         icon={CategoryIcon as any}
+                        chipVariant="outlined"
                       />
                       <Alert severity="warning" sx={{ borderRadius: 2 }}>
                         Based on your answers, you are not eligible for{" "}
@@ -305,6 +313,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                     <SectionHeader
                       label={getCoverageCategorySectionLabel(categoryId)}
                       icon={CategoryIcon as any}
+                      chipVariant="outlined"
                     />
                     <Box
                       sx={{
@@ -610,6 +619,7 @@ function ProductCard({
                 <SectionHeader
                   label={applicantSectionTitles[sectionId]}
                   icon={applicantIcons[sectionId]}
+                  chipVariant="outlined"
                   sx={{ mb: 1.5 }}
                 />
               )}

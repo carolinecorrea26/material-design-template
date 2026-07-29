@@ -7,15 +7,23 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   Divider,
+  FormControl,
+  FormHelperText,
+  InputLabel,
   Link,
+  MenuItem,
+  Select,
   Stack,
   Tab,
   Tabs,
+  TextField,
   Typography,
 } from "@mui/material";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
-import HomeQuoteCard from "../components/HomeQuoteCard";
+import QuoteCalculator from "../components/forms/QuoteCalculator";
+import type { QuoteCalculatorInitialValues } from "../components/forms/QuoteCalculator";
 import AppDrawer from "../components/ui/AppDrawer";
 import QuickDecisionIndicator from "../components/ui/QuickDecisionIndicator";
 import QuickDecisionDrawerContent from "../components/content/QuickDecisionExplainer";
@@ -32,6 +40,16 @@ import type {
 import { getPagePath } from "../config/pages";
 import { formatUSD } from "../utils/formatUSD";
 import type { HomePageVariant } from "../config/clients/types";
+import {
+  deriveStateProvinceFromZipOrPostalCode,
+  formatZipOrPostalCode,
+} from "../utils/zipToStateProvince";
+import {
+  parseStoredDate,
+  formatDateForStorage,
+  formatDateDisplay,
+} from "../utils/dateFormatting";
+import { fieldCatalog } from "../config/fields";
 
 type DrawerId = "application-review" | "quick-decision" | null;
 const PAGE_MAX_WIDTH = 1200;
@@ -82,6 +100,145 @@ function formatCoverageRange(coverage: CoverageDefinition) {
 
 function getApplicantLabel(applicant: CoverageApplicantId): string {
   return content.shared.applicantLabels[applicant];
+}
+
+// ── Home page quote card ───────────────────────────────────────────────────
+// Collects DOB/ZIP/State, then opens the QuoteCalculator drawer pre-filled.
+type HomeQuoteSectionProps = {
+  onOpenQuote: (eligibility: QuoteCalculatorInitialValues) => void;
+};
+
+function HomeQuoteSection({ onOpenQuote }: HomeQuoteSectionProps) {
+  const stateOptions = useMemo(() => fieldCatalog["state-province"].options ?? [], []);
+  const [birthday, setBirthday] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [state, setState] = useState("");
+  const [attempted, setAttempted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [dobFocused, setDobFocused] = useState(false);
+  const [ageError, setAgeError] = useState("");
+
+  useEffect(() => {
+    const derived = deriveStateProvinceFromZipOrPostalCode(zipCode, stateOptions);
+    if (derived && derived !== state) setState(derived);
+  }, [zipCode, stateOptions, state]);
+
+  const validationErrors = useMemo(() => {
+    const errors: Record<string, string> = {};
+    if (!birthday) errors.birthday = "Date of birth is required.";
+    else if (!/^\d{4}-\d{2}-\d{2}$/.test(birthday))
+      errors.birthday = "Enter a complete date (MM/DD/YYYY).";
+    if (!zipCode) errors.zipCode = "ZIP / postal code is required.";
+    if (!state) errors.state = "State is required.";
+    return errors;
+  }, [birthday, zipCode, state]);
+
+  function handleGetEstimate() {
+    setAttempted(true);
+    setAgeError("");
+    if (Object.keys(validationErrors).length > 0) return;
+
+    const age = (() => {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(birthday)) return null;
+      const [y, m, d] = birthday.split("-").map(Number);
+      const birth = new Date(y, m - 1, d);
+      const today = new Date();
+      let a = today.getFullYear() - birth.getFullYear();
+      const mo = today.getMonth() - birth.getMonth();
+      if (mo < 0 || (mo === 0 && today.getDate() < birth.getDate())) a--;
+      return a;
+    })();
+    if (age !== null && age >= 80) {
+      setAgeError("We're sorry, but coverage is not available for applicants age 80 or older.");
+      return;
+    }
+
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      onOpenQuote({ birthday, zipCode, state });
+    }, 600);
+  }
+
+  return (
+    <Box
+      sx={{
+        ...SURFACE_SX,
+        width: "100%",
+        borderColor: "rgba(7, 104, 255, 0.14)",
+        background: "linear-gradient(135deg, #f4f8ff 0%, #ffffff 52%, #f7fbff 100%)",
+      }}
+    >
+      <Stack spacing={2.25} sx={{ p: { xs: 2.5, sm: 3 } }}>
+        <Box>
+          <Typography variant="h2" paddingBottom={0.5}>
+            Get an instant quote
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Find a premium and amount that&apos;s a good fit for you.
+          </Typography>
+        </Box>
+
+        <Stack spacing={2.5}>
+          <TextField
+            label="Date of Birth"
+            fullWidth
+            required
+            placeholder="MM/DD/YYYY"
+            value={parseStoredDate(birthday)}
+            onChange={(event) => {
+              const formatted = formatDateDisplay(event.target.value);
+              const digits = formatted.replace(/\D/g, "");
+              if (digits.length === 8) {
+                setBirthday(formatDateForStorage(formatted));
+              } else {
+                setBirthday(formatted);
+              }
+            }}
+            onFocus={() => setDobFocused(true)}
+            onBlur={() => setDobFocused(false)}
+            inputProps={{ inputMode: "numeric" }}
+            InputLabelProps={{ shrink: dobFocused || !!birthday }}
+            error={attempted && !!validationErrors.birthday}
+            helperText={attempted && validationErrors.birthday ? validationErrors.birthday : undefined}
+          />
+          <TextField
+            label="ZIP / Postal Code"
+            fullWidth
+            required
+            value={zipCode}
+            onChange={(event) => setZipCode(formatZipOrPostalCode(event.target.value))}
+            inputProps={{ inputMode: "text", maxLength: 7 }}
+            error={attempted && !!validationErrors.zipCode}
+            helperText={attempted ? validationErrors.zipCode || undefined : undefined}
+          />
+          <FormControl fullWidth required error={attempted && !!validationErrors.state}>
+            <InputLabel id="home-estimate-state-label">State</InputLabel>
+            <Select
+              labelId="home-estimate-state-label"
+              label="State"
+              value={state}
+              onChange={(event) => setState(event.target.value)}
+            >
+              {stateOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+              ))}
+            </Select>
+            {attempted && validationErrors.state && (
+              <FormHelperText>{validationErrors.state}</FormHelperText>
+            )}
+          </FormControl>
+        </Stack>
+
+        <Stack spacing={1}>
+          <Button variant="outlined" size="large" sx={{ py: "16px" }} onClick={handleGetEstimate} disabled={isLoading}>
+            {isLoading ? <CircularProgress size={20} color="inherit" /> : "Get an instant quote"}
+          </Button>
+          {ageError && <Alert severity="error" sx={{ mt: 0.5 }}>{ageError}</Alert>}
+        </Stack>
+      </Stack>
+    </Box>
+  );
 }
 
 function InlineDrawerLink({
@@ -256,6 +413,8 @@ export default function Home() {
   const showCoverageOptions = variant !== "welcome-back";
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const [activeDrawer, setActiveDrawer] = useState<DrawerId>(null);
+  const [quoteDrawerOpen, setQuoteDrawerOpen] = useState(false);
+  const [quoteEligibility, setQuoteEligibility] = useState<QuoteCalculatorInitialValues | null>(null);
   const [activeCoverageCategory, setActiveCoverageCategory] =
     useState<CoverageCategoryId>("LI");
   const howApplyingWorksRef = useRef<HTMLDivElement>(null);
@@ -492,7 +651,14 @@ export default function Home() {
             )}
           </Stack>
 
-          {showQuoteTool && <HomeQuoteCard />}
+          {showQuoteTool && (
+            <HomeQuoteSection
+              onOpenQuote={(eligibility) => {
+                setQuoteEligibility(eligibility);
+                setQuoteDrawerOpen(true);
+              }}
+            />
+          )}
           {showHeroImage && (
             <Box
               component="img"
@@ -804,6 +970,13 @@ export default function Home() {
           <QuickDecisionDrawerContent />
         )}
       </AppDrawer>
+
+      <QuoteCalculator
+        open={quoteDrawerOpen}
+        onClose={() => setQuoteDrawerOpen(false)}
+        collectEligibility={false}
+        initialEligibility={quoteEligibility ?? undefined}
+      />
     </Box>
   );
 }

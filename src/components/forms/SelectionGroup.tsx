@@ -52,7 +52,7 @@ export default function SelectionGroup({
       sx={(theme) => ({
         display: "flex",
         alignItems: "center",
-        gap: 1,
+        gap: 1.5,
         padding: "16.5px 14px",
         width: "100%",
         border: "1px solid",

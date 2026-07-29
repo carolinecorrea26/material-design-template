@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import SelectionGroup from "../components/forms/SelectionGroup";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
-import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import FormRoutePage from "../app/RoutePage";
 
 import AppDrawer from "../components/ui/AppDrawer";
@@ -54,7 +53,14 @@ export default function Coverage() {
           </AppDrawer>
         </>
       }
-      hideNextButton={() => !state.showProducts || state.productsLoading}
+      hideNextButton={() =>
+        // Hide Next while products are loading
+        (state.showProducts && state.productsLoading) ||
+        // Hide Next when "See my coverage options" button is visible
+        (state.selectedCategories.length > 0 &&
+          !state.showProducts &&
+          state.needsAdditionalQuestions)
+      }
     >
       {({
         control,
@@ -124,7 +130,7 @@ function CoveragePageContent({
           error={state.selectedCategories.length === 0 && !!pageError}
         >
           <FormLabel component="legend" required sx={{ mb: 1.5 }}>
-            Choose category
+            Choose a coverage category
           </FormLabel>
           <Stack spacing={1.5}>
             {state.availableCategories.map((category) => {
@@ -158,7 +164,7 @@ function CoveragePageContent({
                       flexShrink: 0,
                     }}
                   >
-                    <Icon sx={{ fontSize: "1.25rem" }} />
+                    <Icon sx={{ fontSize: "1.5rem" }} />
                   </Box>
                   <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
                     <Box
@@ -207,31 +213,6 @@ function CoveragePageContent({
           coverageQuestions={state.clientCoverageQuestions}
         />
 
-        {/* Empty state when no categories selected */}
-        {state.selectedCategories.length === 0 && (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "start",
-              textAlign: "center",
-              minHeight: 200,
-              py: 6,
-              px: 4,
-            }}
-          >
-            <Stack spacing={1} alignItems="center">
-              <PrivacyTipIcon sx={{ fontSize: 40, color: "text.disabled" }} />
-              <Typography variant="body1" sx={{ color: "text.secondary" }}>
-                No coverage selected yet.
-              </Typography>
-              <Typography variant="body2" sx={{ color: "text.disabled" }}>
-                Your coverage options will appear here once you select coverage.
-              </Typography>
-            </Stack>
-          </Box>
-        )}
       </Stack>
 
       {/* Divider between coverage questions and products */}

@@ -285,6 +285,7 @@ export default function Payment() {
                     <SectionHeader
                       label={getCoverageCategorySectionLabel(category.id)}
                       icon={category.icon as any}
+                      chipVariant="outlined"
                     />
                     <Box
                       sx={{
@@ -471,7 +472,7 @@ export default function Payment() {
 
             {hasAnyBankAccountSelected && (
               <Stack spacing={1.5} sx={{ pt: 1 }}>
-                <SectionHeader label="Banking Information" />
+                <SectionHeader label="Banking Information" chipVariant="outlined" size="small" />
 
                 {BANK_FIELD_IDS.map((fieldId) => (
                   <FieldRenderer

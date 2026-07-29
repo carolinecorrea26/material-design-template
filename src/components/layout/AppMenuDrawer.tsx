@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
-import RequestQuoteRoundedIcon from "@mui/icons-material/RequestQuoteRounded";
 import CalculateRoundedIcon from "@mui/icons-material/CalculateRounded";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
@@ -19,7 +18,6 @@ import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import AppDrawer from "../ui/AppDrawer";
 import { CoverageOptionsDrawerContent } from "../../content/helpContent";
 import CoverageNeedsCalculator from "../CoverageNeedsCalculator";
-import QuoteEstimator from "../QuoteEstimator";
 import QuickDecisionDrawerContent from "../content/QuickDecisionExplainer";
 import { useState } from "react";
 import type { ClientConfig } from "../../config/clients/types";
@@ -39,7 +37,6 @@ export default function AppMenuDrawer({
 }: AppMenuDrawerProps) {
   const [isCoverageDrawerOpen, setIsCoverageDrawerOpen] = useState(false);
   const [isNeedsCalcOpen, setIsNeedsCalcOpen] = useState(false);
-  const [isQuoteDrawerOpen, setIsQuoteDrawerOpen] = useState(false);
   const [isQuickDecisionOpen, setIsQuickDecisionOpen] = useState(false);
 
   const phone = client.support.phone;
@@ -110,104 +107,77 @@ export default function AppMenuDrawer({
               <Typography variant="subtitle1" sx={APP_MENU_SECTION_TITLE_SX}>
                 Application Tools
               </Typography>
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: 1.5,
-                }}
-              >
+              <Stack spacing={1.5}>
                 <Button
                   variant="outlined"
+                  fullWidth
                   onClick={() => {
                     onClose();
                     setIsCoverageDrawerOpen(true);
                   }}
                   sx={{
-                    flexDirection: "column",
+                    flexDirection: "row",
                     textTransform: "none",
-                    py: 2,
-                    px: 1,
-                    gap: 0.5,
+                    py: 1.5,
+                    px: 2,
+                    gap: 1.5,
                     borderRadius: 2,
-                    minHeight: 80,
+                    justifyContent: "flex-start",
                   }}
                 >
                   <PrivacyTipIcon />
-                  <Typography variant="caption" fontWeight={600}>
+                  <Typography variant="body2" fontWeight={600}>
                     About Coverage
                   </Typography>
                 </Button>
 
                 <Button
                   variant="outlined"
-                  onClick={() => {
-                    onClose();
-                    setIsQuoteDrawerOpen(true);
-                  }}
-                  sx={{
-                    flexDirection: "column",
-                    textTransform: "none",
-                    py: 2,
-                    px: 1,
-                    gap: 0.5,
-                    borderRadius: 2,
-                    minHeight: 80,
-                  }}
-                >
-                  <RequestQuoteRoundedIcon />
-                  <Typography variant="caption" fontWeight={600}>
-                    Get Quote
-                  </Typography>
-                </Button>
-
-                <Button
-                  variant="outlined"
+                  fullWidth
                   onClick={() => {
                     onClose();
                     setIsNeedsCalcOpen(true);
                   }}
                   sx={{
-                    flexDirection: "column",
+                    flexDirection: "row",
                     textTransform: "none",
-                    py: 2,
-                    px: 1,
-                    gap: 0.5,
+                    py: 1.5,
+                    px: 2,
+                    gap: 1.5,
                     borderRadius: 2,
-                    minHeight: 80,
+                    justifyContent: "flex-start",
                   }}
                 >
                   <CalculateRoundedIcon />
-                  <Typography variant="caption" fontWeight={600}>
+                  <Typography variant="body2" fontWeight={600}>
                     Needs Calculator
                   </Typography>
                 </Button>
 
                 <Button
                   variant="outlined"
+                  fullWidth
                   onClick={() => {
                     onClose();
                     setIsQuickDecisionOpen(true);
                   }}
                   sx={{
-                    flexDirection: "column",
+                    flexDirection: "row",
                     textTransform: "none",
-                    py: 2,
-                    px: 1,
-                    gap: 0.5,
+                    py: 1.5,
+                    px: 2,
+                    gap: 1.5,
                     borderRadius: 2,
-                    minHeight: 80,
+                    justifyContent: "flex-start",
                   }}
                 >
                   <AutoAwesomeRoundedIcon />
-                  <Typography variant="caption" fontWeight={600}>
+                  <Typography variant="body2" fontWeight={600}>
                     About QuickDecision
-                    <Box component="sup" sx={{ fontSize: "0.7em" }}>
-                      SM
-                    </Box>
+                    <Box component="sup" sx={{ fontSize: "0.7em" }}>SM</Box>
                   </Typography>
                 </Button>
-              </Box>
+              </Stack>
             </Stack>
           </Box>
 
@@ -295,14 +265,6 @@ export default function AppMenuDrawer({
         onClose={() => setIsNeedsCalcOpen(false)}
       >
         <CoverageNeedsCalculator />
-      </AppDrawer>
-
-      <AppDrawer
-        open={isQuoteDrawerOpen}
-        title="How much does it cost?"
-        onClose={() => setIsQuoteDrawerOpen(false)}
-      >
-        <QuoteEstimator />
       </AppDrawer>
 
       <AppDrawer

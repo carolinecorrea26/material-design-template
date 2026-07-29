@@ -267,7 +267,6 @@ export default function QuoteEstimator() {
                   return (
                     <SelectionGroup
                       key={category.id}
-                      component="div"
                       role="checkbox"
                       aria-checked={isSelected}
                       checked={isSelected}
@@ -282,28 +281,16 @@ export default function QuoteEstimator() {
                     >
                       <Box
                         className="SelectionGroup-icon"
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          flexShrink: 0,
-                        }}
+                        sx={{ display: "flex", alignItems: "center", flexShrink: 0 }}
                       >
                         <Icon sx={{ fontSize: "1.25rem" }} />
                       </Box>
                       <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
-                        <Box
-                          component="span"
-                          className="SelectionGroup-label"
-                          sx={{ fontSize: "0.875rem" }}
-                        >
+                        <Box component="span" className="SelectionGroup-label" sx={{ fontSize: "0.875rem" }}>
                           {category.label}
                         </Box>
                         {productNames && (
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ fontSize: "0.75rem" }}
-                          >
+                          <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.75rem" }}>
                             {productNames}
                           </Typography>
                         )}
@@ -568,11 +555,7 @@ export default function QuoteEstimator() {
                       <ProductCardSurface
                         key={product.id}
                         selected={hasAnyApplicantSelected}
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: 1.5,
-                        }}
+                        sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}
                       >
                         {/* Title row */}
                         <Stack
