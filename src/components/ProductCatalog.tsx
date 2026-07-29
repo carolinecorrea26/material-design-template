@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Alert,
   Box,
@@ -6,21 +5,17 @@ import {
   Chip,
   CircularProgress,
   Collapse,
-  Divider,
   FormControl,
   FormHelperText,
   InputLabel,
-  Link,
   MenuItem,
   Select,
   Stack,
   Typography,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
 import FeaturedBadge from "./ui/FeaturedBadge";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import SectionTitle from "./forms/SectionTitle";
+import SectionHeader from "./forms/SectionHeader";
 import SelectionGroup from "./forms/SelectionGroup";
 import ProductCardSurface from "./ui/ProductCard";
 import QuickDecisionIndicator from "./ui/QuickDecisionIndicator";
@@ -28,6 +23,7 @@ import { QuickDecisionMark } from "./content/QuickDecisionExplainer";
 import { getCoverageCategorySectionLabel } from "../config/coverageCategories";
 import {
   applicantSectionTitles,
+  applicantIcons,
   coverageApplicantToSection,
 } from "../config/formSectionTitle";
 import type {
@@ -154,11 +150,6 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 
   const clientId = resolveClientId();
 
-  // Track expanded/collapsed state per category
-  const [expandedCategories, setExpandedCategories] = useState<
-    Record<CoverageCategoryId, boolean>
-  >({} as Record<CoverageCategoryId, boolean>);
-
   // Canonical display order for coverage sections
   const categoryDisplayOrder: CoverageCategoryId[] = [
     "LI",
@@ -170,16 +161,6 @@ export default function ProductCatalog(props: ProductCatalogProps) {
   const orderedCategories = [...selectedCategories].sort(
     (a, b) => categoryDisplayOrder.indexOf(a) - categoryDisplayOrder.indexOf(b),
   );
-
-  const isCategoryExpanded = (categoryId: CoverageCategoryId) =>
-    expandedCategories[categoryId] !== false; // default to expanded
-
-  const toggleCategory = (categoryId: CoverageCategoryId) => {
-    setExpandedCategories((prev) => ({
-      ...prev,
-      [categoryId]: prev[categoryId] === false,
-    }));
-  };
 
   if (selectedCategories.length === 0 || !showProducts) return null;
 
@@ -288,56 +269,26 @@ export default function ProductCatalog(props: ProductCatalogProps) {
         {/* Product boxes column */}
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Collapse in={showProducts}>
-            <Stack spacing={3} divider={<Divider />}>
+            <Stack spacing={3}>
               {orderedCategories.map((categoryId) => {
                 const category = availableCategories.find(
                   (c) => c.id === categoryId,
                 );
                 if (!category) return null;
 
+                const CategoryIcon = category.icon;
+
                 if (categoryEligibility[categoryId] === false) {
                   return (
                     <Stack spacing={2} key={categoryId}>
-                      <Stack
-                        direction="row"
-                        justifyContent="space-between"
-                        alignItems="center"
-                        gap={2}
-                      >
-                        <Typography variant="overline">
-                          {getCoverageCategorySectionLabel(categoryId)}
-                        </Typography>
-                        <Link
-                          component="button"
-                          type="button"
-                          variant="caption"
-                          underline="none"
-                          onClick={() => toggleCategory(categoryId)}
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 0.5,
-                            fontWeight: 600,
-                            flexShrink: 0,
-                          }}
-                        >
-                          {isCategoryExpanded(categoryId) ? (
-                            <>
-                              <RemoveIcon sx={{ fontSize: "1rem" }} /> Hide
-                            </>
-                          ) : (
-                            <>
-                              <AddIcon sx={{ fontSize: "1rem" }} /> Show
-                            </>
-                          )}
-                        </Link>
-                      </Stack>
-                      <Collapse in={isCategoryExpanded(categoryId)}>
-                        <Alert severity="warning" sx={{ borderRadius: 2 }}>
-                          Based on your answers, you are not eligible for{" "}
-                          {category.label} coverage at this time.
-                        </Alert>
-                      </Collapse>
+                      <SectionHeader
+                        label={getCoverageCategorySectionLabel(categoryId)}
+                        icon={CategoryIcon as any}
+                      />
+                      <Alert severity="warning" sx={{ borderRadius: 2 }}>
+                        Based on your answers, you are not eligible for{" "}
+                        {category.label} coverage at this time.
+                      </Alert>
                     </Stack>
                   );
                 }
@@ -351,84 +302,67 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 
                 return (
                   <Stack spacing={2} key={categoryId}>
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      gap={2}
+                    <SectionHeader
+                      label={getCoverageCategorySectionLabel(categoryId)}
+                      icon={CategoryIcon as any}
+                    />
+                    <Box
+                      sx={{
+                        p: "1rem",
+                        background: "#cadfff",
+                        borderRadius: "24px",
+                      }}
                     >
-                      <Typography variant="overline">
-                        {getCoverageCategorySectionLabel(categoryId)}
-                      </Typography>
-                      <Link
-                        component="button"
-                        type="button"
-                        variant="body2"
-                        underline="none"
-                        onClick={() => toggleCategory(categoryId)}
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 0.5,
-                          fontSize: "0.75rem",
-                          fontWeight: 600,
-                          flexShrink: 0,
-                        }}
-                      >
-                        {isCategoryExpanded(categoryId) ? (
-                          <>
-                            <RemoveIcon sx={{ fontSize: "1rem" }} /> Hide all
-                          </>
-                        ) : (
-                          <>
-                            <AddIcon sx={{ fontSize: "1rem" }} /> Show all
-                          </>
-                        )}
-                      </Link>
-                    </Stack>
-                    <Collapse in={isCategoryExpanded(categoryId)}>
-                      <Box sx={{ p: "1rem", background: "#cadfff", borderRadius: "24px" }}>
-                        <Stack spacing={2}>
-                          {notes && (
-                            <Alert severity="info" sx={{ borderRadius: 2 }}>
-                              <Typography variant="body2" sx={{ mb: hasSpouse || notes.child ? 1 : 0 }}>
-                                {notes.member}
+                      <Stack spacing={2}>
+                        {notes && (
+                          <Alert severity="info" sx={{ borderRadius: 2 }}>
+                            <Typography
+                              variant="body2"
+                              sx={{ mb: hasSpouse || notes.child ? 1 : 0 }}
+                            >
+                              {notes.member}
+                            </Typography>
+                            {hasSpouse && (
+                              <Typography
+                                variant="body2"
+                                sx={{ mb: notes.child ? 1 : 0 }}
+                              >
+                                {notes.spouse}
                               </Typography>
-                              {hasSpouse && (
-                                <Typography variant="body2" sx={{ mb: notes.child ? 1 : 0 }}>
-                                  {notes.spouse}
-                                </Typography>
-                              )}
-                              {notes.child && <Typography variant="body2">{notes.child}</Typography>}
-                            </Alert>
-                          )}
-                          {productsInCategory.map((coverage) => (
-                            <ProductCard
-                              key={coverage.id}
-                              coverage={coverage}
-                              productApplicants={productApplicants}
-                              storedAmounts={storedAmounts}
-                              storedRiders={storedRiders}
-                              storedRiderAmounts={storedRiderAmounts}
-                              storedWaitingPeriods={storedWaitingPeriods}
-                              storedMaxBenefitPeriods={storedMaxBenefitPeriods}
-                              calculatingRateKeys={calculatingRateKeys}
-                              rateFrequency={rateFrequency}
-                              frequencyCalculating={frequencyCalculating}
-                              onToggleApplicant={onToggleApplicant}
-                              onAmountChange={onAmountChange}
-                              onRiderToggle={onRiderToggle}
-                              onRiderAmountChange={onRiderAmountChange}
-                              onWaitingPeriodChange={onWaitingPeriodChange}
-                              onMaxBenefitPeriodChange={onMaxBenefitPeriodChange}
-                              getVisibleApplicants={getVisibleApplicants}
-                              calcApplicantPremium={calcApplicantPremium}
-                              generateAmountChoices={generateAmountChoices}
-                            />
-                          ))}
-                        </Stack>
-                      </Box>
-                    </Collapse>
+                            )}
+                            {notes.child && (
+                              <Typography variant="body2">
+                                {notes.child}
+                              </Typography>
+                            )}
+                          </Alert>
+                        )}
+                        {productsInCategory.map((coverage) => (
+                          <ProductCard
+                            key={coverage.id}
+                            coverage={coverage}
+                            productApplicants={productApplicants}
+                            storedAmounts={storedAmounts}
+                            storedRiders={storedRiders}
+                            storedRiderAmounts={storedRiderAmounts}
+                            storedWaitingPeriods={storedWaitingPeriods}
+                            storedMaxBenefitPeriods={storedMaxBenefitPeriods}
+                            calculatingRateKeys={calculatingRateKeys}
+                            rateFrequency={rateFrequency}
+                            frequencyCalculating={frequencyCalculating}
+                            onToggleApplicant={onToggleApplicant}
+                            onAmountChange={onAmountChange}
+                            onRiderToggle={onRiderToggle}
+                            onRiderAmountChange={onRiderAmountChange}
+                            onWaitingPeriodChange={onWaitingPeriodChange}
+                            onMaxBenefitPeriodChange={onMaxBenefitPeriodChange}
+                            getVisibleApplicants={getVisibleApplicants}
+                            calcApplicantPremium={calcApplicantPremium}
+                            generateAmountChoices={generateAmountChoices}
+                          />
+                        ))}
+                      </Stack>
+                    </Box>
                   </Stack>
                 );
               })}
@@ -480,14 +414,6 @@ export default function ProductCatalog(props: ProductCatalogProps) {
           calcCoveragePremium={calcCoveragePremium}
           isCoverageCalculating={isCoverageCalculating}
         />
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ display: "block", mt: 1.5 }}
-        >
-          <sup>1</sup> Quoted cost is the best rate available. Final cost may
-          vary based on gender, health status, and tobacco/nicotine use.
-        </Typography>
       </Box>
     </>
   );
@@ -665,7 +591,7 @@ function ProductCard({
 
       {/* Per-applicant sections */}
       <Stack spacing={isMultiApplicant ? 3 : 2} sx={{ mt: 1 }}>
-        {visibleApplicants.map((applicantId, idx) => {
+        {visibleApplicants.map((applicantId) => {
           const isSelected = currentApplicants.includes(applicantId);
           const sectionId = coverageApplicantToSection[applicantId];
           const key = `${coverage.id}:${applicantId}`;
@@ -681,14 +607,11 @@ function ProductCard({
           return (
             <Box key={applicantId}>
               {isMultiApplicant && (
-                <>
-                  {idx > 0 && <Divider sx={{ mb: 1.5 }} />}
-                  <SectionTitle
-                    label={applicantSectionTitles[sectionId]}
-                    variant="applicant"
-                    sx={{ mb: 1.5 }}
-                  />
-                </>
+                <SectionHeader
+                  label={applicantSectionTitles[sectionId]}
+                  icon={applicantIcons[sectionId]}
+                  sx={{ mb: 1.5 }}
+                />
               )}
 
               {/* Applicant-level info note */}

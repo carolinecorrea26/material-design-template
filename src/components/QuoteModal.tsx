@@ -30,6 +30,7 @@ import type {
   CoverageApplicantId,
   CoverageDefinition,
 } from "../config/coverages/types";
+import { coverageCategories } from "../config/coverageCategories";
 import {
   getCategoryRequirements,
   getBenefitAmountLabel,
@@ -44,7 +45,6 @@ import { getActiveClient } from "../config/client/getActiveClient";
 import type { EstimatedRateFrequency } from "../config/clients/types";
 import SelectionGroup from "./forms/SelectionGroup";
 import QuickDecisionIndicator from "./ui/QuickDecisionIndicator";
-import CoverageCategoryChips from "./ui/CoverageCategoryChips";
 import RateFrequencyToggle from "./ui/RateFrequencyToggle";
 import FeaturedBadge from "./ui/FeaturedBadge";
 
@@ -432,12 +432,70 @@ export default function QuoteModal({
       {/* Category chips + questions (full width) */}
       <Box>
         <Stack spacing={3}>
-          {/* Category chips (multi-select) */}
-          <CoverageCategoryChips
-            coverages={coverages}
-            selectedCategories={selectedCategories}
-            onToggle={handleCategoryToggle}
-          />
+          {/* Category selection (multi-select) */}
+          <FormControl component="fieldset">
+            <FormLabel component="legend" required sx={{ mb: 1.5 }}>
+              Choose category
+            </FormLabel>
+            <Stack spacing={1.5}>
+              {coverageCategories
+                .filter((cat) => coverages.some((c) => c.categoryId === cat.id))
+                .map((category) => {
+                  const Icon = category.icon;
+                  const isSelected = selectedCategories.includes(category.id);
+                  const productNames = coverages
+                    .filter((c) => c.categoryId === category.id)
+                    .map((c) => c.name)
+                    .join(", ");
+                  return (
+                    <SelectionGroup
+                      key={category.id}
+                      component="div"
+                      role="checkbox"
+                      aria-checked={isSelected}
+                      checked={isSelected}
+                      tabIndex={0}
+                      onClick={() => handleCategoryToggle(category.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === " " || e.key === "Enter") {
+                          e.preventDefault();
+                          handleCategoryToggle(category.id);
+                        }
+                      }}
+                    >
+                      <Box
+                        className="SelectionGroup-icon"
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <Icon sx={{ fontSize: "1.25rem" }} />
+                      </Box>
+                      <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
+                        <Box
+                          component="span"
+                          className="SelectionGroup-label"
+                          sx={{ fontSize: "0.875rem" }}
+                        >
+                          {category.label}
+                        </Box>
+                        {productNames && (
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ fontSize: "0.75rem" }}
+                          >
+                            {productNames}
+                          </Typography>
+                        )}
+                      </Stack>
+                    </SelectionGroup>
+                  );
+                })}
+            </Stack>
+          </FormControl>
 
           {/* Category-level additional fields */}
           {needsAdditionalFields && selectedCategories.length > 0 && (
@@ -466,7 +524,11 @@ export default function QuoteModal({
                   >
                     <ToggleButton
                       value="male"
-                      sx={{ textTransform: "none", gap: 1, justifyContent: "flex-start" }}
+                      sx={{
+                        textTransform: "none",
+                        gap: 1,
+                        justifyContent: "flex-start",
+                      }}
                     >
                       <Radio
                         checked={gender === "male"}
@@ -477,7 +539,11 @@ export default function QuoteModal({
                     </ToggleButton>
                     <ToggleButton
                       value="female"
-                      sx={{ textTransform: "none", gap: 1, justifyContent: "flex-start" }}
+                      sx={{
+                        textTransform: "none",
+                        gap: 1,
+                        justifyContent: "flex-start",
+                      }}
                     >
                       <Radio
                         checked={gender === "female"}
@@ -512,7 +578,11 @@ export default function QuoteModal({
                   >
                     <ToggleButton
                       value="yes"
-                      sx={{ textTransform: "none", gap: 1, justifyContent: "flex-start" }}
+                      sx={{
+                        textTransform: "none",
+                        gap: 1,
+                        justifyContent: "flex-start",
+                      }}
                     >
                       <Radio
                         checked={smoker === "yes"}
@@ -523,7 +593,11 @@ export default function QuoteModal({
                     </ToggleButton>
                     <ToggleButton
                       value="no"
-                      sx={{ textTransform: "none", gap: 1, justifyContent: "flex-start" }}
+                      sx={{
+                        textTransform: "none",
+                        gap: 1,
+                        justifyContent: "flex-start",
+                      }}
                     >
                       <Radio
                         checked={smoker === "no"}

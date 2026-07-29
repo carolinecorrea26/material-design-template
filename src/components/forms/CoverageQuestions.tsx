@@ -1,10 +1,15 @@
-import { Box, Divider, Stack, Typography } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import FieldRenderer from "./FieldRenderer";
 import ApplicantSection from "./ApplicantSection";
 import ConditionalGroup from "./ConditionalGroup";
+import SectionHeader from "./SectionHeader";
 import type { FormRouteRenderProps } from "../../app/RoutePage";
 import type { CoverageCategoryId } from "../../config/coverages/types";
-import type { PageSectionConfig, PageSectionId, SectionVisibilityRule } from "../../config/pageSections/types";
+import type {
+  PageSectionConfig,
+  PageSectionId,
+  SectionVisibilityRule,
+} from "../../config/pageSections/types";
 import type { ClientCoverageQuestions } from "../../config/clients/types";
 
 /**
@@ -40,7 +45,9 @@ const defaultWorkIncomeSections = new Set<PageSectionId>([
   "selfCoverageWorkIncome",
   "spouseCoverageWorkIncome",
 ]);
-const defaultBusinessSections = new Set<PageSectionId>(["selfCoverageBusinessExpenses"]);
+const defaultBusinessSections = new Set<PageSectionId>([
+  "selfCoverageBusinessExpenses",
+]);
 
 type CoverageQuestionsProps = Pick<
   FormRouteRenderProps,
@@ -181,12 +188,7 @@ export default function CoverageQuestions(props: CoverageQuestionsProps) {
       return (
         <Box key={section.id}>
           {section.description && (
-            <>
-              <Divider sx={{ mb: 2 }} />
-              <Typography variant="overline" sx={{ mb: 1.5, display: "block" }}>
-                {section.description}
-              </Typography>
-            </>
+            <SectionHeader label={section.description} sx={{ mb: 2 }} />
           )}
           {isConditional ? (
             <ConditionalGroup>{content}</ConditionalGroup>

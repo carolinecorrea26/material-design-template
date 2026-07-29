@@ -320,7 +320,7 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
           }),
           // Entered text is bold; empty/placeholder stays at default weight
           input: {
-            "&:not(:placeholder-shown)": { fontWeight: 900 },
+            "&:not(:placeholder-shown)": { fontWeight: 700 },
           },
         },
       },
@@ -376,14 +376,13 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
         styleOverrides: {
           root: {
             borderRadius: 9999,
-            fontWeight: 600,
+            fontWeight: 700,
+            padding: "16px 24px",
             textTransform: "none",
             transition: "transform 180ms ease, box-shadow 180ms ease",
             "&:hover": { transform: "translateY(-2px)" },
           },
           contained: ({ theme: t }) => ({
-            padding: "16px",
-            fontWeight: 700,
             boxShadow: `0 8px 18px ${t.palette.primary.main}3d`,
             "&:hover": { boxShadow: `0 8px 18px ${t.palette.primary.main}3d` },
           }),
@@ -463,12 +462,12 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
       },
       MuiCssBaseline: {
         styleOverrides: {
-          // SelectionGroup: custom radio/checkbox row component
+          // SelectionGroup font-weight rules. All border/background/color selected
+          // states are handled in SelectionGroup's sx prop so they use the correct
+          // theme primary color per client.
           ".SelectionGroup-root .SelectionGroup-label": {
             fontWeight: 700,
-          },
-          ".SelectionGroup-root:has(:checked) .SelectionGroup-label": {
-            fontWeight: 900,
+            fontSize: "0.875rem",
           },
         },
       },
@@ -507,15 +506,18 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
             border: `1px solid ${FIELD_BORDER_COLOR}`,
             borderRadius: INPUT_RADIUS,
             textTransform: "none",
-            fontWeight: 500,
+            fontWeight: 700,
             color: TEXT_PRIMARY,
             "&:hover": { backgroundColor: t.palette.action.hover },
             "&.Mui-selected": {
-              backgroundColor: t.palette.background.paper,
+              borderColor: t.palette.primary.main,
+              backgroundColor: `${t.palette.primary.main}1A`,
               color: TEXT_PRIMARY,
               fontWeight: 900,
             },
-            "&.Mui-selected:hover": { backgroundColor: t.palette.action.hover },
+            "&.Mui-selected:hover": {
+              backgroundColor: `${t.palette.primary.main}33`,
+            },
           }),
         },
       },
@@ -534,19 +536,9 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
       MuiChip: {
         styleOverrides: {
           root: {
-            "& .MuiChip-icon": { marginLeft: "5px", marginRight: "-5px" },
-            "&.coverageCategoryChip": {
-              padding: "16px 8px",
-              height: "auto",
-              borderRadius: "16px",
-              display: "flex",
-              flexDirection: "column",
-              minWidth: "100px",
-              fontSize: "0.875rem",
-              fontWeight: 600,
-              border: `1px solid ${FIELD_BORDER_COLOR}`,
-              "& .MuiChip-icon": { marginLeft: 0, marginRight: 0 },
-              "& .MuiChip-label": { paddingTop: 4 },
+            "& .MuiChip-icon": {
+              marginLeft: "5px",
+              marginRight: "-5px",
             },
           },
         },

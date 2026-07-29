@@ -21,6 +21,8 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
+import SelectionGroup from "./forms/SelectionGroup";
+import { coverageCategories } from "../config/coverageCategories";
 import type {
   CoverageCategoryId,
   CoverageApplicantId,
@@ -38,7 +40,6 @@ import { getActiveClient } from "../config/client/getActiveClient";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import type { EstimatedRateFrequency } from "../config/clients/types";
 import QuickDecisionIndicator from "./ui/QuickDecisionIndicator";
-import CoverageCategoryChips from "./ui/CoverageCategoryChips";
 
 import { formatCurrencyInput } from "../utils/formatting/currency";
 
@@ -248,12 +249,70 @@ export default function QuoteEstimator() {
       {/* Category chips + questions + products */}
       <Box>
         <Stack spacing={3}>
-          {/* Category chips (multi-select) */}
-          <CoverageCategoryChips
-            coverages={coverages}
-            selectedCategories={selectedCategories}
-            onToggle={handleCategoryToggle}
-          />
+          {/* Category selection (multi-select) */}
+          <FormControl component="fieldset">
+            <FormLabel component="legend" required sx={{ mb: 1.5 }}>
+              Choose category
+            </FormLabel>
+            <Stack spacing={1.5}>
+              {coverageCategories
+                .filter((cat) => coverages.some((c) => c.categoryId === cat.id))
+                .map((category) => {
+                  const Icon = category.icon;
+                  const isSelected = selectedCategories.includes(category.id);
+                  const productNames = coverages
+                    .filter((c) => c.categoryId === category.id)
+                    .map((c) => c.name)
+                    .join(", ");
+                  return (
+                    <SelectionGroup
+                      key={category.id}
+                      component="div"
+                      role="checkbox"
+                      aria-checked={isSelected}
+                      checked={isSelected}
+                      tabIndex={0}
+                      onClick={() => handleCategoryToggle(category.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === " " || e.key === "Enter") {
+                          e.preventDefault();
+                          handleCategoryToggle(category.id);
+                        }
+                      }}
+                    >
+                      <Box
+                        className="SelectionGroup-icon"
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <Icon sx={{ fontSize: "1.25rem" }} />
+                      </Box>
+                      <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
+                        <Box
+                          component="span"
+                          className="SelectionGroup-label"
+                          sx={{ fontSize: "0.875rem" }}
+                        >
+                          {category.label}
+                        </Box>
+                        {productNames && (
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ fontSize: "0.75rem" }}
+                          >
+                            {productNames}
+                          </Typography>
+                        )}
+                      </Stack>
+                    </SelectionGroup>
+                  );
+                })}
+            </Stack>
+          </FormControl>
 
           {/* Category-level additional fields */}
           {needsAdditionalFields && selectedCategories.length > 0 && (
@@ -509,7 +568,11 @@ export default function QuoteEstimator() {
                       <ProductCardSurface
                         key={product.id}
                         selected={hasAnyApplicantSelected}
-                        sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 1.5,
+                        }}
                       >
                         {/* Title row */}
                         <Stack

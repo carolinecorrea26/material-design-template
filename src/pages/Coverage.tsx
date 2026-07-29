@@ -3,11 +3,14 @@ import {
   Alert,
   Box,
   Button,
-  Chip,
   Divider,
+  FormControl,
+  FormHelperText,
+  FormLabel,
   Stack,
   Typography,
 } from "@mui/material";
+import SelectionGroup from "../components/forms/SelectionGroup";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import FormRoutePage from "../app/RoutePage";
@@ -115,33 +118,76 @@ function CoveragePageContent({
         </Box>
       )}
       <Stack spacing={3}>
-        {/* Category chips (multi-select) */}
-        <Box>
-          <Typography variant="overline" sx={{ mb: 1.5, display: "block" }}>
+        {/* Category selection (multi-select) */}
+        <FormControl
+          component="fieldset"
+          error={state.selectedCategories.length === 0 && !!pageError}
+        >
+          <FormLabel component="legend" required sx={{ mb: 1.5 }}>
             Choose category
-          </Typography>
-          <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mt: 1 }}>
+          </FormLabel>
+          <Stack spacing={1.5}>
             {state.availableCategories.map((category) => {
               const Icon = category.icon;
               const isSelected = state.selectedCategories.includes(category.id);
+              const productNames = state.coverages
+                .filter((c) => c.categoryId === category.id)
+                .map((c) => c.name)
+                .join(", ");
               return (
-                <Chip
+                <SelectionGroup
                   key={category.id}
-                  className="coverageCategoryChip"
-                  icon={<Icon sx={{ fontSize: "1.25rem !important" }} />}
-                  label={
-                    "shortLabel" in category
-                      ? category.shortLabel
-                      : category.label
-                  }
-                  variant={isSelected ? "filled" : "outlined"}
-                  color={isSelected ? "primary" : "default"}
+                  component="div"
+                  role="checkbox"
+                  aria-checked={isSelected}
+                  checked={isSelected}
+                  tabIndex={0}
                   onClick={() => state.handleCategoryToggle(category.id)}
-                />
+                  onKeyDown={(e) => {
+                    if (e.key === " " || e.key === "Enter") {
+                      e.preventDefault();
+                      state.handleCategoryToggle(category.id);
+                    }
+                  }}
+                >
+                  <Box
+                    className="SelectionGroup-icon"
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Icon sx={{ fontSize: "1.25rem" }} />
+                  </Box>
+                  <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
+                    <Box
+                      component="span"
+                      className="SelectionGroup-label"
+                      sx={{ fontSize: "0.875rem" }}
+                    >
+                      {category.label}
+                    </Box>
+                    {productNames && (
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ fontSize: "0.75rem" }}
+                      >
+                        {productNames}
+                      </Typography>
+                    )}
+                  </Stack>
+                </SelectionGroup>
               );
             })}
           </Stack>
-        </Box>
+          {state.selectedCategories.length === 0 && pageError && (
+            <FormHelperText>
+              Please select at least one coverage category.
+            </FormHelperText>
+          )}
+        </FormControl>
 
         {/* Category-level question fields */}
         <CoverageQuestions
@@ -178,10 +224,10 @@ function CoveragePageContent({
             <Stack spacing={1} alignItems="center">
               <PrivacyTipIcon sx={{ fontSize: 40, color: "text.disabled" }} />
               <Typography variant="body1" sx={{ color: "text.secondary" }}>
-                Your coverage options will appear here.
+                No coverage selected yet.
               </Typography>
               <Typography variant="body2" sx={{ color: "text.disabled" }}>
-                Select a coverage category to see available options.
+                Your coverage options will appear here once you select coverage.
               </Typography>
             </Stack>
           </Box>

@@ -9,7 +9,7 @@ import { getPageSectionNote } from "../config/pages";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import FormRoutePage from "../app/RoutePage";
-import SectionTitle from "../components/forms/SectionTitle";
+import SectionHeader from "../components/forms/SectionHeader";
 
 import QuoteEstimator from "../components/QuoteEstimator";
 import type { FieldDefinition } from "../config/fields/types";
@@ -352,7 +352,7 @@ export default function Membership() {
 
                 {hasAdditionalFields && (
                   <Box sx={{ mt: 3 }}>
-                    <SectionTitle
+                    <SectionHeader
                       label={
                         client.id === "ama" && membershipValue === "spouse"
                           ? "Physician Information"

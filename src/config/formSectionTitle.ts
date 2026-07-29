@@ -1,6 +1,6 @@
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import ChildCareIcon from "@mui/icons-material/ChildCare";
+import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import SupervisorAccountRoundedIcon from "@mui/icons-material/SupervisorAccountRounded";
+import EscalatorWarningRoundedIcon from "@mui/icons-material/EscalatorWarningRounded";
 import type { SxProps, Theme } from "@mui/material";
 import type { CoverageApplicantId } from "./coverages/types";
 
@@ -48,10 +48,10 @@ export const applicantSectionTitles: Record<ApplicantSectionId, string> = {
 };
 
 export const applicantIcons = {
-  self: PersonOutlineIcon,
-  spouse: FavoriteBorderIcon,
-  child: ChildCareIcon,
-} satisfies Record<ApplicantSectionId, typeof PersonOutlineIcon>;
+  self: PersonRoundedIcon,
+  spouse: SupervisorAccountRoundedIcon,
+  child: EscalatorWarningRoundedIcon,
+} satisfies Record<ApplicantSectionId, typeof PersonRoundedIcon>;
 
 export const coverageApplicantToSection: Record<
   CoverageApplicantId,
@@ -77,7 +77,7 @@ export function shouldShowSectionLabelIcon(
   return showIcon;
 }
 
-/** Shared banner style used by ApplicantSection to visually group fields by applicant. */
+/** @deprecated Use SectionHeader component directly */
 export const applicantSectionBannerSx: SxProps<Theme> = {
   backgroundColor: "rgb(234 242 255 / 84%)",
   padding: "0.5rem 1.25rem",
@@ -86,6 +86,7 @@ export const applicantSectionBannerSx: SxProps<Theme> = {
   justifyContent: "center",
 };
 
+/** @deprecated Use SectionHeader component directly */
 export const sectionTitleIconSx: SxProps<Theme> = {
   width: 28,
   height: 28,
