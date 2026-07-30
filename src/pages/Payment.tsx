@@ -474,7 +474,7 @@ export default function Payment() {
               <Stack spacing={1.5} sx={{ pt: 1 }}>
                 <SectionHeader
                   label="Banking Information"
-                  chipVariant="filled"
+                  chipVariant="outlined"
                   chipColor="default"
                   size="small"
                 />

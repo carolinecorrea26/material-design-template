@@ -39,7 +39,13 @@ export default function ApplicantSection({
 
   return (
     <Box sx={{ mb: 2, mt: 1 }}>
-      <SectionHeader label={title} icon={Icon} chipVariant="outlined" sx={{ mb: 2 }} />
+      <SectionHeader
+        label={title}
+        icon={Icon}
+        chipVariant="filled"
+        chipColor="default"
+        sx={{ mb: 2 }}
+      />
 
       {note && (
         <Alert severity="info" sx={{ mb: 2 }}>

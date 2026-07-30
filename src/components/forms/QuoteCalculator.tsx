@@ -117,7 +117,8 @@ export default function QuoteCalculator({
   const stateOptions = useMemo(() => getStateOptions(), []);
 
   const rateDisplayConfig = activeClient.coverages.estimatedRateDisplay;
-  const showRateFrequencyToggle = rateDisplayConfig?.showFrequencyToggle === true;
+  const showRateFrequencyToggle =
+    rateDisplayConfig?.showFrequencyToggle === true;
   const defaultRateFrequency: EstimatedRateFrequency =
     rateDisplayConfig?.defaultFrequency ?? "monthly";
   const [rateFrequency, setRateFrequency] =
@@ -134,7 +135,10 @@ export default function QuoteCalculator({
   // Auto-derive state from zip
   useEffect(() => {
     if (!collectEligibility) return;
-    const derived = deriveStateProvinceFromZipOrPostalCode(zipCode, stateOptions);
+    const derived = deriveStateProvinceFromZipOrPostalCode(
+      zipCode,
+      stateOptions,
+    );
     if (derived && derived !== state) setState(derived);
   }, [zipCode, stateOptions, state, collectEligibility]);
 
@@ -153,7 +157,9 @@ export default function QuoteCalculator({
     !collectEligibility || Object.keys(eligibilityErrors).length === 0;
 
   // ── Coverage category selection ───────────────────────────────────────────
-  const [selectedCategories, setSelectedCategories] = useState<CoverageCategoryId[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<
+    CoverageCategoryId[]
+  >([]);
 
   const {
     needsGender: categoryNeedsGender,
@@ -176,7 +182,8 @@ export default function QuoteCalculator({
   const fieldErrors = useMemo(() => {
     const errors: Record<string, string> = {};
     if (categoryNeedsGender && !gender) errors.gender = "Gender is required.";
-    if (categoryNeedsSmoker && !smoker) errors.smoker = "This field is required.";
+    if (categoryNeedsSmoker && !smoker)
+      errors.smoker = "This field is required.";
     if (categoryNeedsDi && !avgIncome)
       errors.avgIncome = "Average monthly income is required.";
     if (categoryNeedsHours && !hoursPerWeek)
@@ -187,18 +194,30 @@ export default function QuoteCalculator({
       errors.responsibilityPct = "Responsibility percentage is required.";
     return errors;
   }, [
-    gender, smoker, avgIncome, hoursPerWeek, monthlyExpenses, responsibilityPct,
-    categoryNeedsGender, categoryNeedsSmoker, categoryNeedsDi,
-    categoryNeedsHours, categoryNeedsOo,
+    gender,
+    smoker,
+    avgIncome,
+    hoursPerWeek,
+    monthlyExpenses,
+    responsibilityPct,
+    categoryNeedsGender,
+    categoryNeedsSmoker,
+    categoryNeedsDi,
+    categoryNeedsHours,
+    categoryNeedsOo,
   ]);
   const isFieldsValid = Object.keys(fieldErrors).length === 0;
 
   // ── Products ──────────────────────────────────────────────────────────────
   const [amountsByKey, setAmountsByKey] = useState<Record<string, number>>({});
-  const [productApplicants, setProductApplicants] = useState<Record<string, CoverageApplicantId[]>>({});
+  const [productApplicants, setProductApplicants] = useState<
+    Record<string, CoverageApplicantId[]>
+  >({});
   const [showProducts, setShowProducts] = useState(false);
   const [productsLoading, setProductsLoading] = useState(false);
-  const [calculatingRates, setCalculatingRates] = useState<Set<string>>(new Set());
+  const [calculatingRates, setCalculatingRates] = useState<Set<string>>(
+    new Set(),
+  );
   const rateTimersRef = useRef<Record<string, number>>({});
 
   const categoryProducts = useMemo(
@@ -222,7 +241,10 @@ export default function QuoteCalculator({
     })();
 
   const selectedProducts = useMemo(
-    () => categoryProducts.filter((p) => (productApplicants[p.id] ?? []).length > 0),
+    () =>
+      categoryProducts.filter(
+        (p) => (productApplicants[p.id] ?? []).length > 0,
+      ),
     [categoryProducts, productApplicants],
   );
 
@@ -249,8 +271,16 @@ export default function QuoteCalculator({
     products.forEach((product) => {
       const key = `${product.id}:member`;
       if (newAmounts[key] == null) {
-        const { minAmount, maxAmount, step } = getCoverageAmountRange(product, "member");
-        const choices = generateAmountChoices(product.categoryId, minAmount, maxAmount, { step });
+        const { minAmount, maxAmount, step } = getCoverageAmountRange(
+          product,
+          "member",
+        );
+        const choices = generateAmountChoices(
+          product.categoryId,
+          minAmount,
+          maxAmount,
+          { step },
+        );
         newAmounts[key] = choices[0] ?? 0;
       }
     });
@@ -268,10 +298,16 @@ export default function QuoteCalculator({
 
   // Auto-reveal when no additional fields needed
   useEffect(() => {
-    if (selectedCategories.length > 0 && !needsAdditionalFields && !showProducts) {
+    if (
+      selectedCategories.length > 0 &&
+      !needsAdditionalFields &&
+      !showProducts
+    ) {
       setShowProducts(true);
       setProductsLoading(true);
-      const prods = coverages.filter((c) => selectedCategories.includes(c.categoryId));
+      const prods = coverages.filter((c) =>
+        selectedCategories.includes(c.categoryId),
+      );
       initAmountsForProducts(prods);
       setTimeout(() => setProductsLoading(false), 800);
     }
@@ -281,7 +317,8 @@ export default function QuoteCalculator({
   function handleAmountChange(key: string, amount: number) {
     setAmountsByKey((current) => ({ ...current, [key]: amount }));
     setCalculatingRates((current) => new Set(current).add(key));
-    if (rateTimersRef.current[key]) window.clearTimeout(rateTimersRef.current[key]);
+    if (rateTimersRef.current[key])
+      window.clearTimeout(rateTimersRef.current[key]);
     rateTimersRef.current[key] = window.setTimeout(() => {
       setCalculatingRates((current) => {
         const next = new Set(current);
@@ -291,22 +328,38 @@ export default function QuoteCalculator({
     }, 600);
   }
 
-  function toggleApplicantForProduct(product: CoverageDefinition, applicant: CoverageApplicantId) {
+  function toggleApplicantForProduct(
+    product: CoverageDefinition,
+    applicant: CoverageApplicantId,
+  ) {
     const current = productApplicants[product.id] ?? [];
     const isAdding = !current.includes(applicant);
-    const next = isAdding ? [...current, applicant] : current.filter((a) => a !== applicant);
+    const next = isAdding
+      ? [...current, applicant]
+      : current.filter((a) => a !== applicant);
     setProductApplicants((prev) => ({ ...prev, [product.id]: next }));
     if (isAdding) {
       const key = `${product.id}:${applicant}`;
       if (amountsByKey[key] == null) {
-        const { minAmount, maxAmount, step } = getCoverageAmountRange(product, applicant);
-        const choices = generateAmountChoices(product.categoryId, minAmount, maxAmount, { step });
+        const { minAmount, maxAmount, step } = getCoverageAmountRange(
+          product,
+          applicant,
+        );
+        const choices = generateAmountChoices(
+          product.categoryId,
+          minAmount,
+          maxAmount,
+          { step },
+        );
         setAmountsByKey((prev) => ({ ...prev, [key]: choices[0] ?? 0 }));
       }
     }
   }
 
-  function getApplicantPremium(product: CoverageDefinition, applicant: CoverageApplicantId): number {
+  function getApplicantPremium(
+    product: CoverageDefinition,
+    applicant: CoverageApplicantId,
+  ): number {
     const key = `${product.id}:${applicant}`;
     const amount = amountsByKey[key] ?? 0;
     return estimateMonthlyPremium(product.categoryId, amount);
@@ -315,7 +368,13 @@ export default function QuoteCalculator({
   const grandTotal = useMemo(() => {
     return selectedProducts.reduce((total, product) => {
       const applicants = productApplicants[product.id] ?? [];
-      return total + applicants.reduce((sum, applicant) => sum + getApplicantPremium(product, applicant), 0);
+      return (
+        total +
+        applicants.reduce(
+          (sum, applicant) => sum + getApplicantPremium(product, applicant),
+          0,
+        )
+      );
     }, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProducts, productApplicants, amountsByKey]);
@@ -328,14 +387,22 @@ export default function QuoteCalculator({
       if (!eligibilityValid) return;
       const age = calculateAge(birthday);
       if (age !== null && age >= 80) {
-        setAgeError("We're sorry, but coverage is not available for applicants age 80 or older.");
+        setAgeError(
+          "We're sorry, but coverage is not available for applicants age 80 or older.",
+        );
         return;
       }
     }
 
-    const effectiveBirthday = collectEligibility ? birthday : (initialEligibility?.birthday ?? "");
-    const effectiveZip = collectEligibility ? zipCode : (initialEligibility?.zipCode ?? "");
-    const effectiveState = collectEligibility ? state : (initialEligibility?.state ?? "");
+    const effectiveBirthday = collectEligibility
+      ? birthday
+      : (initialEligibility?.birthday ?? "");
+    const effectiveZip = collectEligibility
+      ? zipCode
+      : (initialEligibility?.zipCode ?? "");
+    const effectiveState = collectEligibility
+      ? state
+      : (initialEligibility?.state ?? "");
 
     const formValues: Record<string, unknown> = {};
     if (effectiveBirthday) formValues["birth-date"] = effectiveBirthday;
@@ -350,8 +417,10 @@ export default function QuoteCalculator({
     }
     if (categoryNeedsOo) {
       if (hoursPerWeek) formValues["hours-worked-per-week"] = hoursPerWeek;
-      if (monthlyExpenses) formValues["monthly-business-expenses"] = monthlyExpenses;
-      if (responsibilityPct) formValues["business-expense-responsibility"] = responsibilityPct;
+      if (monthlyExpenses)
+        formValues["monthly-business-expenses"] = monthlyExpenses;
+      if (responsibilityPct)
+        formValues["business-expense-responsibility"] = responsibilityPct;
     }
 
     formValues["coverageSelections"] = selectedProducts.map((p) => p.id);
@@ -373,9 +442,16 @@ export default function QuoteCalculator({
     const existing = window.sessionStorage.getItem(STORAGE_KEY);
     let existingValues: Record<string, unknown> = {};
     if (existing) {
-      try { existingValues = JSON.parse(existing); } catch { /* ignore */ }
+      try {
+        existingValues = JSON.parse(existing);
+      } catch {
+        /* ignore */
+      }
     }
-    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ...existingValues, ...formValues }));
+    window.sessionStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...existingValues, ...formValues }),
+    );
 
     onClose();
     navigate(getPagePath("membership"));
@@ -383,12 +459,13 @@ export default function QuoteCalculator({
 
   const rateSuffix = rateFrequency === "annual" ? "/yr" : "/mo";
   const displayedGrandTotal =
-    rateFrequency === "annual" ? Math.round(grandTotal * 12 * 100) / 100 : grandTotal;
+    rateFrequency === "annual"
+      ? Math.round(grandTotal * 12 * 100) / 100
+      : grandTotal;
 
   return (
     <AppDrawer open={open} onClose={onClose} title={title}>
       <Stack spacing={3}>
-
         {/* ── Eligibility fields (Membership page trigger only) ── */}
         {collectEligibility && (
           <Stack spacing={2}>
@@ -423,12 +500,22 @@ export default function QuoteCalculator({
               fullWidth
               required
               value={zipCode}
-              onChange={(event) => setZipCode(formatZipOrPostalCode(event.target.value))}
+              onChange={(event) =>
+                setZipCode(formatZipOrPostalCode(event.target.value))
+              }
               inputProps={{ inputMode: "text", maxLength: 7 }}
               error={eligibilityAttempted && !!eligibilityErrors.zipCode}
-              helperText={eligibilityAttempted ? eligibilityErrors.zipCode || undefined : undefined}
+              helperText={
+                eligibilityAttempted
+                  ? eligibilityErrors.zipCode || undefined
+                  : undefined
+              }
             />
-            <FormControl fullWidth required error={eligibilityAttempted && !!eligibilityErrors.state}>
+            <FormControl
+              fullWidth
+              required
+              error={eligibilityAttempted && !!eligibilityErrors.state}
+            >
               <InputLabel id="qc-state-label">State</InputLabel>
               <Select
                 labelId="qc-state-label"
@@ -483,16 +570,28 @@ export default function QuoteCalculator({
                   >
                     <Box
                       className="SelectionGroup-icon"
-                      sx={{ display: "flex", alignItems: "center", flexShrink: 0 }}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        flexShrink: 0,
+                      }}
                     >
                       <Icon sx={{ fontSize: "1.25rem" }} />
                     </Box>
                     <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
-                      <Box component="span" className="SelectionGroup-label" sx={{ fontSize: "0.875rem" }}>
+                      <Box
+                        component="span"
+                        className="SelectionGroup-label"
+                        sx={{ fontSize: "0.875rem" }}
+                      >
                         {category.label}
                       </Box>
                       {productNames && (
-                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.75rem" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ fontSize: "0.75rem" }}
+                        >
                           {productNames}
                         </Typography>
                       )}
@@ -509,41 +608,100 @@ export default function QuoteCalculator({
             {/* Personal details section */}
             {(categoryNeedsGender || categoryNeedsSmoker) && (
               <>
-                <SectionHeader label="Personal details" chipVariant="filled" chipColor="default" size="small" />
+                <SectionHeader
+                  label="Personal details"
+                  chipVariant="outlined"
+                  chipColor="default"
+                  size="small"
+                />
                 {categoryNeedsGender && (
-                  <FormControl fullWidth required error={fieldsAttempted && !!fieldErrors.gender}>
-                    <FormLabel required sx={{ mb: 1 }}>Gender</FormLabel>
+                  <FormControl
+                    fullWidth
+                    required
+                    error={fieldsAttempted && !!fieldErrors.gender}
+                  >
+                    <FormLabel required sx={{ mb: 1 }}>
+                      Gender
+                    </FormLabel>
                     <Stack spacing={1.5}>
                       {(["male", "female"] as const).map((val) => (
                         <SelectionGroup
                           key={val}
                           onClick={() => setGender(val)}
-                          onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); setGender(val); } }}
+                          onKeyDown={(e) => {
+                            if (e.key === " " || e.key === "Enter") {
+                              e.preventDefault();
+                              setGender(val);
+                            }
+                          }}
                         >
-                          <Radio checked={gender === val} size="small" sx={{ p: 0, pointerEvents: "none" }} />
-                          <Box component="span" className="SelectionGroup-label" sx={{ flex: 1, fontSize: "0.875rem", textTransform: "capitalize" }}>{val}</Box>
+                          <Radio
+                            checked={gender === val}
+                            size="small"
+                            sx={{ p: 0, pointerEvents: "none" }}
+                          />
+                          <Box
+                            component="span"
+                            className="SelectionGroup-label"
+                            sx={{
+                              flex: 1,
+                              fontSize: "0.875rem",
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {val}
+                          </Box>
                         </SelectionGroup>
                       ))}
                     </Stack>
-                    {fieldsAttempted && fieldErrors.gender && <FormHelperText>{fieldErrors.gender}</FormHelperText>}
+                    {fieldsAttempted && fieldErrors.gender && (
+                      <FormHelperText>{fieldErrors.gender}</FormHelperText>
+                    )}
                   </FormControl>
                 )}
                 {categoryNeedsSmoker && (
-                  <FormControl fullWidth required error={fieldsAttempted && !!fieldErrors.smoker}>
-                    <FormLabel required sx={{ mb: 1 }}>Do you use nicotine products?</FormLabel>
+                  <FormControl
+                    fullWidth
+                    required
+                    error={fieldsAttempted && !!fieldErrors.smoker}
+                  >
+                    <FormLabel required sx={{ mb: 1 }}>
+                      Do you use nicotine products?
+                    </FormLabel>
                     <Stack spacing={1.5}>
                       {(["yes", "no"] as const).map((val) => (
                         <SelectionGroup
                           key={val}
                           onClick={() => setSmoker(val)}
-                          onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); setSmoker(val); } }}
+                          onKeyDown={(e) => {
+                            if (e.key === " " || e.key === "Enter") {
+                              e.preventDefault();
+                              setSmoker(val);
+                            }
+                          }}
                         >
-                          <Radio checked={smoker === val} size="small" sx={{ p: 0, pointerEvents: "none" }} />
-                          <Box component="span" className="SelectionGroup-label" sx={{ flex: 1, fontSize: "0.875rem", textTransform: "capitalize" }}>{val}</Box>
+                          <Radio
+                            checked={smoker === val}
+                            size="small"
+                            sx={{ p: 0, pointerEvents: "none" }}
+                          />
+                          <Box
+                            component="span"
+                            className="SelectionGroup-label"
+                            sx={{
+                              flex: 1,
+                              fontSize: "0.875rem",
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {val}
+                          </Box>
                         </SelectionGroup>
                       ))}
                     </Stack>
-                    {fieldsAttempted && fieldErrors.smoker && <FormHelperText>{fieldErrors.smoker}</FormHelperText>}
+                    {fieldsAttempted && fieldErrors.smoker && (
+                      <FormHelperText>{fieldErrors.smoker}</FormHelperText>
+                    )}
                   </FormControl>
                 )}
               </>
@@ -552,18 +710,29 @@ export default function QuoteCalculator({
             {/* Work & income section */}
             {(categoryNeedsDi || categoryNeedsHours) && (
               <>
-                <SectionHeader label="Work & income" chipVariant="filled" chipColor="default" size="small" />
+                <SectionHeader
+                  label="Work & income"
+                  chipVariant="outlined"
+                  chipColor="default"
+                  size="small"
+                />
                 {categoryNeedsDi && (
                   <TextField
                     label="Average monthly income"
                     fullWidth
                     required
                     value={avgIncome ? formatCurrencyInput(avgIncome) : ""}
-                    onChange={(e) => setAvgIncome(e.target.value.replace(/[^0-9]/g, ""))}
+                    onChange={(e) =>
+                      setAvgIncome(e.target.value.replace(/[^0-9]/g, ""))
+                    }
                     inputProps={{ inputMode: "numeric" }}
                     InputLabelProps={{ shrink: true }}
                     placeholder="$0"
-                    helperText={fieldsAttempted && fieldErrors.avgIncome ? fieldErrors.avgIncome : "Enter your average gross monthly income before taxes."}
+                    helperText={
+                      fieldsAttempted && fieldErrors.avgIncome
+                        ? fieldErrors.avgIncome
+                        : "Enter your average gross monthly income before taxes."
+                    }
                     error={fieldsAttempted && !!fieldErrors.avgIncome}
                   />
                 )}
@@ -573,9 +742,15 @@ export default function QuoteCalculator({
                     fullWidth
                     required
                     value={hoursPerWeek}
-                    onChange={(e) => setHoursPerWeek(e.target.value.replace(/[^0-9]/g, ""))}
+                    onChange={(e) =>
+                      setHoursPerWeek(e.target.value.replace(/[^0-9]/g, ""))
+                    }
                     inputProps={{ inputMode: "numeric" }}
-                    helperText={fieldsAttempted && fieldErrors.hoursPerWeek ? fieldErrors.hoursPerWeek : undefined}
+                    helperText={
+                      fieldsAttempted && fieldErrors.hoursPerWeek
+                        ? fieldErrors.hoursPerWeek
+                        : undefined
+                    }
                     error={fieldsAttempted && !!fieldErrors.hoursPerWeek}
                   />
                 )}
@@ -585,17 +760,30 @@ export default function QuoteCalculator({
             {/* Business Details section */}
             {categoryNeedsOo && (
               <>
-                <SectionHeader label="Business Details" chipVariant="filled" chipColor="default" size="small" />
+                <SectionHeader
+                  label="Business Details"
+                  chipVariant="outlined"
+                  chipColor="default"
+                  size="small"
+                />
                 <TextField
                   label="Average monthly business expenses"
                   fullWidth
                   required
-                  value={monthlyExpenses ? formatCurrencyInput(monthlyExpenses) : ""}
-                  onChange={(e) => setMonthlyExpenses(e.target.value.replace(/[^0-9]/g, ""))}
+                  value={
+                    monthlyExpenses ? formatCurrencyInput(monthlyExpenses) : ""
+                  }
+                  onChange={(e) =>
+                    setMonthlyExpenses(e.target.value.replace(/[^0-9]/g, ""))
+                  }
                   inputProps={{ inputMode: "numeric" }}
                   InputLabelProps={{ shrink: true }}
                   placeholder="$0"
-                  helperText={fieldsAttempted && fieldErrors.monthlyExpenses ? fieldErrors.monthlyExpenses : undefined}
+                  helperText={
+                    fieldsAttempted && fieldErrors.monthlyExpenses
+                      ? fieldErrors.monthlyExpenses
+                      : undefined
+                  }
                   error={fieldsAttempted && !!fieldErrors.monthlyExpenses}
                 />
                 <TextField
@@ -605,15 +793,27 @@ export default function QuoteCalculator({
                   value={responsibilityPct}
                   onChange={(e) => {
                     const digits = e.target.value.replace(/[^0-9]/g, "");
-                    setResponsibilityPct(digits ? Math.min(parseInt(digits, 10), 100).toString() : "");
+                    setResponsibilityPct(
+                      digits
+                        ? Math.min(parseInt(digits, 10), 100).toString()
+                        : "",
+                    );
                   }}
-                  helperText={fieldsAttempted && fieldErrors.responsibilityPct ? fieldErrors.responsibilityPct : undefined}
+                  helperText={
+                    fieldsAttempted && fieldErrors.responsibilityPct
+                      ? fieldErrors.responsibilityPct
+                      : undefined
+                  }
                   error={fieldsAttempted && !!fieldErrors.responsibilityPct}
                 />
               </>
             )}
 
-            <Button variant="contained" size="large" onClick={handleGetEstimates}>
+            <Button
+              variant="contained"
+              size="large"
+              onClick={handleGetEstimates}
+            >
               See my quote
             </Button>
           </Stack>
@@ -656,7 +856,8 @@ export default function QuoteCalculator({
               </Stack>
             ) : isHoursIneligible ? (
               <Alert severity="error">
-                We're sorry, but products in this category require working at least 40 hours per week.
+                We're sorry, but products in this category require working at
+                least 40 hours per week.
               </Alert>
             ) : (
               <>
@@ -664,45 +865,70 @@ export default function QuoteCalculator({
                 {coverageCategories
                   .filter((cat) => selectedCategories.includes(cat.id))
                   .map((cat) => {
-                    const products = categoryProducts.filter((p) => p.categoryId === cat.id);
+                    const products = categoryProducts.filter(
+                      (p) => p.categoryId === cat.id,
+                    );
                     if (products.length === 0) return null;
                     const CatIcon = cat.icon;
                     return (
                       <Stack spacing={2} key={cat.id}>
-                        <CategoryHeader
-                          label={cat.label}
-                          icon={CatIcon}
-                        />
+                        <CategoryHeader label={cat.label} icon={CatIcon} />
                         {products.map((product) => {
                           const choices = generateAmountChoices(
                             product.categoryId,
                             ...(() => {
-                              const { minAmount, maxAmount, step } = getCoverageAmountRange(product, "member");
+                              const { minAmount, maxAmount, step } =
+                                getCoverageAmountRange(product, "member");
                               return [minAmount, maxAmount, { step }] as const;
                             })(),
                           );
-                          const currentApplicants = productApplicants[product.id] ?? [];
-                          const hasAnyApplicantSelected = currentApplicants.length > 0;
+                          const currentApplicants =
+                            productApplicants[product.id] ?? [];
+                          const hasAnyApplicantSelected =
+                            currentApplicants.length > 0;
                           const key = `${product.id}:member`;
-                          const currentAmount = amountsByKey[key] ?? choices[0] ?? 0;
+                          const currentAmount =
+                            amountsByKey[key] ?? choices[0] ?? 0;
                           const isCalculating = calculatingRates.has(key);
-                          const premium = getApplicantPremium(product, "member");
+                          const premium = getApplicantPremium(
+                            product,
+                            "member",
+                          );
                           const displayedPremium =
-                            rateFrequency === "annual" ? Math.round(premium * 12 * 100) / 100 : premium;
+                            rateFrequency === "annual"
+                              ? Math.round(premium * 12 * 100) / 100
+                              : premium;
 
                           return (
                             <ProductCardSurface
                               key={product.id}
                               selected={hasAnyApplicantSelected}
-                              sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}
+                              sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: 1.5,
+                              }}
                             >
-                              <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1}>
+                              <Stack
+                                direction="row"
+                                justifyContent="space-between"
+                                alignItems="flex-start"
+                                spacing={1}
+                              >
                                 <Stack spacing={0.25} sx={{ minWidth: 0 }}>
-                                  <Typography variant="subtitle1" fontWeight="bold">
+                                  <Typography
+                                    variant="subtitle1"
+                                    fontWeight="bold"
+                                  >
                                     {product.name}
-                                    {product.underwritingType === "QD" && <QuickDecisionIndicator />}
+                                    {product.underwritingType === "QD" && (
+                                      <QuickDecisionIndicator />
+                                    )}
                                   </Typography>
-                                  <Typography variant="body2" color="text.secondary">
+                                  <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                  >
                                     {product.description ?? product.definition}
                                   </Typography>
                                 </Stack>
@@ -712,17 +938,52 @@ export default function QuoteCalculator({
                               <SelectionGroup>
                                 <Checkbox
                                   checked={hasAnyApplicantSelected}
-                                  onChange={() => toggleApplicantForProduct(product, "member")}
+                                  onChange={() =>
+                                    toggleApplicantForProduct(product, "member")
+                                  }
                                   size="small"
-                                  sx={{ p: 0, color: "text.primary", "&.Mui-checked": { color: "primary.main" } }}
+                                  sx={{
+                                    p: 0,
+                                    color: "text.primary",
+                                    "&.Mui-checked": { color: "primary.main" },
+                                  }}
                                 />
-                                <Typography variant="subtitle2" sx={{ flex: 1 }}>
+                                <Typography
+                                  variant="subtitle2"
+                                  sx={{ flex: 1 }}
+                                >
                                   Select for myself
                                 </Typography>
                                 {hasAnyApplicantSelected ? (
-                                  <Chip label="Added" size="small" color="success" sx={{ height: 22, "& .MuiChip-label": { fontSize: "0.7rem", fontWeight: 600, px: 1 } }} />
+                                  <Chip
+                                    label="Added"
+                                    size="small"
+                                    color="success"
+                                    sx={{
+                                      height: 22,
+                                      "& .MuiChip-label": {
+                                        fontSize: "0.7rem",
+                                        fontWeight: 600,
+                                        px: 1,
+                                      },
+                                    }}
+                                  />
                                 ) : (
-                                  <Chip label="Add" size="small" variant="outlined" sx={{ height: 22, borderColor: "grey.300", color: "text.secondary", "& .MuiChip-label": { fontSize: "0.7rem", fontWeight: 600, px: 1 } }} />
+                                  <Chip
+                                    label="Add"
+                                    size="small"
+                                    variant="outlined"
+                                    sx={{
+                                      height: 22,
+                                      borderColor: "grey.300",
+                                      color: "text.secondary",
+                                      "& .MuiChip-label": {
+                                        fontSize: "0.7rem",
+                                        fontWeight: 600,
+                                        px: 1,
+                                      },
+                                    }}
+                                  />
                                 )}
                               </SelectionGroup>
 
@@ -733,24 +994,50 @@ export default function QuoteCalculator({
                                   </InputLabel>
                                   <Select
                                     labelId={`${key}-amount-label`}
-                                    label={getBenefitAmountLabel(product.categoryId)}
+                                    label={getBenefitAmountLabel(
+                                      product.categoryId,
+                                    )}
                                     value={currentAmount}
-                                    onChange={(event) => handleAmountChange(key, Number(event.target.value))}
+                                    onChange={(event) =>
+                                      handleAmountChange(
+                                        key,
+                                        Number(event.target.value),
+                                      )
+                                    }
                                   >
                                     {choices.map((amount) => (
-                                      <MenuItem key={amount} value={amount}>{formatUSD(amount, 0)}</MenuItem>
+                                      <MenuItem key={amount} value={amount}>
+                                        {formatUSD(amount, 0)}
+                                      </MenuItem>
                                     ))}
                                   </Select>
                                 </FormControl>
                                 {currentAmount > 0 && (
-                                  <Stack direction="row" justifyContent="flex-end" alignItems="center" sx={{ mt: 0.5, minHeight: 20 }}>
+                                  <Stack
+                                    direction="row"
+                                    justifyContent="flex-end"
+                                    alignItems="center"
+                                    sx={{ mt: 0.5, minHeight: 20 }}
+                                  >
                                     {isCalculating ? (
-                                      <CircularProgress size={14} thickness={4} />
+                                      <CircularProgress
+                                        size={14}
+                                        thickness={4}
+                                      />
                                     ) : (
-                                      <Typography variant="caption" color="text.secondary">
+                                      <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                      >
                                         Est. cost:{" "}
-                                        <Typography component="span" variant="caption" fontWeight="bold" sx={{ color: "primary.main" }}>
-                                          {formatUSD(displayedPremium)}{rateSuffix}
+                                        <Typography
+                                          component="span"
+                                          variant="caption"
+                                          fontWeight="bold"
+                                          sx={{ color: "primary.main" }}
+                                        >
+                                          {formatUSD(displayedPremium)}
+                                          {rateSuffix}
                                         </Typography>
                                       </Typography>
                                     )}
@@ -765,8 +1052,14 @@ export default function QuoteCalculator({
                   })}
 
                 <Typography variant="caption" color="text.secondary">
-                  <Box component="sup" sx={{ fontSize: "0.85em", lineHeight: 1 }}>1</Box>
-                  Quoted cost is the best rate available. Final cost may vary based on gender, health status, and tobacco/nicotine use.
+                  <Box
+                    component="sup"
+                    sx={{ fontSize: "0.85em", lineHeight: 1 }}
+                  >
+                    1
+                  </Box>
+                  Quoted cost is the best rate available. Final cost may vary
+                  based on gender, health status, and tobacco/nicotine use.
                 </Typography>
               </>
             )}
@@ -774,102 +1067,168 @@ export default function QuoteCalculator({
         )}
 
         {/* ── Estimated cost total + Apply ── */}
-        {showProducts && !productsLoading && selectedCategories.length > 0 && !isHoursIneligible && (
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: "12px",
-              bgcolor: "#f8fafd",
-              border: "1px solid",
-              borderColor: "divider",
-            }}
-          >
-            <Stack spacing={1.5}>
-              <Typography variant="h6">Estimated cost<sup>1</sup></Typography>
+        {showProducts &&
+          !productsLoading &&
+          selectedCategories.length > 0 &&
+          !isHoursIneligible && (
+            <Box
+              sx={{
+                p: 2,
+                borderRadius: "12px",
+                bgcolor: "#f8fafd",
+                border: "1px solid",
+                borderColor: "divider",
+              }}
+            >
+              <Stack spacing={1.5}>
+                <Typography variant="h6">
+                  Estimated cost<sup>1</sup>
+                </Typography>
 
-              {selectedProducts.length === 0 ? (
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 0.75,
-                    px: 1.25,
-                    py: 1,
-                    borderRadius: 2,
-                    bgcolor: "#f8fafc",
-                    border: "1px dashed",
-                    borderColor: "divider",
-                    color: "text.secondary",
-                  }}
-                >
-                  <PrivacyTipIcon sx={{ fontSize: 17, color: "text.disabled" }} />
-                  <Typography variant="caption" fontWeight="bold">
-                    Added coverage will appear here
-                  </Typography>
-                </Box>
-              ) : (
-                <>
-                  {selectedProducts.map((product) => {
-                    const applicants = productApplicants[product.id] ?? [];
-                    const productTotal = applicants.reduce(
-                      (sum, a) => sum + getApplicantPremium(product, a),
-                      0,
-                    );
-                    const displayedProductTotal =
-                      rateFrequency === "annual"
-                        ? Math.round(productTotal * 12 * 100) / 100
-                        : productTotal;
+                {selectedProducts.length === 0 ? (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 0.75,
+                      px: 1.25,
+                      py: 1,
+                      borderRadius: 2,
+                      bgcolor: "#f8fafc",
+                      border: "1px dashed",
+                      borderColor: "divider",
+                      color: "text.secondary",
+                    }}
+                  >
+                    <PrivacyTipIcon
+                      sx={{ fontSize: 17, color: "text.disabled" }}
+                    />
+                    <Typography variant="caption" fontWeight="bold">
+                      Added coverage will appear here
+                    </Typography>
+                  </Box>
+                ) : (
+                  <>
+                    {selectedProducts.map((product) => {
+                      const applicants = productApplicants[product.id] ?? [];
+                      const productTotal = applicants.reduce(
+                        (sum, a) => sum + getApplicantPremium(product, a),
+                        0,
+                      );
+                      const displayedProductTotal =
+                        rateFrequency === "annual"
+                          ? Math.round(productTotal * 12 * 100) / 100
+                          : productTotal;
 
-                    return (
-                      <Stack key={product.id} direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
-                        <Typography variant="caption" color="text.secondary">{product.name}</Typography>
-                        <Typography variant="caption" fontWeight="bold" sx={{ whiteSpace: "nowrap" }}>
-                          {formatUSD(displayedProductTotal)}{rateSuffix}
+                      return (
+                        <Stack
+                          key={product.id}
+                          direction="row"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          spacing={1}
+                        >
+                          <Typography variant="caption" color="text.secondary">
+                            {product.name}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            fontWeight="bold"
+                            sx={{ whiteSpace: "nowrap" }}
+                          >
+                            {formatUSD(displayedProductTotal)}
+                            {rateSuffix}
+                          </Typography>
+                        </Stack>
+                      );
+                    })}
+
+                    <Box
+                      sx={{
+                        borderTop: "1px solid",
+                        borderColor: "divider",
+                        pt: 1.5,
+                      }}
+                    >
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="baseline"
+                      >
+                        <Typography variant="caption" fontWeight="bold">
+                          Total
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          fontWeight="bold"
+                          sx={{ color: "primary.main", whiteSpace: "nowrap" }}
+                        >
+                          {formatUSD(displayedGrandTotal)}
+                          {rateSuffix}
                         </Typography>
                       </Stack>
-                    );
-                  })}
+                    </Box>
+                  </>
+                )}
 
-                  <Box sx={{ borderTop: "1px solid", borderColor: "divider", pt: 1.5 }}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="baseline">
-                      <Typography variant="caption" fontWeight="bold">Total</Typography>
-                      <Typography variant="body2" fontWeight="bold" sx={{ color: "primary.main", whiteSpace: "nowrap" }}>
-                        {formatUSD(displayedGrandTotal)}{rateSuffix}
-                      </Typography>
-                    </Stack>
-                  </Box>
-                </>
-              )}
+                {showRateFrequencyToggle && (
+                  <Stack
+                    direction="row"
+                    spacing={0.75}
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Typography
+                      variant="caption"
+                      fontWeight="bold"
+                      color={
+                        rateFrequency === "monthly"
+                          ? "primary.main"
+                          : "text.secondary"
+                      }
+                    >
+                      Monthly
+                    </Typography>
+                    <RateFrequencyToggle
+                      checked={rateFrequency === "annual"}
+                      onChange={(e) =>
+                        setRateFrequency(
+                          e.target.checked ? "annual" : "monthly",
+                        )
+                      }
+                      slotProps={{
+                        input: {
+                          "aria-label": "Toggle between monthly and annual",
+                        },
+                      }}
+                    />
+                    <Typography
+                      variant="caption"
+                      fontWeight="bold"
+                      color={
+                        rateFrequency === "annual"
+                          ? "primary.main"
+                          : "text.secondary"
+                      }
+                    >
+                      Annual
+                    </Typography>
+                  </Stack>
+                )}
 
-              {showRateFrequencyToggle && (
-                <Stack direction="row" spacing={0.75} alignItems="center" justifyContent="center">
-                  <Typography variant="caption" fontWeight="bold" color={rateFrequency === "monthly" ? "primary.main" : "text.secondary"}>
-                    Monthly
-                  </Typography>
-                  <RateFrequencyToggle
-                    checked={rateFrequency === "annual"}
-                    onChange={(e) => setRateFrequency(e.target.checked ? "annual" : "monthly")}
-                    slotProps={{ input: { "aria-label": "Toggle between monthly and annual" } }}
-                  />
-                  <Typography variant="caption" fontWeight="bold" color={rateFrequency === "annual" ? "primary.main" : "text.secondary"}>
-                    Annual
-                  </Typography>
-                </Stack>
-              )}
-
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                endIcon={<ArrowRightAltRoundedIcon />}
-                onClick={handleApply}
-                sx={{ mt: 1 }}
-              >
-                Apply for coverage
-              </Button>
-            </Stack>
-          </Box>
-        )}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  endIcon={<ArrowRightAltRoundedIcon />}
+                  onClick={handleApply}
+                  sx={{ mt: 1 }}
+                >
+                  Apply for coverage
+                </Button>
+              </Stack>
+            </Box>
+          )}
       </Stack>
     </AppDrawer>
   );

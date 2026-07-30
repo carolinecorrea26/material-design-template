@@ -55,6 +55,7 @@ export default function SectionHeader({
 
   return (
     <Divider
+      // textAlign="center"
       sx={[
         { my: isSmall ? 0.5 : 1 },
         ...(sx ? (Array.isArray(sx) ? sx : [sx]) : []),
@@ -77,7 +78,7 @@ export default function SectionHeader({
         <Chip
           label={label}
           color={chipColor}
-          variant={chipVariant === "filled" ? "filled" : "outlined"}
+          variant={chipVariant === "filled" ? "outlined" : "filled"}
           size="small"
           icon={Icon ? <Icon /> : undefined}
           sx={chipSx}

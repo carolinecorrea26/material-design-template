@@ -619,7 +619,8 @@ function ProductCard({
                 <SectionHeader
                   label={applicantSectionTitles[sectionId]}
                   icon={applicantIcons[sectionId]}
-                  chipVariant="outlined"
+                  chipVariant="filled"
+                  chipColor="default"
                   sx={{ mb: 1.5 }}
                 />
               )}

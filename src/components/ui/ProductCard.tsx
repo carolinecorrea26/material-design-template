@@ -18,10 +18,17 @@ const baseStyles: SxProps<Theme> = {
 
 const selectedStyles: SxProps<Theme> = {
   borderColor: "#009465",
-  backgroundColor: "#e6f4ee",
+  borderWidth: "2px",
+  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+  // backgroundColor: "#e6f4ee",
 };
 
-export default function ProductCard({ children, selected, sx, ...boxProps }: ProductCardProps) {
+export default function ProductCard({
+  children,
+  selected,
+  sx,
+  ...boxProps
+}: ProductCardProps) {
   return (
     <Box
       {...boxProps}

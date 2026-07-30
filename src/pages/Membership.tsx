@@ -182,7 +182,8 @@ export default function Membership() {
     // groupInsuranceHelpItem(client.branding.name),
   ];
   const [activeHelpId, setActiveHelpId] = useState<string | null>(null);
-  const activeHelpItem = drawerHelpItems.find((item) => item.id === activeHelpId) ?? null;
+  const activeHelpItem =
+    drawerHelpItems.find((item) => item.id === activeHelpId) ?? null;
 
   function handleHelpSelect(id: string) {
     if (id === "estimate-cost") {
@@ -370,6 +371,7 @@ export default function Membership() {
                           : "Membership Information"
                       }
                       chipVariant="outlined"
+                      chipColor="default"
                       size="small"
                     />
                     {client.id === "ama" && membershipValue === "spouse" && (

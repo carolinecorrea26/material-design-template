@@ -219,7 +219,7 @@ export default function Profile() {
                   <div key={section.id}>
                     <SectionHeader
                       label={section.description ?? ""}
-                      chipVariant="filled"
+                      chipVariant="outlined"
                       chipColor="default"
                       size="small"
                       sx={{ mb: 1 }}
@@ -394,7 +394,7 @@ export default function Profile() {
                   <div key={section.id}>
                     <SectionHeader
                       label={section.description ?? ""}
-                      chipVariant="filled"
+                      chipVariant="outlined"
                       chipColor="default"
                       size="small"
                       sx={{ mb: 1 }}
