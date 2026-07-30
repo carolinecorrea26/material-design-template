@@ -92,7 +92,7 @@ export const helpDefaults: HelpContent = {
       "We take the security of your payment information seriously. Here's how we handle it throughout the application process.",
     sections: [
       {
-        title: "Payment is not collected now",
+        title: "You will not be charged yet.",
         description:
           "Your payment information is collected as part of the application but you will not be charged until and unless you are approved for coverage. No money leaves your account during the application process.",
       },

@@ -228,8 +228,8 @@ export default function FormVerticalStepper({
           display: isDesktop ? "grid" : "block",
           gridTemplateColumns: isDesktop
             ? {
-                md: "200px minmax(0, 1fr)",
-                lg: "280px minmax(0, 1fr)",
+                md: "240px minmax(0, 1fr)",
+                lg: "300px minmax(0, 1fr)",
               }
             : undefined,
           columnGap: isDesktop ? { md: 6, lg: 3 } : undefined,

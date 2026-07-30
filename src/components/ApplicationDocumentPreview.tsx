@@ -263,7 +263,7 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
     .filter((value): value is string => Boolean(value));
 
   return {
-    title: "Coverage Selections",
+    title: "Coverage",
     groups: [
       {
         entries: [
@@ -319,7 +319,7 @@ function buildBeneficiariesSection(
   });
 
   return {
-    title: "Beneficiaries",
+    title: "Beneficiary",
     groups: [
       {
         entries: entries.length

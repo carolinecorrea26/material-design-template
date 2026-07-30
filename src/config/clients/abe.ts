@@ -81,6 +81,7 @@ export const abeClient: ClientConfig = {
         ],
       },
       "di-ltd": {
+        underwritingType: "SI",
         applicants: ["member", "spouse"],
         waitingPeriodOptions: [
           { label: "90 days", value: "90", days: 90 },

@@ -44,9 +44,9 @@ export const pagesDefaults: Partial<PagesContent> = {
     navTitle: "E-sign",
   },
   "health-si": {
-    title:
-      "Please answer the following health questions to the best of your ability.",
-    subhead: "Answer health questions required for your selected coverage.",
+    title: "About your health history",
+    subhead:
+      "Please answer the following questions about your health as accurately as you can.",
     navTitle: "Health",
   },
   "health-li": {
