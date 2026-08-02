@@ -18,9 +18,9 @@ const baseStyles: SxProps<Theme> = {
 
 const selectedStyles: SxProps<Theme> = {
   borderColor: "#009465",
-  borderWidth: "2px",
+  borderWidth: "1px",
   boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-  // backgroundColor: "#e6f4ee",
+  backgroundColor: "#fbfffd",
 };
 
 export default function ProductCard({

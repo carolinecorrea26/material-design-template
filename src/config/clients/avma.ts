@@ -22,8 +22,10 @@ export const avmaClient: ClientConfig = {
     },
   },
   pages: {
-    excluded: [],
-    optional: ["beneficiary", "payment"],
+    requirements: {
+      beneficiary: "required",
+      payment: "required",
+    },
   },
   coverages: {
     categories: ["LI", "AD", "DI", "OO", "SH"],
@@ -227,6 +229,8 @@ export const avmaClient: ClientConfig = {
   fields: {},
   features: {
     homePageVariant: "welcome-back",
+    linkUrl: "https://avmainsuranceservices.com/",
+    linkLabel: "Find an agent",
   },
   coverageQuestions: {
     always: [

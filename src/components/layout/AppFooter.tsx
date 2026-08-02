@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Link, Stack, Typography } from "@mui/material";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
@@ -17,6 +17,18 @@ export default function AppFooter({ client }: AppFooterProps) {
   const [showTermsOfUse, setShowTermsOfUse] = useState(false);
   const [showPrivacyNotice, setShowPrivacyNotice] = useState(false);
   const footerContent = getContent().footer;
+
+  useEffect(() => {
+    const handleOpenPrivacyNotice = () => setShowPrivacyNotice(true);
+    window.addEventListener("app:open-privacy-notice", handleOpenPrivacyNotice);
+
+    return () => {
+      window.removeEventListener(
+        "app:open-privacy-notice",
+        handleOpenPrivacyNotice,
+      );
+    };
+  }, []);
 
   return (
     <Box
@@ -259,7 +271,11 @@ export default function AppFooter({ client }: AppFooterProps) {
         title={footerContent.termsOfUseContent.title}
         maxWidth={700}
         actions={[
-          { label: "Close", onClick: () => setShowTermsOfUse(false), variant: "contained" },
+          {
+            label: "Close",
+            onClick: () => setShowTermsOfUse(false),
+            variant: "contained",
+          },
         ]}
       >
         <LegalDocViewer doc={footerContent.termsOfUseContent} />
@@ -272,7 +288,11 @@ export default function AppFooter({ client }: AppFooterProps) {
         title={footerContent.privacyNoticeContent.title}
         maxWidth={700}
         actions={[
-          { label: "Close", onClick: () => setShowPrivacyNotice(false), variant: "contained" },
+          {
+            label: "Close",
+            onClick: () => setShowPrivacyNotice(false),
+            variant: "contained",
+          },
         ]}
       >
         <LegalDocViewer doc={footerContent.privacyNoticeContent} />

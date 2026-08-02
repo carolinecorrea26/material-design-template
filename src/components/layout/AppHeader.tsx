@@ -34,6 +34,7 @@ import CoverageSummary, {
   useApplicationSummaryBadge,
 } from "../CoverageSummary";
 import type { AppLayoutVariant } from "./AppLayout";
+import ClientHelpBanner from "./ClientHelpBanner";
 
 type AppHeaderProps = {
   client: ClientConfig;
@@ -118,8 +119,7 @@ export default function AppHeader({
 }: AppHeaderProps) {
   // "applicationForm" and "homepage" both show the menu icon.
   // Utility variants (advisorLogin, advisorSend, resumeEmailCode) show logo only.
-  const showMenu =
-    variant === "applicationForm" || variant === "homepage";
+  const showMenu = variant === "applicationForm" || variant === "homepage";
 
   const [imageError, setImageError] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -191,6 +191,7 @@ export default function AppHeader({
 
   return (
     <>
+      <ClientHelpBanner client={client} />
       <Slide appear={false} direction="down" in={!trigger}>
         <AppBar
           position="sticky"

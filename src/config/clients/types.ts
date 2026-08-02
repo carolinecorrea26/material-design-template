@@ -29,9 +29,16 @@ export type ClientSupport = {
 };
 
 export type ClientPages = {
+  requirements?: Partial<
+    Record<"beneficiary" | "payment", ClientPageRequirement>
+  >;
+  /** @deprecated Use requirements with mode "none" instead. */
   excluded?: PageId[];
+  /** @deprecated Use requirements with mode "optional" instead. */
   optional?: PageId[];
 };
+
+export type ClientPageRequirement = "required" | "optional" | "none";
 
 export type ClientRiderConfig = {
   id: string;
@@ -108,6 +115,24 @@ export type ClientEstimatedRateDisplay = {
   defaultFrequency?: EstimatedRateFrequency;
 };
 
+export type ClientAmountByFrequency = {
+  monthly?: number;
+  annual?: number;
+};
+
+export type ClientProductEstimatedCostBreakdown = {
+  enabled?: boolean;
+  policyFee?: {
+    label?: string;
+    amount: ClientAmountByFrequency;
+  };
+  childApplicantRider?: {
+    enabled?: boolean;
+    label?: string;
+    amount?: ClientAmountByFrequency;
+  };
+};
+
 export type ClientCoverages = {
   categories?: CoverageCategoryId[];
   enabled?: CoverageId[];
@@ -123,6 +148,8 @@ export type ClientCoverages = {
    * "applyForTotal": "...apply for the total amount of coverage you want (amount you currently have + amount you're requesting)."
    */
   additionalCoverageWarning?: "applyForAdditional" | "applyForTotal";
+  /** Product-card estimated cost breakdown config (optional per client). */
+  productEstimatedCostBreakdown?: ClientProductEstimatedCostBreakdown;
 };
 
 export type ClientFields = Partial<
@@ -161,6 +188,10 @@ export type ThemeColorId = "default" | "teal" | "purple" | "dark-blue";
 
 export type ClientFeatures = {
   chat?: boolean;
+  chatUrl?: string;
+  scheduleUrl?: string;
+  linkUrl?: string;
+  linkLabel?: string;
   homePageVariant?: HomePageVariant;
 };
 

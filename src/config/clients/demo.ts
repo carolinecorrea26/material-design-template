@@ -12,6 +12,7 @@ export const demoClient: ClientConfig = {
   support: {
     phone: "800-000-0000",
     phoneDisplay: "800-000-0000",
+    phoneHours: "Mon–Fri, 8am–6pm ET",
     email: "support@demo.com",
     website: "www.demo.com",
     address: {
@@ -22,8 +23,10 @@ export const demoClient: ClientConfig = {
     },
   },
   pages: {
-    excluded: [],
-    optional: ["beneficiary", "payment"],
+    requirements: {
+      beneficiary: "required",
+      payment: "required",
+    },
   },
   coverages: {
     categories: ["LI", "AD", "DI", "OO", "SH"],
@@ -66,6 +69,8 @@ export const demoClient: ClientConfig = {
   },
   features: {
     chat: true,
+    chatUrl: "https://example.com/chat",
+    scheduleUrl: "https://calendly.com/example/30min",
     homePageVariant: "hero-image",
   },
   licenseInfo: [

@@ -93,6 +93,7 @@ export default function AppMenuDrawer({
             </Stack>
             <Button
               variant="contained"
+              size="large"
               fullWidth
               onClick={() => handleNavigate("/resume")}
               sx={{ margin: "1.25rem 0" }}
@@ -174,7 +175,9 @@ export default function AppMenuDrawer({
                   <AutoAwesomeRoundedIcon />
                   <Typography variant="body2" fontWeight={600}>
                     About QuickDecision
-                    <Box component="sup" sx={{ fontSize: "0.7em" }}>SM</Box>
+                    <Box component="sup" sx={{ fontSize: "0.7em" }}>
+                      SM
+                    </Box>
                   </Typography>
                 </Button>
               </Stack>

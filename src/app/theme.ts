@@ -19,6 +19,7 @@ declare module "@mui/material/styles" {
   }
   interface TypeBackground {
     subtle: string;
+    surface: string;
   }
   interface TypeText {
     tertiary: string;
@@ -128,7 +129,13 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
         disabled: "#99a4b5",
         tertiary: "#5b7090",
       },
-      background: { default: "#f9fafc", paper: "#ffffff", subtle: "#f5f8fd" },
+      background: {
+        default: "#f9fafc",
+        paper: "#ffffff",
+        subtle: "#f5f8fd",
+        surface: "#eef1f4",
+      },
+      action: { selected: "#eef1f4" },
       divider: "rgba(52, 59, 72, 0.12)",
       panel: { main: "#f5f8fd", border: "rgba(0, 22, 57, 0.08)" },
       notice: { main: "#fffcf0", border: "#e9e3cb" },
@@ -377,10 +384,12 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
           root: {
             borderRadius: 9999,
             fontWeight: 700,
-            padding: "16px 24px",
             textTransform: "none",
             transition: "transform 180ms ease, box-shadow 180ms ease",
             "&:hover": { transform: "translateY(-2px)" },
+          },
+          sizeLarge: {
+            padding: "16px 24px",
           },
           contained: ({ theme: t }) => ({
             boxShadow: `0 8px 18px ${t.palette.primary.main}3d`,
@@ -541,6 +550,11 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
               marginRight: "-5px",
             },
           },
+          colorDefault: ({ ownerState }) => ({
+            ...(ownerState.variant === "filled" && {
+              backgroundColor: "#eef1f4",
+            }),
+          }),
         },
       },
     },
@@ -552,7 +566,7 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
 const theme = createAppTheme();
 export default theme;
 
-export const SECTION_SURFACE_BG = "rgb(0 22 57 / 4%)";
+export const SECTION_SURFACE_BG = "#eef1f4";
 export const APP_MENU_SECTION_TITLE_SX = {
   typography: "subtitle2",
   color: "text.primary",

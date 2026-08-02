@@ -22,8 +22,10 @@ export const abeClient: ClientConfig = {
     },
   },
   pages: {
-    excluded: [],
-    optional: ["beneficiary", "payment"],
+    requirements: {
+      beneficiary: "optional",
+      payment: "required",
+    },
   },
   coverages: {
     categories: ["LI", "AD", "DI", "OO", "SH"],

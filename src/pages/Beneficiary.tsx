@@ -6,6 +6,7 @@ import {
   Button,
   Checkbox,
   Dialog,
+  Divider,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -25,12 +26,15 @@ import AddIcon from "@mui/icons-material/Add";
 import DynamicListItem from "../components/forms/DynamicListItem";
 import ApplicantSection from "../components/forms/ApplicantSection";
 import CategoryHeader from "../components/CategoryHeader";
+import FieldRenderer from "../components/forms/FieldRenderer";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
 import FormRoutePage from "../app/RoutePage";
 import AppDrawer from "../components/ui/AppDrawer";
+import { getClientPageRequirement } from "../config/client/getClientPageRequirement";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
 import type { CoverageApplicantId } from "../config/coverages/types";
+import type { FieldDefinition } from "../config/fields/types";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { beneficiaryHelpItems } from "../content/helpContent";
 import FormHelpChips from "../components/content/HelpChips";
@@ -90,6 +94,69 @@ const RELATIONSHIP_OPTIONS = [
 
 const ELIGIBLE_CATEGORY_IDS = new Set(["LI", "AD"]);
 
+const BENEFICIARY_INFO_OPT_IN_FIELD_ID = "beneficiary-information-opt-in";
+
+const beneficiaryInfoOptInField: FieldDefinition = {
+  id: BENEFICIARY_INFO_OPT_IN_FIELD_ID,
+  label: "Do you want to add beneficiary information?",
+  inputType: "radio",
+  required: true,
+  options: [
+    { value: "yes", label: "Yes" },
+    { value: "no", label: "No" },
+  ],
+};
+
+function shouldShowBeneficiaryQuestions(
+  pageRequirement: "required" | "optional" | "none",
+  values: Record<string, unknown>,
+): boolean {
+  if (pageRequirement !== "optional") {
+    return true;
+  }
+
+  return values[BENEFICIARY_INFO_OPT_IN_FIELD_ID] === "yes";
+}
+
+function getBeneficiaryPageError(
+  pageRequirement: "required" | "optional" | "none",
+  values: Record<string, unknown>,
+  applicableProductKeys: string[],
+): string | undefined {
+  if (pageRequirement === "none") {
+    return undefined;
+  }
+
+  if (
+    pageRequirement === "optional" &&
+    !shouldShowBeneficiaryQuestions(pageRequirement, values)
+  ) {
+    return undefined;
+  }
+
+  if (applicableProductKeys.length === 0) {
+    return undefined;
+  }
+
+  const beneficiaries =
+    values.beneficiaries != null &&
+    typeof values.beneficiaries === "object" &&
+    !Array.isArray(values.beneficiaries)
+      ? (values.beneficiaries as Record<string, unknown>)
+      : {};
+
+  const hasMissingBeneficiaryInfo = applicableProductKeys.some((productKey) => {
+    const entries = beneficiaries[productKey];
+    return !Array.isArray(entries) || entries.length === 0;
+  });
+
+  if (hasMissingBeneficiaryInfo) {
+    return "Please add beneficiary information before continuing.";
+  }
+
+  return undefined;
+}
+
 function getBeneficiaryDisplayName(item: BeneficiaryItem) {
   const formatDisplay = (value: string) => value.trim().toUpperCase();
 
@@ -131,6 +198,7 @@ const toggleRadioButtonSx = {
 
 export default function Beneficiary() {
   const { values, setPageValues } = useApplicationForm();
+  const pageRequirement = getClientPageRequirement("beneficiary");
   const coverages = useMemo(() => getActiveClientCoverages(), []);
 
   const selectedCoverageIds = Array.isArray(values.coverageSelections)
@@ -672,7 +740,10 @@ export default function Beneficiary() {
 
   const hasAnyApplicantProducts =
     applicantProducts.member.length > 0 || applicantProducts.spouse.length > 0;
-
+  const applicableProductKeys = [
+    ...applicantProducts.member.map((product) => product.productKey),
+    ...applicantProducts.spouse.map((product) => product.productKey),
+  ];
   useEffect(() => {
     function handleDevFillForm() {
       const allProducts = [
@@ -727,6 +798,16 @@ export default function Beneficiary() {
   return (
     <FormRoutePage
       pageId="beneficiary"
+      devFillFields={() =>
+        pageRequirement === "optional" ? [beneficiaryInfoOptInField] : []
+      }
+      validate={(nextValues) =>
+        getBeneficiaryPageError(
+          pageRequirement,
+          nextValues as Record<string, unknown>,
+          applicableProductKeys,
+        )
+      }
       help={
         <>
           <FormHelpChips items={helpItems} onSelect={setActiveHelpId} />
@@ -740,385 +821,423 @@ export default function Beneficiary() {
         </>
       }
     >
-      {!hasAnyApplicantProducts ? (
-        <Alert severity="info">
-          No self or spouse Life/AD product selections were found.
-        </Alert>
-      ) : (
-        <Stack spacing={2.5}>
-          {renderApplicantSection("member")}
-          {renderApplicantSection("spouse")}
-        </Stack>
-      )}
+      {({ control, errors, watchedValues }) => {
+        const showBeneficiaryQuestions = shouldShowBeneficiaryQuestions(
+          pageRequirement,
+          watchedValues as Record<string, unknown>,
+        );
 
-      <Dialog
-        open={!!activeProduct}
-        onClose={closeModal}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>
-          {editingId ? "Edit Beneficiary" : "Add Beneficiary"}
-          {activeProduct ? ` - ${activeProduct.coverageName}` : ""}
-        </DialogTitle>
-
-        <DialogContent>
-          <Stack spacing={2} sx={{ pt: 0.5 }}>
-            <Box>
-              <Tabs
-                value={modalValues.designation}
-                onChange={(_, value: BeneficiaryDesignation) =>
-                  setModalValues((current) => ({
-                    ...current,
-                    designation: value,
-                  }))
-                }
-              >
-                <Tab label="Primary" value="primary" />
-                <Tab label="Contingent" value="contingent" />
-              </Tabs>
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ display: "block", mt: 0.5, fontSize: "0.6875rem" }}
-              >
-                <Typography
-                  component="span"
-                  sx={{
-                    color:
-                      remainingDesignationSlots === 0
-                        ? "error.main"
-                        : "primary.main",
-                    fontWeight: 700,
-                    fontSize: "inherit",
-                  }}
-                >
-                  {remainingDesignationSlots}
-                </Typography>{" "}
-                {modalValues.designation} beneficiaries remaining
-              </Typography>
-            </Box>
-
-            {remainingDesignationSlots === 0 && !editingId && (
-              <Alert severity="warning">
-                No more {modalValues.designation} beneficiaries can be added
-                online.
-              </Alert>
+        return (
+          <>
+            {pageRequirement === "optional" && (
+              <FieldRenderer
+                field={beneficiaryInfoOptInField}
+                control={control}
+                errors={errors}
+              />
             )}
 
-            <FormControl
-              disabled={remainingDesignationSlots === 0 && !editingId}
-            >
-              <FormLabel>Beneficiary Type</FormLabel>
-              <ToggleButtonGroup
-                exclusive
-                value={modalValues.beneficiaryType}
-                disabled={remainingDesignationSlots === 0 && !editingId}
-                onChange={(_, value: BeneficiaryType | null) => {
-                  if (value === null) return;
-                  setModalValues((current) => ({
-                    ...current,
-                    beneficiaryType: value,
-                  }));
-                  setCommittedSharePercent(null);
-                }}
-                sx={toggleRadioGroupSx}
-              >
-                <ToggleButton value="individual" sx={toggleRadioButtonSx}>
-                  <Radio
-                    checked={modalValues.beneficiaryType === "individual"}
-                    size="small"
-                    sx={{ p: 0 }}
-                  />
-                  Individual
-                </ToggleButton>
-                <ToggleButton value="trust" sx={toggleRadioButtonSx}>
-                  <Radio
-                    checked={modalValues.beneficiaryType === "trust"}
-                    size="small"
-                    sx={{ p: 0 }}
-                  />
-                  Trust
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </FormControl>
+            {pageRequirement === "optional" && showBeneficiaryQuestions && (
+              <Divider sx={{ my: 2 }} />
+            )}
 
-            {modalValues.beneficiaryType === "individual" &&
-              individualBlocked && (
-                <Alert severity="warning">
-                  {designationHasTrust
-                    ? `A trust has already been designated as ${modalValues.designation} beneficiary. Individuals cannot be added for this designation.`
-                    : "No more individuals can be added \u2014 0% unassigned share remaining."}
+            {!hasAnyApplicantProducts ? (
+              showBeneficiaryQuestions && (
+                <Alert severity="info">
+                  No self or spouse Life/AD product selections were found.
                 </Alert>
-              )}
+              )
+            ) : showBeneficiaryQuestions ? (
+              <Stack spacing={2.5}>
+                {renderApplicantSection("member")}
+                {renderApplicantSection("spouse")}
+              </Stack>
+            ) : null}
 
-            {modalValues.beneficiaryType === "trust" && trustBlocked && (
-              <Alert severity="warning">
-                {designationHasTrust
-                  ? `Only one trust can be designated per ${modalValues.designation} beneficiary.`
-                  : `An individual has already been designated as ${modalValues.designation} beneficiary. A trust cannot be added for this designation.`}
-              </Alert>
-            )}
+            <Dialog
+              open={!!activeProduct}
+              onClose={closeModal}
+              maxWidth="sm"
+              fullWidth
+            >
+              <DialogTitle>
+                {editingId ? "Edit Beneficiary" : "Add Beneficiary"}
+                {activeProduct ? ` - ${activeProduct.coverageName}` : ""}
+              </DialogTitle>
 
-            {modalValues.beneficiaryType === "individual" ? (
-              <>
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                  <TextField
-                    label="First Name"
-                    disabled={
-                      (remainingDesignationSlots === 0 || individualBlocked) &&
-                      !editingId
-                    }
-                    value={modalValues.firstName}
-                    onChange={(event) =>
-                      setModalValues((current) => ({
-                        ...current,
-                        firstName: event.target.value,
-                      }))
-                    }
-                    fullWidth
-                  />
-
-                  <TextField
-                    label="Last Name"
-                    disabled={
-                      (remainingDesignationSlots === 0 || individualBlocked) &&
-                      !editingId
-                    }
-                    value={modalValues.lastName}
-                    onChange={(event) =>
-                      setModalValues((current) => ({
-                        ...current,
-                        lastName: event.target.value,
-                      }))
-                    }
-                    fullWidth
-                  />
-                </Stack>
-
-                <TextField
-                  select
-                  label="Relationship"
-                  disabled={
-                    (remainingDesignationSlots === 0 || individualBlocked) &&
-                    !editingId
-                  }
-                  value={modalValues.relationship}
-                  onChange={(event) =>
-                    setModalValues((current) => ({
-                      ...current,
-                      relationship: event.target.value,
-                    }))
-                  }
-                  fullWidth
-                >
-                  {RELATIONSHIP_OPTIONS.map((option) => (
-                    <MenuItem key={option} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </TextField>
-
-                <TextField
-                  label="% Share"
-                  disabled={
-                    (remainingDesignationSlots === 0 || individualBlocked) &&
-                    !editingId
-                  }
-                  value={modalValues.share}
-                  onChange={(event) => {
-                    const sanitizedShare = event.target.value
-                      .replace(/\D/g, "")
-                      .slice(0, 3);
-                    setModalValues((current) => ({
-                      ...current,
-                      share: sanitizedShare,
-                    }));
-                    setCommittedSharePercent(null);
-                  }}
-                  onBlur={() =>
-                    setCommittedSharePercent(
-                      parseCommittedShare(modalValues.share),
-                    )
-                  }
-                  inputProps={{
-                    inputMode: "numeric",
-                    pattern: "[0-9]*",
-                    maxLength: 3,
-                  }}
-                  fullWidth
-                />
-
-                <Stack direction="row" spacing={1}>
-                  {[25, 50, 75, 100].map((percent) => (
-                    <Button
-                      key={percent}
-                      size="small"
-                      variant="outlined"
-                      disabled={
-                        (remainingDesignationSlots === 0 ||
-                          individualBlocked) &&
-                        !editingId
-                      }
-                      onClick={() => {
+              <DialogContent>
+                <Stack spacing={2} sx={{ pt: 0.5 }}>
+                  <Box>
+                    <Tabs
+                      value={modalValues.designation}
+                      onChange={(_, value: BeneficiaryDesignation) =>
                         setModalValues((current) => ({
                           ...current,
-                          share: String(percent),
-                        }));
-                        setCommittedSharePercent(percent);
-                      }}
+                          designation: value,
+                        }))
+                      }
                     >
-                      {percent}%
-                    </Button>
-                  ))}
-                </Stack>
-
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ fontSize: "0.6875rem" }}
-                >
-                  <Typography
-                    component="span"
-                    sx={{
-                      color:
-                        displayRemainingShare === 0
-                          ? "error.main"
-                          : "primary.main",
-                      fontWeight: 700,
-                      fontSize: "inherit",
-                    }}
-                  >
-                    {displayRemainingShare}%
-                  </Typography>{" "}
-                  unassigned remaining
-                </Typography>
-              </>
-            ) : (
-              <>
-                <TextField
-                  label="Name of Trust"
-                  disabled={
-                    (remainingDesignationSlots === 0 || trustBlocked) &&
-                    !editingId
-                  }
-                  value={modalValues.trustName}
-                  onChange={(event) =>
-                    setModalValues((current) => ({
-                      ...current,
-                      trustName: event.target.value,
-                    }))
-                  }
-                  fullWidth
-                />
-
-                <TextField
-                  label="Date of Trust"
-                  disabled={
-                    (remainingDesignationSlots === 0 || trustBlocked) &&
-                    !editingId
-                  }
-                  value={modalValues.trustDate}
-                  onChange={(event) =>
-                    setModalValues((current) => ({
-                      ...current,
-                      trustDate: event.target.value,
-                    }))
-                  }
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  fullWidth
-                />
-              </>
-            )}
-
-            {modalError ? <Alert severity="error">{modalError}</Alert> : null}
-          </Stack>
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={closeModal}>Cancel</Button>
-          <Button
-            variant="contained"
-            onClick={saveBeneficiary}
-            disabled={
-              !editingId &&
-              (remainingDesignationSlots === 0 ||
-                (modalValues.beneficiaryType === "individual" &&
-                  individualBlocked) ||
-                (modalValues.beneficiaryType === "trust" && trustBlocked))
-            }
-          >
-            Save Beneficiary
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={applyToOthersOpen}
-        onClose={closeApplyToOthers}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Apply to Other Coverages</DialogTitle>
-        <DialogContent>
-          <Stack spacing={2} sx={{ pt: 0.5 }}>
-            <Typography variant="body2" color="text.secondary">
-              Would you like to apply this beneficiary to other coverages?
-            </Typography>
-            {(() => {
-              if (!applyToOthersSource) return null;
-              const applicantKey =
-                applyToOthersSource.applicantId === "member"
-                  ? "member"
-                  : "spouse";
-              const otherProducts = applicantProducts[applicantKey].filter(
-                (p) => p.productKey !== applyToOthersSource.productKey,
-              );
-              return (
-                <Stack spacing={1}>
-                  {otherProducts.map((product) => (
-                    <Box
-                      key={product.productKey}
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 1,
-                      }}
+                      <Tab label="Primary" value="primary" />
+                      <Tab label="Contingent" value="contingent" />
+                    </Tabs>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ display: "block", mt: 0.5, fontSize: "0.6875rem" }}
                     >
-                      <Checkbox
-                        checked={applyToOthersSelected.includes(
-                          product.productKey,
-                        )}
-                        onChange={(_, checked) => {
-                          setApplyToOthersSelected((prev) =>
-                            checked
-                              ? [...prev, product.productKey]
-                              : prev.filter((k) => k !== product.productKey),
-                          );
+                      <Typography
+                        component="span"
+                        sx={{
+                          color:
+                            remainingDesignationSlots === 0
+                              ? "error.main"
+                              : "primary.main",
+                          fontWeight: 700,
+                          fontSize: "inherit",
                         }}
+                      >
+                        {remainingDesignationSlots}
+                      </Typography>{" "}
+                      {modalValues.designation} beneficiaries remaining
+                    </Typography>
+                  </Box>
+
+                  {remainingDesignationSlots === 0 && !editingId && (
+                    <Alert severity="warning">
+                      No more {modalValues.designation} beneficiaries can be
+                      added online.
+                    </Alert>
+                  )}
+
+                  <FormControl
+                    disabled={remainingDesignationSlots === 0 && !editingId}
+                  >
+                    <FormLabel>Beneficiary Type</FormLabel>
+                    <ToggleButtonGroup
+                      exclusive
+                      value={modalValues.beneficiaryType}
+                      disabled={remainingDesignationSlots === 0 && !editingId}
+                      onChange={(_, value: BeneficiaryType | null) => {
+                        if (value === null) return;
+                        setModalValues((current) => ({
+                          ...current,
+                          beneficiaryType: value,
+                        }));
+                        setCommittedSharePercent(null);
+                      }}
+                      sx={toggleRadioGroupSx}
+                    >
+                      <ToggleButton value="individual" sx={toggleRadioButtonSx}>
+                        <Radio
+                          checked={modalValues.beneficiaryType === "individual"}
+                          size="small"
+                          sx={{ p: 0 }}
+                        />
+                        Individual
+                      </ToggleButton>
+                      <ToggleButton value="trust" sx={toggleRadioButtonSx}>
+                        <Radio
+                          checked={modalValues.beneficiaryType === "trust"}
+                          size="small"
+                          sx={{ p: 0 }}
+                        />
+                        Trust
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </FormControl>
+
+                  {modalValues.beneficiaryType === "individual" &&
+                    individualBlocked && (
+                      <Alert severity="warning">
+                        {designationHasTrust
+                          ? `A trust has already been designated as ${modalValues.designation} beneficiary. Individuals cannot be added for this designation.`
+                          : "No more individuals can be added \u2014 0% unassigned share remaining."}
+                      </Alert>
+                    )}
+
+                  {modalValues.beneficiaryType === "trust" && trustBlocked && (
+                    <Alert severity="warning">
+                      {designationHasTrust
+                        ? `Only one trust can be designated per ${modalValues.designation} beneficiary.`
+                        : `An individual has already been designated as ${modalValues.designation} beneficiary. A trust cannot be added for this designation.`}
+                    </Alert>
+                  )}
+
+                  {modalValues.beneficiaryType === "individual" ? (
+                    <>
+                      <Stack
+                        direction={{ xs: "column", sm: "row" }}
+                        spacing={2}
+                      >
+                        <TextField
+                          label="First Name"
+                          disabled={
+                            (remainingDesignationSlots === 0 ||
+                              individualBlocked) &&
+                            !editingId
+                          }
+                          value={modalValues.firstName}
+                          onChange={(event) =>
+                            setModalValues((current) => ({
+                              ...current,
+                              firstName: event.target.value,
+                            }))
+                          }
+                          fullWidth
+                        />
+
+                        <TextField
+                          label="Last Name"
+                          disabled={
+                            (remainingDesignationSlots === 0 ||
+                              individualBlocked) &&
+                            !editingId
+                          }
+                          value={modalValues.lastName}
+                          onChange={(event) =>
+                            setModalValues((current) => ({
+                              ...current,
+                              lastName: event.target.value,
+                            }))
+                          }
+                          fullWidth
+                        />
+                      </Stack>
+
+                      <TextField
+                        select
+                        label="Relationship"
+                        disabled={
+                          (remainingDesignationSlots === 0 ||
+                            individualBlocked) &&
+                          !editingId
+                        }
+                        value={modalValues.relationship}
+                        onChange={(event) =>
+                          setModalValues((current) => ({
+                            ...current,
+                            relationship: event.target.value,
+                          }))
+                        }
+                        fullWidth
+                      >
+                        {RELATIONSHIP_OPTIONS.map((option) => (
+                          <MenuItem key={option} value={option}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+
+                      <TextField
+                        label="% Share"
+                        disabled={
+                          (remainingDesignationSlots === 0 ||
+                            individualBlocked) &&
+                          !editingId
+                        }
+                        value={modalValues.share}
+                        onChange={(event) => {
+                          const sanitizedShare = event.target.value
+                            .replace(/\D/g, "")
+                            .slice(0, 3);
+                          setModalValues((current) => ({
+                            ...current,
+                            share: sanitizedShare,
+                          }));
+                          setCommittedSharePercent(null);
+                        }}
+                        onBlur={() =>
+                          setCommittedSharePercent(
+                            parseCommittedShare(modalValues.share),
+                          )
+                        }
+                        inputProps={{
+                          inputMode: "numeric",
+                          pattern: "[0-9]*",
+                          maxLength: 3,
+                        }}
+                        fullWidth
                       />
-                      <Typography variant="body2">
-                        {product.coverageName}
+
+                      <Stack direction="row" spacing={1}>
+                        {[25, 50, 75, 100].map((percent) => (
+                          <Button
+                            key={percent}
+                            size="small"
+                            variant="outlined"
+                            disabled={
+                              (remainingDesignationSlots === 0 ||
+                                individualBlocked) &&
+                              !editingId
+                            }
+                            onClick={() => {
+                              setModalValues((current) => ({
+                                ...current,
+                                share: String(percent),
+                              }));
+                              setCommittedSharePercent(percent);
+                            }}
+                          >
+                            {percent}%
+                          </Button>
+                        ))}
+                      </Stack>
+
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ fontSize: "0.6875rem" }}
+                      >
+                        <Typography
+                          component="span"
+                          sx={{
+                            color:
+                              displayRemainingShare === 0
+                                ? "error.main"
+                                : "primary.main",
+                            fontWeight: 700,
+                            fontSize: "inherit",
+                          }}
+                        >
+                          {displayRemainingShare}%
+                        </Typography>{" "}
+                        unassigned remaining
                       </Typography>
-                    </Box>
-                  ))}
+                    </>
+                  ) : (
+                    <>
+                      <TextField
+                        label="Name of Trust"
+                        disabled={
+                          (remainingDesignationSlots === 0 || trustBlocked) &&
+                          !editingId
+                        }
+                        value={modalValues.trustName}
+                        onChange={(event) =>
+                          setModalValues((current) => ({
+                            ...current,
+                            trustName: event.target.value,
+                          }))
+                        }
+                        fullWidth
+                      />
+
+                      <TextField
+                        label="Date of Trust"
+                        disabled={
+                          (remainingDesignationSlots === 0 || trustBlocked) &&
+                          !editingId
+                        }
+                        value={modalValues.trustDate}
+                        onChange={(event) =>
+                          setModalValues((current) => ({
+                            ...current,
+                            trustDate: event.target.value,
+                          }))
+                        }
+                        type="date"
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth
+                      />
+                    </>
+                  )}
+
+                  {modalError ? (
+                    <Alert severity="error">{modalError}</Alert>
+                  ) : null}
                 </Stack>
-              );
-            })()}
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeApplyToOthers}>Skip</Button>
-          <Button
-            variant="contained"
-            onClick={applyBeneficiaryToSelected}
-            disabled={applyToOthersSelected.length === 0}
-          >
-            Apply to Selected
-          </Button>
-        </DialogActions>
-      </Dialog>
+              </DialogContent>
+
+              <DialogActions>
+                <Button onClick={closeModal}>Cancel</Button>
+                <Button
+                  variant="contained"
+                  onClick={saveBeneficiary}
+                  disabled={
+                    !editingId &&
+                    (remainingDesignationSlots === 0 ||
+                      (modalValues.beneficiaryType === "individual" &&
+                        individualBlocked) ||
+                      (modalValues.beneficiaryType === "trust" && trustBlocked))
+                  }
+                >
+                  Save Beneficiary
+                </Button>
+              </DialogActions>
+            </Dialog>
+
+            <Dialog
+              open={applyToOthersOpen}
+              onClose={closeApplyToOthers}
+              maxWidth="sm"
+              fullWidth
+            >
+              <DialogTitle>Apply to Other Coverages</DialogTitle>
+              <DialogContent>
+                <Stack spacing={2} sx={{ pt: 0.5 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Would you like to apply this beneficiary to other coverages?
+                  </Typography>
+                  {(() => {
+                    if (!applyToOthersSource) return null;
+                    const applicantKey =
+                      applyToOthersSource.applicantId === "member"
+                        ? "member"
+                        : "spouse";
+                    const otherProducts = applicantProducts[
+                      applicantKey
+                    ].filter(
+                      (p) => p.productKey !== applyToOthersSource.productKey,
+                    );
+                    return (
+                      <Stack spacing={1}>
+                        {otherProducts.map((product) => (
+                          <Box
+                            key={product.productKey}
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                            }}
+                          >
+                            <Checkbox
+                              checked={applyToOthersSelected.includes(
+                                product.productKey,
+                              )}
+                              onChange={(_, checked) => {
+                                setApplyToOthersSelected((prev) =>
+                                  checked
+                                    ? [...prev, product.productKey]
+                                    : prev.filter(
+                                        (k) => k !== product.productKey,
+                                      ),
+                                );
+                              }}
+                            />
+                            <Typography variant="body2">
+                              {product.coverageName}
+                            </Typography>
+                          </Box>
+                        ))}
+                      </Stack>
+                    );
+                  })()}
+                </Stack>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={closeApplyToOthers}>Skip</Button>
+                <Button
+                  variant="contained"
+                  onClick={applyBeneficiaryToSelected}
+                  disabled={applyToOthersSelected.length === 0}
+                >
+                  Apply to Selected
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </>
+        );
+      }}
     </FormRoutePage>
   );
 }

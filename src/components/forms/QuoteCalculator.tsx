@@ -540,7 +540,7 @@ export default function QuoteCalculator({
         {/* ── Category selection ── */}
         <FormControl component="fieldset">
           <FormLabel component="legend" required sx={{ mb: 1.5 }}>
-            Choose a coverage category
+            Select any coverage categories that you want to apply for:
           </FormLabel>
           <Stack spacing={1.5}>
             {coverageCategories
@@ -1219,6 +1219,7 @@ export default function QuoteCalculator({
                 <Button
                   variant="contained"
                   color="primary"
+                  size="large"
                   fullWidth
                   endIcon={<ArrowRightAltRoundedIcon />}
                   onClick={handleApply}

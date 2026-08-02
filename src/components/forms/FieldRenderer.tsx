@@ -7,6 +7,7 @@ import {
 } from "react";
 import { Controller, type Control, type FieldErrors } from "react-hook-form";
 import {
+  Link,
   Autocomplete,
   Box,
   Checkbox,
@@ -25,6 +26,7 @@ import {
 } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import type { FieldDefinition, FieldOption } from "../../config/fields/types";
@@ -58,6 +60,32 @@ const CURRENCY_FIELD_IDS = new Set([
   "spouse-average-monthly-income",
   "monthly-business-expenses",
 ]);
+
+const SSN_HELPER_TEXT =
+  "We protect your personal information using industry-standard security measures and only use it as described in our";
+
+function openPrivacyNoticeModal() {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent("app:open-privacy-notice"));
+}
+
+function renderSsnHelperText() {
+  return (
+    <>
+      {`${SSN_HELPER_TEXT} `}
+      <Link
+        href="#"
+        onClick={(event) => {
+          event.preventDefault();
+          openPrivacyNoticeModal();
+        }}
+      >
+        Privacy Notice
+      </Link>
+      .
+    </>
+  );
+}
 
 function isCurrencyField(field: FieldDefinition) {
   return field.format === "currency" || CURRENCY_FIELD_IDS.has(field.id);
@@ -157,7 +185,9 @@ function getValidationRules(field: FieldDefinition) {
     rules.validate = (value) => {
       if (!value) return true;
       const digits = String(value).replace(/\D/g, "");
-      return digits.length === 6 ? true : "Enter a valid month and year (MM/YYYY).";
+      return digits.length === 6
+        ? true
+        : "Enter a valid month and year (MM/YYYY).";
     };
   }
 
@@ -300,8 +330,7 @@ function hasCompletedValue(field: FieldDefinition, value: unknown) {
 
   if (field.format === "month-year") {
     return (
-      /^\d{2}\/\d{4}$/.test(stringValue) ||
-      /^\d{4}-\d{2}$/.test(stringValue)
+      /^\d{2}\/\d{4}$/.test(stringValue) || /^\d{4}-\d{2}$/.test(stringValue)
     );
   }
 
@@ -456,32 +485,53 @@ function SsnField({
           value: maskedDisplay,
           onChange: (event: ChangeEvent<HTMLInputElement>) => {
             const inputVal = event.target.value;
-            const newDigits = inputVal.replace(/[^\d]/g, "");
+            const inputDigits = inputVal.replace(/\D/g, "");
             const existingDigits = realValue.replace(/\D/g, "");
-            // Count bullets in display vs input to detect deletion
-            const maskedBullets = maskedDisplay.replace(
-              /[^\u2022]/g,
-              "",
-            ).length;
-            const inputBullets = inputVal.replace(/[^\u2022]/g, "").length;
+            const visibleDigitSlots = (inputVal.match(/[\u2022\d]/g) ?? [])
+              .length;
+            const nativeInputEvent = event.nativeEvent as InputEvent;
+            const inputType = nativeInputEvent.inputType ?? "";
 
-            if (inputBullets < maskedBullets && newDigits.length === 0) {
-              // Deletion: remove last digit(s)
-              const trimmed = existingDigits.slice(0, inputBullets);
-              controllerField.onChange(formatSsn(trimmed));
-              setShowLastDigit(false);
+            let nextDigits = existingDigits;
+
+            if (inputType.startsWith("delete")) {
+              const keepCount = Math.min(
+                visibleDigitSlots,
+                existingDigits.length,
+              );
+              nextDigits = existingDigits.slice(0, keepCount);
+            } else if (inputType === "insertFromPaste") {
+              nextDigits = inputDigits.slice(0, 9);
+            } else if (visibleDigitSlots < existingDigits.length) {
+              nextDigits = existingDigits.slice(0, visibleDigitSlots);
+            } else if (visibleDigitSlots > existingDigits.length) {
+              const appendedCount = visibleDigitSlots - existingDigits.length;
+              const appendedDigits = inputDigits.slice(-appendedCount);
+              nextDigits = (existingDigits + appendedDigits).slice(0, 9);
             } else {
-              // Addition: append new digits to existing
-              const combined = (existingDigits + newDigits).slice(0, 9);
-              controllerField.onChange(formatSsn(combined));
+              nextDigits = inputDigits.slice(0, 9);
+            }
 
-              // Show the last digit briefly
+            controllerField.onChange(formatSsn(nextDigits));
+
+            if (nextDigits.length > existingDigits.length) {
               setShowLastDigit(true);
               if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
               hideTimerRef.current = setTimeout(() => {
                 setShowLastDigit(false);
               }, 800);
+            } else {
+              setShowLastDigit(false);
             }
+          },
+          inputAdornmentProps: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <LockOutlinedIcon
+                  sx={{ color: "action.active", fontSize: "1rem" }}
+                />
+              </InputAdornment>
+            ),
           },
           inputProps: {
             autoComplete: "off",
@@ -503,7 +553,9 @@ export default function FieldRenderer({
 }: FieldRendererProps) {
   const validationRules = getValidationRules(field);
   const fieldError = errors[field.id]?.message as string | undefined;
-  const resolvedHelperText = fieldError ?? field.helperText;
+  const resolvedHelperText =
+    fieldError ??
+    (field.format === "ssn" ? renderSsnHelperText() : field.helperText);
 
   const hasError = Boolean(errors[field.id]);
   const statusState: FieldStatusState = { hasError };
@@ -1225,7 +1277,9 @@ export default function FieldRenderer({
                 const formatted = formatMonthYearDisplay(event.target.value);
                 const digits = formatted.replace(/\D/g, "");
                 if (digits.length === 6) {
-                  controllerField.onChange(formatMonthYearForStorage(formatted));
+                  controllerField.onChange(
+                    formatMonthYearForStorage(formatted),
+                  );
                 } else {
                   controllerField.onChange(formatted);
                 }

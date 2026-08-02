@@ -287,6 +287,7 @@ export default function ResumeCode() {
               <Button
                 type="submit"
                 variant="contained"
+                size="large"
                 fullWidth
                 disabled={isVerifying || verifySuccess || secondsLeft === 0}
                 sx={(theme) => ({

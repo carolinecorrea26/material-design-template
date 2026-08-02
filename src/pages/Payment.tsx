@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Alert, Box, Stack, Typography } from "@mui/material";
+import { Alert, Box, Divider, Stack, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import type { SvgIconComponent } from "@mui/icons-material";
 import { formatUSD as formatCurrency } from "../utils/formatUSD";
 import ProductCard from "../components/ui/ProductCard";
 import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
@@ -13,6 +14,7 @@ import { getCoverageCategorySectionLabel } from "../config/coverageCategories";
 import { coverageCategories } from "../config/coverageCategories";
 import type { CoverageCategoryId } from "../config/coverages/types";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
+import { getClientPageRequirement } from "../config/client/getClientPageRequirement";
 import { fieldCatalog } from "../config/fields";
 import type { FieldDefinition, FieldId } from "../config/fields/types";
 import { paymentHandlingHelpItem } from "../content/helpContent";
@@ -49,6 +51,70 @@ const BANK_FIELD_IDS: FieldId[] = [
   "bank-account-number",
   "bank-authorization",
 ];
+
+const PAYMENT_INFO_OPT_IN_FIELD_ID = "payment-information-opt-in";
+
+const paymentInfoOptInField: FieldDefinition = {
+  id: PAYMENT_INFO_OPT_IN_FIELD_ID,
+  label: "Do you want to add payment information?",
+  inputType: "radio",
+  required: true,
+  options: [
+    { value: "yes", label: "Yes" },
+    { value: "no", label: "No" },
+  ],
+};
+
+function shouldShowPaymentQuestions(
+  pageRequirement: "required" | "optional" | "none",
+  values: Record<string, unknown>,
+): boolean {
+  if (pageRequirement !== "optional") {
+    return true;
+  }
+
+  return values[PAYMENT_INFO_OPT_IN_FIELD_ID] === "yes";
+}
+
+function getPaymentPageError(
+  pageRequirement: "required" | "optional" | "none",
+  values: Record<string, unknown>,
+): string | undefined {
+  if (pageRequirement === "none") {
+    return undefined;
+  }
+
+  if (
+    pageRequirement === "optional" &&
+    !shouldShowPaymentQuestions(pageRequirement, values)
+  ) {
+    return undefined;
+  }
+
+  const appliedProducts = getAppliedProducts(values);
+
+  if (appliedProducts.length === 0) {
+    return undefined;
+  }
+
+  const hasMissingPaymentInfo = appliedProducts.some((product) => {
+    const paymentMethod = values[`payment-method:${product.coverageId}`];
+    const paymentFrequency = values[`payment-frequency:${product.coverageId}`];
+
+    return (
+      typeof paymentMethod !== "string" ||
+      paymentMethod.trim().length === 0 ||
+      typeof paymentFrequency !== "string" ||
+      paymentFrequency.trim().length === 0
+    );
+  });
+
+  if (hasMissingPaymentInfo) {
+    return "Please add payment information for all applicable products before continuing.";
+  }
+
+  return undefined;
+}
 
 function toPositiveAmount(value: unknown): number | null {
   if (typeof value === "number" && Number.isFinite(value) && value > 0) {
@@ -175,9 +241,23 @@ function getAppliedProducts(values: Record<string, unknown>): AppliedProduct[] {
 
 function getPaymentDevFields(
   values: Record<string, unknown>,
+  pageRequirement: "required" | "optional" | "none",
 ): FieldDefinition[] {
-  const appliedProducts = getAppliedProducts(values);
+  if (pageRequirement === "none") {
+    return [];
+  }
+
   const fields: FieldDefinition[] = [];
+
+  if (pageRequirement === "optional") {
+    fields.push(paymentInfoOptInField);
+  }
+
+  if (!shouldShowPaymentQuestions(pageRequirement, values)) {
+    return fields;
+  }
+
+  const appliedProducts = getAppliedProducts(values);
 
   const hasAnyBankAccountSelected = appliedProducts.some((product) => {
     const fieldId = `payment-method:${product.coverageId}`;
@@ -189,7 +269,6 @@ function getPaymentDevFields(
       id: `payment-method:${product.coverageId}`,
       label: "Payment Method",
       inputType: "radio",
-      required: true,
       options: paymentMethodOptions.map((option) => ({
         value: option.value,
         label: option.label,
@@ -200,7 +279,6 @@ function getPaymentDevFields(
       id: `payment-frequency:${product.coverageId}`,
       label: "Payment Frequency",
       inputType: "dropdown",
-      required: true,
       options: paymentFrequencyOptions.map((option) => ({
         value: option.value,
         label: option.label,
@@ -216,6 +294,7 @@ function getPaymentDevFields(
 }
 
 export default function Payment() {
+  const pageRequirement = getClientPageRequirement("payment");
   const helpItems = [paymentHandlingHelpItem];
   const [activeHelpId, setActiveHelpId] = useState<string | null>(null);
   const activeHelpItem =
@@ -224,7 +303,10 @@ export default function Payment() {
   return (
     <FormRoutePage
       pageId="payment"
-      devFillFields={getPaymentDevFields}
+      devFillFields={(values) => getPaymentDevFields(values, pageRequirement)}
+      validate={(values) =>
+        getPaymentPageError(pageRequirement, values as Record<string, unknown>)
+      }
       help={
         <>
           <FormHelpChips items={helpItems} onSelect={setActiveHelpId} />
@@ -240,6 +322,10 @@ export default function Payment() {
     >
       {({ control, errors, watchedValues }) => {
         const values = watchedValues as Record<string, unknown>;
+        const showPaymentQuestions = shouldShowPaymentQuestions(
+          pageRequirement,
+          values,
+        );
         const appliedProducts = getAppliedProducts(values);
 
         const groupedCategories = coverageCategories
@@ -258,255 +344,276 @@ export default function Payment() {
 
         return (
           <Stack spacing={2}>
-            <Alert
-              severity="warning"
-              icon={<InfoOutlinedIcon fontSize="inherit" />}
-              sx={{ alignItems: "flex-start" }}
-            >
-              <Typography variant="subtitle2" fontWeight="bold">
-                You will not be charged yet.
-              </Typography>
-              <Typography variant="body2" sx={{ mt: 0.5 }}>
-                Your payment information is collected as part of the application
-                but you will not be charged until and unless you are approved
-                for coverage. No money leaves your account during the
-                application process.
-              </Typography>
-            </Alert>
+            {pageRequirement === "optional" && (
+              <FieldRenderer
+                field={paymentInfoOptInField}
+                control={control}
+                errors={errors}
+              />
+            )}
 
-            {groupedCategories.length === 0 ? (
-              <Alert severity="info">
-                No applied-for products were found. Return to coverage options
-                to choose coverage and continue.
-              </Alert>
-            ) : (
-              groupedCategories.map(({ category, products }) => {
-                return (
-                  <Stack key={category.id} spacing={1.5}>
-                    <Box
-                      sx={{
-                        p: "1rem",
-                        background: "#f9fafd",
-                        borderRadius: "16px",
-                      }}
-                    >
-                      <CategoryHeader
-                        label={getCoverageCategorySectionLabel(category.id)}
-                        icon={category.icon as any}
-                      />
-                      <Stack spacing={2} sx={{ mt: 2 }}>
-                        {products.map((product) => {
-                          const paymentMethodFieldId = `payment-method:${product.coverageId}`;
-                          const paymentFrequencyFieldId = `payment-frequency:${product.coverageId}`;
-                          const selectedPaymentMethod = values[
-                            paymentMethodFieldId
-                          ] as string | undefined;
+            {pageRequirement === "optional" && showPaymentQuestions && (
+              <Divider sx={{ my: 2 }} />
+            )}
 
-                          const selectedFrequency =
-                            (values[paymentFrequencyFieldId] as string) ||
-                            "monthly";
-                          const frequencyMultiplier =
-                            getFrequencyMultiplier(selectedFrequency);
-                          const frequencyLabel =
-                            getFrequencyLabel(selectedFrequency);
+            {showPaymentQuestions && (
+              <>
+                <Alert
+                  severity="warning"
+                  icon={<InfoOutlinedIcon fontSize="inherit" />}
+                  sx={{ alignItems: "flex-start" }}
+                >
+                  <Typography variant="subtitle2" fontWeight="bold">
+                    You will not be charged yet.
+                  </Typography>
+                  <Typography variant="body2" sx={{ mt: 0.5 }}>
+                    Your payment information is collected as part of the
+                    application but you will not be charged until and unless you
+                    are approved for coverage. No money leaves your account
+                    during the application process.
+                  </Typography>
+                </Alert>
 
-                          const applicantPremiums = product.applicants.map(
-                            (applicantEntry) => ({
-                              applicant: applicantEntry.applicant,
-                              monthlyPremium: estimateMonthlyPremium(
-                                product.categoryId,
-                                applicantEntry.amount,
-                              ),
-                            }),
-                          );
+                {groupedCategories.length === 0 ? (
+                  <Alert severity="info">
+                    No applied-for products were found. Return to coverage
+                    options to choose coverage and continue.
+                  </Alert>
+                ) : (
+                  groupedCategories.map(({ category, products }) => {
+                    return (
+                      <Stack key={category.id} spacing={1.5}>
+                        <Box
+                          sx={{
+                            p: "1rem",
+                            background: "#f9fafd",
+                            borderRadius: "16px",
+                          }}
+                        >
+                          <CategoryHeader
+                            label={getCoverageCategorySectionLabel(category.id)}
+                            icon={category.icon as SvgIconComponent}
+                          />
+                          <Stack spacing={2} sx={{ mt: 2 }}>
+                            {products.map((product) => {
+                              const paymentMethodFieldId = `payment-method:${product.coverageId}`;
+                              const paymentFrequencyFieldId = `payment-frequency:${product.coverageId}`;
+                              const selectedPaymentMethod = values[
+                                paymentMethodFieldId
+                              ] as string | undefined;
 
-                          const totalMonthly = applicantPremiums.reduce(
-                            (sum, entry) => sum + entry.monthlyPremium,
-                            0,
-                          );
+                              const selectedFrequency =
+                                (values[paymentFrequencyFieldId] as string) ||
+                                "monthly";
+                              const frequencyMultiplier =
+                                getFrequencyMultiplier(selectedFrequency);
+                              const frequencyLabel =
+                                getFrequencyLabel(selectedFrequency);
 
-                          const totalForFrequency =
-                            totalMonthly * frequencyMultiplier;
+                              const applicantPremiums = product.applicants.map(
+                                (applicantEntry) => ({
+                                  applicant: applicantEntry.applicant,
+                                  monthlyPremium: estimateMonthlyPremium(
+                                    product.categoryId,
+                                    applicantEntry.amount,
+                                  ),
+                                }),
+                              );
 
-                          const hasDependentBreakdown = applicantPremiums.some(
-                            (entry) => entry.applicant !== "member",
-                          );
+                              const totalMonthly = applicantPremiums.reduce(
+                                (sum, entry) => sum + entry.monthlyPremium,
+                                0,
+                              );
 
-                          return (
-                            <ProductCard key={product.coverageId}>
-                              <Stack spacing={2}>
-                                <Typography
-                                  sx={{ fontSize: "1rem", fontWeight: 700 }}
-                                >
-                                  {product.coverageName}
-                                </Typography>
+                              const totalForFrequency =
+                                totalMonthly * frequencyMultiplier;
 
-                                <FieldRenderer
-                                  field={{
-                                    id: paymentMethodFieldId,
-                                    label: "Payment Method",
-                                    inputType: "radio",
-                                    required: true,
-                                    options: paymentMethodOptions.map(
-                                      (option) => ({
-                                        value: option.value,
-                                        label: option.label,
-                                      }),
-                                    ),
-                                  }}
-                                  control={control}
-                                  errors={errors}
-                                />
+                              const hasDependentBreakdown =
+                                applicantPremiums.some(
+                                  (entry) => entry.applicant !== "member",
+                                );
 
-                                <FieldRenderer
-                                  field={{
-                                    id: paymentFrequencyFieldId,
-                                    label: "Payment Frequency",
-                                    inputType: "dropdown",
-                                    required: true,
-                                    placeholder: "Select frequency",
-                                    disabled: !selectedPaymentMethod,
-                                    options: paymentFrequencyOptions.map(
-                                      (option) => ({
-                                        value: option.value,
-                                        label: option.label,
-                                      }),
-                                    ),
-                                  }}
-                                  control={control}
-                                  errors={errors}
-                                />
+                              return (
+                                <ProductCard key={product.coverageId}>
+                                  <Stack spacing={2}>
+                                    <Typography
+                                      sx={{ fontSize: "1rem", fontWeight: 700 }}
+                                    >
+                                      {product.coverageName}
+                                    </Typography>
 
-                                <Box
-                                  sx={{
-                                    mt: 0.5,
-                                    pt: 1.5,
-                                    borderTop: "1px solid",
-                                    borderColor: "divider",
-                                  }}
-                                >
-                                  <Stack spacing={1.25}>
-                                    {hasDependentBreakdown && (
-                                      <Typography
-                                        variant="body2"
-                                        color="text.secondary"
-                                      >
-                                        Estimated {frequencyLabel.toLowerCase()}{" "}
-                                        cost
-                                      </Typography>
-                                    )}
+                                    <FieldRenderer
+                                      field={{
+                                        id: paymentMethodFieldId,
+                                        label: "Payment Method",
+                                        inputType: "radio",
+                                        options: paymentMethodOptions.map(
+                                          (option) => ({
+                                            value: option.value,
+                                            label: option.label,
+                                          }),
+                                        ),
+                                      }}
+                                      control={control}
+                                      errors={errors}
+                                    />
 
-                                    {hasDependentBreakdown &&
-                                      applicantPremiums.map((entry) => (
-                                        <Stack
-                                          key={entry.applicant}
-                                          direction="row"
-                                          justifyContent="space-between"
-                                          alignItems="center"
-                                          spacing={1}
-                                        >
-                                          <Typography
-                                            variant="subtitle2"
-                                            color="text.secondary"
-                                          >
-                                            {getApplicantLabel(entry.applicant)}
-                                          </Typography>
-                                          <Typography
-                                            variant="subtitle2"
-                                            fontWeight="bold"
-                                            sx={{ whiteSpace: "nowrap" }}
-                                          >
-                                            {formatCurrency(
-                                              entry.monthlyPremium *
-                                                frequencyMultiplier,
-                                            )}
-                                          </Typography>
-                                        </Stack>
-                                      ))}
+                                    <FieldRenderer
+                                      field={{
+                                        id: paymentFrequencyFieldId,
+                                        label: "Payment Frequency",
+                                        inputType: "dropdown",
+                                        placeholder: "Select frequency",
+                                        disabled: !selectedPaymentMethod,
+                                        options: paymentFrequencyOptions.map(
+                                          (option) => ({
+                                            value: option.value,
+                                            label: option.label,
+                                          }),
+                                        ),
+                                      }}
+                                      control={control}
+                                      errors={errors}
+                                    />
 
                                     <Box
                                       sx={{
-                                        borderTop: hasDependentBreakdown
-                                          ? "1px solid"
-                                          : "none",
+                                        mt: 0.5,
+                                        pt: 1.5,
+                                        borderTop: "1px solid",
                                         borderColor: "divider",
-                                        pt: hasDependentBreakdown ? 1.25 : 0,
                                       }}
                                     >
-                                      <Stack
-                                        direction="row"
-                                        justifyContent="space-between"
-                                        alignItems="baseline"
-                                      >
-                                        <Typography variant="subtitle2">
-                                          {hasDependentBreakdown
-                                            ? "Total estimated cost"
-                                            : `Estimated ${frequencyLabel.toLowerCase()} cost`}
-                                          <sup>1</sup>
-                                        </Typography>
-                                        <Typography
-                                          component="span"
-                                          variant="subtitle2"
-                                          fontWeight="bold"
+                                      <Stack spacing={1.25}>
+                                        {hasDependentBreakdown && (
+                                          <Typography
+                                            variant="body2"
+                                            color="text.secondary"
+                                          >
+                                            Estimated{" "}
+                                            {frequencyLabel.toLowerCase()} cost
+                                          </Typography>
+                                        )}
+
+                                        {hasDependentBreakdown &&
+                                          applicantPremiums.map((entry) => (
+                                            <Stack
+                                              key={entry.applicant}
+                                              direction="row"
+                                              justifyContent="space-between"
+                                              alignItems="center"
+                                              spacing={1}
+                                            >
+                                              <Typography
+                                                variant="subtitle2"
+                                                color="text.secondary"
+                                              >
+                                                {getApplicantLabel(
+                                                  entry.applicant,
+                                                )}
+                                              </Typography>
+                                              <Typography
+                                                variant="subtitle2"
+                                                fontWeight="bold"
+                                                sx={{ whiteSpace: "nowrap" }}
+                                              >
+                                                {formatCurrency(
+                                                  entry.monthlyPremium *
+                                                    frequencyMultiplier,
+                                                )}
+                                              </Typography>
+                                            </Stack>
+                                          ))}
+
+                                        <Box
                                           sx={{
-                                            color: "primary.main",
-                                            whiteSpace: "nowrap",
+                                            borderTop: hasDependentBreakdown
+                                              ? "1px solid"
+                                              : "none",
+                                            borderColor: "divider",
+                                            pt: hasDependentBreakdown
+                                              ? 1.25
+                                              : 0,
                                           }}
                                         >
-                                          {formatCurrency(totalForFrequency)}
-                                        </Typography>
+                                          <Stack
+                                            direction="row"
+                                            justifyContent="space-between"
+                                            alignItems="baseline"
+                                          >
+                                            <Typography variant="subtitle2">
+                                              {hasDependentBreakdown
+                                                ? "Total estimated cost"
+                                                : `Estimated ${frequencyLabel.toLowerCase()} cost`}
+                                              <sup>1</sup>
+                                            </Typography>
+                                            <Typography
+                                              component="span"
+                                              variant="subtitle2"
+                                              fontWeight="bold"
+                                              sx={{
+                                                color: "primary.main",
+                                                whiteSpace: "nowrap",
+                                              }}
+                                            >
+                                              {formatCurrency(
+                                                totalForFrequency,
+                                              )}
+                                            </Typography>
+                                          </Stack>
+                                        </Box>
                                       </Stack>
                                     </Box>
                                   </Stack>
-                                </Box>
-                              </Stack>
-                            </ProductCard>
-                          );
-                        })}
+                                </ProductCard>
+                              );
+                            })}
+                          </Stack>
+                        </Box>
                       </Stack>
-                    </Box>
+                    );
+                  })
+                )}
+
+                {hasAnyBankAccountSelected && (
+                  <Stack spacing={1.5} sx={{ pt: 1 }}>
+                    <SectionHeader
+                      label="Banking Information"
+                      chipVariant="outlined"
+                      chipColor="default"
+                      size="small"
+                    />
+
+                    {BANK_FIELD_IDS.map((fieldId) => (
+                      <FieldRenderer
+                        key={fieldId}
+                        field={fieldCatalog[fieldId]}
+                        control={control}
+                        errors={errors}
+                      />
+                    ))}
                   </Stack>
-                );
-              })
-            )}
+                )}
 
-            {hasAnyBankAccountSelected && (
-              <Stack spacing={1.5} sx={{ pt: 1 }}>
-                <SectionHeader
-                  label="Banking Information"
-                  chipVariant="outlined"
-                  chipColor="default"
-                  size="small"
-                />
-
-                {BANK_FIELD_IDS.map((fieldId) => (
-                  <FieldRenderer
-                    key={fieldId}
-                    field={fieldCatalog[fieldId]}
-                    control={control}
-                    errors={errors}
-                  />
-                ))}
-              </Stack>
-            )}
-
-            <Box sx={{ mt: 3, color: "text.secondary" }}>
-              <Typography
-                variant="caption"
-                sx={{
-                  display: "block",
-                  lineHeight: 1.6,
-                }}
-              >
-                <Box component="sup" sx={{ fontSize: "0.8em", mr: 0.5 }}>
-                  1
+                <Box sx={{ mt: 3, color: "text.secondary" }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      display: "block",
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    <Box component="sup" sx={{ fontSize: "0.8em", mr: 0.5 }}>
+                      1
+                    </Box>
+                    Quoted cost is the best rate available based on the
+                    information you provided. Final cost may be based upon
+                    factors such as gender, health status, and use of
+                    tobacco/nicotine. Rates current as of 2026.
+                  </Typography>
                 </Box>
-                Quoted cost is the best rate available based on the information
-                you provided. Final cost may be based upon factors such as
-                gender, health status, and use of tobacco/nicotine. Rates
-                current as of 2026.
-              </Typography>
-            </Box>
+              </>
+            )}
           </Stack>
         );
       }}

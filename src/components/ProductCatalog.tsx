@@ -16,7 +16,7 @@ import {
 import FeaturedBadge from "./ui/FeaturedBadge";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import CategoryHeader from "./CategoryHeader";
-import SectionHeader from "./forms/SectionHeader";
+import ApplicantSectionLabel from "./forms/ApplicantSectionLabel";
 import SelectionGroup from "./forms/SelectionGroup";
 import ProductCardSurface from "./ui/ProductCard";
 import QuickDecisionIndicator from "./ui/QuickDecisionIndicator";
@@ -31,20 +31,107 @@ import type {
   CoverageCategoryId,
   CoverageApplicantId,
 } from "../config/coverages/types";
-import type { EstimatedRateFrequency } from "../config/clients/types";
+import type {
+  ClientAmountByFrequency,
+  ClientProductEstimatedCostBreakdown,
+  EstimatedRateFrequency,
+} from "../config/clients/types";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getContent } from "../content";
 import { formatUSD } from "../utils/formatUSD";
 import EstimatedCostPanel from "./ui/EstimatedCostPanel";
+import ProductEstimatedCostBreakdown, {
+  type ProductEstimatedCostBreakdownItem,
+} from "./ui/ProductEstimatedCostBreakdown";
 import {
   getDisplayedPremium,
   getBenefitAmountLabel,
 } from "../app/useCoverageState";
+import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
 
 type ResolvedCoverage = ReturnType<typeof getActiveClientCoverages>[number];
 import { getMaxAggregateNotes } from "../config/coverageConstants";
 import { resolveClientId } from "../config/client/resolveClientId";
+
+function toMonthlyAmount(config?: ClientAmountByFrequency): number {
+  if (!config) return 0;
+  if (typeof config.monthly === "number") return config.monthly;
+  if (typeof config.annual === "number") return config.annual / 12;
+  return 0;
+}
+
+function collectBreakdownRiderItems({
+  coverage,
+  currentApplicants,
+  storedAmounts,
+  storedRiders,
+  storedRiderAmounts,
+  isMultiApplicant,
+  breakdownConfig,
+}: {
+  coverage: ProductCardProps["coverage"];
+  currentApplicants: CoverageApplicantId[];
+  storedAmounts: ProductCardProps["storedAmounts"];
+  storedRiders: ProductCardProps["storedRiders"];
+  storedRiderAmounts: ProductCardProps["storedRiderAmounts"];
+  isMultiApplicant: boolean;
+  breakdownConfig?: ClientProductEstimatedCostBreakdown;
+}): ProductEstimatedCostBreakdownItem[] {
+  const riderTotals = new Map<string, number>();
+
+  for (const applicantId of currentApplicants) {
+    const key = `${coverage.id}:${applicantId}`;
+    const amount = storedAmounts[key] ?? 0;
+    if (amount <= 0) continue;
+
+    if (
+      applicantId === "child" &&
+      breakdownConfig?.childApplicantRider?.enabled !== false
+    ) {
+      const childLabel =
+        breakdownConfig?.childApplicantRider?.label ??
+        "Child applicant coverage";
+      const childAmount = toMonthlyAmount(
+        breakdownConfig?.childApplicantRider?.amount,
+      );
+      if (childAmount > 0) {
+        riderTotals.set(
+          childLabel,
+          (riderTotals.get(childLabel) ?? 0) + childAmount,
+        );
+      }
+    }
+
+    for (const rider of coverage.riders ?? []) {
+      const riderKey = `${coverage.id}:${rider.id}:${applicantId}`;
+      if (!storedRiders[riderKey]) continue;
+
+      const riderAmount = rider.hasAmount
+        ? (storedRiderAmounts[riderKey] ?? 0)
+        : amount;
+      if (riderAmount <= 0) continue;
+
+      const riderPremium =
+        estimateMonthlyPremium(coverage.categoryId, riderAmount) *
+        rider.premiumFactor;
+      if (riderPremium <= 0) continue;
+
+      const riderLabel = isMultiApplicant
+        ? `${rider.name} (${applicantCheckboxLabels[applicantId]})`
+        : rider.name;
+      riderTotals.set(
+        riderLabel,
+        (riderTotals.get(riderLabel) ?? 0) + riderPremium,
+      );
+    }
+  }
+
+  return Array.from(riderTotals.entries()).map(([label, amount]) => ({
+    label,
+    amount,
+  }));
+}
 
 const applicantCheckboxLabels: Record<CoverageApplicantId, string> =
   getContent().coverage.applicantCheckboxLabels;
@@ -473,6 +560,8 @@ function ProductCard({
   calcApplicantPremium,
   generateAmountChoices,
 }: ProductCardProps) {
+  const breakdownConfig =
+    getActiveClient().coverages.productEstimatedCostBreakdown;
   const visibleApplicants = getVisibleApplicants(
     coverage.applicants,
     coverage.id,
@@ -482,6 +571,30 @@ function ProductCard({
   const amountLabel = getBenefitAmountLabel(coverage.categoryId);
   const rateSuffix = rateFrequency === "annual" ? "/yr" : "/mo";
   const isMultiApplicant = visibleApplicants.length > 1;
+
+  const premiumCost = currentApplicants.reduce((sum, applicantId) => {
+    const key = `${coverage.id}:${applicantId}`;
+    const amount = storedAmounts[key] ?? 0;
+    if (amount <= 0) return sum;
+    return sum + estimateMonthlyPremium(coverage.categoryId, amount);
+  }, 0);
+
+  const riderItems = collectBreakdownRiderItems({
+    coverage,
+    currentApplicants,
+    storedAmounts,
+    storedRiders,
+    storedRiderAmounts,
+    isMultiApplicant,
+    breakdownConfig,
+  });
+
+  const policyFeeLabel =
+    breakdownConfig?.policyFee?.label ?? "Non-member policy fee";
+  const policyFeeAmount = toMonthlyAmount(breakdownConfig?.policyFee?.amount);
+  const shouldShowBreakdown =
+    breakdownConfig?.enabled === true &&
+    (premiumCost > 0 || riderItems.length > 0 || policyFeeAmount > 0);
 
   return (
     <ProductCardSurface
@@ -616,11 +729,9 @@ function ProductCard({
           return (
             <Box key={applicantId}>
               {isMultiApplicant && (
-                <SectionHeader
+                <ApplicantSectionLabel
                   label={applicantSectionTitles[sectionId]}
                   icon={applicantIcons[sectionId]}
-                  chipVariant="filled"
-                  chipColor="default"
                   sx={{ mb: 1.5 }}
                 />
               )}
@@ -652,6 +763,7 @@ function ProductCard({
                     label="Added"
                     size="small"
                     color="success"
+                    variant="outlined"
                     sx={{
                       height: 22,
                       "& .MuiChip-label": {
@@ -665,11 +777,12 @@ function ProductCard({
                   <Chip
                     label="Add"
                     size="small"
-                    variant="outlined"
+                    color="success"
+                    // variant="outlined"
                     sx={{
                       height: 22,
-                      borderColor: "grey.300",
-                      color: "text.secondary",
+                      // borderColor: "grey.300",
+                      // color: "text.secondary",
                       "& .MuiChip-label": {
                         fontSize: "0.7rem",
                         fontWeight: 600,
@@ -923,6 +1036,19 @@ function ProductCard({
           );
         })}
       </Stack>
+
+      {shouldShowBreakdown && (
+        <ProductEstimatedCostBreakdown
+          premiumCost={premiumCost}
+          riderItems={riderItems}
+          policyFee={
+            policyFeeAmount > 0
+              ? { label: policyFeeLabel, amount: policyFeeAmount }
+              : undefined
+          }
+          rateFrequency={rateFrequency}
+        />
+      )}
     </ProductCardSurface>
   );
 }

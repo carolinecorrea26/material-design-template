@@ -2,7 +2,7 @@ import type { PageId } from "../types";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import type { CoverageCategoryId } from "./coverages/types";
 import { getActiveClientCoverages } from "./client/getActiveClientCoverages";
-import { getActiveClient } from "./client/getActiveClient";
+import { getClientPageRequirement } from "./client/getClientPageRequirement";
 
 export const formFlow: PageId[] = [
   "membership",
@@ -120,9 +120,7 @@ export function shouldSkipPage(
   pageId: PageId,
   values: ApplicationFormValues,
 ): boolean {
-  const excludedPages = new Set(getActiveClient().pages.excluded ?? []);
-
-  if (excludedPages.has(pageId)) {
+  if (getClientPageRequirement(pageId) === "none") {
     return true;
   }
 

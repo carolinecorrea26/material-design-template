@@ -5,7 +5,7 @@ import {
   applicantIcons,
   type ApplicantSectionId,
 } from "../../config/formSectionTitle";
-import SectionHeader from "./SectionHeader";
+import ApplicantSectionLabel from "./ApplicantSectionLabel";
 
 type ApplicantSectionProps = {
   applicant: ApplicantSectionId;
@@ -39,13 +39,7 @@ export default function ApplicantSection({
 
   return (
     <Box sx={{ mb: 2, mt: 1 }}>
-      <SectionHeader
-        label={title}
-        icon={Icon}
-        chipVariant="filled"
-        chipColor="default"
-        sx={{ mb: 2 }}
-      />
+      <ApplicantSectionLabel label={title} icon={Icon} sx={{ mb: 2 }} />
 
       {note && (
         <Alert severity="info" sx={{ mb: 2 }}>

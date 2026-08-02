@@ -20,7 +20,9 @@ export default function DynamicListItem({
   return (
     <Box
       sx={{
-        backgroundColor: "rgba(0, 0, 0, 0.04)",
+        border: "1px solid",
+        borderColor: "divider",
+        // backgroundColor: "background.surface",
         borderRadius: 1.5,
         px: 2,
         py: 1.5,

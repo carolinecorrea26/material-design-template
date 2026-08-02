@@ -23,8 +23,10 @@ export const waepaClient: ClientConfig = {
     },
   },
   pages: {
-    excluded: [],
-    optional: ["beneficiary", "payment"],
+    requirements: {
+      beneficiary: "required",
+      payment: "required",
+    },
   },
   coverages: {
     categories: ["LI", "DI"],

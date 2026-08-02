@@ -20,7 +20,8 @@ export const pagesDefaults: Partial<PagesContent> = {
   },
   coverage: {
     title: "Your coverage options",
-    subhead: "Explore and customize the coverage options available to you.",
+    subhead:
+      "Explore and customize your coverage options. Please note that available options are based on eligibility information.",
     navTitle: "Coverage",
   },
   beneficiary: {

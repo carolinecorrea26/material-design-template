@@ -24,8 +24,10 @@ export const amaClient: ClientConfig = {
     },
   },
   pages: {
-    excluded: [],
-    optional: ["beneficiary", "payment"],
+    requirements: {
+      beneficiary: "required",
+      payment: "required",
+    },
   },
   coverages: {
     categories: ["LI", "AD", "DI", "OO", "SH"],
@@ -242,11 +244,26 @@ export const amaClient: ClientConfig = {
       showFrequencyToggle: true,
       defaultFrequency: "annual",
     },
+    productEstimatedCostBreakdown: {
+      enabled: true,
+      policyFee: {
+        label: "Non-AMA Member Policy Fee",
+        amount: { annual: 45 },
+      },
+      childApplicantRider: {
+        enabled: true,
+        label: "Child Applicant Coverage",
+        amount: { annual: 12 },
+      },
+    },
   },
   fields: {
     coverage: {
       hidden: ["average-employees-6-months"],
     },
+  },
+  features: {
+    scheduleUrl: "https://calendly.com/ama-advisor/30min",
   },
   licenseInfo: [
     "CA Insurance License: #0754707",

@@ -130,7 +130,7 @@ function CoveragePageContent({
           error={state.selectedCategories.length === 0 && !!pageError}
         >
           <FormLabel component="legend" required sx={{ mb: 1.5 }}>
-            Choose a coverage category
+            Select any coverage categories that you want to apply for:
           </FormLabel>
           <Stack spacing={1.5}>
             {state.availableCategories.map((category) => {
@@ -212,7 +212,6 @@ function CoveragePageContent({
           onFieldChange={handleCoverageQuestionChange}
           coverageQuestions={state.clientCoverageQuestions}
         />
-
       </Stack>
 
       {/* Divider between coverage questions and products */}
@@ -269,6 +268,7 @@ function CoveragePageContent({
           <Box sx={{ mt: "2rem", mb: "1rem" }}>
             <Button
               variant="contained"
+              size="large"
               fullWidth
               onClick={async () => {
                 const isValid = await trigger();

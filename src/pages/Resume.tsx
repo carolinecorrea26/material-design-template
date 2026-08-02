@@ -227,7 +227,12 @@ export default function Resume() {
                   justifyContent: "flex-end",
                 }}
               >
-                <Button type="submit" variant="contained" fullWidth>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  size="large"
+                  fullWidth
+                >
                   Next
                 </Button>
               </Box>

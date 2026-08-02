@@ -1,14 +1,14 @@
-import { useMemo, useState } from "react";
-import { Alert, Box, Button, Typography } from "@mui/material";
+import { useMemo } from "react";
+import { Alert, Box, Typography } from "@mui/material";
 import FormRoutePage, { isSectionVisible } from "../app/RoutePage";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import ApplicantSection from "../components/forms/ApplicantSection";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
-import { SECTION_SURFACE_BG } from "../app/theme";
 import ConditionalGroup from "../components/forms/ConditionalGroup";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import DynamicList from "../components/forms/DynamicList";
 import SectionHeader from "../components/forms/SectionHeader";
+import PhysicianInformation from "../components/forms/PhysicianInformation.tsx";
 import type { FieldDefinition } from "../config/fields/types";
 
 // Layout groupings — fields that render side-by-side in grids
@@ -139,7 +139,6 @@ function normalizeApplicantId(rawApplicantId: string) {
 }
 
 export default function Profile() {
-  const [showPhysician, setShowPhysician] = useState(false);
   const coverages = useMemo(() => getActiveClientCoverages(), []);
 
   return (
@@ -202,35 +201,53 @@ export default function Profile() {
         const selfHasDisability = hasCoverage("member", "DI");
         const spouseHasLife = hasCoverage("spouse", "LI");
         const spouseHasDisability = hasCoverage("spouse", "DI");
-        const showFinancial =
-          selfHasLife ||
-          selfHasDisability ||
-          spouseHasLife ||
-          spouseHasDisability;
+
+        const visibleSectionIds = new Set(
+          pageSections
+            .filter((section) => isSectionVisible(section, watchedValues))
+            .map((section) => section.id),
+        );
+
+        const selfSectionOrder = [
+          "profilePersonalSelf",
+          "profilePersonalSelfPhysician",
+          "profileFinancialSelf",
+        ] as const;
+        const firstSelfSectionId = selfSectionOrder.find((id) =>
+          visibleSectionIds.has(id),
+        );
+
+        const spouseSectionOrder = [
+          "profilePersonalSpouse",
+          "profilePersonalSpousePhysician",
+          "profileFinancialSpouse",
+        ] as const;
+        const firstSpouseSectionId = spouseSectionOrder.find((id) =>
+          visibleSectionIds.has(id),
+        );
 
         return (
           <>
             {pageSections.map((section) => {
               if (!isSectionVisible(section, watchedValues)) return null;
 
-              // --- Personal self section ---
               if (section.id === "profilePersonalSelf") {
                 return (
                   <div key={section.id}>
-                    <SectionHeader
-                      label={section.description ?? ""}
-                      chipVariant="outlined"
-                      chipColor="default"
-                      size="small"
-                      sx={{ mb: 1 }}
-                    />
                     <ApplicantSection
                       applicant="self"
-                      showLabel={shouldShowApplicantLabel(
-                        "self",
-                        watchedValues,
-                      )}
+                      showLabel={
+                        section.id === firstSelfSectionId &&
+                        shouldShowApplicantLabel("self", watchedValues)
+                      }
                     >
+                      <SectionHeader
+                        label={section.description ?? "Personal information"}
+                        chipVariant="outlined"
+                        chipColor="default"
+                        size="small"
+                        sx={{ mb: 1 }}
+                      />
                       {renderPersonalSelfFields(
                         section.fieldIds,
                         allFields,
@@ -243,169 +260,55 @@ export default function Profile() {
                 );
               }
 
-              // --- Personal self conditional sections (rendered as sub-questions) ---
               if (
                 section.id === "profilePersonalSelfDriversLicense" ||
                 section.id === "profilePersonalSelfOutsideUs" ||
                 section.id === "profilePersonalSelfTravelOutsideUs"
               ) {
-                return (
-                  <ConditionalGroup key={section.id}>
-                    {section.fieldIds.map((fieldId: string) => {
-                      const field = allFields.find(
-                        (f: any) => f.id === fieldId,
-                      );
-                      if (!field) return null;
-                      return (
-                        <FieldRenderer
-                          key={field.id}
-                          field={field}
-                          control={control}
-                          errors={errors}
-                        />
-                      );
-                    })}
-                  </ConditionalGroup>
-                );
+                return null;
               }
 
-              // --- Physician section (self) ---
               if (section.id === "profilePersonalSelfPhysician") {
                 return (
                   <div key={section.id}>
-                    {showPhysician ? (
-                      <Box
-                        sx={{
-                          backgroundColor: SECTION_SURFACE_BG,
-                          borderRadius: 1.5,
-                          px: { xs: 2, sm: 2.5 },
-                          py: 1.5,
-                          mt: 1,
-                        }}
-                      >
-                        {renderPhysicianFields(
-                          section.fieldIds,
-                          allFields,
-                          control,
-                          errors,
-                          physicianNameRow,
-                          physicianStreetRow,
-                          physicianCityStateZipRow,
-                        )}
-                      </Box>
-                    ) : (
-                      <Button
-                        variant="text"
-                        size="small"
-                        onClick={() => setShowPhysician(true)}
-                        sx={{
-                          alignSelf: "flex-start",
-                          mt: 1,
-                          textTransform: "none",
-                        }}
-                      >
-                        + Add physician information (optional)
-                      </Button>
-                    )}
-                  </div>
-                );
-              }
-
-              // --- Personal spouse section ---
-              if (section.id === "profilePersonalSpouse") {
-                return (
-                  <div key={section.id}>
                     <ApplicantSection
-                      applicant="spouse"
-                      showLabel={shouldShowApplicantLabel(
-                        "spouse",
-                        watchedValues,
-                      )}
+                      applicant="self"
+                      showLabel={
+                        section.id === firstSelfSectionId &&
+                        shouldShowApplicantLabel("self", watchedValues)
+                      }
                     >
-                      {renderPersonalSpouseFields(
-                        section.fieldIds,
-                        allFields,
-                        control,
-                        errors,
-                        watchedValues,
-                      )}
+                      <PhysicianInformation
+                        fieldIds={section.fieldIds}
+                        allFields={allFields}
+                        control={control}
+                        errors={errors}
+                        nameRow={physicianNameRow}
+                        streetRow={physicianStreetRow}
+                        cityStateZipRow={physicianCityStateZipRow}
+                      />
                     </ApplicantSection>
                   </div>
                 );
               }
 
-              // --- Spouse conditional sections ---
-              if (
-                section.id === "profilePersonalSpouseDriversLicense" ||
-                section.id === "profilePersonalSpouseOutsideUs" ||
-                section.id === "profilePersonalSpouseTravelOutsideUs"
-              ) {
-                return (
-                  <ConditionalGroup key={section.id}>
-                    {section.fieldIds.map((fieldId: string) => {
-                      const field = allFields.find(
-                        (f: any) => f.id === fieldId,
-                      );
-                      if (!field) return null;
-                      return (
-                        <FieldRenderer
-                          key={field.id}
-                          field={field}
-                          control={control}
-                          errors={errors}
-                        />
-                      );
-                    })}
-                  </ConditionalGroup>
-                );
-              }
-
-              // --- Spouse physician section ---
-              if (section.id === "profilePersonalSpousePhysician") {
-                return (
-                  <div key={section.id}>
-                    <Box
-                      sx={{
-                        backgroundColor: SECTION_SURFACE_BG,
-                        borderRadius: 1.5,
-                        px: { xs: 2, sm: 2.5 },
-                        py: 1.5,
-                        mt: 1,
-                      }}
-                    >
-                      {renderPhysicianFields(
-                        section.fieldIds,
-                        allFields,
-                        control,
-                        errors,
-                        spousePhysicianNameRow,
-                        spousePhysicianStreetRow,
-                        spousePhysicianCityStateZipRow,
-                      )}
-                    </Box>
-                  </div>
-                );
-              }
-
-              // --- Financial self section ---
               if (section.id === "profileFinancialSelf") {
-                if (!showFinancial) return null;
                 return (
                   <div key={section.id}>
-                    <SectionHeader
-                      label={section.description ?? ""}
-                      chipVariant="outlined"
-                      chipColor="default"
-                      size="small"
-                      sx={{ mb: 1 }}
-                    />
                     <ApplicantSection
                       applicant="self"
-                      showLabel={shouldShowApplicantLabel(
-                        "self",
-                        watchedValues,
-                      )}
+                      showLabel={
+                        section.id === firstSelfSectionId &&
+                        shouldShowApplicantLabel("self", watchedValues)
+                      }
                     >
+                      <SectionHeader
+                        label={section.description ?? "Financial information"}
+                        chipVariant="outlined"
+                        chipColor="default"
+                        size="small"
+                        sx={{ mb: 1 }}
+                      />
                       {renderFinancialFields(
                         "self",
                         section.fieldIds,
@@ -421,18 +324,84 @@ export default function Profile() {
                 );
               }
 
-              // --- Financial spouse section ---
-              if (section.id === "profileFinancialSpouse") {
-                if (!showFinancial) return null;
+              if (section.id === "profilePersonalSpouse") {
                 return (
                   <div key={section.id}>
                     <ApplicantSection
                       applicant="spouse"
-                      showLabel={shouldShowApplicantLabel(
-                        "spouse",
+                      showLabel={
+                        section.id === firstSpouseSectionId &&
+                        shouldShowApplicantLabel("spouse", watchedValues)
+                      }
+                    >
+                      <SectionHeader
+                        label={section.description ?? "Personal information"}
+                        chipVariant="outlined"
+                        chipColor="default"
+                        size="small"
+                        sx={{ mb: 1 }}
+                      />
+                      {renderPersonalSpouseFields(
+                        section.fieldIds,
+                        allFields,
+                        control,
+                        errors,
                         watchedValues,
                       )}
+                    </ApplicantSection>
+                  </div>
+                );
+              }
+
+              if (
+                section.id === "profilePersonalSpouseDriversLicense" ||
+                section.id === "profilePersonalSpouseOutsideUs" ||
+                section.id === "profilePersonalSpouseTravelOutsideUs"
+              ) {
+                return null;
+              }
+
+              if (section.id === "profilePersonalSpousePhysician") {
+                return (
+                  <div key={section.id}>
+                    <ApplicantSection
+                      applicant="spouse"
+                      showLabel={
+                        section.id === firstSpouseSectionId &&
+                        shouldShowApplicantLabel("spouse", watchedValues)
+                      }
                     >
+                      <PhysicianInformation
+                        fieldIds={section.fieldIds}
+                        allFields={allFields}
+                        control={control}
+                        errors={errors}
+                        nameRow={spousePhysicianNameRow}
+                        streetRow={spousePhysicianStreetRow}
+                        cityStateZipRow={spousePhysicianCityStateZipRow}
+                      />
+                    </ApplicantSection>
+                  </div>
+                );
+              }
+
+              if (section.id === "profileFinancialSpouse") {
+                return (
+                  <div key={section.id}>
+                    <ApplicantSection
+                      applicant="spouse"
+                      showLabel={
+                        section.id === firstSpouseSectionId &&
+                        shouldShowApplicantLabel("spouse", watchedValues)
+                      }
+                    >
+                      <SectionHeader
+                        label={section.description ?? "Financial information"}
+                        chipVariant="outlined"
+                        chipColor="default"
+                        size="small"
+                        sx={{ mb: 1 }}
+                      />
                       {renderFinancialFields(
                         "spouse",
                         section.fieldIds,
@@ -448,11 +417,10 @@ export default function Profile() {
                 );
               }
 
-              // Default: render fields in section
               return (
                 <div key={section.id}>
                   {section.fieldIds.map((fieldId: string) => {
-                    const field = allFields.find((f: any) => f.id === fieldId);
+                    const field = allFields.find((f) => f.id === fieldId);
                     if (!field) return null;
                     return (
                       <FieldRenderer
@@ -477,206 +445,136 @@ export default function Profile() {
 
 function renderPersonalSelfFields(
   fieldIds: string[],
-  allFields: any[],
-  control: any,
-  errors: any,
-  _watchedValues: any,
+  allFields: FieldDefinition[],
+  control: unknown,
+  errors: unknown,
+  watchedValues: Record<string, unknown>,
 ) {
+  const questionFieldIds = new Set([
+    "has-drivers-license",
+    "intend-live-outside-us",
+    "travel-outside-us-six-months",
+  ]);
+
+  function renderField(fieldId: string, margin: "none" | "normal" = "normal") {
+    const field = allFields.find((f) => f.id === fieldId);
+    if (!field) return null;
+    return (
+      <FieldRenderer
+        key={field.id}
+        field={field}
+        control={control as never}
+        errors={errors as never}
+        margin={margin}
+      />
+    );
+  }
+
   return (
     <>
       {/* Height fields side-by-side */}
       <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
         {fieldIds
           .filter((id) => heightFields.has(id))
-          .map((fieldId) => {
-            const field = allFields.find((f: any) => f.id === fieldId);
-            if (!field) return null;
-            return (
-              <FieldRenderer
-                key={field.id}
-                field={field}
-                control={control}
-                errors={errors}
-                margin="none"
-              />
-            );
-          })}
+          .map((fieldId) => renderField(fieldId, "none"))}
       </Box>
 
       {/* Remaining fields rendered normally */}
       {fieldIds
-        .filter((id) => !heightFields.has(id))
-        .map((fieldId) => {
-          const field = allFields.find((f: any) => f.id === fieldId);
-          if (!field) return null;
-          return (
-            <FieldRenderer
-              key={field.id}
-              field={field}
-              control={control}
-              errors={errors}
-            />
-          );
-        })}
+        .filter((id) => !heightFields.has(id) && !questionFieldIds.has(id))
+        .map((fieldId) => renderField(fieldId))}
+
+      {renderField("has-drivers-license")}
+      {watchedValues["has-drivers-license"] === "yes" && (
+        <ConditionalGroup>
+          {renderField("drivers-license-number")}
+          {renderField("drivers-license-state")}
+        </ConditionalGroup>
+      )}
+
+      {renderField("intend-live-outside-us")}
+      {watchedValues["intend-live-outside-us"] === "yes" && (
+        <ConditionalGroup>
+          {renderField("outside-us-months")}
+          {renderField("outside-us-country")}
+        </ConditionalGroup>
+      )}
+
+      {renderField("travel-outside-us-six-months")}
+      {watchedValues["travel-outside-us-six-months"] === "yes" && (
+        <ConditionalGroup>
+          {renderField("travel-outside-us-country")}
+        </ConditionalGroup>
+      )}
     </>
   );
 }
 
 function renderPersonalSpouseFields(
   fieldIds: string[],
-  allFields: any[],
-  control: any,
-  errors: any,
-  _watchedValues: any,
+  allFields: FieldDefinition[],
+  control: unknown,
+  errors: unknown,
+  watchedValues: Record<string, unknown>,
 ) {
+  const questionFieldIds = new Set([
+    "spouse-has-drivers-license",
+    "spouse-intend-live-outside-us",
+    "spouse-travel-outside-us-six-months",
+  ]);
+
+  function renderField(fieldId: string, margin: "none" | "normal" = "normal") {
+    const field = allFields.find((f) => f.id === fieldId);
+    if (!field) return null;
+    return (
+      <FieldRenderer
+        key={field.id}
+        field={field}
+        control={control as never}
+        errors={errors as never}
+        margin={margin}
+      />
+    );
+  }
+
   return (
     <>
       {/* Height fields side-by-side */}
       <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
         {fieldIds
           .filter((id) => spouseHeightFields.has(id))
-          .map((fieldId) => {
-            const field = allFields.find((f: any) => f.id === fieldId);
-            if (!field) return null;
-            return (
-              <FieldRenderer
-                key={field.id}
-                field={field}
-                control={control}
-                errors={errors}
-                margin="none"
-              />
-            );
-          })}
+          .map((fieldId) => renderField(fieldId, "none"))}
       </Box>
 
       {/* Remaining fields */}
       {fieldIds
-        .filter((id) => !spouseHeightFields.has(id))
-        .map((fieldId) => {
-          const field = allFields.find((f: any) => f.id === fieldId);
-          if (!field) return null;
-          return (
-            <FieldRenderer
-              key={field.id}
-              field={field}
-              control={control}
-              errors={errors}
-            />
-          );
-        })}
-    </>
-  );
-}
+        .filter(
+          (id) => !spouseHeightFields.has(id) && !questionFieldIds.has(id),
+        )
+        .map((fieldId) => renderField(fieldId))}
 
-function renderPhysicianFields(
-  fieldIds: string[],
-  allFields: any[],
-  control: any,
-  errors: any,
-  nameRow: Set<string>,
-  streetRow: Set<string>,
-  cityStateZipRow: Set<string>,
-) {
-  const phoneField = fieldIds.find(
-    (id) => id.includes("physician-phone") || id.includes("-phone"),
-  );
-  const facilityField = fieldIds.find((id) => id.includes("facility-name"));
+      {renderField("spouse-has-drivers-license")}
+      {watchedValues["spouse-has-drivers-license"] === "yes" && (
+        <ConditionalGroup>
+          {renderField("spouse-drivers-license-number")}
+          {renderField("spouse-drivers-license-state")}
+        </ConditionalGroup>
+      )}
 
-  return (
-    <>
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-          gap: { xs: 0, sm: 2 },
-        }}
-      >
-        {fieldIds
-          .filter((id) => nameRow.has(id))
-          .map((fieldId) => {
-            const field = allFields.find((f: any) => f.id === fieldId);
-            if (!field) return null;
-            return (
-              <FieldRenderer
-                key={field.id}
-                field={field}
-                control={control}
-                errors={errors}
-              />
-            );
-          })}
-      </Box>
-      {phoneField &&
-        (() => {
-          const field = allFields.find((f: any) => f.id === phoneField);
-          if (!field) return null;
-          return (
-            <FieldRenderer
-              key={field.id}
-              field={field}
-              control={control}
-              errors={errors}
-            />
-          );
-        })()}
-      {facilityField &&
-        (() => {
-          const field = allFields.find((f: any) => f.id === facilityField);
-          if (!field) return null;
-          return (
-            <FieldRenderer
-              key={field.id}
-              field={field}
-              control={control}
-              errors={errors}
-            />
-          );
-        })()}
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-          gap: { xs: 0, sm: 2 },
-        }}
-      >
-        {fieldIds
-          .filter((id) => streetRow.has(id))
-          .map((fieldId) => {
-            const field = allFields.find((f: any) => f.id === fieldId);
-            if (!field) return null;
-            return (
-              <FieldRenderer
-                key={field.id}
-                field={field}
-                control={control}
-                errors={errors}
-              />
-            );
-          })}
-      </Box>
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr 1fr" },
-          gap: { xs: 0, sm: 2 },
-        }}
-      >
-        {fieldIds
-          .filter((id) => cityStateZipRow.has(id))
-          .map((fieldId) => {
-            const field = allFields.find((f: any) => f.id === fieldId);
-            if (!field) return null;
-            return (
-              <FieldRenderer
-                key={field.id}
-                field={field}
-                control={control}
-                errors={errors}
-              />
-            );
-          })}
-      </Box>
+      {renderField("spouse-intend-live-outside-us")}
+      {watchedValues["spouse-intend-live-outside-us"] === "yes" && (
+        <ConditionalGroup>
+          {renderField("spouse-outside-us-months")}
+          {renderField("spouse-outside-us-country")}
+        </ConditionalGroup>
+      )}
+
+      {renderField("spouse-travel-outside-us-six-months")}
+      {watchedValues["spouse-travel-outside-us-six-months"] === "yes" && (
+        <ConditionalGroup>
+          {renderField("spouse-travel-outside-us-country")}
+        </ConditionalGroup>
+      )}
     </>
   );
 }
@@ -684,10 +582,10 @@ function renderPhysicianFields(
 function renderFinancialFields(
   applicant: "self" | "spouse",
   fieldIds: string[],
-  allFields: any[],
-  control: any,
-  errors: any,
-  watchedValues: any,
+  allFields: FieldDefinition[],
+  control: unknown,
+  errors: unknown,
+  watchedValues: Record<string, unknown>,
   hasLife: boolean,
   hasDisability: boolean,
 ) {
@@ -719,14 +617,14 @@ function renderFinancialFields(
     : "spouseDisabilityCompanies";
 
   function renderField(fieldId: string) {
-    const field = allFields.find((f: any) => f.id === fieldId);
+    const field = allFields.find((f) => f.id === fieldId);
     if (!field) return null;
     return (
       <FieldRenderer
         key={field.id}
         field={field}
-        control={control}
-        errors={errors}
+        control={control as never}
+        errors={errors as never}
       />
     );
   }
@@ -776,7 +674,7 @@ function renderFinancialFields(
             <ConditionalGroup>
               <Box sx={{ mt: 1, mb: 2 }}>
                 <DynamicList
-                  control={control}
+                  control={control as never}
                   name={disabilityListName}
                   label="Company"
                   mapping={disabilityCompanyMapping}

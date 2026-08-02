@@ -464,16 +464,28 @@ export default function QuoteModal({
                     >
                       <Box
                         className="SelectionGroup-icon"
-                        sx={{ display: "flex", alignItems: "center", flexShrink: 0 }}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          flexShrink: 0,
+                        }}
                       >
                         <Icon sx={{ fontSize: "1.25rem" }} />
                       </Box>
                       <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
-                        <Box component="span" className="SelectionGroup-label" sx={{ fontSize: "0.875rem" }}>
+                        <Box
+                          component="span"
+                          className="SelectionGroup-label"
+                          sx={{ fontSize: "0.875rem" }}
+                        >
                           {category.label}
                         </Box>
                         {productNames && (
-                          <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.75rem" }}>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ fontSize: "0.75rem" }}
+                          >
                             {productNames}
                           </Typography>
                         )}
@@ -511,7 +523,11 @@ export default function QuoteModal({
                   >
                     <ToggleButton
                       value="male"
-                      sx={{ textTransform: "none", gap: 1, justifyContent: "flex-start" }}
+                      sx={{
+                        textTransform: "none",
+                        gap: 1,
+                        justifyContent: "flex-start",
+                      }}
                     >
                       <Radio
                         checked={gender === "male"}
@@ -522,7 +538,11 @@ export default function QuoteModal({
                     </ToggleButton>
                     <ToggleButton
                       value="female"
-                      sx={{ textTransform: "none", gap: 1, justifyContent: "flex-start" }}
+                      sx={{
+                        textTransform: "none",
+                        gap: 1,
+                        justifyContent: "flex-start",
+                      }}
                     >
                       <Radio
                         checked={gender === "female"}
@@ -557,7 +577,11 @@ export default function QuoteModal({
                   >
                     <ToggleButton
                       value="yes"
-                      sx={{ textTransform: "none", gap: 1, justifyContent: "flex-start" }}
+                      sx={{
+                        textTransform: "none",
+                        gap: 1,
+                        justifyContent: "flex-start",
+                      }}
                     >
                       <Radio
                         checked={smoker === "yes"}
@@ -568,7 +592,11 @@ export default function QuoteModal({
                     </ToggleButton>
                     <ToggleButton
                       value="no"
-                      sx={{ textTransform: "none", gap: 1, justifyContent: "flex-start" }}
+                      sx={{
+                        textTransform: "none",
+                        gap: 1,
+                        justifyContent: "flex-start",
+                      }}
                     >
                       <Radio
                         checked={smoker === "no"}
@@ -1068,6 +1096,7 @@ export default function QuoteModal({
                   <Button
                     variant="contained"
                     color="primary"
+                    size="large"
                     fullWidth
                     endIcon={<ArrowRightAltRoundedIcon />}
                     onClick={handleApplyForCoverage}

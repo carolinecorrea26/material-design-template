@@ -26,11 +26,12 @@ export default function PageActions({
   nextLabel = "Next",
 }: PageActionsProps) {
   return (
-    <Box sx={{ mt: "1rem", mb: "1rem" }}>
+    <Box sx={{ mt: "2rem", mb: "1rem" }}>
       <Button
         type="submit"
         form={formId}
         variant="contained"
+        size="large"
         fullWidth
         disabled={isTransitioning || disabled}
         endIcon={!isTransitioning ? <ArrowForwardRoundedIcon /> : undefined}

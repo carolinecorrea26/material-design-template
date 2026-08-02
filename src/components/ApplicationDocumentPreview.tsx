@@ -4,6 +4,7 @@ import { getActiveClient } from "../config/client/getActiveClient";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { fieldCatalog } from "../config/fields";
 import type { FieldDefinition, FieldId } from "../config/fields/types";
+import type { CoverageApplicantId } from "../config/coverages/types";
 import { pageSections } from "../config/pageSections/pageSections";
 import { isSectionVisible } from "../app/RoutePage";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
@@ -12,6 +13,7 @@ import type { PageId } from "../types";
 type DisplayEntry = {
   label: string;
   value: string;
+  fieldId?: string;
 };
 
 type DisplayGroup = {
@@ -89,6 +91,39 @@ function resolveOptionLabel(field: FieldDefinition | undefined, value: string) {
   );
 }
 
+function toTitleCase(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/\b([a-z])/g, (letter) => letter.toUpperCase());
+}
+
+function normalizeDisplayCasing(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed) return trimmed;
+
+  // Preserve emails, links, ids, and already-cased strings.
+  if (
+    trimmed.includes("@") ||
+    /https?:\/\//i.test(trimmed) ||
+    trimmed.includes("www.")
+  ) {
+    return trimmed;
+  }
+
+  if (!/[a-z]/.test(trimmed) || /[A-Z]/.test(trimmed)) {
+    return trimmed;
+  }
+
+  return toTitleCase(trimmed);
+}
+
+function hasFilledValue(rawValue: unknown) {
+  if (rawValue == null) return false;
+  if (typeof rawValue === "string") return rawValue.trim().length > 0;
+  if (Array.isArray(rawValue)) return rawValue.length > 0;
+  return true;
+}
+
 function formatFieldValue(fieldId: string, rawValue: unknown) {
   if (rawValue == null || rawValue === "") {
     return PLACEHOLDER;
@@ -106,7 +141,9 @@ function formatFieldValue(fieldId: string, rawValue: unknown) {
     }
 
     return rawValue
-      .map((entry) => resolveOptionLabel(field, String(entry)))
+      .map((entry) =>
+        normalizeDisplayCasing(resolveOptionLabel(field, String(entry))),
+      )
       .join(", ");
   }
 
@@ -123,7 +160,7 @@ function formatFieldValue(fieldId: string, rawValue: unknown) {
       return formatCurrency(rawValue);
     }
 
-    return resolveOptionLabel(field, rawValue);
+    return normalizeDisplayCasing(resolveOptionLabel(field, rawValue));
   }
 
   return String(rawValue);
@@ -197,10 +234,160 @@ function getApplicantLabel(applicant: string) {
   return formatLabel(applicant);
 }
 
+function resolveProfileGroupTitle(sectionId: string) {
+  if (sectionId.includes("Physician")) {
+    return "Physician information";
+  }
+
+  if (sectionId.includes("Financial")) {
+    return "Financial information";
+  }
+
+  if (sectionId.includes("DriversLicense")) {
+    return "Driver's license";
+  }
+
+  if (sectionId.includes("TravelOutsideUs")) {
+    return "Outside U.S. travel";
+  }
+
+  if (sectionId.includes("OutsideUs")) {
+    return "Outside U.S. residence";
+  }
+
+  if (sectionId.includes("Personal")) {
+    return "Personal information";
+  }
+
+  return undefined;
+}
+
+function resolveSectionGroupTitle(
+  pageId: PageId,
+  section: {
+    id: string;
+    title?: string;
+    description?: string;
+  },
+) {
+  if (section.title) {
+    return section.title;
+  }
+
+  if (section.description) {
+    return section.description;
+  }
+
+  if (pageId === "profile") {
+    return resolveProfileGroupTitle(section.id);
+  }
+
+  return undefined;
+}
+
+const previewLabelOverrides: Record<string, string> = {
+  "outside-us-country": "Country (Residence outside U.S.)",
+  "travel-outside-us-country": "Country (Travel destination)",
+  "spouse-outside-us-country": "Country (Spouse residence outside U.S.)",
+  "spouse-travel-outside-us-country": "Country (Spouse travel destination)",
+};
+
+function dedupeAndFormatLabels(entries: DisplayEntry[]) {
+  const labelCounts = new Map<string, number>();
+  for (const entry of entries) {
+    labelCounts.set(entry.label, (labelCounts.get(entry.label) ?? 0) + 1);
+  }
+
+  const usedLabels = new Map<string, number>();
+
+  return entries.map((entry) => {
+    let label = entry.label;
+    const isDuplicated = (labelCounts.get(entry.label) ?? 0) > 1;
+
+    if (isDuplicated && entry.fieldId) {
+      label =
+        previewLabelOverrides[entry.fieldId] ?? formatLabel(entry.fieldId);
+    }
+
+    const nextUse = (usedLabels.get(label) ?? 0) + 1;
+    usedLabels.set(label, nextUse);
+    if (nextUse > 1) {
+      label = `${label} (${nextUse})`;
+    }
+
+    return {
+      ...entry,
+      label,
+    };
+  });
+}
+
+function formatCoverageAmount(value: unknown) {
+  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) {
+    return null;
+  }
+
+  return value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+}
+
+function getRecordValue<T>(
+  value: unknown,
+  validator: (candidate: unknown) => candidate is T,
+) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return {} as Record<string, T>;
+  }
+
+  const source = value as Record<string, unknown>;
+  const out: Record<string, T> = {};
+
+  for (const [key, candidate] of Object.entries(source)) {
+    if (validator(candidate)) {
+      out[key] = candidate;
+    }
+  }
+
+  return out;
+}
+
+function getVisibleCoverageApplicants(
+  coverage: { applicants: CoverageApplicantId[]; id: string },
+  productApplicants: Record<string, CoverageApplicantId[]>,
+  selectedDependents: CoverageApplicantId[],
+) {
+  if (Object.prototype.hasOwnProperty.call(productApplicants, coverage.id)) {
+    const selected = Array.isArray(productApplicants[coverage.id])
+      ? productApplicants[coverage.id]
+      : [];
+
+    return coverage.applicants.filter((applicant) =>
+      selected.includes(applicant),
+    );
+  }
+
+  if (selectedDependents.length > 0) {
+    return coverage.applicants.filter((applicant) => {
+      if (applicant === "member") return true;
+      return selectedDependents.includes(applicant);
+    });
+  }
+
+  return coverage.applicants.includes("member") ? ["member"] : [];
+}
+
+function isNonNullable<T>(value: T | null | undefined): value is T {
+  return value != null;
+}
+
 function buildSectionEntries(values: ApplicationFormValues, pageId: PageId) {
   const sections = pageSections[pageId] ?? [];
 
-  return sections
+  const groups = sections
     .filter((section) => isSectionVisible(section, values))
     .map((section) => {
       const processed = new Set<string>();
@@ -211,6 +398,7 @@ function buildSectionEntries(values: ApplicationFormValues, pageId: PageId) {
           continue;
         }
 
+        const rawValue = values[fieldId];
         const groupKey = getNameGroupKey(fieldId);
         if (groupKey) {
           // Only emit the combined entry once — when we hit the first field in the group
@@ -222,10 +410,14 @@ function buildSectionEntries(values: ApplicationFormValues, pageId: PageId) {
               .some((id) => section.fieldIds.includes(id as FieldId));
 
           if (isFirstInGroup) {
-            entries.push({
-              label: "Name",
-              value: buildNameValue(groupKey, values),
-            });
+            const nameValue = buildNameValue(groupKey, values);
+            if (nameValue !== PLACEHOLDER) {
+              entries.push({
+                label: "Name",
+                value: nameValue,
+                fieldId,
+              });
+            }
           }
 
           // Mark all group fields as processed
@@ -235,47 +427,210 @@ function buildSectionEntries(values: ApplicationFormValues, pageId: PageId) {
           continue;
         }
 
+        if (!hasFilledValue(rawValue)) {
+          processed.add(fieldId);
+          continue;
+        }
+
         const field = fieldCatalog[fieldId as keyof typeof fieldCatalog];
+        const value = formatFieldValue(fieldId, rawValue);
+        if (value === PLACEHOLDER) {
+          processed.add(fieldId);
+          continue;
+        }
+
         entries.push({
           label: field?.label ?? formatLabel(fieldId),
-          value: formatFieldValue(fieldId, values[fieldId]),
+          value,
+          fieldId,
         });
         processed.add(fieldId);
       }
 
+      const sectionEntries = dedupeAndFormatLabels(entries);
+      if (sectionEntries.length === 0) {
+        return null;
+      }
+
       return {
-        title: section.title ?? section.description,
-        entries,
+        title: resolveSectionGroupTitle(pageId, section),
+        entries: sectionEntries,
       } satisfies DisplayGroup;
-    });
+    })
+    .filter(isNonNullable);
+
+  return groups;
 }
 
 function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
   const selectedIds = Array.isArray(values.coverageSelections)
     ? values.coverageSelections.map(String)
     : [];
+
+  const selectedDependents: CoverageApplicantId[] = Array.isArray(
+    values.dependents,
+  )
+    ? values.dependents.filter(
+        (applicant): applicant is CoverageApplicantId =>
+          applicant === "spouse" || applicant === "child",
+      )
+    : [];
+
+  const productApplicants = getRecordValue<CoverageApplicantId[]>(
+    values.productApplicants,
+    (candidate): candidate is CoverageApplicantId[] =>
+      Array.isArray(candidate) &&
+      candidate.every(
+        (item) => item === "member" || item === "spouse" || item === "child",
+      ),
+  );
+
+  const coverageAmounts = getRecordValue<number>(
+    values.coverageAmounts,
+    (candidate): candidate is number =>
+      typeof candidate === "number" && Number.isFinite(candidate),
+  );
+
+  const coverageRiders = getRecordValue<boolean>(
+    values.coverageRiders,
+    (candidate): candidate is boolean => typeof candidate === "boolean",
+  );
+
+  const coverageRiderAmounts = getRecordValue<number>(
+    values.coverageRiderAmounts,
+    (candidate): candidate is number =>
+      typeof candidate === "number" && Number.isFinite(candidate),
+  );
+
+  const coverageWaitingPeriods = getRecordValue<string>(
+    values.coverageWaitingPeriods,
+    (candidate): candidate is string => typeof candidate === "string",
+  );
+
+  const coverageMaxBenefitPeriods = getRecordValue<string>(
+    values.coverageMaxBenefitPeriods,
+    (candidate): candidate is string => typeof candidate === "string",
+  );
+
   const coverages = getActiveClientCoverages();
-  const coverageNames = selectedIds
-    .map(
-      (coverageId) =>
-        coverages.find((coverage) => coverage.id === coverageId)?.name,
-    )
-    .filter((value): value is string => Boolean(value));
+  const coverageById = new Map(
+    coverages.map((coverage) => [coverage.id, coverage]),
+  );
+
+  const groups = selectedIds
+    .map((coverageId) => {
+      const coverage = coverageById.get(coverageId);
+      if (!coverage) return null;
+
+      const visibleApplicants = getVisibleCoverageApplicants(
+        coverage,
+        productApplicants,
+        selectedDependents,
+      );
+
+      const entries: DisplayEntry[] = [];
+      if (visibleApplicants.length > 0) {
+        entries.push({
+          label: "Applicants",
+          value: visibleApplicants.map(getApplicantLabel).join(", "),
+        });
+      }
+
+      for (const applicant of visibleApplicants) {
+        const amount = formatCoverageAmount(
+          coverageAmounts[`${coverage.id}:${applicant}`],
+        );
+
+        if (amount) {
+          entries.push({
+            label: `${getApplicantLabel(applicant)} amount`,
+            value: amount,
+          });
+        }
+
+        const selectedRiders = (coverage.riders ?? [])
+          .filter(
+            (rider) =>
+              coverageRiders[`${coverage.id}:${rider.id}:${applicant}`],
+          )
+          .map((rider) => {
+            if (!rider.hasAmount) return rider.name;
+            const riderAmount = formatCoverageAmount(
+              coverageRiderAmounts[`${coverage.id}:${rider.id}:${applicant}`],
+            );
+            return riderAmount ? `${rider.name} (${riderAmount})` : rider.name;
+          });
+
+        if (selectedRiders.length > 0) {
+          entries.push({
+            label: `${getApplicantLabel(applicant)} riders`,
+            value: selectedRiders.join(", "),
+          });
+        }
+      }
+
+      if (
+        coverage.waitingPeriodOptions &&
+        coverage.waitingPeriodOptions.length > 0
+      ) {
+        const selectedWaitingPeriod =
+          coverageWaitingPeriods[coverage.id] ??
+          coverage.waitingPeriodOptions[0].value;
+        const waitingPeriodLabel =
+          coverage.waitingPeriodOptions.find(
+            (option) => option.value === selectedWaitingPeriod,
+          )?.label ?? selectedWaitingPeriod;
+        if (waitingPeriodLabel) {
+          entries.push({
+            label: "Waiting period",
+            value: waitingPeriodLabel,
+          });
+        }
+      }
+
+      if (
+        coverage.maxBenefitPeriodOptions &&
+        coverage.maxBenefitPeriodOptions.length > 0
+      ) {
+        const selectedMaxBenefitPeriod =
+          coverageMaxBenefitPeriods[coverage.id] ??
+          coverage.maxBenefitPeriodOptions[0].value;
+        const maxBenefitPeriodLabel =
+          coverage.maxBenefitPeriodOptions.find(
+            (option) => option.value === selectedMaxBenefitPeriod,
+          )?.label ?? selectedMaxBenefitPeriod;
+        if (maxBenefitPeriodLabel) {
+          entries.push({
+            label: "Max benefit period",
+            value: maxBenefitPeriodLabel,
+          });
+        }
+      }
+
+      if (entries.length === 0) {
+        entries.push({
+          label: "Selected",
+          value: "Yes",
+        });
+      }
+
+      return {
+        title: coverage.name,
+        entries,
+      } satisfies DisplayGroup;
+    })
+    .filter(isNonNullable);
 
   return {
     title: "Coverage",
-    groups: [
-      {
-        entries: [
-          {
-            label: "Selected products",
-            value: coverageNames.length
-              ? coverageNames.join(", ")
-              : PLACEHOLDER,
-          },
-        ],
-      },
-    ],
+    groups:
+      groups.length > 0
+        ? groups
+        : [
+            {
+              entries: [{ label: "Selected products", value: PLACEHOLDER }],
+            },
+          ],
   };
 }
 
@@ -471,9 +826,9 @@ export default function ApplicationDocumentPreview({
                         ) : null}
 
                         <Stack spacing={0.75}>
-                          {group.entries.map((entry) => (
+                          {group.entries.map((entry, entryIndex) => (
                             <Stack
-                              key={`${section.title}-${group.title ?? "group"}-${entry.label}`}
+                              key={`${section.title}-${group.title ?? "group"}-${entry.label}-${entryIndex}`}
                               direction={{ xs: "column", sm: "row" }}
                               spacing={0.75}
                               justifyContent="space-between"
