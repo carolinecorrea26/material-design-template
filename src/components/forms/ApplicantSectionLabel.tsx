@@ -31,8 +31,22 @@ export default function ApplicantSectionLabel({
         ...(sx ? (Array.isArray(sx) ? sx : [sx]) : []),
       ]}
     >
-      {Icon && <Icon sx={{ fontSize: "1rem", color: "primary.main" }} />}
-      <Typography sx={{ fontSize: "1rem", fontWeight: 700, lineHeight: 1.4 }}>
+      {Icon && (
+        <Icon
+          sx={{
+            fontSize: "1.25rem",
+            color: "primary.dark",
+            backgroundColor: "background.iconBadge",
+            borderRadius: "9999px",
+            padding: "2px",
+            width: "1.25rem",
+            height: "1.25rem",
+          }}
+        />
+      )}
+      <Typography
+        sx={{ fontSize: "0.875rem", fontWeight: 700, lineHeight: 1.4 }}
+      >
         {label}
       </Typography>
     </Box>

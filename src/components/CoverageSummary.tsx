@@ -21,8 +21,10 @@ import {
   Typography,
 } from "@mui/material";
 import { useApplicationForm } from "../app/ApplicationFormContext";
+import { getActiveClient } from "../config/client/getActiveClient";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
+import { getResolvedApplicantLabels } from "../config/formSectionTitle";
 import type {
   CoverageApplicantId,
   CoverageDefinition,
@@ -40,11 +42,9 @@ type CoverageSummaryProps = {
   source?: "cart-icon" | "coverage-page";
 };
 
-const applicantLabels: Record<CoverageApplicantId, string> = {
-  member: "Member",
-  spouse: "Spouse",
-  child: "Child",
-};
+function getClientApplicantLabels() {
+  return getResolvedApplicantLabels(getActiveClient().applicantLabels);
+}
 
 type ApplicantSummary = {
   applicantId: CoverageApplicantId;
@@ -211,6 +211,7 @@ export default function CoverageSummary({
   source = "cart-icon",
 }: CoverageSummaryProps) {
   const { entries, totalMonthly } = useSummaryData();
+  const applicantLabels = getClientApplicantLabels();
   const { values, setPageValues } = useApplicationForm();
   const navigate = useNavigate();
   const location = useLocation();
@@ -362,7 +363,8 @@ export default function CoverageSummary({
             {groupedByCategory.map(({ category: _cat, items }) =>
               items.map(({ coverage, applicants }) => {
                 const isMemberOnly =
-                  applicants.length === 1 && applicants[0].applicantId === "member";
+                  applicants.length === 1 &&
+                  applicants[0].applicantId === "member";
                 return (
                   <Box
                     key={coverage.id}
@@ -370,20 +372,38 @@ export default function CoverageSummary({
                       border: "1px solid #e6e6e6",
                       borderRadius: "16px",
                       backgroundColor: "#ffffff",
-                      px: 2, pb: 2, pt: 1.5,
+                      px: 2,
+                      pb: 2,
+                      pt: 1.5,
                     }}
                   >
                     <Stack spacing={1}>
-                      <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                      >
                         <Typography variant="subtitle1">
                           {coverage.name}
-                          {coverage.underwritingType === "QD" && <QuickDecisionIndicator />}
+                          {coverage.underwritingType === "QD" && (
+                            <QuickDecisionIndicator />
+                          )}
                         </Typography>
-                        <Stack direction="row" alignItems="center" spacing={0.5}>
+                        <Stack
+                          direction="row"
+                          alignItems="center"
+                          spacing={0.5}
+                        >
                           {(() => {
-                            const productTotal = applicants.reduce((s, a) => s + (a.monthlyEstimate ?? 0), 0);
+                            const productTotal = applicants.reduce(
+                              (s, a) => s + (a.monthlyEstimate ?? 0),
+                              0,
+                            );
                             return productTotal > 0 ? (
-                              <Typography variant="body2" sx={{ fontWeight: 700, whiteSpace: "nowrap" }}>
+                              <Typography
+                                variant="body2"
+                                sx={{ fontWeight: 700, whiteSpace: "nowrap" }}
+                              >
                                 {formatUSD(productTotal)}/mo
                               </Typography>
                             ) : null;
@@ -392,74 +412,128 @@ export default function CoverageSummary({
                             size="small"
                             aria-label={`Remove ${coverage.name}`}
                             onClick={() => setConfirmRemoveId(coverage.id)}
-                            sx={{ color: "text.secondary", "&:hover": { color: "error.main" } }}
+                            sx={{
+                              color: "text.secondary",
+                              "&:hover": { color: "error.main" },
+                            }}
                           >
                             <DeleteOutlineIcon sx={{ fontSize: "1.1rem" }} />
                           </IconButton>
                         </Stack>
                       </Stack>
 
-                      {applicants.map(({ applicantId, amount, riders: selectedRiders, monthlyEstimate }) => {
-                        const hasSelectedAmount = amount != null && amount > 0;
-                        return (
-                          <Box key={applicantId} sx={{ pl: 1 }}>
-                            <Stack spacing={0.5}>
-                              {!isMemberOnly && (
-                                <Typography variant="caption" fontWeight="bold">
-                                  {applicantLabels[applicantId]}
-                                </Typography>
-                              )}
-                              {hasSelectedAmount ? (
-                                <>
-                                  <Typography variant="caption" color="text.secondary">
-                                    Requested: {formatUSD(amount, 0)}
+                      {applicants.map(
+                        ({
+                          applicantId,
+                          amount,
+                          riders: selectedRiders,
+                          monthlyEstimate,
+                        }) => {
+                          const hasSelectedAmount =
+                            amount != null && amount > 0;
+                          return (
+                            <Box key={applicantId} sx={{ pl: 1 }}>
+                              <Stack spacing={0.5}>
+                                {!isMemberOnly && (
+                                  <Typography
+                                    variant="caption"
+                                    fontWeight="bold"
+                                  >
+                                    {applicantLabels[applicantId]}
                                   </Typography>
-                                  {selectedRiders.length > 0 && (
-                                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                                      {selectedRiders.map((rider) => (
-                                        <Chip
-                                          key={rider.name}
-                                          label={rider.amount != null ? `${rider.name}: ${formatUSD(rider.amount, 0)}` : rider.name}
-                                          size="small"
-                                          variant="outlined"
-                                        />
-                                      ))}
-                                    </Box>
-                                  )}
-                                  {monthlyEstimate != null && (
-                                    <Typography variant="caption" color="text.secondary">
-                                      Est. cost<sup>1</sup>: {formatUSD(monthlyEstimate)}
+                                )}
+                                {hasSelectedAmount ? (
+                                  <>
+                                    <Typography
+                                      variant="caption"
+                                      color="text.secondary"
+                                    >
+                                      Requested: {formatUSD(amount, 0)}
                                     </Typography>
-                                  )}
-                                </>
-                              ) : (
-                                <Box sx={{
-                                  display: "flex", alignItems: "center", gap: 0.75, mt: 0.5,
-                                  px: 1.25, py: 1, borderRadius: 2, bgcolor: "#f8fafc",
-                                  border: "1px dashed", borderColor: "divider", color: "text.secondary",
-                                }}>
-                                  <InfoOutlinedIcon sx={{ fontSize: 17, color: "text.disabled" }} />
-                                  <Typography variant="caption" fontWeight="bold">
-                                    Cost calculated after amount selection
-                                  </Typography>
-                                </Box>
-                              )}
-                            </Stack>
-                          </Box>
-                        );
-                      })}
+                                    {selectedRiders.length > 0 && (
+                                      <Box
+                                        sx={{
+                                          display: "flex",
+                                          flexWrap: "wrap",
+                                          gap: 0.5,
+                                        }}
+                                      >
+                                        {selectedRiders.map((rider) => (
+                                          <Chip
+                                            key={rider.name}
+                                            label={
+                                              rider.amount != null
+                                                ? `${rider.name}: ${formatUSD(rider.amount, 0)}`
+                                                : rider.name
+                                            }
+                                            size="small"
+                                            variant="outlined"
+                                          />
+                                        ))}
+                                      </Box>
+                                    )}
+                                    {monthlyEstimate != null && (
+                                      <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                      >
+                                        Est. cost<sup>1</sup>:{" "}
+                                        {formatUSD(monthlyEstimate)}
+                                      </Typography>
+                                    )}
+                                  </>
+                                ) : (
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: 0.75,
+                                      mt: 0.5,
+                                      px: 1.25,
+                                      py: 1,
+                                      borderRadius: 2,
+                                      bgcolor: "#f8fafc",
+                                      border: "1px dashed",
+                                      borderColor: "divider",
+                                      color: "text.secondary",
+                                    }}
+                                  >
+                                    <InfoOutlinedIcon
+                                      sx={{
+                                        fontSize: 17,
+                                        color: "text.disabled",
+                                      }}
+                                    />
+                                    <Typography
+                                      variant="caption"
+                                      fontWeight="bold"
+                                    >
+                                      Cost calculated after amount selection
+                                    </Typography>
+                                  </Box>
+                                )}
+                              </Stack>
+                            </Box>
+                          );
+                        },
+                      )}
                     </Stack>
                   </Box>
                 );
-              })
+              }),
             )}
 
             {ineligibleProducts.length > 0 && (
-              <Alert severity="warning" variant="outlined" sx={{ backgroundColor: "rgba(255, 152, 0, 0.04)" }}>
+              <Alert
+                severity="warning"
+                variant="outlined"
+                sx={{ backgroundColor: "rgba(255, 152, 0, 0.04)" }}
+              >
                 <Typography variant="subtitle2">Eligibility concern</Typography>
                 <Typography variant="body2" sx={{ mt: 0.5 }}>
                   Based on your answers, you may not be eligible for:{" "}
-                  {ineligibleProducts.join(", ")}. You may still continue with your other selected coverage.
+                  {ineligibleProducts.join(", ")}. You may still continue with
+                  your other selected coverage.
                 </Typography>
               </Alert>
             )}
@@ -471,13 +545,22 @@ export default function CoverageSummary({
                     .map(({ coverage, applicants }) => ({
                       id: coverage.id,
                       name: coverage.name,
-                      amount: applicants.reduce((s, a) => s + (a.monthlyEstimate ?? 0), 0),
+                      amount: applicants.reduce(
+                        (s, a) => s + (a.monthlyEstimate ?? 0),
+                        0,
+                      ),
                     }))
                     .filter((item) => item.amount > 0),
                 )}
                 total={totalMonthly}
                 totalSuffix="/mo"
-                disclaimer={<><sup>1</sup> Quoted cost is the best rate available. Final cost may vary based on health status, gender, and tobacco/nicotine use.</>}
+                disclaimer={
+                  <>
+                    <sup>1</sup> Quoted cost is the best rate available. Final
+                    cost may vary based on health status, gender, and
+                    tobacco/nicotine use.
+                  </>
+                }
               />
             )}
           </Stack>

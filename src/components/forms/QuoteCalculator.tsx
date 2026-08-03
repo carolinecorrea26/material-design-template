@@ -29,7 +29,10 @@ import FeaturedBadge from "../ui/FeaturedBadge";
 import ProductCardSurface from "../ui/ProductCard";
 import QuickDecisionIndicator from "../ui/QuickDecisionIndicator";
 import RateFrequencyToggle from "../ui/RateFrequencyToggle";
-import { coverageCategories } from "../../config/coverageCategories";
+import {
+  coverageCategories,
+  getCoverageCategorySectionLabel,
+} from "../../config/coverageCategories";
 import type {
   CoverageApplicantId,
   CoverageCategoryId,
@@ -548,10 +551,6 @@ export default function QuoteCalculator({
               .map((category) => {
                 const Icon = category.icon;
                 const isSelected = selectedCategories.includes(category.id);
-                const productNames = coverages
-                  .filter((c) => c.categoryId === category.id)
-                  .map((c) => c.name)
-                  .join(", ");
                 return (
                   <SelectionGroup
                     key={category.id}
@@ -576,7 +575,16 @@ export default function QuoteCalculator({
                         flexShrink: 0,
                       }}
                     >
-                      <Icon sx={{ fontSize: "1.25rem" }} />
+                      <Icon
+                        sx={{
+                          color: "primary.dark",
+                          backgroundColor: "background.iconBadge",
+                          borderRadius: "9999px",
+                          padding: "2px",
+                          width: "2rem",
+                          height: "2rem",
+                        }}
+                      />
                     </Box>
                     <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
                       <Box
@@ -586,15 +594,6 @@ export default function QuoteCalculator({
                       >
                         {category.label}
                       </Box>
-                      {productNames && (
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          sx={{ fontSize: "0.75rem" }}
-                        >
-                          {productNames}
-                        </Typography>
-                      )}
                     </Stack>
                   </SelectionGroup>
                 );
@@ -609,7 +608,7 @@ export default function QuoteCalculator({
             {(categoryNeedsGender || categoryNeedsSmoker) && (
               <>
                 <SectionHeader
-                  label="Personal details"
+                  label="Personal Details"
                   chipVariant="outlined"
                   chipColor="default"
                   size="small"
@@ -711,7 +710,7 @@ export default function QuoteCalculator({
             {(categoryNeedsDi || categoryNeedsHours) && (
               <>
                 <SectionHeader
-                  label="Work & income"
+                  label="Work & Income"
                   chipVariant="outlined"
                   chipColor="default"
                   size="small"
@@ -872,7 +871,13 @@ export default function QuoteCalculator({
                     const CatIcon = cat.icon;
                     return (
                       <Stack spacing={2} key={cat.id}>
-                        <CategoryHeader label={cat.label} icon={CatIcon} />
+                        <CategoryHeader
+                          label={getCoverageCategorySectionLabel(
+                            cat.id,
+                            getActiveClient().coverages.categorySectionLabels,
+                          )}
+                          icon={CatIcon}
+                        />
                         {products.map((product) => {
                           const choices = generateAmountChoices(
                             product.categoryId,

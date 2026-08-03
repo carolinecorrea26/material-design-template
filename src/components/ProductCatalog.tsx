@@ -23,7 +23,7 @@ import QuickDecisionIndicator from "./ui/QuickDecisionIndicator";
 import { QuickDecisionMark } from "./content/QuickDecisionExplainer";
 import { getCoverageCategorySectionLabel } from "../config/coverageCategories";
 import {
-  applicantSectionTitles,
+  getResolvedApplicantSectionTitles,
   applicantIcons,
   coverageApplicantToSection,
 } from "../config/formSectionTitle";
@@ -238,10 +238,12 @@ export default function ProductCatalog(props: ProductCatalogProps) {
   } = props;
 
   const clientId = resolveClientId();
+  const client = getActiveClient();
+
+  const categorySectionLabelOverrides = client.coverages.categorySectionLabels;
 
   const additionalCoverageWarningMode =
-    getActiveClient().coverages.additionalCoverageWarning ??
-    "applyForAdditional";
+    client.coverages.additionalCoverageWarning ?? "applyForAdditional";
 
   const additionalCoverageWarningText =
     additionalCoverageWarningMode === "applyForTotal"
@@ -378,7 +380,10 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                   return (
                     <Stack spacing={2} key={categoryId}>
                       <CategoryHeader
-                        label={getCoverageCategorySectionLabel(categoryId)}
+                        label={getCoverageCategorySectionLabel(
+                          categoryId,
+                          categorySectionLabelOverrides,
+                        )}
                         icon={CategoryIcon as any}
                       />
                       <Alert severity="warning" sx={{ borderRadius: 2 }}>
@@ -406,7 +411,10 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                       }}
                     >
                       <CategoryHeader
-                        label={getCoverageCategorySectionLabel(categoryId)}
+                        label={getCoverageCategorySectionLabel(
+                          categoryId,
+                          categorySectionLabelOverrides,
+                        )}
                         icon={CategoryIcon as any}
                       />
                       <Stack spacing={2} sx={{ mt: 2 }}>
@@ -560,8 +568,11 @@ function ProductCard({
   calcApplicantPremium,
   generateAmountChoices,
 }: ProductCardProps) {
-  const breakdownConfig =
-    getActiveClient().coverages.productEstimatedCostBreakdown;
+  const client = getActiveClient();
+  const breakdownConfig = client.coverages.productEstimatedCostBreakdown;
+  const resolvedSectionTitles = getResolvedApplicantSectionTitles(
+    client.applicantLabels,
+  );
   const visibleApplicants = getVisibleApplicants(
     coverage.applicants,
     coverage.id,
@@ -730,7 +741,7 @@ function ProductCard({
             <Box key={applicantId}>
               {isMultiApplicant && (
                 <ApplicantSectionLabel
-                  label={applicantSectionTitles[sectionId]}
+                  label={resolvedSectionTitles[sectionId]}
                   icon={applicantIcons[sectionId]}
                   sx={{ mb: 1.5 }}
                 />
@@ -742,56 +753,6 @@ function ProductCard({
                   {applicantNote}
                 </Alert>
               )}
-
-              <SelectionGroup>
-                <Checkbox
-                  checked={isSelected}
-                  onChange={() => onToggleApplicant(coverage.id, applicantId)}
-                  size="small"
-                  sx={{
-                    p: 0,
-                    pointerEvents: "none",
-                    color: "text.primary",
-                    "&.Mui-checked": { color: "primary.main" },
-                  }}
-                />
-                <Typography variant="subtitle2" sx={{ flex: 1 }}>
-                  {applicantCheckboxLabels[applicantId]}
-                </Typography>
-                {isSelected ? (
-                  <Chip
-                    label="Added"
-                    size="small"
-                    color="success"
-                    variant="outlined"
-                    sx={{
-                      height: 22,
-                      "& .MuiChip-label": {
-                        fontSize: "0.7rem",
-                        fontWeight: 600,
-                        px: 1,
-                      },
-                    }}
-                  />
-                ) : (
-                  <Chip
-                    label="Add"
-                    size="small"
-                    color="success"
-                    // variant="outlined"
-                    sx={{
-                      height: 22,
-                      // borderColor: "grey.300",
-                      // color: "text.secondary",
-                      "& .MuiChip-label": {
-                        fontSize: "0.7rem",
-                        fontWeight: 600,
-                        px: 1,
-                      },
-                    }}
-                  />
-                )}
-              </SelectionGroup>
 
               {/* Benefit amount & cost */}
               <Stack spacing={1.5} sx={{ mt: 1.5 }}>
@@ -813,37 +774,53 @@ function ProductCard({
                   </Select>
                 </FormControl>
 
-                {/* Estimated cost */}
-                {hasAmountSelection && currentAmount > 0 && (
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    justifyContent="flex-end"
-                    alignItems="center"
-                    sx={{ minHeight: 21 }}
-                  >
-                    {isCalculatingRate || frequencyCalculating ? (
-                      <CircularProgress
-                        size={16}
-                        thickness={4}
-                        sx={{ color: "primary.main" }}
-                      />
-                    ) : (
-                      <Typography variant="body2" color="text.secondary">
-                        Est. cost<sup>1</sup>:{" "}
-                        <Typography
-                          component="span"
-                          variant="subtitle2"
-                          fontWeight="bold"
-                          sx={{ color: "primary.main" }}
-                        >
-                          {formatUSD(displayedPremium)}
-                          {rateSuffix}
-                        </Typography>
-                      </Typography>
-                    )}
-                  </Stack>
-                )}
+                {/* Add coverage button */}
+                <SelectionGroup>
+                  <Checkbox
+                    checked={isSelected}
+                    onChange={() => onToggleApplicant(coverage.id, applicantId)}
+                    size="small"
+                    sx={{
+                      p: 0,
+                      pointerEvents: "none",
+                      color: "text.primary",
+                      "&.Mui-checked": { color: "primary.main" },
+                    }}
+                  />
+                  <Typography variant="subtitle2" sx={{ flex: 1 }}>
+                    Add coverage
+                  </Typography>
+                  {isSelected ? (
+                    <Chip
+                      label="Added"
+                      size="small"
+                      color="success"
+                      variant="outlined"
+                      sx={{
+                        height: 22,
+                        "& .MuiChip-label": {
+                          fontSize: "0.7rem",
+                          fontWeight: 600,
+                          px: 1,
+                        },
+                      }}
+                    />
+                  ) : (
+                    <Chip
+                      label="Add"
+                      size="small"
+                      color="success"
+                      sx={{
+                        height: 22,
+                        "& .MuiChip-label": {
+                          fontSize: "0.7rem",
+                          fontWeight: 600,
+                          px: 1,
+                        },
+                      }}
+                    />
+                  )}
+                </SelectionGroup>
 
                 {/* Additional fields when applicant is selected */}
                 {isSelected && currentAmount > 0 && (
@@ -1030,6 +1007,38 @@ function ProductCard({
                     not applying for this product. Please ensure your selections
                     look correct.
                   </Alert>
+                )}
+
+                {/* Estimated cost */}
+                {hasAmountSelection && currentAmount > 0 && (
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    justifyContent="flex-end"
+                    alignItems="center"
+                    sx={{ minHeight: 21 }}
+                  >
+                    {isCalculatingRate || frequencyCalculating ? (
+                      <CircularProgress
+                        size={16}
+                        thickness={4}
+                        sx={{ color: "primary.main" }}
+                      />
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">
+                        Est. cost<sup>1</sup>:{" "}
+                        <Typography
+                          component="span"
+                          variant="subtitle2"
+                          fontWeight="bold"
+                          sx={{ color: "primary.main" }}
+                        >
+                          {formatUSD(displayedPremium)}
+                          {rateSuffix}
+                        </Typography>
+                      </Typography>
+                    )}
+                  </Stack>
                 )}
               </Stack>
             </Box>

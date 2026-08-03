@@ -14,6 +14,7 @@ import { getCoverageCategorySectionLabel } from "../config/coverageCategories";
 import { coverageCategories } from "../config/coverageCategories";
 import type { CoverageCategoryId } from "../config/coverages/types";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
+import { getActiveClient } from "../config/client/getActiveClient";
 import { getClientPageRequirement } from "../config/client/getClientPageRequirement";
 import { fieldCatalog } from "../config/fields";
 import type { FieldDefinition, FieldId } from "../config/fields/types";
@@ -322,6 +323,8 @@ export default function Payment() {
     >
       {({ control, errors, watchedValues }) => {
         const values = watchedValues as Record<string, unknown>;
+        const categorySectionLabelOverrides =
+          getActiveClient().coverages.categorySectionLabels;
         const showPaymentQuestions = shouldShowPaymentQuestions(
           pageRequirement,
           values,
@@ -391,7 +394,10 @@ export default function Payment() {
                           }}
                         >
                           <CategoryHeader
-                            label={getCoverageCategorySectionLabel(category.id)}
+                            label={getCoverageCategorySectionLabel(
+                              category.id,
+                              categorySectionLabelOverrides,
+                            )}
                             icon={category.icon as SvgIconComponent}
                           />
                           <Stack spacing={2} sx={{ mt: 2 }}>

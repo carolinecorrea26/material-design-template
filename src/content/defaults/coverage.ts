@@ -9,9 +9,9 @@ export const coverageDefaults: CoverageContent = {
     SH: "Supplemental health coverage can help with out-of-pocket costs tied to covered health events.",
   },
   applicantLabels: {
-    member: "Member",
-    spouse: "Spouse",
-    child: "Child",
+    member: "You",
+    spouse: "Your Spouse",
+    child: "Your Child(ren)",
   },
   applicantCheckboxLabels: {
     member: "Select for myself",

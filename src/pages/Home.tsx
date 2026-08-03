@@ -31,7 +31,10 @@ import { ApplicationReviewDrawerContent } from "../content/helpContent";
 import { getContent, resolveTemplate } from "../content";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
-import { coverageCategories } from "../config/coverageCategories";
+import {
+  coverageCategories,
+  getCoverageCategorySectionLabel,
+} from "../config/coverageCategories";
 import type {
   CoverageApplicantId,
   CoverageCategoryId,
@@ -109,7 +112,10 @@ type HomeQuoteSectionProps = {
 };
 
 function HomeQuoteSection({ onOpenQuote }: HomeQuoteSectionProps) {
-  const stateOptions = useMemo(() => fieldCatalog["state-province"].options ?? [], []);
+  const stateOptions = useMemo(
+    () => fieldCatalog["state-province"].options ?? [],
+    [],
+  );
   const [birthday, setBirthday] = useState("");
   const [zipCode, setZipCode] = useState("");
   const [state, setState] = useState("");
@@ -119,7 +125,10 @@ function HomeQuoteSection({ onOpenQuote }: HomeQuoteSectionProps) {
   const [ageError, setAgeError] = useState("");
 
   useEffect(() => {
-    const derived = deriveStateProvinceFromZipOrPostalCode(zipCode, stateOptions);
+    const derived = deriveStateProvinceFromZipOrPostalCode(
+      zipCode,
+      stateOptions,
+    );
     if (derived && derived !== state) setState(derived);
   }, [zipCode, stateOptions, state]);
 
@@ -149,7 +158,9 @@ function HomeQuoteSection({ onOpenQuote }: HomeQuoteSectionProps) {
       return a;
     })();
     if (age !== null && age >= 80) {
-      setAgeError("We're sorry, but coverage is not available for applicants age 80 or older.");
+      setAgeError(
+        "We're sorry, but coverage is not available for applicants age 80 or older.",
+      );
       return;
     }
 
@@ -166,7 +177,8 @@ function HomeQuoteSection({ onOpenQuote }: HomeQuoteSectionProps) {
         ...SURFACE_SX,
         width: "100%",
         borderColor: "rgba(7, 104, 255, 0.14)",
-        background: "linear-gradient(135deg, #f4f8ff 0%, #ffffff 52%, #f7fbff 100%)",
+        background:
+          "linear-gradient(135deg, #f4f8ff 0%, #ffffff 52%, #f7fbff 100%)",
       }}
     >
       <Stack spacing={2.25} sx={{ p: { xs: 2.5, sm: 3 } }}>
@@ -200,19 +212,31 @@ function HomeQuoteSection({ onOpenQuote }: HomeQuoteSectionProps) {
             inputProps={{ inputMode: "numeric" }}
             InputLabelProps={{ shrink: dobFocused || !!birthday }}
             error={attempted && !!validationErrors.birthday}
-            helperText={attempted && validationErrors.birthday ? validationErrors.birthday : undefined}
+            helperText={
+              attempted && validationErrors.birthday
+                ? validationErrors.birthday
+                : undefined
+            }
           />
           <TextField
             label="ZIP / Postal Code"
             fullWidth
             required
             value={zipCode}
-            onChange={(event) => setZipCode(formatZipOrPostalCode(event.target.value))}
+            onChange={(event) =>
+              setZipCode(formatZipOrPostalCode(event.target.value))
+            }
             inputProps={{ inputMode: "text", maxLength: 7 }}
             error={attempted && !!validationErrors.zipCode}
-            helperText={attempted ? validationErrors.zipCode || undefined : undefined}
+            helperText={
+              attempted ? validationErrors.zipCode || undefined : undefined
+            }
           />
-          <FormControl fullWidth required error={attempted && !!validationErrors.state}>
+          <FormControl
+            fullWidth
+            required
+            error={attempted && !!validationErrors.state}
+          >
             <InputLabel id="home-estimate-state-label">State</InputLabel>
             <Select
               labelId="home-estimate-state-label"
@@ -221,7 +245,9 @@ function HomeQuoteSection({ onOpenQuote }: HomeQuoteSectionProps) {
               onChange={(event) => setState(event.target.value)}
             >
               {stateOptions.map((option) => (
-                <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
               ))}
             </Select>
             {attempted && validationErrors.state && (
@@ -231,10 +257,24 @@ function HomeQuoteSection({ onOpenQuote }: HomeQuoteSectionProps) {
         </Stack>
 
         <Stack spacing={1}>
-          <Button variant="outlined" size="large" sx={{ py: "16px" }} onClick={handleGetEstimate} disabled={isLoading}>
-            {isLoading ? <CircularProgress size={20} color="inherit" /> : "Get an instant quote"}
+          <Button
+            variant="outlined"
+            size="large"
+            sx={{ py: "16px" }}
+            onClick={handleGetEstimate}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <CircularProgress size={20} color="inherit" />
+            ) : (
+              "Get an instant quote"
+            )}
           </Button>
-          {ageError && <Alert severity="error" sx={{ mt: 0.5 }}>{ageError}</Alert>}
+          {ageError && (
+            <Alert severity="error" sx={{ mt: 0.5 }}>
+              {ageError}
+            </Alert>
+          )}
         </Stack>
       </Stack>
     </Box>
@@ -414,7 +454,8 @@ export default function Home() {
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const [activeDrawer, setActiveDrawer] = useState<DrawerId>(null);
   const [quoteDrawerOpen, setQuoteDrawerOpen] = useState(false);
-  const [quoteEligibility, setQuoteEligibility] = useState<QuoteCalculatorInitialValues | null>(null);
+  const [quoteEligibility, setQuoteEligibility] =
+    useState<QuoteCalculatorInitialValues | null>(null);
   const [activeCoverageCategory, setActiveCoverageCategory] =
     useState<CoverageCategoryId>("LI");
   const howApplyingWorksRef = useRef<HTMLDivElement>(null);
@@ -787,7 +828,10 @@ export default function Home() {
                       <Stack spacing={2}>
                         <Stack spacing={0.75}>
                           <Typography variant="h4">
-                            {activeCoverageGroup.category.label}
+                            {getCoverageCategorySectionLabel(
+                              activeCoverageGroup.category.id,
+                              client.coverages.categorySectionLabels,
+                            )}
                           </Typography>
                           <Typography variant="body2" color="text.secondary">
                             {

@@ -32,7 +32,11 @@ import FormRoutePage from "../app/RoutePage";
 import AppDrawer from "../components/ui/AppDrawer";
 import { getClientPageRequirement } from "../config/client/getClientPageRequirement";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
-import { coverageCategories } from "../config/coverageCategories";
+import {
+  coverageCategories,
+  getCoverageCategorySectionLabel,
+} from "../config/coverageCategories";
+import { getActiveClient } from "../config/client/getActiveClient";
 import type { CoverageApplicantId } from "../config/coverages/types";
 import type { FieldDefinition } from "../config/fields/types";
 import { useApplicationForm } from "../app/ApplicationFormContext";
@@ -690,7 +694,13 @@ export default function Beneficiary() {
                     borderRadius: "16px",
                   }}
                 >
-                  <CategoryHeader label={group.category.label} icon={CatIcon} />
+                  <CategoryHeader
+                    label={getCoverageCategorySectionLabel(
+                      group.category.id,
+                      getActiveClient().coverages.categorySectionLabels,
+                    )}
+                    icon={CatIcon}
+                  />
                   <Stack spacing={1.25} sx={{ mt: 2 }}>
                     {group.products.map((product) =>
                       renderProductCard(product),

@@ -150,6 +150,8 @@ export type ClientCoverages = {
   additionalCoverageWarning?: "applyForAdditional" | "applyForTotal";
   /** Product-card estimated cost breakdown config (optional per client). */
   productEstimatedCostBreakdown?: ClientProductEstimatedCostBreakdown;
+  /** Override the default coverage category section header labels (e.g. "Office Overhead Expense"). */
+  categorySectionLabels?: Partial<Record<CoverageCategoryId, string>>;
 };
 
 export type ClientFields = Partial<
@@ -213,6 +215,12 @@ export type ClientCoverageQuestions = {
   removeDefaults?: PageSectionId[];
 } & Partial<Record<CoverageCategoryId, PageSectionId[]>>;
 
+export type ClientApplicantLabels = {
+  member?: string;
+  spouse?: string;
+  child?: string;
+};
+
 export type ClientConfig = {
   id: ClientId;
   branding: ClientBranding;
@@ -226,4 +234,6 @@ export type ClientConfig = {
   themeColor?: ThemeColorId;
   licenseInfo?: string[];
   coverageQuestions?: ClientCoverageQuestions;
+  /** Override default applicant section header labels. Max 20 chars each. */
+  applicantLabels?: ClientApplicantLabels;
 };

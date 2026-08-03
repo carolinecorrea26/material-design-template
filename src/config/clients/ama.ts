@@ -31,6 +31,9 @@ export const amaClient: ClientConfig = {
   },
   coverages: {
     categories: ["LI", "AD", "DI", "OO", "SH"],
+    categorySectionLabels: {
+      OO: "Office Overhead Expense",
+    },
     enabled: [
       "li-20yr",
       "li-15yr",

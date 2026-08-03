@@ -1,10 +1,11 @@
 import type { ReactNode } from "react";
 import { Alert, Box } from "@mui/material";
 import {
-  applicantSectionTitles,
+  getResolvedApplicantSectionTitles,
   applicantIcons,
   type ApplicantSectionId,
 } from "../../config/formSectionTitle";
+import { getActiveClient } from "../../config/client/getActiveClient";
 import ApplicantSectionLabel from "./ApplicantSectionLabel";
 
 type ApplicantSectionProps = {
@@ -21,7 +22,10 @@ export default function ApplicantSection({
   showLabel = true,
   note,
 }: ApplicantSectionProps) {
-  const title = applicantSectionTitles[applicant];
+  const sectionTitles = getResolvedApplicantSectionTitles(
+    getActiveClient().applicantLabels,
+  );
+  const title = sectionTitles[applicant];
   const Icon = applicantIcons[applicant];
 
   if (!showLabel) {

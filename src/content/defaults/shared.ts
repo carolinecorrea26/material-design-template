@@ -2,14 +2,14 @@ import type { SharedContent } from "../types";
 
 export const sharedDefaults: SharedContent = {
   applicantLabels: {
-    member: "Member",
-    spouse: "Spouse",
-    child: "Child",
+    member: "You",
+    spouse: "Your Spouse",
+    child: "Your Child(ren)",
   },
   applicantSectionTitles: {
-    self: "Member",
-    spouse: "Spouse",
-    child: "Child",
+    self: "You",
+    spouse: "Your Spouse",
+    child: "Your Child(ren)",
   },
   cookieBanner: {
     message:

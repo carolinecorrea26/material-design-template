@@ -3,6 +3,7 @@ import SupervisorAccountRoundedIcon from "@mui/icons-material/SupervisorAccountR
 import EscalatorWarningRoundedIcon from "@mui/icons-material/EscalatorWarningRounded";
 import type { SxProps, Theme } from "@mui/material";
 import type { CoverageApplicantId } from "./coverages/types";
+import type { ClientApplicantLabels } from "./clients/types";
 
 export type ApplicantSectionId = "self" | "spouse" | "child";
 
@@ -15,16 +16,18 @@ type SectionLabelConfig = {
   };
 };
 
+const MAX_APPLICANT_LABEL_LENGTH = 20;
+
 const defaultApplicantLabels: Record<CoverageApplicantId, string> = {
-  member: "Member",
-  spouse: "Spouse",
-  child: "Child",
+  member: "You",
+  spouse: "Your Spouse",
+  child: "Your Child(ren)",
 };
 
 const defaultApplicantSectionTitles: Record<ApplicantSectionId, string> = {
-  self: "Member",
-  spouse: "Spouse",
-  child: "Child",
+  self: "You",
+  spouse: "Your Spouse",
+  child: "Your Child(ren)",
 };
 
 // Configure section labels and icon visibility here.
@@ -64,6 +67,50 @@ export const coverageApplicantToSection: Record<
 
 export function getApplicantIcon(applicant: CoverageApplicantId) {
   return applicantIcons[coverageApplicantToSection[applicant]];
+}
+
+function truncateLabel(label: string): string {
+  return label.slice(0, MAX_APPLICANT_LABEL_LENGTH);
+}
+
+/**
+ * Resolve applicant labels from client overrides, falling back to defaults.
+ * Labels are truncated to 20 characters max.
+ */
+export function getResolvedApplicantLabels(
+  clientOverrides?: ClientApplicantLabels,
+): Record<CoverageApplicantId, string> {
+  return {
+    member: truncateLabel(
+      clientOverrides?.member ?? defaultApplicantLabels.member,
+    ),
+    spouse: truncateLabel(
+      clientOverrides?.spouse ?? defaultApplicantLabels.spouse,
+    ),
+    child: truncateLabel(
+      clientOverrides?.child ?? defaultApplicantLabels.child,
+    ),
+  };
+}
+
+/**
+ * Resolve applicant section titles from client overrides, falling back to defaults.
+ * Labels are truncated to 20 characters max.
+ */
+export function getResolvedApplicantSectionTitles(
+  clientOverrides?: ClientApplicantLabels,
+): Record<ApplicantSectionId, string> {
+  return {
+    self: truncateLabel(
+      clientOverrides?.member ?? defaultApplicantSectionTitles.self,
+    ),
+    spouse: truncateLabel(
+      clientOverrides?.spouse ?? defaultApplicantSectionTitles.spouse,
+    ),
+    child: truncateLabel(
+      clientOverrides?.child ?? defaultApplicantSectionTitles.child,
+    ),
+  };
 }
 
 export function shouldShowSectionLabelIcon(

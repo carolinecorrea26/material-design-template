@@ -20,6 +20,7 @@ declare module "@mui/material/styles" {
   interface TypeBackground {
     subtle: string;
     surface: string;
+    iconBadge: string;
   }
   interface TypeText {
     tertiary: string;
@@ -134,6 +135,7 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
         paper: "#ffffff",
         subtle: "#f5f8fd",
         surface: "#eef1f4",
+        iconBadge: "#c9d6eb",
       },
       action: { selected: "#eef1f4" },
       divider: "rgba(52, 59, 72, 0.12)",

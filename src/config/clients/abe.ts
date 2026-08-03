@@ -29,6 +29,9 @@ export const abeClient: ClientConfig = {
   },
   coverages: {
     categories: ["LI", "AD", "DI", "OO", "SH"],
+    categorySectionLabels: {
+      OO: "Professional Overhead Expense Disability",
+    },
     enabled: [
       "li-term",
       "li-10yr",

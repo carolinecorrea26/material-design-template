@@ -7,7 +7,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
     {
       id: "selfCoverageQuestions",
       pageId: "coverage",
-      description: "Personal details",
+      description: "Personal Details",
       applicant: "self",
       fieldIds: ["gender", "smoker"],
     },
@@ -21,7 +21,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
     {
       id: "selfCoverageWorkIncome",
       pageId: "coverage",
-      description: "Work & income",
+      description: "Work & Income",
       applicant: "self",
       fieldIds: ["hours-worked-per-week", "average-monthly-income"],
     },
@@ -39,7 +39,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
     {
       id: "spouseCoverageQuestions",
       pageId: "coverage",
-      description: "Personal details",
+      description: "Personal Details",
       applicant: "spouse",
       fieldIds: ["spouse-gender", "spouse-smoker"],
       visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
@@ -57,7 +57,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
     {
       id: "spouseCoverageWorkIncome",
       pageId: "coverage",
-      description: "Work & income",
+      description: "Work & Income",
       applicant: "spouse",
       fieldIds: [
         "spouse-hours-worked-per-week",

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import FeaturedBadge from "./ui/FeaturedBadge";
 import ProductCardSurface from "./ui/ProductCard";
+import RateFrequencyToggle from "./ui/RateFrequencyToggle";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import {
   Alert,
@@ -52,7 +53,10 @@ export default function QuoteEstimator() {
   const rateDisplayConfig = activeClient.coverages.estimatedRateDisplay;
   const defaultRateFrequency: EstimatedRateFrequency =
     rateDisplayConfig?.defaultFrequency ?? "monthly";
-  const rateFrequency = defaultRateFrequency;
+  const showRateFrequencyToggle =
+    rateDisplayConfig?.showFrequencyToggle ?? false;
+  const [rateFrequency, setRateFrequency] =
+    useState<EstimatedRateFrequency>(defaultRateFrequency);
 
   const [selectedCategories, setSelectedCategories] = useState<
     CoverageCategoryId[]
@@ -260,10 +264,6 @@ export default function QuoteEstimator() {
                 .map((category) => {
                   const Icon = category.icon;
                   const isSelected = selectedCategories.includes(category.id);
-                  const productNames = coverages
-                    .filter((c) => c.categoryId === category.id)
-                    .map((c) => c.name)
-                    .join(", ");
                   return (
                     <SelectionGroup
                       key={category.id}
@@ -281,19 +281,31 @@ export default function QuoteEstimator() {
                     >
                       <Box
                         className="SelectionGroup-icon"
-                        sx={{ display: "flex", alignItems: "center", flexShrink: 0 }}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          flexShrink: 0,
+                        }}
                       >
-                        <Icon sx={{ fontSize: "1.25rem" }} />
+                        <Icon
+                          sx={{
+                            color: "primary.dark",
+                            backgroundColor: "background.iconBadge",
+                            borderRadius: "9999px",
+                            padding: "2px",
+                            width: "2rem",
+                            height: "2rem",
+                          }}
+                        />
                       </Box>
                       <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
-                        <Box component="span" className="SelectionGroup-label" sx={{ fontSize: "0.875rem" }}>
+                        <Box
+                          component="span"
+                          className="SelectionGroup-label"
+                          sx={{ fontSize: "0.875rem" }}
+                        >
                           {category.label}
                         </Box>
-                        {productNames && (
-                          <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.75rem" }}>
-                            {productNames}
-                          </Typography>
-                        )}
                       </Stack>
                     </SelectionGroup>
                   );
@@ -555,7 +567,11 @@ export default function QuoteEstimator() {
                       <ProductCardSurface
                         key={product.id}
                         selected={hasAnyApplicantSelected}
-                        sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 1.5,
+                        }}
                       >
                         {/* Title row */}
                         <Stack
@@ -668,6 +684,53 @@ export default function QuoteEstimator() {
                     factors such as gender, health status, and use of
                     tobacco/nicotine. Rates current as of 2026.
                   </Typography>
+
+                  {/* Rate frequency toggle */}
+                  {showRateFrequencyToggle && (
+                    <Stack
+                      direction="row"
+                      spacing={0.75}
+                      alignItems="center"
+                      justifyContent="flex-end"
+                    >
+                      <Typography
+                        variant="caption"
+                        fontWeight="bold"
+                        color={
+                          rateFrequency === "monthly"
+                            ? "primary.main"
+                            : "text.secondary"
+                        }
+                      >
+                        Monthly
+                      </Typography>
+                      <RateFrequencyToggle
+                        checked={rateFrequency === "annual"}
+                        onChange={(e) =>
+                          setRateFrequency(
+                            e.target.checked ? "annual" : "monthly",
+                          )
+                        }
+                        slotProps={{
+                          input: {
+                            "aria-label":
+                              "Toggle estimated cost between monthly and annual",
+                          },
+                        }}
+                      />
+                      <Typography
+                        variant="caption"
+                        fontWeight="bold"
+                        color={
+                          rateFrequency === "annual"
+                            ? "primary.main"
+                            : "text.secondary"
+                        }
+                      >
+                        Annual
+                      </Typography>
+                    </Stack>
+                  )}
                 </Stack>
               )}
             </>

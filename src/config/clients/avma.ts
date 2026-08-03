@@ -29,6 +29,9 @@ export const avmaClient: ClientConfig = {
   },
   coverages: {
     categories: ["LI", "AD", "DI", "OO", "SH"],
+    categorySectionLabels: {
+      OO: "Professional Overhead Expense",
+    },
     enabled: [
       "li-group-term",
       "li-10yr",
