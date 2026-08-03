@@ -906,6 +906,7 @@ export default function Beneficiary() {
               <Box
                 component="form"
                 id="beneficiary-modal-form"
+                noValidate
                 onSubmit={(e) => {
                   e.stopPropagation();
                   handleModalSubmit(saveBeneficiary)(e);
