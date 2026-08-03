@@ -195,7 +195,7 @@ function getDecisionStatus(opts: {
   if (!QUICK_DECISION_UNDERWRITING_TYPES.has(type)) {
     return {
       label: receiptContent.decisionStatuses.fullyUnderwritten.label,
-      color: "#0668ff",
+      color: "primary.main",
       activeStep: 1,
       description:
         receiptContent.decisionStatuses.fullyUnderwritten.description,
@@ -206,7 +206,7 @@ function getDecisionStatus(opts: {
     case "conditionally-approved":
       return {
         label: receiptContent.decisionStatuses.conditionallyApproved.label,
-        color: "#0668ff",
+        color: "primary.main",
         activeStep: 2,
         description:
           receiptContent.decisionStatuses.conditionallyApproved.description,
@@ -215,7 +215,7 @@ function getDecisionStatus(opts: {
     case "referred":
       return {
         label: receiptContent.decisionStatuses.referred.label,
-        color: "#0668ff",
+        color: "primary.main",
         activeStep: 1,
         description: receiptContent.decisionStatuses.referred.description,
       };
@@ -223,7 +223,7 @@ function getDecisionStatus(opts: {
     case "soft-declined":
       return {
         label: receiptContent.decisionStatuses.softDeclined.label,
-        color: "#0668ff",
+        color: "primary.main",
         activeStep: 2,
         description: receiptContent.decisionStatuses.softDeclined.description,
       };
@@ -231,7 +231,7 @@ function getDecisionStatus(opts: {
     case "database-unavailable":
       return {
         label: receiptContent.decisionStatuses.databaseUnavailable.label,
-        color: "#0668ff",
+        color: "primary.main",
         activeStep: 1,
         description:
           receiptContent.decisionStatuses.databaseUnavailable.description,
@@ -409,7 +409,7 @@ export default function Receipt() {
   }, [orderedDecisionEntries]);
 
   const cardSx = {
-    backgroundColor: "#fff",
+    backgroundColor: "background.paper",
     border: "1px solid #e0e4ea",
     borderRadius: 2,
     p: 3,
@@ -419,7 +419,7 @@ export default function Receipt() {
     <Box
       sx={{
         flex: 1,
-        backgroundColor: "#fff",
+        backgroundColor: "background.paper",
         borderRadius: 3,
         // border: "1px solid #e0e4ea",
         boxShadow: "rgba(52, 59, 72, 0.06) 0px 8px 16px",
@@ -654,7 +654,7 @@ export default function Receipt() {
                                 ? "success.main"
                                 : isSentForReview
                                   ? "primary.main"
-                                  : "#ff9800",
+                                  : "warning.main",
                             }}
                           />
                           <Typography
@@ -665,7 +665,7 @@ export default function Receipt() {
                                 ? "success.main"
                                 : isSentForReview
                                   ? "primary.main"
-                                  : "#e65100",
+                                  : "warning.main",
                             }}
                           >
                             {status.label}
@@ -737,7 +737,10 @@ export default function Receipt() {
                                     />
                                   ) : (
                                     <CircleOutlinedIcon
-                                      sx={{ fontSize: 22, color: "#c4cdd5" }}
+                                      sx={{
+                                        fontSize: 22,
+                                        color: "text.disabled",
+                                      }}
                                     />
                                   )
                                 }

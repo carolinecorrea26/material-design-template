@@ -60,7 +60,15 @@ export default function ClientHelpBanner({ client }: ClientHelpBannerProps) {
           }}
         >
           {/* Call button + hours */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              flexWrap: "wrap",
+              justifyContent: "center",
+            }}
+          >
             <Button
               variant="outlined"
               size="small"

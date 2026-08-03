@@ -2,12 +2,24 @@ import type { PageId } from "../../types";
 import type { PageSectionConfig } from "./types";
 import { applicantSectionTitles } from "../formSectionTitle";
 
+/**
+ * Canonical section header labels — import these instead of hardcoding strings.
+ */
+export const sectionLabels = {
+  personalDetails: "Personal Details",
+  workAndIncome: "Work & Income",
+  businessDetails: "Business Details",
+  businessEmployerInfo: "Business / Employer Information",
+  personalInfo: "Personal information",
+  financialInfo: "Financial information",
+} as const;
+
 export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
   coverage: [
     {
       id: "selfCoverageQuestions",
       pageId: "coverage",
-      description: "Personal Details",
+      description: sectionLabels.personalDetails,
       applicant: "self",
       fieldIds: ["gender", "smoker"],
     },
@@ -21,14 +33,14 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
     {
       id: "selfCoverageWorkIncome",
       pageId: "coverage",
-      description: "Work & Income",
+      description: sectionLabels.workAndIncome,
       applicant: "self",
       fieldIds: ["hours-worked-per-week", "average-monthly-income"],
     },
     {
       id: "selfCoverageBusinessExpenses",
       pageId: "coverage",
-      description: "Business Details",
+      description: sectionLabels.businessDetails,
       applicant: "self",
       fieldIds: [
         "monthly-business-expenses",
@@ -39,7 +51,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
     {
       id: "spouseCoverageQuestions",
       pageId: "coverage",
-      description: "Personal Details",
+      description: sectionLabels.personalDetails,
       applicant: "spouse",
       fieldIds: ["spouse-gender", "spouse-smoker"],
       visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
@@ -57,7 +69,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
     {
       id: "spouseCoverageWorkIncome",
       pageId: "coverage",
-      description: "Work & Income",
+      description: sectionLabels.workAndIncome,
       applicant: "spouse",
       fieldIds: [
         "spouse-hours-worked-per-week",
@@ -136,7 +148,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
     {
       id: "contactBusinessInfo",
       pageId: "contact",
-      description: "Business / Employer Information",
+      description: sectionLabels.businessEmployerInfo,
       fieldIds: [
         "business-name",
         "business-type",
@@ -163,7 +175,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
     {
       id: "profilePersonalSelf",
       pageId: "profile",
-      description: "Personal information",
+      description: sectionLabels.personalInfo,
       applicant: "self",
       fieldIds: [
         "height-feet",
@@ -217,7 +229,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
     {
       id: "profileFinancialSelf",
       pageId: "profile",
-      description: "Financial information",
+      description: sectionLabels.financialInfo,
       applicant: "self",
       fieldIds: [
         "has-other-life-insurance",

@@ -1,15 +1,6 @@
 import { useCallback, useRef, useState } from "react";
-import {
-  Alert,
-  Box,
-  Button,
-  Divider,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Stack,
-} from "@mui/material";
-import SelectionGroup from "../components/forms/SelectionGroup";
+import { Alert, Box, Button, Divider, Stack } from "@mui/material";
+import CoverageCategorySelector from "../components/forms/CoverageCategorySelector";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import FormRoutePage from "../app/RoutePage";
 
@@ -124,71 +115,13 @@ function CoveragePageContent({
       )}
       <Stack spacing={3}>
         {/* Category selection (multi-select) */}
-        <FormControl
-          component="fieldset"
+        <CoverageCategorySelector
+          categories={state.availableCategories}
+          selectedIds={state.selectedCategories}
+          onToggle={state.handleCategoryToggle}
           error={state.selectedCategories.length === 0 && !!pageError}
-        >
-          <FormLabel component="legend" required sx={{ mb: 1.5 }}>
-            Select any coverage categories that you want to apply for:
-          </FormLabel>
-          <Stack spacing={1.5}>
-            {state.availableCategories.map((category) => {
-              const Icon = category.icon;
-              const isSelected = state.selectedCategories.includes(category.id);
-              return (
-                <SelectionGroup
-                  key={category.id}
-                  component="div"
-                  role="checkbox"
-                  aria-checked={isSelected}
-                  checked={isSelected}
-                  tabIndex={0}
-                  onClick={() => state.handleCategoryToggle(category.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === " " || e.key === "Enter") {
-                      e.preventDefault();
-                      state.handleCategoryToggle(category.id);
-                    }
-                  }}
-                >
-                  <Box
-                    className="SelectionGroup-icon"
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <Icon
-                      sx={{
-                        color: "primary.dark",
-                        backgroundColor: "background.iconBadge",
-                        borderRadius: "9999px",
-                        padding: "2px",
-                        width: "2rem",
-                        height: "2rem",
-                      }}
-                    />
-                  </Box>
-                  <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
-                    <Box
-                      component="span"
-                      className="SelectionGroup-label"
-                      sx={{ fontSize: "0.875rem" }}
-                    >
-                      {category.label}
-                    </Box>
-                  </Stack>
-                </SelectionGroup>
-              );
-            })}
-          </Stack>
-          {state.selectedCategories.length === 0 && pageError && (
-            <FormHelperText>
-              Please select at least one coverage category.
-            </FormHelperText>
-          )}
-        </FormControl>
+          errorMessage="Please select at least one coverage category."
+        />
 
         {/* Category-level question fields */}
         <CoverageQuestions

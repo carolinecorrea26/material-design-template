@@ -190,9 +190,7 @@ export default function CoverageQuestions(props: CoverageQuestionsProps) {
           {section.description && (
             <SectionHeader
               label={section.description}
-              chipVariant="outlined"
-              chipColor="default"
-              size="small"
+              variant="subsection"
               sx={{ mb: 2 }}
             />
           )}

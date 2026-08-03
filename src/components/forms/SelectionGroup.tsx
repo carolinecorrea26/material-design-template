@@ -1,5 +1,6 @@
 import type { ReactNode, MouseEventHandler, KeyboardEventHandler } from "react";
 import { Box } from "@mui/material";
+import { CARD_RADIUS } from "../../app/theme";
 
 type SelectionGroupProps = {
   children: ReactNode;
@@ -57,8 +58,8 @@ export default function SelectionGroup({
         width: "100%",
         border: "1px solid",
         borderColor: "rgba(52, 59, 72, 0.23)",
-        borderRadius: "16px",
-        bgcolor: "white",
+        borderRadius: CARD_RADIUS,
+        bgcolor: "background.paper",
         cursor: "pointer",
         transition: "background-color 0.2s ease, border-color 0.2s ease",
         // Selected state via data-checked (icon rows with no native input)

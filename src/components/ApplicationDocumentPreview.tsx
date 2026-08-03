@@ -5,7 +5,10 @@ import { getActiveClientCoverages } from "../config/client/getActiveClientCovera
 import { fieldCatalog } from "../config/fields";
 import type { FieldDefinition, FieldId } from "../config/fields/types";
 import type { CoverageApplicantId } from "../config/coverages/types";
-import { pageSections } from "../config/pageSections/pageSections";
+import {
+  pageSections,
+  sectionLabels,
+} from "../config/pageSections/pageSections";
 import { isSectionVisible } from "../app/RoutePage";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import type { PageId } from "../types";
@@ -240,7 +243,7 @@ function resolveProfileGroupTitle(sectionId: string) {
   }
 
   if (sectionId.includes("Financial")) {
-    return "Financial information";
+    return sectionLabels.financialInfo;
   }
 
   if (sectionId.includes("DriversLicense")) {
@@ -256,7 +259,7 @@ function resolveProfileGroupTitle(sectionId: string) {
   }
 
   if (sectionId.includes("Personal")) {
-    return "Personal information";
+    return sectionLabels.personalInfo;
   }
 
   return undefined;
@@ -751,7 +754,7 @@ export default function ApplicationDocumentPreview({
           <Box
             key={`page-${pageIndex + 1}`}
             sx={{
-              backgroundColor: "#fff",
+              backgroundColor: "background.paper",
               border: "1px solid rgba(15, 23, 42, 0.12)",
               borderRadius: 1,
               px: { xs: 2, md: 4 },

@@ -8,6 +8,7 @@ import ConditionalGroup from "../components/forms/ConditionalGroup";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import DynamicList from "../components/forms/DynamicList";
 import SectionHeader from "../components/forms/SectionHeader";
+import { sectionLabels } from "../config/pageSections";
 import PhysicianInformation from "../components/forms/PhysicianInformation.tsx";
 import type { FieldDefinition } from "../config/fields/types";
 
@@ -242,10 +243,10 @@ export default function Profile() {
                       }
                     >
                       <SectionHeader
-                        label={section.description ?? "Personal information"}
-                        chipVariant="outlined"
-                        chipColor="default"
-                        size="small"
+                        label={
+                          section.description ?? sectionLabels.personalInfo
+                        }
+                        variant="subsection"
                         sx={{ mb: 1 }}
                       />
                       {renderPersonalSelfFields(
@@ -303,10 +304,10 @@ export default function Profile() {
                       }
                     >
                       <SectionHeader
-                        label={section.description ?? "Financial information"}
-                        chipVariant="outlined"
-                        chipColor="default"
-                        size="small"
+                        label={
+                          section.description ?? sectionLabels.financialInfo
+                        }
+                        variant="subsection"
                         sx={{ mb: 1 }}
                       />
                       {renderFinancialFields(
@@ -335,10 +336,10 @@ export default function Profile() {
                       }
                     >
                       <SectionHeader
-                        label={section.description ?? "Personal information"}
-                        chipVariant="outlined"
-                        chipColor="default"
-                        size="small"
+                        label={
+                          section.description ?? sectionLabels.personalInfo
+                        }
+                        variant="subsection"
                         sx={{ mb: 1 }}
                       />
                       {renderPersonalSpouseFields(
@@ -396,10 +397,10 @@ export default function Profile() {
                       }
                     >
                       <SectionHeader
-                        label={section.description ?? "Financial information"}
-                        chipVariant="outlined"
-                        chipColor="default"
-                        size="small"
+                        label={
+                          section.description ?? sectionLabels.financialInfo
+                        }
+                        variant="subsection"
                         sx={{ mb: 1 }}
                       />
                       {renderFinancialFields(

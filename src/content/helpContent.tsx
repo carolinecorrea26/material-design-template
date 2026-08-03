@@ -20,6 +20,7 @@ import AppDrawer from "../components/ui/AppDrawer";
 import type { FormPageHelpItem } from "../components/content/HelpChips";
 import QuickDecisionDrawerContent from "../components/content/QuickDecisionExplainer";
 import { QuickDecisionMark } from "../components/content/QuickDecisionExplainer";
+import QuickDecisionInfoBox from "../components/content/QuickDecisionInfoBox";
 import QuickDecisionIndicator from "../components/ui/QuickDecisionIndicator";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
@@ -308,10 +309,7 @@ export function CoverageOptionsDrawerContent({
 
   return (
     <Stack spacing={0}>
-      {/* <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Review the coverage categories available and the products offered within
-        each category.
-      </Typography> */}
+      <QuickDecisionInfoBox />
 
       <Box
         sx={{
@@ -329,7 +327,7 @@ export function CoverageOptionsDrawerContent({
             sx={{
               width: 56,
               flexShrink: 0,
-              backgroundColor: "#fbfcff",
+              backgroundColor: "background.subtle",
             }}
           >
             <Tabs
@@ -373,7 +371,7 @@ export function CoverageOptionsDrawerContent({
             </Tabs>
           </Box>
 
-          <Box sx={{ flex: 1, p: 2, bgcolor: "#fff" }}>
+          <Box sx={{ flex: 1, p: 2, bgcolor: "background.paper" }}>
             {activeGroup ? (
               <Stack spacing={2}>
                 <Stack spacing={0.5}>

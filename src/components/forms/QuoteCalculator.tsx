@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AppDrawer from "../ui/AppDrawer";
+import CoverageCategorySelector from "./CoverageCategorySelector";
 import SelectionGroup from "./SelectionGroup";
 import SectionHeader from "./SectionHeader";
 import CategoryHeader from "../CategoryHeader";
@@ -46,6 +47,7 @@ import { getActiveClient } from "../../config/client/getActiveClient";
 import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
 import type { EstimatedRateFrequency } from "../../config/clients/types";
 import { getPagePath } from "../../config/pages";
+import { sectionLabels } from "../../config/pageSections";
 import { STORAGE_KEY } from "../../app/ApplicationFormContext";
 import { formatUSD } from "../../utils/formatUSD";
 import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
@@ -62,6 +64,7 @@ import {
   formatDateDisplay,
 } from "../../utils/dateFormatting";
 import { fieldCatalog } from "../../config/fields";
+import { calculateAge } from "../../utils/calculateAge";
 
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
@@ -89,19 +92,6 @@ type QuoteCalculatorProps = {
    */
   initialEligibility?: QuoteCalculatorInitialValues;
 };
-
-function calculateAge(birthdayStr: string): number | null {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(birthdayStr)) return null;
-  const [y, m, d] = birthdayStr.split("-").map(Number);
-  const birth = new Date(y, m - 1, d);
-  const today = new Date();
-  let age = today.getFullYear() - birth.getFullYear();
-  const monthDiff = today.getMonth() - birth.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-    age--;
-  }
-  return age;
-}
 
 function getStateOptions() {
   return fieldCatalog["state-province"].options ?? [];
@@ -541,65 +531,13 @@ export default function QuoteCalculator({
         )}
 
         {/* ── Category selection ── */}
-        <FormControl component="fieldset">
-          <FormLabel component="legend" required sx={{ mb: 1.5 }}>
-            Select any coverage categories that you want to apply for:
-          </FormLabel>
-          <Stack spacing={1.5}>
-            {coverageCategories
-              .filter((cat) => coverages.some((c) => c.categoryId === cat.id))
-              .map((category) => {
-                const Icon = category.icon;
-                const isSelected = selectedCategories.includes(category.id);
-                return (
-                  <SelectionGroup
-                    key={category.id}
-                    component="div"
-                    role="checkbox"
-                    aria-checked={isSelected}
-                    checked={isSelected}
-                    tabIndex={0}
-                    onClick={() => handleCategoryToggle(category.id)}
-                    onKeyDown={(e) => {
-                      if (e.key === " " || e.key === "Enter") {
-                        e.preventDefault();
-                        handleCategoryToggle(category.id);
-                      }
-                    }}
-                  >
-                    <Box
-                      className="SelectionGroup-icon"
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <Icon
-                        sx={{
-                          color: "primary.dark",
-                          backgroundColor: "background.iconBadge",
-                          borderRadius: "9999px",
-                          padding: "2px",
-                          width: "2rem",
-                          height: "2rem",
-                        }}
-                      />
-                    </Box>
-                    <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
-                      <Box
-                        component="span"
-                        className="SelectionGroup-label"
-                        sx={{ fontSize: "0.875rem" }}
-                      >
-                        {category.label}
-                      </Box>
-                    </Stack>
-                  </SelectionGroup>
-                );
-              })}
-          </Stack>
-        </FormControl>
+        <CoverageCategorySelector
+          categories={coverageCategories.filter((cat) =>
+            coverages.some((c) => c.categoryId === cat.id),
+          )}
+          selectedIds={selectedCategories}
+          onToggle={handleCategoryToggle}
+        />
 
         {/* ── Additional fields grouped by section (gender/smoker=Personal, income/hours=Work, expenses=Business) ── */}
         {needsAdditionalFields && selectedCategories.length > 0 && (
@@ -608,10 +546,8 @@ export default function QuoteCalculator({
             {(categoryNeedsGender || categoryNeedsSmoker) && (
               <>
                 <SectionHeader
-                  label="Personal Details"
-                  chipVariant="outlined"
-                  chipColor="default"
-                  size="small"
+                  label={sectionLabels.personalDetails}
+                  variant="subsection"
                 />
                 {categoryNeedsGender && (
                   <FormControl
@@ -710,10 +646,8 @@ export default function QuoteCalculator({
             {(categoryNeedsDi || categoryNeedsHours) && (
               <>
                 <SectionHeader
-                  label="Work & Income"
-                  chipVariant="outlined"
-                  chipColor="default"
-                  size="small"
+                  label={sectionLabels.workAndIncome}
+                  variant="subsection"
                 />
                 {categoryNeedsDi && (
                   <TextField
@@ -760,10 +694,8 @@ export default function QuoteCalculator({
             {categoryNeedsOo && (
               <>
                 <SectionHeader
-                  label="Business Details"
-                  chipVariant="outlined"
-                  chipColor="default"
-                  size="small"
+                  label={sectionLabels.businessDetails}
+                  variant="subsection"
                 />
                 <TextField
                   label="Average monthly business expenses"
@@ -921,10 +853,7 @@ export default function QuoteCalculator({
                                 spacing={1}
                               >
                                 <Stack spacing={0.25} sx={{ minWidth: 0 }}>
-                                  <Typography
-                                    variant="subtitle1"
-                                    fontWeight="bold"
-                                  >
+                                  <Typography variant="productNameLabel">
                                     {product.name}
                                     {product.underwritingType === "QD" && (
                                       <QuickDecisionIndicator />
@@ -1080,7 +1009,7 @@ export default function QuoteCalculator({
               sx={{
                 p: 2,
                 borderRadius: "12px",
-                bgcolor: "#f8fafd",
+                bgcolor: "background.subtle",
                 border: "1px solid",
                 borderColor: "divider",
               }}
@@ -1099,7 +1028,7 @@ export default function QuoteCalculator({
                       px: 1.25,
                       py: 1,
                       borderRadius: 2,
-                      bgcolor: "#f8fafc",
+                      bgcolor: "background.subtle",
                       border: "1px dashed",
                       borderColor: "divider",
                       color: "text.secondary",

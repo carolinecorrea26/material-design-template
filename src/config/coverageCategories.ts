@@ -34,13 +34,10 @@ export type CoverageCategory = (typeof coverageCategories)[number];
 export type CoverageCategoryId = CoverageCategory["id"];
 
 export const defaultCategorySectionLabels: Record<CoverageCategoryId, string> =
-  {
-    LI: "Life",
-    AD: "Accidental Death and Dismemberment",
-    DI: "Disability",
-    OO: "Office Overhead",
-    SH: "Supplemental Health",
-  };
+  Object.fromEntries(coverageCategories.map((c) => [c.id, c.label])) as Record<
+    CoverageCategoryId,
+    string
+  >;
 
 export function getCoverageCategorySectionLabel(
   categoryId: CoverageCategoryId,

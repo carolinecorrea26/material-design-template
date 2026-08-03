@@ -370,9 +370,7 @@ export default function Membership() {
                           ? "Physician Information"
                           : "Membership Information"
                       }
-                      chipVariant="outlined"
-                      chipColor="default"
-                      size="small"
+                      variant="subsection"
                     />
                     {client.id === "ama" && membershipValue === "spouse" && (
                       <Alert severity="info" sx={{ mt: 1 }}>

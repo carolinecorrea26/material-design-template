@@ -9,18 +9,15 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {
   Alert,
   Box,
-  Button,
   Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
   DialogContentText,
-  DialogTitle,
   IconButton,
   Stack,
   Typography,
 } from "@mui/material";
 import { useApplicationForm } from "../app/ApplicationFormContext";
+import { CARD_RADIUS } from "../app/theme";
+import AppModal from "./ui/AppModal";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
@@ -370,7 +367,7 @@ export default function CoverageSummary({
                     key={coverage.id}
                     sx={{
                       border: "1px solid #e6e6e6",
-                      borderRadius: "16px",
+                      borderRadius: CARD_RADIUS,
                       backgroundColor: "#ffffff",
                       px: 2,
                       pb: 2,
@@ -383,7 +380,7 @@ export default function CoverageSummary({
                         justifyContent="space-between"
                         alignItems="flex-start"
                       >
-                        <Typography variant="subtitle1">
+                        <Typography variant="productNameLabel">
                           {coverage.name}
                           {coverage.underwritingType === "QD" && (
                             <QuickDecisionIndicator />
@@ -492,7 +489,7 @@ export default function CoverageSummary({
                                       px: 1.25,
                                       py: 1,
                                       borderRadius: 2,
-                                      bgcolor: "#f8fafc",
+                                      bgcolor: "background.subtle",
                                       border: "1px dashed",
                                       borderColor: "divider",
                                       color: "text.secondary",
@@ -577,28 +574,31 @@ export default function CoverageSummary({
   return (
     <>
       {drawerContent}
-      <Dialog
+      <AppModal
         open={confirmRemoveId != null}
         onClose={() => setConfirmRemoveId(null)}
+        maxWidth={400}
+        title="Remove coverage"
+        role="alertdialog"
+        actions={[
+          {
+            label: "Remove",
+            onClick: () => handleRemoveCoverage(confirmRemoveId!),
+            variant: "contained",
+            color: "error",
+          },
+          {
+            label: "Cancel",
+            onClick: () => setConfirmRemoveId(null),
+            variant: "text",
+          },
+        ]}
       >
-        <DialogTitle>Remove coverage</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to remove{" "}
-            <strong>{confirmCoverageName}</strong> from your selections?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmRemoveId(null)}>Cancel</Button>
-          <Button
-            color="error"
-            variant="contained"
-            onClick={() => handleRemoveCoverage(confirmRemoveId!)}
-          >
-            Remove
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <DialogContentText>
+          Are you sure you want to remove <strong>{confirmCoverageName}</strong>{" "}
+          from your selections?
+        </DialogContentText>
+      </AppModal>
     </>
   );
 }

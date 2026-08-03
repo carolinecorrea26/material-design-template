@@ -13,6 +13,7 @@ import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import { useNavigate } from "react-router-dom";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getPagePath, getPageTitle } from "../config/pages";
+import { formatCountdown } from "../utils/formatCountdown";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import {
   useApplicationForm,
@@ -260,8 +261,7 @@ export default function ResumeCode() {
                   <>
                     Code expires in{" "}
                     <Box component="span" sx={{ fontWeight: 700 }}>
-                      {Math.floor(secondsLeft / 60)}:
-                      {String(secondsLeft % 60).padStart(2, "0")}
+                      {formatCountdown(secondsLeft)}
                     </Box>
                   </>
                 )}

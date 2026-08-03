@@ -48,7 +48,7 @@ const RateFrequencyToggle = styled(Switch)(({ theme }) => ({
   "& .MuiSwitch-track": {
     opacity: 1,
     borderRadius: 13,
-    backgroundColor: "#cdd9ec",
+    backgroundColor: theme.palette.background.iconBadge,
   },
 }));
 

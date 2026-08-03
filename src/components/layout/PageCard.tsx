@@ -5,6 +5,7 @@ import {
   type SxProps,
   type Theme,
 } from "@mui/material";
+import { CARD_RADIUS } from "../../app/theme";
 
 type PageCardProps = Omit<PaperProps, "children" | "sx" | "elevation"> & {
   children: ReactNode;
@@ -13,7 +14,7 @@ type PageCardProps = Omit<PaperProps, "children" | "sx" | "elevation"> & {
 
 const baseStyles: SxProps<Theme> = {
   width: "100%",
-  borderRadius: "16px",
+  borderRadius: CARD_RADIUS,
   boxShadow: "0 8px 16px rgba(52, 59, 72, 0.06)",
 };
 

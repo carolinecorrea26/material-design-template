@@ -43,9 +43,7 @@ export default function PhysicianInformation({
     <>
       <SectionHeader
         label="Physician information"
-        chipVariant="outlined"
-        chipColor="default"
-        size="small"
+        variant="subsection"
         sx={{ mb: 1 }}
       />
 

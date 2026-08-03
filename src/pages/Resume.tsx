@@ -17,6 +17,7 @@ import PageCard from "../components/layout/PageCard";
 import { getPageSubhead, getPageTitle } from "../config/pages";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import { sendResumeMagicLinkMockEmail } from "../utils/mockEmail";
+import { formatCountdown } from "../utils/formatCountdown";
 
 export default function Resume() {
   const navigate = useNavigate();
@@ -175,8 +176,7 @@ export default function Resume() {
                     <>
                       Link expires in{" "}
                       <Box component="span" sx={{ fontWeight: 700 }}>
-                        {Math.floor(secondsLeft / 60)}:
-                        {String(secondsLeft % 60).padStart(2, "0")}
+                        {formatCountdown(secondsLeft)}
                       </Box>
                     </>
                   )}

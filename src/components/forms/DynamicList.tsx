@@ -1,13 +1,5 @@
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
+import { Box, Button, DialogContentText } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import {
   useFieldArray,
@@ -17,6 +9,7 @@ import {
 } from "react-hook-form";
 import FieldRenderer from "./FieldRenderer";
 import DynamicListItem from "./DynamicListItem";
+import AppModal from "../ui/AppModal";
 import type { FieldDefinition } from "../../config/fields/types";
 
 type DynamicListFieldMapping<T extends Record<string, string>> = {
@@ -169,97 +162,109 @@ export default function DynamicList<T extends Record<string, string>>({
       )}
 
       {/* Add / Edit dialog */}
-      <Dialog open={showForm} onClose={handleCancel} maxWidth="sm" fullWidth>
-        <DialogTitle>
-          {editingIndex !== null ? `Edit ${label}` : `Add ${label}`}
-        </DialogTitle>
-        <DialogContent>
-          <Box
-            component="form"
-            id={formId}
-            onSubmit={(e) => {
-              e.stopPropagation();
-              handleSubmit(handleSave)(e);
-            }}
-          >
-            {gridFields.length > 0 && (
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-                  gap: { xs: 0, sm: 2 },
-                }}
-              >
-                {gridFields.map((f) => (
-                  <FieldRenderer
-                    key={f.id}
-                    field={f}
-                    control={
-                      itemControl as unknown as Control<
-                        Record<string, string | boolean | string[]>
-                      >
-                    }
-                    errors={
-                      itemErrors as FieldErrors<
-                        Record<string, string | boolean | string[]>
-                      >
-                    }
-                  />
-                ))}
-              </Box>
-            )}
-            {remainingFields.map((f) => (
-              <FieldRenderer
-                key={f.id}
-                field={f}
-                control={
-                  itemControl as unknown as Control<
-                    Record<string, string | boolean | string[]>
-                  >
-                }
-                errors={
-                  itemErrors as FieldErrors<
-                    Record<string, string | boolean | string[]>
-                  >
-                }
-              />
-            ))}
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel}>Cancel</Button>
-          <Button type="submit" form={formId} variant="contained">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <AppModal
+        open={showForm}
+        onClose={handleCancel}
+        maxWidth={600}
+        title={editingIndex !== null ? `Edit ${label}` : `Add ${label}`}
+        actions={[
+          {
+            label: "Save",
+            onClick: () => {
+              const formEl = document.getElementById(
+                formId,
+              ) as HTMLFormElement | null;
+              formEl?.requestSubmit();
+            },
+            variant: "contained",
+          },
+          {
+            label: "Cancel",
+            onClick: handleCancel,
+            variant: "text",
+          },
+        ]}
+      >
+        <Box
+          component="form"
+          id={formId}
+          onSubmit={(e) => {
+            e.stopPropagation();
+            handleSubmit(handleSave)(e);
+          }}
+        >
+          {gridFields.length > 0 && (
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                gap: { xs: 0, sm: 2 },
+              }}
+            >
+              {gridFields.map((f) => (
+                <FieldRenderer
+                  key={f.id}
+                  field={f}
+                  control={
+                    itemControl as unknown as Control<
+                      Record<string, string | boolean | string[]>
+                    >
+                  }
+                  errors={
+                    itemErrors as FieldErrors<
+                      Record<string, string | boolean | string[]>
+                    >
+                  }
+                />
+              ))}
+            </Box>
+          )}
+          {remainingFields.map((f) => (
+            <FieldRenderer
+              key={f.id}
+              field={f}
+              control={
+                itemControl as unknown as Control<
+                  Record<string, string | boolean | string[]>
+                >
+              }
+              errors={
+                itemErrors as FieldErrors<
+                  Record<string, string | boolean | string[]>
+                >
+              }
+            />
+          ))}
+        </Box>
+      </AppModal>
 
       {/* Remove confirmation dialog */}
-      <Dialog
+      <AppModal
         open={removeIndex !== null}
         onClose={handleRemoveCancel}
-        maxWidth="xs"
-        fullWidth
+        maxWidth={400}
+        title={`Remove ${label}?`}
+        role="alertdialog"
+        actions={[
+          {
+            label: "Remove",
+            onClick: handleRemoveConfirm,
+            variant: "contained",
+            color: "error",
+          },
+          {
+            label: "Cancel",
+            onClick: handleRemoveCancel,
+            variant: "text",
+          },
+        ]}
       >
-        <DialogTitle>Remove {label}?</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {removeItemLabel
-              ? `Remove ${removeItemLabel}? This cannot be undone.`
-              : `Are you sure you want to remove this ${label.toLowerCase()}? This cannot be undone.`}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleRemoveCancel}>Cancel</Button>
-          <Button
-            onClick={handleRemoveConfirm}
-            color="error"
-            variant="contained"
-          >
-            Remove
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <DialogContentText>
+          {removeItemLabel
+            ? `Remove ${removeItemLabel}? This cannot be undone.`
+            : `Are you sure you want to remove this ${label.toLowerCase()}? This cannot be undone.`}
+        </DialogContentText>
+      </AppModal>
     </div>
   );
 }

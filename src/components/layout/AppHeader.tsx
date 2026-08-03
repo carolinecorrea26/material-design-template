@@ -198,7 +198,7 @@ export default function AppHeader({
           color="default"
           elevation={0}
           sx={{
-            backgroundColor: "#fff",
+            backgroundColor: "background.paper",
             borderBottom: "none",
             boxShadow: "none",
             pt: 2,

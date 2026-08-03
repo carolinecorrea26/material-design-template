@@ -11,6 +11,7 @@ import DynamicList from "../components/forms/DynamicList";
 import AppDrawer from "../components/ui/AppDrawer";
 import FormHelpChips from "../components/content/HelpChips";
 import type { FieldDefinition } from "../config/fields/types";
+import { YES_NO_OPTIONS } from "../config/constants";
 
 // ─── Help content ─────────────────────────────────────────────────────────────
 
@@ -81,7 +82,7 @@ function renderDetailsItem(item: Record<string, string>) {
   return (
     <Stack spacing={0.25}>
       {item.onset && (
-        <span style={{ fontSize: "0.75rem", color: "rgba(0,0,0,0.6)" }}>
+        <span style={{ fontSize: "0.75rem", color: "#49596f" }}>
           Onset: {item.onset}
         </span>
       )}
@@ -121,11 +122,6 @@ const QUESTIONS = [
   },
 ];
 
-const yesNoOptions = [
-  { value: "yes", label: "Yes" },
-  { value: "no", label: "No" },
-];
-
 // ─── Field builders ───────────────────────────────────────────────────────────
 
 function createAnswerFields(applicant: "self" | "spouse"): FieldDefinition[] {
@@ -135,7 +131,7 @@ function createAnswerFields(applicant: "self" | "spouse"): FieldDefinition[] {
     label: q.label,
     inputType: "radio" as const,
     required: true,
-    options: yesNoOptions,
+    options: YES_NO_OPTIONS,
     labelVariant: "standard" as const,
   }));
 }

@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
+import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 
 function QuickDecisionMark() {
   return (
@@ -11,15 +12,37 @@ function QuickDecisionMark() {
   );
 }
 
-export { QuickDecisionMark };
+/** Inline styled QuickDecision mark with bold, success green, and lightning icon. */
+function QuickDecisionMarkStyled() {
+  return (
+    <Typography
+      component="span"
+      sx={{
+        fontWeight: 700,
+        color: "success.main",
+        display: "inline-flex",
+        alignItems: "baseline",
+        gap: 0.25,
+      }}
+    >
+      <OfflineBoltIcon
+        color="success"
+        sx={{ fontSize: "1em", alignSelf: "center" }}
+      />
+      <QuickDecisionMark />
+    </Typography>
+  );
+}
+
+export { QuickDecisionMark, QuickDecisionMarkStyled };
 
 export default function QuickDecisionDrawerContent() {
   return (
     <Stack spacing={2}>
       <Typography variant="body2" color="text.secondary">
-        <QuickDecisionMark /> helps speed up your application by using your
-        answers to health questions along with securely accessed data, such as
-        prescription history, medical claims, driving records, and prior
+        <QuickDecisionMarkStyled /> helps speed up your application by using
+        your answers to health questions along with securely accessed data, such
+        as prescription history, medical claims, driving records, and prior
         insurance activity. In many cases, this means no medical exams or lab
         tests are needed.
       </Typography>

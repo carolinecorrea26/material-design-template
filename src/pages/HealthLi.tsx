@@ -8,6 +8,7 @@ import {
 import FieldRenderer from "../components/forms/FieldRenderer";
 import DynamicList from "../components/forms/DynamicList";
 import type { FieldDefinition } from "../config/fields/types";
+import { YES_NO_OPTIONS } from "../config/constants";
 
 const HEALTH_QUESTIONS = [
   "Are you currently confined to a hospital, nursing home, psychiatric facility, incarcerated in a prison/correctional facility, currently on parole or currently receiving home health care/assisted living care?",
@@ -27,11 +28,6 @@ const HEALTH_QUESTIONS = [
   "Have any of your siblings or either of your parents been diagnosed with or died from cancer or cardiovascular disease prior to age 60?",
 ];
 
-const yesNoOptions = [
-  { value: "yes", label: "Yes" },
-  { value: "no", label: "No" },
-];
-
 const detailsFields: FieldDefinition[] = [
   {
     id: "onset",
@@ -44,7 +40,8 @@ const detailsFields: FieldDefinition[] = [
   },
   {
     id: "conditionsDetails",
-    label: "Condition/Medication & Details (Medical Advice Given, Treatment, Results, Date Recovered)",
+    label:
+      "Condition/Medication & Details (Medical Advice Given, Treatment, Results, Date Recovered)",
     inputType: "text",
     required: true,
     multiline: true,
@@ -75,7 +72,7 @@ function renderDetailsItem(item: Record<string, string>) {
   return (
     <Stack spacing={0.25}>
       {item.onset && (
-        <span style={{ fontSize: "0.75rem", color: "rgba(0,0,0,0.6)" }}>
+        <span style={{ fontSize: "0.75rem", color: "#49596f" }}>
           Onset: {item.onset}
         </span>
       )}
@@ -93,7 +90,7 @@ function createQuestionFields(applicant: "self" | "spouse"): FieldDefinition[] {
     label: question,
     inputType: "radio" as const,
     required: true,
-    options: yesNoOptions,
+    options: YES_NO_OPTIONS,
     labelVariant: "standard" as const,
   }));
 }

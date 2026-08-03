@@ -205,7 +205,7 @@ function SectionAccordion({
         sx={{
           px: { xs: 2, md: 3 },
           py: 1,
-          backgroundColor: "#f8fafc",
+          backgroundColor: "background.subtle",
           borderBottom: "1px solid",
           borderColor: "divider",
         }}

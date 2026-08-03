@@ -1,4 +1,5 @@
 import type { CoverageContent } from "../types";
+import { applicantLabels } from "../../config/formSectionTitle";
 
 export const coverageDefaults: CoverageContent = {
   categoryDescriptions: {
@@ -8,11 +9,7 @@ export const coverageDefaults: CoverageContent = {
     OO: "Office overhead coverage can help keep eligible business expenses paid during a covered disability.",
     SH: "Supplemental health coverage can help with out-of-pocket costs tied to covered health events.",
   },
-  applicantLabels: {
-    member: "You",
-    spouse: "Your Spouse",
-    child: "Your Child(ren)",
-  },
+  applicantLabels: { ...applicantLabels },
   applicantCheckboxLabels: {
     member: "Select for myself",
     spouse: "Select for my spouse",

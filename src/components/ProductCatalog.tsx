@@ -14,13 +14,14 @@ import {
   Typography,
 } from "@mui/material";
 import FeaturedBadge from "./ui/FeaturedBadge";
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
+import type { SvgIconComponent } from "@mui/icons-material";
+import CategorySectionCard from "./ui/CategorySectionCard";
 import CategoryHeader from "./CategoryHeader";
 import ApplicantSectionLabel from "./forms/ApplicantSectionLabel";
 import SelectionGroup from "./forms/SelectionGroup";
 import ProductCardSurface from "./ui/ProductCard";
 import QuickDecisionIndicator from "./ui/QuickDecisionIndicator";
-import { QuickDecisionMark } from "./content/QuickDecisionExplainer";
+import QuickDecisionInfoBox from "./content/QuickDecisionInfoBox";
 import { getCoverageCategorySectionLabel } from "../config/coverageCategories";
 import {
   getResolvedApplicantSectionTitles,
@@ -302,54 +303,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 
       {/* QuickDecision note */}
       {hasQdCategorySelected && (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "flex-start",
-            gap: 1,
-            p: 2,
-            mb: 2,
-            borderRadius: 2,
-            backgroundColor: "#e6f4ee",
-          }}
-        >
-          <OfflineBoltIcon color="success" sx={{ mt: 0.25, flexShrink: 0 }} />
-          <Typography variant="body2" color="text.secondary">
-            <Typography
-              component="span"
-              variant="body2"
-              sx={{ fontWeight: 700, color: "success.main" }}
-            >
-              <QuickDecisionMark />
-            </Typography>{" "}
-            helps many applicants receive a decision instantly or within a few
-            days without a medical exam. This starts with health questions you
-            answer online to reduce time needed with phone calls or other follow
-            up.{" "}
-            <Typography
-              component="span"
-              role="button"
-              tabIndex={0}
-              onClick={onQdDrawerOpen}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  onQdDrawerOpen();
-                }
-              }}
-              sx={{
-                color: "primary.main",
-                textDecoration: "underline",
-                textUnderlineOffset: "0.12em",
-                cursor: "pointer",
-                font: "inherit",
-                lineHeight: "inherit",
-              }}
-            >
-              Learn more about this process.
-            </Typography>
-          </Typography>
-        </Box>
+        <QuickDecisionInfoBox onLearnMore={onQdDrawerOpen} />
       )}
 
       {/* Coverage increase warning */}
@@ -403,70 +357,61 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 
                 return (
                   <Stack spacing={2} key={categoryId}>
-                    <Box
-                      sx={{
-                        p: "1rem",
-                        background: "#f9fafd",
-                        borderRadius: "16px",
-                      }}
+                    <CategorySectionCard
+                      label={getCoverageCategorySectionLabel(
+                        categoryId,
+                        categorySectionLabelOverrides,
+                      )}
+                      icon={CategoryIcon as SvgIconComponent}
                     >
-                      <CategoryHeader
-                        label={getCoverageCategorySectionLabel(
-                          categoryId,
-                          categorySectionLabelOverrides,
-                        )}
-                        icon={CategoryIcon as any}
-                      />
-                      <Stack spacing={2} sx={{ mt: 2 }}>
-                        {notes && (
-                          <Alert severity="info" sx={{ borderRadius: 2 }}>
+                      {notes && (
+                        <Alert severity="info" sx={{ borderRadius: 2 }}>
+                          <Typography
+                            variant="body2"
+                            sx={{ mb: hasSpouse || notes.child ? 1 : 0 }}
+                          >
+                            {notes.member}
+                          </Typography>
+                          {hasSpouse && (
                             <Typography
                               variant="body2"
-                              sx={{ mb: hasSpouse || notes.child ? 1 : 0 }}
+                              sx={{ mb: notes.child ? 1 : 0 }}
                             >
-                              {notes.member}
+                              {notes.spouse}
                             </Typography>
-                            {hasSpouse && (
-                              <Typography
-                                variant="body2"
-                                sx={{ mb: notes.child ? 1 : 0 }}
-                              >
-                                {notes.spouse}
-                              </Typography>
-                            )}
-                            {notes.child && (
-                              <Typography variant="body2">
-                                {notes.child}
-                              </Typography>
-                            )}
-                          </Alert>
-                        )}
-                        {productsInCategory.map((coverage) => (
-                          <ProductCard
-                            key={coverage.id}
-                            coverage={coverage}
-                            productApplicants={productApplicants}
-                            storedAmounts={storedAmounts}
-                            storedRiders={storedRiders}
-                            storedRiderAmounts={storedRiderAmounts}
-                            storedWaitingPeriods={storedWaitingPeriods}
-                            storedMaxBenefitPeriods={storedMaxBenefitPeriods}
-                            calculatingRateKeys={calculatingRateKeys}
-                            rateFrequency={rateFrequency}
-                            frequencyCalculating={frequencyCalculating}
-                            onToggleApplicant={onToggleApplicant}
-                            onAmountChange={onAmountChange}
-                            onRiderToggle={onRiderToggle}
-                            onRiderAmountChange={onRiderAmountChange}
-                            onWaitingPeriodChange={onWaitingPeriodChange}
-                            onMaxBenefitPeriodChange={onMaxBenefitPeriodChange}
-                            getVisibleApplicants={getVisibleApplicants}
-                            calcApplicantPremium={calcApplicantPremium}
-                            generateAmountChoices={generateAmountChoices}
-                          />
-                        ))}
-                      </Stack>
-                    </Box>
+                          )}
+                          {notes.child && (
+                            <Typography variant="body2">
+                              {notes.child}
+                            </Typography>
+                          )}
+                        </Alert>
+                      )}
+                      {productsInCategory.map((coverage) => (
+                        <ProductCard
+                          key={coverage.id}
+                          coverage={coverage}
+                          productApplicants={productApplicants}
+                          storedAmounts={storedAmounts}
+                          storedRiders={storedRiders}
+                          storedRiderAmounts={storedRiderAmounts}
+                          storedWaitingPeriods={storedWaitingPeriods}
+                          storedMaxBenefitPeriods={storedMaxBenefitPeriods}
+                          calculatingRateKeys={calculatingRateKeys}
+                          rateFrequency={rateFrequency}
+                          frequencyCalculating={frequencyCalculating}
+                          onToggleApplicant={onToggleApplicant}
+                          onAmountChange={onAmountChange}
+                          onRiderToggle={onRiderToggle}
+                          onRiderAmountChange={onRiderAmountChange}
+                          onWaitingPeriodChange={onWaitingPeriodChange}
+                          onMaxBenefitPeriodChange={onMaxBenefitPeriodChange}
+                          getVisibleApplicants={getVisibleApplicants}
+                          calcApplicantPremium={calcApplicantPremium}
+                          generateAmountChoices={generateAmountChoices}
+                        />
+                      ))}
+                    </CategorySectionCard>
                   </Stack>
                 );
               })}
@@ -620,7 +565,7 @@ function ProductCard({
           alignItems="center"
           spacing={1}
         >
-          <Typography sx={{ fontSize: "1rem", fontWeight: 700 }}>
+          <Typography variant="productNameLabel">
             {coverage.name}
             {coverage.underwritingType === "QD" && <QuickDecisionIndicator />}
           </Typography>

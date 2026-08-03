@@ -55,7 +55,7 @@ export default function AppLayout({
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "#f9fafc",
+        backgroundColor: "background.default",
       }}
     >
       <AppHeader client={client} variant={variant} />

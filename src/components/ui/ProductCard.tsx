@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 import { Box, type BoxProps, type SxProps, type Theme } from "@mui/material";
+import { CARD_RADIUS } from "../../app/theme";
 
 type ProductCardProps = Omit<BoxProps, "children" | "sx"> & {
   children: ReactNode;
@@ -9,18 +10,18 @@ type ProductCardProps = Omit<BoxProps, "children" | "sx"> & {
 };
 
 const baseStyles: SxProps<Theme> = {
-  borderRadius: "16px",
+  borderRadius: CARD_RADIUS,
   border: "1px solid",
   borderColor: "divider",
-  backgroundColor: "#ffffff",
+  backgroundColor: "background.paper",
   p: 2.5,
 };
 
 const selectedStyles: SxProps<Theme> = {
-  borderColor: "#009465",
+  borderColor: "success.main",
   borderWidth: "1px",
   boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-  backgroundColor: "#fbfffd",
+  backgroundColor: "rgba(0, 148, 101, 0.03)",
 };
 
 export default function ProductCard({

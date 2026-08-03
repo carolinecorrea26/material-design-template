@@ -67,7 +67,7 @@ export default function EstimatedCostPanel({
           sx={{
             display: "flex", alignItems: "center", justifyContent: "center",
             textAlign: "center", px: 4, py: 4, borderRadius: 2,
-            bgcolor: "#f8fafc", border: "1px dashed", borderColor: "divider",
+            bgcolor: "background.subtle", border: "1px dashed", borderColor: "divider",
           }}
         >
           <Stack spacing={1} alignItems="center">

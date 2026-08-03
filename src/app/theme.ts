@@ -36,6 +36,7 @@ declare module "@mui/material/styles" {
     formProgressStepNumber: ResponsiveCSSProperties;
     formProgressStepLabel: React.CSSProperties;
     formProgressPercent: React.CSSProperties;
+    productNameLabel: React.CSSProperties;
   }
   interface TypographyVariantsOptions {
     formPageTitle?: ResponsiveCSSProperties;
@@ -48,6 +49,7 @@ declare module "@mui/material/styles" {
     formProgressStepNumber?: ResponsiveCSSProperties;
     formProgressStepLabel?: React.CSSProperties;
     formProgressPercent?: React.CSSProperties;
+    productNameLabel?: React.CSSProperties;
   }
 }
 
@@ -63,10 +65,12 @@ declare module "@mui/material/Typography" {
     formProgressStepNumber: true;
     formProgressStepLabel: true;
     formProgressPercent: true;
+    productNameLabel: true;
   }
 }
 
-const INPUT_RADIUS = "16px";
+/** Shared border-radius for card-level surfaces, inputs, and alerts. */
+export const CARD_RADIUS = "16px";
 
 /** Single source-of-truth body/header/input text color. */
 export const TEXT_PRIMARY = "#353b48";
@@ -248,6 +252,12 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
         fontWeight: 700,
         lineHeight: 1,
       },
+      productNameLabel: {
+        fontSize: "0.875rem",
+        fontWeight: 700,
+        lineHeight: 1.4,
+        color: TEXT_PRIMARY,
+      },
     },
 
     components: {
@@ -305,13 +315,13 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
       MuiStepContent: {
         styleOverrides: { root: { marginLeft: 15, borderColor: "#d7dee8" } },
       },
-      MuiAlert: { styleOverrides: { root: { borderRadius: INPUT_RADIUS } } },
+      MuiAlert: { styleOverrides: { root: { borderRadius: CARD_RADIUS } } },
 
       MuiOutlinedInput: {
         styleOverrides: {
           root: ({ theme: t }) => ({
             backgroundColor: t.palette.background.paper,
-            borderRadius: INPUT_RADIUS,
+            borderRadius: CARD_RADIUS,
             "& .MuiOutlinedInput-notchedOutline": {
               borderColor: FIELD_BORDER_COLOR,
               borderWidth: "1px",
@@ -399,7 +409,7 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
           }),
         },
       },
-      MuiCard: { styleOverrides: { root: { borderRadius: INPUT_RADIUS } } },
+      MuiCard: { styleOverrides: { root: { borderRadius: CARD_RADIUS } } },
       MuiCardContent: {
         styleOverrides: {
           root: { padding: 24, "&:last-child": { paddingBottom: 24 } },
@@ -468,6 +478,7 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
             formProgressStepNumber: "span",
             formProgressStepLabel: "span",
             formProgressPercent: "span",
+            productNameLabel: "span",
           },
         },
       },
@@ -515,7 +526,7 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
             padding: "16.5px 14px",
             backgroundColor: t.palette.background.paper,
             border: `1px solid ${FIELD_BORDER_COLOR}`,
-            borderRadius: INPUT_RADIUS,
+            borderRadius: CARD_RADIUS,
             textTransform: "none",
             fontWeight: 700,
             color: TEXT_PRIMARY,
@@ -539,7 +550,7 @@ export function createAppTheme(colorId: ThemeColorId = "default") {
             gap: t.spacing(1.5),
             "& .MuiToggleButtonGroup-grouped": {
               border: `1px solid ${FIELD_BORDER_COLOR}`,
-              borderRadius: `${INPUT_RADIUS} !important`,
+              borderRadius: `${CARD_RADIUS} !important`,
             },
           }),
         },

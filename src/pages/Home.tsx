@@ -27,6 +27,7 @@ import type { QuoteCalculatorInitialValues } from "../components/forms/QuoteCalc
 import AppDrawer from "../components/ui/AppDrawer";
 import QuickDecisionIndicator from "../components/ui/QuickDecisionIndicator";
 import QuickDecisionDrawerContent from "../components/content/QuickDecisionExplainer";
+import QuickDecisionInfoBox from "../components/content/QuickDecisionInfoBox";
 import { ApplicationReviewDrawerContent } from "../content/helpContent";
 import { getContent, resolveTemplate } from "../content";
 import { getActiveClient } from "../config/client/getActiveClient";
@@ -53,16 +54,11 @@ import {
   formatDateDisplay,
 } from "../utils/dateFormatting";
 import { fieldCatalog } from "../config/fields";
+import { calculateAge } from "../utils/calculateAge";
+import { SURFACE_SX } from "../config/constants";
 
 type DrawerId = "application-review" | "quick-decision" | null;
 const PAGE_MAX_WIDTH = 1200;
-
-const SURFACE_SX = {
-  border: "1px solid rgba(52, 59, 72, 0.10)",
-  borderRadius: 4,
-  backgroundColor: "#ffffff",
-  boxShadow: "0 18px 40px rgba(52, 59, 72, 0.06)",
-};
 
 const fadeInUp = keyframes`
   from {
@@ -147,16 +143,7 @@ function HomeQuoteSection({ onOpenQuote }: HomeQuoteSectionProps) {
     setAgeError("");
     if (Object.keys(validationErrors).length > 0) return;
 
-    const age = (() => {
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(birthday)) return null;
-      const [y, m, d] = birthday.split("-").map(Number);
-      const birth = new Date(y, m - 1, d);
-      const today = new Date();
-      let a = today.getFullYear() - birth.getFullYear();
-      const mo = today.getMonth() - birth.getMonth();
-      if (mo < 0 || (mo === 0 && today.getDate() < birth.getDate())) a--;
-      return a;
-    })();
+    const age = calculateAge(birthday);
     if (age !== null && age >= 80) {
       setAgeError(
         "We're sorry, but coverage is not available for applicants age 80 or older.",
@@ -573,7 +560,7 @@ export default function Home() {
               variant="outlined"
               sx={{
                 borderColor: "divider",
-                bgcolor: "#f9fafc",
+                bgcolor: "background.default",
                 fontSize: "0.75rem",
                 height: "auto",
                 py: 0.5,
@@ -739,6 +726,10 @@ export default function Home() {
               </Typography>
             </Stack>
 
+            <QuickDecisionInfoBox
+              onLearnMore={() => setActiveDrawer("quick-decision")}
+            />
+
             <Box
               sx={{
                 ...SURFACE_SX,
@@ -763,7 +754,10 @@ export default function Home() {
                     sx={{
                       width: { xs: 56, md: 260 },
                       flexShrink: 0,
-                      backgroundColor: { xs: "transparent", md: "#fbfcff" },
+                      backgroundColor: {
+                        xs: "transparent",
+                        md: "background.subtle",
+                      },
                     }}
                   >
                     <Tabs

@@ -11,7 +11,7 @@ import DynamicList from "../components/forms/DynamicList";
 import AppDrawer from "../components/ui/AppDrawer";
 import FormHelpChips from "../components/content/HelpChips";
 import type { FieldDefinition } from "../config/fields/types";
-
+import { YES_NO_OPTIONS } from "../config/constants";
 // ─── Help content ─────────────────────────────────────────────────────────────
 
 const HELP_ITEMS = [
@@ -91,7 +91,10 @@ const assistanceFields: FieldDefinition[] = [
       { value: "dressing", label: "Dressing" },
       { value: "eating", label: "Eating" },
       { value: "walking", label: "Walking" },
-      { value: "moving", label: "Moving in/out of a bed or chair or wheel chair" },
+      {
+        value: "moving",
+        label: "Moving in/out of a bed or chair or wheel chair",
+      },
       { value: "toileting", label: "Toileting" },
       { value: "bowel-bladder", label: "Bowel or bladder control" },
     ],
@@ -212,7 +215,7 @@ function renderSpecificItem(item: Record<string, string>) {
   return (
     <Stack spacing={0.25}>
       {item.onset && (
-        <span style={{ fontSize: "0.75rem", color: "rgba(0,0,0,0.6)" }}>
+        <span style={{ fontSize: "0.75rem", color: "#49596f" }}>
           Onset: {item.onset}
         </span>
       )}
@@ -227,12 +230,12 @@ function renderAssistanceItem(item: Record<string, string>) {
   return (
     <Stack spacing={0.25}>
       {item.assistanceType && (
-        <span style={{ fontSize: "0.75rem", color: "rgba(0,0,0,0.6)" }}>
+        <span style={{ fontSize: "0.75rem", color: "#49596f" }}>
           {item.assistanceType}
         </span>
       )}
       {item.onset && (
-        <span style={{ fontSize: "0.75rem", color: "rgba(0,0,0,0.6)" }}>
+        <span style={{ fontSize: "0.75rem", color: "#49596f" }}>
           Onset: {item.onset}
         </span>
       )}
@@ -247,12 +250,12 @@ function renderFallItem(item: Record<string, string>) {
   return (
     <Stack spacing={0.25}>
       {item.fallType && (
-        <span style={{ fontSize: "0.75rem", color: "rgba(0,0,0,0.6)" }}>
+        <span style={{ fontSize: "0.75rem", color: "#49596f" }}>
           {item.fallType}
         </span>
       )}
       {item.onset && (
-        <span style={{ fontSize: "0.75rem", color: "rgba(0,0,0,0.6)" }}>
+        <span style={{ fontSize: "0.75rem", color: "#49596f" }}>
           Onset: {item.onset}
         </span>
       )}
@@ -332,11 +335,6 @@ const QUESTIONS: QuestionDef[] = [
 
 // ─── Field builders ───────────────────────────────────────────────────────────
 
-const yesNoOptions = [
-  { value: "yes", label: "Yes" },
-  { value: "no", label: "No" },
-];
-
 function createAnswerFields(applicant: "self" | "spouse"): FieldDefinition[] {
   const suffix = applicant === "spouse" ? "-spouse" : "";
   return QUESTIONS.map((q) => ({
@@ -344,7 +342,7 @@ function createAnswerFields(applicant: "self" | "spouse"): FieldDefinition[] {
     label: q.label,
     inputType: "radio" as const,
     required: true,
-    options: yesNoOptions,
+    options: YES_NO_OPTIONS,
     labelVariant: "standard" as const,
   }));
 }

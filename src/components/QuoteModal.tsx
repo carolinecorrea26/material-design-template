@@ -31,6 +31,7 @@ import type {
   CoverageDefinition,
 } from "../config/coverages/types";
 import { coverageCategories } from "../config/coverageCategories";
+import CoverageCategorySelector from "./forms/CoverageCategorySelector";
 import {
   getCategoryRequirements,
   getBenefitAmountLabel,
@@ -433,64 +434,14 @@ export default function QuoteModal({
       <Box>
         <Stack spacing={3}>
           {/* Category selection (multi-select) */}
-          <FormControl component="fieldset">
-            <FormLabel component="legend" required sx={{ mb: 1.5 }}>
-              Choose category
-            </FormLabel>
-            <Stack spacing={1.5}>
-              {coverageCategories
-                .filter((cat) => coverages.some((c) => c.categoryId === cat.id))
-                .map((category) => {
-                  const Icon = category.icon;
-                  const isSelected = selectedCategories.includes(category.id);
-                  return (
-                    <SelectionGroup
-                      key={category.id}
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      checked={isSelected}
-                      tabIndex={0}
-                      onClick={() => handleCategoryToggle(category.id)}
-                      onKeyDown={(e) => {
-                        if (e.key === " " || e.key === "Enter") {
-                          e.preventDefault();
-                          handleCategoryToggle(category.id);
-                        }
-                      }}
-                    >
-                      <Box
-                        className="SelectionGroup-icon"
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          flexShrink: 0,
-                        }}
-                      >
-                        <Icon
-                          sx={{
-                            color: "primary.dark",
-                            backgroundColor: "background.iconBadge",
-                            borderRadius: "9999px",
-                            padding: "2px",
-                            width: "2rem",
-                            height: "2rem",
-                          }}
-                        />
-                      </Box>
-                      <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
-                        <Box
-                          component="span"
-                          className="SelectionGroup-label"
-                          sx={{ fontSize: "0.875rem" }}
-                        >
-                          {category.label}
-                        </Box>
-                      </Stack>
-                    </SelectionGroup>
-                  );
-                })}
-            </Stack>
-          </FormControl>
+          <CoverageCategorySelector
+            categories={coverageCategories.filter((cat) =>
+              coverages.some((c) => c.categoryId === cat.id),
+            )}
+            selectedIds={selectedCategories}
+            onToggle={handleCategoryToggle}
+            legend="Choose category"
+          />
 
           {/* Category-level additional fields */}
           {needsAdditionalFields && selectedCategories.length > 0 && (
@@ -764,7 +715,7 @@ export default function QuoteModal({
                           spacing={1}
                         >
                           <Stack spacing={0.25} sx={{ minWidth: 0 }}>
-                            <Typography variant="subtitle1" fontWeight="bold">
+                            <Typography variant="productNameLabel">
                               {product.name}
                               {product.underwritingType === "QD" && (
                                 <QuickDecisionIndicator />
@@ -941,7 +892,7 @@ export default function QuoteModal({
                 sx={{
                   p: 2,
                   borderRadius: "12px",
-                  bgcolor: "#f8fafd",
+                  bgcolor: "background.subtle",
                   border: "1px solid",
                   borderColor: "divider",
                 }}
@@ -960,7 +911,7 @@ export default function QuoteModal({
                         px: 1.25,
                         py: 1,
                         borderRadius: 2,
-                        bgcolor: "#f8fafc",
+                        bgcolor: "background.subtle",
                         border: "1px dashed",
                         borderColor: "divider",
                         color: "text.secondary",

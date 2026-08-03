@@ -56,7 +56,7 @@ export default function ProductEstimatedCostBreakdown({
       }}
     >
       <Typography variant="subtitle2" sx={{ mb: 1.25, fontWeight: 700 }}>
-        Estimated Cost Breakdown
+        Estimated Cost Breakdown<sup>1</sup>
       </Typography>
 
       <Stack spacing={0.75}>
@@ -85,11 +85,11 @@ export default function ProductEstimatedCostBreakdown({
       <Divider sx={{ my: 1.25 }} />
 
       <Stack direction="row" justifyContent="space-between" spacing={2}>
-        <Typography variant="h6" sx={{ fontWeight: 700 }}>
-          Total
+        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+          Total<sup>1</sup>
         </Typography>
         <Typography
-          variant="h6"
+          variant="subtitle2"
           sx={{ fontWeight: 700, color: "primary.main" }}
         >
           {formatUSD(getDisplayedPremium(total, rateFrequency))}

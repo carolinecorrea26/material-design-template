@@ -53,7 +53,12 @@ export default function AppDrawer({
           alignItems="center"
           justifyContent="space-between"
           spacing={2}
-          sx={{ px: 3, py: 2, borderColor: "divider", bgcolor: "white" }}
+          sx={{
+            px: 3,
+            py: 2,
+            borderColor: "divider",
+            bgcolor: "background.paper",
+          }}
         >
           {typeof title === "string" ? (
             <Typography variant="h6">{title}</Typography>
@@ -65,7 +70,16 @@ export default function AppDrawer({
           </IconButton>
         </Stack>
       )}
-      <Box sx={{ px: 3, pb: 3, pt: title != null ? 1 : 3, overflowY: "auto", flex: 1, bgcolor: "white" }}>
+      <Box
+        sx={{
+          px: 3,
+          pb: 3,
+          pt: title != null ? 1 : 3,
+          overflowY: "auto",
+          flex: 1,
+          bgcolor: "background.paper",
+        }}
+      >
         {children}
       </Box>
     </Box>
@@ -79,7 +93,12 @@ export default function AppDrawer({
         onClose={onClose}
         onOpen={() => {}}
         disableSwipeToOpen
-        sx={{ "& .MuiDrawer-paper": { borderTopLeftRadius: 16, borderTopRightRadius: 16 } }}
+        sx={{
+          "& .MuiDrawer-paper": {
+            borderTopLeftRadius: 16,
+            borderTopRightRadius: 16,
+          },
+        }}
       >
         {content}
       </SwipeableDrawer>

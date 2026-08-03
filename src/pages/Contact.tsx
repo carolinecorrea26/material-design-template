@@ -5,6 +5,7 @@ import FieldRenderer from "../components/forms/FieldRenderer";
 import ApplicantSection from "../components/forms/ApplicantSection";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
 import SectionHeader from "../components/forms/SectionHeader";
+import { sectionLabels } from "../config/pageSections";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { getSelectedCategoryIds } from "../config/formFlow";
 
@@ -249,10 +250,8 @@ function ContactFields({
               {showBusinessSection && businessSection && (
                 <Box sx={{ mt: 2 }}>
                   <SectionHeader
-                    label="Business / Employer Information"
-                    chipVariant="outlined"
-                    chipColor="default"
-                    size="small"
+                    label={sectionLabels.businessEmployerInfo}
+                    variant="subsection"
                   />
 
                   {renderBusinessFields(

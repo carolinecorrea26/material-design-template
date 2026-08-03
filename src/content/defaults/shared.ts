@@ -1,16 +1,12 @@
 import type { SharedContent } from "../types";
+import {
+  applicantLabels,
+  applicantSectionTitles,
+} from "../../config/formSectionTitle";
 
 export const sharedDefaults: SharedContent = {
-  applicantLabels: {
-    member: "You",
-    spouse: "Your Spouse",
-    child: "Your Child(ren)",
-  },
-  applicantSectionTitles: {
-    self: "You",
-    spouse: "Your Spouse",
-    child: "Your Child(ren)",
-  },
+  applicantLabels: { ...applicantLabels },
+  applicantSectionTitles: { ...applicantSectionTitles },
   cookieBanner: {
     message:
       "New York Life uses cookies to enhance your experience and analyze site performance. By continuing, you agree to our use of cookies.",

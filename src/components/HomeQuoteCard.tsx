@@ -26,18 +26,13 @@ import {
   formatDateForStorage,
   formatDateDisplay,
 } from "../utils/dateFormatting";
+import { calculateAge } from "../utils/calculateAge";
+import { SURFACE_SX } from "../config/constants";
 
 type EligibilityValues = {
   birthday: string;
   zipCode: string;
   state: string;
-};
-
-const SURFACE_SX = {
-  border: "1px solid rgba(52, 59, 72, 0.10)",
-  borderRadius: 4,
-  backgroundColor: "#ffffff",
-  boxShadow: "0 18px 40px rgba(52, 59, 72, 0.06)",
 };
 
 const ESTIMATE_STORAGE_KEY = "homeEstimateValues";
@@ -58,19 +53,6 @@ function saveEstimateValues(values: EligibilityValues) {
 
 function getStateOptions() {
   return fieldCatalog["state-province"].options ?? [];
-}
-
-function calculateAge(birthdayStr: string): number | null {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(birthdayStr)) return null;
-  const [y, m, d] = birthdayStr.split("-").map(Number);
-  const birth = new Date(y, m - 1, d);
-  const today = new Date();
-  let age = today.getFullYear() - birth.getFullYear();
-  const monthDiff = today.getMonth() - birth.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-    age--;
-  }
-  return age;
 }
 
 export default function HomeQuoteCard() {
