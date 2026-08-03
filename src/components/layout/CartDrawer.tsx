@@ -15,24 +15,24 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useApplicationForm } from "../app/ApplicationFormContext";
-import { CARD_RADIUS } from "../app/theme";
-import AppModal from "./ui/AppModal";
-import { getActiveClient } from "../config/client/getActiveClient";
-import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
-import { coverageCategories } from "../config/coverageCategories";
-import { getResolvedApplicantLabels } from "../config/formSectionTitle";
+import { useApplicationForm } from "../../app/ApplicationFormContext";
+import { CARD_RADIUS } from "../../app/theme";
+import AppModal from "./AppModal";
+import { getActiveClient } from "../../config/client/getActiveClient";
+import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
+import { coverageCategories } from "../../config/coverageCategories";
+import { getResolvedApplicantLabels } from "../../config/formSectionTitle";
 import type {
   CoverageApplicantId,
   CoverageDefinition,
-} from "../config/coverages/types";
-import QuickDecisionIndicator from "./ui/QuickDecisionIndicator";
-import TotalCostPanel from "./ui/TotalCostPanel";
-import { formatUSD } from "../utils/formatUSD";
-import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
-import { getResolvedFormFlow } from "../config/formFlow";
-import { pages } from "../config/pages";
-import type { PageId } from "../types";
+} from "../../config/coverages/types";
+import QuickDecisionIndicator from "../ui/QuickDecisionIndicator";
+import TotalCostSummary from "../ui/TotalCostSummary";
+import { formatUSD } from "../../utils/formatUSD";
+import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
+import { getResolvedFormFlow } from "../../config/formFlow";
+import { pages } from "../../config/pages";
+import type { PageId } from "../../types";
 
 type CoverageSummaryProps = {
   onClose: () => void;
@@ -203,7 +203,7 @@ export function useApplicationSummaryBadge(): number {
   return useSummaryData().badgeCount;
 }
 
-export default function CoverageSummary({
+export default function CartDrawer({
   onClose,
   source = "cart-icon",
 }: CoverageSummaryProps) {
@@ -536,7 +536,7 @@ export default function CoverageSummary({
             )}
 
             {totalMonthly > 0 && (
-              <TotalCostPanel
+              <TotalCostSummary
                 items={groupedByCategory.flatMap(({ items }) =>
                   items
                     .map(({ coverage, applicants }) => ({

@@ -21,13 +21,13 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import AppDrawer from "../ui/AppDrawer";
+import AppDrawer from "../layout/AppDrawer";
 import CoverageCategorySelector from "./CoverageCategorySelector";
 import SelectionGroup from "./SelectionGroup";
-import SectionHeader from "./SectionHeader";
-import CategoryHeader from "../CategoryHeader";
+import SectionDivider from "../layout/SectionDivider";
+import CategoryHeader from "../layout/CategoryHeader";
 import FeaturedBadge from "../ui/FeaturedBadge";
-import ProductCardSurface from "../ui/ProductCard";
+import ProductCardSurface from "../layout/ProductCard";
 import QuickDecisionIndicator from "../ui/QuickDecisionIndicator";
 import RateFrequencyToggle from "../ui/RateFrequencyToggle";
 import {
@@ -545,7 +545,7 @@ export default function QuoteCalculator({
             {/* Personal details section */}
             {(categoryNeedsGender || categoryNeedsSmoker) && (
               <>
-                <SectionHeader
+                <SectionDivider
                   label={sectionLabels.personalDetails}
                   variant="subsection"
                 />
@@ -645,7 +645,7 @@ export default function QuoteCalculator({
             {/* Work & income section */}
             {(categoryNeedsDi || categoryNeedsHours) && (
               <>
-                <SectionHeader
+                <SectionDivider
                   label={sectionLabels.workAndIncome}
                   variant="subsection"
                 />
@@ -693,7 +693,7 @@ export default function QuoteCalculator({
             {/* Business Details section */}
             {categoryNeedsOo && (
               <>
-                <SectionHeader
+                <SectionDivider
                   label={sectionLabels.businessDetails}
                   variant="subsection"
                 />

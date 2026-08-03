@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 import type { SvgIconComponent } from "@mui/icons-material";
 import { Box, Stack } from "@mui/material";
-import CategoryHeader from "../CategoryHeader";
+import CategoryHeader from "./CategoryHeader";
 import { CATEGORY_SECTION_SX } from "../../config/constants";
 
-type CategorySectionCardProps = {
+type CategoryCardProps = {
   label: string;
   icon?: SvgIconComponent;
   children: ReactNode;
@@ -14,11 +14,11 @@ type CategorySectionCardProps = {
  * Surface card wrapping a category header + content stack.
  * Used on Payment, Beneficiary, and ProductCatalog pages.
  */
-export default function CategorySectionCard({
+export default function CategoryCard({
   label,
   icon: CatIcon,
   children,
-}: CategorySectionCardProps) {
+}: CategoryCardProps) {
   return (
     <Box sx={CATEGORY_SECTION_SX}>
       <CategoryHeader label={label} icon={CatIcon} />

@@ -21,8 +21,8 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ChatIcon from "@mui/icons-material/Chat";
-import AppMenuDrawer from "./AppMenuDrawer";
-import AppDrawer from "../ui/AppDrawer";
+import AppMenu from "./AppMenu";
+import AppDrawer from "../layout/AppDrawer";
 import { pages } from "../../config/pages";
 import type { CoverageDefinition } from "../../config/coverages/types";
 import { getFormProgressPercent, isFormPage } from "../../config/formFlow";
@@ -30,16 +30,16 @@ import type { ClientConfig } from "../../config/clients/types";
 import type { PageId } from "../../types";
 import { useApplicationForm } from "../../app/ApplicationFormContext";
 import { router } from "../../app/router";
-import CoverageSummary, {
+import CartDrawer, {
   useApplicationSummaryBadge,
-} from "../CoverageSummary";
-import type { AppLayoutVariant } from "./AppLayout";
+} from "./CartDrawer";
+import type { AppShellVariant } from "./AppShell";
 import ClientHelpBanner from "./ClientHelpBanner";
 
 type AppHeaderProps = {
   client: ClientConfig;
   /** Controls which header actions are shown. Defaults to "applicationForm". */
-  variant?: AppLayoutVariant;
+  variant?: AppShellVariant;
 };
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
@@ -335,14 +335,14 @@ export default function AppHeader({
       </Slide>
 
       {showMenu && (
-        <AppMenuDrawer
+        <AppMenu
           open={isMenuOpen}
           onClose={() => setIsMenuOpen(false)}
           client={client}
         />
       )}
 
-      {/* Coverage details dialog (triggered from CoverageSummary or ProductCatalog) */}
+      {/* Coverage details dialog (triggered from CartDrawer or ProductCatalog) */}
       <Dialog
         open={Boolean(activeCoverage)}
         onClose={() => setActiveCoverage(null)}
@@ -434,7 +434,7 @@ export default function AppHeader({
         onClose={() => setIsSummaryOpen(false)}
         swipeable
       >
-        <CoverageSummary
+        <CartDrawer
           onClose={() => setIsSummaryOpen(false)}
           source={summarySource}
         />

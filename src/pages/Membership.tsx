@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Alert, Box, Stack, Typography } from "@mui/material";
 import FormHelpChips from "../components/content/HelpChips";
-import AppDrawer from "../components/ui/AppDrawer";
+import AppDrawer from "../components/layout/AppDrawer";
 import type { UseFormSetValue } from "react-hook-form";
 
 import { getActiveClient } from "../config/client/getActiveClient";
@@ -9,7 +9,7 @@ import { getPageSectionNote } from "../config/pages";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import FormRoutePage from "../app/RoutePage";
-import SectionHeader from "../components/forms/SectionHeader";
+import SectionDivider from "../components/layout/SectionDivider";
 
 import QuoteCalculator from "../components/forms/QuoteCalculator";
 import type { FieldDefinition } from "../config/fields/types";
@@ -364,7 +364,7 @@ export default function Membership() {
 
                 {hasAdditionalFields && (
                   <Box sx={{ mt: 3 }}>
-                    <SectionHeader
+                    <SectionDivider
                       label={
                         client.id === "ama" && membershipValue === "spouse"
                           ? "Physician Information"

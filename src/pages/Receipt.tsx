@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import ProductCard from "../components/ui/ProductCard";
+import ProductCard from "../components/layout/ProductCard";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import FileDownloadRoundedIcon from "@mui/icons-material/FileDownloadRounded";

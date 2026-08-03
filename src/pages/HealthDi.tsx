@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Box, FormLabel, Stack, Typography } from "@mui/material";
 import FormRoutePage, { type FormRouteRenderProps } from "../app/RoutePage";
-import ApplicantSection from "../components/forms/ApplicantSection";
+import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
 import {
   isApplicantApplying,
   shouldShowApplicantLabel,
 } from "../utils/applicantVisibility";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import DynamicList from "../components/forms/DynamicList";
-import AppDrawer from "../components/ui/AppDrawer";
+import AppDrawer from "../components/layout/AppDrawer";
 import FormHelpChips from "../components/content/HelpChips";
 import type { FieldDefinition } from "../config/fields/types";
 import { YES_NO_OPTIONS } from "../config/constants";
@@ -458,7 +458,7 @@ export default function HealthDi() {
         return (
           <Stack spacing={3}>
             {hasSelf && (
-              <ApplicantSection
+              <ApplicantSectionDivider
                 applicant="self"
                 showLabel={shouldShowApplicantLabel("self", watchedValues)}
               >
@@ -469,10 +469,10 @@ export default function HealthDi() {
                   watchedValues={watchedValues}
                   allFields={allFields}
                 />
-              </ApplicantSection>
+              </ApplicantSectionDivider>
             )}
             {hasSpouse && (
-              <ApplicantSection
+              <ApplicantSectionDivider
                 applicant="spouse"
                 showLabel={shouldShowApplicantLabel("spouse", watchedValues)}
               >
@@ -483,7 +483,7 @@ export default function HealthDi() {
                   watchedValues={watchedValues}
                   allFields={allFields}
                 />
-              </ApplicantSection>
+              </ApplicantSectionDivider>
             )}
           </Stack>
         );

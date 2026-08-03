@@ -77,7 +77,7 @@ function renderSection(section: LegalDocSection, index: number) {
   }
 }
 
-export default function LegalDocViewer({ doc }: LegalDocViewerProps) {
+export default function LegalDocList({ doc }: LegalDocViewerProps) {
   return (
     <Stack spacing={2}>
       {doc.sections.map((section, index) => renderSection(section, index))}

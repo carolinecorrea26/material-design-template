@@ -1,6 +1,6 @@
 import { Box, FormLabel, Stack } from "@mui/material";
 import FormRoutePage, { type FormRouteRenderProps } from "../app/RoutePage";
-import ApplicantSection from "../components/forms/ApplicantSection";
+import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
 import {
   isApplicantApplying,
   shouldShowApplicantLabel,
@@ -188,7 +188,7 @@ export default function HealthLi() {
         return (
           <Stack spacing={3}>
             {hasSelf && (
-              <ApplicantSection
+              <ApplicantSectionDivider
                 applicant="self"
                 showLabel={shouldShowApplicantLabel("self", watchedValues)}
               >
@@ -199,10 +199,10 @@ export default function HealthLi() {
                   watchedValues={watchedValues}
                   allFields={allFields}
                 />
-              </ApplicantSection>
+              </ApplicantSectionDivider>
             )}
             {hasSpouse && (
-              <ApplicantSection
+              <ApplicantSectionDivider
                 applicant="spouse"
                 showLabel={shouldShowApplicantLabel("spouse", watchedValues)}
               >
@@ -213,7 +213,7 @@ export default function HealthLi() {
                   watchedValues={watchedValues}
                   allFields={allFields}
                 />
-              </ApplicantSection>
+              </ApplicantSectionDivider>
             )}
           </Stack>
         );

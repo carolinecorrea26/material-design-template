@@ -9,7 +9,7 @@ import {
 } from "react-hook-form";
 import FieldRenderer from "./FieldRenderer";
 import DynamicListItem from "./DynamicListItem";
-import AppModal from "../ui/AppModal";
+import AppModal from "../layout/AppModal";
 import type { FieldDefinition } from "../../config/fields/types";
 
 type DynamicListFieldMapping<T extends Record<string, string>> = {

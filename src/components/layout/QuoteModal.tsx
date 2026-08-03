@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
-import ProductCardSurface from "./ui/ProductCard";
+import ProductCardSurface from "./ProductCard";
 import {
   Box,
   Button,
@@ -29,25 +29,25 @@ import type {
   CoverageCategoryId,
   CoverageApplicantId,
   CoverageDefinition,
-} from "../config/coverages/types";
-import { coverageCategories } from "../config/coverageCategories";
-import CoverageCategorySelector from "./forms/CoverageCategorySelector";
+} from "../../config/coverages/types";
+import { coverageCategories } from "../../config/coverageCategories";
+import CoverageCategorySelector from "../forms/CoverageCategorySelector";
 import {
   getCategoryRequirements,
   getBenefitAmountLabel,
-} from "../config/coverageConstants";
-import { formatUSD } from "../utils/formatUSD";
-import { getCoverageAmountRange } from "../utils/coverageAmounts";
-import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
-import { generateAmountChoices } from "../utils/generateAmountChoices";
-import { getPagePath } from "../config/pages";
-import { STORAGE_KEY } from "../app/ApplicationFormContext";
-import { getActiveClient } from "../config/client/getActiveClient";
-import type { EstimatedRateFrequency } from "../config/clients/types";
-import SelectionGroup from "./forms/SelectionGroup";
-import QuickDecisionIndicator from "./ui/QuickDecisionIndicator";
-import RateFrequencyToggle from "./ui/RateFrequencyToggle";
-import FeaturedBadge from "./ui/FeaturedBadge";
+} from "../../config/coverageConstants";
+import { formatUSD } from "../../utils/formatUSD";
+import { getCoverageAmountRange } from "../../utils/coverageAmounts";
+import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
+import { generateAmountChoices } from "../../utils/generateAmountChoices";
+import { getPagePath } from "../../config/pages";
+import { STORAGE_KEY } from "../../app/ApplicationFormContext";
+import { getActiveClient } from "../../config/client/getActiveClient";
+import type { EstimatedRateFrequency } from "../../config/clients/types";
+import SelectionGroup from "../forms/SelectionGroup";
+import QuickDecisionIndicator from "../ui/QuickDecisionIndicator";
+import RateFrequencyToggle from "../ui/RateFrequencyToggle";
+import FeaturedBadge from "../ui/FeaturedBadge";
 
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
@@ -60,7 +60,7 @@ type QuoteModalProps = {
   state: string;
 };
 
-import { formatCurrencyInput } from "../utils/formatting/currency";
+import { formatCurrencyInput } from "../../utils/formatting/currency";
 
 export default function QuoteModal({
   onClose,

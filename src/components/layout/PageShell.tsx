@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
 import { Alert, Box, Stack } from "@mui/material";
-import PageTitle from "./Title";
+import PageTitle from "./PageTitle";
 
 type PageLayoutProps = {
   title: ReactNode;
@@ -17,7 +17,7 @@ type PageLayoutProps = {
   noContainer?: boolean;
 };
 
-export default function PageLayout({
+export default function PageShell({
   title,
   subhead,
   children,

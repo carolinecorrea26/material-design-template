@@ -15,26 +15,26 @@ import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
-import AppDrawer from "../ui/AppDrawer";
+import AppDrawer from "../layout/AppDrawer";
 import { CoverageOptionsDrawerContent } from "../../content/helpContent";
-import CoverageNeedsCalculator from "../CoverageNeedsCalculator";
+import CoverageNeedsCalculator from "../forms/CoverageNeedsCalculator";
 import QuickDecisionDrawerContent from "../content/QuickDecisionExplainer";
 import { useState } from "react";
 import type { ClientConfig } from "../../config/clients/types";
 import { router } from "../../app/router";
 import { APP_MENU_SECTION_TITLE_SX } from "../../app/theme";
 
-type AppMenuDrawerProps = {
+type AppMenuProps = {
   open: boolean;
   onClose: () => void;
   client: ClientConfig;
 };
 
-export default function AppMenuDrawer({
+export default function AppMenu({
   open,
   onClose,
   client,
-}: AppMenuDrawerProps) {
+}: AppMenuProps) {
   const [isCoverageDrawerOpen, setIsCoverageDrawerOpen] = useState(false);
   const [isNeedsCalcOpen, setIsNeedsCalcOpen] = useState(false);
   const [isQuickDecisionOpen, setIsQuickDecisionOpen] = useState(false);

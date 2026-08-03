@@ -1,7 +1,7 @@
 import { Box, Button, CircularProgress } from "@mui/material";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
-type PageActionsProps = {
+type PageNavProps = {
   /** The form id this submit button targets. */
   formId: string;
   /** When true, shows a spinner and disables the button. */
@@ -19,12 +19,12 @@ type PageActionsProps = {
  * Back navigation is handled by PageHeader (via the onBack prop on PageTitle)
  * so PageActions only owns the forward action.
  */
-export default function PageActions({
+export default function PageNav({
   formId,
   isTransitioning = false,
   disabled = false,
   nextLabel = "Next",
-}: PageActionsProps) {
+}: PageNavProps) {
   return (
     <Box sx={{ mt: "2rem", mb: "1rem" }}>
       <Button

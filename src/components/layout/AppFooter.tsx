@@ -6,8 +6,8 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import type { ClientConfig } from "../../config/clients/types";
 import { getContent } from "../../content";
-import AppModal from "../ui/AppModal";
-import LegalDocViewer from "../ui/LegalDocViewer";
+import AppModal from "../layout/AppModal";
+import LegalDocList from "../content/LegalDocList";
 
 type AppFooterProps = {
   client: ClientConfig;
@@ -278,7 +278,7 @@ export default function AppFooter({ client }: AppFooterProps) {
           },
         ]}
       >
-        <LegalDocViewer doc={footerContent.termsOfUseContent} />
+        <LegalDocList doc={footerContent.termsOfUseContent} />
       </AppModal>
 
       {/* Privacy Notice modal */}
@@ -295,7 +295,7 @@ export default function AppFooter({ client }: AppFooterProps) {
           },
         ]}
       >
-        <LegalDocViewer doc={footerContent.privacyNoticeContent} />
+        <LegalDocList doc={footerContent.privacyNoticeContent} />
       </AppModal>
     </Box>
   );

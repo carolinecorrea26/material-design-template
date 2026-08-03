@@ -1,8 +1,8 @@
 import { Box, Stack } from "@mui/material";
 import FieldRenderer from "./FieldRenderer";
-import ApplicantSection from "./ApplicantSection";
+import ApplicantSectionDivider from "../layout/ApplicantSectionDivider";
 import ConditionalGroup from "./ConditionalGroup";
-import SectionHeader from "./SectionHeader";
+import SectionDivider from "../layout/SectionDivider";
 import type { FormRouteRenderProps } from "../../app/RoutePage";
 import type { CoverageCategoryId } from "../../config/coverages/types";
 import type {
@@ -188,7 +188,7 @@ export default function CoverageQuestions(props: CoverageQuestionsProps) {
       return (
         <Box key={section.id}>
           {section.description && (
-            <SectionHeader
+            <SectionDivider
               label={section.description}
               variant="subsection"
               sx={{ mb: 2 }}
@@ -207,13 +207,13 @@ export default function CoverageQuestions(props: CoverageQuestionsProps) {
     <Box>
       {hasSpouse ? (
         <Stack spacing={2}>
-          <ApplicantSection applicant="self" showLabel>
+          <ApplicantSectionDivider applicant="self" showLabel>
             <Stack spacing={2}>{renderSections(selfSections)}</Stack>
-          </ApplicantSection>
+          </ApplicantSectionDivider>
           {hasVisibleSpouseSections && (
-            <ApplicantSection applicant="spouse" showLabel>
+            <ApplicantSectionDivider applicant="spouse" showLabel>
               <Stack spacing={2}>{renderSections(spouseSections)}</Stack>
-            </ApplicantSection>
+            </ApplicantSectionDivider>
           )}
         </Stack>
       ) : (

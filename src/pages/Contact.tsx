@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import FormRoutePage, { isSectionVisible } from "../app/RoutePage";
 import FieldRenderer from "../components/forms/FieldRenderer";
-import ApplicantSection from "../components/forms/ApplicantSection";
+import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
-import SectionHeader from "../components/forms/SectionHeader";
+import SectionDivider from "../components/layout/SectionDivider";
 import { sectionLabels } from "../config/pageSections";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { getSelectedCategoryIds } from "../config/formFlow";
@@ -177,7 +177,7 @@ function ContactFields({
           const content = (
             <>
               {/* Residential Address sub-section label */}
-              {/* <SectionHeader label="Home Address" /> */}
+              {/* <SectionDivider label="Home Address" /> */}
 
               {/* Street address + Apt/Suite row */}
               <Box
@@ -249,7 +249,7 @@ function ContactFields({
               {/* Business / Employer Info inside Self container */}
               {showBusinessSection && businessSection && (
                 <Box sx={{ mt: 2 }}>
-                  <SectionHeader
+                  <SectionDivider
                     label={sectionLabels.businessEmployerInfo}
                     variant="subsection"
                   />
@@ -269,12 +269,12 @@ function ContactFields({
 
           return (
             <div key={section.id}>
-              <ApplicantSection
+              <ApplicantSectionDivider
                 applicant="self"
                 showLabel={shouldShowApplicantLabel("self", watchedValues)}
               >
                 {content}
-              </ApplicantSection>
+              </ApplicantSectionDivider>
             </div>
           );
         }
@@ -305,7 +305,7 @@ function ContactFields({
         return (
           <div key={section.id}>
             {section.applicant ? (
-              <ApplicantSection
+              <ApplicantSectionDivider
                 applicant={section.applicant}
                 showLabel={shouldShowApplicantLabel(
                   section.applicant,
@@ -313,7 +313,7 @@ function ContactFields({
                 )}
               >
                 {content}
-              </ApplicantSection>
+              </ApplicantSectionDivider>
             ) : (
               <>
                 {section.title && (

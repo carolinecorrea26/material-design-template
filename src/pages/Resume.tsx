@@ -12,8 +12,8 @@ import {
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import MailLockRounded from "@mui/icons-material/MailLockRounded";
 import { useNavigate } from "react-router-dom";
-import PageTitle from "../components/layout/Title";
-import PageCard from "../components/layout/PageCard";
+import PageTitle from "../components/layout/PageTitle";
+import FormShell from "../components/layout/FormShell";
 import { getPageSubhead, getPageTitle } from "../config/pages";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import { sendResumeMagicLinkMockEmail } from "../utils/mockEmail";
@@ -97,7 +97,7 @@ export default function Resume() {
       }}
     >
       <Box sx={{ width: "100%", maxWidth: 600 }}>
-        <PageCard
+        <FormShell
           sx={{
             px: { xs: 2, sm: 4 },
             py: 6,
@@ -238,7 +238,7 @@ export default function Resume() {
               </Box>
             </Box>
           )}
-        </PageCard>
+        </FormShell>
       </Box>
     </Stack>
   );

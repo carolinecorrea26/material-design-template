@@ -20,8 +20,8 @@ import {
   type ApplicationFormValues,
 } from "../app/ApplicationFormContext";
 import type { ClientId } from "../types";
-import PageTitle from "../components/layout/Title";
-import PageCard from "../components/layout/PageCard";
+import PageTitle from "../components/layout/PageTitle";
+import FormShell from "../components/layout/FormShell";
 
 type DeliveryMode = "text" | "voice";
 
@@ -143,7 +143,7 @@ export default function ResumeCode() {
       }}
     >
       <Box sx={{ width: "100%", maxWidth: 600 }}>
-        <PageCard
+        <FormShell
           sx={{
             px: { xs: 2, sm: 4 },
             py: 6,
@@ -317,7 +317,7 @@ export default function ResumeCode() {
               </Button>
             </Box>
           </Box>
-        </PageCard>
+        </FormShell>
       </Box>
     </Stack>
   );

@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { CARD_RADIUS } from "../../app/theme";
 
-type PageCardProps = Omit<PaperProps, "children" | "sx" | "elevation"> & {
+type FormShellProps = Omit<PaperProps, "children" | "sx" | "elevation"> & {
   children: ReactNode;
   sx?: SxProps<Theme>;
 };
@@ -18,11 +18,11 @@ const baseStyles: SxProps<Theme> = {
   boxShadow: "0 8px 16px rgba(52, 59, 72, 0.06)",
 };
 
-export default function PageCard({
+export default function FormShell({
   children,
   sx,
   ...paperProps
-}: PageCardProps) {
+}: FormShellProps) {
   return (
     <Paper
       elevation={0}

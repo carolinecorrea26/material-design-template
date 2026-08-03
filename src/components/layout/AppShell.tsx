@@ -1,10 +1,10 @@
 import { useState, type ReactNode } from "react";
 import { Box } from "@mui/material";
 import { getActiveClient } from "../../config/client/getActiveClient";
-import CookieBanner from "./CookieBanner";
+import CookieDialog from "./CookieDialog";
 import DevTools from "../../dev/DevTools";
 import AppHeader from "./AppHeader";
-import AppBody from "./Body";
+import AppBody from "./AppBody";
 import AppFooter from "./AppFooter";
 
 /**
@@ -22,22 +22,22 @@ import AppFooter from "./AppFooter";
  * - "resumeEmailCode"  Utility chrome: header with logo only, no menu,
  *   no progress bar. Used for the resume magic-link / phone-code pages.
  */
-export type AppLayoutVariant =
+export type AppShellVariant =
   | "applicationForm"
   | "homepage"
   | "advisorLogin"
   | "advisorSend"
   | "resumeEmailCode";
 
-type AppLayoutProps = {
+type AppShellProps = {
   children: ReactNode;
-  variant?: AppLayoutVariant;
+  variant?: AppShellVariant;
 };
 
-export default function AppLayout({
+export default function AppShell({
   children,
   variant = "applicationForm",
-}: AppLayoutProps) {
+}: AppShellProps) {
   const client = getActiveClient();
 
   const [showCookieBanner, setShowCookieBanner] = useState(() => {
@@ -62,7 +62,7 @@ export default function AppLayout({
       <AppBody>{children}</AppBody>
       <AppFooter client={client} />
       <DevTools />
-      {showCookieBanner && <CookieBanner onClose={handleCloseCookieBanner} />}
+      {showCookieBanner && <CookieDialog onClose={handleCloseCookieBanner} />}
     </Box>
   );
 }

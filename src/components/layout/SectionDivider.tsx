@@ -38,7 +38,7 @@ type SectionHeaderProps = {
  *  Coverage question sub-sections → chipVariant="filled"  chipColor="default"  size="small"
  *  Standalone page sections       → chipVariant="filled"  chipColor="default"  size="small"
  */
-export default function SectionHeader({
+export default function SectionDivider({
   label,
   icon: Icon,
   variant,

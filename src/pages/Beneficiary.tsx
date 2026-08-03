@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import ProductCard from "../components/ui/ProductCard";
+import ProductCard from "../components/layout/ProductCard";
 import {
   Alert,
   Box,
@@ -19,13 +19,13 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import { useForm, type Control, type FieldErrors } from "react-hook-form";
 import DynamicListItem from "../components/forms/DynamicListItem";
-import ApplicantSection from "../components/forms/ApplicantSection";
-import CategorySectionCard from "../components/ui/CategorySectionCard";
-import AppModal from "../components/ui/AppModal";
+import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
+import CategoryCard from "../components/layout/CategoryCard";
+import AppModal from "../components/layout/AppModal";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
 import FormRoutePage from "../app/RoutePage";
-import AppDrawer from "../components/ui/AppDrawer";
+import AppDrawer from "../components/layout/AppDrawer";
 import { getClientPageRequirement } from "../config/client/getClientPageRequirement";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import {
@@ -704,7 +704,7 @@ export default function Beneficiary() {
       .filter((group) => group.products.length > 0);
 
     return (
-      <ApplicantSection
+      <ApplicantSectionDivider
         applicant={applicant === "member" ? "self" : "spouse"}
         showLabel={shouldShowApplicantLabel(applicant, values)}
       >
@@ -712,7 +712,7 @@ export default function Beneficiary() {
           {groupedByCategory.map((group) => {
             return (
               <Stack spacing={1.5} key={group.category.id}>
-                <CategorySectionCard
+                <CategoryCard
                   label={getCoverageCategorySectionLabel(
                     group.category.id,
                     getActiveClient().coverages.categorySectionLabels,
@@ -720,12 +720,12 @@ export default function Beneficiary() {
                   icon={group.category.icon}
                 >
                   {group.products.map((product) => renderProductCard(product))}
-                </CategorySectionCard>
+                </CategoryCard>
               </Stack>
             );
           })}
         </Stack>
-      </ApplicantSection>
+      </ApplicantSectionDivider>
     );
   }
 

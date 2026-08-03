@@ -24,13 +24,13 @@ import {
   useApplicationForm,
 } from "./ApplicationFormContext";
 import { isApplicantApplying } from "../utils/applicantVisibility";
-import PageLayout from "../components/layout/Page";
+import PageShell from "../components/layout/PageShell";
 import PageHeader from "../components/layout/PageHeader";
-import PageCard from "../components/layout/PageCard";
-import PageActions from "../components/layout/PageActions";
-import FormVerticalStepper, {
+import FormShell from "../components/layout/FormShell";
+import PageNav from "../components/navigation/PageNav";
+import ProgressStep, {
   VerticalStepperBreadcrumbs,
-} from "../components/navigation/Stepper";
+} from "../components/navigation/ProgressStep";
 import { getActiveProgressStepIndex } from "../config/progressSteps";
 import { generateFormDataUpToPage } from "../dev/utils/generateFormData";
 import {
@@ -515,7 +515,7 @@ export default function FormRoutePage({
   const resolvedInfoNote = getPageInfoNote(pageId);
 
   const formPageElement = (
-    <PageLayout
+    <PageShell
       title={resolvedTitle}
       maxWidth={hasVerticalStepper ? "100%" : formMaxWidth}
       noTitle
@@ -523,7 +523,7 @@ export default function FormRoutePage({
       actions={undefined}
     >
       <Box>
-        <PageCard
+        <FormShell
           sx={{
             px: { xs: 2, sm: "48px" },
             py: { xs: 2, sm: "32px" },
@@ -574,7 +574,7 @@ export default function FormRoutePage({
             !(typeof hideNextButton === "function"
               ? hideNextButton(watchedValues)
               : hideNextButton) && (
-              <PageActions
+              <PageNav
                 formId={`${pageId}-form`}
                 isTransitioning={isTransitioning}
                 disabled={
@@ -584,9 +584,9 @@ export default function FormRoutePage({
                 }
               />
             )}
-        </PageCard>
+        </FormShell>
       </Box>
-    </PageLayout>
+    </PageShell>
   );
 
   return (
@@ -597,9 +597,9 @@ export default function FormRoutePage({
       />
 
       {hasVerticalStepper ? (
-        <FormVerticalStepper pageId={pageId}>
+        <ProgressStep pageId={pageId}>
           {formPageElement}
-        </FormVerticalStepper>
+        </ProgressStep>
       ) : (
         formPageElement
       )}

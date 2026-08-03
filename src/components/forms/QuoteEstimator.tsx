@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import FeaturedBadge from "./ui/FeaturedBadge";
-import ProductCardSurface from "./ui/ProductCard";
-import RateFrequencyToggle from "./ui/RateFrequencyToggle";
+import FeaturedBadge from "../ui/FeaturedBadge";
+import ProductCardSurface from "../layout/ProductCard";
+import RateFrequencyToggle from "../ui/RateFrequencyToggle";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import {
   Alert,
@@ -22,27 +22,27 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import CoverageCategorySelector from "./forms/CoverageCategorySelector";
-import { coverageCategories } from "../config/coverageCategories";
+import CoverageCategorySelector from "./CoverageCategorySelector";
+import { coverageCategories } from "../../config/coverageCategories";
 import type {
   CoverageCategoryId,
   CoverageApplicantId,
   CoverageDefinition,
-} from "../config/coverages/types";
+} from "../../config/coverages/types";
 import {
   getCategoryRequirements,
   getBenefitAmountLabel,
-} from "../config/coverageConstants";
-import { formatUSD } from "../utils/formatUSD";
-import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
-import { getCoverageAmountRange } from "../utils/coverageAmounts";
-import { generateAmountChoices } from "../utils/generateAmountChoices";
-import { getActiveClient } from "../config/client/getActiveClient";
-import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
-import type { EstimatedRateFrequency } from "../config/clients/types";
-import QuickDecisionIndicator from "./ui/QuickDecisionIndicator";
+} from "../../config/coverageConstants";
+import { formatUSD } from "../../utils/formatUSD";
+import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
+import { getCoverageAmountRange } from "../../utils/coverageAmounts";
+import { generateAmountChoices } from "../../utils/generateAmountChoices";
+import { getActiveClient } from "../../config/client/getActiveClient";
+import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
+import type { EstimatedRateFrequency } from "../../config/clients/types";
+import QuickDecisionIndicator from "../ui/QuickDecisionIndicator";
 
-import { formatCurrencyInput } from "../utils/formatting/currency";
+import { formatCurrencyInput } from "../../utils/formatting/currency";
 
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";

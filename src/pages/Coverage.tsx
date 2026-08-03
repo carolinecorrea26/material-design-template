@@ -4,13 +4,13 @@ import CoverageCategorySelector from "../components/forms/CoverageCategorySelect
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import FormRoutePage from "../app/RoutePage";
 
-import AppDrawer from "../components/ui/AppDrawer";
+import AppDrawer from "../components/layout/AppDrawer";
 import FormHelpChips from "../components/content/HelpChips";
 import QuickDecisionDrawerContent from "../components/content/QuickDecisionExplainer";
 import { QuickDecisionMark } from "../components/content/QuickDecisionExplainer";
-import CoverageSummary from "../components/CoverageSummary";
+import CartDrawer from "../components/layout/CartDrawer";
 import CoverageQuestions from "../components/forms/CoverageQuestions";
-import ProductCatalog from "../components/ProductCatalog";
+import ProductCatalog from "../components/forms/ProductCatalog";
 import { useCoverageState } from "../app/useCoverageState";
 
 export default function Coverage() {
@@ -248,7 +248,7 @@ function CoveragePageContent({
         onClose={() => state.setSummaryDrawerOpen(false)}
         swipeable
       >
-        <CoverageSummary
+        <CartDrawer
           onClose={() => state.setSummaryDrawerOpen(false)}
           source="coverage-page"
         />

@@ -13,21 +13,21 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import AppModal from "./ui/AppModal";
-import QuoteModal from "./QuoteModal";
-import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
-import { fieldCatalog } from "../config/fields";
+import AppModal from "../layout/AppModal";
+import QuoteModal from "../layout/QuoteModal";
+import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
+import { fieldCatalog } from "../../config/fields";
 import {
   deriveStateProvinceFromZipOrPostalCode,
   formatZipOrPostalCode,
-} from "../utils/zipToStateProvince";
+} from "../../utils/zipToStateProvince";
 import {
   parseStoredDate,
   formatDateForStorage,
   formatDateDisplay,
-} from "../utils/dateFormatting";
-import { calculateAge } from "../utils/calculateAge";
-import { SURFACE_SX } from "../config/constants";
+} from "../../utils/dateFormatting";
+import { calculateAge } from "../../utils/calculateAge";
+import { SURFACE_SX } from "../../config/constants";
 
 type EligibilityValues = {
   birthday: string;
@@ -55,7 +55,7 @@ function getStateOptions() {
   return fieldCatalog["state-province"].options ?? [];
 }
 
-export default function HomeQuoteCard() {
+export default function QuoteCard() {
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const stateOptions = useMemo(() => getStateOptions(), []);
 

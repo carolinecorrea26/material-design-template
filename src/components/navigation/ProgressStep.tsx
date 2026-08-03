@@ -203,7 +203,7 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
   );
 }
 
-export default function FormVerticalStepper({
+export default function ProgressStep({
   pageId,
   children,
 }: FormVerticalStepperProps) {

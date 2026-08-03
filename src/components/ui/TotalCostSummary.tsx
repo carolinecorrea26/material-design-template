@@ -9,7 +9,7 @@ import {
 import { CARD_RADIUS } from "../../app/theme";
 import { formatUSD } from "../../utils/formatUSD";
 
-export type TotalCostPanelItem = {
+export type TotalCostSummaryItem = {
   id: string;
   name: string;
   amount: number;
@@ -18,7 +18,7 @@ export type TotalCostPanelItem = {
 };
 
 type TotalCostPanelProps = {
-  items: TotalCostPanelItem[];
+  items: TotalCostSummaryItem[];
   total: number;
   totalSuffix?: string;
   isCalculating?: boolean;
@@ -32,7 +32,7 @@ type TotalCostPanelProps = {
  * Styling: bg #f8fafd, border 2px solid primary, borderRadius 16px.
  * Total: fontWeight 900, color success.main.
  */
-export default function TotalCostPanel({
+export default function TotalCostSummary({
   items,
   total,
   totalSuffix = "/mo",

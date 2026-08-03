@@ -2,9 +2,9 @@
 
 import type { ComponentType } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import AppLayout, {
-  type AppLayoutVariant,
-} from "../components/layout/AppLayout";
+import AppShell, {
+  type AppShellVariant,
+} from "../components/layout/AppShell";
 import { getPagePath } from "../config/pages";
 import type { PageId } from "../types";
 import Home from "../pages/Home";
@@ -85,7 +85,7 @@ const routedPageIds: PageId[] = [
   "information-architecture",
 ];
 
-const pageVariants: Partial<Record<PageId, AppLayoutVariant>> = {
+const pageVariants: Partial<Record<PageId, AppShellVariant>> = {
   home: "homepage",
   resume: "resumeEmailCode",
   "resume-code": "resumeEmailCode",
@@ -104,9 +104,9 @@ export const router = createBrowserRouter(
         pageId === "mock-email-preview" ? (
           <PageComponent />
         ) : (
-          <AppLayout variant={variant}>
+          <AppShell variant={variant}>
             <PageComponent />
-          </AppLayout>
+          </AppShell>
         ),
     };
   }),

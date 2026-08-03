@@ -19,7 +19,7 @@ import FormRoutePage, {
 } from "../app/RoutePage";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import DynamicList from "../components/forms/DynamicList";
-import ApplicantSection from "../components/forms/ApplicantSection";
+import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
 import { fieldCatalog } from "../config/fields";
 import {
   deriveStateProvinceFromZipOrPostalCode,
@@ -455,9 +455,9 @@ function EligibilityFields({
         return (
           <div key={section.id}>
             {section.applicant && section.applicant !== "self" ? (
-              <ApplicantSection applicant={section.applicant}>
+              <ApplicantSectionDivider applicant={section.applicant}>
                 {content}
-              </ApplicantSection>
+              </ApplicantSectionDivider>
             ) : (
               <>{content}</>
             )}

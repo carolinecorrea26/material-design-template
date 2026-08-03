@@ -24,7 +24,7 @@ import {
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import QuoteCalculator from "../components/forms/QuoteCalculator";
 import type { QuoteCalculatorInitialValues } from "../components/forms/QuoteCalculator";
-import AppDrawer from "../components/ui/AppDrawer";
+import AppDrawer from "../components/layout/AppDrawer";
 import QuickDecisionIndicator from "../components/ui/QuickDecisionIndicator";
 import QuickDecisionDrawerContent from "../components/content/QuickDecisionExplainer";
 import QuickDecisionInfoBox from "../components/content/QuickDecisionInfoBox";

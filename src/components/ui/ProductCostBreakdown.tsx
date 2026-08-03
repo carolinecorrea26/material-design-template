@@ -3,15 +3,15 @@ import type { EstimatedRateFrequency } from "../../config/clients/types";
 import { formatUSD } from "../../utils/formatUSD";
 import { getDisplayedPremium } from "../../app/useCoverageState";
 
-export type ProductEstimatedCostBreakdownItem = {
+export type ProductCostBreakdownItem = {
   label: string;
   amount: number;
 };
 
 type ProductEstimatedCostBreakdownProps = {
   premiumCost: number;
-  riderItems: ProductEstimatedCostBreakdownItem[];
-  policyFee?: ProductEstimatedCostBreakdownItem;
+  riderItems: ProductCostBreakdownItem[];
+  policyFee?: ProductCostBreakdownItem;
   rateFrequency: EstimatedRateFrequency;
 };
 
@@ -19,7 +19,7 @@ function BreakdownRow({
   label,
   amount,
   rateFrequency,
-}: ProductEstimatedCostBreakdownItem & {
+}: ProductCostBreakdownItem & {
   rateFrequency: EstimatedRateFrequency;
 }) {
   return (
@@ -34,7 +34,7 @@ function BreakdownRow({
   );
 }
 
-export default function ProductEstimatedCostBreakdown({
+export default function ProductCostBreakdown({
   premiumCost,
   riderItems,
   policyFee,

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, Stack, TextField, Typography } from "@mui/material";
 
-import { formatUSD } from "../utils/formatUSD";
+import { formatUSD } from "../../utils/formatUSD";
 
 export default function CoverageNeedsCalculator() {
   const [annualIncome, setAnnualIncome] = useState("");

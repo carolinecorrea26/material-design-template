@@ -2,12 +2,12 @@ import { useMemo } from "react";
 import { Alert, Box, Typography } from "@mui/material";
 import FormRoutePage, { isSectionVisible } from "../app/RoutePage";
 import FieldRenderer from "../components/forms/FieldRenderer";
-import ApplicantSection from "../components/forms/ApplicantSection";
+import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
 import ConditionalGroup from "../components/forms/ConditionalGroup";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import DynamicList from "../components/forms/DynamicList";
-import SectionHeader from "../components/forms/SectionHeader";
+import SectionDivider from "../components/layout/SectionDivider";
 import { sectionLabels } from "../config/pageSections";
 import PhysicianInformation from "../components/forms/PhysicianInformation.tsx";
 import type { FieldDefinition } from "../config/fields/types";
@@ -235,14 +235,14 @@ export default function Profile() {
               if (section.id === "profilePersonalSelf") {
                 return (
                   <div key={section.id}>
-                    <ApplicantSection
+                    <ApplicantSectionDivider
                       applicant="self"
                       showLabel={
                         section.id === firstSelfSectionId &&
                         shouldShowApplicantLabel("self", watchedValues)
                       }
                     >
-                      <SectionHeader
+                      <SectionDivider
                         label={
                           section.description ?? sectionLabels.personalInfo
                         }
@@ -256,7 +256,7 @@ export default function Profile() {
                         errors,
                         watchedValues,
                       )}
-                    </ApplicantSection>
+                    </ApplicantSectionDivider>
                   </div>
                 );
               }
@@ -272,7 +272,7 @@ export default function Profile() {
               if (section.id === "profilePersonalSelfPhysician") {
                 return (
                   <div key={section.id}>
-                    <ApplicantSection
+                    <ApplicantSectionDivider
                       applicant="self"
                       showLabel={
                         section.id === firstSelfSectionId &&
@@ -288,7 +288,7 @@ export default function Profile() {
                         streetRow={physicianStreetRow}
                         cityStateZipRow={physicianCityStateZipRow}
                       />
-                    </ApplicantSection>
+                    </ApplicantSectionDivider>
                   </div>
                 );
               }
@@ -296,14 +296,14 @@ export default function Profile() {
               if (section.id === "profileFinancialSelf") {
                 return (
                   <div key={section.id}>
-                    <ApplicantSection
+                    <ApplicantSectionDivider
                       applicant="self"
                       showLabel={
                         section.id === firstSelfSectionId &&
                         shouldShowApplicantLabel("self", watchedValues)
                       }
                     >
-                      <SectionHeader
+                      <SectionDivider
                         label={
                           section.description ?? sectionLabels.financialInfo
                         }
@@ -320,7 +320,7 @@ export default function Profile() {
                         selfHasLife,
                         selfHasDisability,
                       )}
-                    </ApplicantSection>
+                    </ApplicantSectionDivider>
                   </div>
                 );
               }
@@ -328,14 +328,14 @@ export default function Profile() {
               if (section.id === "profilePersonalSpouse") {
                 return (
                   <div key={section.id}>
-                    <ApplicantSection
+                    <ApplicantSectionDivider
                       applicant="spouse"
                       showLabel={
                         section.id === firstSpouseSectionId &&
                         shouldShowApplicantLabel("spouse", watchedValues)
                       }
                     >
-                      <SectionHeader
+                      <SectionDivider
                         label={
                           section.description ?? sectionLabels.personalInfo
                         }
@@ -349,7 +349,7 @@ export default function Profile() {
                         errors,
                         watchedValues,
                       )}
-                    </ApplicantSection>
+                    </ApplicantSectionDivider>
                   </div>
                 );
               }
@@ -365,7 +365,7 @@ export default function Profile() {
               if (section.id === "profilePersonalSpousePhysician") {
                 return (
                   <div key={section.id}>
-                    <ApplicantSection
+                    <ApplicantSectionDivider
                       applicant="spouse"
                       showLabel={
                         section.id === firstSpouseSectionId &&
@@ -381,7 +381,7 @@ export default function Profile() {
                         streetRow={spousePhysicianStreetRow}
                         cityStateZipRow={spousePhysicianCityStateZipRow}
                       />
-                    </ApplicantSection>
+                    </ApplicantSectionDivider>
                   </div>
                 );
               }
@@ -389,14 +389,14 @@ export default function Profile() {
               if (section.id === "profileFinancialSpouse") {
                 return (
                   <div key={section.id}>
-                    <ApplicantSection
+                    <ApplicantSectionDivider
                       applicant="spouse"
                       showLabel={
                         section.id === firstSpouseSectionId &&
                         shouldShowApplicantLabel("spouse", watchedValues)
                       }
                     >
-                      <SectionHeader
+                      <SectionDivider
                         label={
                           section.description ?? sectionLabels.financialInfo
                         }
@@ -413,7 +413,7 @@ export default function Profile() {
                         spouseHasLife,
                         spouseHasDisability,
                       )}
-                    </ApplicantSection>
+                    </ApplicantSectionDivider>
                   </div>
                 );
               }

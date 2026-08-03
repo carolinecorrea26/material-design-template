@@ -3,7 +3,7 @@ import PrintOutlinedIcon from "@mui/icons-material/PrintOutlined";
 import { Alert, Box, Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import FormRoutePage from "../app/RoutePage";
-import ApplicantSection from "../components/forms/ApplicantSection";
+import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
 import {
   isApplicantApplying,
   shouldShowApplicantLabel,
@@ -13,7 +13,7 @@ import FieldRenderer from "../components/forms/FieldRenderer";
 import type { PageId } from "../types";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { fieldCatalog } from "../config/fields";
-import ApplicationDocumentPreview from "../components/ApplicationDocumentPreview";
+import ApplicationDocumentPreview from "../components/content/ApplicationDocumentPreview";
 import { getContent } from "../content";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 
@@ -184,7 +184,7 @@ export default function Review() {
             </Box>
 
             <Stack spacing={1.5}>
-              <ApplicantSection
+              <ApplicantSectionDivider
                 applicant="self"
                 showLabel={shouldShowApplicantLabel("self", values)}
               >
@@ -193,16 +193,16 @@ export default function Review() {
                   control={control}
                   errors={errors}
                 />
-              </ApplicantSection>
+              </ApplicantSectionDivider>
 
               {hasSpouse ? (
-                <ApplicantSection applicant="spouse" showLabel>
+                <ApplicantSectionDivider applicant="spouse" showLabel>
                   <FieldRenderer
                     field={fieldCatalog["review-spouse-consent"]}
                     control={control}
                     errors={errors}
                   />
-                </ApplicantSection>
+                </ApplicantSectionDivider>
               ) : null}
             </Stack>
           </Stack>

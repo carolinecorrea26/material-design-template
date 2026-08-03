@@ -5,9 +5,9 @@ import type { CoverageApplicantId } from "../../config/coverages/types";
 import type { EstimatedRateFrequency } from "../../config/clients/types";
 import { getDisplayedPremium } from "../../app/useCoverageState";
 import RateFrequencyToggle from "./RateFrequencyToggle";
-import TotalCostPanel, { type TotalCostPanelItem } from "./TotalCostPanel";
+import TotalCostSummary, { type TotalCostSummaryItem } from "./TotalCostSummary";
 
-type EstimatedCostPanelProps = {
+type TotalCostCartProps = {
   categoryProducts: Array<{ id: string; name: string }>;
   selectedCoverageIds: string[];
   productApplicants: Record<string, CoverageApplicantId[]>;
@@ -22,7 +22,7 @@ type EstimatedCostPanelProps = {
   isCoverageCalculating: (coverageId: string) => boolean;
 };
 
-export default function EstimatedCostPanel({
+export default function TotalCostCart({
   categoryProducts,
   selectedCoverageIds,
   calculatingRateKeys,
@@ -34,12 +34,12 @@ export default function EstimatedCostPanel({
   onFrequencyToggle,
   calcCoveragePremium,
   isCoverageCalculating,
-}: EstimatedCostPanelProps) {
+}: TotalCostCartProps) {
   const isAnyCalculating = calculatingRateKeys.size > 0 || frequencyCalculating || selectionCalculating;
   const displayedTotal = getDisplayedPremium(grandTotal, rateFrequency);
   const rateSuffix = rateFrequency === "annual" ? "/yr" : "/mo";
 
-  const items: TotalCostPanelItem[] = categoryProducts
+  const items: TotalCostSummaryItem[] = categoryProducts
     .filter((c) => selectedCoverageIds.includes(c.id))
     .map((coverage) => {
       const coverageTotal = calcCoveragePremium(coverage.id);
@@ -53,7 +53,7 @@ export default function EstimatedCostPanel({
         suffix: rateSuffix,
       };
     })
-    .filter(Boolean) as TotalCostPanelItem[];
+    .filter(Boolean) as TotalCostSummaryItem[];
 
   return (
     <Stack spacing={1.5}>
@@ -77,7 +77,7 @@ export default function EstimatedCostPanel({
         </Box>
       ) : (
         <>
-          <TotalCostPanel
+          <TotalCostSummary
             items={items}
             total={displayedTotal}
             totalSuffix={rateSuffix}

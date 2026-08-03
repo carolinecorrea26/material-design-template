@@ -13,47 +13,47 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import FeaturedBadge from "./ui/FeaturedBadge";
+import FeaturedBadge from "../ui/FeaturedBadge";
 import type { SvgIconComponent } from "@mui/icons-material";
-import CategorySectionCard from "./ui/CategorySectionCard";
-import CategoryHeader from "./CategoryHeader";
-import ApplicantSectionLabel from "./forms/ApplicantSectionLabel";
-import SelectionGroup from "./forms/SelectionGroup";
-import ProductCardSurface from "./ui/ProductCard";
-import QuickDecisionIndicator from "./ui/QuickDecisionIndicator";
-import QuickDecisionInfoBox from "./content/QuickDecisionInfoBox";
-import { getCoverageCategorySectionLabel } from "../config/coverageCategories";
+import CategoryCard from "../layout/CategoryCard";
+import CategoryHeader from "../layout/CategoryHeader";
+import { ApplicantSectionLabel } from "../layout/ApplicantSectionDivider";
+import SelectionGroup from "./SelectionGroup";
+import ProductCardSurface from "../layout/ProductCard";
+import QuickDecisionIndicator from "../ui/QuickDecisionIndicator";
+import QuickDecisionInfoBox from "../content/QuickDecisionInfoBox";
+import { getCoverageCategorySectionLabel } from "../../config/coverageCategories";
 import {
   getResolvedApplicantSectionTitles,
   applicantIcons,
   coverageApplicantToSection,
-} from "../config/formSectionTitle";
+} from "../../config/formSectionTitle";
 import type {
   CoverageCategoryId,
   CoverageApplicantId,
-} from "../config/coverages/types";
+} from "../../config/coverages/types";
 import type {
   ClientAmountByFrequency,
   ClientProductEstimatedCostBreakdown,
   EstimatedRateFrequency,
-} from "../config/clients/types";
-import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
-import { getActiveClient } from "../config/client/getActiveClient";
-import { getContent } from "../content";
-import { formatUSD } from "../utils/formatUSD";
-import EstimatedCostPanel from "./ui/EstimatedCostPanel";
-import ProductEstimatedCostBreakdown, {
-  type ProductEstimatedCostBreakdownItem,
-} from "./ui/ProductEstimatedCostBreakdown";
+} from "../../config/clients/types";
+import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
+import { getActiveClient } from "../../config/client/getActiveClient";
+import { getContent } from "../../content";
+import { formatUSD } from "../../utils/formatUSD";
+import TotalCostCart from "../ui/TotalCostCart";
+import ProductCostBreakdown, {
+  type ProductCostBreakdownItem,
+} from "../ui/ProductCostBreakdown";
 import {
   getDisplayedPremium,
   getBenefitAmountLabel,
-} from "../app/useCoverageState";
-import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
+} from "../../app/useCoverageState";
+import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
 
 type ResolvedCoverage = ReturnType<typeof getActiveClientCoverages>[number];
-import { getMaxAggregateNotes } from "../config/coverageConstants";
-import { resolveClientId } from "../config/client/resolveClientId";
+import { getMaxAggregateNotes } from "../../config/coverageConstants";
+import { resolveClientId } from "../../config/client/resolveClientId";
 
 function toMonthlyAmount(config?: ClientAmountByFrequency): number {
   if (!config) return 0;
@@ -78,7 +78,7 @@ function collectBreakdownRiderItems({
   storedRiderAmounts: ProductCardProps["storedRiderAmounts"];
   isMultiApplicant: boolean;
   breakdownConfig?: ClientProductEstimatedCostBreakdown;
-}): ProductEstimatedCostBreakdownItem[] {
+}): ProductCostBreakdownItem[] {
   const riderTotals = new Map<string, number>();
 
   for (const applicantId of currentApplicants) {
@@ -357,7 +357,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 
                 return (
                   <Stack spacing={2} key={categoryId}>
-                    <CategorySectionCard
+                    <CategoryCard
                       label={getCoverageCategorySectionLabel(
                         categoryId,
                         categorySectionLabelOverrides,
@@ -411,7 +411,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                           generateAmountChoices={generateAmountChoices}
                         />
                       ))}
-                    </CategorySectionCard>
+                    </CategoryCard>
                   </Stack>
                 );
               })}
@@ -449,7 +449,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 
       {/* Estimated cost section (always below products) */}
       <Box sx={{ mt: 3 }}>
-        <EstimatedCostPanel
+        <TotalCostCart
           categoryProducts={categoryProducts}
           selectedCoverageIds={selectedCoverageIds}
           productApplicants={productApplicants}
@@ -992,7 +992,7 @@ function ProductCard({
       </Stack>
 
       {shouldShowBreakdown && (
-        <ProductEstimatedCostBreakdown
+        <ProductCostBreakdown
           premiumCost={premiumCost}
           riderItems={riderItems}
           policyFee={

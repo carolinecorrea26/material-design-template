@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import type { ReactNode } from "react";
-import PageTitle from "./Title";
+import PageTitle from "./PageTitle";
 
 type PageHeaderProps = {
   title: ReactNode;

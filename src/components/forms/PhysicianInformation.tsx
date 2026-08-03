@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import type { FieldDefinition } from "../../config/fields/types";
 import FieldRenderer from "./FieldRenderer";
-import SectionHeader from "./SectionHeader";
+import SectionDivider from "../layout/SectionDivider";
 
 type PhysicianInformationProps = {
   fieldIds: string[];
@@ -41,7 +41,7 @@ export default function PhysicianInformation({
 
   return (
     <>
-      <SectionHeader
+      <SectionDivider
         label="Physician information"
         variant="subsection"
         sx={{ mb: 1 }}

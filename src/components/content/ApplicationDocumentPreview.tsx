@@ -1,17 +1,17 @@
 import { Box, Divider, IconButton, Stack, Typography } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import { getActiveClient } from "../config/client/getActiveClient";
-import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
-import { fieldCatalog } from "../config/fields";
-import type { FieldDefinition, FieldId } from "../config/fields/types";
-import type { CoverageApplicantId } from "../config/coverages/types";
+import { getActiveClient } from "../../config/client/getActiveClient";
+import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
+import { fieldCatalog } from "../../config/fields";
+import type { FieldDefinition, FieldId } from "../../config/fields/types";
+import type { CoverageApplicantId } from "../../config/coverages/types";
 import {
   pageSections,
   sectionLabels,
-} from "../config/pageSections/pageSections";
-import { isSectionVisible } from "../app/RoutePage";
-import type { ApplicationFormValues } from "../app/ApplicationFormContext";
-import type { PageId } from "../types";
+} from "../../config/pageSections/pageSections";
+import { isSectionVisible } from "../../app/RoutePage";
+import type { ApplicationFormValues } from "../../app/ApplicationFormContext";
+import type { PageId } from "../../types";
 
 type DisplayEntry = {
   label: string;

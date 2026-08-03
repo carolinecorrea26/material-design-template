@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Alert, Box, Divider, Stack, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { formatUSD as formatCurrency } from "../utils/formatUSD";
-import ProductCard from "../components/ui/ProductCard";
+import ProductCard from "../components/layout/ProductCard";
 import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
 import FormRoutePage from "../app/RoutePage";
-import SectionHeader from "../components/forms/SectionHeader";
-import CategorySectionCard from "../components/ui/CategorySectionCard";
+import SectionDivider from "../components/layout/SectionDivider";
+import CategoryCard from "../components/layout/CategoryCard";
 
 import FieldRenderer from "../components/forms/FieldRenderer";
 import { getCoverageCategorySectionLabel } from "../config/coverageCategories";
@@ -19,7 +19,7 @@ import { fieldCatalog } from "../config/fields";
 import type { FieldDefinition, FieldId } from "../config/fields/types";
 import { paymentHandlingHelpItem } from "../content/helpContent";
 import FormHelpChips from "../components/content/HelpChips";
-import AppDrawer from "../components/ui/AppDrawer";
+import AppDrawer from "../components/layout/AppDrawer";
 
 type AppliedProduct = {
   coverageId: string;
@@ -378,7 +378,7 @@ export default function Payment() {
                   groupedCategories.map(({ category, products }) => {
                     return (
                       <Stack key={category.id} spacing={1.5}>
-                        <CategorySectionCard
+                        <CategoryCard
                           label={getCoverageCategorySectionLabel(
                             category.id,
                             categorySectionLabelOverrides,
@@ -552,7 +552,7 @@ export default function Payment() {
                               </ProductCard>
                             );
                           })}
-                        </CategorySectionCard>
+                        </CategoryCard>
                       </Stack>
                     );
                   })
@@ -560,7 +560,7 @@ export default function Payment() {
 
                 {hasAnyBankAccountSelected && (
                   <Stack spacing={1.5} sx={{ pt: 1 }}>
-                    <SectionHeader
+                    <SectionDivider
                       label="Banking Information"
                       variant="subsection"
                     />

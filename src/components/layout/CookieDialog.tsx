@@ -2,11 +2,11 @@ import { Alert, Box, IconButton, Link, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { getContent } from "../../content";
 
-type CookieBannerProps = {
+type CookieDialogProps = {
   onClose: () => void;
 };
 
-export default function CookieBanner({ onClose }: CookieBannerProps) {
+export default function CookieDialog({ onClose }: CookieDialogProps) {
   const { message, learnMoreLabel, learnMoreHref } =
     getContent().shared.cookieBanner;
 
