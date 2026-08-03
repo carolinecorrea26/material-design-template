@@ -30,9 +30,7 @@ import type { ClientConfig } from "../../config/clients/types";
 import type { PageId } from "../../types";
 import { useApplicationForm } from "../../app/ApplicationFormContext";
 import { router } from "../../app/router";
-import CartDrawer, {
-  useApplicationSummaryBadge,
-} from "./CartDrawer";
+import CartDrawer, { useApplicationSummaryBadge } from "./CartDrawer";
 import type { AppShellVariant } from "./AppShell";
 import ClientHelpBanner from "./ClientHelpBanner";
 
@@ -165,7 +163,8 @@ export default function AppHeader({
     variant === "applicationForm" &&
     currentPageId !== undefined &&
     currentPageId !== "home" &&
-    currentPageId !== "receipt";
+    currentPageId !== "receipt" &&
+    window.sessionStorage.getItem("reviewSubmitted") !== "true";
 
   const prevCoverageCountRef = useRef<number>(
     Array.isArray(values.coverageSelections)

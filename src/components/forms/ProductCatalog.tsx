@@ -549,6 +549,7 @@ function ProductCard({
     breakdownConfig?.policyFee?.label ?? "Non-member policy fee";
   const policyFeeAmount = toMonthlyAmount(breakdownConfig?.policyFee?.amount);
   const shouldShowBreakdown =
+    hasAnyApplicantSelected &&
     breakdownConfig?.enabled === true &&
     (premiumCost > 0 || riderItems.length > 0 || policyFeeAmount > 0);
 

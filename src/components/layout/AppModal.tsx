@@ -43,6 +43,8 @@ type AppModalProps = {
    * Defaults to "dialog".
    */
   role?: "dialog" | "alertdialog";
+  /** Min height for the dialog on desktop. Defaults to "50vh". Set to "auto" for compact dialogs. */
+  minHeight?: string;
 };
 
 export type { AppModalAction };
@@ -56,6 +58,7 @@ export default function AppModal({
   showCloseIcon = true,
   maxWidth = 900,
   role = "dialog",
+  minHeight = "50vh",
 }: AppModalProps) {
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
@@ -69,9 +72,7 @@ export default function AppModal({
       fullScreen={!isDesktop}
       role={role}
       PaperProps={{
-        sx: isDesktop
-          ? { minHeight: "50vh", maxHeight: "85vh", maxWidth }
-          : {},
+        sx: isDesktop ? { minHeight, maxHeight: "85vh", maxWidth } : {},
       }}
     >
       <DialogTitle
@@ -103,10 +104,7 @@ export default function AppModal({
             <Button
               key={index}
               onClick={action.onClick}
-              variant={
-                action.variant ??
-                (index === 0 ? "contained" : "text")
-              }
+              variant={action.variant ?? (index === 0 ? "contained" : "text")}
               color={action.color ?? "primary"}
             >
               {action.label}

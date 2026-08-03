@@ -433,6 +433,11 @@ export default function FormRoutePage({
       });
     }
 
+    if (pageId === "review") {
+      window.sessionStorage.setItem("reviewSubmitted", "true");
+      window.dispatchEvent(new Event("reviewsubmitted"));
+    }
+
     const nextPageId =
       resolveNextPageId?.(nextNavigationValues) ??
       getNextFormPageId(pageId, nextNavigationValues);
@@ -514,6 +519,15 @@ export default function FormRoutePage({
   const resolvedSubhead = subhead ?? getPageSubhead(pageId);
   const resolvedInfoNote = getPageInfoNote(pageId);
 
+  // After review is submitted, disable back navigation on post-review pages
+  const reviewSubmitted =
+    window.sessionStorage.getItem("reviewSubmitted") === "true";
+  const flow = getResolvedFormFlow();
+  const reviewIndex = flow.indexOf("review");
+  const currentIndex = flow.indexOf(pageId);
+  const isAfterReview =
+    reviewSubmitted && reviewIndex !== -1 && currentIndex > reviewIndex;
+
   const formPageElement = (
     <PageShell
       title={resolvedTitle}
@@ -544,6 +558,7 @@ export default function FormRoutePage({
                   title={resolvedTitle}
                   subhead={resolvedSubhead}
                   onBack={
+                    !isAfterReview &&
                     getPreviousFormPageId(pageId, watchedValues)
                       ? handleBack
                       : undefined
@@ -597,9 +612,7 @@ export default function FormRoutePage({
       />
 
       {hasVerticalStepper ? (
-        <ProgressStep pageId={pageId}>
-          {formPageElement}
-        </ProgressStep>
+        <ProgressStep pageId={pageId}>{formPageElement}</ProgressStep>
       ) : (
         formPageElement
       )}

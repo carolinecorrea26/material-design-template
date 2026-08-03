@@ -131,6 +131,10 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
     (entry) => entry.containsCurrentPage,
   );
 
+  // After review is submitted, disable breadcrumb navigation
+  const reviewSubmittedForBreadcrumbs =
+    window.sessionStorage.getItem("reviewSubmitted") === "true";
+
   return (
     <Breadcrumbs
       separator={
@@ -161,7 +165,7 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
             HEALTH_PAGE_IDS.includes(pendingCompletedPageId));
         const isCompleted =
           index < currentEntryIndex || isPendingCompletedEntry;
-        const isClickable = isCompleted;
+        const isClickable = isCompleted && !reviewSubmittedForBreadcrumbs;
 
         return (
           <Box
@@ -214,6 +218,10 @@ export default function ProgressStep({
 
   const activeSteps = getActiveProgressSteps(values);
   const activeStep = getActiveProgressStepIndex(pageId, values);
+
+  // After review is submitted, disable navigation to prior steps
+  const reviewSubmitted =
+    window.sessionStorage.getItem("reviewSubmitted") === "true";
 
   return (
     <Box
@@ -268,6 +276,7 @@ export default function ProgressStep({
             {activeSteps.map((step, index) => {
               const isActive = index === activeStep;
               const isCompleted = index < activeStep;
+              const isClickable = isCompleted && !reviewSubmitted;
               const stepLabelColor = isActive
                 ? "text.primary"
                 : isCompleted
@@ -278,7 +287,7 @@ export default function ProgressStep({
                 <Step key={step.id} completed={isCompleted}>
                   <StepLabel
                     onClick={
-                      isCompleted
+                      isClickable
                         ? () => {
                             const firstPage = step.pageIds[0];
                             if (firstPage) {
@@ -287,7 +296,7 @@ export default function ProgressStep({
                           }
                         : undefined
                     }
-                    sx={isCompleted ? { cursor: "pointer" } : undefined}
+                    sx={isClickable ? { cursor: "pointer" } : undefined}
                   >
                     <Typography
                       variant="formVerticalStepLabel"

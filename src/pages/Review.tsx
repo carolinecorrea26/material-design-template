@@ -1,3 +1,4 @@
+import { useState } from "react";
 import ReportRoundedIcon from "@mui/icons-material/ReportRounded";
 import PrintOutlinedIcon from "@mui/icons-material/PrintOutlined";
 import { Alert, Box, Button, Stack, Typography } from "@mui/material";
@@ -16,14 +17,25 @@ import { fieldCatalog } from "../config/fields";
 import ApplicationDocumentPreview from "../components/content/ApplicationDocumentPreview";
 import { getContent } from "../content";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
+import ConfirmationDialog from "../components/layout/ConfirmationDialog";
+import { useReviewSubmitted } from "../app/useReviewSubmitted";
 
 const reviewContent = getContent().review;
 
 export default function Review() {
   const navigate = useNavigate();
+  const { isReviewSubmitted } = useReviewSubmitted();
+  const [editTargetPageId, setEditTargetPageId] = useState<PageId | null>(null);
 
   function printSection() {
     window.print();
+  }
+
+  function handleEditConfirm() {
+    if (editTargetPageId) {
+      navigate(`/${editTargetPageId}`);
+    }
+    setEditTargetPageId(null);
   }
 
   return (
@@ -54,7 +66,7 @@ export default function Review() {
         );
 
         function openEdit(pageId: PageId) {
-          navigate(`/${pageId}`);
+          setEditTargetPageId(pageId);
         }
 
         return (
@@ -110,8 +122,18 @@ export default function Review() {
                 day: "2-digit",
                 year: "numeric",
               }).format(new Date())}
-              onEditSection={openEdit}
+              onEditSection={isReviewSubmitted ? undefined : openEdit}
               hideSignature
+            />
+
+            <ConfirmationDialog
+              open={editTargetPageId !== null}
+              onClose={() => setEditTargetPageId(null)}
+              title="Edit your application"
+              message="To edit your application, you will be sent back to the page where that information is collected. Do you want to go to this page to make edits?"
+              confirmLabel="Yes"
+              cancelLabel="Cancel"
+              onConfirm={handleEditConfirm}
             />
 
             <Box>
