@@ -45,6 +45,11 @@ export const pages = [
     path: "/information-architecture",
     type: "internal",
   },
+  {
+    id: "design-system",
+    path: "/design-system",
+    type: "internal",
+  },
   { id: "profile", path: "/profile", type: "form", groupId: "profile" },
 ] as const;
 

@@ -114,6 +114,10 @@ export const pagesDefaults: Partial<PagesContent> = {
     title: "Information Architecture",
     navTitle: "Information architecture",
   },
+  "design-system": {
+    title: "Design System",
+    navTitle: "Design system",
+  },
   profile: {
     title: "About you",
     subhead:

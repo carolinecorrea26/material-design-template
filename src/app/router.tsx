@@ -29,6 +29,7 @@ import AdvisorLogin from "../pages/AdvisorLogin";
 import AdvisorSendConfirmation from "../pages/AdvisorSendConfirmation";
 import MockEmailPreview from "../pages/MockEmailPreview";
 import InformationArchitecture from "../pages/InformationArchitecture";
+import DesignSystem from "../pages/DesignSystem";
 
 /**
  * Maps each page ID to its React component.
@@ -57,6 +58,7 @@ const pageComponents: Record<PageId, ComponentType> = {
   "advisor-send-confirmation": AdvisorSendConfirmation,
   "mock-email-preview": MockEmailPreview,
   "information-architecture": InformationArchitecture,
+  "design-system": DesignSystem,
 };
 
 /** Pages that get their own route. Internal-only pages are excluded. */
@@ -83,6 +85,7 @@ const routedPageIds: PageId[] = [
   "advisor-send-confirmation",
   "mock-email-preview",
   "information-architecture",
+  "design-system",
 ];
 
 const pageVariants: Partial<Record<PageId, AppShellVariant>> = {
