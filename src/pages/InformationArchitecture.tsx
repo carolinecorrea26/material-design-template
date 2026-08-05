@@ -39,6 +39,7 @@ import { pages, getPageTitle, getPageNavTitle } from "../config/pages";
 import { pageSections } from "../config/pageSections";
 import type { SectionVisibilityRule } from "../config/pageSections/types";
 import type { PageId } from "../types";
+import DocsSidebarNav from "../components/docs/DocsSidebarNav";
 
 const tableOfContents = [
   { id: "pages-table", label: "Pages" },
@@ -2060,6 +2061,7 @@ export default function InformationArchitecture() {
             borderColor: "divider",
             borderRadius: "24px",
             boxShadow: "0 12px 28px rgba(15, 23, 42, 0.06)",
+            display: { xs: "block", md: "none" },
           }}
         >
           <CardContent>
@@ -2087,6 +2089,9 @@ export default function InformationArchitecture() {
           </CardContent>
         </Card>
 
+        <Box sx={{ display: "flex", gap: 4, alignItems: "flex-start" }}>
+          <DocsSidebarNav items={tableOfContents} />
+          <Stack spacing={3} sx={{ flex: 1, minWidth: 0 }}>
         {/* 1. PAGES */}
         <SectionAccordion
           id="pages-table"
@@ -2551,6 +2556,8 @@ export default function InformationArchitecture() {
             </ResponsiveTableContainer>
           </Stack>
         </SectionAccordion>
+          </Stack>
+        </Box>
       </Stack>
 
       {/* Field detail modal */}

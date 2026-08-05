@@ -1,10 +1,12 @@
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Alert,
   Box,
+  Button,
   Card,
   CardContent,
   Chip,
@@ -22,6 +24,14 @@ import {
 } from "@mui/material";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import FieldRenderer from "../components/forms/FieldRenderer";
+import DynamicList from "../components/forms/DynamicList";
+import AppHeader from "../components/layout/AppHeader";
+import AppMenu from "../components/layout/AppMenu";
+import { getActiveClient } from "../config/client/getActiveClient";
+import { formatUSD } from "../utils/formatUSD";
+import DocsSidebarNav from "../components/docs/DocsSidebarNav";
+import type { FieldDefinition } from "../config/fields/types";
 
 // Navigation & actions
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
@@ -475,10 +485,530 @@ const toc = [
   { id: "colors-section", label: "Colors" },
   { id: "typography-section", label: "Typography" },
   { id: "overrides-section", label: "Component overrides" },
+  { id: "field-examples-section", label: "Form field examples" },
+  { id: "field-errors-section", label: "Field errors" },
+  { id: "components-section", label: "Component examples" },
   { id: "icons-section", label: "Icons" },
   { id: "branding-section", label: "Branding guidelines" },
   { id: "rules-section", label: "Design rules" },
 ];
+
+// ---------------------------------------------------------------------------
+// FieldRenderer examples — one instance of every input pattern FieldRenderer
+// supports (source: src/components/forms/FieldRenderer.tsx)
+// ---------------------------------------------------------------------------
+
+type FieldExample = {
+  title: string;
+  note: string;
+  field: FieldDefinition;
+};
+
+const fieldExamples: FieldExample[] = [
+  {
+    title: "Text — floating label",
+    note: "Default label mode: label floats inside the input border.",
+    field: {
+      id: "ds-text-floating",
+      label: "First name",
+      inputType: "text",
+      required: true,
+      autoComplete: "given-name",
+    },
+  },
+  {
+    title: "Text — standard label",
+    note: "labelVariant: 'standard' — label sits above the input as a FormLabel.",
+    field: {
+      id: "ds-text-standard",
+      label: "Last name",
+      inputType: "text",
+      labelVariant: "standard",
+      required: true,
+      autoComplete: "family-name",
+    },
+  },
+  {
+    title: "Email",
+    note: "format: 'email' — validated on blur, mobile email keyboard.",
+    field: {
+      id: "ds-email",
+      label: "Email address",
+      inputType: "text",
+      format: "email",
+      required: true,
+      autoComplete: "email",
+    },
+  },
+  {
+    title: "Phone — with type dropdown",
+    note: "format: 'phone' — auto-formats digits, inline Mobile/Home/Business selector as an end adornment.",
+    field: {
+      id: "ds-phone",
+      label: "Phone number",
+      inputType: "text",
+      format: "phone",
+      required: true,
+    },
+  },
+  {
+    title: "Phone — plain",
+    note: "showPhoneTypeSelector: false — formatted phone input with no type selector.",
+    field: {
+      id: "ds-phone-plain",
+      label: "Business phone",
+      inputType: "text",
+      format: "phone",
+      showPhoneTypeSelector: false,
+    },
+  },
+  {
+    title: "Number",
+    note: "inputType: 'number' — digit-only, numeric mobile keyboard.",
+    field: {
+      id: "ds-number",
+      label: "Years self-employed",
+      inputType: "number",
+    },
+  },
+  {
+    title: "Currency",
+    note: "format: 'currency' — auto-formats to $ with thousands separators.",
+    field: {
+      id: "ds-currency",
+      label: "Average monthly income",
+      inputType: "text",
+      format: "currency",
+    },
+  },
+  {
+    title: "Percent",
+    note: "format: 'percent' — strips to a max of 3 digits, no symbol.",
+    field: {
+      id: "ds-percent",
+      label: "Ownership share",
+      inputType: "text",
+      format: "percent",
+    },
+  },
+  {
+    title: "SSN — input with icon",
+    note: "format: 'ssn' — lock icon start adornment; digits mask to bullets, last digit shown briefly.",
+    field: {
+      id: "ds-ssn",
+      label: "Social Security Number",
+      inputType: "text",
+      format: "ssn",
+      required: true,
+    },
+  },
+  {
+    title: "Date",
+    note: "inputType: 'date' — MM/DD/YYYY display, stored as YYYY-MM-DD.",
+    field: {
+      id: "ds-date",
+      label: "Date of birth",
+      inputType: "date",
+      required: true,
+      autoComplete: "bday",
+    },
+  },
+  {
+    title: "Month / year",
+    note: "format: 'month-year' — MM/YYYY display, e.g. coverage start date.",
+    field: {
+      id: "ds-month-year",
+      label: "Coverage start",
+      inputType: "text",
+      format: "month-year",
+    },
+  },
+  {
+    title: "Textarea",
+    note: "multiline: true — free-form multi-line text.",
+    field: {
+      id: "ds-textarea",
+      label: "Additional details",
+      inputType: "text",
+      multiline: true,
+      minRows: 3,
+      placeholder: "Add any additional context here…",
+    },
+  },
+  {
+    title: "Dropdown — floating label",
+    note: "inputType: 'dropdown' — MUI Select with a floating InputLabel.",
+    field: {
+      id: "ds-dropdown-floating",
+      label: "State",
+      inputType: "dropdown",
+      required: true,
+      options: [
+        { value: "ny", label: "New York" },
+        { value: "ca", label: "California" },
+        { value: "tx", label: "Texas" },
+      ],
+    },
+  },
+  {
+    title: "Dropdown — standard label",
+    note: "inputType: 'dropdown' + labelVariant: 'standard' — external FormLabel.",
+    field: {
+      id: "ds-dropdown-standard",
+      label: "Business type",
+      inputType: "dropdown",
+      labelVariant: "standard",
+      options: [
+        { value: "sole-prop", label: "Sole Proprietor" },
+        { value: "corp", label: "Professional Corporation" },
+        { value: "llc", label: "LLC" },
+      ],
+    },
+  },
+  {
+    title: "Searchable select",
+    note: "inputType: 'searchable-select' — MUI Autocomplete with type-ahead filtering.",
+    field: {
+      id: "ds-searchable-select",
+      label: "AVMA graduation year",
+      inputType: "searchable-select",
+      options: Array.from({ length: 6 }, (_, i) => {
+        const year = String(2024 - i);
+        return { value: year, label: year };
+      }),
+    },
+  },
+  {
+    title: "Multi-select",
+    note: "inputType: 'multi-select' — Select multiple, checkboxes inside a dropdown.",
+    field: {
+      id: "ds-multi-select",
+      label: "Tobacco products used",
+      inputType: "multi-select",
+      options: [
+        { value: "cigarettes", label: "Cigarettes" },
+        { value: "cigars", label: "Cigars" },
+        { value: "vaping", label: "Vaping / e-cigarettes" },
+        { value: "chewing", label: "Chewing tobacco" },
+      ],
+    },
+  },
+  {
+    title: "Radio",
+    note: "inputType: 'radio' — full-width SelectionGroup rows, one tap target per option.",
+    field: {
+      id: "ds-radio",
+      label: "Do you use tobacco products?",
+      inputType: "radio",
+      required: true,
+      options: [
+        { value: "yes", label: "Yes" },
+        { value: "no", label: "No" },
+      ],
+    },
+  },
+  {
+    title: "Checkbox — single",
+    note: "inputType: 'checkbox' — single boolean toggle in a SelectionGroup row.",
+    field: {
+      id: "ds-checkbox",
+      label: "I authorize this bank account for premium payments.",
+      inputType: "checkbox",
+      required: true,
+    },
+  },
+  {
+    title: "Checkbox group",
+    note: "inputType: 'checkbox-group' — multiple independent checkboxes, stores an array.",
+    field: {
+      id: "ds-checkbox-group",
+      label: "Which of these apply to you?",
+      inputType: "checkbox-group",
+      options: [
+        { value: "self-employed", label: "Self-employed" },
+        { value: "work-from-home", label: "Work from home" },
+        { value: "travel-often", label: "Travel outside the US often" },
+      ],
+    },
+  },
+];
+
+type DemoFormValues = Record<string, string | boolean | string[]>;
+
+function FieldExampleCard({ example }: { example: FieldExample }) {
+  const {
+    control,
+    formState: { errors },
+  } = useForm<DemoFormValues>({
+    defaultValues: {
+      [example.field.id]: example.field.inputType === "checkbox"
+        ? false
+        : example.field.inputType === "checkbox-group" ||
+            example.field.inputType === "multi-select"
+          ? []
+          : "",
+      "phone-type": "mobile",
+    },
+  });
+
+  return (
+    <Card
+      variant="outlined"
+      sx={{ borderRadius: 3, height: "100%", display: "flex", flexDirection: "column" }}
+    >
+      <CardContent sx={{ flex: 1 }}>
+        <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+          {example.title}
+        </Typography>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ display: "block", mb: 2 }}
+        >
+          {example.note}
+        </Typography>
+        <FieldRenderer field={example.field} control={control} errors={errors} />
+      </CardContent>
+    </Card>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Field error examples — same FieldRenderer, forced into its error state via
+// react-hook-form validation (real validation rules from FieldRenderer).
+// ---------------------------------------------------------------------------
+
+const errorFieldExamples: FieldExample[] = [
+  {
+    title: "Text — error",
+    note: "Required field left empty: red outline + \"This field is required.\" helper text.",
+    field: {
+      id: "ds-error-text",
+      label: "Email address",
+      inputType: "text",
+      format: "email",
+      required: true,
+    },
+  },
+  {
+    title: "Dropdown — error",
+    note: "Required select with no value chosen.",
+    field: {
+      id: "ds-error-dropdown",
+      label: "State",
+      inputType: "dropdown",
+      required: true,
+      options: [
+        { value: "ny", label: "New York" },
+        { value: "ca", label: "California" },
+      ],
+    },
+  },
+  {
+    title: "Radio — error",
+    note: "Required radio group with no option selected.",
+    field: {
+      id: "ds-error-radio",
+      label: "Do you use tobacco products?",
+      inputType: "radio",
+      required: true,
+      options: [
+        { value: "yes", label: "Yes" },
+        { value: "no", label: "No" },
+      ],
+    },
+  },
+  {
+    title: "Checkbox — error",
+    note: "Required consent checkbox left unchecked.",
+    field: {
+      id: "ds-error-checkbox",
+      label: "I authorize this bank account for premium payments.",
+      inputType: "checkbox",
+      required: true,
+    },
+  },
+];
+
+function FieldErrorExampleCard({ example }: { example: FieldExample }) {
+  const {
+    control,
+    trigger,
+    formState: { errors },
+  } = useForm<DemoFormValues>({
+    mode: "onChange",
+    defaultValues: {
+      [example.field.id]:
+        example.field.inputType === "checkbox" ? false : "",
+    },
+  });
+
+  // Force validation to run once on mount so the error state renders
+  // immediately, without requiring the visitor to interact with the field.
+  useEffect(() => {
+    void trigger();
+  }, [trigger]);
+
+  return (
+    <Card
+      variant="outlined"
+      sx={{
+        borderRadius: 3,
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        borderColor: "error.main",
+      }}
+    >
+      <CardContent sx={{ flex: 1 }}>
+        <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+          {example.title}
+        </Typography>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ display: "block", mb: 2 }}
+        >
+          {example.note}
+        </Typography>
+        <FieldRenderer field={example.field} control={control} errors={errors} />
+      </CardContent>
+    </Card>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Beneficiary "Add" modal example (DynamicList — self-contained, no shared
+// app state; safe to mount live).
+// ---------------------------------------------------------------------------
+
+const beneficiaryModalFields: FieldDefinition[] = [
+  { id: "ds-ben-first-name", label: "First Name", inputType: "text", required: true },
+  { id: "ds-ben-last-name", label: "Last Name", inputType: "text", required: true },
+  {
+    id: "ds-ben-relationship",
+    label: "Relationship",
+    inputType: "dropdown",
+    required: true,
+    options: [
+      { value: "spouse", label: "Spouse" },
+      { value: "child", label: "Child" },
+      { value: "parent", label: "Parent" },
+      { value: "sibling", label: "Sibling" },
+      { value: "other", label: "Other" },
+    ],
+  },
+  { id: "ds-ben-share", label: "% Share", inputType: "number", required: true },
+];
+
+const beneficiaryFieldToKey = {
+  "ds-ben-first-name": "firstName",
+  "ds-ben-last-name": "lastName",
+  "ds-ben-relationship": "relationship",
+  "ds-ben-share": "share",
+} as const;
+
+function BeneficiaryModalExample() {
+  const { control } = useForm<Record<string, any>>({
+    defaultValues: {
+      beneficiaries: [
+        {
+          firstName: "Jordan",
+          lastName: "Lee",
+          relationship: "spouse",
+          share: "100",
+        },
+      ],
+    },
+  });
+
+  return (
+    <DynamicList
+      control={control}
+      name="beneficiaries"
+      label="Beneficiary"
+      mapping={{ fields: beneficiaryModalFields, fieldToKey: beneficiaryFieldToKey }}
+      getItemLabel={(item) => `${item.firstName} ${item.lastName}`}
+      renderItem={(item) => (
+        <Typography variant="body2">
+          <strong>
+            {item.firstName} {item.lastName}
+          </strong>{" "}
+          — {item.relationship}, {item.share}% share
+        </Typography>
+      )}
+    />
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Coverage cart — static visual reconstruction (not wired to live app state).
+// The real ECart/CartDrawer reads shared session data; a static mock keeps
+// this reference deterministic and avoids touching a real in-progress
+// application's saved selections.
+// ---------------------------------------------------------------------------
+
+const mockCartLines = [
+  { product: "Term Life Insurance", applicant: "Primary Applicant", amount: "$250,000", monthly: 24.5 },
+  { product: "Term Life Insurance", applicant: "Spouse", amount: "$100,000", monthly: 11.75 },
+  { product: "Accidental Death & Dismemberment", applicant: "Primary Applicant", amount: "$50,000", monthly: 4.25 },
+];
+
+function CoverageCartPreview() {
+  const total = mockCartLines.reduce((sum, line) => sum + line.monthly, 0);
+
+  return (
+    <Card variant="outlined" sx={{ borderRadius: CARD_RADIUS, maxWidth: 380 }}>
+      <CardContent>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.5 }}>
+          <Typography variant="subtitle2">Your Coverage</Typography>
+          <Chip label="Estimate" size="small" variant="outlined" />
+        </Stack>
+        <Stack spacing={1.5} divider={<Divider />}>
+          {mockCartLines.map((line, i) => (
+            <Stack key={i} spacing={0.25}>
+              <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                {line.product}
+              </Typography>
+              <Stack direction="row" justifyContent="space-between">
+                <Typography variant="caption" color="text.secondary">
+                  {line.applicant} · {line.amount}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {formatUSD(line.monthly)}/mo
+                </Typography>
+              </Stack>
+            </Stack>
+          ))}
+        </Stack>
+        <Divider sx={{ my: 1.5 }} />
+        <Stack direction="row" justifyContent="space-between" alignItems="baseline">
+          <Typography variant="subtitle2">Estimated total</Typography>
+          <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
+            {formatUSD(total)}/mo
+          </Typography>
+        </Stack>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// App menu preview — real AppMenu, opened via a local toggle so it's safe
+// and deterministic to demo (no shared state, closes like the real drawer).
+// ---------------------------------------------------------------------------
+
+function AppMenuPreview() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button variant="outlined" startIcon={<MenuIcon />} onClick={() => setOpen(true)}>
+        Open menu
+      </Button>
+      <AppMenu open={open} onClose={() => setOpen(false)} client={getActiveClient()} />
+    </>
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Page
@@ -546,6 +1076,7 @@ export default function DesignSystem() {
             borderColor: "divider",
             borderRadius: "24px",
             boxShadow: "0 12px 28px rgba(15, 23, 42, 0.06)",
+            display: { xs: "block", md: "none" },
           }}
         >
           <CardContent>
@@ -573,6 +1104,9 @@ export default function DesignSystem() {
           </CardContent>
         </Card>
 
+        <Box sx={{ display: "flex", gap: 4, alignItems: "flex-start" }}>
+          <DocsSidebarNav items={toc} />
+          <Stack spacing={3} sx={{ flex: 1, minWidth: 0 }}>
         {/* 1. COLORS */}
         <SectionAccordion
           id="colors-section"
@@ -750,7 +1284,119 @@ export default function DesignSystem() {
           </ResponsiveTableContainer>
         </SectionAccordion>
 
-        {/* 4. ICONS */}
+        {/* 4. FORM FIELD EXAMPLES */}
+        <SectionAccordion
+          id="field-examples-section"
+          title="Form field examples"
+          description="One live instance of every input pattern FieldRenderer supports, rendered with the real component."
+          count={fieldExamples.length}
+        >
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "repeat(2, minmax(0, 1fr))",
+                lg: "repeat(3, minmax(0, 1fr))",
+              },
+              gap: 2,
+            }}
+          >
+            {fieldExamples.map((example) => (
+              <FieldExampleCard key={example.field.id} example={example} />
+            ))}
+          </Box>
+        </SectionAccordion>
+
+        {/* 5. FIELD ERRORS */}
+        <SectionAccordion
+          id="field-errors-section"
+          title="Field errors"
+          description="Real FieldRenderer validation errors, forced to render immediately for reference. Page-level error banners are covered under Design rules → Alerts."
+          count={errorFieldExamples.length}
+        >
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "repeat(2, minmax(0, 1fr))",
+                lg: "repeat(4, minmax(0, 1fr))",
+              },
+              gap: 2,
+            }}
+          >
+            {errorFieldExamples.map((example) => (
+              <FieldErrorExampleCard key={example.field.id} example={example} />
+            ))}
+          </Box>
+        </SectionAccordion>
+
+        {/* 6. COMPONENT EXAMPLES */}
+        <SectionAccordion
+          id="components-section"
+          title="Component examples"
+          description="Live instances of larger site components, mounted directly from source. Interactive elements are safe to click — none of these write to the app's real saved-application state."
+        >
+          <Stack spacing={3}>
+            <Box>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                App header
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 1.5, display: "block" }}>
+                Rendered in the <code>homepage</code> chrome variant here to
+                keep this reference read-only (the <code>applicationForm</code>{" "}
+                variant additionally shows a progress bar and cart icon in-app).
+              </Typography>
+              <Box sx={{ border: "1px solid", borderColor: "divider", borderRadius: 3, overflow: "hidden" }}>
+                <AppHeader client={getActiveClient()} variant="homepage" />
+              </Box>
+            </Box>
+
+            <Divider />
+
+            <Box>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                App menu
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 1.5, display: "block" }}>
+                Full-screen slide-in drawer with coverage tools and support info.
+              </Typography>
+              <AppMenuPreview />
+            </Box>
+
+            <Divider />
+
+            <Box>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                Coverage cart
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 1.5, display: "block" }}>
+                Static visual reconstruction with mock data — the real
+                component reads the shared application session, which isn't
+                deterministic for a documentation page.
+              </Typography>
+              <CoverageCartPreview />
+            </Box>
+
+            <Divider />
+
+            <Box>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                Beneficiary "Add" modal
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 1.5, display: "block" }}>
+                DynamicList: repeating field-array pattern with a modal-based
+                add/edit form. Click "Add Beneficiary" to see the dialog.
+              </Typography>
+              <Box sx={{ maxWidth: 480 }}>
+                <BeneficiaryModalExample />
+              </Box>
+            </Box>
+          </Stack>
+        </SectionAccordion>
+
+        {/* 7. ICONS */}
         <SectionAccordion
           id="icons-section"
           title="Icons"
@@ -805,7 +1451,7 @@ export default function DesignSystem() {
           </Stack>
         </SectionAccordion>
 
-        {/* 5. BRANDING GUIDELINES */}
+        {/* 8. BRANDING GUIDELINES */}
         <SectionAccordion
           id="branding-section"
           title="Branding guidelines"
@@ -954,7 +1600,7 @@ export default function DesignSystem() {
           </Stack>
         </SectionAccordion>
 
-        {/* 6. DESIGN RULES */}
+        {/* 9. DESIGN RULES */}
         <SectionAccordion
           id="rules-section"
           title="Design rules"
@@ -1074,6 +1720,8 @@ export default function DesignSystem() {
             </Box>
           </Stack>
         </SectionAccordion>
+          </Stack>
+        </Box>
       </Stack>
     </Box>
   );
