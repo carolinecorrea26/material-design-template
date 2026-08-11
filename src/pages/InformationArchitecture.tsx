@@ -3122,52 +3122,51 @@ export default function InformationArchitecture() {
                       {
                         condition: "LI (SI) or DI (SI) selected",
                         page: "SI",
-                        purpose: "SI underwriting health questions",
+                        purpose: "Simplified Issue health questions",
                         implemented: true,
                       },
                       {
-                        condition: "Whole Life product selected",
+                        condition: "WL (SI + UW) selected",
                         page: "WAEPAWL",
-                        purpose: "Whole Life SI + UW health questions",
+                        purpose: "Whole Life health questions",
                         implemented: false,
                       },
                       {
                         condition: "LI (UW), DI (UW), or OO (UW) selected",
                         page: "TELE SUPP",
-                        purpose: "Telephone/UW supplemental health questions",
+                        purpose: "Tele-Supplemental health questions",
                         implemented: true,
                       },
                       {
-                        condition: "Critical Illness product selected",
+                        condition: "CI product selected",
                         page: "CI",
                         purpose: "Critical Illness health questions",
                         implemented: false,
                       },
                       {
-                        condition:
-                          "LI (UW) + CIR rider, or CIR rider standalone",
+                        condition: "LI (UW) + CIR, or CIR standalone",
                         page: "UW CIR",
-                        purpose: "CIR rider health questions (UW path)",
+                        purpose: "Chronic Illness Rider health questions",
                         implemented: true,
                       },
                       {
                         condition: "LI (QD) and/or DI (QD) selected",
                         page: "QD LI / QD DI / QD LI+DI",
                         purpose:
-                          "QuickDecision questionnaire — renders as LI-only, DI-only, or combined page depending on selections",
+                          "Magnum QuickDecision (LI/DI/LI+DI) health questions",
                         implemented: true,
                       },
                       {
-                        condition: "LI (QD) + CIR rider selected",
+                        condition: "LI (QD) + CIR selected",
                         page: "QD CIR",
-                        purpose: "CIR rider health questions (QD path)",
+                        purpose:
+                          "Magnum Chronic Illness Rider health questions",
                         implemented: false,
                       },
                       {
-                        condition: "LI (QD) + DI (UW) both selected",
+                        condition: "LI (QD) + DI (UW) selected",
                         page: "DI SUPP",
-                        purpose:
-                          "Supplemental DI health questions alongside QD path",
+                        purpose: "Supplemental Disability health questions",
                         implemented: false,
                       },
                     ].map((item) => (
