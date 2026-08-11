@@ -1,23 +1,23 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
-import ProductCardSurface from "./ProductCard";
+// import ProductCardSurface from "./ProductCard";
 import EstimatorProductCard from "../forms/EstimatorProductCard";
 import EmptyState from "../feedback/EmptyState";
 import {
   Box,
   Button,
-  Checkbox,
-  Chip,
+  // Checkbox,
+  // Chip,
   Divider,
   FormControl,
   FormHelperText,
   FormLabel,
   // IconButton,
-  InputLabel,
-  MenuItem,
+  // InputLabel,
+  // MenuItem,
   Radio,
-  Select,
+  // Select,
   Stack,
   TextField,
   ToggleButton,
@@ -36,7 +36,7 @@ import { coverageCategories } from "../../config/coverageCategories";
 import CoverageCategorySelector from "../forms/CoverageCategorySelector";
 import {
   getCategoryRequirements,
-  getBenefitAmountLabel,
+  // getBenefitAmountLabel,
 } from "../../config/coverageConstants";
 import { formatUSD } from "../../utils/formatUSD";
 import { getCoverageAmountRange } from "../../utils/coverageAmounts";
@@ -46,10 +46,10 @@ import { getPagePath } from "../../config/pages";
 import { STORAGE_KEY } from "../../app/ApplicationFormContext";
 import { getActiveClient } from "../../config/client/getActiveClient";
 import type { EstimatedRateFrequency } from "../../config/clients/types";
-import SelectionGroup from "../forms/SelectionGroup";
-import QuickDecisionIndicator from "../ui/QuickDecisionIndicator";
+// import SelectionGroup from "../forms/SelectionGroup";
+// import QuickDecisionIndicator from "../ui/QuickDecisionIndicator";
 import RateFrequencyToggle from "../ui/RateFrequencyToggle";
-import FeaturedBadge from "../ui/FeaturedBadge";
+// import FeaturedBadge from "../ui/FeaturedBadge";
 
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";

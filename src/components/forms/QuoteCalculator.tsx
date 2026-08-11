@@ -5,17 +5,17 @@ import {
   Alert,
   Box,
   Button,
-  Checkbox,
-  Chip,
+  // Checkbox,
+  // Chip,
   CircularProgress,
   Divider,
   FormControl,
   FormHelperText,
   FormLabel,
-  InputLabel,
-  MenuItem,
+  // InputLabel,
+  // MenuItem,
   Radio,
-  Select,
+  // Select,
   Stack,
   TextField,
   Typography,
@@ -26,9 +26,6 @@ import CoverageCategorySelector from "./CoverageCategorySelector";
 import SelectionGroup from "./SelectionGroup";
 import SectionDivider from "../layout/SectionDivider";
 import CategoryHeader from "../layout/CategoryHeader";
-import FeaturedBadge from "../ui/FeaturedBadge";
-import ProductCardSurface from "../layout/ProductCard";
-import QuickDecisionIndicator from "../ui/QuickDecisionIndicator";
 import RateFrequencyToggle from "../ui/RateFrequencyToggle";
 import EligibilityFields, {
   type EligibilityValues,
@@ -47,7 +44,7 @@ import type {
 } from "../../config/coverages/types";
 import {
   getCategoryRequirements,
-  getBenefitAmountLabel,
+  // getBenefitAmountLabel,
 } from "../../config/coverageConstants";
 import { getActiveClient } from "../../config/client/getActiveClient";
 import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
@@ -60,7 +57,6 @@ import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
 import { getCoverageAmountRange } from "../../utils/coverageAmounts";
 import { generateAmountChoices } from "../../utils/generateAmountChoices";
 import { formatCurrencyInput } from "../../utils/formatting/currency";
-
 
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
@@ -89,8 +85,6 @@ type QuoteCalculatorProps = {
   initialEligibility?: QuoteCalculatorInitialValues;
 };
 
-
-
 export default function QuoteCalculator({
   open,
   onClose,
@@ -110,11 +104,13 @@ export default function QuoteCalculator({
     useState<EstimatedRateFrequency>(defaultRateFrequency);
 
   // ── Eligibility fields (only shown when collectEligibility=true) ──────────
-  const [eligibilityValues, setEligibilityValues] = useState<EligibilityValues>({
-    birthday: initialEligibility?.birthday ?? "",
-    zipCode: initialEligibility?.zipCode ?? "",
-    state: initialEligibility?.state ?? "",
-  });
+  const [eligibilityValues, setEligibilityValues] = useState<EligibilityValues>(
+    {
+      birthday: initialEligibility?.birthday ?? "",
+      zipCode: initialEligibility?.zipCode ?? "",
+      state: initialEligibility?.state ?? "",
+    },
+  );
   const [eligibilityAttempted, setEligibilityAttempted] = useState(false);
   const [ageError, setAgeError] = useState("");
 
@@ -345,7 +341,8 @@ export default function QuoteCalculator({
     // Validate eligibility fields if collecting them here
     if (collectEligibility) {
       setEligibilityAttempted(true);
-      const { ageError: newAgeError, isValid } = validateEligibility(eligibilityValues);
+      const { ageError: newAgeError, isValid } =
+        validateEligibility(eligibilityValues);
       setAgeError(newAgeError);
       if (!isValid) return;
     }
@@ -716,7 +713,10 @@ export default function QuoteCalculator({
                           const currentAmount =
                             amountsByKey[key] ?? choices[0] ?? 0;
                           const isCalculating = calculatingRates.has(key);
-                          const premium = getApplicantPremium(product, "member");
+                          const premium = getApplicantPremium(
+                            product,
+                            "member",
+                          );
                           const displayedPremium =
                             rateFrequency === "annual"
                               ? Math.round(premium * 12 * 100) / 100

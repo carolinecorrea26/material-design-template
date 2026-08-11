@@ -47,6 +47,93 @@ const tableOfContents = [
   { id: "components-table", label: "Components" },
   { id: "fields-table", label: "Fields" },
   { id: "configurations-table", label: "Configurations" },
+  { id: "site-rules-table", label: "Site Rules" },
+  { id: "template-changes-table", label: "Template Changes" },
+];
+
+// ---------------------------------------------------------------------------
+// Site rules data
+// ---------------------------------------------------------------------------
+
+const siteRules: { area: string; rule: string; behavior: string; ref: string }[] = [
+  { area: "Application flow", rule: "Resolved next/back navigation", behavior: "Next and Back use the form-flow resolver and skip pages whose display conditions evaluate to false.", ref: "src/config/formFlow.ts; src/app/RoutePage.tsx" },
+  { area: "Application flow", rule: "Client page mode = none", behavior: "If Beneficiary or Payment is configured as none, the page is skipped from the active form flow.", ref: "src/config/formFlow.ts; getClientPageRequirement" },
+  { area: "Application flow", rule: "Beneficiary routing", behavior: "Beneficiary is shown only when selected coverage includes Life (LI) or Accidental Death (AD), unless the page is configured as none.", ref: "src/config/formFlow.ts" },
+  { area: "Application flow", rule: "Health SI routing", behavior: "Health SI is shown when at least one selected product uses SI underwriting.", ref: "src/config/formFlow.ts" },
+  { area: "Application flow", rule: "Health LI routing", behavior: "Health LI is shown when selected Life coverage uses TELE underwriting.", ref: "src/config/formFlow.ts" },
+  { area: "Application flow", rule: "Health QD routing", behavior: "Health QD is shown when at least one selected product uses QD underwriting.", ref: "src/config/formFlow.ts" },
+  { area: "Application flow", rule: "Health DI routing", behavior: "Health DI is shown when selected Disability coverage uses TELE underwriting.", ref: "src/config/formFlow.ts" },
+  { area: "Application flow", rule: "Health CIR routing", behavior: "Health CIR is shown when an enabled selected rider key contains :cir:.", ref: "src/config/formFlow.ts" },
+  { area: "Progress/navigation", rule: "Health grouped in progress", behavior: "Multiple routed health pages are presented within the consolidated application-review/progress experience rather than as separate major progress stages.", ref: "src/config/progressSteps.ts" },
+  { area: "Progress/navigation", rule: "Skipped stages removed", behavior: "If every page in a progress stage is skipped, the stage is removed from the active progress steps.", ref: "src/config/progressSteps.ts" },
+  { area: "Progress/navigation", rule: "Post-review Back disabled", behavior: "After Review is submitted, Back navigation is disabled on pages after Review.", ref: "src/app/RoutePage.tsx" },
+  { area: "Validation", rule: "Page advance", behavior: "The user cannot advance when field validation or page-level validation fails; the page shows an error and moves focus/scroll toward the first error.", ref: "src/app/RoutePage.tsx" },
+  { area: "Persistence", rule: "Values preserved during navigation", behavior: "Current page values are written to shared application state on submit, Back, and unmount when the page was not explicitly saved.", ref: "src/app/RoutePage.tsx; ApplicationFormContext.tsx" },
+  { area: "Persistence", rule: "Progress-saved feedback", behavior: "After forward navigation, the destination page displays a Progress Saved snackbar.", ref: "src/app/RoutePage.tsx" },
+  { area: "Persistence", rule: "Membership starts autosave mock communication", behavior: "Submitting Membership triggers the current prototype autosave mock-email behavior.", ref: "src/app/RoutePage.tsx" },
+  { area: "Applicant display", rule: "Member section title hidden for member-only flow", behavior: "The Member/Self applicant section label is hidden when no spouse/child is actually selected for any product. It is shown when another applicant is applying.", ref: "src/utils/applicantVisibility.ts" },
+  { area: "Applicant display", rule: "Dependent section shown only when applying", behavior: "Spouse/child applicant labels and post-Coverage applicant sections are shown only when that applicant is actually selected for an applicable product.", ref: "src/utils/applicantVisibility.ts; src/app/RoutePage.tsx" },
+  { area: "Applicant display", rule: "Eligibility selection alone is not enough after Coverage", behavior: "A spouse/child selected on Eligibility does not count as applying if that dependent is not selected for any product on Coverage.", ref: "src/utils/applicantVisibility.ts" },
+  { area: "Applicant display", rule: "Member-only fallback", behavior: "When no dependents are selected, the member is treated as the applicant by default.", ref: "src/utils/applicantsApplying.ts" },
+  { area: "Eligibility", rule: "Child dependent requires child record", behavior: "If Child is selected as a dependent, at least one child record must be added before continuing.", ref: "src/pages/Eligibility.tsx" },
+  { area: "Eligibility", rule: "Spouse dependent requires spouse details", behavior: "If Spouse is selected, spouse name details must be provided before continuing.", ref: "src/pages/Eligibility.tsx" },
+  { area: "Eligibility", rule: "ZIP can derive state/province", behavior: "When a recognizable ZIP/postal code is entered, the state/province field is automatically derived when a matching configured option exists.", ref: "src/pages/Eligibility.tsx; src/utils/zipToStateProvince.ts" },
+  { area: "Eligibility", rule: "Membership-conditional dependent options", behavior: "Dependent options on Eligibility can be suppressed based on membership attestation. When a membership type implies a specific relationship (e.g. the member is a spouse/dependent of the primary member), the corresponding dependent option is removed to prevent duplicate applicant entry. Section visibility, labels, and suppression rules are client-configurable.", ref: "src/pages/Eligibility.tsx" },
+  { area: "Coverage", rule: "Coverage categories reflect selected products", behavior: "Coverage behavior and downstream routing are driven by the products selected on Coverage and their effective categories/underwriting types.", ref: "src/pages/Coverage.tsx; src/components/forms/ProductCatalog.tsx; src/config/formFlow.ts" },
+  { area: "Coverage", rule: "Coverage amount note", behavior: "The site can present either 'additional coverage' or 'total coverage' guidance based on the active client configuration.", ref: "src/components/forms/ProductCatalog.tsx" },
+  { area: "Coverage", rule: "Category initial expansion", behavior: "Coverage categories may start expanded for clients configured with allCategoriesExpanded.", ref: "src/config/clients/types.ts; client configs" },
+  { area: "Coverage", rule: "Applicant coverage selection", behavior: "Coverage is selected separately by eligible applicant/product; selected applicant and amount data are stored by product/applicant key.", ref: "src/components/forms/ProductCatalog.tsx" },
+  { area: "Coverage cart", rule: "Cart availability", behavior: "The application header shows the coverage cart on application pages except Home and Receipt, and hides it after Review has been submitted.", ref: "src/components/layout/AppHeader.tsx" },
+  { area: "Coverage cart", rule: "Cart badge", behavior: "The cart icon displays a badge count derived from current coverage selections.", ref: "src/components/layout/AppHeader.tsx; CoverageCart.tsx" },
+  { area: "Beneficiary", rule: "Applicable applicants/products", behavior: "Beneficiary records are created only for selected member/spouse LI/AD products with a positive coverage amount and selected applicant.", ref: "src/pages/Beneficiary.tsx" },
+  { area: "Beneficiary", rule: "Optional page opt-in", behavior: "When Beneficiary mode is optional, the page first asks whether the user wants to add beneficiary information. No skips the beneficiary questions and permits continuation.", ref: "src/pages/Beneficiary.tsx" },
+  { area: "Beneficiary", rule: "Required beneficiary per applicable product", behavior: "When beneficiary questions are active, each applicable product must have at least one beneficiary before continuing.", ref: "src/pages/Beneficiary.tsx" },
+  { area: "Beneficiary", rule: "Primary/contingent designation", behavior: "Each beneficiary is designated as Primary or Contingent.", ref: "src/pages/Beneficiary.tsx" },
+  { area: "Beneficiary", rule: "Individual vs. trust", behavior: "A beneficiary can be an Individual or Trust. Within the same Primary/Contingent designation, trust and individual beneficiary types cannot be mixed.", ref: "src/pages/Beneficiary.tsx" },
+  { area: "Beneficiary", rule: "Maximum beneficiaries", behavior: "Up to 10 Primary and 10 Contingent beneficiaries may be added per product; reaching 10 prevents additional entries for that designation.", ref: "src/pages/Beneficiary.tsx" },
+  { area: "Beneficiary", rule: "Individual allocation", behavior: "Individual beneficiary share must be greater than 0 and cannot exceed the unassigned percentage remaining for that designation.", ref: "src/pages/Beneficiary.tsx" },
+  { area: "Beneficiary", rule: "Allocation reaches 100%", behavior: "Once the assigned individual share reaches 100% for a designation, no more individual beneficiaries can be added for that designation.", ref: "src/pages/Beneficiary.tsx" },
+  { area: "Beneficiary", rule: "Trust exclusivity", behavior: "Only one Trust may be added per Primary/Contingent designation; if a Trust exists, additional individuals or trusts are blocked for that designation.", ref: "src/pages/Beneficiary.tsx" },
+  { area: "Beneficiary", rule: "Add/edit/remove", behavior: "Beneficiaries are maintained through a modal supporting Add, Edit and Remove actions.", ref: "src/pages/Beneficiary.tsx" },
+  { area: "Beneficiary", rule: "Apply to other coverages", behavior: "After adding a beneficiary, if the same applicant has other eligible products, the user is offered the option to apply that beneficiary to other coverages.", ref: "src/pages/Beneficiary.tsx" },
+  { area: "Contact", rule: "Business address same as home", behavior: "The Contact page conditionally hides/reuses business-address inputs when the business address is marked the same as the home address; DI/OO-related contact fields drive additional display rules.", ref: "src/pages/Contact.tsx" },
+  { area: "Profile", rule: "Driver license follow-up", behavior: "Driver license number/state fields appear only when the user answers Yes to having a driver license, where those fields are present for the client.", ref: "src/pages/Profile.tsx" },
+  { area: "Profile", rule: "Outside-U.S. follow-up", behavior: "Spouse outside-U.S. residence/travel questions reveal country/month follow-ups only for affirmative responses.", ref: "src/pages/Profile.tsx" },
+  { area: "Profile", rule: "Existing/pending coverage follow-ups", behavior: "Financial/insurance follow-up fields and repeatable insurance-company records display only when the controlling answer and applicable coverage context require them.", ref: "src/pages/Profile.tsx" },
+  { area: "Health", rule: "Applicant health sections", behavior: "Member/spouse health sections follow applicant-applying visibility; the member label is hidden for member-only flow.", ref: "src/pages/HealthSi.tsx; HealthLi.tsx; HealthDi.tsx; applicantVisibility.ts" },
+  { area: "Health", rule: "Yes/No progressive disclosure", behavior: "Health questions are required Yes/No. A Yes response displays question-specific repeatable detail records; No displays no detail list.", ref: "src/pages/HealthSi.tsx; HealthLi.tsx; HealthDi.tsx" },
+  { area: "Health", rule: "Dynamic List records", behavior: "Repeatable health/insurance records are added and edited through the shared DynamicList pattern.", ref: "src/components/forms/DynamicList.tsx" },
+  { area: "Payment", rule: "Optional payment opt-in", behavior: "When Payment mode is optional, the page first asks whether the user wants to add payment information; No permits continuation without payment questions.", ref: "src/pages/Payment.tsx" },
+  { area: "Payment", rule: "Payment per applicable product", behavior: "When payment questions are active, each applicable product requires a payment method and payment frequency before continuing.", ref: "src/pages/Payment.tsx" },
+  { area: "Payment", rule: "Bank account detail display", behavior: "Bank-account details are displayed when Bank account is selected as the payment method.", ref: "src/pages/Payment.tsx" },
+  { area: "Review", rule: "Edit confirmation", behavior: "Selecting an edit action prompts the user before routing back to the page that owns the information.", ref: "src/pages/Review.tsx" },
+  { area: "Landing Page", rule: "Variant behavior", behavior: "default = inline Quote Tool and no hero image; hero-image = hero image, no inline Quote Tool; welcome-back = hero image, Continue/New Application actions, and hides How Applying Works and Coverage Options.", ref: "src/pages/Home.tsx" },
+  { area: "Landing Page", rule: "Resume link", behavior: "Default and hero-image variants display the saved-application resume prompt/link; welcome-back uses Continue Application as the primary action instead.", ref: "src/pages/Home.tsx" },
+  { area: "Header", rule: "Header actions", behavior: "Application header supports Chat (when enabled and eligible), Coverage Cart and Menu. It does not contain a Quote action in the latest source.", ref: "src/components/layout/AppHeader.tsx" },
+  { area: "Application menu", rule: "Menu tools", behavior: "Menu provides Continue Saved Application, About Coverage, Needs Calculator, About QuickDecision and client Contact information.", ref: "src/components/layout/AppMenu.tsx" },
+];
+
+// ---------------------------------------------------------------------------
+// Template changes data
+// ---------------------------------------------------------------------------
+
+const templateChanges: { area: string; current: string; next: string }[] = [
+  { area: "Design system", current: "Bootstrap-based UI.", next: "Google Material Design-based UI." },
+  { area: "Add-item interactions", current: "Beneficiaries, children, companies, and similar repeatable entries are added inline on the page.", next: "Repeatable entries are added and edited within a modal/dialog." },
+  { area: "Beneficiary allocation guidance", current: "No real-time indication of remaining beneficiary allocation.", next: "Displays assigned and remaining beneficiary allocation in real time." },
+  { area: "Autosave initiation", current: "Autosave begins after the third application page.", next: "Autosave begins after the first application page." },
+  { area: "Resume process", current: "Three-step resume process.", next: "Two-step resume process using email link followed by phone verification code." },
+  { area: "Quote tool product support", current: "Quote functionality limited to approximately three Life products or one Disability product.", next: "Quote tool supports all applicable products." },
+  { area: "Standardized client flow", current: "Page flow can vary significantly by client; some clients have unique pages such as Membership.", next: "All client sites use a standardized page structure and flow, with client differences handled through configuration rather than unique client pages." },
+  { area: "Page length / field distribution", current: "Large pages such as Eligibility and Profile contain many fields and require significant scrolling.", next: "Large pages are broken into smaller, task-focused pages with fewer fields per page." },
+  { area: "Review and signature flow", current: "Preview and Read & Sign are separate pages.", next: "Review/Preview and Read & Sign functionality is consolidated where appropriate into a single stage/page experience." },
+  { area: "Decision and confirmation flow", current: "Decision and Receipt are separate pages.", next: "Decision and Receipt are consolidated into a single final confirmation/Receipt experience." },
+  { area: "Responsive design", current: "Desktop-oriented layouts adapted for smaller screens.", next: "Mobile-first responsive layouts and components." },
+  { area: "Contextual help", current: "Help content is limited or presented separately from the task.", next: "Pages provide contextual helper chips and progressive-disclosure help relevant to the current task." },
+  { area: "Loading feedback", current: "Primarily spinner-based loading states.", next: "Uses skeleton loaders, progress indicators, and other contextual loading feedback." },
+  { area: "Applicant-first flow", current: "Applicants may need to explicitly identify/select themselves as an applicant.", next: "Common member-only scenario is assumed first, with dependents added only when needed." },
+  { area: "Page content density", current: "Pages contain more instructional text and content competing with form tasks.", next: "Content is reduced and structured for faster scanning and lower cognitive load." },
+  { area: "Application navigation", current: "Navigation and progress patterns vary with the existing page structure.", next: "Standardized navigation and progress pattern across client implementations." },
 ];
 
 // ---------------------------------------------------------------------------
@@ -1187,6 +1274,14 @@ const componentsData: ComponentRow[] = [
     storybookLink: "/?path=/story/content-quickdecisioninfobox",
   },
   {
+    name: "EmptyState",
+    category: "feedback",
+    description: "Icon + title + body placeholder for empty or unavailable content.",
+    sourcePath: "src/components/feedback/EmptyState.tsx",
+    usedIn: "CoverageCart, QuoteCalculator, error states",
+    storybookLink: "/?path=/story/feedback-emptystate",
+  },
+  {
     name: "LoadingOverlay",
     category: "feedback",
     description: "Multi-size loading spinner with optional status message.",
@@ -1197,7 +1292,7 @@ const componentsData: ComponentRow[] = [
   {
     name: "PageAlert",
     category: "feedback",
-    description: "Full-width contextual alert above form content.",
+    description: "Full-width contextual alert above form content. PageErrorAlert is a deprecated re-export of this component.",
     sourcePath: "src/components/feedback/PageAlert.tsx",
     usedIn: "PageShell error/info display",
     storybookLink: "/?path=/story/feedback-pagealert",
@@ -1226,6 +1321,24 @@ const componentsData: ComponentRow[] = [
     sourcePath: "src/components/forms/ConditionalGroup.tsx",
     usedIn: "Coverage, Profile, Eligibility pages",
     storybookLink: "/?path=/story/forms-conditionalgroup",
+  },
+  {
+    name: "EligibilityFields",
+    category: "forms",
+    description:
+      "Shared eligibility input fields (DOB, gender, tobacco, state, ZIP) used by the Quote Calculator and Home page quote entry.",
+    sourcePath: "src/components/forms/EligibilityFields.tsx",
+    usedIn: "QuoteCalculator, Home page",
+    storybookLink: "/?path=/story/forms-eligibilityfields",
+  },
+  {
+    name: "EstimatorProductCard",
+    category: "forms",
+    description:
+      "Product card with amount selector and QD indicator used inside the Quote Calculator and Quote Modal estimator views.",
+    sourcePath: "src/components/forms/EstimatorProductCard.tsx",
+    usedIn: "QuoteCalculator, QuoteModal",
+    storybookLink: "/?path=/story/forms-estimatorproductcard",
   },
   {
     name: "CoverageCategorySelector",
@@ -1302,24 +1415,7 @@ const componentsData: ComponentRow[] = [
     usedIn: "AppMenu drawer",
     storybookLink: "/?path=/story/forms-quotecalculator",
   },
-  {
-    name: "QuoteCard",
-    category: "forms",
-    description:
-      "Individual coverage quote card with applicant amount controls.",
-    sourcePath: "src/components/forms/QuoteCard.tsx",
-    usedIn: "QuoteEstimator",
-    storybookLink: "/?path=/story/forms-quotecard",
-  },
-  {
-    name: "QuoteEstimator",
-    category: "forms",
-    description:
-      "Coverage quote estimator with category filter and product cards.",
-    sourcePath: "src/components/forms/QuoteEstimator.tsx",
-    usedIn: "Coverage page drawer",
-    storybookLink: "/?path=/story/forms-quoteestimator",
-  },
+
   {
     name: "SelectionGroup",
     category: "forms",
@@ -1342,7 +1438,7 @@ const componentsData: ComponentRow[] = [
     category: "layout",
     description: "Slide-in drawer (swipeable on mobile) with title and close.",
     sourcePath: "src/components/layout/AppDrawer.tsx",
-    usedIn: "CartDrawer, QuoteEstimator, AppMenu",
+    usedIn: "CoverageCart, QuoteModal, AppMenu",
     storybookLink: "/?path=/story/layout-appdrawer",
   },
   {
@@ -1395,14 +1491,7 @@ const componentsData: ComponentRow[] = [
     usedIn: "Coverage, Profile pages",
     storybookLink: "/?path=/story/layout-applicantsectiondivider",
   },
-  {
-    name: "CartDrawer",
-    category: "layout",
-    description: "Shopping cart drawer showing selected coverages and costs.",
-    sourcePath: "src/components/layout/CartDrawer.tsx",
-    usedIn: "AppHeader cart icon",
-    storybookLink: "/?path=/story/layout-cartdrawer",
-  },
+
   {
     name: "CategoryCard",
     category: "layout",
@@ -1486,9 +1575,9 @@ const componentsData: ComponentRow[] = [
   {
     name: "QuoteModal",
     category: "layout",
-    description: "Quote/rate comparison modal with product cards.",
+    description: "Quote/rate comparison modal containing EstimatorProductCard entries per product.",
     sourcePath: "src/components/layout/QuoteModal.tsx",
-    usedIn: "Coverage page",
+    usedIn: "Coverage page, AppHeader",
     storybookLink: "/?path=/story/layout-quotemodal",
   },
   {
@@ -1528,7 +1617,7 @@ const componentsData: ComponentRow[] = [
     category: "ui",
     description: "Itemized premium + rider + policy fee breakdown.",
     sourcePath: "src/components/ui/ProductCostBreakdown.tsx",
-    usedIn: "CartDrawer, TotalCostCart",
+    usedIn: "CoverageCart",
     storybookLink: "/?path=/story/ui-productcostbreakdown",
   },
   {
@@ -1544,16 +1633,16 @@ const componentsData: ComponentRow[] = [
     category: "ui",
     description: "Switch toggle for monthly/annual rate display.",
     sourcePath: "src/components/ui/RateFrequencyToggle.tsx",
-    usedIn: "TotalCostCart, CartDrawer",
+    usedIn: "CoverageCart",
     storybookLink: "/?path=/story/ui-ratefrequencytoggle",
   },
   {
-    name: "TotalCostCart",
+    name: "CoverageCart",
     category: "ui",
-    description: "Full cart cost panel with products, frequency, total.",
-    sourcePath: "src/components/ui/TotalCostCart.tsx",
-    usedIn: "CartDrawer",
-    storybookLink: "/?path=/story/ui-totalcostcart",
+    description: "Selected coverage summary with drawer and inline variants. Renders per-product cost breakdown and total. Replaces the former CartDrawer + TotalCostCart split.",
+    sourcePath: "src/components/ui/CoverageCart.tsx",
+    usedIn: "AppHeader (drawer), ProductCatalog (inline)",
+    storybookLink: "/?path=/story/ui-coveragecart",
   },
   {
     name: "TotalCostSummary",
@@ -1566,115 +1655,436 @@ const componentsData: ComponentRow[] = [
 ];
 
 type ConfigRow = {
-  name: string;
+  group: string;
+  label: string;
+  name: string; // code-style key shown as secondary identifier
   description: string;
   sourcePath: string;
   configurable: string;
   usedIn: string;
 };
 const configurationsData: ConfigRow[] = [
+  // ── A. Client identity & branding ─────────────────────────────────────────
   {
-    name: "pages",
-    description: "Page registry: IDs, paths, types, and group assignments.",
-    sourcePath: "src/config/pages.ts",
-    configurable: "Per-client page requirement overrides",
-    usedIn: "Router, navigation, form flow",
-  },
-  {
-    name: "formFlow",
-    description: "Ordered page sequence and skip/visibility logic.",
-    sourcePath: "src/config/formFlow.ts",
-    configurable: "Skip rules based on coverage selections",
-    usedIn: "PageNav next/prev, progress calculation",
-  },
-  {
-    name: "pageSections",
-    description: "Section-to-field mappings per page with visibility rules.",
-    sourcePath: "src/config/pageSections/pageSections.ts",
-    configurable: "visibleWhen rules, applicant scoping",
-    usedIn: "FieldRenderer, ApplicationDocumentPreview",
-  },
-  {
-    name: "fieldCatalog",
+    group: "Client identity & branding",
+    label: "Client branding",
+    name: "ClientConfig.branding",
     description:
-      "Master field definitions: labels, input types, options, validation.",
-    sourcePath: "src/config/fields/index.ts",
-    configurable: "Per-client field overrides (extra/hidden/required)",
-    usedIn: "FieldRenderer, pageSections, form state",
+      "Client name, short acronym, logo asset, and logo alt text. If the logo fails to load, the client name is displayed instead.",
+    sourcePath: "src/config/clients/*.ts",
+    configurable: "Client Configurable",
+    usedIn: "AppHeader, AppShell, email templates",
   },
   {
-    name: "coverages",
+    group: "Client identity & branding",
+    label: "Site theme",
+    name: "ClientConfig.themeColor",
     description:
-      "Coverage product definitions: amounts, riders, underwriting type.",
-    sourcePath: "src/config/coverages/index.ts",
-    configurable: "Per-client enabled list, range overrides",
-    usedIn: "ProductCatalog, CartDrawer, form flow skip logic",
-  },
-  {
-    name: "coverageCategories",
-    description: "Category ID definitions (LI, AD, DI, OO, SH) and labels.",
-    sourcePath: "src/config/coverageCategories.ts",
-    configurable: "Per-client category filtering",
-    usedIn: "CoverageCategorySelector, ProductCatalog",
-  },
-  {
-    name: "pageGroups",
-    description: "Logical page groupings for navigation structure.",
-    sourcePath: "src/config/pageGroups.ts",
-    configurable: "Static",
-    usedIn: "Progress bar grouping",
-  },
-  {
-    name: "progressSteps",
-    description: "Breadcrumb step definitions mapping steps to page IDs.",
-    sourcePath: "src/config/progressSteps.ts",
-    configurable: "Dynamic based on active flow",
-    usedIn: "ProgressStep component",
-  },
-  {
-    name: "clients (8 configs)",
-    description:
-      "Per-client branding, support, coverage overrides, field customizations.",
-    sourcePath: "src/config/clients/",
-    configurable: "Full client-level customization",
-    usedIn: "getActiveClient, theme, all page rendering",
-  },
-  {
-    name: "constants",
-    description:
-      "Shared UI constants: YES_NO_OPTIONS, SURFACE_SX, CARD_RADIUS.",
-    sourcePath: "src/config/constants.ts",
-    configurable: "Static",
-    usedIn: "FieldRenderer options, layout styles",
-  },
-  {
-    name: "coverageConstants",
-    description: "Coverage-specific constants for amount calculations.",
-    sourcePath: "src/config/coverageConstants.ts",
-    configurable: "Static",
-    usedIn: "Coverage amount logic",
-  },
-  {
-    name: "transitionMessages",
-    description: "Loading/transition messages between page navigations.",
-    sourcePath: "src/config/transitionMessages.ts",
-    configurable: "Static per page",
-    usedIn: "LoadingOverlay",
-  },
-  {
-    name: "theme",
-    description:
-      "MUI theme overrides: palette, typography, component defaults.",
-    sourcePath: "src/app/theme.ts",
-    configurable: "Per-client themeColor",
+      "Selects an approved MUI theme token set. Supported values: default, teal, purple, dark-blue.",
+    sourcePath: "src/config/clients/*.ts / src/app/theme.ts",
+    configurable: "Client Configurable (approved palette only)",
     usedIn: "ThemeProvider (global)",
   },
   {
-    name: "content (per-client)",
-    description: "Page titles, subtitles, help content, legal docs per client.",
-    sourcePath: "src/content/clients/",
-    configurable: "Full per-client content overrides",
-    usedIn: "getPageTitle, PageHeader, HelpChips, LegalDocList",
+    group: "Client identity & branding",
+    label: "Applicant labels",
+    name: "ClientConfig.applicantLabels",
+    description:
+      "Overrides the default Member/Spouse/Child headings across Coverage and applicant sections. Max 20 characters. Does not affect applicant IDs or business logic.",
+    sourcePath: "src/config/clients/*.ts",
+    configurable: "Client Configurable",
+    usedIn: "ApplicantSectionDivider, CoverageQuestions",
+  },
+  // ── B. Support & contact ──────────────────────────────────────────────────
+  {
+    group: "Support & contact",
+    label: "Support phone & hours",
+    name: "ClientConfig.support.phone / phoneDisplay / phoneHours",
+    description:
+      "Machine-readable support phone, human-readable display version, and optional support hours. When configured, the help banner renders 'Call for help' with optional hours.",
+    sourcePath: "src/config/clients/*.ts",
+    configurable: "Client Configurable",
+    usedIn: "ClientHelpBanner, AppFooter, AppMenu",
+  },
+  {
+    group: "Support & contact",
+    label: "Support email, website & address",
+    name: "ClientConfig.support.email / website / address",
+    description:
+      "Support email, client website (full URL or bare domain), and structured mailing address. Each is hidden when absent.",
+    sourcePath: "src/config/clients/*.ts",
+    configurable: "Client Configurable",
+    usedIn: "ClientHelpBanner, AppFooter",
+  },
+  {
+    group: "Support & contact",
+    label: "License disclosures",
+    name: "ClientConfig.licenseInfo[]",
+    description:
+      "Array of client licensing disclosure strings shown in the footer or legal area. Rendered in configured order.",
+    sourcePath: "src/config/clients/*.ts",
+    configurable: "Client Configurable",
+    usedIn: "AppFooter",
+  },
+  // ── C. Landing Page behavior ──────────────────────────────────────────────
+  {
+    group: "Landing Page",
+    label: "Landing Page variant",
+    name: "ClientConfig.features.homePageVariant",
+    description:
+      "Selects the Landing Page composition. Three variants: default (inline quote tool + How Applying Works + Coverage Options), hero-image (hero + How Applying Works + Coverage Options, no inline quote), welcome-back (hero image only; How Applying Works and Coverage Options hidden).",
+    sourcePath: "src/config/clients/*.ts / src/pages/Home.tsx",
+    configurable: "Client Configurable",
+    usedIn: "Home page",
+  },
+  {
+    group: "Landing Page",
+    label: "Chat support",
+    name: "ClientConfig.features.chat / chatUrl",
+    description:
+      "Enables a chat action in the help banner and optionally in the app header. Hidden when false or when no valid URL is configured.",
+    sourcePath: "src/config/clients/*.ts",
+    configurable: "Client Configurable",
+    usedIn: "ClientHelpBanner, AppHeader",
+  },
+  {
+    group: "Landing Page",
+    label: "Schedule-a-call support",
+    name: "ClientConfig.features.scheduleUrl",
+    description:
+      "Displays a 'Schedule a call' action in the help banner, opening a scheduling page in a modal.",
+    sourcePath: "src/config/clients/*.ts",
+    configurable: "Client Configurable",
+    usedIn: "ClientHelpBanner",
+  },
+  {
+    group: "Landing Page",
+    label: "Custom help/action link",
+    name: "ClientConfig.features.linkUrl / linkLabel",
+    description:
+      "Optional client-defined action link (URL + label) in the help banner. Not displayed when absent or without a valid destination.",
+    sourcePath: "src/config/clients/*.ts",
+    configurable: "Client Configurable",
+    usedIn: "ClientHelpBanner",
+  },
+  {
+    group: "Landing Page",
+    label: "Hero copy",
+    name: "content.home.hero.*",
+    description:
+      "Landing Page hero copy: tagline, title, description, CTA label, secondary CTA label, resume prompt/link label, welcome-back title and description. Supports {{clientName}} interpolation.",
+    sourcePath: "src/content/clients/*.ts",
+    configurable: "Client Configurable (content)",
+    usedIn: "Home page hero section",
+  },
+  {
+    group: "Landing Page",
+    label: "Client-specific homepage section",
+    name: "content.home.clientSection",
+    description:
+      "Optional client informational block on the Landing Page with a tagline and paragraphs array. Rendered only when configured.",
+    sourcePath: "src/content/clients/*.ts",
+    configurable: "Client Configurable (content)",
+    usedIn: "Home page",
+  },
+  {
+    group: "Landing Page",
+    label: "How Applying Works content",
+    name: "content.home.howApplyingWorks / applyingSteps",
+    description:
+      "Title, description, and step array (title, body, imageSrc, imageAlt) for the How Applying Works section. Present on default and hero-image variants; hidden on welcome-back.",
+    sourcePath: "src/content/defaults/home.ts / src/content/clients/*.ts",
+    configurable: "Globally Configurable / Client content override",
+    usedIn: "Home page, How Applying Works modal",
+  },
+  {
+    group: "Landing Page",
+    label: "Coverage options introduction",
+    name: "content.home.coverageOptions",
+    description:
+      "Title and description for the Coverage Options section on the Landing Page. Present on default and hero-image variants; hidden on welcome-back.",
+    sourcePath: "src/content/defaults/home.ts / src/content/clients/*.ts",
+    configurable: "Globally Configurable / Client content override",
+    usedIn: "Home page",
+  },
+  {
+    group: "Landing Page",
+    label: "NYL credentials",
+    name: "content.home.nylCredentials",
+    description:
+      "NYL name, tagline, description, ratings note, and ratings array. Centrally governed — ratings and effective dates are updated globally, not per client.",
+    sourcePath: "src/content/defaults/home.ts",
+    configurable: "Globally Controlled",
+    usedIn: "Home page footer",
+  },
+  // ── D. Page inclusion & workflow ──────────────────────────────────────────
+  {
+    group: "Page inclusion & workflow",
+    label: "Beneficiary & Payment page mode",
+    name: "ClientConfig.pages.requirements.beneficiary / payment",
+    description:
+      "Controls whether Beneficiary and Payment pages are required, optional, or excluded (none). 'none' removes the page from routing, stepper, breadcrumbs, and Review. 'optional' shows a preliminary Yes/No prompt. The older pages.excluded and pages.optional arrays are deprecated.",
+    sourcePath: "src/config/clients/*.ts",
+    configurable: "Client Configurable",
+    usedIn: "Router, formFlow, ProgressStep, Review",
+  },
+  {
+    group: "Page inclusion & workflow",
+    label: "Form flow",
+    name: "formFlow",
+    description:
+      "Ordered page sequence with skip/visibility logic. Determines which pages appear in the resolved flow for a given client and coverage selection.",
+    sourcePath: "src/config/formFlow.ts",
+    configurable: "Globally defined; skip rules based on coverage selections",
+    usedIn: "PageNav next/prev, progress calculation",
+  },
+  {
+    group: "Page inclusion & workflow",
+    label: "Page registry & progress steps",
+    name: "pages / pageGroups / progressSteps",
+    description:
+      "Page registry (IDs, paths, types, group assignments), logical page groupings for the progress bar, and breadcrumb step definitions mapping stages to page IDs.",
+    sourcePath: "src/config/pages.ts / src/config/pageGroups.ts / src/config/progressSteps.ts",
+    configurable: "Static / dynamic based on active flow",
+    usedIn: "Router, ProgressStep, PageNav",
+  },
+  // ── E. Coverage categories ────────────────────────────────────────────────
+  {
+    group: "Coverage categories",
+    label: "Enabled categories",
+    name: "ClientConfig.coverages.categories",
+    description:
+      "Array of enabled coverage category IDs (LI, AD, DI, OO, SH) for the client. Display order follows array order. Eligibility may further reduce visible categories.",
+    sourcePath: "src/config/clients/*.ts / src/config/coverageCategories.ts",
+    configurable: "Client Configurable",
+    usedIn: "CoverageCategorySelector, ProductCatalog, form flow",
+  },
+  {
+    group: "Coverage categories",
+    label: "Category label overrides & expand behavior",
+    name: "ClientConfig.coverages.categorySectionLabels / allCategoriesExpanded",
+    description:
+      "Per-category display label overrides and a boolean controlling whether category accordions start expanded on load.",
+    sourcePath: "src/config/clients/*.ts",
+    configurable: "Client Configurable",
+    usedIn: "ProductCatalog, CoverageCategorySelector",
+  },
+  {
+    group: "Coverage categories",
+    label: "Coverage amount basis",
+    name: "ClientConfig.coverages.additionalCoverageWarning",
+    description:
+      "Controls whether applicants enter an additional amount or a total coverage amount. Values: applyForAdditional (default) or applyForTotal.",
+    sourcePath: "src/config/clients/*.ts",
+    configurable: "Client Configurable",
+    usedIn: "ProductCatalog, coverage amount logic",
+  },
+  {
+    group: "Coverage categories",
+    label: "Category descriptions",
+    name: "content.coverage.categoryDescriptions",
+    description:
+      "Explanatory copy displayed per coverage category. Shared defaults apply unless overridden per client.",
+    sourcePath: "src/content/defaults/coverage.ts / src/content/clients/*.ts",
+    configurable: "Client Configurable (content)",
+    usedIn: "ProductCatalog, CoverageCategorySelector",
+  },
+  // ── F. Products & coverage options ───────────────────────────────────────
+  {
+    group: "Products & coverage options",
+    label: "Enabled products & overrides",
+    name: "ClientConfig.coverages.enabled / overrides",
+    description:
+      "Array of enabled product IDs and per-product overrides: display name, category, description, featured flag, underwriting type (FUW / GI / NA / QD / SI), eligible applicant types, coverage note, product warning, structured content, and per-applicant notes.",
+    sourcePath: "src/config/clients/*.ts / src/config/coverages/index.ts",
+    configurable: "Client / Product Configurable",
+    usedIn: "ProductCatalog, QuoteModal, health routing",
+  },
+  {
+    group: "Products & coverage options",
+    label: "Coverage amount ranges",
+    name: "ranges[productId] (min / max / amountStep / spouse* / child*)",
+    description:
+      "Per-product coverage amount ranges and step increments for member, spouse, and child applicants. Generated options must not exceed the configured maximum.",
+    sourcePath: "src/config/coverages/index.ts → ranges",
+    configurable: "Client / Product Configurable",
+    usedIn: "ProductCatalog, CoverageCart, QuoteModal",
+  },
+  {
+    group: "Products & coverage options",
+    label: "Waiting period & benefit period options",
+    name: "overrides[].waitingPeriodOptions / maxBenefitPeriodOptions",
+    description:
+      "Available elimination/waiting periods (label, value, days) and maximum benefit periods for applicable DI/OO products.",
+    sourcePath: "src/config/coverages/index.ts → overrides",
+    configurable: "Client / Product Configurable",
+    usedIn: "ProductCatalog",
+  },
+  {
+    group: "Products & coverage options",
+    label: "Rider definitions",
+    name: "overrides[].riders",
+    description:
+      "Per-product rider definitions: name, description, hasAmount, min/max amount, premiumFactor, and health-routing rules. Rider IDs must be stable across config changes.",
+    sourcePath: "src/config/coverages/index.ts → overrides[].riders",
+    configurable: "Client / Product Configurable",
+    usedIn: "ProductCatalog, form flow health routing",
+  },
+  // ── I. Premium & estimated cost display ───────────────────────────────────
+  {
+    group: "Premium & estimated cost",
+    label: "Frequency toggle",
+    name: "ClientConfig.estimatedRateDisplay",
+    description:
+      "Controls the monthly/annual frequency toggle and default frequency for estimated cost display.",
+    sourcePath: "src/config/clients/*.ts",
+    configurable: "Client Configurable",
+    usedIn: "CoverageCart, QuoteModal, TotalCostSummary",
+  },
+  {
+    group: "Premium & estimated cost",
+    label: "Cost breakdown & supplemental fees",
+    name: "productEstimatedCostBreakdown / policyFee / childApplicantRider",
+    description:
+      "Enables supplemental cost line items beneath product estimates: policy fee (label + monthly/annual amount) and child applicant rider fee.",
+    sourcePath: "src/config/clients/*.ts",
+    configurable: "Client Configurable",
+    usedIn: "ProductCostBreakdown, CoverageCart",
+  },
+  // ── J. Coverage-question sections ─────────────────────────────────────────
+  {
+    group: "Coverage question sections",
+    label: "Coverage question section rules",
+    name: "ClientConfig.coverageQuestions",
+    description:
+      "Controls which Coverage page question sections appear: always-shown sections, removed default sections, and per-category additional sections. References stable section IDs from the shared pageSections catalog.",
+    sourcePath: "src/config/clients/*.ts / src/config/pageSections/pageSections.ts",
+    configurable: "Client Configurable",
+    usedIn: "CoverageQuestions",
+  },
+  // ── K. Field configuration ────────────────────────────────────────────────
+  {
+    group: "Field configuration",
+    label: "Field catalog",
+    name: "fieldCatalog",
+    description:
+      "Master field definitions: labels, input types, options, validation rules, format, placeholder, helper text, autoComplete. All field rendering flows through FieldRenderer using these definitions.",
+    sourcePath: "src/config/fields/index.ts",
+    configurable: "Globally defined; client overrides via ClientConfig.fields",
+    usedIn: "FieldRenderer, pageSections, form state",
+  },
+  {
+    group: "Field configuration",
+    label: "Per-page field overrides",
+    name: "ClientConfig.fields[pageId].extra / hidden / required / overrides",
+    description:
+      "Per-client, per-page field configuration: add supported fields, hide fields, make fields required, or override supported field properties (label, placeholder, helperText, options). Hidden fields must not be required. Field IDs must exist in the catalog.",
+    sourcePath: "src/config/clients/*.ts",
+    configurable: "Client Configurable",
+    usedIn: "FieldRenderer, pageSections",
+  },
+  {
+    group: "Field configuration",
+    label: "Client eligibility fields",
+    name: "ClientConfig.fields.eligibility.extra",
+    description:
+      "Client-specific eligibility questions inserted into the Eligibility page. New fields must be created as reusable supported field definitions, not client-only JSX.",
+    sourcePath: "src/config/clients/*.ts → clientFields/",
+    configurable: "Client Configurable",
+    usedIn: "Eligibility page, EligibilityFields",
+  },
+  // ── L. Page, section & help content ──────────────────────────────────────
+  {
+    group: "Page & help content",
+    label: "Page title, subtitle & info note",
+    name: "content.pages[pageId].title / subhead / navTitle / infoNote",
+    description:
+      "Per-page content: main H1 heading, subtitle, navigation label, and an optional informational note displayed below the title.",
+    sourcePath: "src/content/defaults/pages.ts / src/content/clients/*.ts",
+    configurable: "Client Configurable (content)",
+    usedIn: "PageHeader, AppHeader progress, ProgressStep",
+  },
+  {
+    group: "Page & help content",
+    label: "Section notes",
+    name: "content.pages[pageId].sectionNotes",
+    description:
+      "Informational notes keyed by section ID, displayed below specific section headings.",
+    sourcePath: "src/content/clients/*.ts",
+    configurable: "Client Configurable (content)",
+    usedIn: "Form pages (section rendering)",
+  },
+  {
+    group: "Page & help content",
+    label: "Help panel content",
+    name: "content.help",
+    description:
+      "Structured help content for How Applying Works, application review, group insurance, Coverage, beneficiary allocation, field rationale, and payment handling. Client overrides merge at the property level.",
+    sourcePath: "src/content/defaults/help.ts / src/content/clients/*.ts",
+    configurable: "Globally / Client Configurable (content)",
+    usedIn: "HelpChips, AppMenu, helpContent.tsx",
+  },
+  {
+    group: "Page & help content",
+    label: "Navigation & transition messages",
+    name: "content.navigation",
+    description:
+      "Route transition messages (by destination page), progress step labels (by stage ID), and the shared Back navigation message. Pages excluded from the flow must not appear in step labels.",
+    sourcePath: "src/content/defaults/navigation.ts / src/config/transitionMessages.ts",
+    configurable: "Globally Configurable (content)",
+    usedIn: "LoadingOverlay, ProgressStep",
+  },
+  // ── M. Footer, legal & compliance ─────────────────────────────────────────
+  {
+    group: "Footer, legal & compliance",
+    label: "Footer content & ratings",
+    name: "content.footer",
+    description:
+      "Administrator label, underwriter name and address, financial strength ratings with 'as of' date, additional legal lines, and Terms of Use / Privacy Notice links. Ratings and effective date are centrally governed. Terms of Use and Privacy Notice content are fixed and not client-configurable.",
+    sourcePath: "src/content/defaults/footer.ts / src/content/clients/*.ts",
+    configurable: "Globally Controlled / Client Configurable where approved",
+    usedIn: "AppFooter, LegalDocList",
+  },
+  // ── Shared infrastructure ─────────────────────────────────────────────────
+  {
+    group: "Shared infrastructure",
+    label: "Page sections catalog",
+    name: "pageSections",
+    description:
+      "Section-to-field mappings per page with visibleWhen rules and applicant scoping. Client configuration should reference section IDs only; structural definitions belong here.",
+    sourcePath: "src/config/pageSections/pageSections.ts",
+    configurable: "Globally defined; extended via coverageQuestions client config",
+    usedIn: "FieldRenderer, CoverageQuestions, ApplicationDocumentPreview",
+  },
+  {
+    group: "Shared infrastructure",
+    label: "Shared constants",
+    name: "constants / coverageConstants",
+    description:
+      "Shared UI constants (YES_NO_OPTIONS, SURFACE_SX, CARD_RADIUS) and coverage-specific constants for amount calculations.",
+    sourcePath: "src/config/constants.ts / src/config/coverageConstants.ts",
+    configurable: "Static",
+    usedIn: "FieldRenderer options, layout styles, coverage amount logic",
+  },
+  {
+    group: "Shared infrastructure",
+    label: "Client site configs",
+    name: "src/config/clients/ (8 configs)",
+    description:
+      "Full per-client configuration objects combining branding, support, features, pages, coverages, fields, estimatedRateDisplay, and content overrides. Resolved at runtime by getActiveClient().",
+    sourcePath: "src/config/clients/",
+    configurable: "Client Configurable (full scope)",
+    usedIn: "getActiveClient(), all page rendering, theme, routing",
+  },
+  {
+    group: "Shared infrastructure",
+    label: "Default content",
+    name: "src/content/defaults/",
+    description:
+      "Shared default content used when a client does not override it: page titles, helper copy, Landing Page content, footer content, navigation messages, receipt/review content.",
+    sourcePath: "src/content/defaults/",
+    configurable: "Globally defined fallback",
+    usedIn: "All content-consuming components",
   },
 ];
 
@@ -1986,7 +2396,7 @@ export default function InformationArchitecture() {
     if (!configFilter) return configurationsData;
     const lc = configFilter.toLowerCase();
     return configurationsData.filter((c) =>
-      `${c.name} ${c.description} ${c.configurable} ${c.usedIn}`
+      `${c.group} ${c.label} ${c.name} ${c.description} ${c.configurable} ${c.usedIn}`
         .toLowerCase()
         .includes(lc),
     );
@@ -2501,7 +2911,7 @@ export default function InformationArchitecture() {
         <SectionAccordion
           id="configurations-table"
           title="Configurations"
-          description="Configuration sources defining application behavior, routing, and client customization."
+          description="Client and global configuration options organized by area."
           count={filteredConfigs.length}
         >
           <Stack spacing={2}>
@@ -2510,52 +2920,218 @@ export default function InformationArchitecture() {
               onChange={setConfigFilter}
               placeholder="Filter configurations…"
             />
-            <ResponsiveTableContainer>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Config</TableCell>
-                    <TableCell>Description</TableCell>
-                    <TableCell>Source path</TableCell>
-                    <TableCell>Configurability</TableCell>
-                    <TableCell>Used in</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {filteredConfigs.map((config) => (
-                    <TableRow key={config.name}>
-                      <TableCell>
-                        <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                          {config.name}
-                        </Typography>
-                      </TableCell>
-                      <TableCell
-                        sx={{ whiteSpace: "normal !important", maxWidth: 300 }}
-                      >
-                        {config.description}
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="caption" color="text.secondary">
-                          {config.sourcePath}
-                        </Typography>
-                      </TableCell>
-                      <TableCell
-                        sx={{ whiteSpace: "normal !important", maxWidth: 220 }}
-                      >
-                        {config.configurable}
-                      </TableCell>
-                      <TableCell
-                        sx={{ whiteSpace: "normal !important", maxWidth: 220 }}
-                      >
-                        {config.usedIn}
-                      </TableCell>
+            {filteredConfigs.length === 0 ? (
+              <Typography variant="body2" color="text.secondary" sx={{ py: 2 }}>
+                No configurations match the current filter.
+              </Typography>
+            ) : (
+              <ResponsiveTableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ minWidth: 160 }}>Group</TableCell>
+                      <TableCell sx={{ minWidth: 180 }}>Configuration</TableCell>
+                      <TableCell sx={{ minWidth: 260 }}>Description</TableCell>
+                      <TableCell sx={{ minWidth: 200 }}>Source</TableCell>
+                      <TableCell sx={{ minWidth: 160 }}>Configurability</TableCell>
+                      <TableCell sx={{ minWidth: 160 }}>Used in</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </ResponsiveTableContainer>
+                  </TableHead>
+                  <TableBody>
+                    {filteredConfigs.map((config, i) => {
+                      const showGroup = i === 0 || filteredConfigs[i - 1].group !== config.group;
+                      return (
+                        <TableRow key={config.label + config.name}>
+                          <TableCell
+                            sx={{
+                              verticalAlign: "top",
+                              color: showGroup ? "text.primary" : "transparent",
+                              fontWeight: 600,
+                              fontSize: "0.8125rem",
+                              whiteSpace: "normal",
+                              borderTop: showGroup && i !== 0 ? "2px solid" : undefined,
+                              borderTopColor: showGroup && i !== 0 ? "divider" : undefined,
+                            }}
+                          >
+                            {config.group}
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              verticalAlign: "top",
+                              borderTop: showGroup && i !== 0 ? "2px solid" : undefined,
+                              borderTopColor: showGroup && i !== 0 ? "divider" : undefined,
+                            }}
+                          >
+                            <Typography variant="body2" sx={{ fontWeight: 700, lineHeight: 1.4 }}>
+                              {config.label}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              color="text.disabled"
+                              sx={{ fontFamily: "monospace", display: "block", mt: 0.25, lineHeight: 1.4, whiteSpace: "normal" }}
+                            >
+                              {config.name}
+                            </Typography>
+                          </TableCell>
+                          <TableCell sx={{ whiteSpace: "normal !important", verticalAlign: "top", borderTop: showGroup && i !== 0 ? "2px solid" : undefined, borderTopColor: showGroup && i !== 0 ? "divider" : undefined }}>
+                            {config.description}
+                          </TableCell>
+                          <TableCell sx={{ verticalAlign: "top", borderTop: showGroup && i !== 0 ? "2px solid" : undefined, borderTopColor: showGroup && i !== 0 ? "divider" : undefined }}>
+                            <Typography variant="caption" color="text.secondary" sx={{ fontFamily: "monospace", whiteSpace: "normal", display: "block" }}>
+                              {config.sourcePath}
+                            </Typography>
+                          </TableCell>
+                          <TableCell sx={{ whiteSpace: "normal !important", verticalAlign: "top", borderTop: showGroup && i !== 0 ? "2px solid" : undefined, borderTopColor: showGroup && i !== 0 ? "divider" : undefined }}>
+                            {config.configurable}
+                          </TableCell>
+                          <TableCell sx={{ whiteSpace: "normal !important", verticalAlign: "top", borderTop: showGroup && i !== 0 ? "2px solid" : undefined, borderTopColor: showGroup && i !== 0 ? "divider" : undefined }}>
+                            {config.usedIn}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </ResponsiveTableContainer>
+            )}
           </Stack>
         </SectionAccordion>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Site Rules & Functionality                                        */}
+        {/* ---------------------------------------------------------------- */}
+        <SectionAccordion
+          id="site-rules-table"
+          title="Site Rules"
+          description="Functional rules derived from the prototype implementation, describing how the new template works. These are not product eligibility or underwriting rules."
+          count={siteRules.length}
+        >
+          {(() => {
+            const ruleGroupOrder: string[] = [];
+            const ruleGrouped: Record<string, typeof siteRules> = {};
+            for (const r of siteRules) {
+              if (!ruleGrouped[r.area]) {
+                ruleGroupOrder.push(r.area);
+                ruleGrouped[r.area] = [];
+              }
+              ruleGrouped[r.area].push(r);
+            }
+            return (
+              <Stack spacing={1.5}>
+                {ruleGroupOrder.map((area) => (
+                  <Accordion
+                    key={area}
+                    defaultExpanded
+                    disableGutters
+                    sx={{
+                      border: "1px solid",
+                      borderColor: "divider",
+                      borderRadius: "12px !important",
+                      overflow: "hidden",
+                      boxShadow: "none",
+                      "&:before": { display: "none" },
+                    }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreRoundedIcon />}
+                      sx={{
+                        px: 2,
+                        py: 0.75,
+                        minHeight: 44,
+                        backgroundColor: "background.subtle",
+                        borderBottom: "1px solid",
+                        borderColor: "divider",
+                      }}
+                    >
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                          {area}
+                        </Typography>
+                        <Chip
+                          label={ruleGrouped[area].length}
+                          size="small"
+                          sx={{ height: 18, fontSize: "0.7rem" }}
+                        />
+                      </Stack>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ p: 0 }}>
+                      <ResponsiveTableContainer>
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell sx={{ minWidth: 180 }}>Rule</TableCell>
+                              <TableCell sx={{ minWidth: 300 }}>Behavior</TableCell>
+                              <TableCell sx={{ minWidth: 220 }}>Implementation Reference</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {ruleGrouped[area].map((row, i) => (
+                              <TableRow key={i}>
+                                <TableCell sx={{ verticalAlign: "top", fontWeight: 600, fontSize: "0.8125rem" }}>
+                                  {row.rule}
+                                </TableCell>
+                                <TableCell sx={{ verticalAlign: "top", fontSize: "0.8125rem", whiteSpace: "normal !important" }}>
+                                  {row.behavior}
+                                </TableCell>
+                                <TableCell sx={{ verticalAlign: "top" }}>
+                                  <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                    sx={{ fontFamily: "monospace", whiteSpace: "pre-wrap", display: "block" }}
+                                  >
+                                    {row.ref}
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </ResponsiveTableContainer>
+                    </AccordionDetails>
+                  </Accordion>
+                ))}
+              </Stack>
+            );
+          })()}
+        </SectionAccordion>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Current → New Template Changes                                   */}
+        {/* ---------------------------------------------------------------- */}
+        <SectionAccordion
+          id="template-changes-table"
+          title="Template Changes"
+          description="User-facing and functional changes from the existing Portal template to the redesigned template. Client-specific differences still need to be preserved during migration unless explicitly retired or converted to supported configuration."
+          count={templateChanges.length}
+        >
+          <ResponsiveTableContainer>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 600, whiteSpace: "nowrap" }}>Change</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Current Template</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>New Template</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {templateChanges.map((row, i) => (
+                  <TableRow key={i}>
+                    <TableCell sx={{ verticalAlign: "top", whiteSpace: "nowrap", color: "text.secondary", fontSize: "0.8125rem" }}>
+                      {row.area}
+                    </TableCell>
+                    <TableCell sx={{ verticalAlign: "top", fontSize: "0.8125rem", whiteSpace: "normal !important" }}>
+                      {row.current}
+                    </TableCell>
+                    <TableCell sx={{ verticalAlign: "top", fontSize: "0.8125rem", whiteSpace: "normal !important" }}>
+                      {row.next}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </ResponsiveTableContainer>
+        </SectionAccordion>
+
           </Stack>
         </Box>
       </Stack>

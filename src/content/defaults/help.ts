@@ -15,7 +15,7 @@ export const helpDefaults: HelpContent = {
       },
       {
         title: "Get a decision",
-        body: "Decisions are made after all information is received and reviewed by New York Life. If approved, you will receive a certificate of insurance and have a 30-day no-obligation free look. Plus, when QuickDecision is available, you can get a faster decision on your application, typically with no medical exam.",
+        body: "Decisions are made after all information is received and reviewed by New York Life. If approved, you will receive a certificate of insurance and have a 30-day no-obligation free look.",
       },
     ],
   },
