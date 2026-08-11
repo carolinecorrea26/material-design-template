@@ -41,7 +41,7 @@ import { getActiveClientCoverages } from "../../config/client/getActiveClientCov
 import { getActiveClient } from "../../config/client/getActiveClient";
 import { getContent } from "../../content";
 import { formatUSD } from "../../utils/formatUSD";
-import TotalCostCart from "../ui/TotalCostCart";
+import CoverageCart from "../ui/CoverageCart";
 import ProductCostBreakdown, {
   type ProductCostBreakdownItem,
 } from "../ui/ProductCostBreakdown";
@@ -449,7 +449,8 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 
       {/* Estimated cost section (always below products) */}
       <Box sx={{ mt: 3 }}>
-        <TotalCostCart
+        <CoverageCart
+          variant="inline"
           categoryProducts={categoryProducts}
           selectedCoverageIds={selectedCoverageIds}
           productApplicants={productApplicants}

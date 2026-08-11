@@ -30,6 +30,12 @@ import FeaturedBadge from "../ui/FeaturedBadge";
 import ProductCardSurface from "../layout/ProductCard";
 import QuickDecisionIndicator from "../ui/QuickDecisionIndicator";
 import RateFrequencyToggle from "../ui/RateFrequencyToggle";
+import EligibilityFields, {
+  type EligibilityValues,
+  validateEligibility,
+} from "./EligibilityFields";
+import EstimatorProductCard from "./EstimatorProductCard";
+import EmptyState from "../feedback/EmptyState";
 import {
   coverageCategories,
   getCoverageCategorySectionLabel,
@@ -54,17 +60,7 @@ import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
 import { getCoverageAmountRange } from "../../utils/coverageAmounts";
 import { generateAmountChoices } from "../../utils/generateAmountChoices";
 import { formatCurrencyInput } from "../../utils/formatting/currency";
-import {
-  deriveStateProvinceFromZipOrPostalCode,
-  formatZipOrPostalCode,
-} from "../../utils/zipToStateProvince";
-import {
-  parseStoredDate,
-  formatDateForStorage,
-  formatDateDisplay,
-} from "../../utils/dateFormatting";
-import { fieldCatalog } from "../../config/fields";
-import { calculateAge } from "../../utils/calculateAge";
+
 
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
@@ -93,9 +89,7 @@ type QuoteCalculatorProps = {
   initialEligibility?: QuoteCalculatorInitialValues;
 };
 
-function getStateOptions() {
-  return fieldCatalog["state-province"].options ?? [];
-}
+
 
 export default function QuoteCalculator({
   open,
@@ -107,8 +101,6 @@ export default function QuoteCalculator({
   const navigate = useNavigate();
   const activeClient = useMemo(() => getActiveClient(), []);
   const coverages = useMemo(() => getActiveClientCoverages(), []);
-  const stateOptions = useMemo(() => getStateOptions(), []);
-
   const rateDisplayConfig = activeClient.coverages.estimatedRateDisplay;
   const showRateFrequencyToggle =
     rateDisplayConfig?.showFrequencyToggle === true;
@@ -118,36 +110,13 @@ export default function QuoteCalculator({
     useState<EstimatedRateFrequency>(defaultRateFrequency);
 
   // ── Eligibility fields (only shown when collectEligibility=true) ──────────
-  const [birthday, setBirthday] = useState(initialEligibility?.birthday ?? "");
-  const [zipCode, setZipCode] = useState(initialEligibility?.zipCode ?? "");
-  const [state, setState] = useState(initialEligibility?.state ?? "");
-  const [dobFocused, setDobFocused] = useState(false);
+  const [eligibilityValues, setEligibilityValues] = useState<EligibilityValues>({
+    birthday: initialEligibility?.birthday ?? "",
+    zipCode: initialEligibility?.zipCode ?? "",
+    state: initialEligibility?.state ?? "",
+  });
   const [eligibilityAttempted, setEligibilityAttempted] = useState(false);
   const [ageError, setAgeError] = useState("");
-
-  // Auto-derive state from zip
-  useEffect(() => {
-    if (!collectEligibility) return;
-    const derived = deriveStateProvinceFromZipOrPostalCode(
-      zipCode,
-      stateOptions,
-    );
-    if (derived && derived !== state) setState(derived);
-  }, [zipCode, stateOptions, state, collectEligibility]);
-
-  const eligibilityErrors = useMemo(() => {
-    if (!collectEligibility) return {};
-    const errors: Record<string, string> = {};
-    if (!birthday) errors.birthday = "Date of birth is required.";
-    else if (!/^\d{4}-\d{2}-\d{2}$/.test(birthday))
-      errors.birthday = "Enter a complete date (MM/DD/YYYY).";
-    if (!zipCode) errors.zipCode = "ZIP / postal code is required.";
-    if (!state) errors.state = "State is required.";
-    return errors;
-  }, [birthday, zipCode, state, collectEligibility]);
-
-  const eligibilityValid =
-    !collectEligibility || Object.keys(eligibilityErrors).length === 0;
 
   // ── Coverage category selection ───────────────────────────────────────────
   const [selectedCategories, setSelectedCategories] = useState<
@@ -376,25 +345,19 @@ export default function QuoteCalculator({
     // Validate eligibility fields if collecting them here
     if (collectEligibility) {
       setEligibilityAttempted(true);
-      setAgeError("");
-      if (!eligibilityValid) return;
-      const age = calculateAge(birthday);
-      if (age !== null && age >= 80) {
-        setAgeError(
-          "We're sorry, but coverage is not available for applicants age 80 or older.",
-        );
-        return;
-      }
+      const { ageError: newAgeError, isValid } = validateEligibility(eligibilityValues);
+      setAgeError(newAgeError);
+      if (!isValid) return;
     }
 
     const effectiveBirthday = collectEligibility
-      ? birthday
+      ? eligibilityValues.birthday
       : (initialEligibility?.birthday ?? "");
     const effectiveZip = collectEligibility
-      ? zipCode
+      ? eligibilityValues.zipCode
       : (initialEligibility?.zipCode ?? "");
     const effectiveState = collectEligibility
-      ? state
+      ? eligibilityValues.state
       : (initialEligibility?.state ?? "");
 
     const formValues: Record<string, unknown> = {};
@@ -461,73 +424,15 @@ export default function QuoteCalculator({
       <Stack spacing={3}>
         {/* ── Eligibility fields (Membership page trigger only) ── */}
         {collectEligibility && (
-          <Stack spacing={2}>
-            <TextField
-              label="Date of Birth"
-              fullWidth
-              required
-              placeholder="MM/DD/YYYY"
-              value={parseStoredDate(birthday)}
-              onChange={(event) => {
-                const formatted = formatDateDisplay(event.target.value);
-                const digits = formatted.replace(/\D/g, "");
-                if (digits.length === 8) {
-                  setBirthday(formatDateForStorage(formatted));
-                } else {
-                  setBirthday(formatted);
-                }
-              }}
-              onFocus={() => setDobFocused(true)}
-              onBlur={() => setDobFocused(false)}
-              inputProps={{ inputMode: "numeric" }}
-              InputLabelProps={{ shrink: dobFocused || !!birthday }}
-              error={eligibilityAttempted && !!eligibilityErrors.birthday}
-              helperText={
-                eligibilityAttempted && eligibilityErrors.birthday
-                  ? eligibilityErrors.birthday
-                  : undefined
-              }
-            />
-            <TextField
-              label="ZIP / Postal Code"
-              fullWidth
-              required
-              value={zipCode}
-              onChange={(event) =>
-                setZipCode(formatZipOrPostalCode(event.target.value))
-              }
-              inputProps={{ inputMode: "text", maxLength: 7 }}
-              error={eligibilityAttempted && !!eligibilityErrors.zipCode}
-              helperText={
-                eligibilityAttempted
-                  ? eligibilityErrors.zipCode || undefined
-                  : undefined
-              }
-            />
-            <FormControl
-              fullWidth
-              required
-              error={eligibilityAttempted && !!eligibilityErrors.state}
-            >
-              <InputLabel id="qc-state-label">State</InputLabel>
-              <Select
-                labelId="qc-state-label"
-                label="State"
-                value={state}
-                onChange={(event) => setState(event.target.value)}
-              >
-                {stateOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </Select>
-              {eligibilityAttempted && eligibilityErrors.state && (
-                <FormHelperText>{eligibilityErrors.state}</FormHelperText>
-              )}
-            </FormControl>
-            {ageError && <Alert severity="error">{ageError}</Alert>}
-          </Stack>
+          <EligibilityFields
+            values={eligibilityValues}
+            onChange={(next) =>
+              setEligibilityValues((prev) => ({ ...prev, ...next }))
+            }
+            attempted={eligibilityAttempted}
+            ageError={ageError}
+            idPrefix="qc"
+          />
         )}
 
         {/* ── Category selection ── */}
@@ -752,26 +657,10 @@ export default function QuoteCalculator({
 
         {/* ── Empty state ── */}
         {selectedCategories.length === 0 && (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-              py: 6,
-              px: 4,
-            }}
-          >
-            <Stack spacing={1} alignItems="center">
-              <PrivacyTipIcon sx={{ fontSize: 40, color: "text.disabled" }} />
-              <Typography variant="body1" color="text.secondary">
-                Your estimated cost will appear here
-              </Typography>
-              <Typography variant="body2" color="text.disabled">
-                Select a coverage category to see your estimated cost.
-              </Typography>
-            </Stack>
-          </Box>
+          <EmptyState
+            title="Your estimated cost will appear here"
+            body="Select a coverage category to see your estimated cost."
+          />
         )}
 
         {/* ── Products ── */}
@@ -827,158 +716,29 @@ export default function QuoteCalculator({
                           const currentAmount =
                             amountsByKey[key] ?? choices[0] ?? 0;
                           const isCalculating = calculatingRates.has(key);
-                          const premium = getApplicantPremium(
-                            product,
-                            "member",
-                          );
+                          const premium = getApplicantPremium(product, "member");
                           const displayedPremium =
                             rateFrequency === "annual"
                               ? Math.round(premium * 12 * 100) / 100
                               : premium;
 
                           return (
-                            <ProductCardSurface
+                            <EstimatorProductCard
                               key={product.id}
+                              product={product}
+                              currentAmount={currentAmount}
+                              amountChoices={choices}
                               selected={hasAnyApplicantSelected}
-                              sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: 1.5,
-                              }}
-                            >
-                              <Stack
-                                direction="row"
-                                justifyContent="space-between"
-                                alignItems="flex-start"
-                                spacing={1}
-                              >
-                                <Stack spacing={0.25} sx={{ minWidth: 0 }}>
-                                  <Typography variant="productNameLabel">
-                                    {product.name}
-                                    {product.underwritingType === "QD" && (
-                                      <QuickDecisionIndicator />
-                                    )}
-                                  </Typography>
-                                  <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                  >
-                                    {product.description ?? product.definition}
-                                  </Typography>
-                                </Stack>
-                                {product.featured && <FeaturedBadge />}
-                              </Stack>
-
-                              <SelectionGroup>
-                                <Checkbox
-                                  checked={hasAnyApplicantSelected}
-                                  onChange={() =>
-                                    toggleApplicantForProduct(product, "member")
-                                  }
-                                  size="small"
-                                  sx={{
-                                    p: 0,
-                                    color: "text.primary",
-                                    "&.Mui-checked": { color: "primary.main" },
-                                  }}
-                                />
-                                <Typography
-                                  variant="subtitle2"
-                                  sx={{ flex: 1 }}
-                                >
-                                  Select for myself
-                                </Typography>
-                                {hasAnyApplicantSelected ? (
-                                  <Chip
-                                    label="Added"
-                                    size="small"
-                                    color="success"
-                                    sx={{
-                                      height: 22,
-                                      "& .MuiChip-label": {
-                                        fontSize: "0.7rem",
-                                        fontWeight: 600,
-                                        px: 1,
-                                      },
-                                    }}
-                                  />
-                                ) : (
-                                  <Chip
-                                    label="Add"
-                                    size="small"
-                                    variant="outlined"
-                                    sx={{
-                                      height: 22,
-                                      borderColor: "grey.300",
-                                      color: "text.secondary",
-                                      "& .MuiChip-label": {
-                                        fontSize: "0.7rem",
-                                        fontWeight: 600,
-                                        px: 1,
-                                      },
-                                    }}
-                                  />
-                                )}
-                              </SelectionGroup>
-
-                              <Box>
-                                <FormControl fullWidth>
-                                  <InputLabel id={`${key}-amount-label`}>
-                                    {getBenefitAmountLabel(product.categoryId)}
-                                  </InputLabel>
-                                  <Select
-                                    labelId={`${key}-amount-label`}
-                                    label={getBenefitAmountLabel(
-                                      product.categoryId,
-                                    )}
-                                    value={currentAmount}
-                                    onChange={(event) =>
-                                      handleAmountChange(
-                                        key,
-                                        Number(event.target.value),
-                                      )
-                                    }
-                                  >
-                                    {choices.map((amount) => (
-                                      <MenuItem key={amount} value={amount}>
-                                        {formatUSD(amount, 0)}
-                                      </MenuItem>
-                                    ))}
-                                  </Select>
-                                </FormControl>
-                                {currentAmount > 0 && (
-                                  <Stack
-                                    direction="row"
-                                    justifyContent="flex-end"
-                                    alignItems="center"
-                                    sx={{ mt: 0.5, minHeight: 20 }}
-                                  >
-                                    {isCalculating ? (
-                                      <CircularProgress
-                                        size={14}
-                                        thickness={4}
-                                      />
-                                    ) : (
-                                      <Typography
-                                        variant="caption"
-                                        color="text.secondary"
-                                      >
-                                        Est. cost:{" "}
-                                        <Typography
-                                          component="span"
-                                          variant="caption"
-                                          fontWeight="bold"
-                                          sx={{ color: "primary.main" }}
-                                        >
-                                          {formatUSD(displayedPremium)}
-                                          {rateSuffix}
-                                        </Typography>
-                                      </Typography>
-                                    )}
-                                  </Stack>
-                                )}
-                              </Box>
-                            </ProductCardSurface>
+                              isCalculating={isCalculating}
+                              displayedPremium={displayedPremium}
+                              rateSuffix={rateSuffix}
+                              onToggleSelected={() =>
+                                toggleApplicantForProduct(product, "member")
+                              }
+                              onAmountChange={(amount) =>
+                                handleAmountChange(key, amount)
+                              }
+                            />
                           );
                         })}
                       </Stack>

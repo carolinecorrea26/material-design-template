@@ -28,7 +28,7 @@ type CoverageCategorySelectorProps = {
 
 /**
  * Reusable multi-select coverage category toggle list.
- * Used on Coverage page, QuoteCalculator, QuoteEstimator, and QuoteModal.
+ * Used on Coverage page, QuoteCalculator, and QuoteModal.
  */
 export default function CoverageCategorySelector({
   categories,

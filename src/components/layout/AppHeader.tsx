@@ -30,7 +30,7 @@ import type { ClientConfig } from "../../config/clients/types";
 import type { PageId } from "../../types";
 import { useApplicationForm } from "../../app/ApplicationFormContext";
 import { router } from "../../app/router";
-import CartDrawer, { useApplicationSummaryBadge } from "./CartDrawer";
+import CoverageCart, { useCoverageCartBadge } from "../ui/CoverageCart";
 import type { AppShellVariant } from "./AppShell";
 import ClientHelpBanner from "./ClientHelpBanner";
 
@@ -129,7 +129,7 @@ export default function AppHeader({
   const [activeCoverage, setActiveCoverage] =
     useState<CoverageDefinition | null>(null);
   const { values } = useApplicationForm();
-  const summaryBadgeCount = useApplicationSummaryBadge();
+  const summaryBadgeCount = useCoverageCartBadge();
 
   const pathname = useSyncExternalStore(
     subscribeToPathname,
@@ -341,7 +341,7 @@ export default function AppHeader({
         />
       )}
 
-      {/* Coverage details dialog (triggered from CartDrawer or ProductCatalog) */}
+      {/* Coverage details dialog (triggered from CoverageCart or ProductCatalog) */}
       <Dialog
         open={Boolean(activeCoverage)}
         onClose={() => setActiveCoverage(null)}
@@ -433,9 +433,10 @@ export default function AppHeader({
         onClose={() => setIsSummaryOpen(false)}
         swipeable
       >
-        <CartDrawer
-          onClose={() => setIsSummaryOpen(false)}
+        <CoverageCart
+          variant="drawer"
           source={summarySource}
+          onClose={() => setIsSummaryOpen(false)}
         />
       </AppDrawer>
     </>

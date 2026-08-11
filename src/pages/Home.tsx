@@ -9,21 +9,18 @@ import {
   Chip,
   CircularProgress,
   Divider,
-  FormControl,
-  FormHelperText,
-  InputLabel,
   Link,
-  MenuItem,
-  Select,
   Stack,
   Tab,
   Tabs,
-  TextField,
   Typography,
 } from "@mui/material";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import QuoteCalculator from "../components/forms/QuoteCalculator";
 import type { QuoteCalculatorInitialValues } from "../components/forms/QuoteCalculator";
+import EligibilityFields, {
+  validateEligibility,
+} from "../components/forms/EligibilityFields";
 import AppDrawer from "../components/layout/AppDrawer";
 import QuickDecisionIndicator from "../components/ui/QuickDecisionIndicator";
 import QuickDecisionDrawerContent from "../components/content/QuickDecisionExplainer";
@@ -44,17 +41,7 @@ import type {
 import { getPagePath } from "../config/pages";
 import { formatUSD } from "../utils/formatUSD";
 import type { HomePageVariant } from "../config/clients/types";
-import {
-  deriveStateProvinceFromZipOrPostalCode,
-  formatZipOrPostalCode,
-} from "../utils/zipToStateProvince";
-import {
-  parseStoredDate,
-  formatDateForStorage,
-  formatDateDisplay,
-} from "../utils/dateFormatting";
-import { fieldCatalog } from "../config/fields";
-import { calculateAge } from "../utils/calculateAge";
+
 import { SURFACE_SX } from "../config/constants";
 
 type DrawerId = "application-review" | "quick-decision" | null;
@@ -108,53 +95,26 @@ type HomeQuoteSectionProps = {
 };
 
 function HomeQuoteSection({ onOpenQuote }: HomeQuoteSectionProps) {
-  const stateOptions = useMemo(
-    () => fieldCatalog["state-province"].options ?? [],
-    [],
-  );
-  const [birthday, setBirthday] = useState("");
-  const [zipCode, setZipCode] = useState("");
-  const [state, setState] = useState("");
+  const [eligibilityValues, setEligibilityValues] = useState({
+    birthday: "",
+    zipCode: "",
+    state: "",
+  });
   const [attempted, setAttempted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [dobFocused, setDobFocused] = useState(false);
   const [ageError, setAgeError] = useState("");
-
-  useEffect(() => {
-    const derived = deriveStateProvinceFromZipOrPostalCode(
-      zipCode,
-      stateOptions,
-    );
-    if (derived && derived !== state) setState(derived);
-  }, [zipCode, stateOptions, state]);
-
-  const validationErrors = useMemo(() => {
-    const errors: Record<string, string> = {};
-    if (!birthday) errors.birthday = "Date of birth is required.";
-    else if (!/^\d{4}-\d{2}-\d{2}$/.test(birthday))
-      errors.birthday = "Enter a complete date (MM/DD/YYYY).";
-    if (!zipCode) errors.zipCode = "ZIP / postal code is required.";
-    if (!state) errors.state = "State is required.";
-    return errors;
-  }, [birthday, zipCode, state]);
 
   function handleGetEstimate() {
     setAttempted(true);
     setAgeError("");
-    if (Object.keys(validationErrors).length > 0) return;
-
-    const age = calculateAge(birthday);
-    if (age !== null && age >= 80) {
-      setAgeError(
-        "We're sorry, but coverage is not available for applicants age 80 or older.",
-      );
-      return;
-    }
+    const { ageError: newAgeError, isValid } = validateEligibility(eligibilityValues);
+    setAgeError(newAgeError);
+    if (!isValid) return;
 
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-      onOpenQuote({ birthday, zipCode, state });
+      onOpenQuote(eligibilityValues);
     }, 600);
   }
 
@@ -178,91 +138,29 @@ function HomeQuoteSection({ onOpenQuote }: HomeQuoteSectionProps) {
           </Typography>
         </Box>
 
-        <Stack spacing={2.5}>
-          <TextField
-            label="Date of Birth"
-            fullWidth
-            required
-            placeholder="MM/DD/YYYY"
-            value={parseStoredDate(birthday)}
-            onChange={(event) => {
-              const formatted = formatDateDisplay(event.target.value);
-              const digits = formatted.replace(/\D/g, "");
-              if (digits.length === 8) {
-                setBirthday(formatDateForStorage(formatted));
-              } else {
-                setBirthday(formatted);
-              }
-            }}
-            onFocus={() => setDobFocused(true)}
-            onBlur={() => setDobFocused(false)}
-            inputProps={{ inputMode: "numeric" }}
-            InputLabelProps={{ shrink: dobFocused || !!birthday }}
-            error={attempted && !!validationErrors.birthday}
-            helperText={
-              attempted && validationErrors.birthday
-                ? validationErrors.birthday
-                : undefined
-            }
-          />
-          <TextField
-            label="ZIP / Postal Code"
-            fullWidth
-            required
-            value={zipCode}
-            onChange={(event) =>
-              setZipCode(formatZipOrPostalCode(event.target.value))
-            }
-            inputProps={{ inputMode: "text", maxLength: 7 }}
-            error={attempted && !!validationErrors.zipCode}
-            helperText={
-              attempted ? validationErrors.zipCode || undefined : undefined
-            }
-          />
-          <FormControl
-            fullWidth
-            required
-            error={attempted && !!validationErrors.state}
-          >
-            <InputLabel id="home-estimate-state-label">State</InputLabel>
-            <Select
-              labelId="home-estimate-state-label"
-              label="State"
-              value={state}
-              onChange={(event) => setState(event.target.value)}
-            >
-              {stateOptions.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </Select>
-            {attempted && validationErrors.state && (
-              <FormHelperText>{validationErrors.state}</FormHelperText>
-            )}
-          </FormControl>
-        </Stack>
+        <EligibilityFields
+          values={eligibilityValues}
+          onChange={(next) =>
+            setEligibilityValues((prev) => ({ ...prev, ...next }))
+          }
+          attempted={attempted}
+          ageError={ageError}
+          idPrefix="home"
+        />
 
-        <Stack spacing={1}>
-          <Button
-            variant="outlined"
-            size="large"
-            sx={{ py: "16px" }}
-            onClick={handleGetEstimate}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <CircularProgress size={20} color="inherit" />
-            ) : (
-              "Get an instant quote"
-            )}
-          </Button>
-          {ageError && (
-            <Alert severity="error" sx={{ mt: 0.5 }}>
-              {ageError}
-            </Alert>
+        <Button
+          variant="outlined"
+          size="large"
+          sx={{ py: "16px" }}
+          onClick={handleGetEstimate}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <CircularProgress size={20} color="inherit" />
+          ) : (
+            "Get an instant quote"
           )}
-        </Stack>
+        </Button>
       </Stack>
     </Box>
   );

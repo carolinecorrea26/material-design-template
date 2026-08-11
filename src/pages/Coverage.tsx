@@ -8,7 +8,7 @@ import AppDrawer from "../components/layout/AppDrawer";
 import FormHelpChips from "../components/content/HelpChips";
 import QuickDecisionDrawerContent from "../components/content/QuickDecisionExplainer";
 import { QuickDecisionMark } from "../components/content/QuickDecisionExplainer";
-import CartDrawer from "../components/layout/CartDrawer";
+import CoverageCart from "../components/ui/CoverageCart";
 import CoverageQuestions from "../components/forms/CoverageQuestions";
 import ProductCatalog from "../components/forms/ProductCatalog";
 import { useCoverageState } from "../app/useCoverageState";
@@ -248,9 +248,10 @@ function CoveragePageContent({
         onClose={() => state.setSummaryDrawerOpen(false)}
         swipeable
       >
-        <CartDrawer
-          onClose={() => state.setSummaryDrawerOpen(false)}
+        <CoverageCart
+          variant="drawer"
           source="coverage-page"
+          onClose={() => state.setSummaryDrawerOpen(false)}
         />
       </AppDrawer>
     </>

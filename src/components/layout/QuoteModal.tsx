@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import ProductCardSurface from "./ProductCard";
+import EstimatorProductCard from "../forms/EstimatorProductCard";
+import EmptyState from "../feedback/EmptyState";
 import {
   Box,
   Button,
@@ -696,165 +698,32 @@ export default function QuoteModal({
                       productApplicants[product.id] ?? [];
                     const hasAnyApplicantSelected =
                       currentApplicants.length > 0;
+                    const key = `${product.id}:member`;
+                    const currentAmount = amountsByKey[key] ?? choices[0] ?? 0;
+                    const isCalculating = calculatingRates.has(key);
+                    const premium = getApplicantPremium(product, "member");
+                    const displayedPremium =
+                      rateFrequency === "annual"
+                        ? Math.round(premium * 12 * 100) / 100
+                        : premium;
 
                     return (
-                      <ProductCardSurface
+                      <EstimatorProductCard
                         key={product.id}
+                        product={product}
+                        currentAmount={currentAmount}
+                        amountChoices={choices}
                         selected={hasAnyApplicantSelected}
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: 1.5,
-                        }}
-                      >
-                        {/* Title row */}
-                        <Stack
-                          direction="row"
-                          justifyContent="space-between"
-                          alignItems="flex-start"
-                          spacing={1}
-                        >
-                          <Stack spacing={0.25} sx={{ minWidth: 0 }}>
-                            <Typography variant="productNameLabel">
-                              {product.name}
-                              {product.underwritingType === "QD" && (
-                                <QuickDecisionIndicator />
-                              )}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              {product.description ?? product.definition}
-                            </Typography>
-                          </Stack>
-
-                          {product.featured && <FeaturedBadge />}
-                        </Stack>
-
-                        {/* Select for myself */}
-                        <SelectionGroup>
-                          <Checkbox
-                            checked={hasAnyApplicantSelected}
-                            onChange={() =>
-                              toggleApplicantForProduct(product, "member")
-                            }
-                            size="small"
-                            sx={{
-                              p: 0,
-                              pointerEvents: "none",
-                              color: "text.primary",
-                              "&.Mui-checked": {
-                                color: "primary.main",
-                              },
-                            }}
-                          />
-                          <Typography variant="subtitle2" sx={{ flex: 1 }}>
-                            Select for myself
-                          </Typography>
-                          {hasAnyApplicantSelected ? (
-                            <Chip
-                              label="Added"
-                              size="small"
-                              color="success"
-                              sx={{
-                                height: 22,
-                                "& .MuiChip-label": {
-                                  fontSize: "0.7rem",
-                                  fontWeight: 600,
-                                  px: 1,
-                                },
-                              }}
-                            />
-                          ) : (
-                            <Chip
-                              label="Add"
-                              size="small"
-                              variant="outlined"
-                              sx={{
-                                height: 22,
-                                borderColor: "grey.300",
-                                color: "text.secondary",
-                                "& .MuiChip-label": {
-                                  fontSize: "0.7rem",
-                                  fontWeight: 600,
-                                  px: 1,
-                                },
-                              }}
-                            />
-                          )}
-                        </SelectionGroup>
-
-                        {/* Benefit amount & estimated cost (always visible) */}
-                        {(() => {
-                          const key = `${product.id}:member`;
-                          const currentAmount =
-                            amountsByKey[key] ?? choices[0] ?? 0;
-                          const isCalculating = calculatingRates.has(key);
-                          const premium = getApplicantPremium(
-                            product,
-                            "member",
-                          );
-                          const displayedPremium =
-                            rateFrequency === "annual"
-                              ? Math.round(premium * 12 * 100) / 100
-                              : premium;
-
-                          return (
-                            <Box>
-                              <FormControl fullWidth>
-                                <InputLabel id={`${key}-amount-label`}>
-                                  {getBenefitAmountLabel(product.categoryId)}
-                                </InputLabel>
-                                <Select
-                                  labelId={`${key}-amount-label`}
-                                  label={getBenefitAmountLabel(
-                                    product.categoryId,
-                                  )}
-                                  value={currentAmount}
-                                  onChange={(event) =>
-                                    handleAmountChange(
-                                      key,
-                                      Number(event.target.value),
-                                    )
-                                  }
-                                >
-                                  {choices.map((amount) => (
-                                    <MenuItem key={amount} value={amount}>
-                                      {formatUSD(amount, 0)}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                              </FormControl>
-                              {currentAmount > 0 && (
-                                <Stack
-                                  direction="row"
-                                  justifyContent="flex-end"
-                                  alignItems="center"
-                                  sx={{ mt: 0.5, minHeight: 20 }}
-                                >
-                                  {isCalculating ? (
-                                    <CircularProgress size={14} thickness={4} />
-                                  ) : (
-                                    <Typography
-                                      variant="caption"
-                                      color="text.secondary"
-                                    >
-                                      Est. cost:{" "}
-                                      <Typography
-                                        component="span"
-                                        variant="caption"
-                                        fontWeight="bold"
-                                        sx={{ color: "primary.main" }}
-                                      >
-                                        {formatUSD(displayedPremium)}
-                                        {rateSuffix}
-                                      </Typography>
-                                    </Typography>
-                                  )}
-                                </Stack>
-                              )}
-                            </Box>
-                          );
-                        })()}
-                      </ProductCardSurface>
+                        isCalculating={isCalculating}
+                        displayedPremium={displayedPremium}
+                        rateSuffix={rateSuffix}
+                        onToggleSelected={() =>
+                          toggleApplicantForProduct(product, "member")
+                        }
+                        onAmountChange={(amount) =>
+                          handleAmountChange(key, amount)
+                        }
+                      />
                     );
                   })}
 
@@ -1071,28 +940,11 @@ export default function QuoteModal({
 
       {/* Empty state when no categories selected */}
       {selectedCategories.length === 0 && (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "start",
-            textAlign: "center",
-            minHeight: 200,
-            py: 6,
-            px: 4,
-          }}
-        >
-          <Stack spacing={1} alignItems="center">
-            <PrivacyTipIcon sx={{ fontSize: 40, color: "text.disabled" }} />
-            <Typography variant="body1" sx={{ color: "text.secondary" }}>
-              Your estimated cost will appear here
-            </Typography>
-            <Typography variant="body2" sx={{ color: "text.disabled" }}>
-              Select a coverage category to see your estimated cost.
-            </Typography>
-          </Stack>
-        </Box>
+        <EmptyState
+          title="Your estimated cost will appear here"
+          body="Select a coverage category to see your estimated cost."
+          sx={{ minHeight: 200, justifyContent: "flex-start" }}
+        />
       )}
     </Stack>
   );
