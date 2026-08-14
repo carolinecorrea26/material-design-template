@@ -171,6 +171,7 @@ export type FieldId =
   | "advisor-code"
   | "applicant-email"
   | "resume-email"
+  | "resume-delivery-method"
   | "resume-security-code"
   | "waepa-declaration"
   | "waepa-attestation"

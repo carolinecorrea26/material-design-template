@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getPagePath, getPageTitle } from "../config/pages";
 import { formatCountdown } from "../utils/formatCountdown";
@@ -22,8 +22,6 @@ import {
 import type { ClientId } from "../types";
 import PageTitle from "../components/layout/PageTitle";
 import FormShell from "../components/layout/FormShell";
-
-type DeliveryMode = "text" | "voice";
 
 const MOCK_SAVED_APPLICATIONS: Record<string, ApplicationFormValues> = {
   "returning.user@example.com": {
@@ -62,17 +60,23 @@ function getSavedApplicationForEmail(
 
 export default function ResumeCode() {
   const navigate = useNavigate();
+  const location = useLocation();
   const client = getActiveClient();
   const { setPageValues } = useApplicationForm();
 
   const fields = getClientPageFields("resume-code");
   const codeField = fields.find((field) => field.id === "resume-security-code");
 
+  const deliveryMode =
+    (location.state as { deliveryMethod?: string } | null)?.deliveryMethod ===
+    "call"
+      ? "voice"
+      : "text";
+
   const [phoneCode, setPhoneCode] = useState("");
   const [phoneCodeError, setPhoneCodeError] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [verifySuccess, setVerifySuccess] = useState(false);
-  const [deliveryMode, setDeliveryMode] = useState<DeliveryMode>("text");
   const [secondsLeft, setSecondsLeft] = useState(300);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -103,7 +107,7 @@ export default function ResumeCode() {
     event.preventDefault();
 
     if (!phoneCode.trim()) {
-      setPhoneCodeError("Enter your phone code.");
+      setPhoneCodeError("Enter your verification code.");
       return;
     }
 
@@ -154,7 +158,7 @@ export default function ResumeCode() {
               title={getPageTitle("resume-code")}
               subhead={
                 <>
-                  Please enter the security code sent via{" "}
+                  Please enter the verification code sent via{" "}
                   {deliveryMode === "voice" ? "call" : "text"} to the phone
                   number{" "}
                   <Box
@@ -167,28 +171,10 @@ export default function ResumeCode() {
                   >
                     (•••)•••1111
                   </Box>
-                  .{" "}
-                  <Link
-                    component="button"
-                    type="button"
-                    variant="body2"
-                    underline="hover"
-                    onClick={() => {
-                      setDeliveryMode((currentMode) =>
-                        currentMode === "text" ? "voice" : "text",
-                      );
-                    }}
-                    sx={{
-                      fontSize: "inherit",
-                      verticalAlign: "baseline",
-                    }}
-                  >
-                    {deliveryMode === "text"
-                      ? "Get security code with voice call instead."
-                      : "Get security code with text message instead."}
-                  </Link>
+                  .
                 </>
               }
+              onBack={() => navigate(getPagePath("resume-method"))}
             />
           </Box>
 
@@ -200,7 +186,7 @@ export default function ResumeCode() {
           >
             {secondsLeft === 0 && (
               <Alert severity="error" sx={{ mb: 2 }}>
-                Your security code has expired.{" "}
+                Your verification code has expired.{" "}
                 <Link
                   href="#"
                   underline="hover"
@@ -212,7 +198,7 @@ export default function ResumeCode() {
                     verticalAlign: "baseline",
                   }}
                 >
-                  Resend Code
+                  Resend code
                 </Link>
               </Alert>
             )}
@@ -223,7 +209,7 @@ export default function ResumeCode() {
               required={codeField?.required}
               value={phoneCode}
               disabled={secondsLeft === 0}
-              label={codeField?.label ?? "Security Code"}
+              label={codeField?.label ?? "Verification Code"}
               onChange={(event) => {
                 setPhoneCode(event.target.value);
 

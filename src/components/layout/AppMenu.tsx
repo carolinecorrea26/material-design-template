@@ -18,7 +18,9 @@ import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import AppDrawer from "../layout/AppDrawer";
 import { CoverageOptionsDrawerContent } from "../../content/helpContent";
 import CoverageNeedsCalculator from "../forms/CoverageNeedsCalculator";
-import QuickDecisionDrawerContent from "../content/QuickDecisionExplainer";
+import QuickDecisionDrawerContent, {
+  QuickDecisionMark,
+} from "../content/QuickDecisionExplainer";
 import { useState } from "react";
 import type { ClientConfig } from "../../config/clients/types";
 import { router } from "../../app/router";
@@ -30,11 +32,7 @@ type AppMenuProps = {
   client: ClientConfig;
 };
 
-export default function AppMenu({
-  open,
-  onClose,
-  client,
-}: AppMenuProps) {
+export default function AppMenu({ open, onClose, client }: AppMenuProps) {
   const [isCoverageDrawerOpen, setIsCoverageDrawerOpen] = useState(false);
   const [isNeedsCalcOpen, setIsNeedsCalcOpen] = useState(false);
   const [isQuickDecisionOpen, setIsQuickDecisionOpen] = useState(false);
@@ -69,7 +67,7 @@ export default function AppMenu({
               gap: 1,
             }}
           >
-            <Typography variant="subtitle1" fontWeight="bold">
+            <Typography variant="subtitle1" fontWeight={700}>
               Menu
             </Typography>
             <IconButton
@@ -137,6 +135,29 @@ export default function AppMenu({
                   fullWidth
                   onClick={() => {
                     onClose();
+                    setIsQuickDecisionOpen(true);
+                  }}
+                  sx={{
+                    flexDirection: "row",
+                    textTransform: "none",
+                    py: 1.5,
+                    px: 2,
+                    gap: 1.5,
+                    borderRadius: 2,
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  <OfflineBoltIcon color="success" />
+                  <Typography variant="body2" fontWeight={600}>
+                    About <QuickDecisionMark />
+                  </Typography>
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={() => {
+                    onClose();
                     setIsNeedsCalcOpen(true);
                   }}
                   sx={{
@@ -152,32 +173,6 @@ export default function AppMenu({
                   <CalculateRoundedIcon />
                   <Typography variant="body2" fontWeight={600}>
                     Needs Calculator
-                  </Typography>
-                </Button>
-
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  onClick={() => {
-                    onClose();
-                    setIsQuickDecisionOpen(true);
-                  }}
-                  sx={{
-                    flexDirection: "row",
-                    textTransform: "none",
-                    py: 1.5,
-                    px: 2,
-                    gap: 1.5,
-                    borderRadius: 2,
-                    justifyContent: "flex-start",
-                  }}
-                >
-                  <OfflineBoltIcon color="success" />
-                  <Typography variant="body2" fontWeight={600}>
-                    About QuickDecision
-                    <Box component="sup" sx={{ fontSize: "0.7em" }}>
-                      SM
-                    </Box>
                   </Typography>
                 </Button>
               </Stack>
@@ -273,12 +268,9 @@ export default function AppMenu({
       <AppDrawer
         open={isQuickDecisionOpen}
         title={
-          <Typography variant="h6">
-            About QuickDecision
-            <Box component="sup" sx={{ fontSize: "0.65em" }}>
-              SM
-            </Box>
-          </Typography>
+          <>
+            What is <QuickDecisionMark />?
+          </>
         }
         onClose={() => setIsQuickDecisionOpen(false)}
       >

@@ -106,7 +106,7 @@ function getClientEmailPayload() {
     clientLogoAlt: client.branding.logoAlt,
     startUrl,
     resumeUrl: `${startUrl}/resume`,
-    resumeMagicLinkUrl: `${startUrl}/resume?resumeFlow=code`,
+    resumeMagicLinkUrl: `${startUrl}/resume-method`,
   };
 }
 

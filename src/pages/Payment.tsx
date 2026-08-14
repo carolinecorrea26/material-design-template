@@ -358,7 +358,7 @@ export default function Payment() {
                   icon={<InfoOutlinedIcon fontSize="inherit" />}
                   sx={{ alignItems: "flex-start" }}
                 >
-                  <Typography variant="subtitle2" fontWeight="bold">
+                  <Typography variant="subtitle2" fontWeight={700}>
                     You will not be charged yet.
                   </Typography>
                   <Typography variant="body2" sx={{ mt: 0.5 }}>
@@ -502,7 +502,7 @@ export default function Payment() {
                                             </Typography>
                                             <Typography
                                               variant="subtitle2"
-                                              fontWeight="bold"
+                                              fontWeight={700}
                                               sx={{ whiteSpace: "nowrap" }}
                                             >
                                               {formatCurrency(
@@ -536,7 +536,7 @@ export default function Payment() {
                                           <Typography
                                             component="span"
                                             variant="subtitle2"
-                                            fontWeight="bold"
+                                            fontWeight={700}
                                             sx={{
                                               color: "primary.main",
                                               whiteSpace: "nowrap",

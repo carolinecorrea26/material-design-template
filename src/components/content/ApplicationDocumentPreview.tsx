@@ -741,7 +741,8 @@ export default function ApplicationDocumentPreview({
   return (
     <Box
       sx={{
-        border: "1px solid rgba(0, 0, 0, 0.12)",
+        border: "1px solid",
+        borderColor: "divider",
         borderRadius: 2,
         backgroundColor: "#f3f4f6",
         p: { xs: 1.5, md: 2.5 },

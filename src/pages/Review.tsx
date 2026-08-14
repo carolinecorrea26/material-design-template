@@ -139,7 +139,7 @@ export default function Review() {
             <Box>
               <Typography
                 variant="subtitle1"
-                fontWeight="bold"
+                fontWeight={700}
                 sx={{ mb: 1, textAlign: "center" }}
               >
                 {reviewContent.readAndSignTitle}
@@ -147,7 +147,8 @@ export default function Review() {
               <Box
                 sx={{
                   overflowY: "auto",
-                  border: "1px solid rgba(0, 0, 0, 0.12)",
+                  border: "1px solid",
+                  borderColor: "divider",
                   borderRadius: 1,
                   p: 1.5,
                   backgroundColor: SECTION_SURFACE_BG,
@@ -173,7 +174,7 @@ export default function Review() {
             <Box>
               <Typography
                 variant="subtitle1"
-                fontWeight="bold"
+                fontWeight={700}
                 sx={{ mb: 1, textAlign: "center" }}
               >
                 {reviewContent.electronicConsentTitle}
@@ -182,7 +183,8 @@ export default function Review() {
                 sx={{
                   maxHeight: 200,
                   overflowY: "auto",
-                  border: "1px solid rgba(0, 0, 0, 0.12)",
+                  border: "1px solid",
+                  borderColor: "divider",
                   borderRadius: 1,
                   p: 1.5,
                   backgroundColor: SECTION_SURFACE_BG,

@@ -48,6 +48,8 @@ export const pageFields: Partial<Record<PageId, FieldId[]>> = {
 
   resume: ["resume-email"],
 
+  "resume-method": ["resume-delivery-method"],
+
   "resume-code": ["resume-security-code"],
 
   coverage: [

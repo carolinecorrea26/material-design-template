@@ -307,7 +307,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
       )}
 
       {/* Coverage increase warning */}
-      <Alert severity="warning" sx={{ borderRadius: 2, mb: 2 }}>
+      <Alert severity="warning"  sx={{ mb: 2 }}>
         {additionalCoverageWarningText}
       </Alert>
 
@@ -340,7 +340,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                         )}
                         icon={CategoryIcon as any}
                       />
-                      <Alert severity="warning" sx={{ borderRadius: 2 }}>
+                      <Alert severity="warning" >
                         Based on your answers, you are not eligible for{" "}
                         {category.label} coverage at this time.
                       </Alert>
@@ -365,7 +365,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                       icon={CategoryIcon as SvgIconComponent}
                     >
                       {notes && (
-                        <Alert severity="info" sx={{ borderRadius: 2 }}>
+                        <Alert severity="info" >
                           <Typography
                             variant="body2"
                             sx={{ mb: hasSpouse || notes.child ? 1 : 0 }}
@@ -419,7 +419,6 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                 <Alert
                   severity="error"
                   sx={{
-                    borderRadius: 2,
                     "& .MuiAlert-message": { width: "100%" },
                   }}
                 >
@@ -582,10 +581,10 @@ function ProductCard({
       {coverage.productWarning && (
         <Alert
           severity={coverage.productWarning.severity}
-          sx={{ borderRadius: 2 }}
+          
         >
           {coverage.productWarning.title && (
-            <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
+            <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1 }}>
               {coverage.productWarning.title}
             </Typography>
           )}
@@ -597,10 +596,10 @@ function ProductCard({
       {coverage.productContent && coverage.productContent.length > 0 && (
         <Box
           sx={{
-            backgroundColor: "#fff",
+            backgroundColor: "background.paper",
             border: "1px solid",
             borderColor: "divider",
-            borderRadius: 2,
+            borderRadius: "16px",
             p: 2,
           }}
         >
@@ -618,7 +617,7 @@ function ProductCard({
                   <Typography
                     key={i}
                     variant="subtitle1"
-                    fontWeight="bold"
+                    fontWeight={700}
                     sx={{ textAlign: "center", mb: 0.5 }}
                   >
                     {block.text}
@@ -650,7 +649,7 @@ function ProductCard({
                   <Box key={i} sx={{ mb: 1.5 }}>
                     <Typography
                       variant="subtitle1"
-                      fontWeight="bold"
+                      fontWeight={700}
                       sx={{ mb: 0.5 }}
                     >
                       {block.heading}
@@ -696,7 +695,7 @@ function ProductCard({
 
               {/* Applicant-level info note */}
               {applicantNote && (
-                <Alert severity="info" sx={{ borderRadius: 2, mb: 1.5 }}>
+                <Alert severity="info"  sx={{ mb: 1.5 }}>
                   {applicantNote}
                 </Alert>
               )}
@@ -977,7 +976,7 @@ function ProductCard({
                         <Typography
                           component="span"
                           variant="subtitle2"
-                          fontWeight="bold"
+                          fontWeight={700}
                           sx={{ color: "primary.main" }}
                         >
                           {formatUSD(displayedPremium)}

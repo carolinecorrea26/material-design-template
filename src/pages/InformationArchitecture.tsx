@@ -35,13 +35,14 @@ import {
 } from "@mui/material";
 import { fieldCatalog } from "../config/fields";
 import { formFlow } from "../config/formFlow";
-import { pages, getPageTitle, getPageNavTitle } from "../config/pages";
+import { pages, getPageTitle } from "../config/pages";
 import { pageSections } from "../config/pageSections";
 import type { SectionVisibilityRule } from "../config/pageSections/types";
 import type { PageId } from "../types";
 import DocsSidebarNav from "../components/docs/DocsSidebarNav";
 
 const tableOfContents = [
+  { id: "changelog-table", label: "Change Log" },
   { id: "pages-table", label: "Pages" },
   { id: "flows-table", label: "Flows" },
   { id: "components-table", label: "Components" },
@@ -49,6 +50,29 @@ const tableOfContents = [
   { id: "configurations-table", label: "Configurations" },
   { id: "site-rules-table", label: "Site Rules" },
   { id: "template-changes-table", label: "Template Changes" },
+];
+
+// ---------------------------------------------------------------------------
+// Change log data
+// ---------------------------------------------------------------------------
+
+type ChangeLogEntry = {
+  id: string;
+  date: string;
+  area: string;
+  summary: string;
+  details: string;
+};
+
+const changeLog: ChangeLogEntry[] = [
+  {
+    id: "CL-001",
+    date: "2026-08-14",
+    area: "Resume flow",
+    summary: "Added Resume Method page; renamed security code to verification code",
+    details:
+      "Inserted a new Resume Method step between Resume (email entry) and Resume Code. The page presents a radio button choice — Text or Call — for how the user wants to receive their verification code. The chosen method is passed via location state to Resume Code, which now reads delivery mode from state instead of managing a toggle inline. Removed the 'Get security code with voice call instead' toggle link from Resume Code. Renamed all instances of 'security code' to 'verification code' on the Resume Code page (title, subhead, field label, error copy). Updated the resume flow diagram in this document. Updated the mock email magic link URL to point to /resume-method. Added resume-delivery-method to the field catalog and page fields catalog. Added resume-method to pages, router, and default content.",
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -496,7 +520,7 @@ const templateChanges: { area: string; current: string; next: string }[] = [
   {
     area: "Resume process",
     current: "Three-step resume process.",
-    next: "Two-step resume process using email link followed by phone verification code.",
+    next: "Three-step resume process: email link, delivery method selection (Text or Call), then phone verification code.",
   },
   {
     area: "Quote tool product support",
@@ -1578,9 +1602,14 @@ const resumeFlow: FlowStep[] = [
     description: "User opens the time-limited email link.",
   },
   {
+    label: "Resume Method",
+    description:
+      "User selects how to receive their verification code: Text or Call.",
+  },
+  {
     label: "Resume Code",
     description:
-      "System sends a text code by default; user may request delivery by voice call.",
+      "User enters the security code sent via the chosen delivery method.",
   },
   {
     label: "Verification Result",
@@ -2521,22 +2550,7 @@ const configurationsData: ConfigRow[] = [
   },
 ];
 
-const pageGroupOrder = [
-  "get-started",
-  "coverage",
-  "profile",
-  "review",
-  "health",
-  "payment",
-];
-const pageGroupLabels: Record<string, string> = {
-  "get-started": "Get Started",
-  coverage: "Coverage",
-  profile: "Profile",
-  review: "Review & Sign",
-  health: "Health",
-  payment: "Payment",
-};
+
 
 // ---------------------------------------------------------------------------
 // Reusable UI pieces
@@ -2704,6 +2718,103 @@ function FlowStepper({ steps }: { steps: FlowStep[] }) {
 }
 
 // ---------------------------------------------------------------------------
+// Page category helpers (for single pages table)
+// ---------------------------------------------------------------------------
+
+const categoryOrder = ["application", "resume", "advisor", "internal"];
+
+function getPageCategory(page: { type: string; id: string }): string {
+  if (page.type === "internal") return "internal";
+  if (page.id === "mock-email-preview") return "internal";
+  if (page.id.startsWith("advisor")) return "advisor";
+  if (page.id.startsWith("resume") || page.type === "resume") return "resume";
+  return "application";
+}
+
+// ---------------------------------------------------------------------------
+// Page step / breadcrumb metadata for the pages table
+// ---------------------------------------------------------------------------
+
+/** Maps each page ID to its progress step label shown in the pages table. */
+const pageStepLabel: Partial<Record<string, string>> = {
+  home: "N/A",
+  membership: "Getting Started",
+  eligibility: "Getting Started",
+  coverage: "Coverage",
+  beneficiary: "Profile",
+  contact: "Profile",
+  profile: "Profile",
+  review: "Review & Sign",
+  "health-si": "Review & Sign",
+  "health-li": "Review & Sign",
+  "health-qd": "Review & Sign",
+  "health-di": "Review & Sign",
+  "health-cir": "Review & Sign",
+  payment: "Review & Sign",
+  docusign: "E-sign",
+  receipt: "N/A",
+  resume: "N/A",
+  "resume-method": "N/A",
+  "resume-code": "N/A",
+  "advisor-login": "N/A",
+  "advisor-send-confirmation": "N/A",
+  "mock-email-preview": "N/A",
+  "information-architecture": "N/A",
+  "design-system": "N/A",
+};
+
+/** Maps each page ID to its breadcrumb label (progress bar step label). */
+const pageBreadcrumbLabel: Partial<Record<string, string>> = {
+  home: "N/A",
+  membership: "Eligibility",
+  eligibility: "Eligibility",
+  coverage: "Coverage",
+  beneficiary: "Profile",
+  contact: "Profile",
+  profile: "Profile",
+  review: "Review",
+  "health-si": "Review",
+  "health-li": "Review",
+  "health-qd": "Review",
+  "health-di": "Review",
+  "health-cir": "Review",
+  payment: "Review",
+  docusign: "E-sign",
+  receipt: "N/A",
+  resume: "N/A",
+  "resume-method": "N/A",
+  "resume-code": "N/A",
+  "advisor-login": "N/A",
+  "advisor-send-confirmation": "N/A",
+  "mock-email-preview": "N/A",
+  "information-architecture": "N/A",
+  "design-system": "N/A",
+};
+
+/**
+ * Application flow order for sorting application pages correctly.
+ * Non-application pages (resume, advisor, internal) are sorted by category after.
+ */
+const applicationPageOrder: string[] = [
+  "home",
+  "membership",
+  "eligibility",
+  "coverage",
+  "beneficiary",
+  "contact",
+  "profile",
+  "review",
+  "health-si",
+  "health-li",
+  "health-qd",
+  "health-di",
+  "health-cir",
+  "payment",
+  "docusign",
+  "receipt",
+];
+
+// ---------------------------------------------------------------------------
 // Main page component
 // ---------------------------------------------------------------------------
 
@@ -2717,72 +2828,52 @@ export default function InformationArchitecture() {
     null,
   );
 
-  const groupedPages = useMemo(() => {
-    const lc = pageFilter.toLowerCase();
-    const grouped: {
-      group: string;
-      label: string;
-      items: {
-        id: PageId;
-        title: string;
-        navTitle: string;
-        path: string;
-        type: string;
-        group: string;
-        sourcePath: string;
-      }[];
-    }[] = [];
-    const allPagesFlat = pages.map((page) => ({
-      id: page.id as PageId,
-      title: getPageTitle(page.id as PageId),
-      navTitle: getPageNavTitle(page.id as PageId),
-      path: page.path,
-      type: page.type,
-      group: "groupId" in page ? (page as { groupId: string }).groupId : "—",
-      sourcePath: `src/pages/${page.id
-        .split("-")
-        .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-        .join("")}.tsx`,
-    }));
-    for (const groupId of pageGroupOrder) {
-      const items = allPagesFlat.filter((p) => p.group === groupId);
-      if (items.length > 0) {
-        const filtered = lc
-          ? items.filter((p) =>
-              `${p.id} ${p.title} ${p.type} ${p.path}`
-                .toLowerCase()
-                .includes(lc),
-            )
-          : items;
-        if (filtered.length > 0)
-          grouped.push({
-            group: groupId,
-            label: pageGroupLabels[groupId] ?? groupId,
-            items: filtered,
-          });
-      }
-    }
-    const ungrouped = allPagesFlat.filter((p) => p.group === "—");
-    if (ungrouped.length > 0) {
-      const filtered = lc
-        ? ungrouped.filter((p) =>
-            `${p.id} ${p.title} ${p.type} ${p.path}`.toLowerCase().includes(lc),
-          )
-        : ungrouped;
-      if (filtered.length > 0)
-        grouped.push({
-          group: "other",
-          label: "Other (Resume, Advisor, Internal)",
-          items: filtered,
-        });
-    }
-    return grouped;
-  }, [pageFilter]);
-
-  const totalPageCount = useMemo(
-    () => groupedPages.reduce((sum, g) => sum + g.items.length, 0),
-    [groupedPages],
+  const allPagesFlat = useMemo(
+    () =>
+      pages.map((page) => {
+        const id = page.id as PageId;
+        // Home uses the hero title from content rather than the generic page title
+        const title =
+          id === "home"
+            ? "Safeguard your financial future"
+            : getPageTitle(id);
+        return {
+          id,
+          title,
+          path: page.path,
+          category: getPageCategory(page),
+          step: pageStepLabel[id] ?? "N/A",
+          breadcrumb: pageBreadcrumbLabel[id] ?? "N/A",
+        };
+      }),
+    [],
   );
+
+  const filteredPages = useMemo(() => {
+    const lc = pageFilter.toLowerCase();
+    const filtered = lc
+      ? allPagesFlat.filter((p) =>
+          `${p.id} ${p.title} ${p.category} ${p.path} ${p.step} ${p.breadcrumb}`
+            .toLowerCase()
+            .includes(lc),
+        )
+      : allPagesFlat;
+
+    return [...filtered].sort((a, b) => {
+      const catA = categoryOrder.indexOf(a.category);
+      const catB = categoryOrder.indexOf(b.category);
+      if (catA !== catB) return catA - catB;
+      // Within application pages, preserve flow order
+      if (a.category === "application") {
+        const ia = applicationPageOrder.indexOf(a.id);
+        const ib = applicationPageOrder.indexOf(b.id);
+        return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+      }
+      return 0;
+    });
+  }, [pageFilter, allPagesFlat]);
+
+  const totalPageCount = filteredPages.length;
   const filteredComponents = useMemo(() => {
     if (!componentFilter) return componentsData;
     const lc = componentFilter.toLowerCase();
@@ -2935,11 +3026,75 @@ export default function InformationArchitecture() {
         <Box sx={{ display: "flex", gap: 4, alignItems: "flex-start" }}>
           <DocsSidebarNav items={tableOfContents} />
           <Stack spacing={3} sx={{ flex: 1, minWidth: 0 }}>
+            {/* 0. CHANGE LOG */}
+            <SectionAccordion
+              id="changelog-table"
+              title="Change Log"
+              description="Chronological log of documented changes to the prototype and this document."
+              count={changeLog.length}
+            >
+              <ResponsiveTableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ whiteSpace: "nowrap" }}>ID</TableCell>
+                      <TableCell sx={{ whiteSpace: "nowrap" }}>Date</TableCell>
+                      <TableCell sx={{ whiteSpace: "nowrap" }}>Area</TableCell>
+                      <TableCell>Summary</TableCell>
+                      <TableCell sx={{ minWidth: 340 }}>Details</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {changeLog.map((entry) => (
+                      <TableRow key={entry.id}>
+                        <TableCell
+                          sx={{ verticalAlign: "top", fontWeight: 700, whiteSpace: "nowrap" }}
+                        >
+                          {entry.id}
+                        </TableCell>
+                        <TableCell
+                          sx={{ verticalAlign: "top", whiteSpace: "nowrap", color: "text.secondary" }}
+                        >
+                          {entry.date}
+                        </TableCell>
+                        <TableCell
+                          sx={{ verticalAlign: "top", whiteSpace: "nowrap" }}
+                        >
+                          {entry.area}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            verticalAlign: "top",
+                            whiteSpace: "normal !important",
+                            fontWeight: 600,
+                            fontSize: "0.8125rem",
+                            minWidth: 220,
+                          }}
+                        >
+                          {entry.summary}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            verticalAlign: "top",
+                            whiteSpace: "normal !important",
+                            fontSize: "0.8125rem",
+                            color: "text.secondary",
+                          }}
+                        >
+                          {entry.details}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </ResponsiveTableContainer>
+            </SectionAccordion>
+
             {/* 1. PAGES */}
             <SectionAccordion
               id="pages-table"
               title="Pages"
-              description="All registered pages organized by navigation group."
+              description="All registered pages ordered by category: application, resume, advisor, internal."
               count={totalPageCount}
             >
               <Stack spacing={2}>
@@ -2948,70 +3103,83 @@ export default function InformationArchitecture() {
                   onChange={setPageFilter}
                   placeholder="Filter pages…"
                 />
-                {groupedPages.map((group) => (
-                  <Box key={group.group}>
-                    <Typography
-                      variant="subtitle2"
-                      sx={{
-                        fontWeight: 800,
-                        mb: 1,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.05em",
-                        color: "text.secondary",
-                      }}
-                    >
-                      {group.label}
-                    </Typography>
-                    <ResponsiveTableContainer>
-                      <Table size="small">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Page ID</TableCell>
-                            <TableCell>Title</TableCell>
-                            <TableCell>Path</TableCell>
-                            <TableCell>Type</TableCell>
-                            <TableCell>Nav title</TableCell>
-                            <TableCell>Source</TableCell>
+                <ResponsiveTableContainer>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Category</TableCell>
+                        <TableCell>Page</TableCell>
+                        <TableCell>Title</TableCell>
+                        <TableCell>Step</TableCell>
+                        <TableCell>Breadcrumb</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {filteredPages.map((page, i) => {
+                        const showCategory =
+                          i === 0 ||
+                          filteredPages[i - 1].category !== page.category;
+                        return (
+                          <TableRow key={page.id}>
+                            <TableCell
+                              sx={{
+                                verticalAlign: "top",
+                                fontWeight: 600,
+                                fontSize: "0.8125rem",
+                                color: showCategory
+                                  ? "text.primary"
+                                  : "transparent",
+                                borderTop:
+                                  showCategory && i !== 0
+                                    ? "2px solid"
+                                    : undefined,
+                                borderTopColor:
+                                  showCategory && i !== 0
+                                    ? "divider"
+                                    : undefined,
+                                whiteSpace: "nowrap",
+                                textTransform: "capitalize",
+                              }}
+                            >
+                              {page.category}
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                borderTop:
+                                  showCategory && i !== 0
+                                    ? "2px solid"
+                                    : undefined,
+                                borderTopColor:
+                                  showCategory && i !== 0
+                                    ? "divider"
+                                    : undefined,
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              <Link href={page.path} sx={{ fontWeight: 700 }}>
+                                {page.id}
+                              </Link>
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                whiteSpace: "normal !important",
+                                maxWidth: 260,
+                              }}
+                            >
+                              {page.title}
+                            </TableCell>
+                            <TableCell sx={{ whiteSpace: "nowrap" }}>
+                              {page.step}
+                            </TableCell>
+                            <TableCell sx={{ whiteSpace: "nowrap" }}>
+                              {page.breadcrumb}
+                            </TableCell>
                           </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {group.items.map((page) => (
-                            <TableRow key={page.id}>
-                              <TableCell>
-                                <Typography
-                                  variant="body2"
-                                  sx={{ fontWeight: 700 }}
-                                >
-                                  {page.id}
-                                </Typography>
-                              </TableCell>
-                              <TableCell>{page.title}</TableCell>
-                              <TableCell>
-                                <Link href={page.path}>{page.path}</Link>
-                              </TableCell>
-                              <TableCell>
-                                <Chip
-                                  label={page.type}
-                                  size="small"
-                                  variant="outlined"
-                                />
-                              </TableCell>
-                              <TableCell>{page.navTitle}</TableCell>
-                              <TableCell>
-                                <Typography
-                                  variant="caption"
-                                  color="text.secondary"
-                                >
-                                  {page.sourcePath}
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </ResponsiveTableContainer>
-                  </Box>
-                ))}
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </ResponsiveTableContainer>
               </Stack>
             </SectionAccordion>
 

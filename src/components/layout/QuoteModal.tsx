@@ -20,8 +20,6 @@ import {
   // Select,
   Stack,
   TextField,
-  ToggleButton,
-  ToggleButtonGroup,
   Typography,
   Alert,
   CircularProgress,
@@ -46,7 +44,7 @@ import { getPagePath } from "../../config/pages";
 import { STORAGE_KEY } from "../../app/ApplicationFormContext";
 import { getActiveClient } from "../../config/client/getActiveClient";
 import type { EstimatedRateFrequency } from "../../config/clients/types";
-// import SelectionGroup from "../forms/SelectionGroup";
+import SelectionGroup from "../forms/SelectionGroup";
 // import QuickDecisionIndicator from "../ui/QuickDecisionIndicator";
 import RateFrequencyToggle from "../ui/RateFrequencyToggle";
 // import FeaturedBadge from "../ui/FeaturedBadge";
@@ -462,45 +460,38 @@ export default function QuoteModal({
                   <FormLabel required sx={{ mb: 1 }}>
                     Gender
                   </FormLabel>
-                  <ToggleButtonGroup
-                    exclusive
-                    value={gender}
-                    onChange={(_, value) => {
-                      if (value !== null) setGender(value as EstimateGender);
-                    }}
-                    sx={{ display: "flex", flexDirection: "column", gap: 1 }}
-                  >
-                    <ToggleButton
-                      value="male"
-                      sx={{
-                        textTransform: "none",
-                        gap: 1,
-                        justifyContent: "flex-start",
-                      }}
-                    >
-                      <Radio
-                        checked={gender === "male"}
-                        size="small"
-                        sx={{ p: 0 }}
-                      />
-                      Male
-                    </ToggleButton>
-                    <ToggleButton
-                      value="female"
-                      sx={{
-                        textTransform: "none",
-                        gap: 1,
-                        justifyContent: "flex-start",
-                      }}
-                    >
-                      <Radio
-                        checked={gender === "female"}
-                        size="small"
-                        sx={{ p: 0 }}
-                      />
-                      Female
-                    </ToggleButton>
-                  </ToggleButtonGroup>
+                  <Stack spacing={1} role="radiogroup" aria-label="Gender">
+                    {(
+                      [
+                        { value: "male", label: "Male" },
+                        { value: "female", label: "Female" },
+                      ] as { value: EstimateGender; label: string }[]
+                    ).map((option) => (
+                      <SelectionGroup
+                        key={option.value}
+                        role="radio"
+                        aria-checked={gender === option.value}
+                        tabIndex={gender === option.value ? 0 : -1}
+                        onClick={() => setGender(option.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === " " || e.key === "Enter") {
+                            e.preventDefault();
+                            setGender(option.value);
+                          }
+                        }}
+                      >
+                        <Radio
+                          checked={gender === option.value}
+                          size="small"
+                          sx={{ p: 0, pointerEvents: "none" }}
+                          aria-hidden
+                        />
+                        <Box component="span" className="SelectionGroup-label" sx={{ fontSize: "0.875rem" }}>
+                          {option.label}
+                        </Box>
+                      </SelectionGroup>
+                    ))}
+                  </Stack>
                   {fieldsAttempted && fieldErrors.gender && (
                     <FormHelperText>{fieldErrors.gender}</FormHelperText>
                   )}
@@ -516,45 +507,38 @@ export default function QuoteModal({
                   <FormLabel required sx={{ mb: 1 }}>
                     Do you use nicotine products?
                   </FormLabel>
-                  <ToggleButtonGroup
-                    exclusive
-                    value={smoker}
-                    onChange={(_, value) => {
-                      if (value !== null) setSmoker(value as EstimateYesNo);
-                    }}
-                    sx={{ display: "flex", flexDirection: "column", gap: 1 }}
-                  >
-                    <ToggleButton
-                      value="yes"
-                      sx={{
-                        textTransform: "none",
-                        gap: 1,
-                        justifyContent: "flex-start",
-                      }}
-                    >
-                      <Radio
-                        checked={smoker === "yes"}
-                        size="small"
-                        sx={{ p: 0 }}
-                      />
-                      Yes
-                    </ToggleButton>
-                    <ToggleButton
-                      value="no"
-                      sx={{
-                        textTransform: "none",
-                        gap: 1,
-                        justifyContent: "flex-start",
-                      }}
-                    >
-                      <Radio
-                        checked={smoker === "no"}
-                        size="small"
-                        sx={{ p: 0 }}
-                      />
-                      No
-                    </ToggleButton>
-                  </ToggleButtonGroup>
+                  <Stack spacing={1} role="radiogroup" aria-label="Nicotine use">
+                    {(
+                      [
+                        { value: "yes", label: "Yes" },
+                        { value: "no", label: "No" },
+                      ] as { value: EstimateYesNo; label: string }[]
+                    ).map((option) => (
+                      <SelectionGroup
+                        key={option.value}
+                        role="radio"
+                        aria-checked={smoker === option.value}
+                        tabIndex={smoker === option.value ? 0 : -1}
+                        onClick={() => setSmoker(option.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === " " || e.key === "Enter") {
+                            e.preventDefault();
+                            setSmoker(option.value);
+                          }
+                        }}
+                      >
+                        <Radio
+                          checked={smoker === option.value}
+                          size="small"
+                          sx={{ p: 0, pointerEvents: "none" }}
+                          aria-hidden
+                        />
+                        <Box component="span" className="SelectionGroup-label" sx={{ fontSize: "0.875rem" }}>
+                          {option.label}
+                        </Box>
+                      </SelectionGroup>
+                    ))}
+                  </Stack>
                   {fieldsAttempted && fieldErrors.smoker && (
                     <FormHelperText>{fieldErrors.smoker}</FormHelperText>
                   )}
@@ -789,7 +773,7 @@ export default function QuoteModal({
                       <PrivacyTipIcon
                         sx={{ fontSize: 17, color: "text.disabled" }}
                       />
-                      <Typography variant="caption" fontWeight="bold">
+                      <Typography variant="caption" fontWeight={700}>
                         Added coverage will appear here
                       </Typography>
                     </Box>
@@ -822,7 +806,7 @@ export default function QuoteModal({
                             </Typography>
                             <Typography
                               variant="caption"
-                              fontWeight="bold"
+                              fontWeight={700}
                               sx={{ whiteSpace: "nowrap" }}
                             >
                               {formatUSD(displayedProductTotal)}
@@ -844,12 +828,12 @@ export default function QuoteModal({
                           justifyContent="space-between"
                           alignItems="baseline"
                         >
-                          <Typography variant="caption" fontWeight="bold">
+                          <Typography variant="caption" fontWeight={700}>
                             Total
                           </Typography>
                           <Typography
                             variant="body2"
-                            fontWeight="bold"
+                            fontWeight={700}
                             sx={{
                               color: "primary.main",
                               whiteSpace: "nowrap",
@@ -872,7 +856,7 @@ export default function QuoteModal({
                     >
                       <Typography
                         variant="caption"
-                        fontWeight="bold"
+                        fontWeight={700}
                         color={
                           rateFrequency === "monthly"
                             ? "primary.main"
@@ -896,7 +880,7 @@ export default function QuoteModal({
                       />
                       <Typography
                         variant="caption"
-                        fontWeight="bold"
+                        fontWeight={700}
                         color={
                           rateFrequency === "annual"
                             ? "primary.main"

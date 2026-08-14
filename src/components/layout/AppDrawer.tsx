@@ -60,11 +60,7 @@ export default function AppDrawer({
             bgcolor: "background.paper",
           }}
         >
-          {typeof title === "string" ? (
-            <Typography variant="h6">{title}</Typography>
-          ) : (
-            title
-          )}
+          <Typography variant="h6">{title}</Typography>
           <IconButton onClick={onClose} aria-label="Close drawer">
             <CloseRoundedIcon />
           </IconButton>

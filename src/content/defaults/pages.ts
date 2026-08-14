@@ -89,11 +89,17 @@ export const pagesDefaults: Partial<PagesContent> = {
       "Before proceeding, we need to confirm your identity. Please enter your email and we'll send a secure link for verification.",
     navTitle: "Resume application",
   },
-  "resume-code": {
-    title: "Enter security code",
+  "resume-method": {
+    title: "Get your verification code",
     subhead:
-      "Enter the security code sent to your phone number that was used to begin an application.",
-    navTitle: "Security code",
+      "Choose how you would like to receive your verification code for the phone number on file.",
+    navTitle: "Verification method",
+  },
+  "resume-code": {
+    title: "Enter your verification code",
+    subhead:
+      "Enter the verification code sent to your phone number that was used to begin an application.",
+    navTitle: "Verification code",
   },
   "advisor-login": {
     title: "Advisor Portal",

@@ -410,8 +410,9 @@ export default function Receipt() {
 
   const cardSx = {
     backgroundColor: "background.paper",
-    border: "1px solid #e0e4ea",
-    borderRadius: 2,
+    border: "1px solid",
+    borderColor: "divider",
+    borderRadius: "16px",
     p: 3,
   };
 
@@ -420,8 +421,7 @@ export default function Receipt() {
       sx={{
         flex: 1,
         backgroundColor: "background.paper",
-        borderRadius: 3,
-        // border: "1px solid #e0e4ea",
+        borderRadius: "16px",
         boxShadow: "rgba(52, 59, 72, 0.06) 0px 8px 16px",
         p: { xs: 3, md: 4 },
       }}
@@ -512,21 +512,21 @@ export default function Receipt() {
 
         {/* Summary bar */}
         <Box
-          sx={{
+          sx={(theme) => ({
             display: "flex",
             flexWrap: "wrap",
-            border: "1px solid #e0e4ea",
+            border: `1px solid ${theme.palette.divider}`,
             borderRadius: 2,
-            backgroundColor: "#f5f6f9",
+            backgroundColor: "background.subtle",
             "& > *": {
               flex: 1,
               minWidth: { xs: 0, sm: 140 },
               px: { xs: 1.5, sm: 3 },
               py: 1.5,
-              borderRight: "1px solid #e0e4ea",
+              borderRight: `1px solid ${theme.palette.divider}`,
               "&:last-child": { borderRight: "none" },
             },
-          }}
+          })}
         >
           <Box>
             <Typography variant="caption" color="text.secondary" noWrap>
@@ -658,8 +658,8 @@ export default function Receipt() {
                             }}
                           />
                           <Typography
+                            variant="caption"
                             sx={{
-                              fontSize: "0.78rem",
                               fontWeight: 600,
                               color: isApproved
                                 ? "success.main"

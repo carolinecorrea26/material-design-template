@@ -12,10 +12,9 @@ import {
   Stack,
   Tab,
   Tabs,
-  ToggleButton,
-  ToggleButtonGroup,
   Typography,
 } from "@mui/material";
+import SelectionGroup from "../components/forms/SelectionGroup";
 import AddIcon from "@mui/icons-material/Add";
 import { useForm, type Control, type FieldErrors } from "react-hook-form";
 import DynamicListItem from "../components/forms/DynamicListItem";
@@ -202,22 +201,7 @@ function getRelationshipLabel(item: BeneficiaryItem) {
   return item.relationship || "Relationship not provided";
 }
 
-const toggleRadioGroupSx = {
-  display: "flex",
-  flexDirection: "column",
-  gap: 1,
-  mt: 1,
-};
 
-const toggleRadioButtonSx = {
-  width: "100%",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-start",
-  gap: 1.5,
-  py: 1.5,
-  textTransform: "none",
-};
 
 export default function Beneficiary() {
   const { values, setPageValues } = useApplicationForm();
@@ -926,7 +910,7 @@ export default function Beneficiary() {
                     <Typography
                       variant="caption"
                       color="text.secondary"
-                      sx={{ display: "block", mt: 0.5, fontSize: "0.6875rem" }}
+                      sx={{ display: "block", mt: 0.5 }}
                     >
                       <Typography
                         component="span"
@@ -956,33 +940,60 @@ export default function Beneficiary() {
                     disabled={remainingDesignationSlots === 0 && !editingId}
                   >
                     <FormLabel>Beneficiary Type</FormLabel>
-                    <ToggleButtonGroup
-                      exclusive
-                      value={modalBeneficiaryType}
-                      disabled={remainingDesignationSlots === 0 && !editingId}
-                      onChange={(_, value: BeneficiaryType | null) => {
-                        if (value === null) return;
-                        setModalBeneficiaryType(value);
-                      }}
-                      sx={toggleRadioGroupSx}
+                    <Stack
+                      spacing={1}
+                      sx={{ mt: 1 }}
+                      role="radiogroup"
+                      aria-label="Beneficiary Type"
                     >
-                      <ToggleButton value="individual" sx={toggleRadioButtonSx}>
-                        <Radio
-                          checked={modalBeneficiaryType === "individual"}
-                          size="small"
-                          sx={{ p: 0 }}
-                        />
-                        Individual
-                      </ToggleButton>
-                      <ToggleButton value="trust" sx={toggleRadioButtonSx}>
-                        <Radio
-                          checked={modalBeneficiaryType === "trust"}
-                          size="small"
-                          sx={{ p: 0 }}
-                        />
-                        Trust
-                      </ToggleButton>
-                    </ToggleButtonGroup>
+                      {(
+                        [
+                          { value: "individual", label: "Individual" },
+                          { value: "trust", label: "Trust" },
+                        ] as { value: BeneficiaryType; label: string }[]
+                      ).map((option) => {
+                        const isDisabled =
+                          remainingDesignationSlots === 0 && !editingId;
+                        return (
+                          <SelectionGroup
+                            key={option.value}
+                            role="radio"
+                            aria-checked={modalBeneficiaryType === option.value}
+                            tabIndex={
+                              modalBeneficiaryType === option.value ? 0 : -1
+                            }
+                            onClick={() => {
+                              if (!isDisabled)
+                                setModalBeneficiaryType(option.value);
+                            }}
+                            onKeyDown={(e) => {
+                              if (
+                                !isDisabled &&
+                                (e.key === " " || e.key === "Enter")
+                              ) {
+                                e.preventDefault();
+                                setModalBeneficiaryType(option.value);
+                              }
+                            }}
+                          >
+                            <Radio
+                              checked={modalBeneficiaryType === option.value}
+                              disabled={isDisabled}
+                              size="small"
+                              sx={{ p: 0, pointerEvents: "none" }}
+                              aria-hidden
+                            />
+                            <Box
+                              component="span"
+                              className="SelectionGroup-label"
+                              sx={{ fontSize: "0.875rem" }}
+                            >
+                              {option.label}
+                            </Box>
+                          </SelectionGroup>
+                        );
+                      })}
+                    </Stack>
                   </FormControl>
 
                   {modalBeneficiaryType === "individual" &&
@@ -1110,7 +1121,6 @@ export default function Beneficiary() {
                       <Typography
                         variant="caption"
                         color="text.secondary"
-                        sx={{ fontSize: "0.6875rem" }}
                       >
                         <Typography
                           component="span"

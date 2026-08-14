@@ -1642,6 +1642,17 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     helperText: "The applicant's email that was used to begin the application.",
   },
 
+  "resume-delivery-method": {
+    id: "resume-delivery-method",
+    label: "Choose how to get your verification code.",
+    inputType: "radio",
+    required: true,
+    options: [
+      { value: "text", label: "Text" },
+      { value: "call", label: "Call" },
+    ],
+  },
+
   "resume-email": {
     id: "resume-email",
     label: "Email",
@@ -1654,7 +1665,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
 
   "resume-security-code": {
     id: "resume-security-code",
-    label: "Security Code",
+    label: "Verification Code",
     inputType: "text",
     required: true,
     inputMode: "numeric",

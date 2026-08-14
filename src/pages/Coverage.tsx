@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from "react";
-import { Alert, Box, Button, Divider, Stack } from "@mui/material";
+import { Box, Button, Divider, Stack } from "@mui/material";
+import PageAlert from "../components/feedback/PageAlert";
 import CoverageCategorySelector from "../components/forms/CoverageCategorySelector";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import FormRoutePage from "../app/RoutePage";
@@ -106,13 +107,7 @@ function CoveragePageContent({
   return (
     <>
       {/* Section 1: Category chips + coverage questions */}
-      {pageError && (
-        <Box sx={{ mb: 2 }}>
-          <Alert severity="error" sx={{ width: "100%" }}>
-            {pageError}
-          </Alert>
-        </Box>
-      )}
+      <PageAlert severity="error" message={pageError ?? undefined} />
       <Stack spacing={3}>
         {/* Category selection (multi-select) */}
         <CoverageCategorySelector

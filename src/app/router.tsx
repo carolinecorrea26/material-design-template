@@ -24,6 +24,7 @@ import HealthCir from "../pages/HealthCir";
 import Payment from "../pages/Payment";
 import Receipt from "../pages/Receipt";
 import Resume from "../pages/Resume";
+import ResumeMethod from "../pages/ResumeMethod";
 import ResumeCode from "../pages/ResumeCode";
 import AdvisorLogin from "../pages/AdvisorLogin";
 import AdvisorSendConfirmation from "../pages/AdvisorSendConfirmation";
@@ -53,6 +54,7 @@ const pageComponents: Record<PageId, ComponentType> = {
   payment: Payment,
   receipt: Receipt,
   resume: Resume,
+  "resume-method": ResumeMethod,
   "resume-code": ResumeCode,
   "advisor-login": AdvisorLogin,
   "advisor-send-confirmation": AdvisorSendConfirmation,
@@ -80,6 +82,7 @@ const routedPageIds: PageId[] = [
   "payment",
   "receipt",
   "resume",
+  "resume-method",
   "resume-code",
   "advisor-login",
   "advisor-send-confirmation",
@@ -91,6 +94,7 @@ const routedPageIds: PageId[] = [
 const pageVariants: Partial<Record<PageId, AppShellVariant>> = {
   home: "homepage",
   resume: "resumeEmailCode",
+  "resume-method": "resumeEmailCode",
   "resume-code": "resumeEmailCode",
   "advisor-login": "advisorLogin",
   "advisor-send-confirmation": "advisorSend",

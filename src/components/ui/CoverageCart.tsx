@@ -402,9 +402,10 @@ function CoverageCartDrawer({
                     <Box
                       key={coverage.id}
                       sx={{
-                        border: "1px solid #e6e6e6",
+                        border: "1px solid",
+                        borderColor: "divider",
                         borderRadius: CARD_RADIUS,
-                        backgroundColor: "#ffffff",
+                        backgroundColor: "background.paper",
                         px: 2,
                         pb: 2,
                         pt: 1.5,
@@ -458,7 +459,7 @@ function CoverageCartDrawer({
                               <Box key={applicantId} sx={{ pl: 1 }}>
                                 <Stack spacing={0.5}>
                                   {!isMemberOnly && (
-                                    <Typography variant="caption" fontWeight="bold">
+                                    <Typography variant="caption" fontWeight={700}>
                                       {applicantLabels[applicantId]}
                                     </Typography>
                                   )}
@@ -509,7 +510,7 @@ function CoverageCartDrawer({
                                       <InfoOutlinedIcon
                                         sx={{ fontSize: 17, color: "text.disabled" }}
                                       />
-                                      <Typography variant="caption" fontWeight="bold">
+                                      <Typography variant="caption" fontWeight={700}>
                                         Cost calculated after amount selection
                                       </Typography>
                                     </Box>
@@ -648,7 +649,7 @@ function CoverageCartInline({
     <Stack spacing={1.5}>
       <Stack direction="row" spacing={1} alignItems="center">
         <ShoppingCartOutlinedIcon sx={{ color: "primary.main" }} />
-        <Typography variant="subtitle1" fontWeight="bold">
+        <Typography variant="subtitle1" fontWeight={700}>
           Your requested coverage
         </Typography>
       </Stack>
@@ -722,7 +723,7 @@ function CoverageCartInline({
             >
               <Typography
                 variant="caption"
-                fontWeight="bold"
+                fontWeight={700}
                 color={rateFrequency === "monthly" ? "primary.main" : "text.secondary"}
               >
                 Monthly
@@ -740,7 +741,7 @@ function CoverageCartInline({
               />
               <Typography
                 variant="caption"
-                fontWeight="bold"
+                fontWeight={700}
                 color={rateFrequency === "annual" ? "primary.main" : "text.secondary"}
               >
                 Annual

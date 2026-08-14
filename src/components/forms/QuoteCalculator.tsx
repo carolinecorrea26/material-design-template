@@ -797,7 +797,7 @@ export default function QuoteCalculator({
                     <PrivacyTipIcon
                       sx={{ fontSize: 17, color: "text.disabled" }}
                     />
-                    <Typography variant="caption" fontWeight="bold">
+                    <Typography variant="caption" fontWeight={700}>
                       Added coverage will appear here
                     </Typography>
                   </Box>
@@ -827,7 +827,7 @@ export default function QuoteCalculator({
                           </Typography>
                           <Typography
                             variant="caption"
-                            fontWeight="bold"
+                            fontWeight={700}
                             sx={{ whiteSpace: "nowrap" }}
                           >
                             {formatUSD(displayedProductTotal)}
@@ -849,12 +849,12 @@ export default function QuoteCalculator({
                         justifyContent="space-between"
                         alignItems="baseline"
                       >
-                        <Typography variant="caption" fontWeight="bold">
+                        <Typography variant="caption" fontWeight={700}>
                           Total
                         </Typography>
                         <Typography
                           variant="body2"
-                          fontWeight="bold"
+                          fontWeight={700}
                           sx={{ color: "primary.main", whiteSpace: "nowrap" }}
                         >
                           {formatUSD(displayedGrandTotal)}
@@ -874,7 +874,7 @@ export default function QuoteCalculator({
                   >
                     <Typography
                       variant="caption"
-                      fontWeight="bold"
+                      fontWeight={700}
                       color={
                         rateFrequency === "monthly"
                           ? "primary.main"
@@ -898,7 +898,7 @@ export default function QuoteCalculator({
                     />
                     <Typography
                       variant="caption"
-                      fontWeight="bold"
+                      fontWeight={700}
                       color={
                         rateFrequency === "annual"
                           ? "primary.main"
