@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getPagePath, getPageTitle } from "../config/pages";
 import { formatCountdown } from "../utils/formatCountdown";
@@ -60,18 +60,12 @@ function getSavedApplicationForEmail(
 
 export default function ResumeCode() {
   const navigate = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
   const client = getActiveClient();
   const { setPageValues } = useApplicationForm();
 
   const fields = getClientPageFields("resume-code");
   const codeField = fields.find((field) => field.id === "resume-security-code");
-
-  const deliveryMode =
-    (location.state as { deliveryMethod?: string } | null)?.deliveryMethod ===
-    "call"
-      ? "voice"
-      : "text";
 
   const [phoneCode, setPhoneCode] = useState("");
   const [phoneCodeError, setPhoneCodeError] = useState<string | null>(null);
@@ -158,9 +152,7 @@ export default function ResumeCode() {
               title={getPageTitle("resume-code")}
               subhead={
                 <>
-                  Please enter the verification code sent via{" "}
-                  {deliveryMode === "voice" ? "call" : "text"} to the phone
-                  number{" "}
+                  Please enter the verification code sent to the phone number{" "}
                   <Box
                     component="span"
                     sx={{

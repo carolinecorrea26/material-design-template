@@ -21,6 +21,7 @@ import { getActiveClient } from "../config/client/getActiveClient";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
 import { getContent } from "../content";
+import { getPageTitle } from "../config/pages";
 import type {
   CoverageApplicantId,
   CoverageDefinition,
@@ -463,7 +464,7 @@ export default function Receipt() {
           </Box>
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography variant="h4" component="h1" sx={{ mb: 1 }}>
-              Your application has been submitted
+              {getPageTitle("receipt")}
             </Typography>
 
             <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>

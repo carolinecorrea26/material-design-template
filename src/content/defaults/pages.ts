@@ -92,13 +92,13 @@ export const pagesDefaults: Partial<PagesContent> = {
   "resume-method": {
     title: "Get your verification code",
     subhead:
-      "Choose how you would like to receive your verification code for the phone number on file.",
+      "Choose how you would like to receive your verification code for the phone number (•••)•••1111.",
     navTitle: "Verification method",
   },
   "resume-code": {
     title: "Enter your verification code",
     subhead:
-      "Enter the verification code sent to your phone number that was used to begin an application.",
+      "Please enter the verification code sent to the phone number (•••)•••1111.",
     navTitle: "Verification code",
   },
   "advisor-login": {

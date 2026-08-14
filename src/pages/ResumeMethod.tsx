@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import PageTitle from "../components/layout/PageTitle";
 import FormShell from "../components/layout/FormShell";
 import SelectionGroup from "../components/forms/SelectionGroup";
-import { getPagePath, getPageSubhead, getPageTitle } from "../config/pages";
+import { getPagePath, getPageTitle } from "../config/pages";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 
 export default function ResumeMethod() {
@@ -53,7 +53,23 @@ export default function ResumeMethod() {
           <Box sx={{ mb: 2 }}>
             <PageTitle
               title={getPageTitle("resume-method")}
-              subhead={getPageSubhead("resume-method")}
+              subhead={
+                <>
+                  Choose how you would like to receive your verification code
+                  for the phone number{" "}
+                  <Box
+                    component="span"
+                    sx={{
+                      fontWeight: 700,
+                      letterSpacing: "0.08em",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    (•••)•••1111
+                  </Box>
+                  .
+                </>
+              }
             />
           </Box>
 
