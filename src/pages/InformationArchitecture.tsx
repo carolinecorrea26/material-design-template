@@ -73,6 +73,14 @@ const changeLog: ChangeLogEntry[] = [
     details:
       "Inserted a new Resume Method step between Resume (email entry) and Resume Code. The page presents a radio button choice — Text or Call — for how the user wants to receive their verification code. The chosen method is passed via location state to Resume Code, which now reads delivery mode from state instead of managing a toggle inline. Removed the 'Get security code with voice call instead' toggle link from Resume Code. Renamed all instances of 'security code' to 'verification code' on the Resume Code page (title, subhead, field label, error copy). Updated the resume flow diagram in this document. Updated the mock email magic link URL to point to /resume-method. Added resume-delivery-method to the field catalog and page fields catalog. Added resume-method to pages, router, and default content.",
   },
+  {
+    id: "CL-002",
+    date: "2026-08-14",
+    area: "Profile page",
+    summary: "Renamed Financial information chip to \'Other coverage\'; added conditional Financial questionnaire section",
+    details:
+      "Renamed the Financial information section chip label to \'Other coverage\' (sectionLabels.financialInfo in pageSections.ts). Added a new profileFinancialQuestionnaireSelf page section (\'Financial questionnaire\') below the Other coverage section. The section is only shown when the member has a DI coverage amount greater than $2,000. It contains: total-net-worth, total-annual-unearned-income, is-self-employed, and — when is-self-employed = yes — a ConditionalGroup with is-sole-proprietor, is-professional-corporation, sole-proprietor-gross-income, sole-proprietor-gross-earnings, sole-proprietor-business-expenses, professional-corporation-annual-salary, professional-corporation-s-corp-distribution, professional-corporation-dividends, professional-corporation-bonus, bonus-payment-frequency, professional-corporation-commission, commission-payment-frequency, professional-corporation-benefits-cost, years-self-employed, work-from-home, has-work-location-outside-home, and work-location-details. All field IDs were already present in the field catalog and pageFields. The IA fields table reflects the new section automatically.",
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -411,6 +419,13 @@ const siteRules: {
     behavior:
       "Financial/insurance follow-up fields and repeatable insurance-company records display only when the controlling answer and applicable coverage context require them.",
     ref: "src/pages/Profile.tsx",
+  },
+  {
+    area: "Profile",
+    rule: "Financial questionnaire visibility",
+    behavior:
+      "The Financial questionnaire section (total net worth, unearned income, self-employment details) is shown only when the member has a DI coverage amount greater than $2,000. The self-employment detail fields are revealed only when is-self-employed = Yes.",
+    ref: "src/pages/Profile.tsx; src/config/pageSections/pageSections.ts",
   },
   {
     area: "Health",
@@ -2735,7 +2750,7 @@ function getPageCategory(page: { type: string; id: string }): string {
 // Page step / breadcrumb metadata for the pages table
 // ---------------------------------------------------------------------------
 
-/** Maps each page ID to its progress step label shown in the pages table. */
+/** Maps each page ID to its progress step group. */
 const pageStepLabel: Partial<Record<string, string>> = {
   home: "N/A",
   membership: "Getting Started",
@@ -2763,22 +2778,22 @@ const pageStepLabel: Partial<Record<string, string>> = {
   "design-system": "N/A",
 };
 
-/** Maps each page ID to its breadcrumb label (progress bar step label). */
+/** Maps each page ID to its individual breadcrumb label (the page's own nav label in the stepper). */
 const pageBreadcrumbLabel: Partial<Record<string, string>> = {
   home: "N/A",
-  membership: "Eligibility",
+  membership: "Membership",
   eligibility: "Eligibility",
   coverage: "Coverage",
-  beneficiary: "Profile",
-  contact: "Profile",
+  beneficiary: "Beneficiary",
+  contact: "Contact",
   profile: "Profile",
   review: "Review",
-  "health-si": "Review",
-  "health-li": "Review",
-  "health-qd": "Review",
-  "health-di": "Review",
-  "health-cir": "Review",
-  payment: "Review",
+  "health-si": "Health",
+  "health-li": "Health",
+  "health-qd": "Health",
+  "health-di": "Health",
+  "health-cir": "Health",
+  payment: "Payment",
   docusign: "E-sign",
   receipt: "N/A",
   resume: "N/A",

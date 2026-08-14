@@ -1259,13 +1259,13 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
 
   "is-sole-proprietor": {
     id: "is-sole-proprietor",
-    label: "Sole Proprietor or Partner",
+    label: "Sole proprietor",
     inputType: "checkbox",
   },
 
   "is-professional-corporation": {
     id: "is-professional-corporation",
-    label: "Professional Corporation",
+    label: "Professional corporation",
     inputType: "checkbox",
   },
 

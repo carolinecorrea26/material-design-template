@@ -29,6 +29,7 @@ export type PageSectionId =
   | "profilePersonalSpouseTravelOutsideUs"
   | "profilePersonalSpousePhysician"
   | "profileFinancialSelf"
+  | "profileFinancialQuestionnaireSelf"
   | "profileFinancialSpouse"
   | "advisorLoginNew"
   | "advisorLoginSaved";

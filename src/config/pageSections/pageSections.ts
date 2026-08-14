@@ -11,7 +11,7 @@ export const sectionLabels = {
   businessDetails: "Business Details",
   businessEmployerInfo: "Business / Employer Information",
   personalInfo: "Personal information",
-  financialInfo: "Financial information",
+  financialInfo: "Other coverage",
 } as const;
 
 export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
@@ -241,6 +241,34 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
         "has-disability-insurance",
         "is-replacing-disability-insurance",
         "disability-replacement-amount",
+      ],
+    },
+    {
+      id: "profileFinancialQuestionnaireSelf",
+      pageId: "profile",
+      description: "Financial questionnaire",
+      applicant: "self",
+      fieldIds: [
+        "total-net-worth",
+        "total-annual-unearned-income",
+        "is-self-employed",
+        "is-sole-proprietor",
+        "is-professional-corporation",
+        "sole-proprietor-gross-income",
+        "sole-proprietor-gross-earnings",
+        "sole-proprietor-business-expenses",
+        "professional-corporation-annual-salary",
+        "professional-corporation-s-corp-distribution",
+        "professional-corporation-dividends",
+        "professional-corporation-bonus",
+        "bonus-payment-frequency",
+        "professional-corporation-commission",
+        "commission-payment-frequency",
+        "professional-corporation-benefits-cost",
+        "years-self-employed",
+        "work-from-home",
+        "has-work-location-outside-home",
+        "work-location-details",
       ],
     },
     {

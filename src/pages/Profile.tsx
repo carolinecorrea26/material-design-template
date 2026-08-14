@@ -202,6 +202,7 @@ export default function Profile() {
         const selfHasDisability = hasCoverage("member", "DI");
         const spouseHasLife = hasCoverage("spouse", "LI");
         const spouseHasDisability = hasCoverage("spouse", "DI");
+        const selfHasDIOver2000 = hasCoverage("member", "DI", 2000);
 
         const visibleSectionIds = new Set(
           pageSections
@@ -213,6 +214,7 @@ export default function Profile() {
           "profilePersonalSelf",
           "profilePersonalSelfPhysician",
           "profileFinancialSelf",
+          "profileFinancialQuestionnaireSelf",
         ] as const;
         const firstSelfSectionId = selfSectionOrder.find((id) =>
           visibleSectionIds.has(id),
@@ -319,6 +321,36 @@ export default function Profile() {
                         watchedValues,
                         selfHasLife,
                         selfHasDisability,
+                      )}
+                    </ApplicantSectionDivider>
+                  </div>
+                );
+              }
+
+              if (section.id === "profileFinancialQuestionnaireSelf") {
+                if (!selfHasDIOver2000) return null;
+                return (
+                  <div key={section.id}>
+                    <ApplicantSectionDivider
+                      applicant="self"
+                      showLabel={
+                        section.id === firstSelfSectionId &&
+                        shouldShowApplicantLabel("self", watchedValues)
+                      }
+                    >
+                      <SectionDivider
+                        label={
+                          section.description ?? "Financial questionnaire"
+                        }
+                        variant="subsection"
+                        sx={{ mb: 1 }}
+                      />
+                      {renderFinancialQuestionnaireFields(
+                        section.fieldIds,
+                        allFields,
+                        control,
+                        errors,
+                        watchedValues,
                       )}
                     </ApplicantSectionDivider>
                   </div>
@@ -574,6 +606,76 @@ function renderPersonalSpouseFields(
       {watchedValues["spouse-travel-outside-us-six-months"] === "yes" && (
         <ConditionalGroup>
           {renderField("spouse-travel-outside-us-country")}
+        </ConditionalGroup>
+      )}
+    </>
+  );
+}
+
+function renderFinancialQuestionnaireFields(
+  _fieldIds: string[],
+  allFields: FieldDefinition[],
+  control: unknown,
+  errors: unknown,
+  watchedValues: Record<string, unknown>,
+) {
+  function renderField(fieldId: string) {
+    const field = allFields.find((f) => f.id === fieldId);
+    if (!field) return null;
+    return (
+      <FieldRenderer
+        key={field.id}
+        field={field}
+        control={control as never}
+        errors={errors as never}
+      />
+    );
+  }
+
+  const isSelfEmployed = watchedValues["is-self-employed"] === "yes";
+  const isSoleProprietor = watchedValues["is-sole-proprietor"] === true;
+  const isProfessionalCorporation =
+    watchedValues["is-professional-corporation"] === true;
+  const hasSelfEmploymentSource = isSoleProprietor || isProfessionalCorporation;
+  const hasWorkOutsideHome =
+    watchedValues["has-work-location-outside-home"] === "yes";
+
+  return (
+    <>
+      {renderField("total-net-worth")}
+      {renderField("total-annual-unearned-income")}
+      {renderField("is-self-employed")}
+      {isSelfEmployed && (
+        <ConditionalGroup>
+          {renderField("is-sole-proprietor")}
+          {renderField("is-professional-corporation")}
+          {isSoleProprietor && (
+            <>
+              {renderField("sole-proprietor-gross-income")}
+              {renderField("sole-proprietor-gross-earnings")}
+              {renderField("sole-proprietor-business-expenses")}
+            </>
+          )}
+          {isProfessionalCorporation && (
+            <>
+              {renderField("professional-corporation-annual-salary")}
+              {renderField("professional-corporation-s-corp-distribution")}
+              {renderField("professional-corporation-dividends")}
+              {renderField("professional-corporation-bonus")}
+              {renderField("bonus-payment-frequency")}
+              {renderField("professional-corporation-commission")}
+              {renderField("commission-payment-frequency")}
+              {renderField("professional-corporation-benefits-cost")}
+            </>
+          )}
+          {hasSelfEmploymentSource && (
+            <>
+              {renderField("years-self-employed")}
+              {renderField("work-from-home")}
+              {renderField("has-work-location-outside-home")}
+              {hasWorkOutsideHome && renderField("work-location-details")}
+            </>
+          )}
         </ConditionalGroup>
       )}
     </>
