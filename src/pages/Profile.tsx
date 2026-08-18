@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Alert, Box, Typography } from "@mui/material";
 import FormRoutePage, { isSectionVisible } from "../app/RoutePage";
 import FieldRenderer from "../components/forms/FieldRenderer";
@@ -11,6 +11,14 @@ import SectionDivider from "../components/layout/SectionDivider";
 import { sectionLabels } from "../config/pageSections";
 import PhysicianInformation from "../components/forms/PhysicianInformation.tsx";
 import type { FieldDefinition } from "../config/fields/types";
+import { useNavigate } from "react-router-dom";
+import { useApplicationForm } from "../app/ApplicationFormContext";
+import SendApplicationDialog from "../components/layout/SendApplicationDialog";
+import { getPagePath } from "../config/pages";
+import {
+  getApplicantEmail,
+  getApplicantName,
+} from "../utils/applicantIdentity";
 
 // Layout groupings — fields that render side-by-side in grids
 const heightFields = new Set(["height-feet", "height-inches"]);
@@ -140,337 +148,383 @@ function normalizeApplicantId(rawApplicantId: string) {
 }
 
 export default function Profile() {
+  const navigate = useNavigate();
+  const { values } = useApplicationForm();
   const coverages = useMemo(() => getActiveClientCoverages(), []);
 
+  // Advisor flow: show send-application dialog before navigating after Profile.
+  // advisor-flow-type is set in ApplicationFormContext when an advisor logs in.
+  const isAdvisorFlow = Boolean(values["advisor-flow-type"]);
+  const [sendDialogOpen, setSendDialogOpen] = useState(false);
+
+  // A ref lets resolveNextPageId (synchronous, inside FormRoutePage) open the
+  // dialog without stale-closure issues.
+  const openDialogRef = useRef<(() => void) | null>(null);
+  openDialogRef.current = () => setSendDialogOpen(true);
+
+  const applicantName = getApplicantName(values);
+  const applicantEmail = getApplicantEmail(values);
+
+  function handleSendConfirm() {
+    setSendDialogOpen(false);
+    navigate(getPagePath("advisor-send-confirmation"));
+  }
+
   return (
-    <FormRoutePage pageId="profile">
-      {({ control, errors, watchedValues, allFields, pageSections }) => {
-        const selectedCoverageIds = Array.isArray(
-          watchedValues["coverageSelections"],
-        )
-          ? watchedValues["coverageSelections"]
-          : [];
-        const selectedCoverageIdSet = new Set(selectedCoverageIds);
-
-        // Determine which coverage types the member/spouse have
-        const storedAmounts = getStoredCoverageAmounts(watchedValues);
-        const selectedCoverages = coverages.filter((c) =>
-          selectedCoverageIdSet.has(c.id),
-        );
-        const coverageIdSet = new Set(coverages.map((c) => c.id));
-        const selectedCoveragesById = new Map(
-          selectedCoverages.map((c) => [c.id, c]),
-        );
-
-        function parseCoverageAmountKey(key: string) {
-          const [firstPart, secondPart] = key.split(":").map((p) => p.trim());
-          if (!firstPart || !secondPart) return null;
-          if (coverageIdSet.has(firstPart))
-            return {
-              coverageId: firstPart,
-              applicant: normalizeApplicantId(secondPart),
-            };
-          if (coverageIdSet.has(secondPart))
-            return {
-              coverageId: secondPart,
-              applicant: normalizeApplicantId(firstPart),
-            };
-          return null;
-        }
-
-        function hasCoverage(
-          applicantId: "member" | "spouse",
-          categoryId: "LI" | "DI",
-          minimumAmount = 0,
-        ) {
-          return Object.entries(storedAmounts).some(([key, rawAmount]) => {
-            const parsedKey = parseCoverageAmountKey(key);
-            if (!parsedKey) return false;
-            if (parsedKey.applicant !== applicantId) return false;
-            if (
-              selectedCoverageIdSet.size > 0 &&
-              !selectedCoverageIdSet.has(parsedKey.coverageId)
-            )
-              return false;
-            const coverage = selectedCoveragesById.get(parsedKey.coverageId);
-            if (!coverage || coverage.categoryId !== categoryId) return false;
-            return toNumericAmount(rawAmount) > minimumAmount;
-          });
-        }
-
-        const selfHasLife = hasCoverage("member", "LI");
-        const selfHasDisability = hasCoverage("member", "DI");
-        const spouseHasLife = hasCoverage("spouse", "LI");
-        const spouseHasDisability = hasCoverage("spouse", "DI");
-        const selfHasDIOver2000 = hasCoverage("member", "DI", 2000);
-
-        const visibleSectionIds = new Set(
-          pageSections
-            .filter((section) => isSectionVisible(section, watchedValues))
-            .map((section) => section.id),
-        );
-
-        const selfSectionOrder = [
-          "profilePersonalSelf",
-          "profilePersonalSelfPhysician",
-          "profileFinancialSelf",
-          "profileFinancialQuestionnaireSelf",
-        ] as const;
-        const firstSelfSectionId = selfSectionOrder.find((id) =>
-          visibleSectionIds.has(id),
-        );
-
-        const spouseSectionOrder = [
-          "profilePersonalSpouse",
-          "profilePersonalSpousePhysician",
-          "profileFinancialSpouse",
-        ] as const;
-        const firstSpouseSectionId = spouseSectionOrder.find((id) =>
-          visibleSectionIds.has(id),
-        );
-
-        return (
-          <>
-            {pageSections.map((section) => {
-              if (!isSectionVisible(section, watchedValues)) return null;
-
-              if (section.id === "profilePersonalSelf") {
-                return (
-                  <div key={section.id}>
-                    <ApplicantSectionDivider
-                      applicant="self"
-                      showLabel={
-                        section.id === firstSelfSectionId &&
-                        shouldShowApplicantLabel("self", watchedValues)
-                      }
-                    >
-                      <SectionDivider
-                        label={
-                          section.description ?? sectionLabels.personalInfo
-                        }
-                        variant="subsection"
-                        sx={{ mb: 1 }}
-                      />
-                      {renderPersonalSelfFields(
-                        section.fieldIds,
-                        allFields,
-                        control,
-                        errors,
-                        watchedValues,
-                      )}
-                    </ApplicantSectionDivider>
-                  </div>
-                );
-              }
-
-              if (
-                section.id === "profilePersonalSelfDriversLicense" ||
-                section.id === "profilePersonalSelfOutsideUs" ||
-                section.id === "profilePersonalSelfTravelOutsideUs"
-              ) {
+    <>
+      <FormRoutePage
+        pageId="profile"
+        resolveNextPageId={
+          isAdvisorFlow
+            ? () => {
+                // Open the dialog and return null to block FormRoutePage's own navigation.
+                openDialogRef.current?.();
                 return null;
               }
+            : undefined
+        }
+      >
+        {({ control, errors, watchedValues, allFields, pageSections }) => {
+          const selectedCoverageIds = Array.isArray(
+            watchedValues["coverageSelections"],
+          )
+            ? watchedValues["coverageSelections"]
+            : [];
+          const selectedCoverageIdSet = new Set(selectedCoverageIds);
 
-              if (section.id === "profilePersonalSelfPhysician") {
-                return (
-                  <div key={section.id}>
-                    <ApplicantSectionDivider
-                      applicant="self"
-                      showLabel={
-                        section.id === firstSelfSectionId &&
-                        shouldShowApplicantLabel("self", watchedValues)
-                      }
-                    >
-                      <PhysicianInformation
-                        fieldIds={section.fieldIds}
-                        allFields={allFields}
-                        control={control}
-                        errors={errors}
-                        nameRow={physicianNameRow}
-                        streetRow={physicianStreetRow}
-                        cityStateZipRow={physicianCityStateZipRow}
-                      />
-                    </ApplicantSectionDivider>
-                  </div>
-                );
-              }
+          // Determine which coverage types the member/spouse have
+          const storedAmounts = getStoredCoverageAmounts(watchedValues);
+          const selectedCoverages = coverages.filter((c) =>
+            selectedCoverageIdSet.has(c.id),
+          );
+          const coverageIdSet = new Set(coverages.map((c) => c.id));
+          const selectedCoveragesById = new Map(
+            selectedCoverages.map((c) => [c.id, c]),
+          );
 
-              if (section.id === "profileFinancialSelf") {
-                return (
-                  <div key={section.id}>
-                    <ApplicantSectionDivider
-                      applicant="self"
-                      showLabel={
-                        section.id === firstSelfSectionId &&
-                        shouldShowApplicantLabel("self", watchedValues)
-                      }
-                    >
-                      <SectionDivider
-                        label={
-                          section.description ?? sectionLabels.financialInfo
-                        }
-                        variant="subsection"
-                        sx={{ mb: 1 }}
-                      />
-                      {renderFinancialFields(
-                        "self",
-                        section.fieldIds,
-                        allFields,
-                        control,
-                        errors,
-                        watchedValues,
-                        selfHasLife,
-                        selfHasDisability,
-                      )}
-                    </ApplicantSectionDivider>
-                  </div>
-                );
-              }
+          function parseCoverageAmountKey(key: string) {
+            const [firstPart, secondPart] = key.split(":").map((p) => p.trim());
+            if (!firstPart || !secondPart) return null;
+            if (coverageIdSet.has(firstPart))
+              return {
+                coverageId: firstPart,
+                applicant: normalizeApplicantId(secondPart),
+              };
+            if (coverageIdSet.has(secondPart))
+              return {
+                coverageId: secondPart,
+                applicant: normalizeApplicantId(firstPart),
+              };
+            return null;
+          }
 
-              if (section.id === "profileFinancialQuestionnaireSelf") {
-                if (!selfHasDIOver2000) return null;
-                return (
-                  <div key={section.id}>
-                    <ApplicantSectionDivider
-                      applicant="self"
-                      showLabel={
-                        section.id === firstSelfSectionId &&
-                        shouldShowApplicantLabel("self", watchedValues)
-                      }
-                    >
-                      <SectionDivider
-                        label={
-                          section.description ?? "Financial questionnaire"
-                        }
-                        variant="subsection"
-                        sx={{ mb: 1 }}
-                      />
-                      {renderFinancialQuestionnaireFields(
-                        section.fieldIds,
-                        allFields,
-                        control,
-                        errors,
-                        watchedValues,
-                      )}
-                    </ApplicantSectionDivider>
-                  </div>
-                );
-              }
-
-              if (section.id === "profilePersonalSpouse") {
-                return (
-                  <div key={section.id}>
-                    <ApplicantSectionDivider
-                      applicant="spouse"
-                      showLabel={
-                        section.id === firstSpouseSectionId &&
-                        shouldShowApplicantLabel("spouse", watchedValues)
-                      }
-                    >
-                      <SectionDivider
-                        label={
-                          section.description ?? sectionLabels.personalInfo
-                        }
-                        variant="subsection"
-                        sx={{ mb: 1 }}
-                      />
-                      {renderPersonalSpouseFields(
-                        section.fieldIds,
-                        allFields,
-                        control,
-                        errors,
-                        watchedValues,
-                      )}
-                    </ApplicantSectionDivider>
-                  </div>
-                );
-              }
-
+          function hasCoverage(
+            applicantId: "member" | "spouse",
+            categoryId: "LI" | "DI",
+            minimumAmount = 0,
+          ) {
+            return Object.entries(storedAmounts).some(([key, rawAmount]) => {
+              const parsedKey = parseCoverageAmountKey(key);
+              if (!parsedKey) return false;
+              if (parsedKey.applicant !== applicantId) return false;
               if (
-                section.id === "profilePersonalSpouseDriversLicense" ||
-                section.id === "profilePersonalSpouseOutsideUs" ||
-                section.id === "profilePersonalSpouseTravelOutsideUs"
-              ) {
-                return null;
-              }
+                selectedCoverageIdSet.size > 0 &&
+                !selectedCoverageIdSet.has(parsedKey.coverageId)
+              )
+                return false;
+              const coverage = selectedCoveragesById.get(parsedKey.coverageId);
+              if (!coverage || coverage.categoryId !== categoryId) return false;
+              return toNumericAmount(rawAmount) > minimumAmount;
+            });
+          }
 
-              if (section.id === "profilePersonalSpousePhysician") {
-                return (
-                  <div key={section.id}>
-                    <ApplicantSectionDivider
-                      applicant="spouse"
-                      showLabel={
-                        section.id === firstSpouseSectionId &&
-                        shouldShowApplicantLabel("spouse", watchedValues)
-                      }
-                    >
-                      <PhysicianInformation
-                        fieldIds={section.fieldIds}
-                        allFields={allFields}
-                        control={control}
-                        errors={errors}
-                        nameRow={spousePhysicianNameRow}
-                        streetRow={spousePhysicianStreetRow}
-                        cityStateZipRow={spousePhysicianCityStateZipRow}
-                      />
-                    </ApplicantSectionDivider>
-                  </div>
-                );
-              }
+          const selfHasLife = hasCoverage("member", "LI");
+          const selfHasDisability = hasCoverage("member", "DI");
+          const spouseHasLife = hasCoverage("spouse", "LI");
+          const spouseHasDisability = hasCoverage("spouse", "DI");
+          const selfHasDIOver2000 = hasCoverage("member", "DI", 2000);
 
-              if (section.id === "profileFinancialSpouse") {
-                return (
-                  <div key={section.id}>
-                    <ApplicantSectionDivider
-                      applicant="spouse"
-                      showLabel={
-                        section.id === firstSpouseSectionId &&
-                        shouldShowApplicantLabel("spouse", watchedValues)
-                      }
-                    >
-                      <SectionDivider
-                        label={
-                          section.description ?? sectionLabels.financialInfo
+          const visibleSectionIds = new Set(
+            pageSections
+              .filter((section) => isSectionVisible(section, watchedValues))
+              .map((section) => section.id),
+          );
+
+          const selfSectionOrder = [
+            "profilePersonalSelf",
+            "profilePersonalSelfPhysician",
+            "profileFinancialSelf",
+            "profileFinancialQuestionnaireSelf",
+          ] as const;
+          const firstSelfSectionId = selfSectionOrder.find((id) =>
+            visibleSectionIds.has(id),
+          );
+
+          const spouseSectionOrder = [
+            "profilePersonalSpouse",
+            "profilePersonalSpousePhysician",
+            "profileFinancialSpouse",
+          ] as const;
+          const firstSpouseSectionId = spouseSectionOrder.find((id) =>
+            visibleSectionIds.has(id),
+          );
+
+          return (
+            <>
+              {pageSections.map((section) => {
+                if (!isSectionVisible(section, watchedValues)) return null;
+
+                if (section.id === "profilePersonalSelf") {
+                  return (
+                    <div key={section.id}>
+                      <ApplicantSectionDivider
+                        applicant="self"
+                        showLabel={
+                          section.id === firstSelfSectionId &&
+                          shouldShowApplicantLabel("self", watchedValues)
                         }
-                        variant="subsection"
-                        sx={{ mb: 1 }}
-                      />
-                      {renderFinancialFields(
-                        "spouse",
-                        section.fieldIds,
-                        allFields,
-                        control,
-                        errors,
-                        watchedValues,
-                        spouseHasLife,
-                        spouseHasDisability,
-                      )}
-                    </ApplicantSectionDivider>
+                      >
+                        <SectionDivider
+                          label={
+                            section.description ?? sectionLabels.personalInfo
+                          }
+                          variant="subsection"
+                          sx={{ mb: 1 }}
+                        />
+                        {renderPersonalSelfFields(
+                          section.fieldIds,
+                          allFields,
+                          control,
+                          errors,
+                          watchedValues,
+                        )}
+                      </ApplicantSectionDivider>
+                    </div>
+                  );
+                }
+
+                if (
+                  section.id === "profilePersonalSelfDriversLicense" ||
+                  section.id === "profilePersonalSelfOutsideUs" ||
+                  section.id === "profilePersonalSelfTravelOutsideUs"
+                ) {
+                  return null;
+                }
+
+                if (section.id === "profilePersonalSelfPhysician") {
+                  return (
+                    <div key={section.id}>
+                      <ApplicantSectionDivider
+                        applicant="self"
+                        showLabel={
+                          section.id === firstSelfSectionId &&
+                          shouldShowApplicantLabel("self", watchedValues)
+                        }
+                      >
+                        <PhysicianInformation
+                          fieldIds={section.fieldIds}
+                          allFields={allFields}
+                          control={control}
+                          errors={errors}
+                          nameRow={physicianNameRow}
+                          streetRow={physicianStreetRow}
+                          cityStateZipRow={physicianCityStateZipRow}
+                        />
+                      </ApplicantSectionDivider>
+                    </div>
+                  );
+                }
+
+                if (section.id === "profileFinancialSelf") {
+                  return (
+                    <div key={section.id}>
+                      <ApplicantSectionDivider
+                        applicant="self"
+                        showLabel={
+                          section.id === firstSelfSectionId &&
+                          shouldShowApplicantLabel("self", watchedValues)
+                        }
+                      >
+                        <SectionDivider
+                          label={
+                            section.description ?? sectionLabels.financialInfo
+                          }
+                          variant="subsection"
+                          sx={{ mb: 1 }}
+                        />
+                        {renderFinancialFields(
+                          "self",
+                          section.fieldIds,
+                          allFields,
+                          control,
+                          errors,
+                          watchedValues,
+                          selfHasLife,
+                          selfHasDisability,
+                        )}
+                      </ApplicantSectionDivider>
+                    </div>
+                  );
+                }
+
+                if (section.id === "profileFinancialQuestionnaireSelf") {
+                  if (!selfHasDIOver2000) return null;
+                  return (
+                    <div key={section.id}>
+                      <ApplicantSectionDivider
+                        applicant="self"
+                        showLabel={
+                          section.id === firstSelfSectionId &&
+                          shouldShowApplicantLabel("self", watchedValues)
+                        }
+                      >
+                        <SectionDivider
+                          label={
+                            section.description ?? "Financial questionnaire"
+                          }
+                          variant="subsection"
+                          sx={{ mb: 1 }}
+                        />
+                        {renderFinancialQuestionnaireFields(
+                          section.fieldIds,
+                          allFields,
+                          control,
+                          errors,
+                          watchedValues,
+                        )}
+                      </ApplicantSectionDivider>
+                    </div>
+                  );
+                }
+
+                if (section.id === "profilePersonalSpouse") {
+                  return (
+                    <div key={section.id}>
+                      <ApplicantSectionDivider
+                        applicant="spouse"
+                        showLabel={
+                          section.id === firstSpouseSectionId &&
+                          shouldShowApplicantLabel("spouse", watchedValues)
+                        }
+                      >
+                        <SectionDivider
+                          label={
+                            section.description ?? sectionLabels.personalInfo
+                          }
+                          variant="subsection"
+                          sx={{ mb: 1 }}
+                        />
+                        {renderPersonalSpouseFields(
+                          section.fieldIds,
+                          allFields,
+                          control,
+                          errors,
+                          watchedValues,
+                        )}
+                      </ApplicantSectionDivider>
+                    </div>
+                  );
+                }
+
+                if (
+                  section.id === "profilePersonalSpouseDriversLicense" ||
+                  section.id === "profilePersonalSpouseOutsideUs" ||
+                  section.id === "profilePersonalSpouseTravelOutsideUs"
+                ) {
+                  return null;
+                }
+
+                if (section.id === "profilePersonalSpousePhysician") {
+                  return (
+                    <div key={section.id}>
+                      <ApplicantSectionDivider
+                        applicant="spouse"
+                        showLabel={
+                          section.id === firstSpouseSectionId &&
+                          shouldShowApplicantLabel("spouse", watchedValues)
+                        }
+                      >
+                        <PhysicianInformation
+                          fieldIds={section.fieldIds}
+                          allFields={allFields}
+                          control={control}
+                          errors={errors}
+                          nameRow={spousePhysicianNameRow}
+                          streetRow={spousePhysicianStreetRow}
+                          cityStateZipRow={spousePhysicianCityStateZipRow}
+                        />
+                      </ApplicantSectionDivider>
+                    </div>
+                  );
+                }
+
+                if (section.id === "profileFinancialSpouse") {
+                  return (
+                    <div key={section.id}>
+                      <ApplicantSectionDivider
+                        applicant="spouse"
+                        showLabel={
+                          section.id === firstSpouseSectionId &&
+                          shouldShowApplicantLabel("spouse", watchedValues)
+                        }
+                      >
+                        <SectionDivider
+                          label={
+                            section.description ?? sectionLabels.financialInfo
+                          }
+                          variant="subsection"
+                          sx={{ mb: 1 }}
+                        />
+                        {renderFinancialFields(
+                          "spouse",
+                          section.fieldIds,
+                          allFields,
+                          control,
+                          errors,
+                          watchedValues,
+                          spouseHasLife,
+                          spouseHasDisability,
+                        )}
+                      </ApplicantSectionDivider>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div key={section.id}>
+                    {section.fieldIds.map((fieldId: string) => {
+                      const field = allFields.find((f) => f.id === fieldId);
+                      if (!field) return null;
+                      return (
+                        <FieldRenderer
+                          key={field.id}
+                          field={field}
+                          control={control}
+                          errors={errors}
+                        />
+                      );
+                    })}
                   </div>
                 );
-              }
+              })}
+            </>
+          );
+        }}
+      </FormRoutePage>
 
-              return (
-                <div key={section.id}>
-                  {section.fieldIds.map((fieldId: string) => {
-                    const field = allFields.find((f) => f.id === fieldId);
-                    if (!field) return null;
-                    return (
-                      <FieldRenderer
-                        key={field.id}
-                        field={field}
-                        control={control}
-                        errors={errors}
-                      />
-                    );
-                  })}
-                </div>
-              );
-            })}
-          </>
-        );
-      }}
-    </FormRoutePage>
+      {isAdvisorFlow && (
+        <SendApplicationDialog
+          open={sendDialogOpen}
+          onClose={() => setSendDialogOpen(false)}
+          onConfirm={handleSendConfirm}
+          title="Send to applicant for review"
+          introText="This application will be sent to the following applicant for review, completion of any remaining steps, and e-signature."
+          recipientName={applicantName}
+          recipientEmail={applicantEmail}
+          recipientLabel="applicant"
+        />
+      )}
+    </>
   );
 }
 

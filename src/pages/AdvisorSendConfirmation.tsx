@@ -16,6 +16,10 @@ import { useNavigate } from "react-router-dom";
 import FormRoutePage from "../app/RoutePage";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { getPagePath } from "../config/pages";
+import {
+  getApplicantEmail,
+  getApplicantName,
+} from "../utils/applicantIdentity";
 
 function formatDateTime(date: Date) {
   return new Intl.DateTimeFormat("en-US", {
@@ -31,13 +35,8 @@ export default function AdvisorSendConfirmation() {
   const { values } = useApplicationForm();
   const navigate = useNavigate();
 
-  const firstName = String(values["first-name"] ?? "").trim();
-  const lastName = String(values["last-name"] ?? "").trim();
-  const applicantName =
-    [firstName, lastName].filter(Boolean).join(" ") || "\u2014";
-  const applicantEmail =
-    String(values["applicant-email"] ?? values["email"] ?? "").trim() ||
-    "\u2014";
+  const applicantName = getApplicantName(values) || "\u2014";
+  const applicantEmail = getApplicantEmail(values) || "\u2014";
 
   const { sentDate, purgeDate } = useMemo(() => {
     const now = new Date();
@@ -63,9 +62,9 @@ export default function AdvisorSendConfirmation() {
       {() => (
         <Stack spacing={3}>
           <Alert severity="success" icon={<SendRoundedIcon fontSize="small" />}>
-            The application has been sent to the applicant for electronic
-            signature. You will be notified when the application is signed or if
-            any updates occur.
+            The application has been sent to the following applicant for review.
+            You will be notified when the application is signed or if any edits
+            are needed.
           </Alert>
 
           <TableContainer
@@ -103,7 +102,7 @@ export default function AdvisorSendConfirmation() {
               startIcon={<AddCircleOutlineRoundedIcon />}
               onClick={() => navigate(getPagePath("advisor-login"))}
             >
-              Start New Application
+              Start new application
             </Button>
           </Box>
         </Stack>

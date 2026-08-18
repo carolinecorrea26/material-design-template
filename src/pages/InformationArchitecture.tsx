@@ -69,7 +69,8 @@ const changeLog: ChangeLogEntry[] = [
     id: "CL-001",
     date: "2026-08-14",
     area: "Resume flow",
-    summary: "Added Resume Method page; renamed security code to verification code",
+    summary:
+      "Added Resume Method page; renamed security code to verification code",
     details:
       "Inserted a new Resume Method step between Resume (email entry) and Resume Code. The page presents a radio button choice — Text or Call — for how the user wants to receive their verification code. The chosen method is passed via location state to Resume Code, which now reads delivery mode from state instead of managing a toggle inline. Removed the 'Get security code with voice call instead' toggle link from Resume Code. Renamed all instances of 'security code' to 'verification code' on the Resume Code page (title, subhead, field label, error copy). Updated the resume flow diagram in this document. Updated the mock email magic link URL to point to /resume-method. Added resume-delivery-method to the field catalog and page fields catalog. Added resume-method to pages, router, and default content.",
   },
@@ -77,9 +78,28 @@ const changeLog: ChangeLogEntry[] = [
     id: "CL-002",
     date: "2026-08-14",
     area: "Profile page",
-    summary: "Renamed Financial information chip to \'Other coverage\'; added conditional Financial questionnaire section",
+    summary:
+      "Renamed Financial information chip to \'Other coverage\'; added conditional Financial questionnaire section",
     details:
       "Renamed the Financial information section chip label to \'Other coverage\' (sectionLabels.financialInfo in pageSections.ts). Added a new profileFinancialQuestionnaireSelf page section (\'Financial questionnaire\') below the Other coverage section. The section is only shown when the member has a DI coverage amount greater than $2,000. It contains: total-net-worth, total-annual-unearned-income, is-self-employed, and — when is-self-employed = yes — a ConditionalGroup with is-sole-proprietor, is-professional-corporation, sole-proprietor-gross-income, sole-proprietor-gross-earnings, sole-proprietor-business-expenses, professional-corporation-annual-salary, professional-corporation-s-corp-distribution, professional-corporation-dividends, professional-corporation-bonus, bonus-payment-frequency, professional-corporation-commission, commission-payment-frequency, professional-corporation-benefits-cost, years-self-employed, work-from-home, has-work-location-outside-home, and work-location-details. All field IDs were already present in the field catalog and pageFields. The IA fields table reflects the new section automatically.",
+  },
+  {
+    id: "CL-004",
+    date: "2026-08-17",
+    area: "Advisor flow",
+    summary:
+      "Advisor send/edit dialogs finalized on a single Review page path; Application Edit Confirmation updated",
+    details:
+      "Finalized advisor-assisted behavior: (1) On Profile, when advisor-flow-type is present, Next opens SendApplicationDialog titled 'Send to applicant for review' with intro text 'This application will be sent to the following applicant for review, completion of any remaining steps, and e-signature.' The dialog shows applicant name + email. Send navigates to Advisor Send Confirmation; Cancel stays on Profile. (2) Applicant resume via resume?flow=advisor now lands on the standard Review page in advisor mode (single review page approach). The advisor-mode Review branch shows advisor-specific alerts, keeps legal/consent sections on the same page, and opens a SendApplicationDialog titled 'Request edit to application' when edit icons are clicked. This dialog shows advisor email only (no name) and intro text 'An alert will be sent requesting updates to your application. Your advisor will contact you with additional details and guidance.' Send routes to Application Edit Confirmation; Cancel stays on Review. (3) Earlier advisor-completed steps (Getting Started, Coverage, Profile) remain locked via advisorApplicantFlow session state and stepper/breadcrumb guards. (4) Application Edit Confirmation detail rows were reduced to show only 'Sent to advisor' and 'Request sent' (removed Applicant name and Application expires).",
+  },
+  {
+    id: "CL-003",
+    date: "2026-08-17",
+    area: "Eligibility / Coverage",
+    summary:
+      "Added TPA member verification modal and Coverage Portfolio drawer",
+    details:
+      "When submitted eligibility data matches a TPA member record (dummy trigger: ABE client, first name Caroline, last name Correa, DOB 08/26/1990, state NY), Eligibility intercepts the form submission and opens a MemberVerification modal before navigating to Coverage. The modal has three dot-stepper steps: (1) method selection — send text code, send voice code, answer security questions, or proceed without verification; (2) security questions — three LexisNexis-style questions each with a \'None of the answers apply to me\' option; (3) result screen (success or failure). Selecting \'None of the answers apply to me\' for any question shows the failed verification screen; all other paths show the success screen. On modal close, tpa-verified is stored in ApplicationFormContext and navigation proceeds to Coverage. On Coverage, when tpa-verified is true, a \'View coverage portfolio\' button opens a CoveragePortfolioDrawer listing the member\'s (and, when applicable, spouse\'s) existing in-force coverage: coverage name, amount, and riders. New components: MemberVerification (src/components/layout/MemberVerification.tsx), CoveragePortfolioDrawer (src/components/layout/CoveragePortfolioDrawer.tsx). Modified pages: Eligibility, Coverage. TPA Verification flow added to the Flows section of this document.",
   },
 ];
 
@@ -1583,21 +1603,34 @@ const advisorFlow: FlowStep[] = [
     description: "Advisor completes the final advisor page.",
   },
   {
-    label: "Send Application",
-    description: "Advisor confirms handoff to the applicant via popup action.",
+    label: "Send Application Dialog",
+    description:
+      "After clicking Next on Profile, advisor sees SendApplicationDialog titled 'Send to applicant for review' with applicant name + email and send-confirmation copy. Send navigates to Advisor Send Confirmation; Cancel stays on Profile.",
+  },
+  {
+    label: "Advisor Send Confirmation",
+    description:
+      "Confirmation page showing the applicant email, send timestamp, and purge date. Advisor can start a new application.",
   },
   {
     label: "Resume & Verification (Applicant)",
-    description: "Applicant uses secure resume flow to access the application.",
-  },
-  {
-    label: "Advisor-Applicant Review",
-    description: "Applicant reviews advisor-entered information as read-only.",
-  },
-  {
-    label: "Remaining Application",
     description:
-      "Applicant completes next incomplete applicant-owned page through Receipt.",
+      "Applicant enters via resume?flow=advisor. Verification step may be skipped in the advisor flow.",
+  },
+  {
+    label: "Review (advisor mode)",
+    description:
+      "Applicant reviews advisor-entered application data on the standard Review page (flow=advisor). Earlier stepper steps are locked. Edit icon opens SendApplicationDialog titled 'Request edit to application' with advisor email only and alert copy. Send -> Application Edit Confirmation; Cancel -> stay.",
+  },
+  {
+    label: "Application Edit Confirmation (if edits requested)",
+    description:
+      "Confirms the edit request was sent to the advisor dummy email. Application lock transfers back to the advisor.",
+  },
+  {
+    label: "Continue → Review and Remaining Steps",
+    description:
+      "If no edits are needed, applicant continues through the same Review page to complete legal consent and then Health / Payment / E-Sign / Receipt.",
   },
 ];
 
@@ -1684,6 +1717,38 @@ const quoteFlow: FlowStep[] = [
     label: "Carry into application",
     description:
       "Applicable quote inputs and selected products carry into the application fields.",
+  },
+];
+
+// ---------------------------------------------------------------------------
+// TPA Verification flow
+// ---------------------------------------------------------------------------
+
+const tpaVerificationFlow: FlowStep[] = [
+  {
+    label: "Eligibility",
+    description:
+      "On successful submission, the system checks whether the applicant matches a TPA member record. If no match, flow continues normally.",
+  },
+  {
+    label: "Member Verification — Method",
+    description:
+      "A modal opens. Applicant chooses how to verify: send text code, send voice code, answer security questions, or proceed without verification.",
+  },
+  {
+    label: "Member Verification — Security Questions",
+    description:
+      "Shown when the applicant selects security questions. Three identity questions are presented, each including a none-of-the-above option.",
+  },
+  {
+    label: "Member Verification — Result",
+    description:
+      "Displays success or failure. The applicant may continue either way.",
+  },
+  {
+    label: "Coverage",
+    description:
+      "When verification was completed, a button is available to open a drawer showing the applicant's existing in-force coverage.",
   },
 ];
 
@@ -2565,8 +2630,6 @@ const configurationsData: ConfigRow[] = [
   },
 ];
 
-
-
 // ---------------------------------------------------------------------------
 // Reusable UI pieces
 // ---------------------------------------------------------------------------
@@ -2741,7 +2804,11 @@ const categoryOrder = ["application", "resume", "advisor", "internal"];
 function getPageCategory(page: { type: string; id: string }): string {
   if (page.type === "internal") return "internal";
   if (page.id === "mock-email-preview") return "internal";
-  if (page.id.startsWith("advisor")) return "advisor";
+  if (
+    page.id.startsWith("advisor") ||
+    page.id === "application-edit-confirmation"
+  )
+    return "advisor";
   if (page.id.startsWith("resume") || page.type === "resume") return "resume";
   return "application";
 }
@@ -2773,6 +2840,7 @@ const pageStepLabel: Partial<Record<string, string>> = {
   "resume-code": "N/A",
   "advisor-login": "N/A",
   "advisor-send-confirmation": "N/A",
+  "application-edit-confirmation": "N/A",
   "mock-email-preview": "N/A",
   "information-architecture": "N/A",
   "design-system": "N/A",
@@ -2801,6 +2869,7 @@ const pageBreadcrumbLabel: Partial<Record<string, string>> = {
   "resume-code": "N/A",
   "advisor-login": "N/A",
   "advisor-send-confirmation": "N/A",
+  "application-edit-confirmation": "N/A",
   "mock-email-preview": "N/A",
   "information-architecture": "N/A",
   "design-system": "N/A",
@@ -2849,9 +2918,7 @@ export default function InformationArchitecture() {
         const id = page.id as PageId;
         // Home uses the hero title from content rather than the generic page title
         const title =
-          id === "home"
-            ? "Safeguard your financial future"
-            : getPageTitle(id);
+          id === "home" ? "Safeguard your financial future" : getPageTitle(id);
         return {
           id,
           title,
@@ -3063,12 +3130,20 @@ export default function InformationArchitecture() {
                     {changeLog.map((entry) => (
                       <TableRow key={entry.id}>
                         <TableCell
-                          sx={{ verticalAlign: "top", fontWeight: 700, whiteSpace: "nowrap" }}
+                          sx={{
+                            verticalAlign: "top",
+                            fontWeight: 700,
+                            whiteSpace: "nowrap",
+                          }}
                         >
                           {entry.id}
                         </TableCell>
                         <TableCell
-                          sx={{ verticalAlign: "top", whiteSpace: "nowrap", color: "text.secondary" }}
+                          sx={{
+                            verticalAlign: "top",
+                            whiteSpace: "nowrap",
+                            color: "text.secondary",
+                          }}
                         >
                           {entry.date}
                         </TableCell>
@@ -3284,6 +3359,23 @@ export default function InformationArchitecture() {
                     determine available products and estimated premiums.
                   </Typography>
                   <FlowStepper steps={quoteFlow} />
+                </Box>
+                <Divider />
+                <Box>
+                  <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>
+                    TPA Member Verification Flow
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 2 }}
+                  >
+                    Triggered when eligibility data matches a TPA member record.
+                    The applicant completes identity verification before
+                    proceeding to Coverage, where their existing coverage
+                    portfolio is available.
+                  </Typography>
+                  <FlowStepper steps={tpaVerificationFlow} />
                 </Box>
                 <Divider />
                 <Box>

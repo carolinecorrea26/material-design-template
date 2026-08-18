@@ -438,9 +438,11 @@ export default function FormRoutePage({
       window.dispatchEvent(new Event("reviewsubmitted"));
     }
 
+    const resolvedNextPageId = resolveNextPageId?.(nextNavigationValues);
     const nextPageId =
-      resolveNextPageId?.(nextNavigationValues) ??
-      getNextFormPageId(pageId, nextNavigationValues);
+      resolvedNextPageId === undefined
+        ? getNextFormPageId(pageId, nextNavigationValues)
+        : resolvedNextPageId;
 
     const destination = nextPageId ?? (pageId === "payment" ? "receipt" : null);
     if (!destination) return;

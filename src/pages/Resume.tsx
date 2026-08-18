@@ -11,17 +11,29 @@ import {
 } from "@mui/material";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import MailLockRounded from "@mui/icons-material/MailLockRounded";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import PageTitle from "../components/layout/PageTitle";
 import FormShell from "../components/layout/FormShell";
-import { getPageSubhead, getPageTitle } from "../config/pages";
+import { getPageSubhead, getPageTitle, getPagePath } from "../config/pages";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import { sendResumeMagicLinkMockEmail } from "../utils/mockEmail";
 import { formatCountdown } from "../utils/formatCountdown";
 
 export default function Resume() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const fields = getClientPageFields("resume");
+
+  // When flow=advisor, skip the email-entry step and go directly to Review
+  // in advisor-applicant mode. The review page then adjusts edit behavior.
+  const isAdvisorFlow = searchParams.get("flow") === "advisor";
+
+  useEffect(() => {
+    if (!isAdvisorFlow) {
+      window.sessionStorage.removeItem("advisorApplicantFlow");
+    }
+  }, [isAdvisorFlow]);
+
   const emailField = fields.find((field) => field.id === "resume-email");
 
   const [emailAddress, setEmailAddress] = useState("");
@@ -75,6 +87,15 @@ export default function Resume() {
       void sendResumeMagicLinkMockEmail(trimmedEmailAddress);
 
       setIsEmailSending(false);
+
+      if (isAdvisorFlow) {
+        // Advisor-flow resumes skip the verification step and go straight to
+        // review in advisor-applicant mode.
+        window.sessionStorage.setItem("advisorApplicantFlow", "true");
+        navigate(`${getPagePath("review")}?flow=advisor`);
+        return;
+      }
+
       setSecondsLeft(600);
       setEmailSent(true);
     }, 1500);

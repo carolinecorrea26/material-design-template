@@ -2,9 +2,7 @@
 
 import type { ComponentType } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import AppShell, {
-  type AppShellVariant,
-} from "../components/layout/AppShell";
+import AppShell, { type AppShellVariant } from "../components/layout/AppShell";
 import { getPagePath } from "../config/pages";
 import type { PageId } from "../types";
 import Home from "../pages/Home";
@@ -28,6 +26,7 @@ import ResumeMethod from "../pages/ResumeMethod";
 import ResumeCode from "../pages/ResumeCode";
 import AdvisorLogin from "../pages/AdvisorLogin";
 import AdvisorSendConfirmation from "../pages/AdvisorSendConfirmation";
+import ApplicationEditConfirmation from "../pages/ApplicationEditConfirmation";
 import MockEmailPreview from "../pages/MockEmailPreview";
 import InformationArchitecture from "../pages/InformationArchitecture";
 import DesignSystem from "../pages/DesignSystem";
@@ -58,6 +57,7 @@ const pageComponents: Record<PageId, ComponentType> = {
   "resume-code": ResumeCode,
   "advisor-login": AdvisorLogin,
   "advisor-send-confirmation": AdvisorSendConfirmation,
+  "application-edit-confirmation": ApplicationEditConfirmation,
   "mock-email-preview": MockEmailPreview,
   "information-architecture": InformationArchitecture,
   "design-system": DesignSystem,
@@ -86,6 +86,7 @@ const routedPageIds: PageId[] = [
   "resume-code",
   "advisor-login",
   "advisor-send-confirmation",
+  "application-edit-confirmation",
   "mock-email-preview",
   "information-architecture",
   "design-system",
@@ -98,6 +99,7 @@ const pageVariants: Partial<Record<PageId, AppShellVariant>> = {
   "resume-code": "resumeEmailCode",
   "advisor-login": "advisorLogin",
   "advisor-send-confirmation": "advisorSend",
+  "application-edit-confirmation": "advisorSend",
 };
 
 export const router = createBrowserRouter(

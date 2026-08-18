@@ -20,6 +20,9 @@ import FormRoutePage, {
 import FieldRenderer from "../components/forms/FieldRenderer";
 import DynamicList from "../components/forms/DynamicList";
 import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
+import MemberVerification, {
+  isTpaMemberMatch,
+} from "../components/ui/MemberVerification";
 import { fieldCatalog } from "../config/fields";
 import {
   deriveStateProvinceFromZipOrPostalCode,
@@ -47,11 +50,12 @@ const childMapping = {
 export default function Eligibility() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { setPageValues } = useApplicationForm();
+  const client = getActiveClient();
+
   const resumeLoadedFromRouteState = Boolean(
     (
-      location.state as {
-        resumeLoaded?: boolean;
-      } | null
+      location.state as { resumeLoaded?: boolean } | null
     )?.resumeLoaded,
   );
 
@@ -59,14 +63,28 @@ export default function Eligibility() {
     resumeLoadedFromRouteState,
   );
 
-  useEffect(() => {
-    if (!resumeLoadedFromRouteState) {
-      return;
-    }
+  const [memberVerificationOpen, setMemberVerificationOpen] = useState(false);
+  // Set to true once the modal has been completed; validate() checks this to
+  // allow the subsequent programmatic form submission through.
+  const tpaCompletedRef = useRef(false);
+  // Ref to the hidden form submit button so we can trigger it after modal close.
+  const formSubmitRef = useRef<HTMLButtonElement | null>(null);
 
-    // Clear one-time location state so refresh/back doesn't keep re-triggering.
+  useEffect(() => {
+    if (!resumeLoadedFromRouteState) return;
     navigate(location.pathname, { replace: true, state: {} });
   }, [location.pathname, navigate, resumeLoadedFromRouteState]);
+
+  function handleModalClose(verified: boolean) {
+    setPageValues({ "tpa-verified": verified });
+    tpaCompletedRef.current = true;
+    setMemberVerificationOpen(false);
+    // Programmatically re-submit the form now that the modal is done.
+    // validate() will pass this time because tpaCompletedRef.current is true.
+    requestAnimationFrame(() => {
+      formSubmitRef.current?.click();
+    });
+  }
 
   return (
     <>
@@ -98,11 +116,38 @@ export default function Eligibility() {
             }
           }
 
+          // Open the TPA modal and block navigation until it's completed.
+          if (
+            isTpaMemberMatch(client.id, nextValues) &&
+            !tpaCompletedRef.current
+          ) {
+            setMemberVerificationOpen(true);
+            return "\u200b"; // zero-width space: truthy (blocks nav) but invisible
+          }
+
           return undefined;
         }}
       >
-        {(props) => <EligibilityFields {...props} />}
+        {(props) => (
+          <>
+            <EligibilityFields {...props} />
+            {/* Hidden submit trigger used by handleModalClose */}
+            <button
+              ref={formSubmitRef}
+              type="submit"
+              form={`eligibility-form`}
+              style={{ display: "none" }}
+              aria-hidden="true"
+            />
+          </>
+        )}
       </FormRoutePage>
+
+      <MemberVerification
+        open={memberVerificationOpen}
+        onClose={handleModalClose}
+      />
+
       <Snackbar
         open={showResumeLoadedSnackbar}
         autoHideDuration={4000}
@@ -137,7 +182,6 @@ function EligibilityFields({
   const showMessageFrameRef = useRef<number | null>(null);
   const hideMessageTimeoutRef = useRef<number | null>(null);
 
-  // For AMA spouse-of-physician, remove "Spouse" from dependent options
   const allFields = useMemo(() => {
     if (client.id === "ama" && appValues.membership === "spouse") {
       return rawAllFields.map((field) => {
@@ -158,7 +202,6 @@ function EligibilityFields({
       if (showMessageFrameRef.current !== null) {
         window.cancelAnimationFrame(showMessageFrameRef.current);
       }
-
       if (hideMessageTimeoutRef.current !== null) {
         window.clearTimeout(hideMessageTimeoutRef.current);
       }
@@ -179,22 +222,15 @@ function EligibilityFields({
 
   useEffect(() => {
     const trimmed = zipPostalCodeValue.trim();
-    if (trimmed.length < 5) {
-      return;
-    }
+    if (trimmed.length < 5) return;
 
     const derivedStateProvinceValue = deriveStateProvinceFromZipOrPostalCode(
       zipPostalCodeValue,
       stateProvinceOptions,
     );
 
-    if (!derivedStateProvinceValue) {
-      return;
-    }
-
-    if (derivedStateProvinceValue === stateProvinceValue) {
-      return;
-    }
+    if (!derivedStateProvinceValue) return;
+    if (derivedStateProvinceValue === stateProvinceValue) return;
 
     setValue("state-province", derivedStateProvinceValue, {
       shouldDirty: true,

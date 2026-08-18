@@ -92,8 +92,8 @@ function AdvisorLoginFields({
             },
           }}
         >
-          <Tab label="Start New" value="new" />
-          <Tab label="Continue Saved" value="saved" />
+          <Tab label="Start" value="new" />
+          <Tab label="Continue" value="saved" />
         </Tabs>
 
         <Stack spacing={2} sx={{ width: "100%" }}>

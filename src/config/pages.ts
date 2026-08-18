@@ -40,6 +40,11 @@ export const pages = [
     path: "/advisor-send-confirmation",
     type: "form",
   },
+  {
+    id: "application-edit-confirmation",
+    path: "/application-edit-confirmation",
+    type: "form",
+  },
   { id: "mock-email-preview", path: "/mock-email-preview", type: "receipt" },
   {
     id: "information-architecture",

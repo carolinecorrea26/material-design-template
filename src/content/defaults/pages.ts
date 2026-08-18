@@ -112,6 +112,12 @@ export const pagesDefaults: Partial<PagesContent> = {
       "The applicant can now review, sign, and submit their application.",
     navTitle: "Sent confirmation",
   },
+  "application-edit-confirmation": {
+    title: "Edit request sent!",
+    subhead:
+      "Your advisor has been notified of your request to edit your application.",
+    navTitle: "Edit confirmation",
+  },
   "mock-email-preview": {
     title: "Mock Email Preview",
     navTitle: "Mock email preview",

@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getPagePath, getPageTitle } from "../config/pages";
 import { formatCountdown } from "../utils/formatCountdown";
@@ -60,7 +60,8 @@ function getSavedApplicationForEmail(
 
 export default function ResumeCode() {
   const navigate = useNavigate();
-  // const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const isAdvisorFlow = searchParams.get("flow") === "advisor";
   const client = getActiveClient();
   const { setPageValues } = useApplicationForm();
 
@@ -120,11 +121,16 @@ export default function ResumeCode() {
 
         setPageValues(savedApplication);
 
-        navigate(getPagePath("eligibility"), {
-          state: {
-            resumeLoaded: true,
-          },
-        });
+        if (isAdvisorFlow) {
+          window.sessionStorage.setItem("advisorApplicantFlow", "true");
+          navigate(getPagePath("review"), {
+            state: { resumeLoaded: true },
+          });
+        } else {
+          navigate(getPagePath("eligibility"), {
+            state: { resumeLoaded: true },
+          });
+        }
       }, 2000);
     }, 700);
   }

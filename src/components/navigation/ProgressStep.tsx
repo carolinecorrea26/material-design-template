@@ -134,6 +134,8 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
   // After review is submitted, disable breadcrumb navigation
   const reviewSubmittedForBreadcrumbs =
     window.sessionStorage.getItem("reviewSubmitted") === "true";
+  const advisorApplicantModeForBreadcrumbs =
+    window.sessionStorage.getItem("advisorApplicantFlow") === "true";
 
   return (
     <Breadcrumbs
@@ -165,7 +167,7 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
             HEALTH_PAGE_IDS.includes(pendingCompletedPageId));
         const isCompleted =
           index < currentEntryIndex || isPendingCompletedEntry;
-        const isClickable = isCompleted && !reviewSubmittedForBreadcrumbs;
+        const isClickable = isCompleted && !reviewSubmittedForBreadcrumbs && !advisorApplicantModeForBreadcrumbs;
 
         return (
           <Box
@@ -223,6 +225,12 @@ export default function ProgressStep({
   const reviewSubmitted =
     window.sessionStorage.getItem("reviewSubmitted") === "true";
 
+  // In the advisor-applicant flow the applicant cannot navigate back to
+  // advisor-completed steps (Getting Started, Coverage, Profile).
+  // We use a sessionStorage flag set when the applicant enters via resume?flow=advisor.
+  const advisorApplicantMode =
+    window.sessionStorage.getItem("advisorApplicantFlow") === "true";
+
   return (
     <Box
       sx={{
@@ -276,7 +284,11 @@ export default function ProgressStep({
             {activeSteps.map((step, index) => {
               const isActive = index === activeStep;
               const isCompleted = index < activeStep;
-              const isClickable = isCompleted && !reviewSubmitted;
+              // In advisor-applicant mode, only the application-review step and beyond
+              // are accessible — earlier advisor-completed steps are locked.
+              const isAdvisorLockedStep =
+                advisorApplicantMode && step.id !== "application-review" && step.id !== "esign-submit";
+              const isClickable = isCompleted && !reviewSubmitted && !isAdvisorLockedStep;
               const stepLabelColor = isActive
                 ? "text.primary"
                 : isCompleted

@@ -3,6 +3,7 @@ import { Box, Button, Divider, Stack } from "@mui/material";
 import PageAlert from "../components/feedback/PageAlert";
 import CoverageCategorySelector from "../components/forms/CoverageCategorySelector";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 import FormRoutePage from "../app/RoutePage";
 
 import AppDrawer from "../components/layout/AppDrawer";
@@ -13,9 +14,19 @@ import CoverageCart from "../components/ui/CoverageCart";
 import CoverageQuestions from "../components/forms/CoverageQuestions";
 import ProductCatalog from "../components/forms/ProductCatalog";
 import { useCoverageState } from "../app/useCoverageState";
+import CoveragePortfolioDrawer from "../components/ui/CoveragePortfolioDrawer";
+import { useApplicationForm } from "../app/ApplicationFormContext";
 
 export default function Coverage() {
   const state = useCoverageState();
+  const { values } = useApplicationForm();
+
+  const isTpaVerified = values["tpa-verified"] === true;
+  const hasSpouse =
+    Array.isArray(values.dependents) &&
+    (values.dependents as string[]).includes("spouse");
+
+  const [portfolioDrawerOpen, setPortfolioDrawerOpen] = useState(false);
 
   const helpItems: {
     id: string;
@@ -61,15 +72,25 @@ export default function Coverage() {
         pageSections,
         trigger,
       }) => (
-        <CoveragePageContent
-          control={control}
-          errors={errors}
-          watchedValues={watchedValues}
-          allFields={allFields}
-          pageSections={pageSections}
-          trigger={trigger}
-          state={state}
-        />
+        <>
+          <CoveragePageContent
+            control={control}
+            errors={errors}
+            watchedValues={watchedValues}
+            allFields={allFields}
+            pageSections={pageSections}
+            trigger={trigger}
+            state={state}
+            isTpaVerified={isTpaVerified}
+            onOpenPortfolio={() => setPortfolioDrawerOpen(true)}
+          />
+
+          <CoveragePortfolioDrawer
+            open={portfolioDrawerOpen}
+            onClose={() => setPortfolioDrawerOpen(false)}
+            hasSpouse={hasSpouse}
+          />
+        </>
       )}
     </FormRoutePage>
   );
@@ -83,6 +104,8 @@ function CoveragePageContent({
   pageSections,
   trigger,
   state,
+  isTpaVerified,
+  onOpenPortfolio,
 }: {
   control: any;
   errors: any;
@@ -91,6 +114,8 @@ function CoveragePageContent({
   pageSections: any[];
   trigger: () => Promise<boolean>;
   state: ReturnType<typeof useCoverageState>;
+  isTpaVerified: boolean;
+  onOpenPortfolio: () => void;
 }) {
   // Use a ref so the callback always has the latest showProducts value
   const showProductsRef = useRef(state.showProducts);
@@ -106,6 +131,20 @@ function CoveragePageContent({
 
   return (
     <>
+      {/* TPA portfolio banner */}
+      {isTpaVerified && (
+        <Box sx={{ mb: 3 }}>
+          <Button
+            variant="outlined"
+            size="medium"
+            startIcon={<AccountBalanceWalletRoundedIcon />}
+            onClick={onOpenPortfolio}
+          >
+            View coverage portfolio
+          </Button>
+        </Box>
+      )}
+
       {/* Section 1: Category chips + coverage questions */}
       <PageAlert severity="error" message={pageError ?? undefined} />
       <Stack spacing={3}>

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import ReportRoundedIcon from "@mui/icons-material/ReportRounded";
+import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import PrintOutlinedIcon from "@mui/icons-material/PrintOutlined";
 import { Alert, Box, Button, Stack, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import FormRoutePage from "../app/RoutePage";
 import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
 import {
@@ -18,14 +19,24 @@ import ApplicationDocumentPreview from "../components/content/ApplicationDocumen
 import { getContent } from "../content";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import ConfirmationDialog from "../components/layout/ConfirmationDialog";
+import SendApplicationDialog from "../components/layout/SendApplicationDialog";
 import { useReviewSubmitted } from "../app/useReviewSubmitted";
+import { getPagePath } from "../config/pages";
 
 const reviewContent = getContent().review;
 
 export default function Review() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { isReviewSubmitted } = useReviewSubmitted();
   const [editTargetPageId, setEditTargetPageId] = useState<PageId | null>(null);
+  const [sendBackDialogOpen, setSendBackDialogOpen] = useState(false);
+  const isAdvisorApplicantFlow =
+    searchParams.get("flow") === "advisor" ||
+    window.sessionStorage.getItem("advisorApplicantFlow") === "true";
+
+  // Dummy advisor email used as the send-back target.
+  const advisorEmail = "advisor@example.com";
 
   function printSection() {
     window.print();
@@ -66,52 +77,90 @@ export default function Review() {
         );
 
         function openEdit(pageId: PageId) {
+          if (isAdvisorApplicantFlow) {
+            setSendBackDialogOpen(true);
+            return;
+          }
+
           setEditTargetPageId(pageId);
         }
 
         return (
           <Stack spacing={2.5}>
-            <Alert
-              severity="warning"
-              icon={<ReportRoundedIcon fontSize="large" />}
-            >
-              <Stack spacing={1.5}>
-                <Typography variant="body2" fontWeight={600}>
-                  {reviewContent.alertTitle}
-                </Typography>
-
-                <Box
-                  component="ul"
-                  sx={{ m: 0, pl: 3, "& li + li": { mt: 1.5 } }}
+            {isAdvisorApplicantFlow ? (
+              <>
+                <Alert
+                  severity="info"
+                  icon={<InfoRoundedIcon fontSize="large" />}
                 >
-                  {reviewContent.alertItems.map((item) => (
-                    <li key={item.title}>
-                      <Box>
-                        <Typography variant="subtitle2">
-                          {item.title}
-                        </Typography>
-                        <Typography variant="body2">
-                          {item.description}
-                        </Typography>
-                      </Box>
-                    </li>
-                  ))}
+                  <Stack spacing={0.5}>
+                    <Typography variant="body2" fontWeight={600}>
+                      Your advisor has completed this section of the
+                      application.
+                    </Typography>
+                    <Typography variant="body2">
+                      Review the information below. If anything needs to be
+                      corrected, click the edit icon and your application will
+                      be sent back to your advisor. Otherwise, continue to
+                      complete and submit your application.
+                    </Typography>
+                  </Stack>
+                </Alert>
 
-                  {showHealthQuestionsNote ? (
-                    <li>
-                      <Box>
-                        <Typography variant="subtitle2">
-                          {reviewContent.healthQuestionsNote.title}
-                        </Typography>
-                        <Typography variant="body2">
-                          {reviewContent.healthQuestionsNote.description}
-                        </Typography>
-                      </Box>
-                    </li>
-                  ) : null}
-                </Box>
-              </Stack>
-            </Alert>
+                <Alert
+                  severity="warning"
+                  icon={<ReportRoundedIcon fontSize="medium" />}
+                  sx={{ py: 0.75 }}
+                >
+                  <Typography variant="body2">
+                    Steps completed by your advisor - Getting Started, Coverage,
+                    and Profile - are locked and cannot be edited directly.
+                  </Typography>
+                </Alert>
+              </>
+            ) : (
+              <Alert
+                severity="warning"
+                icon={<ReportRoundedIcon fontSize="large" />}
+              >
+                <Stack spacing={1.5}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {reviewContent.alertTitle}
+                  </Typography>
+
+                  <Box
+                    component="ul"
+                    sx={{ m: 0, pl: 3, "& li + li": { mt: 1.5 } }}
+                  >
+                    {reviewContent.alertItems.map((item) => (
+                      <li key={item.title}>
+                        <Box>
+                          <Typography variant="subtitle2">
+                            {item.title}
+                          </Typography>
+                          <Typography variant="body2">
+                            {item.description}
+                          </Typography>
+                        </Box>
+                      </li>
+                    ))}
+
+                    {showHealthQuestionsNote ? (
+                      <li>
+                        <Box>
+                          <Typography variant="subtitle2">
+                            {reviewContent.healthQuestionsNote.title}
+                          </Typography>
+                          <Typography variant="body2">
+                            {reviewContent.healthQuestionsNote.description}
+                          </Typography>
+                        </Box>
+                      </li>
+                    ) : null}
+                  </Box>
+                </Stack>
+              </Alert>
+            )}
 
             <ApplicationDocumentPreview
               values={values}
@@ -127,13 +176,27 @@ export default function Review() {
             />
 
             <ConfirmationDialog
-              open={editTargetPageId !== null}
+              open={!isAdvisorApplicantFlow && editTargetPageId !== null}
               onClose={() => setEditTargetPageId(null)}
               title="Edit your application"
               message="To edit your application, you will be sent back to the page where that information is collected. Do you want to go to this page to make edits?"
               confirmLabel="Yes"
               cancelLabel="Cancel"
               onConfirm={handleEditConfirm}
+            />
+
+            <SendApplicationDialog
+              open={isAdvisorApplicantFlow && sendBackDialogOpen}
+              onClose={() => setSendBackDialogOpen(false)}
+              onConfirm={() => {
+                setSendBackDialogOpen(false);
+                navigate(getPagePath("application-edit-confirmation"));
+              }}
+              title="Request edit to application"
+              introText="Your advisor will be notified of your request to edit your application and will contact you for additional details"
+              showRecipientName={false}
+              recipientEmail={advisorEmail}
+              recipientLabel="advisor"
             />
 
             <Box>
