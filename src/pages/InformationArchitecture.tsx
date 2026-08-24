@@ -66,6 +66,15 @@ type ChangeLogEntry = {
 
 const changeLog: ChangeLogEntry[] = [
   {
+    id: "CL-006",
+    date: "2026-08-24",
+    area: "Eligibility",
+    summary:
+      "Added child-section eligibility notice for unmarried-children coverage rule",
+    details:
+      "On the Eligibility page, the Child dependent section now displays an info alert directly under the section header: 'Only unmarried children are eligible for coverage.' The notice appears at the top of the child section before child entries are added via DynamicList.",
+  },
+  {
     id: "CL-001",
     date: "2026-08-14",
     area: "Resume flow",
@@ -84,6 +93,15 @@ const changeLog: ChangeLogEntry[] = [
       "Renamed the Financial information section chip label to \'Other coverage\' (sectionLabels.financialInfo in pageSections.ts). Added a new profileFinancialQuestionnaireSelf page section (\'Financial questionnaire\') below the Other coverage section. The section is only shown when the member has a DI coverage amount greater than $2,000. It contains: total-net-worth, total-annual-unearned-income, is-self-employed, and — when is-self-employed = yes — a ConditionalGroup with is-sole-proprietor, is-professional-corporation, sole-proprietor-gross-income, sole-proprietor-gross-earnings, sole-proprietor-business-expenses, professional-corporation-annual-salary, professional-corporation-s-corp-distribution, professional-corporation-dividends, professional-corporation-bonus, bonus-payment-frequency, professional-corporation-commission, commission-payment-frequency, professional-corporation-benefits-cost, years-self-employed, work-from-home, has-work-location-outside-home, and work-location-details. All field IDs were already present in the field catalog and pageFields. The IA fields table reflects the new section automatically.",
   },
   {
+    id: "CL-003",
+    date: "2026-08-17",
+    area: "Eligibility / Coverage",
+    summary:
+      "Added TPA member verification modal and Coverage Portfolio drawer",
+    details:
+      "When submitted eligibility data matches a TPA member record (dummy trigger: ABE client, first name Caroline, last name Correa, DOB 08/26/1990, state NY), Eligibility intercepts the form submission and opens a MemberVerification modal before navigating to Coverage. The modal has three dot-stepper steps: (1) method selection — send text code, send voice code, answer security questions, or proceed without verification; (2) security questions — three LexisNexis-style questions each with a \'None of the answers apply to me\' option; (3) result screen (success or failure). Selecting \'None of the answers apply to me\' for any question shows the failed verification screen; all other paths show the success screen. On modal close, tpa-verified is stored in ApplicationFormContext and navigation proceeds to Coverage. On Coverage, when tpa-verified is true, a \'View coverage portfolio\' button opens a CoveragePortfolioDrawer listing the member\'s (and, when applicable, spouse\'s) existing in-force coverage: coverage name, amount, and riders. New components: MemberVerification (src/components/layout/MemberVerification.tsx), CoveragePortfolioDrawer (src/components/layout/CoveragePortfolioDrawer.tsx). Modified pages: Eligibility, Coverage. TPA Verification flow added to the Flows section of this document.",
+  },
+  {
     id: "CL-004",
     date: "2026-08-17",
     area: "Advisor flow",
@@ -93,13 +111,13 @@ const changeLog: ChangeLogEntry[] = [
       "Finalized advisor-assisted behavior: (1) On Profile, when advisor-flow-type is present, Next opens SendApplicationDialog titled 'Send to applicant for review' with intro text 'This application will be sent to the following applicant for review, completion of any remaining steps, and e-signature.' The dialog shows applicant name + email. Send navigates to Advisor Send Confirmation; Cancel stays on Profile. (2) Applicant resume via resume?flow=advisor now lands on the standard Review page in advisor mode (single review page approach). The advisor-mode Review branch shows advisor-specific alerts, keeps legal/consent sections on the same page, and opens a SendApplicationDialog titled 'Request edit to application' when edit icons are clicked. This dialog shows advisor email only (no name) and intro text 'An alert will be sent requesting updates to your application. Your advisor will contact you with additional details and guidance.' Send routes to Application Edit Confirmation; Cancel stays on Review. (3) Earlier advisor-completed steps (Getting Started, Coverage, Profile) remain locked via advisorApplicantFlow session state and stepper/breadcrumb guards. (4) Application Edit Confirmation detail rows were reduced to show only 'Sent to advisor' and 'Request sent' (removed Applicant name and Application expires).",
   },
   {
-    id: "CL-003",
-    date: "2026-08-17",
-    area: "Eligibility / Coverage",
+    id: "CL-005",
+    date: "2026-08-24",
+    area: "Navigation / Coverage",
     summary:
-      "Added TPA member verification modal and Coverage Portfolio drawer",
+      "Added global intermediate-step Next interception and dependent-only Coverage confirmation",
     details:
-      "When submitted eligibility data matches a TPA member record (dummy trigger: ABE client, first name Caroline, last name Correa, DOB 08/26/1990, state NY), Eligibility intercepts the form submission and opens a MemberVerification modal before navigating to Coverage. The modal has three dot-stepper steps: (1) method selection — send text code, send voice code, answer security questions, or proceed without verification; (2) security questions — three LexisNexis-style questions each with a \'None of the answers apply to me\' option; (3) result screen (success or failure). Selecting \'None of the answers apply to me\' for any question shows the failed verification screen; all other paths show the success screen. On modal close, tpa-verified is stored in ApplicationFormContext and navigation proceeds to Coverage. On Coverage, when tpa-verified is true, a \'View coverage portfolio\' button opens a CoveragePortfolioDrawer listing the member\'s (and, when applicable, spouse\'s) existing in-force coverage: coverage name, amount, and riders. New components: MemberVerification (src/components/layout/MemberVerification.tsx), CoveragePortfolioDrawer (src/components/layout/CoveragePortfolioDrawer.tsx). Modified pages: Eligibility, Coverage. TPA Verification flow added to the Flows section of this document.",
+      "FormRoutePage now supports a shared onBeforeNext interception hook that can pause forward navigation, present an intermediate step, and then resume the standard transition through a continueNavigation callback. This centralizes pre-next confirmation behavior while preserving transition messages, progress snapshot behavior, and destination routing. Profile advisor send behavior was migrated to this shared pattern. Coverage now uses the same mechanism to intercept Next when selected coverage is for spouse and/or child only (no member selection) and shows a confirmation dialog: 'To apply for dependent coverage, you must have this group insurance coverage.' with Continue and Cancel actions. Continue resumes standard navigation; Cancel keeps the user on Coverage.",
   },
 ];
 
@@ -122,6 +140,13 @@ const siteRules: {
   },
   {
     area: "Application flow",
+    rule: "Intermediate-step Next interception",
+    behavior:
+      "Pages can intercept Next with a shared pre-navigation hook to show an intermediate step (such as a confirmation dialog). Navigation resumes only when the page calls the provided continuation callback.",
+    ref: "src/app/RoutePage.tsx; src/pages/Profile.tsx; src/pages/Coverage.tsx",
+  },
+  {
+    area: "Application flow",
     rule: "Client page mode = none",
     behavior:
       "If Beneficiary or Payment is configured as none, the page is skipped from the active form flow.",
@@ -133,6 +158,13 @@ const siteRules: {
     behavior:
       "Beneficiary is shown only when selected coverage includes Life (LI) or Accidental Death (AD), unless the page is configured as none.",
     ref: "src/config/formFlow.ts",
+  },
+  {
+    area: "Coverage",
+    rule: "Dependent-only selection confirmation",
+    behavior:
+      "If only spouse and/or child are selected for all chosen products (no member selection), clicking Next opens a confirmation dialog requiring explicit Continue before navigation proceeds.",
+    ref: "src/pages/Coverage.tsx; src/components/layout/ConfirmationDialog.tsx",
   },
   {
     area: "Application flow",
@@ -278,6 +310,13 @@ const siteRules: {
     rule: "Spouse dependent requires spouse details",
     behavior:
       "If Spouse is selected, spouse name details must be provided before continuing.",
+    ref: "src/pages/Eligibility.tsx",
+  },
+  {
+    area: "Eligibility",
+    rule: "Child section displays unmarried-children notice",
+    behavior:
+      "When the Child dependent section is visible, an info alert under the section header states that only unmarried children are eligible for coverage.",
     ref: "src/pages/Eligibility.tsx",
   },
   {
@@ -1531,12 +1570,12 @@ const consumerFlow: FlowStep[] = [
   {
     label: "Eligibility",
     description:
-      "Collects ZIP/postal code, state, date of birth, dependent selection, and configured eligibility responses.",
+      "Collects ZIP/postal code, state, date of birth, dependent selection, and configured eligibility responses. When the Child dependent section is shown, an info alert indicates only unmarried children are eligible for coverage.",
   },
   {
     label: "Coverage",
     description:
-      "Collects coverage interests and selections: eligible applicants, products, amounts, riders, estimated premiums.",
+      "Collects coverage interests and selections: eligible applicants, products, amounts, riders, estimated premiums. If only spouse and/or child coverage is selected (no member selection), Next requires an intermediate confirmation before advancing.",
   },
   {
     label: "Beneficiary",

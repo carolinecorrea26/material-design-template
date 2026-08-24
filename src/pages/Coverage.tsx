@@ -16,6 +16,9 @@ import ProductCatalog from "../components/forms/ProductCatalog";
 import { useCoverageState } from "../app/useCoverageState";
 import CoveragePortfolioDrawer from "../components/ui/CoveragePortfolioDrawer";
 import { useApplicationForm } from "../app/ApplicationFormContext";
+import type { CoverageApplicantId } from "../config/coverages/types";
+import type { BeforeNextContext } from "../app/RoutePage";
+import ConfirmationDialog from "../components/layout/ConfirmationDialog";
 
 export default function Coverage() {
   const state = useCoverageState();
@@ -27,6 +30,9 @@ export default function Coverage() {
     (values.dependents as string[]).includes("spouse");
 
   const [portfolioDrawerOpen, setPortfolioDrawerOpen] = useState(false);
+  const pendingContinueRef = useRef<(() => void) | null>(null);
+  const [dependentCoverageDialogOpen, setDependentCoverageDialogOpen] =
+    useState(false);
 
   const helpItems: {
     id: string;
@@ -39,10 +45,82 @@ export default function Coverage() {
   const activeHelpItem =
     helpItems.find((item) => item.id === activeHelpId) ?? null;
 
+  function getProductApplicants(
+    formValues: Record<string, unknown>,
+  ): Record<string, CoverageApplicantId[]> {
+    if (
+      formValues.productApplicants != null &&
+      typeof formValues.productApplicants === "object" &&
+      !Array.isArray(formValues.productApplicants)
+    ) {
+      return formValues.productApplicants as Record<
+        string,
+        CoverageApplicantId[]
+      >;
+    }
+
+    return {};
+  }
+
+  function hasOnlyDependentCoverage(formValues: Record<string, unknown>) {
+    const selectedCoverageIds = Array.isArray(formValues.coverageSelections)
+      ? formValues.coverageSelections.map(String)
+      : [];
+
+    if (selectedCoverageIds.length === 0) {
+      return false;
+    }
+
+    const productApplicants = getProductApplicants(formValues);
+    let hasDependentApplicant = false;
+
+    for (const coverageId of selectedCoverageIds) {
+      const applicants = Array.isArray(productApplicants[coverageId])
+        ? productApplicants[coverageId]
+        : [];
+
+      if (applicants.includes("member")) {
+        return false;
+      }
+
+      if (applicants.includes("spouse") || applicants.includes("child")) {
+        hasDependentApplicant = true;
+      }
+    }
+
+    return hasDependentApplicant;
+  }
+
+  function handleBeforeNext({
+    values: nextValues,
+    continueNavigation,
+  }: BeforeNextContext) {
+    if (!hasOnlyDependentCoverage(nextValues)) {
+      return true;
+    }
+
+    pendingContinueRef.current = continueNavigation;
+    setDependentCoverageDialogOpen(true);
+    return false;
+  }
+
+  function handleDependentCoverageContinue() {
+    setDependentCoverageDialogOpen(false);
+    const continueNavigation = pendingContinueRef.current;
+    pendingContinueRef.current = null;
+    continueNavigation?.();
+  }
+
+  function handleDependentCoverageCancel() {
+    setDependentCoverageDialogOpen(false);
+    pendingContinueRef.current = null;
+  }
+
   return (
     <FormRoutePage
       pageId="coverage"
       validate={state.validate}
+      onBeforeNext={handleBeforeNext}
       help={
         <>
           <FormHelpChips items={helpItems} onSelect={setActiveHelpId} />
@@ -89,6 +167,16 @@ export default function Coverage() {
             open={portfolioDrawerOpen}
             onClose={() => setPortfolioDrawerOpen(false)}
             hasSpouse={hasSpouse}
+          />
+
+          <ConfirmationDialog
+            open={dependentCoverageDialogOpen}
+            onClose={handleDependentCoverageCancel}
+            title="Dependent coverage"
+            message="To apply for dependent coverage, the member must be insured with this group coverage."
+            confirmLabel="Continue"
+            cancelLabel="Cancel"
+            onConfirm={handleDependentCoverageContinue}
           />
         </>
       )}

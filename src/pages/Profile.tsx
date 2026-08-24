@@ -1,6 +1,9 @@
 import { useMemo, useRef, useState } from "react";
 import { Alert, Box, Typography } from "@mui/material";
-import FormRoutePage, { isSectionVisible } from "../app/RoutePage";
+import FormRoutePage, {
+  isSectionVisible,
+  type BeforeNextContext,
+} from "../app/RoutePage";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
 import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
@@ -11,10 +14,8 @@ import SectionDivider from "../components/layout/SectionDivider";
 import { sectionLabels } from "../config/pageSections";
 import PhysicianInformation from "../components/forms/PhysicianInformation.tsx";
 import type { FieldDefinition } from "../config/fields/types";
-import { useNavigate } from "react-router-dom";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import SendApplicationDialog from "../components/layout/SendApplicationDialog";
-import { getPagePath } from "../config/pages";
 import {
   getApplicantEmail,
   getApplicantName,
@@ -148,7 +149,6 @@ function normalizeApplicantId(rawApplicantId: string) {
 }
 
 export default function Profile() {
-  const navigate = useNavigate();
   const { values } = useApplicationForm();
   const coverages = useMemo(() => getActiveClientCoverages(), []);
 
@@ -156,34 +156,36 @@ export default function Profile() {
   // advisor-flow-type is set in ApplicationFormContext when an advisor logs in.
   const isAdvisorFlow = Boolean(values["advisor-flow-type"]);
   const [sendDialogOpen, setSendDialogOpen] = useState(false);
-
-  // A ref lets resolveNextPageId (synchronous, inside FormRoutePage) open the
-  // dialog without stale-closure issues.
-  const openDialogRef = useRef<(() => void) | null>(null);
-  openDialogRef.current = () => setSendDialogOpen(true);
+  const pendingContinueRef = useRef<(() => void) | null>(null);
 
   const applicantName = getApplicantName(values);
   const applicantEmail = getApplicantEmail(values);
 
   function handleSendConfirm() {
     setSendDialogOpen(false);
-    navigate(getPagePath("advisor-send-confirmation"));
+    const continueNavigation = pendingContinueRef.current;
+    pendingContinueRef.current = null;
+    continueNavigation?.();
+  }
+
+  function handleSendCancel() {
+    setSendDialogOpen(false);
+    pendingContinueRef.current = null;
+  }
+
+  function handleBeforeNext({ continueNavigation }: BeforeNextContext) {
+    if (!isAdvisorFlow) {
+      return true;
+    }
+
+    pendingContinueRef.current = continueNavigation;
+    setSendDialogOpen(true);
+    return false;
   }
 
   return (
     <>
-      <FormRoutePage
-        pageId="profile"
-        resolveNextPageId={
-          isAdvisorFlow
-            ? () => {
-                // Open the dialog and return null to block FormRoutePage's own navigation.
-                openDialogRef.current?.();
-                return null;
-              }
-            : undefined
-        }
-      >
+      <FormRoutePage pageId="profile" onBeforeNext={handleBeforeNext}>
         {({ control, errors, watchedValues, allFields, pageSections }) => {
           const selectedCoverageIds = Array.isArray(
             watchedValues["coverageSelections"],
@@ -515,7 +517,7 @@ export default function Profile() {
       {isAdvisorFlow && (
         <SendApplicationDialog
           open={sendDialogOpen}
-          onClose={() => setSendDialogOpen(false)}
+          onClose={handleSendCancel}
           onConfirm={handleSendConfirm}
           title="Send to applicant for review"
           introText="This application will be sent to the following applicant for review, completion of any remaining steps, and e-signature."

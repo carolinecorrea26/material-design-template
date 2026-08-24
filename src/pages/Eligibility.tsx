@@ -54,9 +54,7 @@ export default function Eligibility() {
   const client = getActiveClient();
 
   const resumeLoadedFromRouteState = Boolean(
-    (
-      location.state as { resumeLoaded?: boolean } | null
-    )?.resumeLoaded,
+    (location.state as { resumeLoaded?: boolean } | null)?.resumeLoaded,
   );
 
   const [showResumeLoadedSnackbar, setShowResumeLoadedSnackbar] = useState(
@@ -261,17 +259,22 @@ function EligibilityFields({
 
         const content =
           section.id === "childSection" ? (
-            <DynamicList
-              control={control}
-              name="children"
-              label="Child"
-              mapping={childMapping}
-              renderItem={(item) => (
-                <Typography variant="body2">
-                  {`${item.firstName} ${item.lastName}`.trim().toUpperCase()}
-                </Typography>
-              )}
-            />
+            <>
+              <Alert severity="info" sx={{ mt: 1, mb: 2 }}>
+                Only unmarried children are eligible for coverage.
+              </Alert>
+              <DynamicList
+                control={control}
+                name="children"
+                label="Child"
+                mapping={childMapping}
+                renderItem={(item) => (
+                  <Typography variant="body2">
+                    {`${item.firstName} ${item.lastName}`.trim().toUpperCase()}
+                  </Typography>
+                )}
+              />
+            </>
           ) : section.id === "spouseSection" ? (
             (() => {
               const nameFields = ["spouse-first-name", "spouse-last-name"];

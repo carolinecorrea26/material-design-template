@@ -61,6 +61,11 @@ export type FormRouteRenderProps = {
   trigger: ReturnType<typeof useForm<FormRoutePageFormValues>>["trigger"];
 };
 
+export type BeforeNextContext = {
+  values: FormRoutePageValues;
+  continueNavigation: () => void;
+};
+
 type DevFillContext = {
   currentValues: FormRoutePageValues;
   currentFields: FieldDefinition[];
@@ -84,6 +89,7 @@ type FormRoutePageProps = {
   defaultValueOverrides?: FormRoutePageFormValues;
   devFillFields?: (currentValues: FormRoutePageValues) => FieldDefinition[];
   onDevFill?: (context: DevFillContext) => void;
+  onBeforeNext?: (context: BeforeNextContext) => boolean;
   resolveNextPageId?: (values: FormRoutePageValues) => PageId | null;
   initialTransitionMessage?: string;
 };
@@ -238,6 +244,7 @@ export default function FormRoutePage({
   defaultValueOverrides,
   devFillFields,
   onDevFill,
+  onBeforeNext,
   resolveNextPageId,
   initialTransitionMessage,
 }: FormRoutePageProps) {
@@ -409,6 +416,37 @@ export default function FormRoutePage({
     });
   }, []);
 
+  const continueToNextPage = useCallback(
+    (nextNavigationValues: FormRoutePageValues) => {
+      const resolvedNextPageId = resolveNextPageId?.(nextNavigationValues);
+      const nextPageId =
+        resolvedNextPageId === undefined
+          ? getNextFormPageId(pageId, nextNavigationValues)
+          : resolvedNextPageId;
+
+      const destination =
+        nextPageId ?? (pageId === "payment" ? "receipt" : null);
+      if (!destination) return;
+
+      const [msg1, msg2] = getForwardMessages(pageId);
+
+      emitPendingBreadcrumbCompletion(pageId);
+      setTransitionMessage(msg1);
+      setIsTransitioning(true);
+      window.scrollTo({ top: 0 });
+
+      transitionTimerRef.current = setTimeout(() => {
+        setTransitionMessage(msg2);
+
+        transitionTimerRef.current = setTimeout(() => {
+          emitProgressSnapshot(nextNavigationValues);
+          navigate(`/${destination}`, { state: { showProgressSaved: true } });
+        }, MESSAGE_DURATION);
+      }, MESSAGE_DURATION);
+    },
+    [navigate, pageId, resolveNextPageId],
+  );
+
   function onSubmit(formValues: FormRoutePageValues) {
     const nextNavigationValues = {
       ...values,
@@ -438,34 +476,16 @@ export default function FormRoutePage({
       window.dispatchEvent(new Event("reviewsubmitted"));
     }
 
-    const resolvedNextPageId = resolveNextPageId?.(nextNavigationValues);
-    const nextPageId =
-      resolvedNextPageId === undefined
-        ? getNextFormPageId(pageId, nextNavigationValues)
-        : resolvedNextPageId;
+    const shouldContinue = onBeforeNext?.({
+      values: nextNavigationValues,
+      continueNavigation: () => continueToNextPage(nextNavigationValues),
+    });
 
-    const destination = nextPageId ?? (pageId === "payment" ? "receipt" : null);
-    if (!destination) return;
+    if (shouldContinue === false) {
+      return;
+    }
 
-    const startTransition = () => {
-      const [msg1, msg2] = getForwardMessages(pageId);
-
-      emitPendingBreadcrumbCompletion(pageId);
-      setTransitionMessage(msg1);
-      setIsTransitioning(true);
-      window.scrollTo({ top: 0 });
-
-      transitionTimerRef.current = setTimeout(() => {
-        setTransitionMessage(msg2);
-
-        transitionTimerRef.current = setTimeout(() => {
-          emitProgressSnapshot(nextNavigationValues);
-          navigate(`/${destination}`, { state: { showProgressSaved: true } });
-        }, MESSAGE_DURATION);
-      }, MESSAGE_DURATION);
-    };
-
-    startTransition();
+    continueToNextPage(nextNavigationValues);
   }
 
   function onFormError(fieldErrors: FieldErrors<FormRoutePageValues>) {

@@ -154,6 +154,7 @@ export default function DynamicList<T extends Record<string, string>>({
         <Button
           onClick={handleAdd}
           variant="outlined"
+          size="medium"
           fullWidth
           startIcon={<AddIcon />}
         >
