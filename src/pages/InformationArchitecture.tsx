@@ -66,6 +66,15 @@ type ChangeLogEntry = {
 
 const changeLog: ChangeLogEntry[] = [
   {
+    id: "CL-007",
+    date: "2026-08-27",
+    area: "Email templates",
+    summary:
+      "Reorganized Email Templates page into Consumer/Advisor sections and overhauled mock email content",
+    details:
+      "The Email Templates (mock email) page is now split into two always-visible sections — 'Consumer Flow Emails' and 'Advisor Flow Emails' — replacing the previous tab switcher. Shared decision-status logic (buildSelectedCoverageEntries, getOrderedDecisionEntries, getQdDecisionResult, getDecisionStatus, formatCurrencyAmount, APPLICANT_LABELS) was extracted from Receipt.tsx into src/utils/coverageDecisions.ts so the receipt page and receipt email stay in sync. Email content changes: removed the 'New York Life Insurance Company is licensed/authorized...NAIC ID #66915' sentence from the shared NYL footer on all emails; all 'Dear' salutations now use a single consistent test applicant name (Caroline Correa, first + last) instead of a mix of full names and first-name-only; 'Continue my application' buttons in the autosave and pending-reminder emails are now preceded by an identity-verification notice ('To access your application information, you will be asked to verify your identity using the email and phone number provided in your application.'); the 'Your application will be saved for 10 days.' warning box was removed from the purge-reminder ('Your insurance application progress') email; the magic-link button was renamed from 'Confirm my email' to 'Verify my email'. Resume links: any email/button linking to the resume flow (autosave, pending-reminder 'Continue my application', and the new advisor portal line) now actually navigates to the internal /resume?client={activeClientId} route, while the URL shown in the email body is a fake production-style '{clientAcronym}.nylinsure.com/resume' string for demo purposes only. The receipt email ('Thank you! We've received your insurance request') body text was rewritten to 'Your insurance application through {Association Name} has been received and we've begun processing your application.' and now renders simplified, inline-styled HTML decision boxes mirroring the Receipt page's 'Coverage decisions' section (coverage name, status badge, applicant/amount subtitle, decision description) for each selected coverage. All advisor emails now include an 'Association: {active association name}' row at the top of the details table and a line below the table linking to the '{clientAcronym} Advisor Portal' (same fake-URL/real-link resume pattern).",
+  },
+  {
     id: "CL-006",
     date: "2026-08-24",
     area: "Eligibility",

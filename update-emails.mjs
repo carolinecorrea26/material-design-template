@@ -51,7 +51,7 @@ const newAutosave = `function buildAutosaveEmailHtml(
       \${getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail)}
       \${getNoticeHtml(
         "Your application will be saved for 10 days.",
-        \`For your security, your saved application will be deleted on \${formatMockDate(purgeDate)} (10 days from when you started). After that, you\u2019ll need to begin a new application.\`,
+        \`For your security, your saved application will be deleted on \${formatMockDate(purgeDate)} . After that, you\u2019ll need to begin a new application.\`,
       )}
       \${getNoReplyHtml()}
     \`,
@@ -126,7 +126,7 @@ const newMagicLink = `function buildResumeMagicLinkEmailHtml() {
       \${getButtonHtml("Confirm my email", payload.resumeMagicLinkUrl)}
 
       <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
-        This link will expire in <strong>5 minutes.</strong>
+        This link will expire in <strong>10 minutes.</strong>
       </p>
 
       <p style="margin:0 0 8px; font-size:16px; line-height:1.55; font-weight:700;">
@@ -192,7 +192,7 @@ const newPending = `function buildPendingReminderEmailHtml() {
         "Your application will be saved for 10 days.",
         \`For your security, your saved application will be deleted on \${formatMockDate(
           purgeDate,
-        )} (10 days from when you started). After that, you\u2019ll need to begin a new application.\`,
+        )} . After that, you\u2019ll need to begin a new application.\`,
       )}
       \${getNoReplyHtml()}
     \`,
@@ -253,7 +253,7 @@ const newPurge = `function buildPurgeReminderEmailHtml() {
         "Your application will be saved for 10 days.",
         \`For your security, your saved application will be deleted on \${formatMockDate(
           purgeDate,
-        )} (10 days from when you started). After that, you\u2019ll need to begin a new application.\`,
+        )} . After that, you\u2019ll need to begin a new application.\`,
       )}
 
       <div style="margin:20px 0; border-top:1px dashed #d1d5db;"></div>
