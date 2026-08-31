@@ -24,6 +24,9 @@ import { useReviewSubmitted } from "../app/useReviewSubmitted";
 import { getPagePath } from "../config/pages";
 
 const reviewContent = getContent().review;
+const editApplicationDialogContent = getContent().dialogs.confirmation.editApplication;
+const requestEditDialogContent =
+  getContent().dialogs.sendApplication.requestEditToApplication;
 
 export default function Review() {
   const navigate = useNavigate();
@@ -178,8 +181,8 @@ export default function Review() {
             <ConfirmationDialog
               open={!isAdvisorApplicantFlow && editTargetPageId !== null}
               onClose={() => setEditTargetPageId(null)}
-              title="Edit your application"
-              message="To edit your application, you will be sent back to the page where that information is collected. Do you want to go to this page to make edits?"
+              title={editApplicationDialogContent.title}
+              message={editApplicationDialogContent.message}
               confirmLabel="Yes"
               cancelLabel="Cancel"
               onConfirm={handleEditConfirm}
@@ -192,8 +195,8 @@ export default function Review() {
                 setSendBackDialogOpen(false);
                 navigate(getPagePath("application-edit-confirmation"));
               }}
-              title="Request edit to application"
-              introText="Your advisor will be notified of your request to edit your application and will contact you for additional details"
+              title={requestEditDialogContent.title}
+              introText={requestEditDialogContent.introText}
               showRecipientName={false}
               recipientEmail={advisorEmail}
               recipientLabel="advisor"

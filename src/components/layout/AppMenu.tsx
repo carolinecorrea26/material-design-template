@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
+import ListAltRoundedIcon from "@mui/icons-material/ListAltRounded";
 import CalculateRoundedIcon from "@mui/icons-material/CalculateRounded";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
@@ -16,7 +17,8 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import AppDrawer from "../layout/AppDrawer";
-import { CoverageOptionsDrawerContent } from "../../content/helpContent";
+import HowApplyingWorksPanel from "../ui/HowApplyingWorksPanel";
+import CoverageOptionsPanel from "../ui/CoverageOptionsPanel";
 import CoverageNeedsCalculator from "../forms/CoverageNeedsCalculator";
 import QuickDecisionDrawerContent, {
   QuickDecisionMark,
@@ -33,6 +35,7 @@ type AppMenuProps = {
 };
 
 export default function AppMenu({ open, onClose, client }: AppMenuProps) {
+  const [isHowApplyingWorksOpen, setIsHowApplyingWorksOpen] = useState(false);
   const [isCoverageDrawerOpen, setIsCoverageDrawerOpen] = useState(false);
   const [isNeedsCalcOpen, setIsNeedsCalcOpen] = useState(false);
   const [isQuickDecisionOpen, setIsQuickDecisionOpen] = useState(false);
@@ -107,6 +110,29 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
                 Application Tools
               </Typography>
               <Stack spacing={1.5}>
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={() => {
+                    onClose();
+                    setIsHowApplyingWorksOpen(true);
+                  }}
+                  sx={{
+                    flexDirection: "row",
+                    textTransform: "none",
+                    py: 1.5,
+                    px: 2,
+                    gap: 1.5,
+                    borderRadius: 2,
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  <ListAltRoundedIcon />
+                  <Typography variant="body2" fontWeight={600}>
+                    How Applying Works
+                  </Typography>
+                </Button>
+
                 <Button
                   variant="outlined"
                   fullWidth
@@ -250,11 +276,25 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
       </Drawer>
 
       <AppDrawer
+        open={isHowApplyingWorksOpen}
+        title="How does applying work?"
+        onClose={() => setIsHowApplyingWorksOpen(false)}
+      >
+        <HowApplyingWorksPanel variant="drawer" />
+      </AppDrawer>
+
+      <AppDrawer
         open={isCoverageDrawerOpen}
         title="What are my coverage options?"
         onClose={() => setIsCoverageDrawerOpen(false)}
       >
-        <CoverageOptionsDrawerContent />
+        <CoverageOptionsPanel
+          variant="drawer"
+          onLearnMoreQuickDecision={() => {
+            setIsCoverageDrawerOpen(false);
+            setIsQuickDecisionOpen(true);
+          }}
+        />
       </AppDrawer>
 
       <AppDrawer

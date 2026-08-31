@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   FormControl,
@@ -46,6 +46,9 @@ function getStateOptions() {
  * Reusable DOB + ZIP + State field group.
  * Handles date formatting, auto-deriving state from ZIP, and field-level validation.
  *
+ * ZIP auto-sets state on change; the user may then override state manually.
+ * If the user edits ZIP again, state is re-derived from the new ZIP.
+ *
  * Used on the Home page quote entry card and inside QuoteCalculator
  * when collecting eligibility before showing coverage estimates.
  */
@@ -59,12 +62,19 @@ export default function EligibilityFields({
   const stateOptions = useMemo(() => getStateOptions(), []);
   const [dobFocused, setDobFocused] = useState(false);
 
-  // Auto-derive state from zip
+  // Track the zip that last auto-set the state, so we only re-derive when zip changes.
+  const lastDerivedZipRef = useRef<string>("");
+
+  // Auto-derive state from zip whenever zip changes (but not on manual state edits).
   useEffect(() => {
+    if (values.zipCode === lastDerivedZipRef.current) return;
+
     const derived = deriveStateProvinceFromZipOrPostalCode(
       values.zipCode,
       stateOptions,
     );
+    lastDerivedZipRef.current = values.zipCode;
+
     if (derived && derived !== values.state) {
       onChange({ state: derived });
     }
@@ -88,6 +98,20 @@ export default function EligibilityFields({
   void isValid;
 
   const stateLabelId = `${idPrefix}-state-label`;
+
+  function handleZipChange(rawValue: string) {
+    const formatted = formatZipOrPostalCode(rawValue);
+    // Reset the "last derived" ref so the effect re-runs for the new zip.
+    lastDerivedZipRef.current = "";
+    onChange({ zipCode: formatted });
+  }
+
+  function handleStateChange(newState: string) {
+    // Update the "last derived" zip ref to the current zip so the effect
+    // doesn't immediately override the user's manual selection.
+    lastDerivedZipRef.current = values.zipCode;
+    onChange({ state: newState });
+  }
 
   return (
     <Stack spacing={2}>
@@ -121,9 +145,7 @@ export default function EligibilityFields({
         fullWidth
         required
         value={values.zipCode}
-        onChange={(event) =>
-          onChange({ zipCode: formatZipOrPostalCode(event.target.value) })
-        }
+        onChange={(event) => handleZipChange(event.target.value)}
         inputProps={{ inputMode: "text", maxLength: 7 }}
         error={attempted && !!errors.zipCode}
         helperText={attempted ? errors.zipCode || undefined : undefined}
@@ -135,7 +157,7 @@ export default function EligibilityFields({
           labelId={stateLabelId}
           label="State"
           value={values.state}
-          onChange={(event) => onChange({ state: event.target.value })}
+          onChange={(event) => handleStateChange(event.target.value)}
         >
           {stateOptions.map((option) => (
             <MenuItem key={option.value} value={option.value}>

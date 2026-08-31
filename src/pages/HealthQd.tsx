@@ -1,8 +1,10 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import FormRoutePage from "../app/RoutePage";
+import { getContent } from "../content";
 
 export default function HealthQd() {
+  const content = getContent().statusMessages.healthQd;
   return (
     <FormRoutePage pageId="health-qd">
       {() => (
@@ -22,7 +24,8 @@ export default function HealthQd() {
               <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
                 <OfflineBoltIcon color="success" sx={{ fontSize: "1.4rem" }} />
                 <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                  QuickDecision<sup style={{ fontSize: "0.6em" }}>SM</sup>
+                  {content.heading}
+                  <sup style={{ fontSize: "0.6em" }}>SM</sup>
                 </Typography>
               </Box>
               <Typography
@@ -30,10 +33,9 @@ export default function HealthQd() {
                 color="text.secondary"
                 sx={{ textAlign: "center", lineHeight: 1.6 }}
               >
-                You are about to be taken to a new page to answer health
-                questions online for QuickDecision
-                <sup style={{ fontSize: "0.6em" }}>SM</sup>. Please do not close
-                this window.
+                {content.bodyBeforeMark} {content.heading}
+                <sup style={{ fontSize: "0.6em" }}>SM</sup>
+                {content.bodyAfterMark}
               </Typography>
             </Stack>
           </Stack>

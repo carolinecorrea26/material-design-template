@@ -781,7 +781,7 @@ function FieldExampleCard({ example }: { example: FieldExample }) {
 const errorFieldExamples: FieldExample[] = [
   {
     title: "Text — error",
-    note: "Required field left empty: red outline + \"This field is required.\" helper text.",
+    note: "Required field left empty: red outline + \"{Field label} is required.\" helper text.",
     field: {
       id: "ds-error-text",
       label: "Email address",

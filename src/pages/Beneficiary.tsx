@@ -37,6 +37,9 @@ import type { FieldDefinition } from "../config/fields/types";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { beneficiaryHelpItems } from "../content/helpContent";
 import FormHelpChips from "../components/content/HelpChips";
+import { getContent } from "../content";
+
+const content = getContent();
 
 type BeneficiaryDesignation = "primary" | "contingent";
 type BeneficiaryType = "individual" | "trust";
@@ -173,7 +176,7 @@ function getBeneficiaryPageError(
   });
 
   if (hasMissingBeneficiaryInfo) {
-    return "Please add beneficiary information before continuing.";
+    return content.beneficiary.missingBeneficiaryError;
   }
 
   return undefined;
@@ -653,7 +656,7 @@ export default function Beneficiary() {
 
           {isProductFullyMaxed(product.productKey) ? (
             <Alert severity="info" sx={{ mt: 1 }}>
-              No more beneficiaries can be added online for this coverage.
+              {content.beneficiary.noMoreOnlineMessage}
             </Alert>
           ) : (
             <Button
@@ -851,7 +854,7 @@ export default function Beneficiary() {
             {!hasAnyApplicantProducts ? (
               showBeneficiaryQuestions && (
                 <Alert severity="info">
-                  No self or spouse Life/AD product selections were found.
+                  {content.beneficiary.noApplicantProductsMessage}
                 </Alert>
               )
             ) : showBeneficiaryQuestions ? (
@@ -866,7 +869,9 @@ export default function Beneficiary() {
               onClose={closeModal}
               maxWidth={600}
               title={
-                (editingId ? "Edit Beneficiary" : "Add Beneficiary") +
+                (editingId
+                  ? content.dialogs.beneficiary.editTitle
+                  : content.dialogs.beneficiary.addTitle) +
                 (activeProduct ? ` - ${activeProduct.coverageName}` : "")
               }
               actions={[
@@ -1176,7 +1181,7 @@ export default function Beneficiary() {
               open={applyToOthersOpen}
               onClose={closeApplyToOthers}
               maxWidth={600}
-              title="Apply to Other Coverages"
+              title={content.dialogs.beneficiary.applyToOthersTitle}
               actions={[
                 {
                   label: "Apply to Selected",
@@ -1192,7 +1197,7 @@ export default function Beneficiary() {
             >
               <Stack spacing={2} sx={{ pt: 0.5 }}>
                 <Typography variant="body2" color="text.secondary">
-                  Would you like to apply this beneficiary to other coverages?
+                  {content.dialogs.beneficiary.applyToOthersPrompt}
                 </Typography>
                 {(() => {
                   if (!applyToOthersSource) return null;

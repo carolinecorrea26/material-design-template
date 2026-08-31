@@ -42,6 +42,14 @@ export type HomeContent = {
     tagline: string;
     paragraphs: string[];
   };
+  quoteSection: {
+    title: string;
+    description: string;
+  };
+  reviewProcessLinkLabel: string;
+  quickDecisionAvailableSuffix: string;
+  noCoverageCategoriesMessage: string;
+  availableForLabel: string;
 };
 
 // ─── Coverage ─────────────────────────────────────────────────────────────────
@@ -54,6 +62,8 @@ export type CoverageContent = {
     spouse: string;
     child: string;
   };
+  selectAtLeastOneCategoryError: string;
+  correctErrorsMessage: string;
 };
 
 // ─── Navigation ───────────────────────────────────────────────────────────────
@@ -141,6 +151,38 @@ export type ReceiptContent = {
     softDeclined: DecisionStatusContent;
     databaseUnavailable: DecisionStatusContent;
   };
+  documentsNote: string;
+  summaryLabels: {
+    status: string;
+    applying: string;
+    requested: string;
+    submittedStatus: string;
+    defaultApplicant: string;
+  };
+  coverageDecisions: {
+    title: string;
+    description: string;
+    noSelectionsMessage: string;
+  };
+  whatHappensNext: {
+    title: string;
+    items: Array<{ title: string; description: string }>;
+  };
+  support: {
+    title: string;
+    /** Supports the {{clientName}} placeholder, resolved via resolveTemplate. */
+    administratorLabel: string;
+    callLabel: string;
+    emailLabel: string;
+  };
+};
+
+// ─── Beneficiary ──────────────────────────────────────────────────────────────
+
+export type BeneficiaryContent = {
+  noMoreOnlineMessage: string;
+  noApplicantProductsMessage: string;
+  missingBeneficiaryError: string;
 };
 
 // ─── Help / Drawer ────────────────────────────────────────────────────────────
@@ -149,8 +191,15 @@ export type HelpContent = {
   howApplyingWorks: {
     intro: string;
     steps: Array<{ title: string; body: string }>;
+    /** Titles for the nested sub-drawers opened from within the "How applying works" drawer. */
+    subDrawerTitles: {
+      applicationReview: string;
+      quickDecision: string;
+    };
   };
   applicationReview: {
+    /** Title used when this drawer is opened directly (e.g. from the Home page). */
+    title: string;
     intro: string;
     whatToExpectTitle: string;
     whatToExpectItems: string[];
@@ -186,6 +235,21 @@ export type HelpContent = {
       description: string;
     }>;
   };
+  quickDecision: {
+    /** Text preceding the "QuickDecision" mark in the drawer title, e.g. "What is". */
+    titlePrefix: string;
+    /** Text following the QuickDecision mark in the intro paragraph. */
+    intro: string;
+    whatToExpectTitle: string;
+    whatToExpectItems: string[];
+    importantToKnowTitle: string;
+    /** First item is plain text; the second item's text follows an inline QuickDecision mark. */
+    importantToKnowItems: string[];
+  };
+  coveragePortfolio: {
+    title: string;
+    intro: string;
+  };
 };
 
 // ─── Shared ───────────────────────────────────────────────────────────────────
@@ -200,6 +264,57 @@ export type SharedContent = {
   };
 };
 
+// ─── Dialogs ──────────────────────────────────────────────────────────────────
+
+export type DialogMessage = {
+  title: string;
+  message: string;
+};
+
+export type SendApplicationDialogVariant = {
+  title: string;
+  introText: string;
+};
+
+export type DialogsContent = {
+  confirmation: {
+    editApplication: DialogMessage;
+    dependentCoverage: DialogMessage;
+  };
+  sendApplication: {
+    sendToApplicant: SendApplicationDialogVariant;
+    requestEditToApplication: SendApplicationDialogVariant;
+  };
+  beneficiary: {
+    addTitle: string;
+    editTitle: string;
+    applyToOthersTitle: string;
+    applyToOthersPrompt: string;
+  };
+  coverageDetails: {
+    fallbackTitle: string;
+    benefitAmountLabel: string;
+    coverageNoteLabel: string;
+    eligibleApplicantsLabel: string;
+    waitingPeriodsLabel: string;
+    maxBenefitPeriodsLabel: string;
+    availableRidersLabel: string;
+    viewFullDetailsLinkLabel: string;
+  };
+};
+
+// ─── Inline Notes & Status Messages ──────────────────────────────────────────
+
+export type StatusMessagesContent = {
+  docusign: { heading: string; body: string };
+  healthQd: {
+    heading: string;
+    bodyBeforeMark: string;
+    bodyAfterMark: string;
+  };
+  healthCir: { body: string };
+};
+
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
 export type SiteContent = {
@@ -212,4 +327,7 @@ export type SiteContent = {
   receipt: ReceiptContent;
   help: HelpContent;
   shared: SharedContent;
+  beneficiary: BeneficiaryContent;
+  dialogs: DialogsContent;
+  statusMessages: StatusMessagesContent;
 };

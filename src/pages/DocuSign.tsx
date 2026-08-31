@@ -1,7 +1,9 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 import FormRoutePage from "../app/RoutePage";
+import { getContent } from "../content";
 
 export default function DocuSign() {
+  const content = getContent().statusMessages.docusign;
   return (
     <FormRoutePage pageId="docusign" formMaxWidth={1200}>
       <Box
@@ -24,7 +26,7 @@ export default function DocuSign() {
                 style={{ height: "1.4rem", width: "auto" }}
               />
               <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                DocuSign
+                {content.heading}
               </Typography>
             </Box>
             <Typography
@@ -32,9 +34,7 @@ export default function DocuSign() {
               color="text.secondary"
               sx={{ textAlign: "center", lineHeight: 1.6 }}
             >
-              You are about to be taken to a new page to securely review and
-              sign your application with DocuSign. Please do not close this
-              window.
+              {content.body}
             </Typography>
           </Stack>
         </Stack>

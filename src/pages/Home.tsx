@@ -1,18 +1,14 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import { keyframes } from "@mui/material/styles";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import {
-  Alert,
   Box,
   Button,
   Chip,
   CircularProgress,
-  Divider,
   Link,
   Stack,
-  Tab,
-  Tabs,
   Typography,
 } from "@mui/material";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
@@ -22,24 +18,15 @@ import EligibilityFields, {
   validateEligibility,
 } from "../components/forms/EligibilityFields";
 import AppDrawer from "../components/layout/AppDrawer";
-import QuickDecisionIndicator from "../components/ui/QuickDecisionIndicator";
-import QuickDecisionDrawerContent from "../components/content/QuickDecisionExplainer";
-import QuickDecisionInfoBox from "../components/content/QuickDecisionInfoBox";
+import CoverageOptionsPanel from "../components/ui/CoverageOptionsPanel";
+import HowApplyingWorksPanel from "../components/ui/HowApplyingWorksPanel";
+import QuickDecisionDrawerContent, {
+  QuickDecisionMark,
+} from "../components/content/QuickDecisionExplainer";
 import { ApplicationReviewDrawerContent } from "../content/helpContent";
 import { getContent, resolveTemplate } from "../content";
 import { getActiveClient } from "../config/client/getActiveClient";
-import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
-import {
-  coverageCategories,
-  getCoverageCategorySectionLabel,
-} from "../config/coverageCategories";
-import type {
-  CoverageApplicantId,
-  CoverageCategoryId,
-  CoverageDefinition,
-} from "../config/coverages/types";
 import { getPagePath } from "../config/pages";
-import { formatUSD } from "../utils/formatUSD";
 import type { HomePageVariant } from "../config/clients/types";
 
 import { SURFACE_SX } from "../config/constants";
@@ -64,29 +51,6 @@ const FADE_IN_SECTION_SX = (delay: number) => ({
 });
 
 const content = getContent();
-
-function formatCoverageRange(coverage: CoverageDefinition) {
-  if (coverage.minAmount == null && coverage.maxAmount == null) {
-    return "Coverage amount varies by selection.";
-  }
-
-  if (coverage.minAmount != null && coverage.maxAmount != null) {
-    return `${formatUSD(coverage.minAmount, 0)} - ${formatUSD(
-      coverage.maxAmount,
-      0,
-    )}`;
-  }
-
-  if (coverage.minAmount != null) {
-    return `Starting at ${formatUSD(coverage.minAmount, 0)}`;
-  }
-
-  return `Up to ${formatUSD(coverage.maxAmount ?? 0, 0)}`;
-}
-
-function getApplicantLabel(applicant: CoverageApplicantId): string {
-  return content.shared.applicantLabels[applicant];
-}
 
 // ── Home page quote card ───────────────────────────────────────────────────
 // Collects DOB/ZIP/State, then opens the QuoteCalculator drawer pre-filled.
@@ -131,10 +95,10 @@ function HomeQuoteSection({ onOpenQuote }: HomeQuoteSectionProps) {
       <Stack spacing={2.25} sx={{ p: { xs: 2.5, sm: 3 } }}>
         <Box>
           <Typography variant="h2" paddingBottom={0.5}>
-            Get an instant quote
+            {content.home.quoteSection.title}
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Find a premium and amount that&apos;s a good fit for you.
+            {content.home.quoteSection.description}
           </Typography>
         </Box>
 
@@ -166,158 +130,6 @@ function HomeQuoteSection({ onOpenQuote }: HomeQuoteSectionProps) {
   );
 }
 
-function InlineDrawerLink({
-  children,
-  onClick,
-}: {
-  children: ReactNode;
-  onClick: () => void;
-}) {
-  return (
-    <Typography
-      component="span"
-      role="button"
-      tabIndex={0}
-      onClick={onClick}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          onClick();
-        }
-      }}
-      sx={{
-        display: "inline",
-        color: "primary.main",
-        font: "inherit",
-        lineHeight: "inherit",
-        textDecoration: "underline",
-        textUnderlineOffset: "0.12em",
-        cursor: "pointer",
-      }}
-    >
-      {children}
-    </Typography>
-  );
-}
-
-function QuickDecisionMark() {
-  return (
-    <>
-      QuickDecision
-      <Box component="sup" sx={{ fontSize: "0.6em", lineHeight: 1 }}>
-        SM
-      </Box>
-    </>
-  );
-}
-
-function HowApplyingWorksSection({
-  onOpenApplicationReview,
-  onOpenQuickDecision,
-}: {
-  onOpenApplicationReview: () => void;
-  onOpenQuickDecision: () => void;
-}) {
-  const applyingSteps = content.home.applyingSteps;
-  return (
-    <Stack spacing={4}>
-      <Stack spacing={1} sx={{ textAlign: { xs: "center", md: "left" } }}>
-        <Typography variant="h2">
-          {content.home.howApplyingWorks.title}
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          {content.home.howApplyingWorks.description}
-        </Typography>
-      </Stack>
-
-      <Stack spacing={6}>
-        {applyingSteps.map((step, index) => (
-          <Box key={index} sx={{ padding: { xs: "0 1.5rem", md: "0 2rem" } }}>
-            <Stack
-              direction={{ xs: "column", sm: "row" }}
-              spacing={{ xs: 3, sm: 5 }}
-              alignItems={{ xs: "flex-start", sm: "center" }}
-            >
-              <Box
-                sx={{ flexShrink: 0, alignSelf: { xs: "center", sm: "auto" } }}
-              >
-                <Box
-                  component="img"
-                  src={step.imageSrc}
-                  alt={step.imageAlt}
-                  sx={{
-                    display: "block",
-                    width: { xs: "120px", sm: "100px", md: "120px" },
-                    height: { xs: "120px", sm: "100px", md: "120px" },
-                    objectFit: "contain",
-                  }}
-                />
-              </Box>
-
-              <Box sx={{ width: "100%" }}>
-                <Stack spacing={1}>
-                  <Stack
-                    direction="row"
-                    spacing={1.5}
-                    alignItems="center"
-                    justifyContent={{ xs: "center", sm: "flex-start" }}
-                  >
-                    <Box
-                      sx={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: "50%",
-                        bgcolor: "primary.main",
-                        color: "#fff",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "0.85rem",
-                        fontWeight: 700,
-                        flexShrink: 0,
-                      }}
-                    >
-                      {index + 1}
-                    </Box>
-                    <Typography variant="h4">{step.title}</Typography>
-                  </Stack>
-
-                  <Typography
-                    variant="body1"
-                    color="text.secondary"
-                    sx={{ textAlign: { xs: "justify", sm: "left" } }}
-                  >
-                    {step.body}
-                    {index === 1 && (
-                      <>
-                        {" "}
-                        <InlineDrawerLink onClick={onOpenApplicationReview}>
-                          Learn more about the review process.
-                        </InlineDrawerLink>
-                      </>
-                    )}
-                    {index === 2 && (
-                      <>
-                        {" "}
-                        When{" "}
-                        <InlineDrawerLink onClick={onOpenQuickDecision}>
-                          <QuickDecisionMark />
-                        </InlineDrawerLink>{" "}
-                        is available, you may get a faster decision with no
-                        medical exam.
-                      </>
-                    )}
-                  </Typography>
-                </Stack>
-              </Box>
-            </Stack>
-          </Box>
-        ))}
-      </Stack>
-    </Stack>
-  );
-}
-
 const VALID_VARIANTS: HomePageVariant[] = [
   "default",
   "hero-image",
@@ -336,64 +148,20 @@ export default function Home() {
   const showHeroImage = variant === "hero-image" || variant === "welcome-back";
   const showHowApplyingWorks = variant !== "welcome-back";
   const showCoverageOptions = variant !== "welcome-back";
-  const coverages = useMemo(() => getActiveClientCoverages(), []);
   const [activeDrawer, setActiveDrawer] = useState<DrawerId>(null);
   const [quoteDrawerOpen, setQuoteDrawerOpen] = useState(false);
   const [quoteEligibility, setQuoteEligibility] =
     useState<QuoteCalculatorInitialValues | null>(null);
-  const [activeCoverageCategory, setActiveCoverageCategory] =
-    useState<CoverageCategoryId>("LI");
   const howApplyingWorksRef = useRef<HTMLDivElement>(null);
-
-  const coverageGroups = useMemo(
-    () =>
-      coverageCategories
-        .map((category) => ({
-          category,
-          products: coverages
-            .filter((coverage) => coverage.categoryId === category.id)
-            .slice()
-            .sort((a, b) => {
-              if (a.featured && !b.featured) return -1;
-              if (!a.featured && b.featured) return 1;
-              return a.name.localeCompare(b.name);
-            }),
-        }))
-        .filter((group) => group.products.length > 0),
-    [coverages],
-  );
-
-  useEffect(() => {
-    if (coverageGroups.length === 0) return;
-
-    const nextDefault = coverageGroups.some(
-      (group) => group.category.id === "LI",
-    )
-      ? "LI"
-      : coverageGroups[0].category.id;
-
-    const hasActive = coverageGroups.some(
-      (group) => group.category.id === activeCoverageCategory,
-    );
-
-    if (!hasActive) {
-      setActiveCoverageCategory(nextDefault);
-    }
-  }, [activeCoverageCategory, coverageGroups]);
-
-  const activeCoverageGroup =
-    coverageGroups.find(
-      (group) => group.category.id === activeCoverageCategory,
-    ) ?? coverageGroups[0];
 
   const DRAWER_CONFIG: Record<Exclude<DrawerId, null>, { title: ReactNode }> = {
     "application-review": {
-      title: "About the application review process",
+      title: content.help.applicationReview.title,
     },
     "quick-decision": {
       title: (
         <>
-          What is <QuickDecisionMark />?
+          {content.help.quickDecision.titlePrefix} <QuickDecisionMark />?
         </>
       ),
     },
@@ -604,7 +372,8 @@ export default function Home() {
         </Box>
         {showHowApplyingWorks && (
           <Box ref={howApplyingWorksRef} sx={FADE_IN_SECTION_SX(0.15)}>
-            <HowApplyingWorksSection
+            <HowApplyingWorksPanel
+              variant="page"
               onOpenApplicationReview={() =>
                 setActiveDrawer("application-review")
               }
@@ -624,164 +393,10 @@ export default function Home() {
               </Typography>
             </Stack>
 
-            <QuickDecisionInfoBox
-              onLearnMore={() => setActiveDrawer("quick-decision")}
+            <CoverageOptionsPanel
+              variant="page"
+              onLearnMoreQuickDecision={() => setActiveDrawer("quick-decision")}
             />
-
-            <Box
-              sx={{
-                ...SURFACE_SX,
-                overflow: "hidden",
-                background:
-                  "linear-gradient(135deg, #f4f8ff 0%, #ffffff 52%, #f7fbff 100%)",
-              }}
-            >
-              {coverageGroups.length === 0 ? (
-                <Box sx={{ p: { xs: 2.5, md: 3 } }}>
-                  <Alert severity="info">
-                    No coverage categories are currently available for this
-                    site.
-                  </Alert>
-                </Box>
-              ) : (
-                <Stack
-                  direction="row"
-                  divider={<Divider flexItem orientation="vertical" />}
-                >
-                  <Box
-                    sx={{
-                      width: { xs: 56, md: 260 },
-                      flexShrink: 0,
-                      backgroundColor: {
-                        xs: "transparent",
-                        md: "background.subtle",
-                      },
-                    }}
-                  >
-                    <Tabs
-                      value={activeCoverageGroup?.category.id ?? false}
-                      onChange={(_, value: CoverageCategoryId) =>
-                        setActiveCoverageCategory(value)
-                      }
-                      orientation="vertical"
-                      variant="standard"
-                      sx={{
-                        px: { xs: 0, md: 0 },
-                        py: { xs: 1, md: 2 },
-                        minHeight: "100%",
-                        "& .MuiTabs-indicator": {
-                          backgroundColor: "primary.main",
-                        },
-                        "& .MuiTab-root": {
-                          alignItems: "center",
-                          justifyContent: { xs: "center", md: "flex-start" },
-                          textAlign: "left",
-                          textTransform: "none",
-                          fontWeight: 600,
-                          fontSize: "0.95rem",
-                          minHeight: 52,
-                          minWidth: { xs: 56, md: "auto" },
-                          px: { xs: 0, md: 2 },
-                        },
-                      }}
-                    >
-                      {coverageGroups.map(({ category }) => {
-                        const IconComponent = category.icon;
-                        return (
-                          <Tab
-                            key={category.id}
-                            value={category.id}
-                            icon={
-                              <IconComponent sx={{ fontSize: "1.25rem" }} />
-                            }
-                            iconPosition="start"
-                            label={
-                              <Box
-                                component="span"
-                                sx={{ display: { xs: "none", md: "inline" } }}
-                              >
-                                {category.label}
-                              </Box>
-                            }
-                            sx={{
-                              gap: 1,
-                              "& .MuiTab-iconWrapper": {
-                                mr: { xs: 0, md: 1 },
-                              },
-                            }}
-                          />
-                        );
-                      })}
-                    </Tabs>
-                  </Box>
-
-                  <Box sx={{ flex: 1, p: { xs: 2.5, md: 3 } }}>
-                    {activeCoverageGroup ? (
-                      <Stack spacing={2}>
-                        <Stack spacing={0.75}>
-                          <Typography variant="h4">
-                            {getCoverageCategorySectionLabel(
-                              activeCoverageGroup.category.id,
-                              client.coverages.categorySectionLabels,
-                            )}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {
-                              content.coverage.categoryDescriptions[
-                                activeCoverageGroup.category.id
-                              ]
-                            }
-                          </Typography>
-                        </Stack>
-
-                        <Divider />
-
-                        <Stack spacing={1.5}>
-                          {activeCoverageGroup.products.map((product) => (
-                            <Box key={product.id}>
-                              <Stack spacing={0.4}>
-                                <Link
-                                  href="#"
-                                  underline="hover"
-                                  onClick={(event) => event.preventDefault()}
-                                  sx={{
-                                    fontWeight: 700,
-                                    color: "primary.main",
-                                    cursor: "pointer",
-                                    width: "fit-content",
-                                  }}
-                                >
-                                  {product.name}
-                                  {product.underwritingType === "QD" && (
-                                    <QuickDecisionIndicator />
-                                  )}
-                                </Link>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                >
-                                  {product.description ?? product.definition}
-                                </Typography>
-                                <Typography
-                                  variant="caption"
-                                  color="text.secondary"
-                                >
-                                  {formatCoverageRange(product)} · Available
-                                  for:{" "}
-                                  {product.applicants
-                                    .map(getApplicantLabel)
-                                    .join(", ")}
-                                </Typography>
-                              </Stack>
-                            </Box>
-                          ))}
-                        </Stack>
-                      </Stack>
-                    ) : null}
-                  </Box>
-                </Stack>
-              )}
-            </Box>
           </Stack>
         )}
 

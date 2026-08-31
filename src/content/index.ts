@@ -12,6 +12,9 @@ import {
   helpDefaults,
   sharedDefaults,
   pagesDefaults,
+  beneficiaryDefaults,
+  dialogsDefaults,
+  statusMessagesDefaults,
 } from "./defaults";
 import { clientContentOverrides } from "./clients";
 
@@ -94,6 +97,18 @@ function buildContent(clientId: ClientId): SiteContent {
     shared: deepMerge(
       sharedDefaults,
       overrides?.shared as DeepPartial<typeof sharedDefaults>,
+    ),
+    beneficiary: deepMerge(
+      beneficiaryDefaults,
+      overrides?.beneficiary as DeepPartial<typeof beneficiaryDefaults>,
+    ),
+    dialogs: deepMerge(
+      dialogsDefaults,
+      overrides?.dialogs as DeepPartial<typeof dialogsDefaults>,
+    ),
+    statusMessages: deepMerge(
+      statusMessagesDefaults,
+      overrides?.statusMessages as DeepPartial<typeof statusMessagesDefaults>,
     ),
   };
 }

@@ -36,7 +36,9 @@ import {
   isQuickDecisionUnderwritingType,
   formatCurrencyAmount,
 } from "../utils/coverageDecisions";
+import { getContent, resolveTemplate } from "../content";
 
+const receiptContent = getContent().receipt;
 const RECEIPT_CONFIRMATION_KEY = "receiptConfirmationNumber";
 
 function hashStringToDigits(input: string): string {
@@ -178,9 +180,7 @@ export default function Receipt() {
             </Typography>
 
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Please save a copy of your application documents before leaving
-              this page. For security purposes, a digital copy will not be sent
-              by email.
+              {receiptContent.documentsNote}
             </Typography>
 
             <Stack
@@ -236,7 +236,7 @@ export default function Receipt() {
         >
           <Box>
             <Typography variant="caption" color="text.secondary" noWrap>
-              Status
+              {receiptContent.summaryLabels.status}
             </Typography>
             <Typography
               sx={{
@@ -245,12 +245,12 @@ export default function Receipt() {
               }}
               noWrap
             >
-              Submitted
+              {receiptContent.summaryLabels.submittedStatus}
             </Typography>
           </Box>
           <Box>
             <Typography variant="caption" color="text.secondary" noWrap>
-              Applying
+              {receiptContent.summaryLabels.applying}
             </Typography>
             <Typography
               sx={{
@@ -259,12 +259,12 @@ export default function Receipt() {
               }}
               noWrap
             >
-              {uniqueApplicants || "Member"}
+              {uniqueApplicants || receiptContent.summaryLabels.defaultApplicant}
             </Typography>
           </Box>
           <Box>
             <Typography variant="caption" color="text.secondary" noWrap>
-              Requested
+              {receiptContent.summaryLabels.requested}
             </Typography>
             <Typography
               sx={{
@@ -288,10 +288,10 @@ export default function Receipt() {
           {/* Main column - Coverage decisions */}
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography variant="h5" component="h2" sx={{ mb: 0.5 }}>
-              Coverage decisions
+              {receiptContent.coverageDecisions.title}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>
-              Review the current status for each coverage you applied for.
+              {receiptContent.coverageDecisions.description}
             </Typography>
 
             {hasApplicantSelections ? (
@@ -482,8 +482,7 @@ export default function Receipt() {
             ) : (
               <ProductCard sx={{ p: 3 }}>
                 <Alert severity="info" variant="outlined">
-                  No selected coverage details are available for this
-                  application.
+                  {receiptContent.coverageDecisions.noSelectionsMessage}
                 </Alert>
               </ProductCard>
             )}
@@ -506,59 +505,39 @@ export default function Receipt() {
                 }}
               >
                 <Typography variant="h6" sx={{ mb: 2 }}>
-                  What happens next?
+                  {receiptContent.whatHappensNext.title}
                 </Typography>
                 <Stack spacing={2}>
-                  <Stack direction="row" spacing={1.5} alignItems="flex-start">
-                    <FileDownloadRoundedIcon
-                      sx={{ color: "primary.main", fontSize: 20, mt: 0.25 }}
-                    />
-                    <Box>
-                      <Typography
-                        variant="body2"
-                        sx={{ fontWeight: 600, lineHeight: 1.4 }}
+                  {[
+                    FileDownloadRoundedIcon,
+                    CheckCircleRoundedIcon,
+                    HeadsetMicIcon,
+                  ].map((IconComponent, index) => {
+                    const item = receiptContent.whatHappensNext.items[index];
+                    return (
+                      <Stack
+                        key={item.title}
+                        direction="row"
+                        spacing={1.5}
+                        alignItems="flex-start"
                       >
-                        Save your documents
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        Download your PDFs before leaving this page.
-                      </Typography>
-                    </Box>
-                  </Stack>
-                  <Stack direction="row" spacing={1.5} alignItems="flex-start">
-                    <CheckCircleRoundedIcon
-                      sx={{ color: "primary.main", fontSize: 20, mt: 0.25 }}
-                    />
-                    <Box>
-                      <Typography
-                        variant="body2"
-                        sx={{ fontWeight: 600, lineHeight: 1.4 }}
-                      >
-                        Eligibility is confirmed
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        Your group plan administrator completes final
-                        eligibility review.
-                      </Typography>
-                    </Box>
-                  </Stack>
-                  <Stack direction="row" spacing={1.5} alignItems="flex-start">
-                    <HeadsetMicIcon
-                      sx={{ color: "primary.main", fontSize: 20, mt: 0.25 }}
-                    />
-                    <Box>
-                      <Typography
-                        variant="body2"
-                        sx={{ fontWeight: 600, lineHeight: 1.4 }}
-                      >
-                        You&rsquo;ll be contacted if needed
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        Additional information may be requested for coverage
-                        sent for review.
-                      </Typography>
-                    </Box>
-                  </Stack>
+                        <IconComponent
+                          sx={{ color: "primary.main", fontSize: 20, mt: 0.25 }}
+                        />
+                        <Box>
+                          <Typography
+                            variant="body2"
+                            sx={{ fontWeight: 600, lineHeight: 1.4 }}
+                          >
+                            {item.title}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {item.description}
+                          </Typography>
+                        </Box>
+                      </Stack>
+                    );
+                  })}
                 </Stack>
               </Box>
 
@@ -572,7 +551,7 @@ export default function Receipt() {
                   }}
                 >
                   <Typography variant="h6" sx={{ mb: 1 }}>
-                    Questions? We&rsquo;re here to help.
+                    {receiptContent.support.title}
                   </Typography>
 
                   <Typography
@@ -580,7 +559,7 @@ export default function Receipt() {
                     color="text.secondary"
                     sx={{ mb: 1.5 }}
                   >
-                    {client.branding.name} Insurance Administrator
+                    {resolveTemplate(receiptContent.support.administratorLabel)}
                   </Typography>
 
                   {supportPhone && (
@@ -588,7 +567,7 @@ export default function Receipt() {
                       variant="body2"
                       sx={{ fontWeight: 600, mb: 0.5 }}
                     >
-                      Call:{" "}
+                      {receiptContent.support.callLabel}{" "}
                       <Link
                         href={`tel:${getTelHref(supportPhone)}`}
                         underline="none"
@@ -601,7 +580,7 @@ export default function Receipt() {
 
                   {supportEmail && (
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      Email:{" "}
+                      {receiptContent.support.emailLabel}{" "}
                       <Link
                         href={`mailto:${supportEmail}`}
                         underline="none"

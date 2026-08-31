@@ -66,6 +66,10 @@ export function useCoverageState() {
   const [productsLoading, setProductsLoading] = useState(false);
   const [qdDrawerOpen, setQdDrawerOpen] = useState(false);
   const [summaryDrawerOpen, setSummaryDrawerOpen] = useState(false);
+  // Tracks whether the "Coverage added" drawer has been shown for the very
+  // first product added in this session. Subsequent adds use a snackbar.
+  const initialDrawerShownRef = useRef(false);
+  const [addedSnackbarOpen, setAddedSnackbarOpen] = useState(false);
   const rateCalculationTimersRef = useRef<Record<string, number>>({});
   const productsLoadingTimerRef = useRef<number | null>(null);
 
@@ -493,7 +497,15 @@ export function useCoverageState() {
     });
 
     if (isAdding) {
-      setSummaryDrawerOpen(true);
+      // Show the "Coverage added" drawer only on the very first product added
+      // from a state of zero selections. For all subsequent adds, show a snackbar.
+      const wasEmpty = selectedCoverageIds.length === 0 && !currentlySelected;
+      if (wasEmpty && !initialDrawerShownRef.current) {
+        initialDrawerShownRef.current = true;
+        setSummaryDrawerOpen(true);
+      } else {
+        setAddedSnackbarOpen(true);
+      }
     }
   }
 
@@ -704,11 +716,13 @@ export function useCoverageState() {
     selectionCalculating,
     showRateFrequencyToggle,
 
-    // Drawer state
+    // Drawer / snackbar state
     qdDrawerOpen,
     setQdDrawerOpen,
     summaryDrawerOpen,
     setSummaryDrawerOpen,
+    addedSnackbarOpen,
+    setAddedSnackbarOpen,
 
     // Handlers
     handleCategoryToggle,

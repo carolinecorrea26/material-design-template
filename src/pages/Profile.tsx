@@ -20,6 +20,9 @@ import {
   getApplicantEmail,
   getApplicantName,
 } from "../utils/applicantIdentity";
+import { getContent } from "../content";
+
+const sendToApplicantContent = getContent().dialogs.sendApplication.sendToApplicant;
 
 // Layout groupings — fields that render side-by-side in grids
 const heightFields = new Set(["height-feet", "height-inches"]);
@@ -519,8 +522,8 @@ export default function Profile() {
           open={sendDialogOpen}
           onClose={handleSendCancel}
           onConfirm={handleSendConfirm}
-          title="Send to applicant for review"
-          introText="This application will be sent to the following applicant for review, completion of any remaining steps, and e-signature."
+          title={sendToApplicantContent.title}
+          introText={sendToApplicantContent.introText}
           recipientName={applicantName}
           recipientEmail={applicantEmail}
           recipientLabel="applicant"

@@ -33,6 +33,9 @@ import { router } from "../../app/router";
 import CoverageCart, { useCoverageCartBadge } from "../ui/CoverageCart";
 import type { AppShellVariant } from "./AppShell";
 import ClientHelpBanner from "./ClientHelpBanner";
+import { getContent } from "../../content";
+
+const coverageDetailsContent = getContent().dialogs.coverageDetails;
 
 type AppHeaderProps = {
   client: ClientConfig;
@@ -348,7 +351,9 @@ export default function AppHeader({
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>{activeCoverage?.name ?? "Coverage Details"}</DialogTitle>
+        <DialogTitle>
+          {activeCoverage?.name ?? coverageDetailsContent.fallbackTitle}
+        </DialogTitle>
         <DialogContent dividers>
           <Stack spacing={1.5}>
             <Typography variant="body2" color="text.secondary">
@@ -356,14 +361,14 @@ export default function AppHeader({
             </Typography>
             <Typography variant="body2">
               <Box component="span" sx={{ fontWeight: 700 }}>
-                Benefit amount:
+                {coverageDetailsContent.benefitAmountLabel}
               </Box>{" "}
               {activeCoverage ? formatCoverageRange(activeCoverage) : "-"}
             </Typography>
             {activeCoverage?.coverageNote ? (
               <Typography variant="body2">
                 <Box component="span" sx={{ fontWeight: 700 }}>
-                  Coverage note:
+                  {coverageDetailsContent.coverageNoteLabel}
                 </Box>{" "}
                 {activeCoverage.coverageNote}
               </Typography>
@@ -371,7 +376,7 @@ export default function AppHeader({
             {activeCoverage ? (
               <Typography variant="body2">
                 <Box component="span" sx={{ fontWeight: 700 }}>
-                  Eligible applicants:
+                  {coverageDetailsContent.eligibleApplicantsLabel}
                 </Box>{" "}
                 {formatApplicants(activeCoverage.applicants)}
               </Typography>
@@ -379,7 +384,7 @@ export default function AppHeader({
             {activeCoverage?.waitingPeriodOptions?.length ? (
               <Typography variant="body2">
                 <Box component="span" sx={{ fontWeight: 700 }}>
-                  Waiting periods:
+                  {coverageDetailsContent.waitingPeriodsLabel}
                 </Box>{" "}
                 {activeCoverage.waitingPeriodOptions
                   .map((option) => option.label)
@@ -389,7 +394,7 @@ export default function AppHeader({
             {activeCoverage?.maxBenefitPeriodOptions?.length ? (
               <Typography variant="body2">
                 <Box component="span" sx={{ fontWeight: 700 }}>
-                  Max benefit periods:
+                  {coverageDetailsContent.maxBenefitPeriodsLabel}
                 </Box>{" "}
                 {activeCoverage.maxBenefitPeriodOptions
                   .map((option) => option.label)
@@ -399,7 +404,7 @@ export default function AppHeader({
             {activeCoverage?.riders?.length ? (
               <Stack spacing={0.75}>
                 <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                  Available riders
+                  {coverageDetailsContent.availableRidersLabel}
                 </Typography>
                 {activeCoverage.riders.map((rider) => (
                   <Typography
@@ -419,7 +424,7 @@ export default function AppHeader({
               color="primary"
               sx={{ alignSelf: "flex-start", fontWeight: 700 }}
             >
-              View full coverage details
+              {coverageDetailsContent.viewFullDetailsLinkLabel}
             </Link>
           </Stack>
         </DialogContent>

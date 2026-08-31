@@ -15,4 +15,6 @@ export const coverageDefaults: CoverageContent = {
     spouse: "Select for my spouse",
     child: "Select for my child",
   },
+  selectAtLeastOneCategoryError: "Please select at least one coverage category.",
+  correctErrorsMessage: "Please correct the errors below before continuing.",
 };

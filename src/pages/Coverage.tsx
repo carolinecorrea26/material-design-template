@@ -19,6 +19,10 @@ import { useApplicationForm } from "../app/ApplicationFormContext";
 import type { CoverageApplicantId } from "../config/coverages/types";
 import type { BeforeNextContext } from "../app/RoutePage";
 import ConfirmationDialog from "../components/layout/ConfirmationDialog";
+import { getContent } from "../content";
+import AppSnackbar from "../components/feedback/AppSnackbar";
+
+const content = getContent();
 
 export default function Coverage() {
   const state = useCoverageState();
@@ -172,11 +176,18 @@ export default function Coverage() {
           <ConfirmationDialog
             open={dependentCoverageDialogOpen}
             onClose={handleDependentCoverageCancel}
-            title="Dependent coverage"
-            message="To apply for dependent coverage, the member must be insured with this group coverage."
+            title={content.dialogs.confirmation.dependentCoverage.title}
+            message={content.dialogs.confirmation.dependentCoverage.message}
             confirmLabel="Continue"
             cancelLabel="Cancel"
             onConfirm={handleDependentCoverageContinue}
+          />
+
+          <AppSnackbar
+            open={state.addedSnackbarOpen}
+            onClose={() => state.setAddedSnackbarOpen(false)}
+            message="Added"
+            severity="success"
           />
         </>
       )}
@@ -242,7 +253,7 @@ function CoveragePageContent({
           selectedIds={state.selectedCategories}
           onToggle={state.handleCategoryToggle}
           error={state.selectedCategories.length === 0 && !!pageError}
-          errorMessage="Please select at least one coverage category."
+          errorMessage={content.coverage.selectAtLeastOneCategoryError}
         />
 
         {/* Category-level question fields */}
@@ -323,9 +334,7 @@ function CoveragePageContent({
               onClick={async () => {
                 const isValid = await trigger();
                 if (!isValid) {
-                  setPageError(
-                    "Please correct the errors below before continuing.",
-                  );
+                  setPageError(content.coverage.correctErrorsMessage);
                   // Scroll to first invalid field
                   requestAnimationFrame(() => {
                     const firstErrorField = document.querySelector(
@@ -357,7 +366,7 @@ function CoveragePageContent({
         open={state.qdDrawerOpen}
         title={
           <>
-            What is <QuickDecisionMark />?
+            {content.help.quickDecision.titlePrefix} <QuickDecisionMark />?
           </>
         }
         onClose={() => state.setQdDrawerOpen(false)}

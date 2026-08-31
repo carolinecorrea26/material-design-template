@@ -18,8 +18,13 @@ export const helpDefaults: HelpContent = {
         body: "Decisions are made after all information is received and reviewed by New York Life. If approved, you will receive a certificate of insurance and have a 30-day no-obligation free look.",
       },
     ],
+    subDrawerTitles: {
+      applicationReview: "Application review process",
+      quickDecision: "QuickDecision",
+    },
   },
   applicationReview: {
+    title: "About the application review process",
     intro:
       "During the application review process, also known as underwriting, our team will review your application to provide a decision on your application.",
     whatToExpectTitle: "What to expect",
@@ -112,5 +117,26 @@ export const helpDefaults: HelpContent = {
           "You can cancel your application at any time before approval with no obligation. All payment and application information is purged from our systems 10 days after submission if no action is taken or the application is not approved.",
       },
     ],
+  },
+  quickDecision: {
+    titlePrefix: "What is",
+    intro:
+      "helps speed up your application by using your answers to health questions along with securely accessed data, such as prescription history, medical claims, driving records, and prior insurance activity. In many cases, this means no medical exams or lab tests are needed.",
+    whatToExpectTitle: "What to expect",
+    whatToExpectItems: [
+      "Most decisions are made quickly.",
+      "Some applications may need additional review.",
+      "If so, an underwriter may contact you for more information.",
+    ],
+    importantToKnowTitle: "Important to know",
+    importantToKnowItems: [
+      "Approval depends on confirming your group status and eligibility for the coverage amount selected.",
+      "may not be available for all products or in all states/territories.",
+    ],
+  },
+  coveragePortfolio: {
+    title: "Coverage portfolio",
+    intro:
+      "The following coverage is currently in force based on your membership record.",
   },
 };

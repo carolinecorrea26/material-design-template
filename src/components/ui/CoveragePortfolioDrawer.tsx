@@ -6,6 +6,7 @@ import {
   Typography,
 } from "@mui/material";
 import AppDrawer from "../layout/AppDrawer";
+import { getContent } from "../../content";
 
 // ---------------------------------------------------------------------------
 // Dummy existing-coverage data
@@ -66,13 +67,18 @@ export default function CoveragePortfolioDrawer({
   const visiblePortfolio = DUMMY_PORTFOLIO.filter(
     (p) => p.applicant === "self" || hasSpouse,
   );
+  const coveragePortfolioContent = getContent().help.coveragePortfolio;
 
   return (
-    <AppDrawer open={open} onClose={onClose} title="Coverage portfolio" swipeable>
+    <AppDrawer
+      open={open}
+      onClose={onClose}
+      title={coveragePortfolioContent.title}
+      swipeable
+    >
       <Stack spacing={3}>
         <Typography variant="body2" color="text.secondary">
-          The following coverage is currently in force based on your membership
-          record.
+          {coveragePortfolioContent.intro}
         </Typography>
         {visiblePortfolio.map((portfolio, index) => (
           <Box key={portfolio.applicant}>

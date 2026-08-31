@@ -103,7 +103,8 @@ function getValidationRules(field: FieldDefinition) {
 
   if (field.inputType === "checkbox") {
     if (field.required) {
-      rules.validate = (value) => value === true || "This field is required.";
+      rules.validate = (value) =>
+        value === true || `${field.label} is required.`;
     }
 
     return rules;
@@ -132,7 +133,7 @@ function getValidationRules(field: FieldDefinition) {
   }
 
   if (field.required) {
-    rules.required = "This field is required.";
+    rules.required = `${field.label} is required.`;
   }
 
   if (isZipOrPostalField(field)) {

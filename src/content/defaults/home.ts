@@ -15,7 +15,7 @@ export const homeDefaults: HomeContent = {
     resumeLinkLabel: "Continue here",
   },
   howApplyingWorks: {
-    title: "How applying works",
+    title: "How does applying work?",
     description: "Three simple steps from application to coverage.",
   },
   applyingSteps: [
@@ -55,4 +55,14 @@ export const homeDefaults: HomeContent = {
       { grade: "AA+", source: "Standard & Poor's" },
     ],
   },
+  quoteSection: {
+    title: "Get an instant quote",
+    description: "Find a premium and amount that's a good fit for you.",
+  },
+  reviewProcessLinkLabel: "Learn more about the review process.",
+  quickDecisionAvailableSuffix:
+    " is available, you may get a faster decision with no medical exam.",
+  noCoverageCategoriesMessage:
+    "No coverage categories are currently available for this site.",
+  availableForLabel: "Available for:",
 };

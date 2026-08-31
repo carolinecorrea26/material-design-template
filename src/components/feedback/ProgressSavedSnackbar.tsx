@@ -1,4 +1,4 @@
-import { Alert, Snackbar } from "@mui/material";
+import AppSnackbar from "./AppSnackbar";
 
 type ProgressSavedSnackbarProps = {
   open: boolean;
@@ -10,15 +10,12 @@ export default function ProgressSavedSnackbar({
   onClose,
 }: ProgressSavedSnackbarProps) {
   return (
-    <Snackbar
+    <AppSnackbar
       open={open}
-      autoHideDuration={2000}
       onClose={onClose}
-      anchorOrigin={{ vertical: "top", horizontal: "center" }}
-    >
-      <Alert onClose={onClose} severity="success" variant="filled">
-        Progress saved
-      </Alert>
-    </Snackbar>
+      message="Progress saved"
+      severity="success"
+      autoHideDuration={2000}
+    />
   );
 }

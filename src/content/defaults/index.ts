@@ -7,3 +7,6 @@ export { receiptDefaults } from "./receipt";
 export { helpDefaults } from "./help";
 export { sharedDefaults } from "./shared";
 export { pagesDefaults } from "./pages";
+export { beneficiaryDefaults } from "./beneficiary";
+export { dialogsDefaults } from "./dialogs";
+export { statusMessagesDefaults } from "./statusMessages";

@@ -1,5 +1,41 @@
+import type { ReactNode } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
+import { getContent } from "../../content";
+
+function InlineDrawerLink({
+  children,
+  onClick,
+}: {
+  children: ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <Typography
+      component="span"
+      role="button"
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onClick();
+        }
+      }}
+      sx={{
+        display: "inline",
+        color: "primary.main",
+        font: "inherit",
+        lineHeight: "inherit",
+        textDecoration: "underline",
+        textUnderlineOffset: "0.12em",
+        cursor: "pointer",
+      }}
+    >
+      {children}
+    </Typography>
+  );
+}
 
 function QuickDecisionMark() {
   return (
@@ -34,48 +70,44 @@ function QuickDecisionMarkStyled() {
   );
 }
 
-export { QuickDecisionMark, QuickDecisionMarkStyled };
+export { InlineDrawerLink, QuickDecisionMark, QuickDecisionMarkStyled };
 
 export default function QuickDecisionDrawerContent() {
+  const content = getContent().help.quickDecision;
   return (
     <Stack spacing={2}>
       <Typography variant="body2" color="text.secondary">
-        <QuickDecisionMarkStyled /> helps speed up your application by using
-        your answers to health questions along with securely accessed data, such
-        as prescription history, medical claims, driving records, and prior
-        insurance activity. In many cases, this means no medical exams or lab
-        tests are needed.
+        <QuickDecisionMarkStyled /> {content.intro}
       </Typography>
 
       <Box>
         <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-          What to expect
+          {content.whatToExpectTitle}
         </Typography>
         <Stack component="ul" spacing={1} sx={{ m: 0, pl: 2.5 }}>
-          <Typography component="li" variant="body2" color="text.secondary">
-            Most decisions are made quickly.
-          </Typography>
-          <Typography component="li" variant="body2" color="text.secondary">
-            Some applications may need additional review.
-          </Typography>
-          <Typography component="li" variant="body2" color="text.secondary">
-            If so, an underwriter may contact you for more information.
-          </Typography>
+          {content.whatToExpectItems.map((item, i) => (
+            <Typography
+              key={i}
+              component="li"
+              variant="body2"
+              color="text.secondary"
+            >
+              {item}
+            </Typography>
+          ))}
         </Stack>
       </Box>
 
       <Box>
         <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-          Important to know
+          {content.importantToKnowTitle}
         </Typography>
         <Stack component="ul" spacing={1} sx={{ m: 0, pl: 2.5 }}>
           <Typography component="li" variant="body2" color="text.secondary">
-            Approval depends on confirming your group status and eligibility for
-            the coverage amount selected.
+            {content.importantToKnowItems[0]}
           </Typography>
           <Typography component="li" variant="body2" color="text.secondary">
-            <QuickDecisionMark /> may not be available for all products or in
-            all states/territories.
+            <QuickDecisionMark /> {content.importantToKnowItems[1]}
           </Typography>
         </Stack>
       </Box>

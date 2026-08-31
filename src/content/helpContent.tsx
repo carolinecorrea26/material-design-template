@@ -1,13 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
-import {
-  Box,
-  Divider,
-  Link,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
-} from "@mui/material";
+import { Box, Stack, Link, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
 import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
@@ -16,17 +7,13 @@ import CreditCardOffOutlinedIcon from "@mui/icons-material/CreditCardOffOutlined
 import LoopRoundedIcon from "@mui/icons-material/LoopRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import CoverageNeedsCalculator from "../components/forms/CoverageNeedsCalculator";
-import AppDrawer from "../components/layout/AppDrawer";
 import type { FormPageHelpItem } from "../components/content/HelpChips";
-import QuickDecisionDrawerContent from "../components/content/QuickDecisionExplainer";
-import { QuickDecisionMark } from "../components/content/QuickDecisionExplainer";
-import QuickDecisionInfoBox from "../components/content/QuickDecisionInfoBox";
-import QuickDecisionIndicator from "../components/ui/QuickDecisionIndicator";
-import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
-import { coverageCategories } from "../config/coverageCategories";
+import { InlineDrawerLink, QuickDecisionMark } from "../components/content/QuickDecisionExplainer";
+import CoverageOptionsPanel from "../components/ui/CoverageOptionsPanel";
+import HowApplyingWorksPanel from "../components/ui/HowApplyingWorksPanel";
 import { getContent, resolveTemplate } from "./index";
+import type { coverageCategories } from "../config/coverageCategories";
 import type {
-  CoverageApplicantId,
   CoverageCategoryId,
   CoverageDefinition,
 } from "../config/coverages/types";
@@ -35,46 +22,6 @@ type CoverageProductGroup = {
   category: (typeof coverageCategories)[number];
   products: CoverageDefinition[];
 };
-
-function getApplicantLabel(applicant: CoverageApplicantId): string {
-  return getContent().shared.applicantLabels[applicant];
-}
-
-function InlineDrawerLink({
-  children,
-  onClick,
-}: {
-  children: ReactNode;
-  onClick: () => void;
-}) {
-  return (
-    <Typography
-      component="span"
-      role="button"
-      tabIndex={0}
-      onClick={onClick}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          onClick();
-        }
-      }}
-      sx={{
-        display: "inline",
-        color: "primary.main",
-        font: "inherit",
-        lineHeight: "inherit",
-        textDecoration: "underline",
-        textUnderlineOffset: "0.12em",
-        cursor: "pointer",
-      }}
-    >
-      {children}
-    </Typography>
-  );
-}
-
-const helpSteps = getContent().help.howApplyingWorks.steps;
 
 export function ApplicationReviewDrawerContent({
   onOpenQuickDecision,
@@ -117,80 +64,6 @@ export function ApplicationReviewDrawerContent({
           .join("QuickDecision")}
       </Typography>
     </Stack>
-  );
-}
-
-export function HowApplyingWorksDrawerContent() {
-  type SubDrawerId = "application-review" | "quick-decision" | null;
-  const [subDrawer, setSubDrawer] = useState<SubDrawerId>(null);
-  const helpContent = getContent().help.howApplyingWorks;
-
-  return (
-    <>
-      <Stack spacing={3}>
-        <Typography variant="body2" color="text.secondary">
-          {helpContent.intro}
-        </Typography>
-
-        {helpSteps.map((step, index) => (
-          <Stack
-            key={index}
-            direction="row"
-            spacing={2}
-            alignItems="flex-start"
-          >
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
-                {step.title}
-              </Typography>
-              {index === 1 ? (
-                <Typography variant="body2" color="text.secondary">
-                  {step.body}{" "}
-                  <InlineDrawerLink
-                    onClick={() => setSubDrawer("application-review")}
-                  >
-                    Learn more about the application review process.
-                  </InlineDrawerLink>
-                </Typography>
-              ) : index === 2 ? (
-                <Typography variant="body2" color="text.secondary">
-                  {step.body} When{" "}
-                  <InlineDrawerLink
-                    onClick={() => setSubDrawer("quick-decision")}
-                  >
-                    <QuickDecisionMark />
-                  </InlineDrawerLink>{" "}
-                  is available, you can get a faster decision on your
-                  application, typically with no medical exam.
-                </Typography>
-              ) : (
-                <Typography variant="body2" color="text.secondary">
-                  {step.body}
-                </Typography>
-              )}
-            </Box>
-          </Stack>
-        ))}
-      </Stack>
-
-      <AppDrawer
-        open={subDrawer !== null}
-        title={
-          subDrawer === "application-review"
-            ? "Application review process"
-            : "QuickDecision"
-        }
-        onClose={() => setSubDrawer(null)}
-      >
-        {subDrawer === "application-review" ? (
-          <ApplicationReviewDrawerContent
-            onOpenQuickDecision={() => setSubDrawer("quick-decision")}
-          />
-        ) : (
-          <QuickDecisionDrawerContent />
-        )}
-      </AppDrawer>
-    </>
   );
 }
 
@@ -277,153 +150,8 @@ export function CoverageProductsDrawerContent({
 export function CoverageOptionsDrawerContent({
   initialCategory,
 }: { initialCategory?: CoverageCategoryId } = {}) {
-  const coverages = getActiveClientCoverages();
-  const coverageGroups = coverageCategories
-    .map((category) => ({
-      category,
-      products: coverages.filter((c) => c.categoryId === category.id),
-    }))
-    .filter((group) => group.products.length > 0);
-
-  const [activeCategory, setActiveCategory] = useState<CoverageCategoryId>(
-    initialCategory ?? coverageGroups[0]?.category.id ?? "LI",
-  );
-
-  useEffect(() => {
-    if (initialCategory) {
-      setActiveCategory(initialCategory);
-    }
-  }, [initialCategory]);
-
-  const activeGroup = coverageGroups.find(
-    (g) => g.category.id === activeCategory,
-  );
-
-  if (coverageGroups.length === 0) {
-    return (
-      <Typography variant="body2" color="text.secondary">
-        No coverage categories are currently available.
-      </Typography>
-    );
-  }
-
   return (
-    <Stack spacing={0}>
-      <QuickDecisionInfoBox />
-
-      <Box
-        sx={{
-          border: "1px solid",
-          borderColor: "divider",
-          borderRadius: 2,
-          overflow: "hidden",
-        }}
-      >
-        <Stack
-          direction="row"
-          divider={<Divider flexItem orientation="vertical" />}
-        >
-          <Box
-            sx={{
-              width: 56,
-              flexShrink: 0,
-              backgroundColor: "background.subtle",
-            }}
-          >
-            <Tabs
-              value={activeCategory}
-              onChange={(_, value: CoverageCategoryId) =>
-                setActiveCategory(value)
-              }
-              orientation="vertical"
-              variant="standard"
-              sx={{
-                py: 1,
-                minHeight: "100%",
-                "& .MuiTabs-indicator": {
-                  backgroundColor: "primary.main",
-                },
-                "& .MuiTab-root": {
-                  alignItems: "center",
-                  justifyContent: "center",
-                  textTransform: "none",
-                  fontWeight: 700,
-                  minHeight: 52,
-                  minWidth: 56,
-                  px: 0,
-                },
-                "& .Mui-selected": {
-                  background: "rgb(213 229 255 / 47%)",
-                },
-              }}
-            >
-              {coverageGroups.map(({ category }) => {
-                const IconComponent = category.icon;
-                return (
-                  <Tab
-                    key={category.id}
-                    value={category.id}
-                    icon={<IconComponent sx={{ fontSize: "1.25rem" }} />}
-                    aria-label={category.label}
-                  />
-                );
-              })}
-            </Tabs>
-          </Box>
-
-          <Box sx={{ flex: 1, p: 2, bgcolor: "background.paper" }}>
-            {activeGroup ? (
-              <Stack spacing={2}>
-                <Stack spacing={0.5}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                    {activeGroup.category.label}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {
-                      getContent().coverage.categoryDescriptions[
-                        activeGroup.category.id
-                      ]
-                    }
-                  </Typography>
-                </Stack>
-
-                <Divider />
-
-                <Stack spacing={1.5}>
-                  {activeGroup.products.map((product) => (
-                    <Box key={product.id}>
-                      <Stack spacing={0.25}>
-                        <Typography
-                          // variant="body2"
-                          sx={{
-                            fontWeight: 700,
-                            color: "primary.main",
-                            fontSize: "14px !important",
-                            letterSpacing: "-0.25px",
-                          }}
-                        >
-                          {product.name}
-                          {product.underwritingType === "QD" && (
-                            <QuickDecisionIndicator />
-                          )}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {product.description ?? product.definition}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          Available for:{" "}
-                          {product.applicants.map(getApplicantLabel).join(", ")}
-                        </Typography>
-                      </Stack>
-                    </Box>
-                  ))}
-                </Stack>
-              </Stack>
-            ) : null}
-          </Box>
-        </Stack>
-      </Box>
-    </Stack>
+    <CoverageOptionsPanel variant="drawer" initialCategory={initialCategory} />
   );
 }
 
@@ -442,7 +170,7 @@ export const howApplyingWorksHelpItem: FormPageHelpItem = {
   id: "application-process",
   label: "How does applying work?",
   title: "How does applying work?",
-  content: <HowApplyingWorksDrawerContent />,
+  content: <HowApplyingWorksPanel variant="drawer" />,
 };
 
 export const coverageOptionsAvailableHelpItem: FormPageHelpItem = {

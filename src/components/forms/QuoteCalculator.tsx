@@ -141,7 +141,7 @@ export default function QuoteCalculator({
     const errors: Record<string, string> = {};
     if (categoryNeedsGender && !gender) errors.gender = "Gender is required.";
     if (categoryNeedsSmoker && !smoker)
-      errors.smoker = "This field is required.";
+      errors.smoker = "Do you use nicotine products? is required.";
     if (categoryNeedsDi && !avgIncome)
       errors.avgIncome = "Average monthly income is required.";
     if (categoryNeedsHours && !hoursPerWeek)

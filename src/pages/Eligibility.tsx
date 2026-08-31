@@ -352,7 +352,7 @@ function EligibilityFields({
                       name={field.id}
                       control={control}
                       rules={{
-                        required: "This field is required.",
+                        required: `${field.label} is required.`,
                         validate: (value) => {
                           if (!value) return true;
                           return String(value).trim().length >= 5
