@@ -28,11 +28,15 @@ import { getContent, resolveTemplate } from "../content";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getPagePath } from "../config/pages";
 import type { HomePageVariant } from "../config/clients/types";
+import { getFormTemplate } from "../config/template/resolveTemplate";
+import Membership from "./Membership";
 
 import { SURFACE_SX } from "../config/constants";
 
 type DrawerId = "application-review" | "quick-decision" | null;
 const PAGE_MAX_WIDTH = 1200;
+const SINGLE_TEMPLATE_HERO_MAX_WIDTH = 700;
+const SINGLE_TEMPLATE_FORM_MAX_WIDTH = 800;
 
 const fadeInUp = keyframes`
   from {
@@ -137,6 +141,7 @@ const VALID_VARIANTS: HomePageVariant[] = [
 ];
 
 export default function Home() {
+  const isSingleTemplate = getFormTemplate() === "single";
   const client = getActiveClient();
   const [searchParams] = useSearchParams();
   const urlVariant = searchParams.get("variant") as HomePageVariant | null;
@@ -144,8 +149,10 @@ export default function Home() {
     urlVariant && VALID_VARIANTS.includes(urlVariant)
       ? urlVariant
       : (client.features?.homePageVariant ?? "default");
-  const showQuoteTool = variant === "default";
-  const showHeroImage = variant === "hero-image" || variant === "welcome-back";
+  const showQuoteTool = !isSingleTemplate && variant === "default";
+  const showHeroImage =
+    !isSingleTemplate &&
+    (variant === "hero-image" || variant === "welcome-back");
   const showHowApplyingWorks = variant !== "welcome-back";
   const showCoverageOptions = variant !== "welcome-back";
   const [activeDrawer, setActiveDrawer] = useState<DrawerId>(null);
@@ -173,10 +180,12 @@ export default function Home() {
   return (
     <Box sx={{ width: "100%", flex: 1 }}>
       <Stack
-        spacing={{ xs: 12, md: 10 }}
+        spacing={isSingleTemplate ? 3 : { xs: 12, md: 10 }}
         sx={{
           width: "100%",
-          maxWidth: PAGE_MAX_WIDTH,
+          maxWidth: isSingleTemplate
+            ? SINGLE_TEMPLATE_FORM_MAX_WIDTH
+            : PAGE_MAX_WIDTH,
           mx: "auto",
           px: { xs: 2, sm: 3, md: 4 },
           pt: { xs: 1.5, md: 3 },
@@ -192,6 +201,9 @@ export default function Home() {
                 : "1fr",
             gap: { xs: 2.5, md: 3.5 },
             alignItems: "start",
+            width: "100%",
+            maxWidth: isSingleTemplate ? SINGLE_TEMPLATE_HERO_MAX_WIDTH : undefined,
+            mx: isSingleTemplate ? "auto" : undefined,
             ...FADE_IN_SECTION_SX(0),
           }}
         >
@@ -239,16 +251,11 @@ export default function Home() {
             <Stack spacing={1.5}>
               <Typography
                 variant="h1"
-                // sx={{
-                //   fontSize: {
-                //     xs: "2.5rem",
-                //     sm: "2.5rem",
-                //     md: "3rem",
-                //     lg: "3rem",
-                //   },
-                //   lineHeight: 1.08,
-                //   fontWeight: 700,
-                // }}
+                sx={
+                  isSingleTemplate
+                    ? { fontSize: "2.5rem", lineHeight: 1.15 }
+                    : undefined
+                }
               >
                 {variant === "welcome-back"
                   ? content.home.hero.welcomeBackTitle
@@ -261,75 +268,77 @@ export default function Home() {
               </Typography>
             </Stack>
 
-            <Stack
-              direction="row"
-              spacing={1.5}
-              alignItems="center"
-              useFlexGap
-              sx={{ flexWrap: "wrap" }}
-              mb={1.5}
-            >
-              <Button
-                component={RouterLink}
-                to={getPagePath(
-                  variant === "welcome-back" ? "resume" : "membership",
-                )}
-                variant="contained"
-                size="large"
-                endIcon={<ArrowRightAltRoundedIcon />}
-                sx={{
-                  width: { xs: "100%", sm: "auto" },
-                  px: 3.5,
-                  py: "16px",
-                  fontWeight: 700,
-                  whiteSpace: "nowrap",
-                  flexShrink: 0,
-                }}
+            {!isSingleTemplate && (
+              <Stack
+                direction="row"
+                spacing={1.5}
+                alignItems="center"
+                useFlexGap
+                sx={{ flexWrap: "wrap" }}
+                mb={1.5}
               >
-                {variant === "welcome-back"
-                  ? "Continue Application"
-                  : content.home.hero.ctaLabel}
-              </Button>
-
-              {variant === "welcome-back" ? (
                 <Button
                   component={RouterLink}
-                  to={getPagePath("membership")}
-                  variant="outlined"
+                  to={getPagePath(
+                    variant === "welcome-back" ? "resume" : "membership",
+                  )}
+                  variant="contained"
                   size="large"
+                  endIcon={<ArrowRightAltRoundedIcon />}
                   sx={{
                     width: { xs: "100%", sm: "auto" },
                     px: 3.5,
                     py: "16px",
+                    fontWeight: 700,
                     whiteSpace: "nowrap",
                     flexShrink: 0,
                   }}
                 >
-                  New Application
+                  {variant === "welcome-back"
+                    ? "Continue Application"
+                    : content.home.hero.ctaLabel}
                 </Button>
-              ) : (
-                <Button
-                  variant="outlined"
-                  size="large"
-                  sx={{
-                    width: { xs: "100%", sm: "auto" },
-                    px: 3.5,
-                    py: "16px",
-                    whiteSpace: "nowrap",
-                    flexShrink: 0,
-                  }}
-                  onClick={() => {
-                    howApplyingWorksRef.current?.scrollIntoView({
-                      behavior: "smooth",
-                    });
-                  }}
-                >
-                  {content.home.hero.secondaryCtaLabel}
-                </Button>
-              )}
-            </Stack>
 
-            {(variant === "default" || variant === "hero-image") && (
+                {variant === "welcome-back" ? (
+                  <Button
+                    component={RouterLink}
+                    to={getPagePath("membership")}
+                    variant="outlined"
+                    size="large"
+                    sx={{
+                      width: { xs: "100%", sm: "auto" },
+                      px: 3.5,
+                      py: "16px",
+                      whiteSpace: "nowrap",
+                      flexShrink: 0,
+                    }}
+                  >
+                    New Application
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    sx={{
+                      width: { xs: "100%", sm: "auto" },
+                      px: 3.5,
+                      py: "16px",
+                      whiteSpace: "nowrap",
+                      flexShrink: 0,
+                    }}
+                    onClick={() => {
+                      howApplyingWorksRef.current?.scrollIntoView({
+                        behavior: "smooth",
+                      });
+                    }}
+                  >
+                    {content.home.hero.secondaryCtaLabel}
+                  </Button>
+                )}
+              </Stack>
+            )}
+
+            {!isSingleTemplate && (variant === "default" || variant === "hero-image") && (
               <Typography variant="body2" color="text.secondary">
                 {content.home.hero.resumePrompt}{" "}
                 <Link
@@ -370,7 +379,14 @@ export default function Home() {
             />
           )}
         </Box>
-        {showHowApplyingWorks && (
+
+        {isSingleTemplate && (
+          <Box sx={FADE_IN_SECTION_SX(0.15)}>
+            <Membership />
+          </Box>
+        )}
+
+        {!isSingleTemplate && showHowApplyingWorks && (
           <Box ref={howApplyingWorksRef} sx={FADE_IN_SECTION_SX(0.15)}>
             <HowApplyingWorksPanel
               variant="page"
@@ -382,7 +398,7 @@ export default function Home() {
           </Box>
         )}
 
-        {showCoverageOptions && (
+        {!isSingleTemplate && showCoverageOptions && (
           <Stack spacing={2.5} sx={FADE_IN_SECTION_SX(0.3)}>
             <Stack spacing={1} sx={{ textAlign: { xs: "center", md: "left" } }}>
               <Typography variant="h2">
@@ -400,112 +416,119 @@ export default function Home() {
           </Stack>
         )}
 
-        <Stack spacing={2.5} sx={FADE_IN_SECTION_SX(0.45)}>
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "1fr",
-              gap: { xs: 3, md: 5 },
-              alignItems: "start",
-            }}
-          >
-            {content.home.clientSection && (
+        {!isSingleTemplate && (
+          <Stack spacing={2.5} sx={FADE_IN_SECTION_SX(0.45)}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "1fr",
+                gap: { xs: 3, md: 5 },
+                alignItems: "start",
+              }}
+            >
+              {content.home.clientSection && (
+                <Stack spacing={2}>
+                  <Stack direction="column" spacing={2} alignItems="start">
+                    <Box
+                      component="img"
+                      src={client.branding.logo}
+                      alt={client.branding.logoAlt}
+                      sx={{
+                        display: "block",
+                        height: 30,
+                        width: "auto",
+                        objectFit: "contain",
+                        flexShrink: 0,
+                      }}
+                    />
+                    <Typography variant="body1" color="text.secondary">
+                      {content.home.clientSection.tagline}
+                    </Typography>
+                  </Stack>
+
+                  <Stack spacing={1.25}>
+                    {content.home.clientSection.paragraphs.map(
+                      (paragraph, i) => (
+                        <Typography key={i} variant="body2">
+                          {paragraph}
+                        </Typography>
+                      ),
+                    )}
+                  </Stack>
+                </Stack>
+              )}
               <Stack spacing={2}>
-                <Stack direction="column" spacing={2} alignItems="start">
+                <Stack direction="row" spacing={2} alignItems="center">
                   <Box
                     component="img"
-                    src={client.branding.logo}
-                    alt={client.branding.logoAlt}
+                    src="/logo.svg"
+                    alt="New York Life Logo"
                     sx={{
                       display: "block",
-                      height: 30,
+                      height: 40,
                       width: "auto",
                       objectFit: "contain",
                       flexShrink: 0,
                     }}
                   />
-                  <Typography variant="body1" color="text.secondary">
-                    {content.home.clientSection.tagline}
-                  </Typography>
+                  <Stack spacing={0.25}>
+                    <Typography variant="h5">
+                      {content.home.nylCredentials.name}
+                    </Typography>
+                    <Typography variant="body1" color="text.secondary">
+                      {content.home.nylCredentials.tagline}
+                    </Typography>
+                  </Stack>
                 </Stack>
 
                 <Stack spacing={1.25}>
-                  {content.home.clientSection.paragraphs.map((paragraph, i) => (
-                    <Typography key={i} variant="body2">
-                      {paragraph}
-                    </Typography>
-                  ))}
-                </Stack>
-              </Stack>
-            )}
-            <Stack spacing={2}>
-              <Stack direction="row" spacing={2} alignItems="center">
-                <Box
-                  component="img"
-                  src="/logo.svg"
-                  alt="New York Life Logo"
-                  sx={{
-                    display: "block",
-                    height: 40,
-                    width: "auto",
-                    objectFit: "contain",
-                    flexShrink: 0,
-                  }}
-                />
-                <Stack spacing={0.25}>
-                  <Typography variant="h5">
-                    {content.home.nylCredentials.name}
-                  </Typography>
-                  <Typography variant="body1" color="text.secondary">
-                    {content.home.nylCredentials.tagline}
+                  <Typography variant="body2">
+                    {content.home.nylCredentials.description}
                   </Typography>
                 </Stack>
-              </Stack>
 
-              <Stack spacing={1.25}>
-                <Typography variant="body2">
-                  {content.home.nylCredentials.description}
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  flexWrap="wrap"
+                  useFlexGap
+                  sx={{ rowGap: 1 }}
+                >
+                  {content.home.nylCredentials.ratings.map(
+                    ({ grade, source }) => (
+                      <Stack
+                        key={grade + source}
+                        direction="row"
+                        spacing={0.75}
+                        alignItems="baseline"
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{ fontWeight: 700, color: "primary.main" }}
+                        >
+                          {grade}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {source}
+                        </Typography>
+                      </Stack>
+                    ),
+                  )}
+                </Stack>
+
+                <Typography variant="caption" color="text.secondary">
+                  <Box
+                    component="sup"
+                    sx={{ fontSize: "0.85em", lineHeight: 1 }}
+                  >
+                    1
+                  </Box>
+                  {content.home.nylCredentials.ratingsNote}
                 </Typography>
               </Stack>
-
-              <Stack
-                direction="row"
-                spacing={2}
-                flexWrap="wrap"
-                useFlexGap
-                sx={{ rowGap: 1 }}
-              >
-                {content.home.nylCredentials.ratings.map(
-                  ({ grade, source }) => (
-                    <Stack
-                      key={grade + source}
-                      direction="row"
-                      spacing={0.75}
-                      alignItems="baseline"
-                    >
-                      <Typography
-                        variant="body2"
-                        sx={{ fontWeight: 700, color: "primary.main" }}
-                      >
-                        {grade}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {source}
-                      </Typography>
-                    </Stack>
-                  ),
-                )}
-              </Stack>
-
-              <Typography variant="caption" color="text.secondary">
-                <Box component="sup" sx={{ fontSize: "0.85em", lineHeight: 1 }}>
-                  1
-                </Box>
-                {content.home.nylCredentials.ratingsNote}
-              </Typography>
-            </Stack>
-          </Box>
-        </Stack>
+            </Box>
+          </Stack>
+        )}
       </Stack>
 
       <AppDrawer

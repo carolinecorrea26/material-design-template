@@ -304,7 +304,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
   "state-province": {
     id: "state-province",
     label: "State / Province",
-    inputType: "dropdown",
+    inputType: "searchable-select",
     required: true,
     placeholder: "Select",
     options: usStateOptions,
@@ -607,7 +607,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
   state: {
     id: "state",
     label: "State",
-    inputType: "dropdown",
+    inputType: "searchable-select",
     required: true,
     placeholder: "Select",
     options: usStateOptions,
@@ -688,7 +688,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
   "business-state": {
     id: "business-state",
     label: "State",
-    inputType: "dropdown",
+    inputType: "searchable-select",
     required: true,
     placeholder: "Select",
     options: usStateOptions,
@@ -768,7 +768,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
   "medical-state": {
     id: "medical-state",
     label: "State",
-    inputType: "dropdown",
+    inputType: "searchable-select",
     placeholder: "Select",
     options: usStateOptions,
   },
@@ -861,7 +861,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
   "drivers-license-state": {
     id: "drivers-license-state",
     label: "Driver's License State",
-    inputType: "dropdown",
+    inputType: "searchable-select",
     placeholder: "Select",
     required: true,
     options: usStateOptions,
@@ -980,7 +980,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
   "spouse-drivers-license-state": {
     id: "spouse-drivers-license-state",
     label: "Spouse Driver's License State",
-    inputType: "dropdown",
+    inputType: "searchable-select",
     placeholder: "Select",
     required: true,
     options: usStateOptions,
@@ -1091,7 +1091,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
   "spouse-medical-state": {
     id: "spouse-medical-state",
     label: "State",
-    inputType: "dropdown",
+    inputType: "searchable-select",
     placeholder: "Select",
     options: usStateOptions,
   },

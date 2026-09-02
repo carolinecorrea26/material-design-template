@@ -17,7 +17,8 @@ export type ClientId =
   | "csea"
   | "isitrust"
   | "nso"
-  | "waepa";
+  | "waepa"
+  | "waepagi";
 
 export type ClientConfig = {
   id: ClientId;

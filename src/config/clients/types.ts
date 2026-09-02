@@ -4,6 +4,7 @@ import type { PageId } from "../../types";
 import type { ClientId } from "../../types";
 import type { FieldDefinition } from "../fields/types";
 import type { PageSectionId } from "../pageSections/types";
+import type { FormTemplate } from "../template/resolveTemplate";
 
 export type FieldId = string;
 
@@ -195,6 +196,7 @@ export type ClientFeatures = {
   linkUrl?: string;
   linkLabel?: string;
   homePageVariant?: HomePageVariant;
+  defaultTemplate?: FormTemplate;
 };
 
 /**

@@ -10,9 +10,13 @@ import { router } from "./router";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { getActiveClient } from "../config/client/getActiveClient";
+import { getFormTemplate } from "../config/template/resolveTemplate";
 
 const client = getActiveClient();
-const theme = createAppTheme(client.themeColor);
+const template = getFormTemplate();
+const theme = createAppTheme(client.themeColor, {
+  forceMobileLayout: template === "single",
+});
 
 export default function App() {
   return (

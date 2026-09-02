@@ -7,6 +7,7 @@ import { demoClient } from "./demo";
 import { isitrustClient } from "./isitrust";
 import { nsoClient } from "./nso";
 import { waepaClient } from "./waepa";
+import { waepagiClient } from "./waepagi";
 
 export const clients = {
   demo: demoClient,
@@ -16,5 +17,6 @@ export const clients = {
   csea: cseaClient,
   nso: nsoClient,
   waepa: waepaClient,
+  waepagi: waepagiClient,
   isitrust: isitrustClient,
 } satisfies Record<string, ClientConfig>;

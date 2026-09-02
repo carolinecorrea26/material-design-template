@@ -1,4 +1,11 @@
-import { type ReactNode, isValidElement, useState, useMemo } from "react";
+import {
+  type ReactNode,
+  type MouseEvent as ReactMouseEvent,
+  isValidElement,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
@@ -36,11 +43,19 @@ import {
 import { fieldCatalog } from "../config/fields";
 import { formFlow } from "../config/formFlow";
 import { pages, getPageTitle } from "../config/pages";
-import { pageSections } from "../config/pageSections";
+import { pageSections, sectionLabels } from "../config/pageSections";
+import { applicantSectionTitles } from "../config/formSectionTitle";
 import type { SectionVisibilityRule } from "../config/pageSections/types";
 import type { PageId } from "../types";
 import DocsSidebarNav from "../components/docs/DocsSidebarNav";
 import { getContent, type SiteContent } from "../content";
+import { getActiveClient } from "../config/client/getActiveClient";
+import { membershipClientFields } from "../config/clientFields/membership";
+import type { FieldDefinition } from "../config/fields/types";
+import { coverages as coverageCatalog } from "../config/coverages";
+import { getCoverageCategorySectionLabel } from "../config/coverageCategories";
+import type { CoverageCategoryId } from "../config/coverageCategories";
+import { clientContentOverrides } from "../content/clients";
 
 const tableOfContents = [
   { id: "changelog-table", label: "Change Log" },
@@ -50,11 +65,44 @@ const tableOfContents = [
   { id: "fields-table", label: "Fields" },
   { id: "error-messages-table", label: "Error Messages" },
   { id: "configurations-table", label: "Configurations" },
+  { id: "coverages-table", label: "Coverages" },
   { id: "content-table", label: "Content" },
   { id: "site-rules-table", label: "Site Rules" },
   { id: "template-changes-table", label: "Template Changes" },
   { id: "url-parameters-table", label: "URL Parameters" },
 ];
+
+// ---------------------------------------------------------------------------
+// Active client (drives all "client-specific" highlighting below).
+// Resolved the same way the rest of the app resolves it: ?client= URL param,
+// falling back to sessionStorage, falling back to "demo".
+// ---------------------------------------------------------------------------
+const activeClient = getActiveClient();
+
+const CLIENT_HIGHLIGHT_BG = "#fff9c4";
+const CLIENT_HIGHLIGHT_BORDER = "#e4c400";
+
+function ClientNote({ label }: { label: string }) {
+  return (
+    <Chip
+      label={label}
+      size="small"
+      sx={{
+        bgcolor: CLIENT_HIGHLIGHT_BG,
+        borderColor: CLIENT_HIGHLIGHT_BORDER,
+        color: "#5c4a00",
+        fontWeight: 600,
+        border: "1px solid",
+        height: "auto",
+        "& .MuiChip-label": {
+          whiteSpace: "normal",
+          display: "block",
+          py: 0.5,
+        },
+      }}
+    />
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Change log data
@@ -69,6 +117,69 @@ type ChangeLogEntry = {
 };
 
 const changeLog: ChangeLogEntry[] = [
+  {
+    id: "CL-019",
+    date: "2026-09-01",
+    area: "Templates / Home",
+    summary:
+      "Fixed cramped form padding on large screens under template=single; split hero/form max widths (700/800); documented the template feature",
+    details:
+      "createAppTheme's forceMobileLayout option (src/app/theme.ts) previously pinned sm/md/lg/xl to an " +
+      "unreachable width. That also blocked sm-level padding/spacing (e.g. FormRoutePage's FormShell, " +
+      "px: { xs: 2, sm: '48px' }) from ever activating, so the form fields/page title/breadcrumbs area " +
+      "stayed at its tightest xs padding even on a real desktop-width browser. forceMobileLayout now only " +
+      "overrides md/lg/xl; sm (600px) is left at its default so that padding activates normally once the " +
+      "real viewport is 600px or wider, while ProgressStep's isDesktop check and other up('md') structural " +
+      "branches (AppDrawer, AppModal, HelpChips, MemberVerification) still stay forced to their narrow-screen " +
+      "variant. Home.tsx (single template) now caps the hero at 700px (SINGLE_TEMPLATE_HERO_MAX_WIDTH) and " +
+      "the surrounding form column at a wider 800px (SINGLE_TEMPLATE_FORM_MAX_WIDTH) instead of both sharing " +
+      "one width, with the hero centered inside the wider column. Documented in Information Architecture: " +
+      "new 'template' row in the URL Parameters table (+ source-review summary row), 'waepagi' added to the " +
+      "'client' parameter's values, a new 'Default form template' Configurations row, and three new 'Form " +
+      "Template' Site Rules entries. Documented in Design System: new 'Form template layout' design rule " +
+      "under Design rules.",
+  },
+  {
+    id: "CL-018",
+    date: "2026-09-01",
+    area: "Fields",
+    summary:
+      "FieldRenderer now auto-upgrades dropdown fields with 10+ options to the searchable-select component; existing state dropdowns switched over",
+    details:
+      "Added getEffectiveInputType() in src/components/forms/FieldRenderer.tsx: any field configured as " +
+      "inputType: 'dropdown' whose options array has 10 or more entries is rendered via the existing " +
+      "'searchable-select' branch (MUI Autocomplete) instead of a plain MUI Select, so long lists are " +
+      "type-ahead filterable instead of requiring a long scroll. Fields already explicitly set to " +
+      "'searchable-select' (e.g. waepa-employer, waepa-retired-employer, the isitrust membership override) " +
+      "are unaffected. Also updated the 7 US state dropdowns that share the 67-entry usStateOptions list " +
+      "(state-province, state, business-state, medical-state, drivers-license-state, " +
+      "spouse-drivers-license-state, spouse-medical-state in src/config/fields/index.ts) to explicitly " +
+      "declare inputType: 'searchable-select', matching the convention already used for other long lists.",
+  },
+  {
+    id: "CL-017",
+    date: "2026-09-01",
+    area: "Templates / Home",
+    summary:
+      "Added template=single mode (forces the mobile/narrow layout app-wide and merges Home's hero with the Membership form); added waepagi client defaulting to it",
+    details:
+      "New FormTemplate concept ('single' | 'multi', default 'multi') resolved in " +
+      "src/config/template/resolveTemplate.ts via ?template= URL param → sessionStorage → the active " +
+      "client's features.defaultTemplate → default. Existing multi-page routing, FormRoutePage, and " +
+      "ProgressStep are unchanged for both templates — no separate one-page form shell. Instead, " +
+      "createAppTheme (src/app/theme.ts) accepts a forceMobileLayout option that pushes the sm/md/lg/xl " +
+      "breakpoints to unreachable widths; App.tsx enables it whenever template=single, so every existing " +
+      "responsive sx style and useMediaQuery(breakpoints.up(...)) check (including ProgressStep's desktop " +
+      "vs. mobile stepper branch, drawers, modals) renders its narrow-screen variant regardless of actual " +
+      "browser width. Home.tsx also special-cases isSingleTemplate: skips the CTA buttons, resume prompt, " +
+      "quote tool, How Applying Works, Coverage Options, and credentials sections, and renders the hero " +
+      "(tagline, title, description — no hero image, larger title/description type) directly followed by " +
+      "the real Membership page component, so landing on '/' shows hero + the first form step inline with " +
+      "no separate landing-page-then-navigate-to-membership step; Next/Back from there behave exactly like " +
+      "the normal multi-page flow. The hero and form share a single 700px max width container. Added a new " +
+      "waepagi client (src/config/clients/waepagi.ts, src/content/clients/waepagi.ts — copies of waepa) with " +
+      "features.defaultTemplate: 'single' and features.homePageVariant: 'hero-image'.",
+  },
   {
     id: "CL-016",
     date: "2026-08-31",
@@ -381,6 +492,27 @@ const siteRules: {
     behavior:
       "The PageHeader/PageTitle back arrow is rendered only when getPreviousFormPageId resolves a previous page for the current values and the page is not after a submitted review; otherwise no back control is shown at all (distinct from it being disabled post-review).",
     ref: "src/app/RoutePage.tsx; src/components/layout/PageHeader.tsx; src/components/layout/PageTitle.tsx",
+  },
+  {
+    area: "Form Template",
+    rule: "Single template forces the narrow-screen layout, not a separate one-page form",
+    behavior:
+      "template=single does not change routing, FormRoutePage, or ProgressStep — the flow, pages, and Back/Next navigation are identical to template=multi. The only difference is createAppTheme is created with forceMobileLayout: true, which pins the md/lg/xl breakpoints to an unreachable width. Every useMediaQuery(breakpoints.up(\"md\")) desktop/mobile check (ProgressStep, AppDrawer, AppModal, HelpChips, MemberVerification) and every md/lg/xl-keyed responsive style therefore renders its narrow-screen variant regardless of actual browser width.",
+    ref: "src/config/template/resolveTemplate.ts; src/app/theme.ts; src/app/App.tsx",
+  },
+  {
+    area: "Form Template",
+    rule: "sm breakpoint stays real so sm-level padding isn't lost",
+    behavior:
+      "forceMobileLayout only overrides md/lg/xl — sm (600px) is left at its default. Components that only bump padding/spacing at sm (e.g. FormRoutePage's FormShell, which uses px: { xs: 2, sm: \"48px\" }) still receive that breathing room once the real browser viewport is 600px or wider, instead of staying pinned to their tightest xs padding on an actual desktop screen.",
+    ref: "src/app/theme.ts",
+  },
+  {
+    area: "Form Template",
+    rule: "Home hero + Membership share one column, at different max widths",
+    behavior:
+      "In single template, Home renders the hero (tagline, title, description — no hero image) directly followed by the real Membership page component. The hero is capped at 700px and centered; the surrounding column (which the Membership form fills) is capped at 800px — the hero is deliberately narrower than the form beneath it.",
+    ref: "src/pages/Home.tsx",
   },
   {
     area: "Validation",
@@ -800,6 +932,13 @@ const siteRules: {
     rule: "Phone type selector",
     behavior:
       "Phone-format fields render an inline Mobile/Home/Business type selector tied to a sibling field (field.phoneTypeFieldId, default '<field.id>-type'), unless field.showPhoneTypeSelector is false.",
+    ref: "src/components/forms/FieldRenderer.tsx",
+  },
+  {
+    area: "Fields",
+    rule: "Auto search-select for long option lists",
+    behavior:
+      "FieldRenderer renders a field configured as inputType: 'dropdown' using the searchable-select (MUI Autocomplete) component instead of a plain Select once field.options has 10 or more entries, so long lists (e.g. US states) are searchable rather than requiring a long scroll. Fields already explicitly set to 'searchable-select' are unaffected.",
     ref: "src/components/forms/FieldRenderer.tsx",
   },
   {
@@ -1429,12 +1568,19 @@ const urlParameters: UrlParameterEntry[] = [
     currentBehavior: [
       "Isolates 2 to 3 coverage categories to be only options shown throughout site. List categories in URL parameter with comma-separated list.",
     ],
-    status: "Removed",
-    newValues: ["—"],
-    newBehavior: [
-      "Not supported in the new template. Multi-category restriction is handled by the category parameter using comma-separated values.",
+    status: "Migrated",
+    newValues: [
+      "li",
+      "di",
+      "oo",
+      "sh",
+      "ad",
+      "Comma-separated values supported, e.g. li,di",
     ],
-    notes: "Combined into category parameter.",
+    newBehavior: [
+      "Has the same functionality as the category parameter in the new template. Restricts the site to the listed coverage category or categories, using comma-separated values for multiple categories.",
+    ],
+    notes: "Combined into the category parameter, which supports the same comma-separated multi-category behavior.",
   },
   {
     parameter: "prods",
@@ -1486,8 +1632,10 @@ const urlParameters: UrlParameterEntry[] = [
     ],
     status: "TBD",
     newValues: ["TBD"],
-    newBehavior: ["TBD"],
-    notes: "Current template scope: all",
+    newBehavior: [
+      "TBD. Proposed behavior: the \"Add coverage\" checkbox would be preselected on the Coverage Page for all applicants/products.",
+    ],
+    notes: "Current template scope: all. Still TBD — no known client request for this functionality.",
   },
   {
     parameter: "qt",
@@ -1532,21 +1680,25 @@ const urlParameters: UrlParameterEntry[] = [
     currentBehavior: [
       "If present, shows monthly rates on Coverage page (AMA only uses this for now)",
     ],
-    status: "TBD",
-    newValues: ["TBD"],
-    newBehavior: ["TBD"],
-    notes: "New-template support and behavior are TBD.",
+    status: "Removed",
+    newValues: ["—"],
+    newBehavior: ["Not supported in the new template."],
+    notes:
+      "Clients can use the \"Frequency toggle\" configuration to enable a monthly/annual rate toggle instead.",
   },
   {
-    parameter: "association (TBD)",
+    parameter: "association",
     currentValues: ["xyz"],
     currentBehavior: [
       "Expansion of existing functionality under discussion: Preselects association dropdown on eligibility page (for use with specific cases only). (Current functionality example is CAT to preset association and logo. New functionality to preset dropdown, like with TIE.)",
     ],
-    status: "TBD",
-    newValues: ["TBD"],
-    newBehavior: ["TBD"],
-    notes: "New-template support and behavior are TBD.",
+    status: "Migrated",
+    newValues: ["xyz"],
+    newBehavior: [
+      "Presets the association logo and membership attestation field to the association set in the URL parameter.",
+    ],
+    notes:
+      "Clients such as TIE will not use the association parameter; they will instead have search capability in select fields.",
   },
   {
     parameter: "campaign",
@@ -1664,6 +1816,25 @@ const urlParametersAdditional: UrlParameterAdditionalEntry[] = [
     ],
   },
   {
+    parameter: "template",
+    currentTemplate: "Not listed in current parameter inventory.",
+    status: "New",
+    newValues: ["single", "multi"],
+    newBehavior: [
+      "Selects the form template for the current session. A valid URL value is stored in session storage and remains active for subsequent navigation during the session.",
+      "multi (default): The existing multi-page flow — separate routes for each step, Back/Next navigation, real viewport-based responsive layout.",
+      "single: Same routes, pages, and Back/Next navigation as multi — nothing about FormRoutePage, ProgressStep, or the router changes. createAppTheme is instead given forceMobileLayout: true, which pins the md/lg/xl breakpoints to an unreachable width so every desktop/mobile structural check (ProgressStep's sidebar-vs-stepper branch, AppDrawer, AppModal, HelpChips, MemberVerification) and every md/lg/xl-keyed responsive style renders its narrow-screen variant regardless of actual browser width. sm (600px) is left at its default so sm-level padding/spacing (e.g. FormRoutePage's FormShell) still activates normally on a real desktop-width browser. Home.tsx also renders the hero (tagline, title, description; no hero image; smaller title/description type) directly followed by the real Membership page component instead of a separate landing-page-then-navigate-to-Membership step; the hero is capped at 700px and the form area at 800px, both centered in the same column.",
+    ],
+    notes:
+      "If the URL value is absent or is not one of the supported values, the template falls back to the active client's features.defaultTemplate, or multi when unconfigured. This is the mechanism behind the waepagi client, which defaults to single.",
+    sourceRefs: [
+      "src/config/template/resolveTemplate.ts",
+      "src/app/theme.ts",
+      "src/app/App.tsx",
+      "src/pages/Home.tsx",
+    ],
+  },
+  {
     parameter: "client",
     currentTemplate: "Not listed in current parameter inventory.",
     status: "New — Prototype/Configuration Utility",
@@ -1676,6 +1847,7 @@ const urlParametersAdditional: UrlParameterAdditionalEntry[] = [
       "isitrust",
       "nso",
       "waepa",
+      "waepagi",
     ],
     newBehavior: [
       "Overrides the active client configuration used by the prototype. A valid URL client ID is stored in session storage and remains the active client for subsequent navigation during the session.",
@@ -1740,6 +1912,11 @@ const urlParameterSourceSummary: {
   classification: string;
   productionStatus: string;
 }[] = [
+  {
+    parameter: "template",
+    classification: "User-facing form template selection",
+    productionStatus: "New; behavior documented above",
+  },
   {
     parameter: "variant",
     classification: "User-facing Landing Page behavior",
@@ -1838,6 +2015,8 @@ type FieldRow = {
   required: string;
   options: string;
   visibleWhen: string;
+  /** Set when this row differs from (or was added by) the active client's field config. */
+  clientNote?: string;
 };
 
 function getCustomPageFieldRows(pageId: PageId): FieldRow[] | null {
@@ -2612,6 +2791,50 @@ const coverageProductFields: FieldRow[] = [
   },
 ];
 
+/**
+ * Some pageSections entries have neither `title` nor `description` because,
+ * in the real app, they render with no header of their own: either they're a
+ * silent continuation of the previous section's header (Coverage's tobacco
+ * follow-up questions — CoverageQuestions.tsx only renders a divider `if
+ * (section.description)`), a hardcoded label supplied by the page component
+ * itself (Profile.tsx's per-section-id fallbacks; PhysicianInformation.tsx's
+ * own "Physician information" divider), or a tab rather than a text header
+ * (AdvisorLogin.tsx). Without this map, the doc table falls back to the raw
+ * section id (e.g. "selfCoverageTobacco"). These values mirror what a user
+ * actually sees above each field — verified against each page's source.
+ */
+const sectionLabelOverrides: Record<string, string> = {
+  selfCoverageTobacco: sectionLabels.personalDetails,
+  spouseCoverageTobacco: sectionLabels.personalDetails,
+  default: "—",
+  dependentSelection: applicantSectionTitles.self,
+  advisorLoginNew: "Start (new advisor login)",
+  advisorLoginSaved: "Continue (saved application)",
+  profilePersonalSelfDriversLicense: sectionLabels.personalInfo,
+  profilePersonalSelfOutsideUs: sectionLabels.personalInfo,
+  profilePersonalSelfTravelOutsideUs: sectionLabels.personalInfo,
+  profilePersonalSelfPhysician: "Physician information",
+  profilePersonalSpouse: sectionLabels.personalInfo,
+  profilePersonalSpouseDriversLicense: sectionLabels.personalInfo,
+  profilePersonalSpouseOutsideUs: sectionLabels.personalInfo,
+  profilePersonalSpouseTravelOutsideUs: sectionLabels.personalInfo,
+  profilePersonalSpousePhysician: "Physician information",
+  profileFinancialSpouse: sectionLabels.financialInfo,
+};
+
+function resolveSectionLabel(section: {
+  id: string;
+  title?: string;
+  description?: string;
+}): string {
+  return (
+    section.title ??
+    section.description ??
+    sectionLabelOverrides[section.id] ??
+    section.id
+  );
+}
+
 function getPageFieldRows(pageId: PageId): FieldRow[] {
   const customRows = getCustomPageFieldRows(pageId);
   if (customRows) return customRows;
@@ -2623,7 +2846,7 @@ function getPageFieldRows(pageId: PageId): FieldRow[] {
       return [
         {
           sectionId: section.id,
-          sectionLabel: section.title ?? section.description ?? section.id,
+          sectionLabel: resolveSectionLabel(section),
           applicant: section.applicant ?? "—",
           fieldId: "—",
           label: "Dynamic/repeating content",
@@ -2646,7 +2869,7 @@ function getPageFieldRows(pageId: PageId): FieldRow[] {
       }
       return {
         sectionId: section.id,
-        sectionLabel: section.title ?? section.description ?? section.id,
+        sectionLabel: resolveSectionLabel(section),
         applicant: section.applicant ?? "—",
         fieldId,
         label: field?.label ?? fieldId,
@@ -2661,6 +2884,178 @@ function getPageFieldRows(pageId: PageId): FieldRow[] {
   if (pageId === "eligibility") return [...rows, ...eligibilityChildFields];
   if (pageId === "coverage") return [...rows, ...coverageProductFields];
   return rows;
+}
+
+// ---------------------------------------------------------------------------
+// Active-client field diff (extra / hidden / required / overridden fields)
+// ---------------------------------------------------------------------------
+
+/** Merges an override's label/inputType/required/options onto a doc table row so the row shows what the client actually sees. */
+function mergeFieldOverrideIntoRow(
+  row: FieldRow,
+  override: Partial<FieldDefinition>,
+): FieldRow {
+  return {
+    ...row,
+    label: override.label ?? row.label,
+    inputType: override.inputType ?? row.inputType,
+    required:
+      override.required !== undefined
+        ? override.required
+          ? "Yes"
+          : "No"
+        : row.required,
+    options:
+      override.options !== undefined
+        ? override.options.length > 0
+          ? override.options.map((o) => o.label).join(", ")
+          : "—"
+        : row.options,
+  };
+}
+
+type ClientFieldDiffResult = {
+  /** Rows actually shown to this client, in table order. */
+  rows: FieldRow[];
+  /** Rows hidden for this client — excluded from `rows`, reported separately. */
+  hiddenRows: FieldRow[];
+};
+
+/**
+ * Annotates the generic pageSections/fieldCatalog-driven rows for a page with
+ * the active client's real ClientFields config (extra/hidden/required/overrides):
+ * merges override values into the displayed label/type/required/options,
+ * excludes fields hidden for this client (returned separately in `hiddenRows`),
+ * and appends rows for client-only fields. Pages with hand-authored rows
+ * (see getCustomPageFieldRows) aren't backed by ClientFields and are left as-is.
+ */
+function applyClientFieldDiff(
+  pageId: PageId,
+  rows: FieldRow[],
+): ClientFieldDiffResult {
+  if (getCustomPageFieldRows(pageId)) return { rows, hiddenRows: [] };
+  if (pageId === "membership") return applyMembershipClientFieldDiff(rows);
+
+  const clientPageConfig = activeClient.fields[pageId];
+  if (!clientPageConfig) return { rows, hiddenRows: [] };
+
+  const hidden = new Set(clientPageConfig.hidden ?? []);
+  const required = new Set(clientPageConfig.required ?? []);
+  const overrides = clientPageConfig.overrides ?? {};
+  const extra = clientPageConfig.extra ?? [];
+
+  const visibleRows: FieldRow[] = [];
+  const hiddenRows: FieldRow[] = [];
+
+  for (const row of rows) {
+    if (row.fieldId === "—") {
+      visibleRows.push(row);
+      continue;
+    }
+    if (hidden.has(row.fieldId)) {
+      hiddenRows.push({ ...row, clientNote: "Hidden for this client" });
+      continue;
+    }
+    const notes: string[] = [];
+    let nextRow = row;
+    if (required.has(row.fieldId) && row.required !== "Yes")
+      notes.push("Required for this client");
+    const override = overrides[row.fieldId];
+    if (override) {
+      notes.push(`Overridden: ${Object.keys(override).join(", ")}`);
+      nextRow = mergeFieldOverrideIntoRow(nextRow, override);
+    }
+    visibleRows.push(
+      notes.length > 0 ? { ...nextRow, clientNote: notes.join(" · ") } : row,
+    );
+  }
+
+  const presentIds = new Set(rows.map((r) => r.fieldId));
+  const extraRows: FieldRow[] = extra
+    .filter((id) => !presentIds.has(id))
+    .map((id) => {
+      const base = fieldCatalog[id as keyof typeof fieldCatalog];
+      const override = overrides[id];
+      const merged = override ? { ...base, ...override } : base;
+      return {
+        sectionId: "client-extra",
+        sectionLabel: "Client-added fields",
+        applicant: "—",
+        fieldId: id,
+        label: merged?.label ?? id,
+        inputType: merged?.inputType ?? "—",
+        required: merged?.required ? "Yes" : "No",
+        options:
+          merged?.options && merged.options.length > 0
+            ? merged.options.map((o) => o.label).join(", ")
+            : "—",
+        visibleWhen: "Always visible",
+        clientNote: "Added for this client",
+      };
+    });
+
+  return { rows: [...visibleRows, ...extraRows], hiddenRows };
+}
+
+/** Membership uses its own client-field mechanism (membershipClientFields), separate from ClientFields. */
+function applyMembershipClientFieldDiff(rows: FieldRow[]): ClientFieldDiffResult {
+  const config = membershipClientFields[activeClient.id];
+  if (!config) return { rows, hiddenRows: [] };
+
+  const overrides = config.overrides ?? {};
+  const extraFields = config.extraFields ?? [];
+
+  const visibleRows: FieldRow[] = [];
+  const hiddenRows: FieldRow[] = [];
+
+  for (const row of rows) {
+    if (row.fieldId === "—") {
+      visibleRows.push(row);
+      continue;
+    }
+    if (row.fieldId === "title" && !config.showTitleField) {
+      hiddenRows.push({
+        ...row,
+        clientNote: "Hidden for this client (showTitleField)",
+      });
+      continue;
+    }
+    const override = overrides[row.fieldId];
+    if (override?.hidden) {
+      hiddenRows.push({ ...row, clientNote: "Hidden for this client" });
+      continue;
+    }
+    if (override) {
+      const keys = Object.keys(override).filter((k) => k !== "hidden");
+      if (keys.length > 0) {
+        const merged = mergeFieldOverrideIntoRow(row, override);
+        visibleRows.push({ ...merged, clientNote: `Overridden: ${keys.join(", ")}` });
+        continue;
+      }
+    }
+    visibleRows.push(row);
+  }
+
+  const presentIds = new Set(rows.map((r) => r.fieldId));
+  const extraRows: FieldRow[] = extraFields
+    .filter((f) => !presentIds.has(f.id))
+    .map((f) => ({
+      sectionId: "client-extra",
+      sectionLabel: "Client-added fields",
+      applicant: "—",
+      fieldId: f.id,
+      label: f.label,
+      inputType: f.inputType,
+      required: f.required ? "Yes" : "No",
+      options:
+        f.options && f.options.length > 0
+          ? f.options.map((o) => o.label).join(", ")
+          : "—",
+      visibleWhen: "Always visible",
+      clientNote: "Added for this client",
+    }));
+
+  return { rows: [...visibleRows, ...extraRows], hiddenRows };
 }
 
 // ---------------------------------------------------------------------------
@@ -3459,6 +3854,17 @@ const configurationsData: ConfigRow[] = [
   },
   {
     group: "Landing Page",
+    label: "Default form template",
+    name: "ClientConfig.features.defaultTemplate",
+    description:
+      "Selects the client's default form template ('single' or 'multi', falls back to 'multi'). 'single' forces the whole app into its narrow/mobile-width responsive layout (via createAppTheme's forceMobileLayout option, regardless of actual browser width) and renders Home's hero directly followed by the real Membership page instead of a separate landing step. Overrideable per-session by the ?template= URL parameter. See the URL Parameters 'template' row for full behavior.",
+    sourcePath:
+      "src/config/clients/*.ts / src/config/template/resolveTemplate.ts / src/app/theme.ts / src/pages/Home.tsx",
+    configurable: "Client Configurable",
+    usedIn: "App theme, Home page",
+  },
+  {
+    group: "Landing Page",
     label: "Chat support",
     name: "ClientConfig.features.chat / chatUrl",
     description:
@@ -3841,13 +4247,28 @@ type FlatContentRow = {
   /** null indicates a non-string leaf (number, boolean, React node, etc.). */
   value: string | null;
   defaultsFile: string;
+  /** True when this path is overridden by the active client's content overrides. */
+  clientOverridden: boolean;
 };
+
+/** Reads a `flattenContent`-style path (e.g. "footer.additionalLegalLines[0]") off an object. */
+function getValueAtContentPath(root: unknown, path: string): boolean {
+  const segments = path.match(/[^.[\]]+/g) ?? [];
+  let current: unknown = root;
+  for (const segment of segments) {
+    if (current == null || typeof current !== "object") return false;
+    current = (current as Record<string, unknown>)[segment];
+  }
+  return current !== undefined;
+}
+
+type FlatContentRowDraft = Omit<FlatContentRow, "clientOverridden">;
 
 function flattenContent(
   value: unknown,
   path: string,
   defaultsFile: string,
-  rows: FlatContentRow[],
+  rows: FlatContentRowDraft[],
 ): void {
   if (typeof value === "string") {
     rows.push({ path, value, defaultsFile });
@@ -3872,8 +4293,10 @@ function flattenContent(
   rows.push({ path, value: null, defaultsFile });
 }
 
+const activeClientContentOverrides = clientContentOverrides[activeClient.id];
+
 const flatContentRows: FlatContentRow[] = (() => {
-  const rows: FlatContentRow[] = [];
+  const rows: FlatContentRowDraft[] = [];
   for (const { key, defaultsFile } of contentKeys) {
     // Terms of Use / Privacy Notice are large legal document trees already
     // rendered elsewhere in this page — exclude them from the flat table.
@@ -3888,8 +4311,111 @@ const flatContentRows: FlatContentRow[] = (() => {
         : content[key];
     flattenContent(value, key, defaultsFile, rows);
   }
-  return rows;
+  return rows.map((row) => ({
+    ...row,
+    clientOverridden: getValueAtContentPath(
+      activeClientContentOverrides,
+      row.path,
+    ),
+  }));
 })();
+
+// ---------------------------------------------------------------------------
+// Coverage configuration model (src/config/coverages + active client's
+// ClientCoverages: enabled coverages, ranges, descriptions, and overrides)
+// ---------------------------------------------------------------------------
+
+type ClientCoverageRow = {
+  id: string;
+  name: string;
+  categoryId: CoverageCategoryId;
+  underwritingType: string;
+  applicants: string;
+  memberRange: string;
+  spouseRange: string;
+  childRange: string;
+  riders: string;
+  waitingPeriods: string;
+  maxBenefitPeriods: string;
+  notes: string;
+  clientDiffs: string[];
+};
+
+function formatAmountRange(min?: number, max?: number): string {
+  if (min == null && max == null) return "—";
+  const fmt = (n?: number) => (n != null ? `$${n.toLocaleString()}` : "?");
+  return `${fmt(min)} – ${fmt(max)}`;
+}
+
+const clientEnabledCoverageIds =
+  activeClient.coverages.enabled ?? coverageCatalog.map((c) => c.id);
+
+const clientCoverageRows: ClientCoverageRow[] = clientEnabledCoverageIds
+  .map((id): ClientCoverageRow | null => {
+    const base = coverageCatalog.find((c) => c.id === id);
+    if (!base) return null;
+
+    const override = activeClient.coverages.overrides?.[id];
+    const range = activeClient.coverages.ranges?.[id];
+    const descriptionOverride = activeClient.coverages.descriptions?.[id];
+
+    const clientDiffs: string[] = [];
+    if (override) clientDiffs.push(...Object.keys(override));
+    if (range) clientDiffs.push("range");
+    if (descriptionOverride) clientDiffs.push("description");
+
+    const applicants = override?.applicants ?? base.applicants;
+    const riders = override?.riders ?? base.riders ?? [];
+    const waitingPeriods =
+      override?.waitingPeriodOptions ?? base.waitingPeriodOptions ?? [];
+    const maxBenefitPeriods =
+      override?.maxBenefitPeriodOptions ?? base.maxBenefitPeriodOptions ?? [];
+
+    return {
+      id,
+      name: override?.name ?? base.name,
+      categoryId: override?.categoryId ?? base.categoryId,
+      underwritingType: override?.underwritingType ?? base.underwritingType,
+      applicants: applicants.join(", "),
+      memberRange: formatAmountRange(
+        range?.min ?? base.minAmount,
+        range?.max ?? base.maxAmount,
+      ),
+      spouseRange: formatAmountRange(
+        range?.spouseMin ?? base.spouseMinAmount,
+        range?.spouseMax ?? base.spouseMaxAmount,
+      ),
+      childRange: formatAmountRange(
+        range?.childMin ?? base.childMinAmount,
+        range?.childMax ?? base.childMaxAmount,
+      ),
+      riders: riders.length > 0 ? riders.map((r) => r.name).join(", ") : "—",
+      waitingPeriods:
+        waitingPeriods.length > 0
+          ? waitingPeriods.map((w) => w.label).join(", ")
+          : "—",
+      maxBenefitPeriods:
+        maxBenefitPeriods.length > 0
+          ? maxBenefitPeriods.map((m) => m.label).join(", ")
+          : "—",
+      notes:
+        [override?.coverageNote, descriptionOverride ?? base.description]
+          .filter((n): n is string => Boolean(n))
+          .join(" — ") || "—",
+      clientDiffs,
+    };
+  })
+  .filter((row): row is ClientCoverageRow => row !== null);
+
+const clientCoverageCategoryIds: CoverageCategoryId[] =
+  activeClient.coverages.categories ??
+  (Array.from(
+    new Set(clientCoverageRows.map((r) => r.categoryId)),
+  ) as CoverageCategoryId[]);
+
+const excludedCoverageNames = coverageCatalog
+  .filter((c) => !clientEnabledCoverageIds.includes(c.id))
+  .map((c) => `${c.name} (${c.id})`);
 
 // ---------------------------------------------------------------------------
 // Reusable UI pieces
@@ -3939,6 +4465,61 @@ function ResponsiveTableContainer({ children }: { children: ReactNode }) {
     >
       {children}
     </TableContainer>
+  );
+}
+
+function ResizableHeaderCell({
+  width,
+  onResize,
+  children,
+  sx,
+}: {
+  width: number;
+  onResize: (nextWidth: number) => void;
+  children: ReactNode;
+  sx?: object;
+}) {
+  const handleMouseDown = (event: ReactMouseEvent) => {
+    event.preventDefault();
+    const startX = event.clientX;
+    const startWidth = width;
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      onResize(Math.max(60, startWidth + (moveEvent.clientX - startX)));
+    };
+    const handleMouseUp = () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  return (
+    <TableCell
+      sx={{
+        width,
+        minWidth: width,
+        maxWidth: width,
+        position: "relative",
+        bgcolor: "background.paper",
+        ...sx,
+      }}
+    >
+      {children}
+      <Box
+        onMouseDown={handleMouseDown}
+        sx={{
+          position: "absolute",
+          top: 0,
+          right: -3,
+          height: "100%",
+          width: "6px",
+          cursor: "col-resize",
+          zIndex: 1,
+          "&:hover": { bgcolor: "divider" },
+        }}
+      />
+    </TableCell>
   );
 }
 
@@ -4203,7 +4784,6 @@ export default function InformationArchitecture() {
   const [componentFilter, setComponentFilter] = useState("");
   const [fieldFilter, setFieldFilter] = useState("");
   const [configFilter, setConfigFilter] = useState("");
-  const [fieldModalId, setFieldModalId] = useState<string | null>(null);
   const [componentModalName, setComponentModalName] = useState<string | null>(
     null,
   );
@@ -4263,15 +4843,25 @@ export default function InformationArchitecture() {
   }, [componentFilter]);
 
   const fieldsByPage = useMemo(() => {
-    const result: { pageId: PageId; pageTitle: string; rows: FieldRow[] }[] =
-      [];
+    const result: {
+      pageId: PageId;
+      pageTitle: string;
+      rows: FieldRow[];
+      hiddenRows: FieldRow[];
+    }[] = [];
     for (const pageId of formFlow) {
       if (pagesWithNoFields.has(pageId)) continue;
-      const rows = getPageFieldRows(pageId).filter(
+      const baseRows = getPageFieldRows(pageId).filter(
         (r) => !isClientSpecificField(r.fieldId),
       );
-      if (rows.length > 0)
-        result.push({ pageId, pageTitle: getPageTitle(pageId), rows });
+      const { rows, hiddenRows } = applyClientFieldDiff(pageId, baseRows);
+      if (rows.length > 0 || hiddenRows.length > 0)
+        result.push({
+          pageId,
+          pageTitle: getPageTitle(pageId),
+          rows,
+          hiddenRows,
+        });
     }
     return result;
   }, []);
@@ -4294,6 +4884,23 @@ export default function InformationArchitecture() {
     () => filteredFieldsByPage.reduce((sum, p) => sum + p.rows.length, 0),
     [filteredFieldsByPage],
   );
+  const [fieldsColumnWidths, setFieldsColumnWidths] = useState({
+    page: 100,
+    section: 90,
+    fieldId: 160,
+    label: 220,
+    type: 110,
+    required: 90,
+    options: 300,
+    visibleWhen: 220,
+    client: 160,
+  });
+  const resizeFieldsColumn = useCallback(
+    (key: keyof typeof fieldsColumnWidths, nextWidth: number) => {
+      setFieldsColumnWidths((prev) => ({ ...prev, [key]: nextWidth }));
+    },
+    [],
+  );
   const filteredConfigs = useMemo(() => {
     if (!configFilter) return configurationsData;
     const lc = configFilter.toLowerCase();
@@ -4303,30 +4910,6 @@ export default function InformationArchitecture() {
         .includes(lc),
     );
   }, [configFilter]);
-
-  const selectedField = useMemo(() => {
-    if (!fieldModalId) return null;
-    const catalogField =
-      fieldCatalog[fieldModalId as keyof typeof fieldCatalog];
-    if (catalogField) return { ...catalogField, id: fieldModalId };
-    for (const page of fieldsByPage) {
-      const row = page.rows.find((r) => r.fieldId === fieldModalId);
-      if (row)
-        return {
-          id: fieldModalId,
-          label: row.label,
-          inputType: row.inputType,
-          required: row.required === "Yes",
-          options:
-            row.options !== "—"
-              ? row.options
-                  .split(", ")
-                  .map((l) => ({ value: l.toLowerCase(), label: l }))
-              : undefined,
-        };
-    }
-    return null;
-  }, [fieldModalId, fieldsByPage]);
 
   const selectedComponent = useMemo(() => {
     if (!componentModalName) return null;
@@ -4346,12 +4929,18 @@ export default function InformationArchitecture() {
     >
       <Stack spacing={3}>
         <Box>
-          <Chip
-            label="Internal prototype documentation"
-            color="error"
-            variant="outlined"
-            sx={{ mb: 2 }}
-          />
+          <Stack direction="row" spacing={1} sx={{ mb: 2 }} flexWrap="wrap">
+            <Chip
+              label="Internal prototype documentation"
+              color="error"
+              variant="outlined"
+            />
+            <Chip
+              label={`Active client: ${activeClient.branding.name} (${activeClient.id})`}
+              color="primary"
+              variant="outlined"
+            />
+          </Stack>
           <Typography variant="h3" component="h1" sx={{ fontWeight: 800 }}>
             Application Architecture
           </Typography>
@@ -4362,7 +4951,23 @@ export default function InformationArchitecture() {
           >
             A comprehensive map of the application prototype: pages, flow logic,
             reusable components, field catalog, and configuration sources.
-            Derived from the active implementation (demo client).
+            Derived from the active implementation, reflecting the client
+            resolved from the <code>?client=</code> URL parameter (currently{" "}
+            {activeClient.branding.name}). Fields, content, and coverage
+            configuration that are unique to this client are highlighted{" "}
+            <Box
+              component="span"
+              sx={{
+                bgcolor: CLIENT_HIGHLIGHT_BG,
+                border: "1px solid",
+                borderColor: CLIENT_HIGHLIGHT_BORDER,
+                borderRadius: 0.5,
+                px: 0.5,
+              }}
+            >
+              in yellow
+            </Box>
+            .
           </Typography>
         </Box>
 
@@ -4870,7 +5475,7 @@ export default function InformationArchitecture() {
             <SectionAccordion
               id="fields-table"
               title="Fields"
-              description="Field inventory grouped by page/section (demo client). Excludes client-specific fields and pages with no interactive fields."
+              description={`Field inventory grouped by page/section for the active client (${activeClient.branding.name}). Fields added, hidden, required, or overridden for this client are highlighted in yellow. Excludes pages with no interactive fields.`}
               count={totalFieldCount}
             >
               <Stack spacing={2}>
@@ -4879,105 +5484,164 @@ export default function InformationArchitecture() {
                   onChange={setFieldFilter}
                   placeholder="Filter fields…"
                 />
-                {filteredFieldsByPage.map((page) => (
-                  <Accordion
-                    key={page.pageId}
-                    defaultExpanded
-                    disableGutters
-                    variant="outlined"
-                    sx={{
-                      borderRadius: "16px !important",
-                      overflow: "hidden",
-                      "&:before": { display: "none" },
-                    }}
+                <ResponsiveTableContainer>
+                  <Table
+                    size="small"
+                    sx={{ tableLayout: "fixed", width: "max-content" }}
                   >
-                    <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />}>
-                      <Box>
-                        <Typography sx={{ fontWeight: 700 }}>
-                          {page.pageTitle}
+                    <colgroup>
+                      {Object.values(fieldsColumnWidths).map((width, i) => (
+                        <col key={i} style={{ width }} />
+                      ))}
+                    </colgroup>
+                    <TableHead>
+                      <TableRow>
+                        <ResizableHeaderCell
+                          width={fieldsColumnWidths.page}
+                          onResize={(w) => resizeFieldsColumn("page", w)}
+                          sx={{ position: "sticky", top: 0, zIndex: 2 }}
+                        >
+                          Page
+                        </ResizableHeaderCell>
+                        <ResizableHeaderCell
+                          width={fieldsColumnWidths.section}
+                          onResize={(w) => resizeFieldsColumn("section", w)}
+                          sx={{ position: "sticky", top: 0, zIndex: 2 }}
+                        >
+                          Section
+                        </ResizableHeaderCell>
+                        <ResizableHeaderCell
+                          width={fieldsColumnWidths.fieldId}
+                          onResize={(w) => resizeFieldsColumn("fieldId", w)}
+                          sx={{ position: "sticky", top: 0, zIndex: 2 }}
+                        >
+                          Field ID
+                        </ResizableHeaderCell>
+                        <ResizableHeaderCell
+                          width={fieldsColumnWidths.label}
+                          onResize={(w) => resizeFieldsColumn("label", w)}
+                          sx={{ position: "sticky", top: 0, zIndex: 2 }}
+                        >
+                          Label
+                        </ResizableHeaderCell>
+                        <ResizableHeaderCell
+                          width={fieldsColumnWidths.type}
+                          onResize={(w) => resizeFieldsColumn("type", w)}
+                          sx={{ position: "sticky", top: 0, zIndex: 2 }}
+                        >
+                          Type
+                        </ResizableHeaderCell>
+                        <ResizableHeaderCell
+                          width={fieldsColumnWidths.required}
+                          onResize={(w) => resizeFieldsColumn("required", w)}
+                          sx={{ position: "sticky", top: 0, zIndex: 2 }}
+                        >
+                          Required
+                        </ResizableHeaderCell>
+                        <ResizableHeaderCell
+                          width={fieldsColumnWidths.options}
+                          onResize={(w) => resizeFieldsColumn("options", w)}
+                          sx={{ position: "sticky", top: 0, zIndex: 2 }}
+                        >
+                          Options
+                        </ResizableHeaderCell>
+                        <ResizableHeaderCell
+                          width={fieldsColumnWidths.visibleWhen}
+                          onResize={(w) =>
+                            resizeFieldsColumn("visibleWhen", w)
+                          }
+                          sx={{ position: "sticky", top: 0, zIndex: 2 }}
+                        >
+                          Visible when
+                        </ResizableHeaderCell>
+                        <ResizableHeaderCell
+                          width={fieldsColumnWidths.client}
+                          onResize={(w) => resizeFieldsColumn("client", w)}
+                          sx={{ position: "sticky", top: 0, zIndex: 2 }}
+                        >
+                          Client ({activeClient.id})
+                        </ResizableHeaderCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {filteredFieldsByPage.map((page) =>
+                        page.rows.map((row, index) => (
+                          <TableRow
+                            key={`${page.pageId}-${row.sectionId}-${row.fieldId}-${index}`}
+                            sx={
+                              row.clientNote
+                                ? { bgcolor: CLIENT_HIGHLIGHT_BG }
+                                : undefined
+                            }
+                          >
+                            <TableCell
+                              sx={{ whiteSpace: "normal !important" }}
+                            >
+                              {pageBreadcrumbLabel[page.pageId] ??
+                                page.pageTitle}
+                            </TableCell>
+                            <TableCell
+                              sx={{ whiteSpace: "normal !important" }}
+                            >
+                              {row.sectionLabel}
+                            </TableCell>
+                            <TableCell
+                              sx={{ whiteSpace: "normal !important" }}
+                            >
+                              {row.fieldId}
+                            </TableCell>
+                            <TableCell sx={{ whiteSpace: "normal !important" }}>
+                              {row.label}
+                            </TableCell>
+                            <TableCell>{row.inputType}</TableCell>
+                            <TableCell>{row.required}</TableCell>
+                            <TableCell
+                              sx={{ whiteSpace: "normal !important" }}
+                            >
+                              {row.options}
+                            </TableCell>
+                            <TableCell
+                              sx={{ whiteSpace: "normal !important" }}
+                            >
+                              {row.visibleWhen}
+                            </TableCell>
+                            <TableCell
+                              sx={{ whiteSpace: "normal !important" }}
+                            >
+                              {row.clientNote ? (
+                                <ClientNote label={row.clientNote} />
+                              ) : (
+                                "—"
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        )),
+                      )}
+                    </TableBody>
+                  </Table>
+                </ResponsiveTableContainer>
+                {filteredFieldsByPage.some(
+                  (page) => page.hiddenRows.length > 0,
+                ) && (
+                  <Stack spacing={0.5}>
+                    {filteredFieldsByPage
+                      .filter((page) => page.hiddenRows.length > 0)
+                      .map((page) => (
+                        <Typography
+                          key={page.pageId}
+                          variant="caption"
+                          color="text.secondary"
+                        >
+                          Hidden for {activeClient.branding.name} (
+                          {pageBreadcrumbLabel[page.pageId] ?? page.pageTitle}
+                          ):{" "}
+                          {page.hiddenRows
+                            .map((r) => `${r.fieldId} (${r.label})`)
+                            .join(", ")}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {page.pageId} · {page.rows.length} fields
-                        </Typography>
-                      </Box>
-                    </AccordionSummary>
-                    <AccordionDetails sx={{ pt: 0 }}>
-                      <ResponsiveTableContainer>
-                        <Table size="small">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>Section</TableCell>
-                              <TableCell>Applicant</TableCell>
-                              <TableCell>Field ID</TableCell>
-                              <TableCell>Label</TableCell>
-                              <TableCell>Type</TableCell>
-                              <TableCell>Required</TableCell>
-                              <TableCell sx={{ minWidth: 300 }}>
-                                Options
-                              </TableCell>
-                              <TableCell>Visible when</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {page.rows.map((row, index) => (
-                              <TableRow
-                                key={`${page.pageId}-${row.sectionId}-${row.fieldId}-${index}`}
-                              >
-                                <TableCell>{row.sectionLabel}</TableCell>
-                                <TableCell>{row.applicant}</TableCell>
-                                <TableCell>
-                                  {row.fieldId !== "—" ? (
-                                    <Link
-                                      component="button"
-                                      variant="body2"
-                                      sx={{
-                                        fontWeight: 700,
-                                        textAlign: "left",
-                                      }}
-                                      onClick={() =>
-                                        setFieldModalId(row.fieldId)
-                                      }
-                                    >
-                                      {row.fieldId}
-                                    </Link>
-                                  ) : (
-                                    "—"
-                                  )}
-                                </TableCell>
-                                <TableCell
-                                  sx={{
-                                    whiteSpace: "normal !important",
-                                    maxWidth: 300,
-                                  }}
-                                >
-                                  {row.label}
-                                </TableCell>
-                                <TableCell>{row.inputType}</TableCell>
-                                <TableCell>{row.required}</TableCell>
-                                <TableCell
-                                  sx={{
-                                    whiteSpace: "normal !important",
-                                    minWidth: 300,
-                                  }}
-                                >
-                                  {row.options}
-                                </TableCell>
-                                <TableCell
-                                  sx={{
-                                    whiteSpace: "normal !important",
-                                    maxWidth: 260,
-                                  }}
-                                >
-                                  {row.visibleWhen}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </ResponsiveTableContainer>
-                    </AccordionDetails>
-                  </Accordion>
-                ))}
+                      ))}
+                  </Stack>
+                )}
               </Stack>
             </SectionAccordion>
 
@@ -5307,12 +5971,210 @@ export default function InformationArchitecture() {
             </SectionAccordion>
 
             {/* ---------------------------------------------------------------- */}
+            {/* Coverage configuration                                            */}
+            {/* ---------------------------------------------------------------- */}
+            <SectionAccordion
+              id="coverages-table"
+              title="Coverages"
+              description={`Coverage catalog (src/config/coverages) as enabled and configured for the active client (${activeClient.branding.name}). Coverage properties overridden for this client (ClientConfig.coverages) are highlighted in yellow.`}
+              count={clientCoverageRows.length}
+            >
+              <Stack spacing={2}>
+                {(() => {
+                  const cc = activeClient.coverages;
+                  const displaySettings: string[] = [];
+                  if (cc.categorySectionLabels)
+                    displaySettings.push(
+                      `Category labels: ${Object.entries(cc.categorySectionLabels)
+                        .map(([id, label]) => `${id} → "${label}"`)
+                        .join(", ")}`,
+                    );
+                  if (cc.allCategoriesExpanded)
+                    displaySettings.push(
+                      "All category accordions expanded by default",
+                    );
+                  if (cc.additionalCoverageWarning)
+                    displaySettings.push(
+                      `Additional coverage warning: ${cc.additionalCoverageWarning}`,
+                    );
+                  if (cc.estimatedRateDisplay)
+                    displaySettings.push(
+                      `Estimated rate display: ${JSON.stringify(cc.estimatedRateDisplay)}`,
+                    );
+                  if (cc.productEstimatedCostBreakdown?.enabled)
+                    displaySettings.push(
+                      "Product estimated cost breakdown enabled",
+                    );
+                  return displaySettings.length > 0 ? (
+                    <Box
+                      sx={{
+                        p: 1.5,
+                        borderRadius: 2,
+                        bgcolor: CLIENT_HIGHLIGHT_BG,
+                        border: "1px solid",
+                        borderColor: CLIENT_HIGHLIGHT_BORDER,
+                      }}
+                    >
+                      <Typography
+                        variant="caption"
+                        sx={{ fontWeight: 700, display: "block", mb: 0.5 }}
+                      >
+                        Client-specific category &amp; display settings
+                      </Typography>
+                      {displaySettings.map((line) => (
+                        <Typography
+                          key={line}
+                          variant="caption"
+                          sx={{ display: "block" }}
+                        >
+                          {line}
+                        </Typography>
+                      ))}
+                    </Box>
+                  ) : null;
+                })()}
+
+                {clientCoverageCategoryIds.map((categoryId) => {
+                  const rows = clientCoverageRows.filter(
+                    (r) => r.categoryId === categoryId,
+                  );
+                  if (rows.length === 0) return null;
+                  const label = getCoverageCategorySectionLabel(
+                    categoryId,
+                    activeClient.coverages.categorySectionLabels,
+                  );
+                  return (
+                    <Accordion
+                      key={categoryId}
+                      defaultExpanded
+                      disableGutters
+                      variant="outlined"
+                      sx={{
+                        borderRadius: "16px !important",
+                        overflow: "hidden",
+                        "&:before": { display: "none" },
+                      }}
+                    >
+                      <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />}>
+                        <Box>
+                          <Typography sx={{ fontWeight: 700 }}>
+                            {label}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {categoryId} · {rows.length} coverages
+                          </Typography>
+                        </Box>
+                      </AccordionSummary>
+                      <AccordionDetails sx={{ pt: 0 }}>
+                        <ResponsiveTableContainer>
+                          <Table size="small">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>ID</TableCell>
+                                <TableCell>Name</TableCell>
+                                <TableCell>Underwriting</TableCell>
+                                <TableCell>Applicants</TableCell>
+                                <TableCell>Member range</TableCell>
+                                <TableCell>Spouse range</TableCell>
+                                <TableCell>Child range</TableCell>
+                                <TableCell sx={{ minWidth: 200 }}>
+                                  Riders
+                                </TableCell>
+                                <TableCell sx={{ minWidth: 220 }}>
+                                  Notes
+                                </TableCell>
+                                <TableCell sx={{ minWidth: 160 }}>
+                                  Client ({activeClient.id})
+                                </TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {rows.map((row) => (
+                                <TableRow
+                                  key={row.id}
+                                  sx={
+                                    row.clientDiffs.length > 0
+                                      ? { bgcolor: CLIENT_HIGHLIGHT_BG }
+                                      : undefined
+                                  }
+                                >
+                                  <TableCell
+                                    sx={{
+                                      fontFamily: "monospace",
+                                      fontSize: "0.75rem",
+                                    }}
+                                  >
+                                    {row.id}
+                                  </TableCell>
+                                  <TableCell
+                                    sx={{
+                                      whiteSpace: "normal !important",
+                                      maxWidth: 220,
+                                    }}
+                                  >
+                                    {row.name}
+                                  </TableCell>
+                                  <TableCell>{row.underwritingType}</TableCell>
+                                  <TableCell>{row.applicants}</TableCell>
+                                  <TableCell>{row.memberRange}</TableCell>
+                                  <TableCell>{row.spouseRange}</TableCell>
+                                  <TableCell>{row.childRange}</TableCell>
+                                  <TableCell
+                                    sx={{
+                                      whiteSpace: "normal !important",
+                                      minWidth: 200,
+                                    }}
+                                  >
+                                    {row.riders}
+                                  </TableCell>
+                                  <TableCell
+                                    sx={{
+                                      whiteSpace: "normal !important",
+                                      minWidth: 220,
+                                    }}
+                                  >
+                                    {row.notes}
+                                  </TableCell>
+                                  <TableCell
+                                    sx={{
+                                      whiteSpace: "normal !important",
+                                      maxWidth: 200,
+                                    }}
+                                  >
+                                    {row.clientDiffs.length > 0 ? (
+                                      <ClientNote
+                                        label={`Overridden: ${row.clientDiffs.join(", ")}`}
+                                      />
+                                    ) : (
+                                      "—"
+                                    )}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </ResponsiveTableContainer>
+                      </AccordionDetails>
+                    </Accordion>
+                  );
+                })}
+
+                {excludedCoverageNames.length > 0 && (
+                  <Typography variant="caption" color="text.secondary">
+                    Not enabled for {activeClient.branding.name}:{" "}
+                    {excludedCoverageNames.join(", ")}
+                  </Typography>
+                )}
+              </Stack>
+            </SectionAccordion>
+
+            {/* ---------------------------------------------------------------- */}
             {/* Content model                                                     */}
             {/* ---------------------------------------------------------------- */}
             <SectionAccordion
               id="content-table"
               title="Content"
-              description="Flattened entries from the site content model (src/content/types.ts → SiteContent), resolved by getContent() as client overrides merged over shared defaults. Each row is one leaf value, addressed by its full dot-notation key path."
+              description={`Flattened entries from the site content model (src/content/types.ts → SiteContent), resolved by getContent() as the active client's (${activeClient.branding.name}) overrides merged over shared defaults. Each row is one leaf value, addressed by its full dot-notation key path. Values overridden by this client (src/content/clients/${activeClient.id}.ts) are highlighted in yellow.`}
               count={flatContentRows.length}
             >
               <ResponsiveTableContainer>
@@ -5326,13 +6188,20 @@ export default function InformationArchitecture() {
                         Value
                       </TableCell>
                       <TableCell sx={{ minWidth: 220, fontWeight: 600 }}>
-                        Defaults file
+                        Defaults / client file
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {flatContentRows.map((row) => (
-                      <TableRow key={row.path}>
+                      <TableRow
+                        key={row.path}
+                        sx={
+                          row.clientOverridden
+                            ? { bgcolor: CLIENT_HIGHLIGHT_BG }
+                            : undefined
+                        }
+                      >
                         <TableCell
                           sx={{
                             verticalAlign: "top",
@@ -5373,6 +6242,19 @@ export default function InformationArchitecture() {
                           }}
                         >
                           {row.defaultsFile}
+                          {row.clientOverridden && (
+                            <Typography
+                              component="div"
+                              sx={{
+                                fontFamily: "monospace",
+                                fontSize: "0.75rem",
+                                fontWeight: 700,
+                                color: "#5c4a00",
+                              }}
+                            >
+                              src/content/clients/{activeClient.id}.ts
+                            </Typography>
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -5957,87 +6839,6 @@ export default function InformationArchitecture() {
           </Stack>
         </Box>
       </Stack>
-
-      {/* Field detail modal */}
-      <DetailModal
-        open={!!fieldModalId}
-        onClose={() => setFieldModalId(null)}
-        title={fieldModalId ?? ""}
-      >
-        {selectedField ? (
-          <Stack spacing={2}>
-            <Box>
-              <Typography variant="caption" color="text.secondary">
-                Label
-              </Typography>
-              <Typography>{selectedField.label}</Typography>
-            </Box>
-            <Box>
-              <Typography variant="caption" color="text.secondary">
-                Input type
-              </Typography>
-              <Typography>{selectedField.inputType}</Typography>
-            </Box>
-            <Box>
-              <Typography variant="caption" color="text.secondary">
-                Required
-              </Typography>
-              <Typography>{selectedField.required ? "Yes" : "No"}</Typography>
-            </Box>
-            {selectedField.options &&
-              (Array.isArray(selectedField.options)
-                ? selectedField.options
-                : []
-              ).length > 0 && (
-                <Box>
-                  <Typography variant="caption" color="text.secondary">
-                    Options
-                  </Typography>
-                  <Stack
-                    direction="row"
-                    flexWrap="wrap"
-                    gap={0.5}
-                    sx={{ mt: 0.5 }}
-                  >
-                    {(Array.isArray(selectedField.options)
-                      ? selectedField.options
-                      : []
-                    ).map((opt: { label: string; value: string }) => (
-                      <Chip
-                        key={opt.value}
-                        label={opt.label}
-                        size="small"
-                        variant="outlined"
-                      />
-                    ))}
-                  </Stack>
-                </Box>
-              )}
-            {fieldModalId && clientConfiguredFields.has(fieldModalId) && (
-              <Box>
-                <Typography variant="caption" color="text.secondary">
-                  Visibility
-                </Typography>
-                <Typography color="warning.main">
-                  Client-configured — only shown if client enables this field
-                </Typography>
-              </Box>
-            )}
-            <Box>
-              <Typography variant="caption" color="text.secondary">
-                Source
-              </Typography>
-              <Typography variant="body2">
-                src/config/fields/index.ts
-              </Typography>
-            </Box>
-          </Stack>
-        ) : (
-          <Typography color="text.secondary">
-            Field not found in catalog (page-level custom field).
-          </Typography>
-        )}
-      </DetailModal>
 
       {/* Component detail modal */}
       <DetailModal

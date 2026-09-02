@@ -91,6 +91,21 @@ function isCurrencyField(field: FieldDefinition) {
   return field.format === "currency" || CURRENCY_FIELD_IDS.has(field.id);
 }
 
+const SEARCHABLE_SELECT_OPTION_THRESHOLD = 10;
+
+// Dropdowns with a long option list are hard to scan/scroll, so they render as a
+// searchable select once they hit the threshold, unless the field opts out.
+function getEffectiveInputType(field: FieldDefinition) {
+  if (
+    field.inputType === "dropdown" &&
+    (field.options?.length ?? 0) >= SEARCHABLE_SELECT_OPTION_THRESHOLD
+  ) {
+    return "searchable-select" as const;
+  }
+
+  return field.inputType;
+}
+
 function isZipOrPostalField(field: FieldDefinition) {
   return field.id.includes("zip") || field.autoComplete === "postal-code";
 }
@@ -553,6 +568,7 @@ export default function FieldRenderer({
   onValueChange,
 }: FieldRendererProps) {
   const validationRules = getValidationRules(field);
+  const effectiveInputType = getEffectiveInputType(field);
   const fieldError = errors[field.id]?.message as string | undefined;
   const resolvedHelperText =
     fieldError ??
@@ -744,7 +760,7 @@ export default function FieldRenderer({
     );
   }
 
-  if (field.inputType === "dropdown") {
+  if (effectiveInputType === "dropdown") {
     const labelVariant = getLabelVariant(field);
     const labelId = `${field.id}-label`;
 
@@ -859,7 +875,7 @@ export default function FieldRenderer({
     );
   }
 
-  if (field.inputType === "searchable-select") {
+  if (effectiveInputType === "searchable-select") {
     const labelVariant = getLabelVariant(field);
 
     return (

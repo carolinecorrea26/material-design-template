@@ -9,6 +9,7 @@ import { demoContentOverrides } from "./demo";
 import { isitrustContentOverrides } from "./isitrust";
 import { nsoContentOverrides } from "./nso";
 import { waepaContentOverrides } from "./waepa";
+import { waepagiContentOverrides } from "./waepagi";
 
 export const clientContentOverrides: Record<
   ClientId,
@@ -22,4 +23,5 @@ export const clientContentOverrides: Record<
   isitrust: isitrustContentOverrides,
   nso: nsoContentOverrides,
   waepa: waepaContentOverrides,
+  waepagi: waepagiContentOverrides,
 };

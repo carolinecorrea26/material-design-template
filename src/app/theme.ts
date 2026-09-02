@@ -111,13 +111,36 @@ const themeColorPalettes: Record<
   },
 };
 
-export function createAppTheme(colorId: ThemeColorId = "default") {
+export type CreateAppThemeOptions = {
+  /**
+   * Forces the "md"/"lg"/"xl" breakpoints to an unreachable width, so every
+   * `useMediaQuery(breakpoints.up("md"))` desktop/mobile structural check
+   * (e.g. ProgressStep's sidebar-vs-stepper branch) resolves to its
+   * narrow-screen variant regardless of the actual viewport width. "sm"
+   * (600px) is intentionally left at its default so components that only
+   * bump padding/spacing at "sm" (e.g. FormRoutePage's FormShell) still get
+   * that breathing room on an actual desktop-width browser instead of
+   * staying pinned to their tightest "xs" values.
+   */
+  forceMobileLayout?: boolean;
+};
+
+export function createAppTheme(
+  colorId: ThemeColorId = "default",
+  { forceMobileLayout = false }: CreateAppThemeOptions = {},
+) {
   const primaryPalette =
     themeColorPalettes[colorId] ?? themeColorPalettes.default;
 
   let theme = createTheme({
     spacing: 8,
     shape: { borderRadius: 8 },
+
+    ...(forceMobileLayout && {
+      breakpoints: {
+        values: { xs: 0, sm: 600, md: 1e6, lg: 1e6, xl: 1e6 },
+      },
+    }),
 
     palette: {
       primary: primaryPalette,

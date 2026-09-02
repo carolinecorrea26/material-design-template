@@ -1684,6 +1684,33 @@ export default function DesignSystem() {
 
             <Box>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                Form template layout
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                template=multi (default) uses the app's real, viewport-based
+                responsive breakpoints — no width overrides. template=single
+                keeps the same routes/pages/navigation but forces the whole
+                app into its narrow-screen layout via createAppTheme's
+                forceMobileLayout option, which pins the md/lg/xl
+                breakpoints to an unreachable width regardless of the actual
+                browser width (see Site Rules → Form Template). sm (600px)
+                is deliberately left at its default so sm-level
+                padding/spacing — e.g. FormRoutePage's FormShell, which uses{" "}
+                <code>px: {"{"} xs: 2, sm: "48px" {"}"}</code> — still gets
+                that breathing room on a real desktop-width browser instead
+                of staying pinned to its tightest xs padding. In single
+                template, Home's hero (tagline, title, description; no hero
+                image) is capped at 700px and centered, while the form
+                column beneath it (filled by the real Membership page) is
+                capped at a wider 800px — the hero is intentionally
+                narrower than the form.
+              </Typography>
+            </Box>
+
+            <Divider />
+
+            <Box>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 Alerts
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
