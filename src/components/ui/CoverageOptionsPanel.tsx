@@ -57,13 +57,11 @@ function getApplicantLabel(applicant: CoverageApplicantId): string {
 export type CoverageOptionsPanelProps = {
   variant: "page" | "drawer";
   initialCategory?: CoverageCategoryId;
-  onLearnMoreQuickDecision?: () => void;
 };
 
 export default function CoverageOptionsPanel({
   variant,
   initialCategory,
-  onLearnMoreQuickDecision,
 }: CoverageOptionsPanelProps) {
   const client = getActiveClient();
   const coverages = useMemo(() => getActiveClientCoverages(), []);
@@ -136,7 +134,7 @@ export default function CoverageOptionsPanel({
 
   return (
     <Stack spacing={variant === "page" ? 2.5 : 0}>
-      <QuickDecisionInfoBox onLearnMore={onLearnMoreQuickDecision} />
+      <QuickDecisionInfoBox />
 
       <Box sx={boxSx}>
         {coverageGroups.length === 0 ? (

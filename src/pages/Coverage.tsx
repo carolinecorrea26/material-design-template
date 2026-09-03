@@ -8,8 +8,6 @@ import FormRoutePage from "../app/RoutePage";
 
 import AppDrawer from "../components/layout/AppDrawer";
 import FormHelpChips from "../components/content/HelpChips";
-import QuickDecisionDrawerContent from "../components/content/QuickDecisionExplainer";
-import { QuickDecisionMark } from "../components/content/QuickDecisionExplainer";
 import CoverageCart from "../components/ui/CoverageCart";
 import CoverageQuestions from "../components/forms/CoverageQuestions";
 import ProductCatalog from "../components/forms/ProductCatalog";
@@ -313,7 +311,6 @@ function CoveragePageContent({
             onRiderAmountChange={state.handleRiderAmountChange}
             onWaitingPeriodChange={state.handleWaitingPeriodChange}
             onMaxBenefitPeriodChange={state.handleMaxBenefitPeriodChange}
-            onQdDrawerOpen={() => state.setQdDrawerOpen(true)}
             getVisibleApplicants={state.getVisibleApplicants}
             calcApplicantPremium={state.calcApplicantPremium}
             generateAmountChoices={state.generateAmountChoices}
@@ -361,18 +358,6 @@ function CoveragePageContent({
             </Button>
           </Box>
         )}
-
-      <AppDrawer
-        open={state.qdDrawerOpen}
-        title={
-          <>
-            {content.help.quickDecision.titlePrefix} <QuickDecisionMark />?
-          </>
-        }
-        onClose={() => state.setQdDrawerOpen(false)}
-      >
-        <QuickDecisionDrawerContent />
-      </AppDrawer>
 
       <AppDrawer
         open={state.summaryDrawerOpen}

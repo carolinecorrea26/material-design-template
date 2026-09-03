@@ -508,12 +508,10 @@ export default function Receipt() {
                   {receiptContent.whatHappensNext.title}
                 </Typography>
                 <Stack spacing={2}>
-                  {[
-                    FileDownloadRoundedIcon,
-                    CheckCircleRoundedIcon,
-                    HeadsetMicIcon,
-                  ].map((IconComponent, index) => {
-                    const item = receiptContent.whatHappensNext.items[index];
+                  {receiptContent.whatHappensNext.items.map((item, index) => {
+                    const IconComponent =
+                      [FileDownloadRoundedIcon, HeadsetMicIcon][index] ??
+                      HeadsetMicIcon;
                     return (
                       <Stack
                         key={item.title}

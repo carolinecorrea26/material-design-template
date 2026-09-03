@@ -540,6 +540,7 @@ export default function Payment() {
                                             sx={{
                                               color: "primary.main",
                                               whiteSpace: "nowrap",
+                                              fontSize: "1.25rem",
                                             }}
                                           >
                                             {formatCurrency(totalForFrequency)}

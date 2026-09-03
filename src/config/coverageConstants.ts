@@ -9,9 +9,12 @@ export const RATE_CALCULATION_DELAY_MS = 900;
  */
 export function getCategoryRequirements(
   selectedCategories: CoverageCategoryId[],
+  options?: { hideSmokerQuestion?: boolean },
 ) {
   const needsGender = selectedCategories.some((c) => c === "LI" || c === "DI");
-  const needsSmoker = selectedCategories.some((c) => c === "LI" || c === "SH");
+  const needsSmoker =
+    !options?.hideSmokerQuestion &&
+    selectedCategories.some((c) => c === "LI" || c === "SH");
   const needsDi = selectedCategories.includes("DI");
   const needsOo = selectedCategories.includes("OO");
   const needsHours = needsDi || needsOo;
@@ -88,7 +91,10 @@ export const clientMaxAggregateNoteOverrides: Partial<
     },
   },
   waepa: {
-    LI: null,
+    LI: {
+      member: "The maximum available for a member is $2,000,000.",
+      spouse: "The maximum available for a spouse is $2,000,000.",
+    },
   },
 };
 

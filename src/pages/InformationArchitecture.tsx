@@ -41,7 +41,7 @@ import {
   Typography,
 } from "@mui/material";
 import { fieldCatalog } from "../config/fields";
-import { formFlow } from "../config/formFlow";
+import { formFlow, coverageUnlocksPage } from "../config/formFlow";
 import { pages, getPageTitle } from "../config/pages";
 import { pageSections, sectionLabels } from "../config/pageSections";
 import { applicantSectionTitles } from "../config/formSectionTitle";
@@ -56,6 +56,19 @@ import { coverages as coverageCatalog } from "../config/coverages";
 import { getCoverageCategorySectionLabel } from "../config/coverageCategories";
 import type { CoverageCategoryId } from "../config/coverageCategories";
 import { clientContentOverrides } from "../content/clients";
+import { useApplicationForm, STORAGE_KEY } from "../app/ApplicationFormContext";
+import { router } from "../app/router";
+import { generateFormDataUpToPage } from "../dev/utils/generateFormData";
+import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
+import { findClientIdUnlockingPage } from "../config/client/findClientForPage";
+
+const HEALTH_PAGE_IDS: PageId[] = [
+  "health-si",
+  "health-qd",
+  "health-li",
+  "health-di",
+  "health-cir",
+];
 
 const tableOfContents = [
   { id: "changelog-table", label: "Change Log" },
@@ -117,6 +130,76 @@ type ChangeLogEntry = {
 };
 
 const changeLog: ChangeLogEntry[] = [
+  {
+    id: "CL-021",
+    date: "2026-09-02",
+    area: "WAEPA client",
+    summary:
+      "WAEPA product name overrides, landing hero copy, LI max-aggregate info alert, quote-tool smoker question removed; fixed a dummy-data bug inflating the DI estimated cost, and aligned Payment page's estimated-cost font size with the Coverage page",
+    details:
+      "Coverage names (src/config/clients/waepa.ts → coverages.overrides): li-group-term now names to " +
+      "'Group Term Life Insurance', di-short-term to 'Group Short-Term Disability Income Insurance' " +
+      "(previously unnamed, falling back to the base catalog names 'Group Term Life' / 'Short-Term " +
+      "Disability Insurance'). Landing page hero (src/content/clients/waepa.ts → home.hero): title set to " +
+      "\"Safeguard your family's future.\", description set to \"Group Term Life and Group Short Term " +
+      "Disability Insurance, available exclusively to Civilian Federal Employees. Start your application " +
+      "today.\" (previously used the shared defaults). Coverage page LI info alert (src/config/" +
+      "coverageConstants.ts → clientMaxAggregateNoteOverrides.waepa.LI): changed from null (alert " +
+      "suppressed) to member/spouse text — \"The maximum available for a member/spouse is $2,000,000.\" — " +
+      "matching the pattern already used for AVMA's LI category. Quote tool smoker question " +
+      "(new ClientConfig.coverages.hideSmokerQuestion flag, set true for waepa; consumed by " +
+      "getCategoryRequirements in src/config/coverageConstants.ts and passed from src/components/layout/" +
+      "QuoteModal.tsx and src/components/forms/QuoteCalculator.tsx): WAEPA's quote tool no longer asks or " +
+      "requires the 'Do you use nicotine products?' question for LI/SH categories. Scoped to the quote " +
+      "tool only — the real Coverage page application flow (src/app/useCoverageState.ts) is untouched and " +
+      "still asks the smoker question for LI/SH, since underwriting still requires it there. DI estimate " +
+      "bug fix (src/dev/utils/generateFormData.ts): the dev 'auto-fill sample data' helper previously " +
+      "hardcoded every coverage's sample amount to 100000 (and 50000 for spouse) regardless of the " +
+      "coverage's actual min/max range. For WAEPA's di-short-term (real range $1,000–$4,000), that bogus " +
+      "$100,000 amount fed into estimateMonthlyPremium('DI', amount) = amount * 0.02, producing a fake " +
+      "~$2,000/mo estimate. Sample amounts are now computed via a new pickSampleAmount() helper using the " +
+      "same getCoverageAmountRange() utility the real coverage forms use, snapped to the coverage's " +
+      "amountStep and clamped to its min/max — affects all clients' dummy data, not just WAEPA. Payment " +
+      "page est. cost font size (src/pages/Payment.tsx): the per-product 'Total estimated cost' amount was " +
+      "variant='subtitle2' with no explicit size (~0.875rem); added fontSize: '1.25rem' to match the " +
+      "Coverage page's per-applicant 'Est. cost' amount styling (src/components/forms/ProductCatalog.tsx), " +
+      "so the same figure reads at a consistent size across Coverage and Payment.",
+  },
+  {
+    id: "CL-020",
+    date: "2026-09-02",
+    area: "Coverage / Home quote tool",
+    summary:
+      "Made est. cost rate typography, product-reveal behavior, and the estimated-cost panel consistent between the Coverage page and the quote drawer; trimmed redundant/empty states from the Coverage page's inline cart",
+    details:
+      "Est. cost rate font size: the '$X.XX/mo' rate span shown below the benefit-amount dropdown is now " +
+      "1.25rem in both places it previously differed — src/components/forms/ProductCatalog.tsx (Coverage " +
+      "page product cards, was subtitle2 with no explicit size) and src/components/forms/" +
+      "EstimatorProductCard.tsx (quote drawer product cards, was the smaller 'caption' size). " +
+      "Coverage page inline cart (src/components/ui/CoverageCart.tsx, CoverageCartInline — the 'Your " +
+      "requested coverage' panel below the product catalog, NOT the full-drawer cart variant): the section " +
+      "title and all of its content are now wrapped in a single grandTotal > 0 check, so nothing renders " +
+      "(no title, no 'No coverage selected yet.' placeholder) until an amount is selected for at least one " +
+      "product/applicant. The full-drawer CoverageCartDrawer (header cart icon and the Coverage page's own " +
+      "summary drawer) is untouched and still shows its own empty state. Also removed the redundant 'Total " +
+      "estimated cost $X.XX/mo' row + divider that was rendered directly below the shared TotalCostSummary " +
+      "component inside CoverageCartInline — TotalCostSummary already renders an equivalent 'Total' row, so " +
+      "the duplicate was deleted rather than the one inside TotalCostSummary. Quote drawer (src/components/" +
+      "forms/QuoteCalculator.tsx): clicking 'See my quote' now scrolls the drawer so the revealed product " +
+      "cards land at the top (a ref on the products Stack + scrollIntoView, mirroring the scroll-to-first-" +
+      "error pattern already used on the Coverage page). The 'See my quote' button itself now hides once " +
+      "clicked and only reappears if a coverage question (gender, tobacco use, income, hours, business " +
+      "expenses/responsibility) or the category selection is changed afterward (new handleQuoteFieldChange " +
+      "helper called from each field's onChange and from handleCategoryToggle) — the same show/hide " +
+      "contract as the Coverage page's 'See my coverage options' button, which stays visible above the " +
+      "revealed products the whole time (fields were never hidden there, only the button). Finally, the " +
+      "hand-rolled 'Estimated cost¹' box at the bottom of the quote drawer was replaced with the same " +
+      "TotalCostSummary component used on the Coverage page and in the coverage cart drawer, and — " +
+      "matching the Coverage page's inline cart — it is now hidden entirely (no 'Added coverage will " +
+      "appear here' placeholder) until at least one product/applicant has an amount selected; the rate-" +
+      "frequency toggle and 'Apply for coverage' button remain visible whenever products are shown, " +
+      "regardless of whether any are yet selected.",
+  },
   {
     id: "CL-019",
     date: "2026-09-01",
@@ -660,6 +743,27 @@ const siteRules: {
     behavior:
       "The cart icon displays a badge count derived from current coverage selections.",
     ref: "src/components/layout/AppHeader.tsx; CoverageCart.tsx",
+  },
+  {
+    area: "Coverage cart",
+    rule: "Inline cart hidden until a product is selected",
+    behavior:
+      "The 'Your requested coverage' inline panel below the Coverage page product catalog shows nothing at all — no section title and no empty-state placeholder — until at least one applicant has an amount selected for a product (grandTotal > 0). The full-drawer cart variant (opened from the header cart icon or the Coverage page's own summary drawer) is unaffected and still shows its 'No coverage selected yet.' empty state.",
+    ref: "src/components/ui/CoverageCart.tsx (CoverageCartInline)",
+  },
+  {
+    area: "Home / Quote tool",
+    rule: "Quote reveal mirrors Coverage page's category reveal",
+    behavior:
+      "Clicking 'See my quote' validates the category-level fields, reveals the matching product cards, and scrolls the drawer so the revealed products land at the top. The 'See my quote' button then hides and reappears only if the user edits a coverage question (gender, tobacco use, income, hours, business expenses/responsibility) or toggles a coverage category selection — the same show/hide contract as the Coverage page's 'See my coverage options' button.",
+    ref: "src/components/forms/QuoteCalculator.tsx (handleGetEstimates, handleQuoteFieldChange, handleCategoryToggle)",
+  },
+  {
+    area: "Home / Quote tool",
+    rule: "Estimated cost panel uses the shared TotalCostSummary component",
+    behavior:
+      "The quote drawer's estimated cost panel now renders via the same TotalCostSummary component used on the Coverage page and in the coverage cart drawer, instead of a bespoke box. Like the Coverage page's inline cart, the panel is hidden entirely until at least one product/applicant has been added (no 'Added coverage will appear here' placeholder); the rate-frequency toggle and Apply button remain visible whenever products are shown.",
+    ref: "src/components/forms/QuoteCalculator.tsx; src/components/ui/TotalCostSummary.tsx",
   },
   {
     area: "Feedback",
@@ -2942,7 +3046,7 @@ function applyClientFieldDiff(
   const hidden = new Set(clientPageConfig.hidden ?? []);
   const required = new Set(clientPageConfig.required ?? []);
   const overrides = clientPageConfig.overrides ?? {};
-  const extra = clientPageConfig.extra ?? [];
+  const extra = new Set(clientPageConfig.extra ?? []);
 
   const visibleRows: FieldRow[] = [];
   const hiddenRows: FieldRow[] = [];
@@ -2958,6 +3062,7 @@ function applyClientFieldDiff(
     }
     const notes: string[] = [];
     let nextRow = row;
+    if (extra.has(row.fieldId)) notes.push("Added for this client");
     if (required.has(row.fieldId) && row.required !== "Yes")
       notes.push("Required for this client");
     const override = overrides[row.fieldId];
@@ -2971,7 +3076,7 @@ function applyClientFieldDiff(
   }
 
   const presentIds = new Set(rows.map((r) => r.fieldId));
-  const extraRows: FieldRow[] = extra
+  const extraRows: FieldRow[] = [...extra]
     .filter((id) => !presentIds.has(id))
     .map((id) => {
       const base = fieldCatalog[id as keyof typeof fieldCatalog];
@@ -3744,7 +3849,7 @@ const componentsData: ComponentRow[] = [
     category: "ui",
     description: "Total Estimated Cost summary panel.",
     sourcePath: "src/components/ui/TotalCostSummary.tsx",
-    usedIn: "Coverage page, Review page",
+    usedIn: "Coverage page, Review page, QuoteCalculator (quote drawer)",
     storybookLink: "/?path=/story/ui-totalcostsummary",
   },
   {
@@ -4016,6 +4121,16 @@ const configurationsData: ConfigRow[] = [
     configurable: "Client Configurable (content)",
     usedIn: "ProductCatalog, CoverageCategorySelector",
   },
+  {
+    group: "Coverage categories",
+    label: "Max aggregate coverage note (info alert)",
+    name: "categoryMaxAggregateNotes / clientMaxAggregateNoteOverrides",
+    description:
+      "Info alert shown at the top of a coverage category's product list stating the maximum aggregate amount available per member/spouse/child across policies (e.g. LI's $2,000,000 cap). Defaults apply per category unless a client override maps the category to a replacement note object or null to suppress it entirely. WAEPA overrides LI with member/spouse-only text (\"The maximum available for a member/spouse is $2,000,000.\"); AVMA overrides LI with member/spouse/child text noting the Basic Protection Package exclusion.",
+    sourcePath: "src/config/coverageConstants.ts (getMaxAggregateNotes)",
+    configurable: "Client Configurable",
+    usedIn: "ProductCatalog",
+  },
   // ── F. Products & coverage options ───────────────────────────────────────
   {
     group: "Products & coverage options",
@@ -4089,6 +4204,16 @@ const configurationsData: ConfigRow[] = [
       "src/config/clients/*.ts / src/config/pageSections/pageSections.ts",
     configurable: "Client Configurable",
     usedIn: "CoverageQuestions",
+  },
+  {
+    group: "Coverage question sections",
+    label: "Hide smoker/nicotine question (quote tool)",
+    name: "ClientConfig.coverages.hideSmokerQuestion",
+    description:
+      "When true, suppresses the smoker/nicotine-use question in the standalone quote tool (QuoteModal drawer and the home page's QuoteCalculator) for LI/SH category selections, regardless of category. Does not affect the real Coverage page application flow (useCoverageState), which always asks the smoker question for LI/SH — WAEPA's underwriting still requires it there, only their public quote estimator omits it.",
+    sourcePath: "src/config/coverageConstants.ts (getCategoryRequirements)",
+    configurable: "Client Configurable",
+    usedIn: "QuoteModal, QuoteCalculator",
   },
   // ── K. Field configuration ────────────────────────────────────────────────
   {
@@ -4295,6 +4420,14 @@ function flattenContent(
 
 const activeClientContentOverrides = clientContentOverrides[activeClient.id];
 
+// These content paths are error copy already cataloged in the Error Messages
+// section — excluded here to avoid documenting them twice.
+const ERROR_MESSAGE_CONTENT_PATHS = new Set([
+  "coverage.selectAtLeastOneCategoryError",
+  "coverage.correctErrorsMessage",
+  "beneficiary.missingBeneficiaryError",
+]);
+
 const flatContentRows: FlatContentRow[] = (() => {
   const rows: FlatContentRowDraft[] = [];
   for (const { key, defaultsFile } of contentKeys) {
@@ -4311,13 +4444,15 @@ const flatContentRows: FlatContentRow[] = (() => {
         : content[key];
     flattenContent(value, key, defaultsFile, rows);
   }
-  return rows.map((row) => ({
-    ...row,
-    clientOverridden: getValueAtContentPath(
-      activeClientContentOverrides,
-      row.path,
-    ),
-  }));
+  return rows
+    .filter((row) => !ERROR_MESSAGE_CONTENT_PATHS.has(row.path))
+    .map((row) => ({
+      ...row,
+      clientOverridden: getValueAtContentPath(
+        activeClientContentOverrides,
+        row.path,
+      ),
+    }));
 })();
 
 // ---------------------------------------------------------------------------
@@ -4780,6 +4915,7 @@ const applicationPageOrder: string[] = [
 // ---------------------------------------------------------------------------
 
 export default function InformationArchitecture() {
+  const { setPageValues } = useApplicationForm();
   const [pageFilter, setPageFilter] = useState("");
   const [componentFilter, setComponentFilter] = useState("");
   const [fieldFilter, setFieldFilter] = useState("");
@@ -4832,6 +4968,53 @@ export default function InformationArchitecture() {
   }, [pageFilter, allPagesFlat]);
 
   const totalPageCount = filteredPages.length;
+
+  // Application form pages assume prior steps (coverage selection, etc.)
+  // already ran and populated sessionStorage. Jumping to them directly from
+  // this IA table would otherwise render with no questions, tabs, or
+  // progress bar, so seed plausible dummy data up to that page first — the
+  // same approach the Dev Tools "Jump to Page" action uses.
+  const handlePageLinkClick = useCallback(
+    (event: ReactMouseEvent, pageId: PageId, path: string) => {
+      if (!formFlow.includes(pageId)) return;
+      event.preventDefault();
+
+      // Health pages are gated on a specific coverage underwriting type
+      // (or rider) being selected. If the active client's catalog has no
+      // coverage that can unlock this page, no amount of dummy data will
+      // help — switch to a client that does, which requires a full reload
+      // so getActiveClient()-derived config picks it up everywhere.
+      if (HEALTH_PAGE_IDS.includes(pageId)) {
+        const activeClientUnlocksPage = getActiveClientCoverages().some(
+          (coverage) => coverageUnlocksPage(pageId, coverage),
+        );
+
+        if (!activeClientUnlocksPage) {
+          const unlockingClientId = findClientIdUnlockingPage(pageId);
+
+          if (unlockingClientId) {
+            const url = new URL(path, window.location.origin);
+            url.searchParams.set("client", unlockingClientId);
+            url.searchParams.set("autofill", pageId);
+            window.location.href = url.toString();
+            return;
+          }
+        }
+      }
+
+      const formData = generateFormDataUpToPage(pageId);
+      const current = JSON.parse(
+        window.sessionStorage.getItem(STORAGE_KEY) ?? "{}",
+      ) as typeof formData;
+      const nextValues = { ...current, ...formData };
+
+      window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(nextValues));
+      setPageValues(nextValues);
+
+      void router.navigate(path);
+    },
+    [setPageValues],
+  );
   const filteredComponents = useMemo(() => {
     if (!componentFilter) return componentsData;
     const lc = componentFilter.toLowerCase();
@@ -5147,7 +5330,17 @@ export default function InformationArchitecture() {
                                 whiteSpace: "nowrap",
                               }}
                             >
-                              <Link href={page.path} sx={{ fontWeight: 700 }}>
+                              <Link
+                                href={page.path}
+                                sx={{ fontWeight: 700 }}
+                                onClick={(event) =>
+                                  handlePageLinkClick(
+                                    event,
+                                    page.id,
+                                    page.path,
+                                  )
+                                }
+                              >
                                 {page.id}
                               </Link>
                             </TableCell>
@@ -6174,93 +6367,157 @@ export default function InformationArchitecture() {
             <SectionAccordion
               id="content-table"
               title="Content"
-              description={`Flattened entries from the site content model (src/content/types.ts → SiteContent), resolved by getContent() as the active client's (${activeClient.branding.name}) overrides merged over shared defaults. Each row is one leaf value, addressed by its full dot-notation key path. Values overridden by this client (src/content/clients/${activeClient.id}.ts) are highlighted in yellow.`}
+              description={`Flattened entries from the site content model (src/content/types.ts → SiteContent), resolved by getContent() as the active client's (${activeClient.branding.name}) overrides merged over shared defaults. Grouped by top-level content key. Values overridden by this client (src/content/clients/${activeClient.id}.ts) are highlighted in yellow.`}
               count={flatContentRows.length}
             >
-              <ResponsiveTableContainer>
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell sx={{ minWidth: 260, fontWeight: 600 }}>
-                        Key path
-                      </TableCell>
-                      <TableCell sx={{ minWidth: 360, fontWeight: 600 }}>
-                        Value
-                      </TableCell>
-                      <TableCell sx={{ minWidth: 220, fontWeight: 600 }}>
-                        Defaults / client file
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {flatContentRows.map((row) => (
-                      <TableRow
-                        key={row.path}
-                        sx={
-                          row.clientOverridden
-                            ? { bgcolor: CLIENT_HIGHLIGHT_BG }
-                            : undefined
-                        }
-                      >
-                        <TableCell
-                          sx={{
-                            verticalAlign: "top",
-                            fontFamily: "monospace",
-                            fontSize: "0.75rem",
-                            // fontWeight: 700,
-                            whiteSpace: "normal !important",
-                          }}
+              <Stack spacing={1}>
+                {contentKeys.map(({ key, defaultsFile }) => {
+                  const groupRows = flatContentRows.filter(
+                    (r) =>
+                      r.path === key ||
+                      r.path.startsWith(`${key}.`) ||
+                      r.path.startsWith(`${key}[`),
+                  );
+                  const overrideCount = groupRows.filter(
+                    (r) => r.clientOverridden,
+                  ).length;
+                  return (
+                    <Accordion
+                      key={key}
+                      disableGutters
+                      sx={{
+                        border: "1px solid",
+                        borderColor: "divider",
+                        borderRadius: "12px !important",
+                        overflow: "hidden",
+                        boxShadow: "none",
+                        "&:before": { display: "none" },
+                      }}
+                    >
+                      <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />}>
+                        <Stack
+                          direction="row"
+                          spacing={1.5}
+                          alignItems="center"
+                          sx={{ flexWrap: "wrap", gap: 0.5 }}
                         >
-                          {row.path}
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            verticalAlign: "top",
-                            fontSize: "0.8125rem",
-                            whiteSpace: "normal !important",
-                          }}
-                        >
-                          {row.value !== null ? (
-                            <TruncatedString value={row.value} />
-                          ) : (
-                            <Typography
-                              variant="caption"
-                              color="text.disabled"
-                              sx={{ fontStyle: "italic" }}
-                            >
-                              [non-text]
-                            </Typography>
-                          )}
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            verticalAlign: "top",
-                            fontFamily: "monospace",
-                            fontSize: "0.75rem",
-                            color: "text.secondary",
-                            whiteSpace: "normal !important",
-                          }}
-                        >
-                          {row.defaultsFile}
-                          {row.clientOverridden && (
-                            <Typography
-                              component="div"
+                          <Typography
+                            sx={{
+                              fontFamily: "monospace",
+                              fontWeight: 700,
+                              fontSize: "0.875rem",
+                            }}
+                          >
+                            {key}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            sx={{ fontFamily: "monospace" }}
+                          >
+                            {defaultsFile}
+                          </Typography>
+                          <Chip label={`${groupRows.length}`} size="small" />
+                          {overrideCount > 0 && (
+                            <Chip
+                              label={`${overrideCount} overridden`}
+                              size="small"
                               sx={{
-                                fontFamily: "monospace",
-                                fontSize: "0.75rem",
-                                fontWeight: 700,
+                                bgcolor: CLIENT_HIGHLIGHT_BG,
+                                borderColor: CLIENT_HIGHLIGHT_BORDER,
                                 color: "#5c4a00",
+                                border: "1px solid",
+                                fontWeight: 600,
                               }}
-                            >
-                              src/content/clients/{activeClient.id}.ts
-                            </Typography>
+                            />
                           )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </ResponsiveTableContainer>
+                        </Stack>
+                      </AccordionSummary>
+                      <AccordionDetails sx={{ p: 0 }}>
+                        <ResponsiveTableContainer>
+                          <Table size="small">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell sx={{ minWidth: 220, fontWeight: 600 }}>
+                                  Key path
+                                </TableCell>
+                                <TableCell sx={{ minWidth: 360, fontWeight: 600 }}>
+                                  Value
+                                </TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {groupRows.map((row) => {
+                                // Strip the top-level key prefix for readability
+                                const shortPath = row.path.startsWith(
+                                  `${key}.`,
+                                )
+                                  ? row.path.slice(key.length + 1)
+                                  : row.path.startsWith(`${key}[`)
+                                  ? row.path.slice(key.length)
+                                  : row.path;
+                                return (
+                                  <TableRow
+                                    key={row.path}
+                                    sx={
+                                      row.clientOverridden
+                                        ? { bgcolor: CLIENT_HIGHLIGHT_BG }
+                                        : undefined
+                                    }
+                                  >
+                                    <TableCell
+                                      sx={{
+                                        verticalAlign: "top",
+                                        fontFamily: "monospace",
+                                        fontSize: "0.75rem",
+                                        whiteSpace: "normal !important",
+                                      }}
+                                    >
+                                      {shortPath}
+                                      {row.clientOverridden && (
+                                        <Typography
+                                          component="div"
+                                          sx={{
+                                            fontSize: "0.7rem",
+                                            color: "#5c4a00",
+                                            fontWeight: 600,
+                                            mt: 0.25,
+                                          }}
+                                        >
+                                          ↳ client override
+                                        </Typography>
+                                      )}
+                                    </TableCell>
+                                    <TableCell
+                                      sx={{
+                                        verticalAlign: "top",
+                                        fontSize: "0.8125rem",
+                                        whiteSpace: "normal !important",
+                                      }}
+                                    >
+                                      {row.value !== null ? (
+                                        <TruncatedString value={row.value} />
+                                      ) : (
+                                        <Typography
+                                          variant="caption"
+                                          color="text.disabled"
+                                          sx={{ fontStyle: "italic" }}
+                                        >
+                                          [non-text]
+                                        </Typography>
+                                      )}
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              })}
+                            </TableBody>
+                          </Table>
+                        </ResponsiveTableContainer>
+                      </AccordionDetails>
+                    </Accordion>
+                  );
+                })}
+              </Stack>
             </SectionAccordion>
 
             {/* ---------------------------------------------------------------- */}

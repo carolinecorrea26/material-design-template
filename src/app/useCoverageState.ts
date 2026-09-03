@@ -64,7 +64,6 @@ export function useCoverageState() {
   );
   const [showProducts, setShowProducts] = useState(false);
   const [productsLoading, setProductsLoading] = useState(false);
-  const [qdDrawerOpen, setQdDrawerOpen] = useState(false);
   const [summaryDrawerOpen, setSummaryDrawerOpen] = useState(false);
   // Tracks whether the "Coverage added" drawer has been shown for the very
   // first product added in this session. Subsequent adds use a snackbar.
@@ -717,8 +716,6 @@ export function useCoverageState() {
     showRateFrequencyToggle,
 
     // Drawer / snackbar state
-    qdDrawerOpen,
-    setQdDrawerOpen,
     summaryDrawerOpen,
     setSummaryDrawerOpen,
     addedSnackbarOpen,

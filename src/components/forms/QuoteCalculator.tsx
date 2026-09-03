@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
-import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import {
   Alert,
   Box,
@@ -33,6 +32,9 @@ import EligibilityFields, {
 } from "./EligibilityFields";
 import EstimatorProductCard from "./EstimatorProductCard";
 import EmptyState from "../feedback/EmptyState";
+import TotalCostSummary, {
+  type TotalCostSummaryItem,
+} from "../ui/TotalCostSummary";
 import {
   coverageCategories,
   getCoverageCategorySectionLabel,
@@ -52,7 +54,6 @@ import type { EstimatedRateFrequency } from "../../config/clients/types";
 import { getPagePath } from "../../config/pages";
 import { sectionLabels } from "../../config/pageSections";
 import { STORAGE_KEY } from "../../app/ApplicationFormContext";
-import { formatUSD } from "../../utils/formatUSD";
 import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
 import { getCoverageAmountRange } from "../../utils/coverageAmounts";
 import { generateAmountChoices } from "../../utils/generateAmountChoices";
@@ -126,7 +127,9 @@ export default function QuoteCalculator({
     needsOo: categoryNeedsOo,
     needsHours: categoryNeedsHours,
     needsAdditionalFields,
-  } = getCategoryRequirements(selectedCategories);
+  } = getCategoryRequirements(selectedCategories, {
+    hideSmokerQuestion: activeClient.coverages.hideSmokerQuestion,
+  });
 
   // ── Category-level additional fields ─────────────────────────────────────
   const [gender, setGender] = useState<EstimateGender>("");
@@ -177,6 +180,7 @@ export default function QuoteCalculator({
     new Set(),
   );
   const rateTimersRef = useRef<Record<string, number>>({});
+  const productsSectionRef = useRef<HTMLDivElement>(null);
 
   const categoryProducts = useMemo(
     () =>
@@ -207,6 +211,17 @@ export default function QuoteCalculator({
   );
 
   // ── Handlers ──────────────────────────────────────────────────────────────
+
+  /** Re-hides the revealed products and re-shows "See my quote" whenever a
+   * coverage question or category selection is edited after the quote was
+   * already revealed — mirrors the Coverage page's handleCoverageQuestionChange. */
+  function handleQuoteFieldChange() {
+    if (showProducts) {
+      setShowProducts(false);
+      setFieldsAttempted(false);
+    }
+  }
+
   function handleCategoryToggle(categoryId: CoverageCategoryId) {
     const isAdding = !selectedCategories.includes(categoryId);
     const nextCategories = isAdding
@@ -214,14 +229,7 @@ export default function QuoteCalculator({
       : selectedCategories.filter((id) => id !== categoryId);
 
     setSelectedCategories(nextCategories);
-
-    if (isAdding && showProducts) {
-      const next = getCategoryRequirements(nextCategories);
-      if (next.needsAdditionalFields) {
-        setShowProducts(false);
-        setFieldsAttempted(false);
-      }
-    }
+    handleQuoteFieldChange();
   }
 
   function initAmountsForProducts(products: CoverageDefinition[]) {
@@ -251,7 +259,15 @@ export default function QuoteCalculator({
     setProductsLoading(true);
     setShowProducts(true);
     initAmountsForProducts(categoryProducts);
-    setTimeout(() => setProductsLoading(false), 1000);
+    setTimeout(() => {
+      setProductsLoading(false);
+      requestAnimationFrame(() => {
+        productsSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      });
+    }, 1000);
   }
 
   // Auto-reveal when no additional fields needed
@@ -336,6 +352,32 @@ export default function QuoteCalculator({
     }, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProducts, productApplicants, amountsByKey]);
+
+  const costSummaryItems: TotalCostSummaryItem[] = useMemo(() => {
+    const suffix = rateFrequency === "annual" ? "/yr" : "/mo";
+    return selectedProducts.map((product) => {
+      const applicants = productApplicants[product.id] ?? [];
+      const productTotal = applicants.reduce(
+        (sum, applicant) => sum + getApplicantPremium(product, applicant),
+        0,
+      );
+      const displayedProductTotal =
+        rateFrequency === "annual"
+          ? Math.round(productTotal * 12 * 100) / 100
+          : productTotal;
+      const isCalculating = applicants.some((applicant) =>
+        calculatingRates.has(`${product.id}:${applicant}`),
+      );
+      return {
+        id: product.id,
+        name: product.name,
+        amount: displayedProductTotal,
+        isCalculating,
+        suffix,
+      };
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedProducts, productApplicants, amountsByKey, rateFrequency, calculatingRates]);
 
   function handleApply() {
     // Validate eligibility fields if collecting them here
@@ -464,11 +506,15 @@ export default function QuoteCalculator({
                       {(["male", "female"] as const).map((val) => (
                         <SelectionGroup
                           key={val}
-                          onClick={() => setGender(val)}
+                          onClick={() => {
+                            setGender(val);
+                            handleQuoteFieldChange();
+                          }}
                           onKeyDown={(e) => {
                             if (e.key === " " || e.key === "Enter") {
                               e.preventDefault();
                               setGender(val);
+                              handleQuoteFieldChange();
                             }
                           }}
                         >
@@ -509,11 +555,15 @@ export default function QuoteCalculator({
                       {(["yes", "no"] as const).map((val) => (
                         <SelectionGroup
                           key={val}
-                          onClick={() => setSmoker(val)}
+                          onClick={() => {
+                            setSmoker(val);
+                            handleQuoteFieldChange();
+                          }}
                           onKeyDown={(e) => {
                             if (e.key === " " || e.key === "Enter") {
                               e.preventDefault();
                               setSmoker(val);
+                              handleQuoteFieldChange();
                             }
                           }}
                         >
@@ -557,9 +607,10 @@ export default function QuoteCalculator({
                     fullWidth
                     required
                     value={avgIncome ? formatCurrencyInput(avgIncome) : ""}
-                    onChange={(e) =>
-                      setAvgIncome(e.target.value.replace(/[^0-9]/g, ""))
-                    }
+                    onChange={(e) => {
+                      setAvgIncome(e.target.value.replace(/[^0-9]/g, ""));
+                      handleQuoteFieldChange();
+                    }}
                     inputProps={{ inputMode: "numeric" }}
                     InputLabelProps={{ shrink: true }}
                     placeholder="$0"
@@ -577,9 +628,10 @@ export default function QuoteCalculator({
                     fullWidth
                     required
                     value={hoursPerWeek}
-                    onChange={(e) =>
-                      setHoursPerWeek(e.target.value.replace(/[^0-9]/g, ""))
-                    }
+                    onChange={(e) => {
+                      setHoursPerWeek(e.target.value.replace(/[^0-9]/g, ""));
+                      handleQuoteFieldChange();
+                    }}
                     inputProps={{ inputMode: "numeric" }}
                     helperText={
                       fieldsAttempted && fieldErrors.hoursPerWeek
@@ -606,9 +658,10 @@ export default function QuoteCalculator({
                   value={
                     monthlyExpenses ? formatCurrencyInput(monthlyExpenses) : ""
                   }
-                  onChange={(e) =>
-                    setMonthlyExpenses(e.target.value.replace(/[^0-9]/g, ""))
-                  }
+                  onChange={(e) => {
+                    setMonthlyExpenses(e.target.value.replace(/[^0-9]/g, ""));
+                    handleQuoteFieldChange();
+                  }}
                   inputProps={{ inputMode: "numeric" }}
                   InputLabelProps={{ shrink: true }}
                   placeholder="$0"
@@ -631,6 +684,7 @@ export default function QuoteCalculator({
                         ? Math.min(parseInt(digits, 10), 100).toString()
                         : "",
                     );
+                    handleQuoteFieldChange();
                   }}
                   helperText={
                     fieldsAttempted && fieldErrors.responsibilityPct
@@ -642,13 +696,15 @@ export default function QuoteCalculator({
               </>
             )}
 
-            <Button
-              variant="contained"
-              size="large"
-              onClick={handleGetEstimates}
-            >
-              See my quote
-            </Button>
+            {!showProducts && (
+              <Button
+                variant="contained"
+                size="large"
+                onClick={handleGetEstimates}
+              >
+                See my quote
+              </Button>
+            )}
           </Stack>
         )}
 
@@ -662,7 +718,7 @@ export default function QuoteCalculator({
 
         {/* ── Products ── */}
         {showProducts && selectedCategories.length > 0 && (
-          <Stack spacing={2}>
+          <Stack spacing={2} ref={productsSectionRef}>
             <Divider />
             {productsLoading ? (
               <Stack spacing={2} alignItems="center" sx={{ py: 4 }}>
@@ -765,164 +821,79 @@ export default function QuoteCalculator({
           !productsLoading &&
           selectedCategories.length > 0 &&
           !isHoursIneligible && (
-            <Box
-              sx={{
-                p: 2,
-                borderRadius: "12px",
-                bgcolor: "background.subtle",
-                border: "1px solid",
-                borderColor: "divider",
-              }}
-            >
-              <Stack spacing={1.5}>
-                <Typography variant="h6">
-                  Estimated cost<sup>1</sup>
-                </Typography>
+            <Stack spacing={1.5}>
+              {grandTotal > 0 && (
+                <TotalCostSummary
+                  items={costSummaryItems}
+                  total={displayedGrandTotal}
+                  totalSuffix={rateSuffix}
+                  disclaimer={
+                    <>
+                      <sup>1</sup> Quoted cost is the best rate available.
+                      Final cost may vary based on gender, health status, and
+                      tobacco/nicotine use.
+                    </>
+                  }
+                />
+              )}
 
-                {selectedProducts.length === 0 ? (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 0.75,
-                      px: 1.25,
-                      py: 1,
-                      borderRadius: 2,
-                      bgcolor: "background.subtle",
-                      border: "1px dashed",
-                      borderColor: "divider",
-                      color: "text.secondary",
-                    }}
-                  >
-                    <PrivacyTipIcon
-                      sx={{ fontSize: 17, color: "text.disabled" }}
-                    />
-                    <Typography variant="caption" fontWeight={700}>
-                      Added coverage will appear here
-                    </Typography>
-                  </Box>
-                ) : (
-                  <>
-                    {selectedProducts.map((product) => {
-                      const applicants = productApplicants[product.id] ?? [];
-                      const productTotal = applicants.reduce(
-                        (sum, a) => sum + getApplicantPremium(product, a),
-                        0,
-                      );
-                      const displayedProductTotal =
-                        rateFrequency === "annual"
-                          ? Math.round(productTotal * 12 * 100) / 100
-                          : productTotal;
-
-                      return (
-                        <Stack
-                          key={product.id}
-                          direction="row"
-                          justifyContent="space-between"
-                          alignItems="center"
-                          spacing={1}
-                        >
-                          <Typography variant="caption" color="text.secondary">
-                            {product.name}
-                          </Typography>
-                          <Typography
-                            variant="caption"
-                            fontWeight={700}
-                            sx={{ whiteSpace: "nowrap" }}
-                          >
-                            {formatUSD(displayedProductTotal)}
-                            {rateSuffix}
-                          </Typography>
-                        </Stack>
-                      );
-                    })}
-
-                    <Box
-                      sx={{
-                        borderTop: "1px solid",
-                        borderColor: "divider",
-                        pt: 1.5,
-                      }}
-                    >
-                      <Stack
-                        direction="row"
-                        justifyContent="space-between"
-                        alignItems="baseline"
-                      >
-                        <Typography variant="caption" fontWeight={700}>
-                          Total
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          fontWeight={700}
-                          sx={{ color: "primary.main", whiteSpace: "nowrap" }}
-                        >
-                          {formatUSD(displayedGrandTotal)}
-                          {rateSuffix}
-                        </Typography>
-                      </Stack>
-                    </Box>
-                  </>
-                )}
-
-                {showRateFrequencyToggle && (
-                  <Stack
-                    direction="row"
-                    spacing={0.75}
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    <Typography
-                      variant="caption"
-                      fontWeight={700}
-                      color={
-                        rateFrequency === "monthly"
-                          ? "primary.main"
-                          : "text.secondary"
-                      }
-                    >
-                      Monthly
-                    </Typography>
-                    <RateFrequencyToggle
-                      checked={rateFrequency === "annual"}
-                      onChange={(e) =>
-                        setRateFrequency(
-                          e.target.checked ? "annual" : "monthly",
-                        )
-                      }
-                      slotProps={{
-                        input: {
-                          "aria-label": "Toggle between monthly and annual",
-                        },
-                      }}
-                    />
-                    <Typography
-                      variant="caption"
-                      fontWeight={700}
-                      color={
-                        rateFrequency === "annual"
-                          ? "primary.main"
-                          : "text.secondary"
-                      }
-                    >
-                      Annual
-                    </Typography>
-                  </Stack>
-                )}
-
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  fullWidth
-                  endIcon={<ArrowRightAltRoundedIcon />}
-                  onClick={handleApply}
-                  sx={{ mt: 1 }}
+              {showRateFrequencyToggle && (
+                <Stack
+                  direction="row"
+                  spacing={0.75}
+                  alignItems="center"
+                  justifyContent="center"
                 >
-                  Apply for coverage
-                </Button>
-              </Stack>
-            </Box>
+                  <Typography
+                    variant="caption"
+                    fontWeight={700}
+                    color={
+                      rateFrequency === "monthly"
+                        ? "primary.main"
+                        : "text.secondary"
+                    }
+                  >
+                    Monthly
+                  </Typography>
+                  <RateFrequencyToggle
+                    checked={rateFrequency === "annual"}
+                    onChange={(e) =>
+                      setRateFrequency(
+                        e.target.checked ? "annual" : "monthly",
+                      )
+                    }
+                    slotProps={{
+                      input: {
+                        "aria-label": "Toggle between monthly and annual",
+                      },
+                    }}
+                  />
+                  <Typography
+                    variant="caption"
+                    fontWeight={700}
+                    color={
+                      rateFrequency === "annual"
+                        ? "primary.main"
+                        : "text.secondary"
+                    }
+                  >
+                    Annual
+                  </Typography>
+                </Stack>
+              )}
+
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                fullWidth
+                endIcon={<ArrowRightAltRoundedIcon />}
+                onClick={handleApply}
+                sx={{ mt: 1 }}
+              >
+                Apply for coverage
+              </Button>
+            </Stack>
           )}
       </Stack>
     </AppDrawer>

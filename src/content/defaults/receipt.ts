@@ -52,11 +52,6 @@ export const receiptDefaults: ReceiptContent = {
         description: "Download your PDFs before leaving this page.",
       },
       {
-        title: "Eligibility is confirmed",
-        description:
-          "Your group plan administrator completes final eligibility review.",
-      },
-      {
         title: "You'll be contacted if needed",
         description:
           "Additional information may be requested for coverage sent for review.",

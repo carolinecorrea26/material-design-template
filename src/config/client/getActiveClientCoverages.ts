@@ -1,8 +1,13 @@
 import { coverages } from "../coverages";
 import { getActiveClient } from "./getActiveClient";
+import type { ClientConfig } from "../clients/types";
 
 export function getActiveClientCoverages() {
-  const client = getActiveClient();
+  return getClientCoverages(getActiveClient());
+}
+
+/** Same merging logic as {@link getActiveClientCoverages}, for an arbitrary client. */
+export function getClientCoverages(client: ClientConfig) {
   const enabledCoverageIds = new Set(client.coverages.enabled ?? []);
   const ranges = client.coverages.ranges ?? {};
   const descriptions = client.coverages.descriptions ?? {};

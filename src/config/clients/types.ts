@@ -1,4 +1,5 @@
 import type { CoverageCategoryId } from "../coverageCategories";
+import type { CoverageUnderwritingType } from "../coverages/types";
 import type { CoverageId } from "../../types";
 import type { PageId } from "../../types";
 import type { ClientId } from "../../types";
@@ -100,7 +101,7 @@ export type ClientCoverageOverrides = {
   applicants?: ("member" | "spouse" | "child")[];
   coverageNote?: string;
   featured?: boolean;
-  underwritingType?: "FUW" | "GI" | "NA" | "QD" | "SI";
+  underwritingType?: CoverageUnderwritingType;
   /** Per-applicant info notes displayed above the applicant fields */
   applicantNotes?: CoverageApplicantNotes;
   /** Product-level alert displayed below the product description */
@@ -153,6 +154,8 @@ export type ClientCoverages = {
   productEstimatedCostBreakdown?: ClientProductEstimatedCostBreakdown;
   /** Override the default coverage category section header labels (e.g. "Office Overhead Expense"). */
   categorySectionLabels?: Partial<Record<CoverageCategoryId, string>>;
+  /** When true, the quote tool and coverage questions skip the smoker/nicotine question for this client. */
+  hideSmokerQuestion?: boolean;
 };
 
 export type ClientFields = Partial<

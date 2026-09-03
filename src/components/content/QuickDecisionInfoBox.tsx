@@ -1,18 +1,19 @@
+import { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import { QuickDecisionMark } from "./QuickDecisionExplainer";
-
-type QuickDecisionInfoBoxProps = {
-  onLearnMore?: () => void;
-};
+import QuickDecisionDrawerContent, {
+  QuickDecisionMark,
+} from "./QuickDecisionExplainer";
 
 /**
  * Reusable QuickDecision info panel shown on the Coverage page,
  * landing page coverage options section, and app menu coverage drawer.
  */
-export default function QuickDecisionInfoBox({
-  onLearnMore,
-}: QuickDecisionInfoBoxProps) {
+export default function QuickDecisionInfoBox() {
+  const [expanded, setExpanded] = useState(false);
+
+  const toggleExpanded = () => setExpanded((prev) => !prev);
+
   return (
     <Box
       sx={{
@@ -27,27 +28,26 @@ export default function QuickDecisionInfoBox({
       }}
     >
       <OfflineBoltIcon color="success" sx={{ mt: 0.25, flexShrink: 0 }} />
-      <Typography variant="body2" color="text.secondary">
-        <Typography
-          component="span"
-          variant="body2"
-          sx={{ fontWeight: 700, color: "success.main" }}
-        >
-          <QuickDecisionMark />
-        </Typography>{" "}
-        helps many applicants receive a decision instantly or within a few days
-        without a medical exam. This starts with health questions you answer
-        online to reduce time needed with phone calls or other follow up.{" "}
-        {onLearnMore && (
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        <Typography variant="body2" color="text.secondary">
+          <Typography
+            component="span"
+            variant="body2"
+            sx={{ fontWeight: 700, color: "success.main" }}
+          >
+            <QuickDecisionMark />
+          </Typography>{" "}
+          available! Get a decision instantly or within a few days without a
+          medical exam.{" "}
           <Typography
             component="span"
             role="button"
             tabIndex={0}
-            onClick={onLearnMore}
+            onClick={toggleExpanded}
             onKeyDown={(event) => {
               if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
-                onLearnMore();
+                toggleExpanded();
               }
             }}
             sx={{
@@ -59,10 +59,16 @@ export default function QuickDecisionInfoBox({
               lineHeight: "inherit",
             }}
           >
-            Learn more about this process.
+            {expanded ? "Show less" : "Show more"}
           </Typography>
+        </Typography>
+
+        {expanded && (
+          <Box sx={{ mt: 1.5 }}>
+            <QuickDecisionDrawerContent plainMark />
+          </Box>
         )}
-      </Typography>
+      </Box>
     </Box>
   );
 }

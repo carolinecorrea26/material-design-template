@@ -70,14 +70,33 @@ function QuickDecisionMarkStyled() {
   );
 }
 
-export { InlineDrawerLink, QuickDecisionMark, QuickDecisionMarkStyled };
+/** Inline QuickDecision mark with bold weight only, no color or icon. */
+function QuickDecisionMarkPlain() {
+  return (
+    <Typography component="span" variant="inherit" sx={{ fontWeight: 700 }}>
+      <QuickDecisionMark />
+    </Typography>
+  );
+}
 
-export default function QuickDecisionDrawerContent() {
+export {
+  InlineDrawerLink,
+  QuickDecisionMark,
+  QuickDecisionMarkStyled,
+  QuickDecisionMarkPlain,
+};
+
+export default function QuickDecisionDrawerContent({
+  plainMark = false,
+}: {
+  plainMark?: boolean;
+}) {
   const content = getContent().help.quickDecision;
   return (
     <Stack spacing={2}>
       <Typography variant="body2" color="text.secondary">
-        <QuickDecisionMarkStyled /> {content.intro}
+        {plainMark ? <QuickDecisionMarkPlain /> : <QuickDecisionMarkStyled />}{" "}
+        {content.intro}
       </Typography>
 
       <Box>

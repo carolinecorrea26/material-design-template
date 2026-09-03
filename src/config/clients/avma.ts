@@ -229,7 +229,11 @@ export const avmaClient: ClientConfig = {
         "Helps provide extra financial support if you're hospitalized due to a covered illness or injury. Daily Benefits for hospitalizations due to pregnancy, childbirth, or related medical condition (except complications of pregnancy), will not be payable unless such confinement begins after the proposed insured has been continuously insured for 12 months.",
     },
   },
-  fields: {},
+  fields: {
+    coverage: {
+      extra: ["average-employees-6-months"],
+    },
+  },
   features: {
     homePageVariant: "welcome-back",
     linkUrl: "https://avmainsuranceservices.com/",

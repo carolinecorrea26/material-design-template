@@ -10,9 +10,7 @@ import {
   Alert,
   Box,
   Chip,
-  CircularProgress,
   DialogContentText,
-  Divider,
   IconButton,
   Stack,
   Typography,
@@ -647,17 +645,15 @@ function CoverageCartInline({
 
   return (
     <Stack spacing={1.5}>
-      <Stack direction="row" spacing={1} alignItems="center">
-        <ShoppingCartOutlinedIcon sx={{ color: "primary.main" }} />
-        <Typography variant="subtitle1" fontWeight={700}>
-          Your requested coverage
-        </Typography>
-      </Stack>
-
-      {grandTotal <= 0 ? (
-        <EmptyState title="No coverage selected yet." />
-      ) : (
+      {grandTotal > 0 && (
         <>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <ShoppingCartOutlinedIcon sx={{ color: "primary.main" }} />
+            <Typography variant="subtitle1" fontWeight={700}>
+              Your requested coverage
+            </Typography>
+          </Stack>
+
           {(onEditCoverage || onDeleteCoverage) && (
             <Stack spacing={0.5}>
               {items.map((item) => (
@@ -748,25 +744,6 @@ function CoverageCartInline({
               </Typography>
             </Stack>
           )}
-
-          <Divider />
-
-          <Stack direction="row" justifyContent="space-between" alignItems="baseline">
-            <Typography variant="subtitle2" fontWeight={700}>
-              Total estimated cost
-            </Typography>
-            {isAnyCalculating ? (
-              <CircularProgress size={16} thickness={4} sx={{ color: "success.main" }} />
-            ) : (
-              <Typography
-                variant="subtitle1"
-                sx={{ fontWeight: 900, color: "success.main", whiteSpace: "nowrap" }}
-              >
-                {formatUSD(displayedTotal)}
-                {rateSuffix}
-              </Typography>
-            )}
-          </Stack>
         </>
       )}
 

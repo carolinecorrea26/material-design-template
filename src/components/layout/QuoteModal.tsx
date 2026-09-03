@@ -118,7 +118,9 @@ export default function QuoteModal({
     needsOo: categoryNeedsOo,
     needsHours: categoryNeedsHours,
     needsAdditionalFields,
-  } = getCategoryRequirements(selectedCategories);
+  } = getCategoryRequirements(selectedCategories, {
+    hideSmokerQuestion: activeClient.coverages.hideSmokerQuestion,
+  });
 
   // Validation for category fields
   const fieldErrors = useMemo(() => {

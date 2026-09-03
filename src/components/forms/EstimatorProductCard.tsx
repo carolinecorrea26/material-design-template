@@ -161,7 +161,7 @@ export default function EstimatorProductCard({
                   component="span"
                   variant="caption"
                   fontWeight="bold"
-                  sx={{ color: "primary.main" }}
+                  sx={{ color: "primary.main", fontSize: "1.25rem" }}
                 >
                   {formatUSD(displayedPremium)}
                   {rateSuffix}

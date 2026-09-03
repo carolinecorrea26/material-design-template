@@ -42,8 +42,10 @@ export const waepaClient: ClientConfig = {
         "This coverage can help safeguard against the potentially devastating consequences an illness or injury could have on your life.",
     },
     additionalCoverageWarning: "applyForTotal",
+    hideSmokerQuestion: true,
     overrides: {
       "li-group-term": {
+        name: "Group Term Life Insurance",
         underwritingType: "QD",
         productWarning: {
           severity: "info",
@@ -68,6 +70,7 @@ export const waepaClient: ClientConfig = {
         ],
       },
       "di-short-term": {
+        name: "Group Short-Term Disability Income Insurance",
         underwritingType: "QD",
       },
     },

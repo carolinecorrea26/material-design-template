@@ -34,7 +34,7 @@ export default function CoverageCategorySelector({
   categories,
   selectedIds,
   onToggle,
-  legend = "Select any coverage categories that you want to apply for:",
+  legend = "Which coverage are you interested in?",
   error = false,
   errorMessage,
 }: CoverageCategorySelectorProps) {

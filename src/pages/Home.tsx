@@ -1,5 +1,5 @@
 import { useRef, useState, type ReactNode } from "react";
-import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
+// import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import { keyframes } from "@mui/material/styles";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import {
@@ -75,7 +75,8 @@ function HomeQuoteSection({ onOpenQuote }: HomeQuoteSectionProps) {
   function handleGetEstimate() {
     setAttempted(true);
     setAgeError("");
-    const { ageError: newAgeError, isValid } = validateEligibility(eligibilityValues);
+    const { ageError: newAgeError, isValid } =
+      validateEligibility(eligibilityValues);
     setAgeError(newAgeError);
     if (!isValid) return;
 
@@ -202,7 +203,9 @@ export default function Home() {
             gap: { xs: 2.5, md: 3.5 },
             alignItems: "start",
             width: "100%",
-            maxWidth: isSingleTemplate ? SINGLE_TEMPLATE_HERO_MAX_WIDTH : undefined,
+            maxWidth: isSingleTemplate
+              ? SINGLE_TEMPLATE_HERO_MAX_WIDTH
+              : undefined,
             mx: isSingleTemplate ? "auto" : undefined,
             ...FADE_IN_SECTION_SX(0),
           }}
@@ -284,7 +287,7 @@ export default function Home() {
                   )}
                   variant="contained"
                   size="large"
-                  endIcon={<ArrowRightAltRoundedIcon />}
+                  // endIcon={<ArrowRightAltRoundedIcon />}
                   sx={{
                     width: { xs: "100%", sm: "auto" },
                     px: 3.5,
@@ -338,20 +341,21 @@ export default function Home() {
               </Stack>
             )}
 
-            {!isSingleTemplate && (variant === "default" || variant === "hero-image") && (
-              <Typography variant="body2" color="text.secondary">
-                {content.home.hero.resumePrompt}{" "}
-                <Link
-                  component={RouterLink}
-                  to={getPagePath("resume")}
-                  variant="body2"
-                  color="primary"
-                  sx={{ textDecoration: "none", fontWeight: 700 }}
-                >
-                  {content.home.hero.resumeLinkLabel}
-                </Link>
-              </Typography>
-            )}
+            {!isSingleTemplate &&
+              (variant === "default" || variant === "hero-image") && (
+                <Typography variant="body2" color="text.secondary">
+                  {content.home.hero.resumePrompt}{" "}
+                  <Link
+                    component={RouterLink}
+                    to={getPagePath("resume")}
+                    variant="body2"
+                    color="primary"
+                    sx={{ textDecoration: "none", fontWeight: 700 }}
+                  >
+                    {content.home.hero.resumeLinkLabel}
+                  </Link>
+                </Typography>
+              )}
           </Stack>
 
           {showQuoteTool && (
@@ -409,10 +413,7 @@ export default function Home() {
               </Typography>
             </Stack>
 
-            <CoverageOptionsPanel
-              variant="page"
-              onLearnMoreQuickDecision={() => setActiveDrawer("quick-decision")}
-            />
+            <CoverageOptionsPanel variant="page" />
           </Stack>
         )}
 

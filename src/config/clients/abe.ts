@@ -78,6 +78,9 @@ export const abeClient: ClientConfig = {
       "li-20yr": {
         underwritingType: "QD",
       },
+      "li-50plus": {
+        underwritingType: "TELE",
+      },
       "di-ltd-plus": {
         applicants: ["member", "spouse"],
         waitingPeriodOptions: [
@@ -94,6 +97,7 @@ export const abeClient: ClientConfig = {
         ],
       },
       "di-mtd": {
+        underwritingType: "TELE",
         applicants: ["member", "spouse"],
         waitingPeriodOptions: [
           { label: "90 days", value: "90", days: 90 },

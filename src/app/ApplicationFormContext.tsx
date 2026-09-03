@@ -7,6 +7,10 @@ import {
   type ReactNode,
 } from "react";
 import { withApplicantsApplying } from "../utils/applicantsApplying";
+import { generateFormDataUpToPage } from "../dev/utils/generateFormData";
+import type { PageId } from "../types";
+
+const AUTOFILL_QUERY_PARAM = "autofill";
 
 export type ApplicationFormValues = Record<
   string,
@@ -37,20 +41,41 @@ type ApplicationFormProviderProps = {
 
 function loadStoredValues(): ApplicationFormValues {
   const storedValues = window.sessionStorage.getItem(STORAGE_KEY);
+  let parsedValues: ApplicationFormValues = {};
 
-  if (!storedValues) {
-    return {};
+  if (storedValues) {
+    try {
+      parsedValues = JSON.parse(storedValues) as ApplicationFormValues;
+    } catch {
+      window.sessionStorage.removeItem(STORAGE_KEY);
+      parsedValues = {};
+    }
   }
 
-  try {
-    const parsedValues = JSON.parse(storedValues) as ApplicationFormValues;
-    return Object.keys(parsedValues).length > 0
-      ? (withApplicantsApplying(parsedValues) as ApplicationFormValues)
-      : parsedValues;
-  } catch {
-    window.sessionStorage.removeItem(STORAGE_KEY);
-    return {};
+  // Some links (e.g. the Information Architecture "Pages" table) need to
+  // switch the active client to reach a gated page, which requires a full
+  // reload. They pass ?autofill=<pageId> so that, once the app has booted
+  // with the right client active, dummy data can be generated here — after
+  // getActiveClient() reflects the new client, but before the first render.
+  const autofillPageId = new URLSearchParams(window.location.search).get(
+    AUTOFILL_QUERY_PARAM,
+  ) as PageId | null;
+
+  if (autofillPageId) {
+    parsedValues = {
+      ...parsedValues,
+      ...generateFormDataUpToPage(autofillPageId),
+    };
+    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(parsedValues));
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete(AUTOFILL_QUERY_PARAM);
+    window.history.replaceState({}, "", url.toString());
   }
+
+  return Object.keys(parsedValues).length > 0
+    ? (withApplicantsApplying(parsedValues) as ApplicationFormValues)
+    : parsedValues;
 }
 
 export function ApplicationFormProvider({

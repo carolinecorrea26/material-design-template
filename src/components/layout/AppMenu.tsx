@@ -288,13 +288,7 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
         title="What are my coverage options?"
         onClose={() => setIsCoverageDrawerOpen(false)}
       >
-        <CoverageOptionsPanel
-          variant="drawer"
-          onLearnMoreQuickDecision={() => {
-            setIsCoverageDrawerOpen(false);
-            setIsQuickDecisionOpen(true);
-          }}
-        />
+        <CoverageOptionsPanel variant="drawer" />
       </AppDrawer>
 
       <AppDrawer

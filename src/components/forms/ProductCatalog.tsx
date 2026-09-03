@@ -184,7 +184,6 @@ type ProductCatalogProps = {
   ) => void;
   onWaitingPeriodChange: (coverageId: string, value: string) => void;
   onMaxBenefitPeriodChange: (coverageId: string, value: string) => void;
-  onQdDrawerOpen: () => void;
   getVisibleApplicants: (
     applicants: CoverageApplicantId[],
     coverageId?: string,
@@ -231,7 +230,6 @@ export default function ProductCatalog(props: ProductCatalogProps) {
     onRiderAmountChange,
     onWaitingPeriodChange,
     onMaxBenefitPeriodChange,
-    onQdDrawerOpen,
     getVisibleApplicants,
     calcApplicantPremium,
     generateAmountChoices,
@@ -248,8 +246,8 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 
   const additionalCoverageWarningText =
     additionalCoverageWarningMode === "applyForTotal"
-      ? "If you already have any of the following Insurance and wish to increase your current level of coverage, apply for the total amount of coverage you want (amount you currently have + amount you're requesting)."
-      : "If you already have any of the following Insurance and wish to increase your current level of coverage, apply only for the additional coverage you want.";
+      ? "If you're increasing your current coverage, enter the total amount of coverage you want, including the coverage you already have."
+      : "If you already have coverage and want to increase it, apply for only the additional coverage amount you want.";
 
   // Canonical display order for coverage sections
   const categoryDisplayOrder: CoverageCategoryId[] = [
@@ -298,16 +296,14 @@ export default function ProductCatalog(props: ProductCatalogProps) {
     <>
       {/* Section header */}
       <Typography variant="h5" sx={{ mb: 2 }}>
-        Here are your eligible coverage options
+        Your eligible coverage options:
       </Typography>
 
       {/* QuickDecision note */}
-      {hasQdCategorySelected && (
-        <QuickDecisionInfoBox onLearnMore={onQdDrawerOpen} />
-      )}
+      {hasQdCategorySelected && <QuickDecisionInfoBox />}
 
       {/* Coverage increase warning */}
-      <Alert severity="warning"  sx={{ mb: 2 }}>
+      <Alert severity="warning" sx={{ mb: 2 }}>
         {additionalCoverageWarningText}
       </Alert>
 
@@ -340,7 +336,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                         )}
                         icon={CategoryIcon as any}
                       />
-                      <Alert severity="warning" >
+                      <Alert severity="warning">
                         Based on your answers, you are not eligible for{" "}
                         {category.label} coverage at this time.
                       </Alert>
@@ -365,7 +361,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                       icon={CategoryIcon as SvgIconComponent}
                     >
                       {notes && (
-                        <Alert severity="info" >
+                        <Alert severity="info">
                           <Typography
                             variant="body2"
                             sx={{ mb: hasSpouse || notes.child ? 1 : 0 }}
@@ -579,10 +575,7 @@ function ProductCard({
 
       {/* Product-level warning alert */}
       {coverage.productWarning && (
-        <Alert
-          severity={coverage.productWarning.severity}
-          
-        >
+        <Alert severity={coverage.productWarning.severity}>
           {coverage.productWarning.title && (
             <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 1 }}>
               {coverage.productWarning.title}
@@ -695,7 +688,7 @@ function ProductCard({
 
               {/* Applicant-level info note */}
               {applicantNote && (
-                <Alert severity="info"  sx={{ mb: 1.5 }}>
+                <Alert severity="info" sx={{ mb: 1.5 }}>
                   {applicantNote}
                 </Alert>
               )}
@@ -977,7 +970,7 @@ function ProductCard({
                           component="span"
                           variant="subtitle2"
                           fontWeight={700}
-                          sx={{ color: "primary.main" }}
+                          sx={{ color: "primary.main", fontSize: "1.25rem" }}
                         >
                           {formatUSD(displayedPremium)}
                           {rateSuffix}

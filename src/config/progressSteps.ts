@@ -21,6 +21,7 @@ export type ProgressStep = {
 /** Pages that belong to the consolidated "Health" breadcrumb */
 export const HEALTH_PAGE_IDS: PageId[] = [
   "health-si",
+  "health-li",
   "health-qd",
   "health-di",
   "health-cir",
@@ -54,6 +55,7 @@ const progressSteps: ProgressStep[] = (() => {
       pageIds: [
         "review",
         "health-si",
+        "health-li",
         "health-qd",
         "health-di",
         "health-cir",

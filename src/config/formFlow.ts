@@ -1,6 +1,6 @@
 import type { PageId } from "../types";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
-import type { CoverageCategoryId } from "./coverages/types";
+import type { CoverageCategoryId, CoverageDefinition } from "./coverages/types";
 import { getActiveClientCoverages } from "./client/getActiveClientCoverages";
 import { getClientPageRequirement } from "./client/getClientPageRequirement";
 
@@ -113,6 +113,37 @@ function hasSelectedCirRider(values: ApplicationFormValues): boolean {
   return Object.entries(riders).some(
     ([key, enabled]) => enabled && key.includes(":cir:"),
   );
+}
+
+/**
+ * Coverage-level mirror of shouldSkipPage's health-* branches: true when
+ * selecting this single coverage (with its CIR rider enabled, for
+ * health-cir) would be enough to unlock the given page. Used to find a
+ * coverage (possibly from a different client's catalog) that can satisfy a
+ * gated page, rather than checking only the currently active client.
+ */
+export function coverageUnlocksPage(
+  pageId: PageId,
+  coverage: CoverageDefinition,
+): boolean {
+  switch (pageId) {
+    case "health-si":
+      return coverage.underwritingType === "SI";
+    case "health-qd":
+      return coverage.underwritingType === "QD";
+    case "health-li":
+      return (
+        coverage.categoryId === "LI" && coverage.underwritingType === "TELE"
+      );
+    case "health-di":
+      return (
+        coverage.categoryId === "DI" && coverage.underwritingType === "TELE"
+      );
+    case "health-cir":
+      return Boolean(coverage.riders?.some((r) => r.id === "cir"));
+    default:
+      return false;
+  }
 }
 
 /** True when a page should be skipped given the current form values. */

@@ -1,8 +1,29 @@
 import type { PageId } from "../../types";
-import { getResolvedFormFlow } from "../../config/formFlow";
+import { getResolvedFormFlow, shouldSkipPage } from "../../config/formFlow";
 import { getClientPageFields } from "../../config/clientFields/getClientPageFields";
 import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
+import { getCoverageAmountRange } from "../../utils/coverageAmounts";
+import type { CoverageApplicantId } from "../../config/coverages/types";
 import type { ApplicationFormValues } from "../../app/ApplicationFormContext";
+
+/**
+ * Picks a sample amount within a coverage's min/max range, snapped to its step.
+ * Falls back to 100000 when the coverage has no configured range.
+ */
+function pickSampleAmount(
+  coverage: ReturnType<typeof getActiveClientCoverages>[number],
+  applicantId: CoverageApplicantId,
+): number {
+  const { minAmount, maxAmount, step } = getCoverageAmountRange(
+    coverage,
+    applicantId,
+  );
+  if (minAmount == null || maxAmount == null) return 100000;
+
+  const mid = minAmount + (maxAmount - minAmount) / 2;
+  const snapped = step && step > 0 ? Math.round(mid / step) * step : mid;
+  return Math.min(maxAmount, Math.max(minAmount, Math.round(snapped)));
+}
 
 /**
  * Generate default/sample values for all fields up to and including a specific page
@@ -37,10 +58,34 @@ export function generateFormDataUpToPage(
 
   // Add special handling for coverage-dependent fields
   if (shouldSeedCoverageData) {
-    // Ensure coverage selections exist
+    const coverages = getActiveClientCoverages();
+
+    // Ensure coverage selections exist. Prefer a selection that actually
+    // unlocks the target page (e.g. an "SI" coverage for health-si) instead
+    // of always grabbing the first two coverages, which may leave gated
+    // pages (health-si/qd/li/di) looking empty because their required
+    // underwriting type was never selected.
     if (!values.coverageSelections) {
-      const coverages = getActiveClientCoverages();
-      values.coverageSelections = coverages.slice(0, 2).map((c) => c.id);
+      const defaultSelection = coverages.slice(0, 2).map((c) => c.id);
+      const defaultSelectionUnlocksPage = !shouldSkipPage(targetPageId, {
+        ...values,
+        coverageSelections: defaultSelection,
+      });
+
+      if (defaultSelectionUnlocksPage) {
+        values.coverageSelections = defaultSelection;
+      } else {
+        const unlockingCoverage = coverages.find(
+          (c) =>
+            !shouldSkipPage(targetPageId, {
+              ...values,
+              coverageSelections: [c.id],
+            }),
+        );
+        values.coverageSelections = unlockingCoverage
+          ? [unlockingCoverage.id]
+          : defaultSelection;
+      }
     }
 
     // Generate coverage amounts and payment methods/frequencies
@@ -70,10 +115,12 @@ export function generateFormDataUpToPage(
     // Set amounts and payment info for each coverage
     for (let i = 0; i < coverageSelections.length; i++) {
       const coverageId = coverageSelections[i];
+      const coverage = coverages.find((c) => c.id === coverageId);
       const memberKey = `${coverageId}:member`;
 
-      if (!(memberKey in coverageAmounts)) {
-        (coverageAmounts as Record<string, number>)[memberKey] = 100000;
+      if (!(memberKey in coverageAmounts) && coverage) {
+        (coverageAmounts as Record<string, number>)[memberKey] =
+          pickSampleAmount(coverage, "member");
       }
 
       // Only set spouse amounts if spouse is selected for this coverage
@@ -81,10 +128,11 @@ export function generateFormDataUpToPage(
         | Record<string, string[]>
         | undefined;
       const applicants = productApplicants?.[coverageId];
-      if (applicants && applicants.includes("spouse")) {
+      if (applicants && applicants.includes("spouse") && coverage) {
         const spouseKey = `${coverageId}:spouse`;
         if (!(spouseKey in coverageAmounts)) {
-          (coverageAmounts as Record<string, number>)[spouseKey] = 50000;
+          (coverageAmounts as Record<string, number>)[spouseKey] =
+            pickSampleAmount(coverage, "spouse");
         }
       }
 
@@ -120,6 +168,42 @@ export function generateFormDataUpToPage(
 
       if (!values["bank-authorization"]) {
         values["bank-authorization"] = true;
+      }
+    }
+
+    // health-cir is gated on a selected CIR rider rather than a coverage
+    // selection — seed one on a coverage that offers it so the page isn't
+    // skipped when jumping straight to it.
+    if (targetPageId === "health-cir" && !values.coverageRiders) {
+      const coverageWithCirRider = coverages.find((c) =>
+        c.riders?.some((r) => r.id === "cir"),
+      );
+
+      if (coverageWithCirRider) {
+        if (!coverageSelections.includes(coverageWithCirRider.id)) {
+          coverageSelections.push(coverageWithCirRider.id);
+          values.coverageSelections = coverageSelections;
+        }
+
+        const productApplicants = values.productApplicants as
+          | Record<string, string[]>
+          | undefined;
+        if (!productApplicants?.[coverageWithCirRider.id]) {
+          values.productApplicants = {
+            ...productApplicants,
+            [coverageWithCirRider.id]: ["member"],
+          };
+        }
+
+        const cirMemberKey = `${coverageWithCirRider.id}:member`;
+        if (!(cirMemberKey in coverageAmounts)) {
+          (coverageAmounts as Record<string, number>)[cirMemberKey] =
+            pickSampleAmount(coverageWithCirRider, "member");
+        }
+
+        values.coverageRiders = {
+          [`${coverageWithCirRider.id}:cir:member`]: true,
+        };
       }
     }
 

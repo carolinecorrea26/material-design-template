@@ -6,6 +6,13 @@ import type { SiteContent } from "../types";
  * Only properties that differ from defaults need to be specified.
  */
 export const waepaContentOverrides: DeepPartial<SiteContent> = {
+  home: {
+    hero: {
+      title: "Safeguard your family's future.",
+      description:
+        "Group Term Life and Group Short Term Disability Insurance, available exclusively to Civilian Federal Employees. Start your application today.",
+    },
+  },
   pages: {
     membership: {
       infoNote:
