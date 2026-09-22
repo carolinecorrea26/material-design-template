@@ -1,5 +1,17 @@
 # React + TypeScript + Vite
 
+## Storybook deployment
+
+Storybook is built separately with `npm run build-storybook`; deploy the
+generated `storybook-static` directory as its own Netlify site. In the deployed
+prototype site's Netlify environment, set:
+
+```text
+VITE_STORYBOOK_URL=https://<storybook-netlify-site>.netlify.app
+```
+
+Local development defaults to `http://localhost:6006`.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

@@ -4,9 +4,8 @@ export type ComponentRow = {
   description: string;
   sourcePath: string;
   usedIn: string;
-  storybookLink: string;
-  /** True when a real Storybook story exists for this component (verified against a storybook build), not a guessed/placeholder path. */
-  hasStory: boolean;
+  /** Verified Storybook selection ID, including the story suffix. Omitted when no story exists. */
+  storybookId?: string;
 };
 
 /**
@@ -21,8 +20,7 @@ export const componentsData: ComponentRow[] = [
       "Full review/preview of application data grouped by page sections with edit buttons.",
     sourcePath: "src/components/content/ApplicationDocumentPreview.tsx",
     usedIn: "Review page",
-    storybookLink: "/?path=/story/content-applicationdocumentpreview--default",
-    hasStory: true,
+    storybookId: "content-applicationdocumentpreview--default",
   },
   {
     name: "HelpChips",
@@ -30,8 +28,7 @@ export const componentsData: ComponentRow[] = [
     description: "Horizontally scrollable row of clickable help topic chips.",
     sourcePath: "src/components/content/HelpChips.tsx",
     usedIn: "PageHeader help section",
-    storybookLink: "/?path=/story/content-helpchips--default",
-    hasStory: true,
+    storybookId: "content-helpchips--default",
   },
   {
     name: "LegalDocList",
@@ -39,8 +36,7 @@ export const componentsData: ComponentRow[] = [
     description: "Renders structured legal documents from content data.",
     sourcePath: "src/components/content/LegalDocList.tsx",
     usedIn: "AppFooter legal modals",
-    storybookLink: "/?path=/story/content-legaldoclist--terms-of-use",
-    hasStory: true,
+    storybookId: "content-legaldoclist--terms-of-use",
   },
   {
     name: "QuickDecisionExplainer",
@@ -49,8 +45,7 @@ export const componentsData: ComponentRow[] = [
       "Explainer content for QuickDecision℠ with styled marks and drawer. Documented together with QuickDecisionInfoBox as \"QuickDecision content, two surfaces\" per the Phase 1 audit.",
     sourcePath: "src/components/content/QuickDecisionExplainer.tsx",
     usedIn: "AppMenu (via HowApplyingWorksPanel), QuickDecisionInfoBox",
-    storybookLink: "/?path=/story/content-quickdecision--drawer-explainer-content",
-    hasStory: true,
+    storybookId: "content-quickdecision--drawer-explainer-content",
   },
   {
     name: "QuickDecisionInfoBox",
@@ -58,8 +53,7 @@ export const componentsData: ComponentRow[] = [
     description: "Green info panel promoting QuickDecision℠ eligibility.",
     sourcePath: "src/components/content/QuickDecisionInfoBox.tsx",
     usedIn: "ProductCatalog, CoverageOptionsPanel",
-    storybookLink: "/?path=/story/content-quickdecision--info-box-inline-collapse",
-    hasStory: true,
+    storybookId: "content-quickdecision--info-box-inline-collapse",
   },
   {
     name: "EmptyState",
@@ -68,8 +62,7 @@ export const componentsData: ComponentRow[] = [
       "Icon + title + body placeholder for empty or unavailable content.",
     sourcePath: "src/components/feedback/EmptyState.tsx",
     usedIn: "CoverageCart, QuoteCalculator, error states",
-    storybookLink: "/?path=/story/feedback-emptystate--default",
-    hasStory: true,
+    storybookId: "feedback-emptystate--default",
   },
   {
     name: "LoadingOverlay",
@@ -77,8 +70,7 @@ export const componentsData: ComponentRow[] = [
     description: "Multi-size loading spinner with optional status message.",
     sourcePath: "src/components/feedback/LoadingOverlay.tsx",
     usedIn: "Page transitions, async actions",
-    storybookLink: "/?path=/story/feedback-loadingoverlay--small",
-    hasStory: true,
+    storybookId: "feedback-loadingoverlay--small",
   },
   {
     name: "PageAlert",
@@ -87,8 +79,7 @@ export const componentsData: ComponentRow[] = [
       "Full-width contextual alert above form content. PageErrorAlert is a deprecated re-export of this component.",
     sourcePath: "src/components/feedback/PageAlert.tsx",
     usedIn: "PageShell error/info display",
-    storybookLink: "/?path=/story/feedback-pagealert--error",
-    hasStory: true,
+    storybookId: "feedback-pagealert--error",
   },
   {
     name: "PageTransitionSkeleton",
@@ -96,8 +87,7 @@ export const componentsData: ComponentRow[] = [
     description: "Skeleton placeholder during page transitions.",
     sourcePath: "src/components/feedback/PageTransitionSkeleton.tsx",
     usedIn: "RoutePage transition state",
-    storybookLink: "/?path=/story/feedback-pagetransitionskeleton--with-message",
-    hasStory: true,
+    storybookId: "feedback-pagetransitionskeleton--with-message",
   },
   {
     name: "AppSnackbar",
@@ -106,8 +96,7 @@ export const componentsData: ComponentRow[] = [
       "Base snackbar component with severity, message, and responsive positioning (bottom on small screens, top-center on large screens). Used by ProgressSavedSnackbar and the Coverage page Added feedback.",
     sourcePath: "src/components/feedback/AppSnackbar.tsx",
     usedIn: "ProgressSavedSnackbar, Coverage page",
-    storybookLink: "/?path=/story/feedback-appsnackbar--success",
-    hasStory: true,
+    storybookId: "feedback-appsnackbar--success",
   },
   {
     name: "ProgressSavedSnackbar",
@@ -116,8 +105,7 @@ export const componentsData: ComponentRow[] = [
       "Success snackbar confirming form progress saved. Delegates to AppSnackbar.",
     sourcePath: "src/components/feedback/ProgressSavedSnackbar.tsx",
     usedIn: "RoutePage (global)",
-    storybookLink: "/?path=/story/feedback-appsnackbar--progress-saved-preset",
-    hasStory: true,
+    storybookId: "feedback-appsnackbar--progress-saved-preset",
   },
   {
     name: "ConditionalGroup",
@@ -126,8 +114,7 @@ export const componentsData: ComponentRow[] = [
       "Left-bordered indented container for conditional follow-up questions.",
     sourcePath: "src/components/forms/ConditionalGroup.tsx",
     usedIn: "Coverage, Profile, Eligibility pages",
-    storybookLink: "/?path=/story/forms-conditionalgroup--hidden-and-revealed",
-    hasStory: true,
+    storybookId: "forms-conditionalgroup--hidden-and-revealed",
   },
   {
     name: "EligibilityFields",
@@ -136,8 +123,7 @@ export const componentsData: ComponentRow[] = [
       "Shared eligibility input fields (DOB, gender, tobacco, state, ZIP) used by the Quote Calculator and Home page quote entry.",
     sourcePath: "src/components/forms/EligibilityFields.tsx",
     usedIn: "QuoteCalculator, Home page",
-    storybookLink: "/?path=/story/coverage-commerce-eligibilityfields--default",
-    hasStory: true,
+    storybookId: "coverage-commerce-eligibilityfields--default",
   },
   {
     name: "EstimatorProductCard",
@@ -146,8 +132,7 @@ export const componentsData: ComponentRow[] = [
       "Simplified member-only product card (no riders/waiting periods) used inside the Quote Calculator estimator.",
     sourcePath: "src/components/forms/EstimatorProductCard.tsx",
     usedIn: "QuoteCalculator",
-    storybookLink: "/?path=/story/coverage-commerce-estimatorproductcard--unselected",
-    hasStory: true,
+    storybookId: "coverage-commerce-estimatorproductcard--unselected",
   },
   {
     name: "CoverageCategorySelector",
@@ -155,8 +140,7 @@ export const componentsData: ComponentRow[] = [
     description: "Multi-select toggle list for choosing coverage categories.",
     sourcePath: "src/components/forms/CoverageCategorySelector.tsx",
     usedIn: "Coverage page, QuoteCalculator",
-    storybookLink: "/?path=/story/coverage-commerce-coveragecategoryselector--default",
-    hasStory: true,
+    storybookId: "coverage-commerce-coveragecategoryselector--default",
   },
   {
     name: "CoverageNeedsCalculator",
@@ -164,8 +148,7 @@ export const componentsData: ComponentRow[] = [
     description: "Interactive calculator estimating recommended life coverage.",
     sourcePath: "src/components/forms/CoverageNeedsCalculator.tsx",
     usedIn: "AppMenu drawer",
-    storybookLink: "/?path=/story/coverage-commerce-coverageneedscalculator--default",
-    hasStory: true,
+    storybookId: "coverage-commerce-coverageneedscalculator--default",
   },
   {
     name: "CoverageQuestions",
@@ -174,8 +157,7 @@ export const componentsData: ComponentRow[] = [
       "Category-level coverage questions (tobacco, income) with section visibility.",
     sourcePath: "src/components/forms/CoverageQuestions.tsx",
     usedIn: "Coverage page",
-    storybookLink: "/?path=/story/coverage-commerce-coveragequestions--life-insurance-selected",
-    hasStory: true,
+    storybookId: "coverage-commerce-coveragequestions--life-insurance-selected",
   },
   {
     name: "DynamicList",
@@ -183,8 +165,7 @@ export const componentsData: ComponentRow[] = [
     description: "Add/edit/remove list with modal-based form for items.",
     sourcePath: "src/components/forms/DynamicList.tsx",
     usedIn: "Beneficiary, Profile, Eligibility pages",
-    storybookLink: "/?path=/story/forms-dynamiclist--empty",
-    hasStory: true,
+    storybookId: "forms-dynamiclist--empty",
   },
   {
     name: "DynamicListItem",
@@ -192,8 +173,7 @@ export const componentsData: ComponentRow[] = [
     description: "Single bordered card item in a DynamicList.",
     sourcePath: "src/components/forms/DynamicListItem.tsx",
     usedIn: "DynamicList children",
-    storybookLink: "/?path=/story/forms-dynamiclistitem--default",
-    hasStory: true,
+    storybookId: "forms-dynamiclistitem--default",
   },
   {
     name: "FieldRenderer",
@@ -202,8 +182,7 @@ export const componentsData: ComponentRow[] = [
       "Universal form field renderer: text, date, radio, dropdown, checkbox, multi-select, searchable-select.",
     sourcePath: "src/components/forms/FieldRenderer.tsx",
     usedIn: "All form pages (field rendering)",
-    storybookLink: "/?path=/story/forms-fieldrenderer--playground",
-    hasStory: true,
+    storybookId: "forms-fieldrenderer--playground",
   },
   {
     name: "PhysicianInformation",
@@ -211,8 +190,7 @@ export const componentsData: ComponentRow[] = [
     description: "Physician info section with name/address/phone fields.",
     sourcePath: "src/components/forms/PhysicianInformation.tsx",
     usedIn: "Profile page",
-    storybookLink: "/?path=/story/coverage-commerce-physicianinformation--default",
-    hasStory: true,
+    storybookId: "coverage-commerce-physicianinformation--default",
   },
   {
     name: "ProductCatalog",
@@ -221,8 +199,7 @@ export const componentsData: ComponentRow[] = [
       "Full product catalog with applicant checkboxes, amounts, riders, rates.",
     sourcePath: "src/components/forms/ProductCatalog.tsx",
     usedIn: "Coverage page",
-    storybookLink: "/?path=/story/coverage-commerce-productcatalog--interactive",
-    hasStory: true,
+    storybookId: "coverage-commerce-productcatalog--interactive",
   },
   {
     name: "QuoteCalculator",
@@ -230,8 +207,7 @@ export const componentsData: ComponentRow[] = [
     description: "Quote/rate calculator drawer with category selection.",
     sourcePath: "src/components/forms/QuoteCalculator.tsx",
     usedIn: "Home page, Membership page",
-    storybookLink: "/?path=/story/coverage-commerce-quotecalculator--collects-eligibility",
-    hasStory: true,
+    storybookId: "coverage-commerce-quotecalculator--collects-eligibility",
   },
   {
     name: "SelectionGroup",
@@ -240,8 +216,7 @@ export const componentsData: ComponentRow[] = [
       "Full-width bordered clickable row for checkbox/radio/icon-toggle options.",
     sourcePath: "src/components/forms/SelectionGroup.tsx",
     usedIn: "FieldRenderer (radio/checkbox)",
-    storybookLink: "/?path=/story/forms-selectiongroup--checkbox-row-unselected",
-    hasStory: true,
+    storybookId: "forms-selectiongroup--checkbox-row-unselected",
   },
   {
     name: "AppBody",
@@ -249,8 +224,7 @@ export const componentsData: ComponentRow[] = [
     description: "Main content area wrapper with scroll-to-top on navigation.",
     sourcePath: "src/components/layout/AppBody.tsx",
     usedIn: "AppShell",
-    storybookLink: "/?path=/story/layout-appbody--default",
-    hasStory: true,
+    storybookId: "layout-appbody--default",
   },
   {
     name: "AppDrawer",
@@ -258,8 +232,7 @@ export const componentsData: ComponentRow[] = [
     description: "Slide-in drawer (swipeable on mobile) with title and close.",
     sourcePath: "src/components/layout/AppDrawer.tsx",
     usedIn: "CoverageCart, AppMenu",
-    storybookLink: "/?path=/story/overlays-appdrawer--default",
-    hasStory: true,
+    storybookId: "overlays-appdrawer--default",
   },
   {
     name: "AppFooter",
@@ -267,8 +240,7 @@ export const componentsData: ComponentRow[] = [
     description: "Footer with client support info and legal doc modals.",
     sourcePath: "src/components/layout/AppFooter.tsx",
     usedIn: "AppShell",
-    storybookLink: "/?path=/story/layout-appfooter--default",
-    hasStory: true,
+    storybookId: "layout-appfooter--default",
   },
   {
     name: "AppHeader",
@@ -277,8 +249,7 @@ export const componentsData: ComponentRow[] = [
       "Top app bar with logo, menu, cart badge, progress bar, save/help. Determines its current page via window.location.pathname through its own history-patched subscription, not react-router's useLocation().",
     sourcePath: "src/components/layout/AppHeader.tsx",
     usedIn: "AppShell",
-    storybookLink: "/?path=/story/layout-appheader--application-form-variant",
-    hasStory: true,
+    storybookId: "layout-appheader--application-form-variant",
   },
   {
     name: "AppMenu",
@@ -287,8 +258,7 @@ export const componentsData: ComponentRow[] = [
       "Full-screen side drawer with coverage options, calculator, support. Uses HowApplyingWorksPanel and CoverageOptionsPanel internally for the coverage-options and how-applying-works sub-drawers.",
     sourcePath: "src/components/layout/AppMenu.tsx",
     usedIn: "AppHeader hamburger menu",
-    storybookLink: "/?path=/story/layout-appmenu--default",
-    hasStory: true,
+    storybookId: "layout-appmenu--default",
   },
   {
     name: "AppModal",
@@ -296,8 +266,7 @@ export const componentsData: ComponentRow[] = [
     description: "Reusable responsive dialog/modal with title, close, actions.",
     sourcePath: "src/components/layout/AppModal.tsx",
     usedIn: "ConfirmationDialog, SendApplicationDialog, AppFooter legal modals, CoverageCart, DynamicList",
-    storybookLink: "/?path=/story/overlays-appmodal--default",
-    hasStory: true,
+    storybookId: "overlays-appmodal--default",
   },
   {
     name: "AppShell",
@@ -305,8 +274,7 @@ export const componentsData: ComponentRow[] = [
     description: "Top-level layout shell selecting chrome variant.",
     sourcePath: "src/components/layout/AppShell.tsx",
     usedIn: "Router (wraps all pages)",
-    storybookLink: "/?path=/story/layout-appshell--application-form-variant",
-    hasStory: true,
+    storybookId: "layout-appshell--application-form-variant",
   },
   {
     name: "ApplicantSectionDivider",
@@ -314,8 +282,7 @@ export const componentsData: ComponentRow[] = [
     description: "Section header with icon/label for applicant sections.",
     sourcePath: "src/components/layout/ApplicantSectionDivider.tsx",
     usedIn: "Coverage, Profile pages",
-    storybookLink: "/?path=/story/layout-applicantsectiondivider--member-section",
-    hasStory: true,
+    storybookId: "layout-applicantsectiondivider--member-section",
   },
   {
     name: "CategoryCard",
@@ -323,8 +290,7 @@ export const componentsData: ComponentRow[] = [
     description: "Surface card wrapping a category header + content stack.",
     sourcePath: "src/components/layout/CategoryCard.tsx",
     usedIn: "ProductCatalog",
-    storybookLink: "/?path=/story/layout-categorycard--default",
-    hasStory: true,
+    storybookId: "layout-categorycard--default",
   },
   {
     name: "CategoryHeader",
@@ -332,8 +298,7 @@ export const componentsData: ComponentRow[] = [
     description: "h6 heading with optional icon for coverage category.",
     sourcePath: "src/components/layout/CategoryHeader.tsx",
     usedIn: "CategoryCard",
-    storybookLink: "/?path=/story/layout-categoryheader--with-icon",
-    hasStory: true,
+    storybookId: "layout-categoryheader--with-icon",
   },
   {
     name: "ClientHelpBanner",
@@ -341,8 +306,7 @@ export const componentsData: ComponentRow[] = [
     description: "Support banner with phone, chat, and schedule actions.",
     sourcePath: "src/components/layout/ClientHelpBanner.tsx",
     usedIn: "AppHeader (renders when the active client has a support phone)",
-    storybookLink: "/?path=/story/layout-clienthelpbanner--default",
-    hasStory: true,
+    storybookId: "layout-clienthelpbanner--default",
   },
   {
     name: "ConfirmationDialog",
@@ -350,8 +314,7 @@ export const componentsData: ComponentRow[] = [
     description: "Yes/Cancel confirmation modal built on AppModal.",
     sourcePath: "src/components/layout/ConfirmationDialog.tsx",
     usedIn: "Review, Coverage",
-    storybookLink: "/?path=/story/overlays-confirmationdialog--default",
-    hasStory: true,
+    storybookId: "overlays-confirmationdialog--default",
   },
   {
     name: "CookieDialog",
@@ -360,8 +323,7 @@ export const componentsData: ComponentRow[] = [
       "Fixed-position cookie consent banner — not a true Dialog (no backdrop/focus-trap) despite the name.",
     sourcePath: "src/components/layout/CookieDialog.tsx",
     usedIn: "AppShell (global)",
-    storybookLink: "/?path=/story/overlays-cookiedialog--default",
-    hasStory: true,
+    storybookId: "overlays-cookiedialog--default",
   },
   {
     name: "SendApplicationDialog",
@@ -370,8 +332,7 @@ export const componentsData: ComponentRow[] = [
       "Yes/Cancel confirmation modal (built on AppModal) shown before sending an application to a recipient by email.",
     sourcePath: "src/components/layout/SendApplicationDialog.tsx",
     usedIn: "Profile, Review (advisor ↔ applicant handoff)",
-    storybookLink: "/?path=/story/overlays-sendapplicationdialog--default",
-    hasStory: true,
+    storybookId: "overlays-sendapplicationdialog--default",
   },
   {
     name: "FormShell",
@@ -379,8 +340,7 @@ export const componentsData: ComponentRow[] = [
     description: "Rounded elevated Paper container wrapping form content.",
     sourcePath: "src/components/layout/FormShell.tsx",
     usedIn: "All form pages",
-    storybookLink: "/?path=/story/layout-formshell--default",
-    hasStory: true,
+    storybookId: "layout-formshell--default",
   },
   {
     name: "PageHeader",
@@ -388,8 +348,7 @@ export const componentsData: ComponentRow[] = [
     description: "Page title + subtitle + optional help.",
     sourcePath: "src/components/layout/PageHeader.tsx",
     usedIn: "All form pages",
-    storybookLink: "/?path=/story/layout-pageheader--default",
-    hasStory: true,
+    storybookId: "layout-pageheader--default",
   },
   {
     name: "PageShell",
@@ -397,8 +356,7 @@ export const componentsData: ComponentRow[] = [
     description: "Full page layout with title, error display, max-width.",
     sourcePath: "src/components/layout/PageShell.tsx",
     usedIn: "All page wrappers",
-    storybookLink: "/?path=/story/layout-pageshell--default",
-    hasStory: true,
+    storybookId: "layout-pageshell--default",
   },
   {
     name: "PageTitle",
@@ -406,8 +364,7 @@ export const componentsData: ComponentRow[] = [
     description: "Page title Typography with optional back arrow.",
     sourcePath: "src/components/layout/PageTitle.tsx",
     usedIn: "Non-form pages",
-    storybookLink: "/?path=/story/layout-pagetitle--title-only",
-    hasStory: true,
+    storybookId: "layout-pagetitle--title-only",
   },
   {
     name: "ProductCard",
@@ -415,8 +372,7 @@ export const componentsData: ComponentRow[] = [
     description: "Bordered card for products with selected/unselected states.",
     sourcePath: "src/components/layout/ProductCard.tsx",
     usedIn: "ProductCatalog, QuoteEstimator",
-    storybookLink: "/?path=/story/layout-productcard--unselected",
-    hasStory: true,
+    storybookId: "layout-productcard--unselected",
   },
   {
     name: "QuoteModal",
@@ -425,8 +381,6 @@ export const componentsData: ComponentRow[] = [
       "Quote/rate comparison modal containing EstimatorProductCard entries per product. Confirmed dead code as of the 2026-09 Storybook audit — a repo-wide grep found zero render sites outside a documentation demo, and it appears to duplicate QuoteCalculator. Kept in the repo but intentionally not given a Storybook story.",
     sourcePath: "src/components/layout/QuoteModal.tsx",
     usedIn: "Not rendered anywhere (dead code — previously claimed \"Coverage page, AppHeader\", unconfirmed by grep)",
-    storybookLink: "/?path=/story/layout-quotemodal",
-    hasStory: false,
   },
   {
     name: "SectionDivider",
@@ -434,8 +388,7 @@ export const componentsData: ComponentRow[] = [
     description: "Chip-based or text section header divider.",
     sourcePath: "src/components/layout/SectionDivider.tsx",
     usedIn: "Form pages (visual separators)",
-    storybookLink: "/?path=/story/layout-sectiondivider--subsection-preset",
-    hasStory: true,
+    storybookId: "layout-sectiondivider--subsection-preset",
   },
   {
     name: "PageNav",
@@ -443,8 +396,7 @@ export const componentsData: ComponentRow[] = [
     description: "Bottom-of-page Next button with loading spinner.",
     sourcePath: "src/components/navigation/PageNav.tsx",
     usedIn: "All form pages",
-    storybookLink: "/?path=/story/navigation-pagenav--default",
-    hasStory: true,
+    storybookId: "navigation-pagenav--default",
   },
   {
     name: "ProgressStep",
@@ -452,8 +404,7 @@ export const componentsData: ComponentRow[] = [
     description: "Breadcrumb/stepper progress indicator.",
     sourcePath: "src/components/navigation/ProgressStep.tsx",
     usedIn: "AppHeader progress bar",
-    storybookLink: "/?path=/story/navigation-progressstep--collapsed-steps",
-    hasStory: true,
+    storybookId: "navigation-progressstep--collapsed-steps",
   },
   {
     name: "FeaturedBadge",
@@ -461,8 +412,7 @@ export const componentsData: ComponentRow[] = [
     description: "Small Featured chip badge with star icon.",
     sourcePath: "src/components/ui/FeaturedBadge.tsx",
     usedIn: "ProductCard (featured)",
-    storybookLink: "/?path=/story/coverage-commerce-product-adornments--side-by-side",
-    hasStory: true,
+    storybookId: "coverage-commerce-product-adornments--side-by-side",
   },
   {
     name: "ProductCostBreakdown",
@@ -470,8 +420,7 @@ export const componentsData: ComponentRow[] = [
     description: "Itemized premium + rider + policy fee breakdown.",
     sourcePath: "src/components/ui/ProductCostBreakdown.tsx",
     usedIn: "ProductCatalog (client-config gated)",
-    storybookLink: "/?path=/story/coverage-commerce-productcostbreakdown--monthly",
-    hasStory: true,
+    storybookId: "coverage-commerce-productcostbreakdown--monthly",
   },
   {
     name: "QuickDecisionIndicator",
@@ -479,8 +428,7 @@ export const componentsData: ComponentRow[] = [
     description: "Green lightning bolt icon for QuickDecision℠.",
     sourcePath: "src/components/ui/QuickDecisionIndicator.tsx",
     usedIn: "ProductCard, ProductCatalog",
-    storybookLink: "/?path=/story/coverage-commerce-product-adornments--side-by-side",
-    hasStory: true,
+    storybookId: "coverage-commerce-product-adornments--side-by-side",
   },
   {
     name: "RateFrequencyToggle",
@@ -488,8 +436,7 @@ export const componentsData: ComponentRow[] = [
     description: "Switch toggle for monthly/annual rate display.",
     sourcePath: "src/components/ui/RateFrequencyToggle.tsx",
     usedIn: "CoverageCart, QuoteCalculator",
-    storybookLink: "/?path=/story/coverage-commerce-ratefrequencytoggle--unchecked",
-    hasStory: true,
+    storybookId: "coverage-commerce-ratefrequencytoggle--unchecked",
   },
   {
     name: "CoverageCart",
@@ -498,8 +445,7 @@ export const componentsData: ComponentRow[] = [
       "Selected coverage summary with drawer and inline variants. Renders per-product cost breakdown and total. Replaces the former CartDrawer + TotalCostCart split.",
     sourcePath: "src/components/ui/CoverageCart.tsx",
     usedIn: "AppHeader (drawer), ProductCatalog (inline)",
-    storybookLink: "/?path=/story/coverage-commerce-coveragecart--populated-drawer",
-    hasStory: true,
+    storybookId: "coverage-commerce-coveragecart--populated-drawer",
   },
   {
     name: "TotalCostSummary",
@@ -507,8 +453,7 @@ export const componentsData: ComponentRow[] = [
     description: "Total Estimated Cost summary panel.",
     sourcePath: "src/components/ui/TotalCostSummary.tsx",
     usedIn: "CoverageCart, QuoteCalculator",
-    storybookLink: "/?path=/story/coverage-commerce-totalcostsummary--default",
-    hasStory: true,
+    storybookId: "coverage-commerce-totalcostsummary--default",
   },
   {
     name: "HowApplyingWorksPanel",
@@ -518,8 +463,7 @@ export const componentsData: ComponentRow[] = [
       "In drawer variant manages its own sub-drawers for Application Review and QuickDecision℠ content.",
     sourcePath: "src/components/ui/HowApplyingWorksPanel.tsx",
     usedIn: "Home page, AppMenu drawer",
-    storybookLink: "/?path=/story/coverage-commerce-howapplyingworkspanel--page-variant",
-    hasStory: true,
+    storybookId: "coverage-commerce-howapplyingworkspanel--page-variant",
   },
   {
     name: "CoverageOptionsPanel",
@@ -530,8 +474,7 @@ export const componentsData: ComponentRow[] = [
       "Product names were fixed from placeholder href=\"#\" links to plain text in the 2026-09 Storybook pass, since no real product-detail destination exists.",
     sourcePath: "src/components/ui/CoverageOptionsPanel.tsx",
     usedIn: "Home page, AppMenu drawer",
-    storybookLink: "/?path=/story/coverage-commerce-coverageoptionspanel--page-variant",
-    hasStory: true,
+    storybookId: "coverage-commerce-coverageoptionspanel--page-variant",
   },
   {
     name: "CoveragePortfolioDrawer",
@@ -540,8 +483,7 @@ export const componentsData: ComponentRow[] = [
       "Read-only existing-coverage drawer shown to TPA-verified members on the Coverage page. Uses hardcoded dummy portfolio data, not real member records.",
     sourcePath: "src/components/ui/CoveragePortfolioDrawer.tsx",
     usedIn: "Coverage page (TPA-verified users only)",
-    storybookLink: "/?path=/story/coverage-commerce-coverageportfoliodrawer--member-only",
-    hasStory: true,
+    storybookId: "coverage-commerce-coverageportfoliodrawer--member-only",
   },
   {
     name: "MemberVerification",
@@ -550,8 +492,7 @@ export const componentsData: ComponentRow[] = [
       "Multi-step identity-verification modal with dummy LexisNexis-style security questions (no real identity-verification integration).",
     sourcePath: "src/components/ui/MemberVerification.tsx",
     usedIn: "Eligibility page",
-    storybookLink: "/?path=/story/coverage-commerce-memberverification--interactive",
-    hasStory: true,
+    storybookId: "coverage-commerce-memberverification--interactive",
   },
   {
     name: "RateFrequencyControl",
@@ -559,8 +500,7 @@ export const componentsData: ComponentRow[] = [
     description: "Canonical labeled Monthly/Annual rate-frequency control.",
     sourcePath: "src/components/ui/RateFrequencyControl.tsx",
     usedIn: "CoverageCart, QuoteCalculator",
-    storybookLink: "/?path=/story/coverage-commerce-ratefrequencycontrol--interactive",
-    hasStory: true,
+    storybookId: "coverage-commerce-ratefrequencycontrol--interactive",
   },
   {
     name: "ExpiringCodeAlert",
@@ -568,8 +508,7 @@ export const componentsData: ComponentRow[] = [
     description: "Active, resent, and expired alerts for resume links and verification codes.",
     sourcePath: "src/components/feedback/ExpiringCodeAlert.tsx",
     usedIn: "Resume, ResumeCode",
-    storybookLink: "/?path=/story/feedback-resume-expiration--active-link",
-    hasStory: true,
+    storybookId: "feedback-resume-expiration--active-link",
   },
   {
     name: "ResendCountdownRow",
@@ -577,8 +516,7 @@ export const componentsData: ComponentRow[] = [
     description: "Countdown label and resend action paired with useCountdown.",
     sourcePath: "src/components/feedback/ResendCountdownRow.tsx",
     usedIn: "Resume, ResumeCode",
-    storybookLink: "/?path=/story/feedback-resume-expiration--active-link",
-    hasStory: true,
+    storybookId: "feedback-resume-expiration--active-link",
   },
   {
     name: "ProcessingStatusPage",
@@ -586,8 +524,7 @@ export const componentsData: ComponentRow[] = [
     description: "Centered spinner, mark, heading, and body for external processing states.",
     sourcePath: "src/components/feedback/ProcessingStatusPage.tsx",
     usedIn: "DocuSign, HealthQd",
-    storybookLink: "/?path=/story/feedback-processingstatuspage--external-service",
-    hasStory: true,
+    storybookId: "feedback-processingstatuspage--external-service",
   },
   {
     name: "FieldGrid",
@@ -595,8 +532,7 @@ export const componentsData: ComponentRow[] = [
     description: "Responsive equal, wide/narrow, and wide/two-narrow form rows.",
     sourcePath: "src/components/layout/FieldGrid.tsx",
     usedIn: "Membership, Eligibility, Beneficiary, Contact, Profile",
-    storybookLink: "/?path=/story/layout-fieldgrid--equal-columns",
-    hasStory: true,
+    storybookId: "layout-fieldgrid--equal-columns",
   },
   {
     name: "DetailsTable",
@@ -604,8 +540,7 @@ export const componentsData: ComponentRow[] = [
     description: "Accessible label/value confirmation table.",
     sourcePath: "src/components/layout/DetailsTable.tsx",
     usedIn: "AdvisorSendConfirmation, ApplicationEditConfirmation",
-    storybookLink: "/?path=/story/application-patterns-detailstable--confirmation-details",
-    hasStory: true,
+    storybookId: "application-patterns-detailstable--confirmation-details",
   },
   {
     name: "IconListItem",
@@ -613,8 +548,7 @@ export const componentsData: ComponentRow[] = [
     description: "Two-column list row with a leading icon or ordinal and content.",
     sourcePath: "src/components/layout/IconListItem.tsx",
     usedIn: "YesNoDetailList",
-    storybookLink: "/?path=/story/application-patterns-yesnodetaillist--interactive",
-    hasStory: true,
+    storybookId: "application-patterns-yesnodetaillist--interactive",
   },
   {
     name: "RadioSelectionGroup",
@@ -622,8 +556,7 @@ export const componentsData: ComponentRow[] = [
     description: "Accessible radio group rendered with canonical SelectionGroup rows.",
     sourcePath: "src/components/forms/RadioSelectionGroup.tsx",
     usedIn: "Beneficiary, ResumeMethod",
-    storybookLink: "/?path=/story/forms-radioselectiongroup--interactive",
-    hasStory: true,
+    storybookId: "forms-radioselectiongroup--interactive",
   },
   {
     name: "YesNoDetailList",
@@ -631,7 +564,6 @@ export const componentsData: ComponentRow[] = [
     description: "Numbered yes/no questions that reveal DynamicList details on Yes.",
     sourcePath: "src/components/forms/YesNoDetailList.tsx",
     usedIn: "HealthSi, HealthLi, HealthDi",
-    storybookLink: "/?path=/story/application-patterns-yesnodetaillist--interactive",
-    hasStory: true,
+    storybookId: "application-patterns-yesnodetaillist--interactive",
   },
 ];

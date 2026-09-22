@@ -44,7 +44,7 @@ Every claim below is anchored to a file:line reference found by direct reading o
 | `src/docs/Site_Components_Inventory_Tier3-6.md` | Partially self-correcting but itself has at least one stale claim | Same as above. |
 | `src/docs/pageflows.md` | Accurate at the flow-sequence level; several items explicitly marked speculative | Out of scope for component Storybook work; still useful for an eventual "Application Patterns" page-flow section. |
 | `src/docs/RefactorPlan.md` | Directionally correct, but its target folder structure has partially diverged from what was actually built (no `common/`, overlays merged into `layout/`, a `ui/` folder added that wasn't planned) | Its Storybook outline was the starting point for §7 below, revised to match the real category boundaries. |
-| `src/content/docs/componentInventory.ts` | Mostly accurate; 3 missing rows, 1 unconfirmed usage claim, all `storybookLink`s currently dead | Keep as the live in-app source; fix the 3 gaps and the `QuoteModal` claim in Phase 2 once the `QuoteModal` question is resolved. |
+| `src/content/docs/componentInventory.ts` | Mostly accurate; 3 missing rows, 1 unconfirmed usage claim, and Storybook references not yet verified | Keep as the live in-app source; fix the 3 gaps and the `QuoteModal` claim in Phase 2 once the `QuoteModal` question is resolved. |
 | `src/content/docs/changeLog.ts`, `features.ts`, `portalProject.ts`, `templateChanges.ts` | Accurate, actively maintained, some values computed live rather than hardcoded | No action needed; not in scope for Storybook. |
 
 ## 5. Full inventory
@@ -288,7 +288,7 @@ Neither fix touched application business logic, only dead/buggy prop plumbing in
 
 ### 11.3 Inventory updates
 
-- `src/content/docs/componentInventory.ts`: the 20 components above had their `storybookLink` corrected from a hand-guessed path to the real generated story ID (e.g. `/?path=/story/forms-fieldrenderer--playground`), each verified against the actual `npx storybook build` output rather than assumed. No other entries were touched — every component without a real story still has its previously-flagged dead link, unchanged.
+- `src/content/docs/componentInventory.ts`: the 20 components above had their Storybook metadata corrected from hand-guessed references to real generated story IDs, each verified against the actual `npx storybook build` output rather than assumed.
 - `src/docs/ComponentInventory.md`: all 20 components' `Story?`/`Action` columns updated to `Yes`/`Done`, with the two verified fixes called out inline.
 
 ### 11.4 Explicit non-goals for Phase 2B
@@ -321,19 +321,19 @@ Total: 130 stories registered (up from 119 after Phase 2B), verified via `tsc -b
 
 ### 12.2 Storybook-link bug fixed (reported directly, not from the Phase 1 audit)
 
-Every `storybookLink` value in `src/content/docs/componentInventory.ts` (the data behind the "Storybook" column in `ComponentInventorySection.tsx`, rendered on `DesignSystem.tsx`) is a root-relative path like `/?path=/story/forms-fieldrenderer--playground`. Storybook runs on its own dev server (`localhost:6006`, per the `storybook` script in `package.json`) — a separate origin from the running app. Clicking one of these links from inside the app therefore just reloaded the app itself at that path; there was nothing in the app's own router matching that query string, so every single link was silently broken regardless of whether its target story existed.
+At the time of this phase, `componentInventory.ts` stored root-relative Storybook routes, so links opened against the prototype origin instead of the separate Storybook origin.
 
 Two fixes, both in `src/components/docs/ComponentInventorySection.tsx`:
 
-1. Added a `STORYBOOK_BASE_URL = "http://localhost:6006"` constant and a `resolveStorybookHref()` helper that prefixes `storybookLink` with it before rendering the `<Link>`, in both the table row and the detail modal.
-2. Added a `hasStory: boolean` field to the `ComponentRow` type in `componentInventory.ts` and set it correctly for all 54 rows by cross-checking each entry's name against the titles actually present in a real `npx storybook build` output (23 `true`: the 20 from Phase 2B, plus `PageNav`/`ProgressStep` from this phase, plus `ProgressSavedSnackbar` — which turned out to have had the *wrong* link since Phase 2B; its story is a named story inside `Feedback/AppSnackbar`, not a component of its own, so `/?path=/story/feedback-progresssavedsnackbar` never resolved to anything real). `ComponentInventorySection.tsx` now renders a working link only when `hasStory` is true, and a plain "No story yet" label otherwise — so a developer clicking through the table can no longer land on a dead link and not know whether that's a bug or an intentionally-undocumented component.
+1. Added an initial base-URL resolver before rendering the table and detail-modal links.
+2. Added availability metadata cross-checked against a real Storybook build, including correcting `ProgressSavedSnackbar` to the named story inside `Feedback/AppSnackbar`.
 
-Every row's `storybookLink` value is otherwise unchanged (including the ~31 still-guessed, still-inert paths for components that don't have a story yet) — this phase fixed the two ways the *existing* data was being misused (relative-origin links, and presenting guesses as facts), not the guesses themselves. As more components get real stories in future phases, they need both a corrected `storybookLink` and `hasStory: true`, per this pattern.
+This implementation was later superseded: the inventory now stores only verified `storybookId` values, omits the ID when no story exists, and all URL construction is centralized in `src/config/storybook.ts` using `VITE_STORYBOOK_URL`.
 
 ### 12.3 Explicit non-goals for Phase 2C
 
 - Overlays (`AppDrawer`, `AppModal`, `ConfirmationDialog`, `CookieDialog`, `SendApplicationDialog`) and Coverage & Commerce component stories were not built — still waiting on the `QuoteModal` dead-code question (Overlays) and still the largest remaining cluster (Coverage & Commerce).
-- The other ~31 components with `hasStory: false` were not given stories in this phase and their `storybookLink` guesses were left untouched.
+- The other ~31 components were not given stories in this phase.
 - `AppMenu`/`AppHeader`/`AppFooter`/`AppBody`/`AppShell`/`ClientHelpBanner` (Layout's remaining "App shell" cluster from §7's IA) were not touched — still pending their own pass.
 
 ### 12.4 Recommended next phase
@@ -356,7 +356,7 @@ Scope: the §11.5/§12.4 recommendation, unblocked this session by the team conf
 - **`AppModal`** (5 stories): Default, single-action, two-actions/`alertdialog`, `showCloseIcon={false}`, and `forceFullScreen`.
 - **`ConfirmationDialog`** (3 stories): Default, `confirmColor="error"`, custom labels.
 - **`CookieDialog`** (1 story): states directly in its own description that despite the name it's a fixed banner, not a true Dialog (no backdrop/focus-trap), consistent with the Phase 1 finding.
-- **`SendApplicationDialog`** (3 stories): to-applicant (with recipient name), to-advisor (`showRecipientName={false}`), and the missing-data em-dash fallback. This component was missing from `componentInventory.ts` entirely before this phase (a gap flagged since Phase 1) — added now with a real `hasStory: true` link.
+- **`SendApplicationDialog`** (3 stories): to-applicant (with recipient name), to-advisor (`showRecipientName={false}`), and the missing-data em-dash fallback. This component was missing from `componentInventory.ts` entirely before this phase (a gap flagged since Phase 1) — added now with a verified story ID.
 
 Total: 146 stories registered (up from 130 after Phase 2C), verified via `tsc -b --noEmit`, `eslint`, `npx storybook build`, and `npm run build`, all clean.
 
@@ -443,7 +443,7 @@ Total: 210 stories registered (up from 192 after Phase 2E), verified via `tsc -b
 
 ### 15.3 Component-story coverage: final status
 
-`hasStory: true` for 56 of 57 rows in `componentInventory.ts`. The one exception, `QuoteModal`, is deliberate — confirmed dead code per the Phase 2D team decision, kept in the repository but not given a story. Every component category from the original §7 information architecture (Foundations, Layout, Forms, Navigation, Content, Feedback, Overlays, Coverage & Commerce) now has real, verified Storybook coverage.
+Verified Storybook IDs exist for 56 of 57 rows in `componentInventory.ts`. The one exception, `QuoteModal`, is deliberate — confirmed dead code per the Phase 2D team decision, kept in the repository but not given a story. Every component category from the original §7 information architecture (Foundations, Layout, Forms, Navigation, Content, Feedback, Overlays, Coverage & Commerce) now has real, verified Storybook coverage.
 
 ### 15.4 Explicit non-goals for Phase 2F
 

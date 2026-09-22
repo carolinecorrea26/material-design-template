@@ -2,7 +2,6 @@ import type { ClientId } from "../../types";
 import { clients } from "../../config/clients";
 import { avmaClient } from "../../config/clients/avma";
 import type { ProductContentBlock } from "../../config/clients/types";
-import { getStorybookDocsUrl } from "../../config/storybook";
 import { getSiteDetailsPageOrder } from "../../config/resolvers";
 import { buildContent } from "../index";
 import type { SiteContent } from "../types";
@@ -24,11 +23,12 @@ import {
 // Generated from the complete managed-content tree so new copy automatically
 // appears in the CMS reference instead of relying on a hand-picked inventory.
 export type CmsContentType = "Text" | "Image" | "Video" | "Document" | "Link";
+type CmsPageNoteType = `${string} page note`;
 
 export type CmsComponentType =
   | "Page title"
   | "Page subtitle"
-  | "Coverage page note"
+  | CmsPageNoteType
   | "Section note"
   | "Navigation label"
   | "Default homepage variant"
@@ -59,7 +59,8 @@ export type CmsEntry = {
   page: string;
   componentType: CmsComponentType;
   component: string;
-  storybookUrl: string;
+  /** Verified Storybook selection ID, resolved to a URL by the rendering UI. */
+  storybookId: string;
   status: "Published";
   lastModified: null;
   globalValue: string;
@@ -110,7 +111,7 @@ function externalEntry(
   componentType: CmsComponentType,
   globalValue: string,
   effectiveValue: (clientId: ClientId) => string,
-  storyTitle = "Application Patterns/Page Coverage Audit",
+  storybookId = "application-patterns-page-coverage-audit--all-routes",
   sourceOrder = Number.MAX_SAFE_INTEGER,
 ): CmsEntry {
   const { page, component } = splitLocation(location);
@@ -120,7 +121,7 @@ function externalEntry(
     page,
     componentType,
     component,
-    storybookUrl: getStorybookDocsUrl(storyTitle),
+    storybookId,
     status: "Published",
     lastModified: null,
     globalValue,
@@ -236,7 +237,9 @@ function componentTypeForPath(path: string): CmsComponentType {
     if (field === "title") return "Page title";
     if (field === "subhead") return "Page subtitle";
     if (field === "navTitle") return "Navigation label";
-    if (field === "infoNote" && section === "coverage") return "Coverage page note";
+    if (field === "infoNote") {
+      return `${PUBLIC_PAGE_LABELS[section] ?? titleCase(section)} page note`;
+    }
     if (field === "sectionNotes") return "Section note";
     return "Section content";
   }
@@ -410,60 +413,84 @@ function locationForPath(path: string): string {
   return `${titleCase(root)} - ${titleCase(section ?? "Content")}`;
 }
 
-function storyTitleForPath(path: string): string {
+function storybookIdForPath(path: string): string {
   const [root, section] = pathSegments(path);
 
-  if (root === "pages") return "Layout/PageHeader";
+  if (root === "pages") return "layout-pageheader--default";
   if (root === "home") {
     if (section === "howApplyingWorks" || section === "applyingSteps") {
-      return "Coverage & Commerce/HowApplyingWorksPanel";
+      return "coverage-commerce-howapplyingworkspanel--page-variant";
     }
-    if (section === "coverageOptions") return "Coverage & Commerce/CoverageOptionsPanel";
-    if (section === "quoteSection") return "Coverage & Commerce/QuoteCalculator";
-    if (section === "nylCredentials" || section === "clientSection") return "Layout/AppBody";
-    return "Application Patterns/Page Coverage Audit";
+    if (section === "coverageOptions") {
+      return "coverage-commerce-coverageoptionspanel--page-variant";
+    }
+    if (section === "quoteSection") {
+      return "coverage-commerce-quotecalculator--collects-eligibility";
+    }
+    if (section === "nylCredentials" || section === "clientSection") {
+      return "layout-appbody--default";
+    }
+    return "application-patterns-page-coverage-audit--all-routes";
   }
-  if (root === "receipt") return "Application Patterns/Page Coverage Audit";
+  if (root === "receipt") {
+    return "application-patterns-page-coverage-audit--all-routes";
+  }
   if (root === "review") {
     if (section === "alertTitle" || section === "alertItems" || section === "healthQuestionsNote") {
-      return "Feedback/PageAlert";
+      return "feedback-pagealert--error";
     }
-    return "Content/ApplicationDocumentPreview";
+    return "content-applicationdocumentpreview--default";
   }
   if (root === "help") {
-    if (section === "howApplyingWorks") return "Coverage & Commerce/HowApplyingWorksPanel";
-    if (section === "coverageOptions") return "Coverage & Commerce/CoverageOptionsPanel";
-    if (section === "coveragePortfolio") return "Coverage & Commerce/CoveragePortfolioDrawer";
-    if (section === "quickDecision") return "Content/QuickDecision";
-    return "Overlays/AppDrawer";
+    if (section === "howApplyingWorks") {
+      return "coverage-commerce-howapplyingworkspanel--page-variant";
+    }
+    if (section === "coverageOptions") {
+      return "coverage-commerce-coverageoptionspanel--page-variant";
+    }
+    if (section === "coveragePortfolio") {
+      return "coverage-commerce-coverageportfoliodrawer--member-only";
+    }
+    if (section === "quickDecision") {
+      return "content-quickdecision--info-box-inline-collapse";
+    }
+    return "overlays-appdrawer--default";
   }
   if (root === "coverage") {
-    if (section === "categoryDescriptions") return "Coverage & Commerce/CoverageCategorySelector";
-    return "Coverage & Commerce/ProductCatalog";
+    if (section === "categoryDescriptions") {
+      return "coverage-commerce-coveragecategoryselector--default";
+    }
+    return "coverage-commerce-productcatalog--interactive";
   }
   if (root === "navigation") {
-    if (section === "progressStepLabels") return "Navigation/ProgressStep";
-    if (section === "backMessage") return "Navigation/PageNav";
-    return "Feedback/PageTransitionSkeleton";
+    if (section === "progressStepLabels") {
+      return "navigation-progressstep--collapsed-steps";
+    }
+    if (section === "backMessage") return "navigation-pagenav--default";
+    return "feedback-pagetransitionskeleton--with-message";
   }
   if (root === "footer") {
     if (section === "termsOfUseContent" || section === "privacyNoticeContent") {
-      return "Content/LegalDocList";
+      return "content-legaldoclist--terms-of-use";
     }
-    return "Layout/AppFooter";
+    return "layout-appfooter--default";
   }
   if (root === "shared") {
-    if (section === "cookieBanner") return "Overlays/CookieDialog";
-    return "Layout/ApplicantSectionDivider";
+    if (section === "cookieBanner") return "overlays-cookiedialog--default";
+    return "layout-applicantsectiondivider--member-section";
   }
-  if (root === "beneficiary") return "Feedback/PageAlert";
+  if (root === "beneficiary") return "feedback-pagealert--error";
   if (root === "dialogs") {
-    if (section === "confirmation") return "Overlays/ConfirmationDialog";
-    if (section === "sendApplication") return "Overlays/SendApplicationDialog";
-    return "Overlays/AppModal";
+    if (section === "confirmation") return "overlays-confirmationdialog--default";
+    if (section === "sendApplication") {
+      return "overlays-sendapplicationdialog--default";
+    }
+    return "overlays-appmodal--default";
   }
-  if (root === "statusMessages") return "Feedback/ProcessingStatusPage";
-  return "Application Patterns/Page Coverage Audit";
+  if (root === "statusMessages") {
+    return "feedback-processingstatuspage--external-service";
+  }
+  return "application-patterns-page-coverage-audit--all-routes";
 }
 
 function managedEntry(path: string, sourceOrder: number): CmsEntry {
@@ -475,7 +502,7 @@ function managedEntry(path: string, sourceOrder: number): CmsEntry {
     page,
     componentType: componentTypeForPath(path),
     component,
-    storybookUrl: getStorybookDocsUrl(storyTitleForPath(path)),
+    storybookId: storybookIdForPath(path),
     status: "Published",
     lastModified: null,
     globalValue: rawGlobal === undefined ? "—" : resolveForDisplay(rawGlobal),
@@ -509,7 +536,7 @@ const externalEntries: CmsEntry[] = [
         ? `/client/${clientId}/hero.png (shown — ${variant} variant)`
         : 'Not shown by default — enabled per client via features.homePageVariant ("hero-image" or "welcome-back").';
     },
-    "Application Patterns/Page Coverage Audit",
+    "application-patterns-page-coverage-audit--all-routes",
   ),
   externalEntry(
     "global-client-logo",
@@ -521,7 +548,7 @@ const externalEntries: CmsEntry[] = [
       const { logo, logoAlt } = clients[clientId].branding;
       return `${logo} (alt: "${logoAlt}")`;
     },
-    "Foundations/Branding",
+    "foundations-branding--branding",
   ),
   externalEntry(
     "footer-license-info",
@@ -533,7 +560,7 @@ const externalEntries: CmsEntry[] = [
       const info = clients[clientId].licenseInfo;
       return info && info.length > 0 ? info.join(" / ") : "—";
     },
-    "Layout/AppFooter",
+    "layout-appfooter--default",
   ),
   externalEntry(
     "coverage-avma-hospital-indemnity-disclosure",
@@ -545,7 +572,7 @@ const externalEntries: CmsEntry[] = [
       clientId === "avma"
         ? flattenProductContent(avmaClient.coverages.overrides?.["sh-hospital-income"]?.productContent)
         : "—",
-    "Coverage & Commerce/ProductCatalog",
+    "coverage-commerce-productcatalog--interactive",
   ),
   externalEntry(
     "coverage-brochure",
@@ -560,7 +587,7 @@ const externalEntries: CmsEntry[] = [
       if (clientId === "csea") return "/client/csea/li-clerical.pdf";
       return `/client/${clientId}/brochure.pdf`;
     },
-    "Coverage & Commerce/CoverageOptionsPanel",
+    "coverage-commerce-coverageoptionspanel--page-variant",
   ),
   externalEntry(
     "coverage-brochure-csea-di-clerical",
@@ -569,7 +596,7 @@ const externalEntries: CmsEntry[] = [
     "Document",
     "—",
     (clientId) => (clientId === "csea" ? "/client/csea/di-clerical.pdf" : "—"),
-    "Coverage & Commerce/CoverageOptionsPanel",
+    "coverage-commerce-coverageoptionspanel--page-variant",
   ),
   externalEntry(
     "coverage-quote-cost-footnote",
@@ -578,7 +605,7 @@ const externalEntries: CmsEntry[] = [
     "Coverage page note",
     "Quoted cost is the best rate available based on the information you provided. Final cost may be based upon factors such as gender, health status, and use of tobacco/nicotine. Rates current as of 2026.",
     () => "Quoted cost is the best rate available based on the information you provided. Final cost may be based upon factors such as gender, health status, and use of tobacco/nicotine. Rates current as of 2026.",
-    "Coverage & Commerce/QuoteCalculator",
+    "coverage-commerce-quotecalculator--collects-eligibility",
   ),
 ];
 
@@ -629,6 +656,9 @@ const COMPONENT_TYPE_ORDER: CmsComponentType[] = [
 ];
 
 function cmsComponentTypeRank(componentType: CmsComponentType): number {
+  if (componentType.endsWith(" page note")) {
+    return COMPONENT_TYPE_ORDER.indexOf("Coverage page note");
+  }
   return COMPONENT_TYPE_ORDER.indexOf(componentType);
 }
 

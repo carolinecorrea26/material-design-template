@@ -15,6 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import type { CmsEntry } from "../../content/docs/cmsEntries";
+import { getStorybookStoryUrl } from "../../config/storybook";
 import ResponsiveTableContainer from "./ResponsiveTableContainer";
 import SearchField from "./SearchField";
 import TruncatedString from "./TruncatedString";
@@ -181,7 +182,7 @@ export default function CmsContentTable({ rows }: { rows: CmsTableRow[] }) {
                 <TableCell sx={{ verticalAlign: "top" }}>{entry.componentType}</TableCell>
                 <TableCell sx={{ verticalAlign: "top", whiteSpace: "normal !important" }}>
                   <Link
-                    href={entry.storybookUrl}
+                    href={getStorybookStoryUrl(entry.storybookId)}
                     target="_blank"
                     rel="noopener noreferrer"
                     underline="none"

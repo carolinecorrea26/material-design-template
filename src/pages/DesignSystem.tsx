@@ -24,7 +24,7 @@ import {
   type ThemeColorId,
 } from "../config/clients/types";
 import Home from "./Home";
-import { STORYBOOK_URL } from "../config/storybook";
+import { getStorybookUrl } from "../config/storybook";
 
 const PRESET_IDS: ThemeColorId[] = ["default", "teal", "purple", "dark-blue"];
 const HEX_COLOR_PATTERN = /^#[\da-f]{3}([\da-f]{3})?$/i;
@@ -100,7 +100,7 @@ export default function DesignSystem() {
           <Card variant="outlined" sx={{ maxWidth: 900 }}>
             <CardActionArea
               component="a"
-              href={STORYBOOK_URL}
+              href={getStorybookUrl()}
               target="_blank"
               rel="noopener noreferrer"
               sx={{ p: { xs: 3, md: 5 } }}

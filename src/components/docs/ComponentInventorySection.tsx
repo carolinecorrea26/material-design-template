@@ -18,15 +18,10 @@ import {
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import AppModal from "../layout/AppModal";
 import { componentsData } from "../../content/docs/componentInventory";
+import { getStorybookStoryUrl } from "../../config/storybook";
 
-// storybookLink values are root-relative story paths (e.g. "/?path=/story/...").
-// Storybook runs on its own dev server (see package.json's "storybook" script),
-// not this app's origin, so links must be made absolute to it or clicking them
-// from the running app just reloads the app itself with a dead query string.
-const STORYBOOK_BASE_URL = "http://localhost:6006";
-
-function resolveStorybookHref(comp: { hasStory: boolean; storybookLink: string }) {
-  return comp.hasStory ? `${STORYBOOK_BASE_URL}${comp.storybookLink}` : null;
+function resolveStorybookHref(comp: { storybookId?: string }) {
+  return comp.storybookId ? getStorybookStoryUrl(comp.storybookId) : null;
 }
 
 function ResponsiveTableContainer({ children }: { children: React.ReactNode }) {
@@ -125,7 +120,11 @@ export default function ComponentInventorySection() {
                 </TableCell>
                 <TableCell>
                   {resolveStorybookHref(comp) ? (
-                    <Link href={resolveStorybookHref(comp)!} target="_blank" rel="noopener">
+                    <Link
+                      href={resolveStorybookHref(comp)!}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       Story
                     </Link>
                   ) : (
@@ -181,7 +180,7 @@ export default function ComponentInventorySection() {
                 <Link
                   href={resolveStorybookHref(selectedComponent)!}
                   target="_blank"
-                  rel="noopener"
+                  rel="noopener noreferrer"
                 >
                   {resolveStorybookHref(selectedComponent)}
                 </Link>

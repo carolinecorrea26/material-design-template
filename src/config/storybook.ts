@@ -1,10 +1,18 @@
-export const STORYBOOK_URL = "http://localhost:6006/";
+const DEFAULT_STORYBOOK_URL = "http://localhost:6006";
 
-export function getStorybookDocsUrl(storyTitle: string): string {
-  const storyId = storyTitle
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+export const storybookBaseUrl = (
+  import.meta.env.VITE_STORYBOOK_URL?.trim() || DEFAULT_STORYBOOK_URL
+).replace(/\/+$/, "");
 
-  return `${STORYBOOK_URL}?path=/docs/${storyId}--docs`;
+export function getStorybookUrl(route = ""): string {
+  if (!route) return storybookBaseUrl;
+  return `${storybookBaseUrl}/${route.replace(/^\/+/, "")}`;
+}
+
+export function getStorybookDocsUrl(storybookId: string): string {
+  return getStorybookUrl(`?path=/docs/${storybookId}--docs`);
+}
+
+export function getStorybookStoryUrl(storybookStoryId: string): string {
+  return getStorybookUrl(`?path=/story/${storybookStoryId}`);
 }

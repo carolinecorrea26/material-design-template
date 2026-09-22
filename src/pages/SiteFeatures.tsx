@@ -25,7 +25,7 @@ import { capabilitiesData, type Capability } from "../content/docs/capabilities"
 import { componentsData } from "../content/docs/componentInventory";
 import { parkedIdeas } from "../content/docs/parkedIdeas";
 import { getPagePath } from "../config/pages";
-import { STORYBOOK_URL } from "../config/storybook";
+import { getStorybookStoryUrl } from "../config/storybook";
 
 type FeatureStatus = "available" | "in-progress" | "not-started";
 
@@ -64,14 +64,14 @@ const storybookComponentsByCapability: Record<string, string[]> = {
 
 const storybookComponents = new Map(
   componentsData
-    .filter((component) => component.hasStory)
+    .filter((component) => component.storybookId)
     .map((component) => [component.name, component]),
 );
 
 function storybookHref(componentName: string): string | undefined {
   const component = storybookComponents.get(componentName);
-  if (!component) return undefined;
-  return `${STORYBOOK_URL.replace(/\/$/, "")}${component.storybookLink}`;
+  if (!component?.storybookId) return undefined;
+  return getStorybookStoryUrl(component.storybookId);
 }
 
 const configurationByCapability: Record<string, ConfigurationLink[]> = {
