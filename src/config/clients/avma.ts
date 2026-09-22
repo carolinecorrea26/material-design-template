@@ -2,7 +2,7 @@ import type { ClientConfig } from "./types";
 
 export const avmaClient: ClientConfig = {
   id: "avma",
-  themeColor: "dark-blue",
+  theme: { type: "preset", preset: "dark-blue" },
   branding: {
     name: "American Veterinary Medical Association",
     acronym: "AVMA",

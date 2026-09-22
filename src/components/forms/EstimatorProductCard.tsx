@@ -153,7 +153,11 @@ export default function EstimatorProductCard({
             sx={{ mt: 0.5, minHeight: 20 }}
           >
             {isCalculating ? (
-              <CircularProgress size={14} thickness={4} />
+              <CircularProgress
+                size={14}
+                thickness={4}
+                aria-label="Recalculating estimated cost"
+              />
             ) : (
               <Typography variant="caption" color="text.secondary">
                 Est. cost:{" "}

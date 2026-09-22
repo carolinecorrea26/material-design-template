@@ -362,7 +362,7 @@ function getVisibleCoverageApplicants(
   coverage: { applicants: CoverageApplicantId[]; id: string },
   productApplicants: Record<string, CoverageApplicantId[]>,
   selectedDependents: CoverageApplicantId[],
-) {
+): CoverageApplicantId[] {
   if (Object.prototype.hasOwnProperty.call(productApplicants, coverage.id)) {
     const selected = Array.isArray(productApplicants[coverage.id])
       ? productApplicants[coverage.id]
@@ -568,6 +568,38 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
           entries.push({
             label: `${getApplicantLabel(applicant)} riders`,
             value: selectedRiders.join(", "),
+          });
+        }
+
+        const applicantWaitingPeriods =
+          coverage.waitingPeriodOptionsByApplicant?.[applicant];
+        if (applicantWaitingPeriods?.length) {
+          const selectedValue =
+            coverageWaitingPeriods[`${coverage.id}:${applicant}`] ??
+            applicantWaitingPeriods[0].value;
+          const selectedLabel =
+            applicantWaitingPeriods.find(
+              (option) => option.value === selectedValue,
+            )?.label ?? selectedValue;
+          entries.push({
+            label: `${getApplicantLabel(applicant)} waiting period`,
+            value: selectedLabel,
+          });
+        }
+
+        const applicantBenefitPeriods =
+          coverage.maxBenefitPeriodOptionsByApplicant?.[applicant];
+        if (applicantBenefitPeriods?.length) {
+          const selectedValue =
+            coverageMaxBenefitPeriods[`${coverage.id}:${applicant}`] ??
+            applicantBenefitPeriods[0].value;
+          const selectedLabel =
+            applicantBenefitPeriods.find(
+              (option) => option.value === selectedValue,
+            )?.label ?? selectedValue;
+          entries.push({
+            label: `${getApplicantLabel(applicant)} benefit option`,
+            value: selectedLabel,
           });
         }
       }

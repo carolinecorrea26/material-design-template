@@ -8,6 +8,7 @@ import SectionDivider from "../components/layout/SectionDivider";
 import { sectionLabels } from "../config/pageSections";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { getSelectedCategoryIds } from "../config/formFlow";
+import FieldGrid from "../components/layout/FieldGrid";
 
 const streetRow = new Set(["street-address", "apt-suite"]);
 const cityStateZipRow = new Set(["city", "state", "zip-code"]);
@@ -180,13 +181,7 @@ function ContactFields({
               {/* <SectionDivider label="Home Address" /> */}
 
               {/* Street address + Apt/Suite row */}
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: { xs: "1fr", sm: "2fr 1fr" },
-                  gap: { xs: 0, sm: 2 },
-                }}
-              >
+              <FieldGrid columns="wide-narrow">
                 {section.fieldIds
                   .filter((id: string) => streetRow.has(id))
                   .map((fieldId: string) => {
@@ -201,16 +196,10 @@ function ContactFields({
                       />
                     );
                   })}
-              </Box>
+              </FieldGrid>
 
               {/* City / State / Zip row */}
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: { xs: "1fr", sm: "2fr 1fr 1fr" },
-                  gap: { xs: 0, sm: 2 },
-                }}
-              >
+              <FieldGrid columns="wide-two-narrow">
                 {section.fieldIds
                   .filter((id: string) => cityStateZipRow.has(id))
                   .map((fieldId: string) => {
@@ -225,7 +214,7 @@ function ContactFields({
                       />
                     );
                   })}
-              </Box>
+              </FieldGrid>
 
               {/* Other fields (correspondence-to) */}
               {section.fieldIds
@@ -384,13 +373,7 @@ function renderBusinessFields(
       {(!sameAsHome || !hasDiOrOo) && (
         <>
           {/* Business street + apt row */}
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: { xs: "1fr", sm: "2fr 1fr" },
-              gap: { xs: 0, sm: 2 },
-            }}
-          >
+          <FieldGrid columns="wide-narrow">
             {section.fieldIds
               .filter((id: string) => businessStreetRow.has(id))
               .map((fieldId: string) => {
@@ -405,16 +388,10 @@ function renderBusinessFields(
                   />
                 );
               })}
-          </Box>
+          </FieldGrid>
 
           {/* Business city / state / zip row */}
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: { xs: "1fr", sm: "2fr 1fr 1fr" },
-              gap: { xs: 0, sm: 2 },
-            }}
-          >
+          <FieldGrid columns="wide-two-narrow">
             {section.fieldIds
               .filter((id: string) => businessCityStateZipRow.has(id))
               .map((fieldId: string) => {
@@ -429,7 +406,7 @@ function renderBusinessFields(
                   />
                 );
               })}
-          </Box>
+          </FieldGrid>
         </>
       )}
 

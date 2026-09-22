@@ -3,7 +3,7 @@ import type { HomeContent } from "../types";
 export const homeDefaults: HomeContent = {
   hero: {
     tagline: "Simple • Secure • Member-only rates",
-    title: "Safeguard your financial future",
+    title: "Safeguard your financial future.",
     description:
       "Coverage designed exclusively for {{clientName}} members. Get started today!",
     welcomeBackTitle: "Welcome!",

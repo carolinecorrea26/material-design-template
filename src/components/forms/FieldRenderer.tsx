@@ -698,6 +698,9 @@ export default function FieldRenderer({
               <Box
                 role="radiogroup"
                 aria-labelledby={`${field.id}-label`}
+                aria-describedby={
+                  resolvedHelperText ? `${field.id}-helper` : undefined
+                }
                 onBlur={controllerField.onBlur}
                 sx={{
                   display: "flex",
@@ -752,7 +755,9 @@ export default function FieldRenderer({
                 })}
               </Box>
 
-              <FormHelperText>{resolvedHelperText}</FormHelperText>
+              <FormHelperText id={`${field.id}-helper`}>
+                {resolvedHelperText}
+              </FormHelperText>
             </FormControl>
           );
         }}
@@ -1072,6 +1077,7 @@ export default function FieldRenderer({
               <SelectionGroup>
                 <Checkbox
                   checked={Boolean(controllerField.value)}
+                  required={field.required}
                   onChange={(event) => {
                     controllerField.onChange(event.target.checked);
                     controllerField.onBlur();
@@ -1135,12 +1141,21 @@ export default function FieldRenderer({
             >
               <FormLabel
                 required={field.required}
+                id={`${field.id}-label`}
                 sx={{ display: "block", mb: 1 }}
               >
                 {renderFieldLabel(field)}
               </FormLabel>
 
-              <Stack spacing={1} sx={{ mt: 1 }}>
+              <Stack
+                spacing={1}
+                sx={{ mt: 1 }}
+                role="group"
+                aria-labelledby={`${field.id}-label`}
+                aria-describedby={
+                  resolvedHelperText ? `${field.id}-helper` : undefined
+                }
+              >
                 {(field.options ?? []).map((option) => {
                   const checked = selectedValues.includes(option.value);
 
@@ -1177,7 +1192,9 @@ export default function FieldRenderer({
                 })}
               </Stack>
 
-              <FormHelperText>{resolvedHelperText}</FormHelperText>
+              <FormHelperText id={`${field.id}-helper`}>
+                {resolvedHelperText}
+              </FormHelperText>
             </FormControl>
           );
         }}

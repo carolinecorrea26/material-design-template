@@ -4,11 +4,6 @@ import {
   Box,
   Button,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
 } from "@mui/material";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
@@ -20,6 +15,7 @@ import {
   getApplicantEmail,
   getApplicantName,
 } from "../utils/applicantIdentity";
+import DetailsTable from "../components/layout/DetailsTable";
 
 function formatDateTime(date: Date) {
   return new Intl.DateTimeFormat("en-US", {
@@ -67,34 +63,7 @@ export default function AdvisorSendConfirmation() {
             are needed.
           </Alert>
 
-          <TableContainer
-            sx={{
-              border: "1px solid",
-              borderColor: "divider",
-              borderRadius: 2,
-              overflow: "hidden",
-            }}
-          >
-            <Table size="small">
-              <TableBody>
-                {details.map((row) => (
-                  <TableRow key={row.label}>
-                    <TableCell
-                      sx={{
-                        fontWeight: 700,
-                        color: "text.secondary",
-                        width: "40%",
-                        fontSize: 13,
-                      }}
-                    >
-                      {row.label}
-                    </TableCell>
-                    <TableCell sx={{ fontSize: 13 }}>{row.value}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <DetailsTable rows={details} />
 
           <Box>
             <Button

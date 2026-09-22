@@ -41,6 +41,8 @@ export default function TotalCostSummary({
 }: TotalCostPanelProps) {
   return (
     <Box
+      role="status"
+      aria-live="polite"
       sx={(theme) => ({
         p: 2,
         borderRadius: CARD_RADIUS,
@@ -68,6 +70,7 @@ export default function TotalCostSummary({
               <CircularProgress
                 size={14}
                 thickness={4}
+                aria-label="Recalculating"
                 sx={{ color: "primary.main" }}
               />
             ) : (
@@ -97,6 +100,7 @@ export default function TotalCostSummary({
             <CircularProgress
               size={16}
               thickness={4}
+              aria-label="Recalculating"
               sx={{ color: "success.main" }}
             />
           ) : (

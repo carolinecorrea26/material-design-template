@@ -4,6 +4,7 @@ import type { ApplicationFormValues } from "../../app/ApplicationFormContext";
 import { getPageFields } from "../fields/getPageFields";
 import { fieldCatalog } from "../fields";
 import type { FieldDefinition } from "../fields/types";
+import { evaluateVisibilityRules } from "../pageSections/evaluateVisibilityRules";
 import { membershipClientFields } from "./membership";
 
 export function getClientPageFields(
@@ -47,7 +48,6 @@ export function getClientPageFields(
   const clientConfig = membershipClientFields[client.id];
   const overrides = clientConfig?.overrides ?? {};
   const extraFields = clientConfig?.extraFields ?? [];
-  const showTitleField = clientConfig?.showTitleField ?? false;
 
   const mergedFields = baseFields.map((field) => {
     const override = overrides[field.id];
@@ -62,20 +62,13 @@ export function getClientPageFields(
     };
   });
 
-  const visibleFields = mergedFields.filter((field) => {
-    if (field.id === "title" && !showTitleField) {
-      return false;
-    }
+  const visibleFields = mergedFields.filter(
+    (field) => !overrides[field.id]?.hidden,
+  );
 
-    return !overrides[field.id]?.hidden;
-  });
-
-  const visibleExtraFields =
-    client.id === "waepa" && values?.membership !== "new"
-      ? []
-      : client.id === "ama" && values?.membership !== "spouse"
-        ? []
-        : extraFields;
+  const visibleExtraFields = extraFields.filter((field) =>
+    evaluateVisibilityRules(field.visibleWhen, values ?? {}),
+  );
 
   return [...visibleFields, ...visibleExtraFields];
 }

@@ -58,7 +58,7 @@ function deepMerge<T extends Record<string, unknown>>(
   return result;
 }
 
-function buildContent(clientId: ClientId): SiteContent {
+export function buildContent(clientId: ClientId): SiteContent {
   const overrides = clientContentOverrides[clientId];
 
   return {

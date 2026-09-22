@@ -18,6 +18,7 @@ import {
 import { getPageInfoNote, getPageSubhead, getPageTitle } from "../config/pages";
 import { getPageSections } from "../config/pageSections";
 import type { PageSectionConfig } from "../config/pageSections/types";
+import { evaluateVisibilityRules } from "../config/pageSections/evaluateVisibilityRules";
 import type { FieldDefinition } from "../config/fields/types";
 import {
   type ApplicationFormValues,
@@ -79,7 +80,6 @@ type FormRoutePageProps = {
   subhead?: ReactNode;
   formMaxWidth?: number | string;
   noTitle?: boolean;
-  noContainer?: boolean;
   hideActions?: boolean;
   hideNextButton?: boolean | ((values: FormRoutePageValues) => boolean);
   disableNextButton?: boolean | ((values: FormRoutePageValues) => boolean);
@@ -155,19 +155,7 @@ export function isSectionVisible(
     return false;
   }
 
-  if (!section.visibleWhen) return true;
-
-  return section.visibleWhen.every((rule) => {
-    const value = values[rule.fieldId];
-
-    if ("equals" in rule) return value === rule.equals;
-    if ("notEquals" in rule) return value !== rule.notEquals;
-    if ("includes" in rule) {
-      return Array.isArray(value) && value.includes(rule.includes);
-    }
-
-    return true;
-  });
+  return evaluateVisibilityRules(section.visibleWhen, values);
 }
 
 function getDevValue(field: {
@@ -234,7 +222,6 @@ export default function FormRoutePage({
   subhead,
   formMaxWidth,
   noTitle,
-  noContainer,
   hideActions,
   hideNextButton,
   disableNextButton,
@@ -555,7 +542,6 @@ export default function FormRoutePage({
       title={resolvedTitle}
       maxWidth={hasVerticalStepper ? "100%" : formMaxWidth}
       noTitle
-      noContainer={noContainer || hasVerticalStepper}
       actions={undefined}
     >
       <Box>

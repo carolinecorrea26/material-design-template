@@ -12,6 +12,7 @@ type SelectionGroupProps = {
   tabIndex?: number;
   /** Drive selected visual state explicitly (for rows with no native checked input inside). */
   checked?: boolean;
+  disabled?: boolean;
   onClick?: MouseEventHandler<HTMLElement>;
   onKeyDown?: KeyboardEventHandler<HTMLElement>;
 };
@@ -36,6 +37,7 @@ export default function SelectionGroup({
   "aria-checked": ariaChecked,
   tabIndex,
   checked,
+  disabled = false,
   onClick,
   onKeyDown,
 }: SelectionGroupProps) {
@@ -45,6 +47,7 @@ export default function SelectionGroup({
       htmlFor={htmlFor}
       role={role}
       aria-checked={ariaChecked}
+      aria-disabled={disabled || undefined}
       tabIndex={tabIndex}
       onClick={onClick}
       onKeyDown={onKeyDown}
@@ -60,7 +63,9 @@ export default function SelectionGroup({
         borderColor: "rgba(52, 59, 72, 0.23)",
         borderRadius: CARD_RADIUS,
         bgcolor: "background.paper",
-        cursor: "pointer",
+        cursor: disabled ? "default" : "pointer",
+        opacity: disabled ? 0.6 : 1,
+        pointerEvents: disabled ? "none" : undefined,
         transition: "background-color 0.2s ease, border-color 0.2s ease",
         // Selected state via data-checked (icon rows with no native input)
         "&[data-checked='true']": {
@@ -77,7 +82,7 @@ export default function SelectionGroup({
           "& .SelectionGroup-label": { fontWeight: 700, color: "#353b48" },
           "& .SelectionGroup-icon": { color: theme.palette.primary.main },
         },
-        "@media (hover: hover)": {
+        "@media (hover: hover)": disabled ? undefined : {
           "&:hover": { bgcolor: "action.hover" },
           "&[data-checked='true']:hover": {
             bgcolor: `${theme.palette.primary.main}33`,

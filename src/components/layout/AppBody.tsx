@@ -65,6 +65,8 @@ export default function AppBody({ children }: AppBodyProps) {
   return (
     <Box
       component="main"
+      id="main-content"
+      tabIndex={-1}
       sx={{
         width: "100%",
         maxWidth: { lg: 1200 },

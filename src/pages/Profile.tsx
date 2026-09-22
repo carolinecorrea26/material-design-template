@@ -21,6 +21,7 @@ import {
   getApplicantName,
 } from "../utils/applicantIdentity";
 import { getContent } from "../content";
+import FieldGrid from "../components/layout/FieldGrid";
 
 const sendToApplicantContent = getContent().dialogs.sendApplication.sendToApplicant;
 
@@ -565,11 +566,11 @@ function renderPersonalSelfFields(
   return (
     <>
       {/* Height fields side-by-side */}
-      <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
+      <FieldGrid gap={2}>
         {fieldIds
           .filter((id) => heightFields.has(id))
           .map((fieldId) => renderField(fieldId, "none"))}
-      </Box>
+      </FieldGrid>
 
       {/* Remaining fields rendered normally */}
       {fieldIds
@@ -632,11 +633,11 @@ function renderPersonalSpouseFields(
   return (
     <>
       {/* Height fields side-by-side */}
-      <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
+      <FieldGrid gap={2}>
         {fieldIds
           .filter((id) => spouseHeightFields.has(id))
           .map((fieldId) => renderField(fieldId, "none"))}
-      </Box>
+      </FieldGrid>
 
       {/* Remaining fields */}
       {fieldIds

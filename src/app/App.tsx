@@ -14,7 +14,7 @@ import { getFormTemplate } from "../config/template/resolveTemplate";
 
 const client = getActiveClient();
 const template = getFormTemplate();
-const theme = createAppTheme(client.themeColor, {
+const theme = createAppTheme(client.theme, {
   forceMobileLayout: template === "single",
 });
 

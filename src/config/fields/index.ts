@@ -254,6 +254,13 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     required: false,
   },
 
+  "asce-member-id": {
+    id: "asce-member-id",
+    label: "Membership ID",
+    inputType: "text",
+    required: true,
+  },
+
   "avma-vet-college": {
     id: "avma-vet-college",
     label: "What veterinary college did you attend?",

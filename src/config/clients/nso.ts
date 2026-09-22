@@ -2,7 +2,7 @@ import type { ClientConfig } from "./types";
 
 export const nsoClient: ClientConfig = {
   id: "nso",
-  themeColor: "teal",
+  theme: { type: "preset", preset: "teal" },
   branding: {
     name: "Nurses Services Organization",
     acronym: "NSO",

@@ -45,6 +45,8 @@ type AppModalProps = {
   role?: "dialog" | "alertdialog";
   /** Min height for the dialog on desktop. Defaults to "50vh". Set to "auto" for compact dialogs. */
   minHeight?: string;
+  /** Force fullScreen regardless of viewport, for content meant to fill the entire viewport (e.g. documentation section browsers). */
+  forceFullScreen?: boolean;
 };
 
 export type { AppModalAction };
@@ -59,9 +61,11 @@ export default function AppModal({
   maxWidth = 900,
   role = "dialog",
   minHeight = "50vh",
+  forceFullScreen = false,
 }: AppModalProps) {
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
+  const fullScreen = forceFullScreen || !isDesktop;
 
   return (
     <Dialog
@@ -69,10 +73,10 @@ export default function AppModal({
       onClose={onClose}
       maxWidth={false}
       fullWidth
-      fullScreen={!isDesktop}
+      fullScreen={fullScreen}
       role={role}
       PaperProps={{
-        sx: isDesktop ? { minHeight, maxHeight: "85vh", maxWidth } : {},
+        sx: isDesktop && !forceFullScreen ? { minHeight, maxHeight: "85vh", maxWidth } : {},
       }}
     >
       <DialogTitle
@@ -85,7 +89,9 @@ export default function AppModal({
         }}
       >
         {typeof title === "string" ? (
-          <Typography variant="h5">{title}</Typography>
+          <Typography variant="h5" component="span">
+            {title}
+          </Typography>
         ) : (
           title
         )}

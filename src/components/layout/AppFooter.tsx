@@ -64,6 +64,12 @@ export default function AppFooter({ client }: AppFooterProps) {
 
             <Typography variant="caption" color="text.secondary">
               {client.branding.name}
+              {client.support.address?.organization && (
+                <>
+                  <br />
+                  {client.support.address.organization}
+                </>
+              )}
               {client.support.address?.street && (
                 <>
                   <br />

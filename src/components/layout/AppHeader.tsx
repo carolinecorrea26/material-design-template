@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 import {
   AppBar,
@@ -128,7 +128,6 @@ export default function AppHeader({
   const [summarySource, setSummarySource] = useState<
     "cart-icon" | "coverage-page"
   >("cart-icon");
-  const [_addedSnackbarOpen, setAddedSnackbarOpen] = useState(false);
   const [activeCoverage, setActiveCoverage] =
     useState<CoverageDefinition | null>(null);
   const { values } = useApplicationForm();
@@ -168,28 +167,6 @@ export default function AppHeader({
     currentPageId !== "home" &&
     currentPageId !== "receipt" &&
     window.sessionStorage.getItem("reviewSubmitted") !== "true";
-
-  const prevCoverageCountRef = useRef<number>(
-    Array.isArray(values.coverageSelections)
-      ? values.coverageSelections.length
-      : 0,
-  );
-
-  useEffect(() => {
-    const currentCount = Array.isArray(values.coverageSelections)
-      ? values.coverageSelections.length
-      : 0;
-    const prevCount = prevCoverageCountRef.current;
-    prevCoverageCountRef.current = currentCount;
-
-    if (
-      currentPageId === "coverage" &&
-      currentCount > prevCount &&
-      prevCount >= 0
-    ) {
-      setAddedSnackbarOpen(true);
-    }
-  }, [values.coverageSelections, currentPageId]);
 
   return (
     <>
@@ -280,7 +257,13 @@ export default function AppHeader({
 
                   {showSummaryIcon && (
                     <IconButton
-                      aria-label="Open coverage requested"
+                      aria-label={
+                        summaryBadgeCount
+                          ? `Open coverage summary, ${summaryBadgeCount} item${
+                              summaryBadgeCount === 1 ? "" : "s"
+                            }`
+                          : "Open coverage summary"
+                      }
                       onClick={() => {
                         setSummarySource("cart-icon");
                         setIsSummaryOpen(true);
@@ -391,6 +374,18 @@ export default function AppHeader({
                   .join(", ")}
               </Typography>
             ) : null}
+            {activeCoverage?.waitingPeriodOptionsByApplicant
+              ? Object.entries(
+                  activeCoverage.waitingPeriodOptionsByApplicant,
+                ).map(([applicant, options]) => (
+                  <Typography key={applicant} variant="body2">
+                    <Box component="span" sx={{ fontWeight: 700 }}>
+                      {applicant} waiting periods:
+                    </Box>{" "}
+                    {options.map((option) => option.label).join(", ")}
+                  </Typography>
+                ))
+              : null}
             {activeCoverage?.maxBenefitPeriodOptions?.length ? (
               <Typography variant="body2">
                 <Box component="span" sx={{ fontWeight: 700 }}>
@@ -401,6 +396,18 @@ export default function AppHeader({
                   .join(", ")}
               </Typography>
             ) : null}
+            {activeCoverage?.maxBenefitPeriodOptionsByApplicant
+              ? Object.entries(
+                  activeCoverage.maxBenefitPeriodOptionsByApplicant,
+                ).map(([applicant, options]) => (
+                  <Typography key={applicant} variant="body2">
+                    <Box component="span" sx={{ fontWeight: 700 }}>
+                      {applicant} benefit options:
+                    </Box>{" "}
+                    {options.map((option) => option.label).join(", ")}
+                  </Typography>
+                ))
+              : null}
             {activeCoverage?.riders?.length ? (
               <Stack spacing={0.75}>
                 <Typography variant="body2" sx={{ fontWeight: 700 }}>
@@ -436,6 +443,7 @@ export default function AppHeader({
       <AppDrawer
         open={isSummaryOpen}
         onClose={() => setIsSummaryOpen(false)}
+        ariaLabel="Coverage summary"
         swipeable
       >
         <CoverageCart

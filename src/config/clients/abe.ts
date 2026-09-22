@@ -2,7 +2,7 @@ import type { ClientConfig } from "./types";
 
 export const abeClient: ClientConfig = {
   id: "abe",
-  themeColor: "default",
+  theme: { type: "preset", preset: "default" },
   branding: {
     name: "American Bar Endowment",
     acronym: "ABE",
@@ -118,7 +118,6 @@ export const abeClient: ClientConfig = {
       hidden: ["average-employees-6-months"],
     },
     eligibility: {
-      extra: ["spouse-membership"],
       overrides: {
         "spouse-membership": {
           label:

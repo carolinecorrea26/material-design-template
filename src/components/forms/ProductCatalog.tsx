@@ -8,6 +8,7 @@ import {
   FormControl,
   FormHelperText,
   InputLabel,
+  Link,
   MenuItem,
   Select,
   Stack,
@@ -105,6 +106,7 @@ function collectBreakdownRiderItems({
     }
 
     for (const rider of coverage.riders ?? []) {
+      if (rider.applicants && !rider.applicants.includes(applicantId)) continue;
       const riderKey = `${coverage.id}:${rider.id}:${applicantId}`;
       if (!storedRiders[riderKey]) continue;
 
@@ -182,8 +184,16 @@ type ProductCatalogProps = {
     applicantId: CoverageApplicantId,
     amount: number,
   ) => void;
-  onWaitingPeriodChange: (coverageId: string, value: string) => void;
-  onMaxBenefitPeriodChange: (coverageId: string, value: string) => void;
+  onWaitingPeriodChange: (
+    coverageId: string,
+    value: string,
+    applicantId?: CoverageApplicantId,
+  ) => void;
+  onMaxBenefitPeriodChange: (
+    coverageId: string,
+    value: string,
+    applicantId?: CoverageApplicantId,
+  ) => void;
   getVisibleApplicants: (
     applicants: CoverageApplicantId[],
     coverageId?: string,
@@ -265,8 +275,14 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 
   if (productsLoading) {
     return (
-      <Stack spacing={2} alignItems="center" sx={{ py: 6 }}>
-        <CircularProgress size={32} />
+      <Stack
+        spacing={2}
+        alignItems="center"
+        sx={{ py: 6 }}
+        role="status"
+        aria-live="polite"
+      >
+        <CircularProgress size={32} aria-hidden />
         <Typography variant="body2" color="text.secondary">
           Loading your coverage options…
         </Typography>
@@ -563,7 +579,19 @@ function ProductCard({
           spacing={1}
         >
           <Typography variant="productNameLabel">
-            {coverage.name}
+            {coverage.brochureUrl ? (
+              <Link
+                href={coverage.brochureUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                color="inherit"
+                underline="hover"
+              >
+                {coverage.name}
+              </Link>
+            ) : (
+              coverage.name
+            )}
             {coverage.underwritingType === "QD" && <QuickDecisionIndicator />}
           </Typography>
           {coverage.featured && <FeaturedBadge />}
@@ -675,6 +703,13 @@ function ProductCard({
           const premium = calcApplicantPremium(coverage, applicantId);
           const displayedPremium = getDisplayedPremium(premium, rateFrequency);
           const applicantNote = coverage.applicantNotes?.[applicantId];
+          const waitingPeriodOptions =
+            coverage.waitingPeriodOptionsByApplicant?.[applicantId] ??
+            coverage.waitingPeriodOptions;
+          const maxBenefitPeriodOptions =
+            coverage.maxBenefitPeriodOptionsByApplicant?.[applicantId] ??
+            coverage.maxBenefitPeriodOptions;
+          const applicantOptionKey = `${coverage.id}:${applicantId}`;
 
           return (
             <Box key={applicantId}>
@@ -696,8 +731,11 @@ function ProductCard({
               {/* Benefit amount & cost */}
               <Stack spacing={1.5} sx={{ mt: 1.5 }}>
                 <FormControl fullWidth margin="normal">
-                  <InputLabel>{amountLabel}</InputLabel>
+                  <InputLabel id={`${key}-amount-label`}>
+                    {amountLabel}
+                  </InputLabel>
                   <Select
+                    labelId={`${key}-amount-label`}
                     label={amountLabel}
                     value={selectValue}
                     displayEmpty={false}
@@ -765,31 +803,37 @@ function ProductCard({
                 {isSelected && currentAmount > 0 && (
                   <>
                     {/* Waiting Period (DI and OO) */}
-                    {coverage.waitingPeriodOptions &&
+                    {waitingPeriodOptions &&
                       (coverage.categoryId === "DI" ||
                         coverage.categoryId === "OO") && (
                         <FormControl fullWidth margin="normal">
-                          <InputLabel>Waiting Period</InputLabel>
+                          <InputLabel id={`${coverage.id}-waiting-period-label`}>
+                            Waiting Period
+                          </InputLabel>
                           <Select
+                            labelId={`${coverage.id}-waiting-period-label`}
                             label="Waiting Period"
                             value={
+                              storedWaitingPeriods[applicantOptionKey] ??
                               storedWaitingPeriods[coverage.id] ??
-                              coverage.waitingPeriodOptions[0].value
+                              waitingPeriodOptions[0].value
                             }
                             onChange={(e) =>
                               onWaitingPeriodChange(
                                 coverage.id,
                                 e.target.value as string,
+                                applicantId,
                               )
                             }
+                            aria-describedby={`${coverage.id}-waiting-period-helper`}
                           >
-                            {coverage.waitingPeriodOptions.map((opt) => (
+                            {waitingPeriodOptions.map((opt) => (
                               <MenuItem key={opt.value} value={opt.value}>
                                 {opt.label}
                               </MenuItem>
                             ))}
                           </Select>
-                          <FormHelperText>
+                          <FormHelperText id={`${coverage.id}-waiting-period-helper`}>
                             The number of consecutive days you must be totally
                             disabled by a covered illness or injury and not
                             gainfully employed in any occupation before benefits
@@ -800,34 +844,49 @@ function ProductCard({
                       )}
 
                     {/* Maximum Benefit Period (OO only) */}
-                    {coverage.categoryId === "OO" &&
-                      coverage.maxBenefitPeriodOptions && (
+                    {(coverage.categoryId === "OO" ||
+                      coverage.categoryId === "DI") &&
+                      maxBenefitPeriodOptions && (
                         <FormControl fullWidth margin="normal">
-                          <InputLabel>Maximum Benefit Period</InputLabel>
+                          <InputLabel id={`${coverage.id}-max-benefit-period-label`}>
+                            {coverage.categoryId === "DI"
+                              ? "Benefit Option"
+                              : "Maximum Benefit Period"}
+                          </InputLabel>
                           <Select
-                            label="Maximum Benefit Period"
+                            labelId={`${coverage.id}-max-benefit-period-label`}
+                            label={
+                              coverage.categoryId === "DI"
+                                ? "Benefit Option"
+                                : "Maximum Benefit Period"
+                            }
                             value={
+                              storedMaxBenefitPeriods[applicantOptionKey] ??
                               storedMaxBenefitPeriods[coverage.id] ??
-                              coverage.maxBenefitPeriodOptions[0].value
+                              maxBenefitPeriodOptions[0].value
                             }
                             onChange={(e) =>
                               onMaxBenefitPeriodChange(
                                 coverage.id,
                                 e.target.value as string,
+                                applicantId,
                               )
                             }
+                            aria-describedby={`${coverage.id}-max-benefit-period-helper`}
                           >
-                            {coverage.maxBenefitPeriodOptions.map((opt) => (
+                            {maxBenefitPeriodOptions.map((opt) => (
                               <MenuItem key={opt.value} value={opt.value}>
                                 {opt.label}
                               </MenuItem>
                             ))}
                           </Select>
-                          <FormHelperText>
-                            The maximum length of time Office Overhead benefits
-                            will be paid for eligible business expenses while
-                            disabled.
-                          </FormHelperText>
+                          {coverage.categoryId === "OO" && (
+                            <FormHelperText id={`${coverage.id}-max-benefit-period-helper`}>
+                              The maximum length of time Office Overhead benefits
+                              will be paid for eligible business expenses while
+                              disabled.
+                            </FormHelperText>
+                          )}
                         </FormControl>
                       )}
 
@@ -841,7 +900,13 @@ function ProductCard({
                           Optional Benefit(s)
                         </Typography>
                         <Stack spacing={1}>
-                          {coverage.riders.map((rider) => {
+                          {coverage.riders
+                            .filter(
+                              (rider) =>
+                                !rider.applicants ||
+                                rider.applicants.includes(applicantId),
+                            )
+                            .map((rider) => {
                             const riderKey = `${coverage.id}:${rider.id}:${applicantId}`;
                             const isChecked = !!storedRiders[riderKey];
 
@@ -897,10 +962,13 @@ function ProductCard({
                                       margin="normal"
                                       sx={{ ml: 4, minWidth: 250 }}
                                     >
-                                      <InputLabel>
+                                      <InputLabel
+                                        id={`${riderKey}-amount-label`}
+                                      >
                                         Rider Benefit Amount
                                       </InputLabel>
                                       <Select
+                                        labelId={`${riderKey}-amount-label`}
                                         label="Rider Benefit Amount"
                                         value={
                                           storedRiderAmounts[riderKey] ?? 0
@@ -919,6 +987,18 @@ function ProductCard({
                                             ...coverage,
                                             minAmount: rider.minAmount,
                                             maxAmount: rider.maxAmount,
+                                            spouseMinAmount:
+                                              rider.spouseMinAmount ??
+                                              rider.minAmount,
+                                            spouseMaxAmount:
+                                              rider.spouseMaxAmount ??
+                                              rider.maxAmount,
+                                            childMinAmount:
+                                              rider.childMinAmount ??
+                                              rider.minAmount,
+                                            childMaxAmount:
+                                              rider.childMaxAmount ??
+                                              rider.maxAmount,
                                             amountStep: coverage.amountStep,
                                           },
                                           applicantId,
@@ -961,6 +1041,7 @@ function ProductCard({
                       <CircularProgress
                         size={16}
                         thickness={4}
+                        aria-label="Recalculating estimated cost"
                         sx={{ color: "primary.main" }}
                       />
                     ) : (

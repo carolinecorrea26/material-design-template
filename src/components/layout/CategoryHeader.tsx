@@ -7,7 +7,8 @@ type CategoryHeaderProps = {
 };
 
 /**
- * Simple h6 heading with an optional icon for coverage category sections.
+ * Heading with an optional icon for coverage category sections. Rendered as
+ * an h3 (nested under the page's h2) with h6 visual styling preserved.
  * Icon renders in primary color; label renders in default text color.
  */
 export default function CategoryHeader({
@@ -28,7 +29,11 @@ export default function CategoryHeader({
           }}
         />
       )}
-      <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
+      <Typography
+        variant="h6"
+        component="h3"
+        sx={{ fontWeight: 700, lineHeight: 1.3 }}
+      >
         {label}
       </Typography>
     </Stack>

@@ -27,7 +27,7 @@ export const HEALTH_PAGE_IDS: PageId[] = [
   "health-cir",
 ];
 
-const progressSteps: ProgressStep[] = (() => {
+export const progressSteps: ProgressStep[] = (() => {
   const labels = getContent().navigation.progressStepLabels;
   return [
     {

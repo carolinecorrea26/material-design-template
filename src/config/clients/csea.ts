@@ -2,7 +2,7 @@ import type { ClientConfig } from "./types";
 
 export const cseaClient: ClientConfig = {
   id: "csea",
-  themeColor: "dark-blue",
+  theme: { type: "preset", preset: "dark-blue" },
   branding: {
     name: "CSEA Group Sponsored Insurance Program",
     acronym: "CSEA",

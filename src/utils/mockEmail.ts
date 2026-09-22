@@ -1,7 +1,9 @@
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
+import { clients } from "../config/clients";
 import theme from "../app/theme";
+import type { ClientId } from "../types";
 import {
   getCoverageAmountRequested,
   getDecisionStatus,
@@ -12,13 +14,14 @@ import {
   type SelectedCoverageEntry,
 } from "./coverageDecisions";
 
-type MockEmailType =
+export type MockEmailType =
   | "autosave"
   | "receipt"
   | "resume-magic-link"
   | "pending-reminder"
   | "purge-reminder"
   | "advisor-sent-for-signature"
+  | "advisor-sent-to-applicant"
   | "advisor-pending-reminder"
   | "advisor-edit-request"
   | "advisor-application-complete";
@@ -34,8 +37,6 @@ export type MockEmailPreview = {
   createdAt: string;
   html: string;
 };
-
-export type MockEmailAudience = "applicant" | "advisor";
 
 const MOCK_EMAIL_PREVIEWS_KEY = "mockEmail:previews";
 const MOCK_EMAIL_PREVIEWS_CHANGED_EVENT = "mockEmail:previewsChanged";
@@ -109,17 +110,25 @@ function getResumeDisplayUrl(clientAcronym: string) {
   return `${clientAcronym.toLowerCase()}.nylinsure.com/resume`;
 }
 
-function getClientEmailPayload() {
-  const client = getActiveClient();
+function getClientEmailPayload(clientId?: ClientId) {
+  const client = clientId ? clients[clientId] : getActiveClient();
   const startUrl = getNormalizedWebsiteUrl(client.support.website);
+  const emailSupport = client.emailSupport;
 
   return {
     clientId: client.id,
     associationName: client.branding.name,
     clientAcronym: client.branding.acronym,
-    tpaName: client.branding.name,
-    tpaPhone: client.support.phoneDisplay || client.support.phone || "",
-    tpaEmail: client.support.email || "",
+    tpaName: emailSupport?.contactOverride?.name || client.branding.name,
+    tpaAcronym: emailSupport?.contactOverride?.acronym || client.branding.acronym,
+    tpaPhone:
+      emailSupport?.supportOverride?.phone ||
+      client.support.phoneDisplay ||
+      client.support.phone ||
+      "",
+    tpaEmail: emailSupport?.supportOverride?.email || client.support.email || "",
+    tpaWebsite: emailSupport?.supportOverride?.website || client.support.website || "",
+    hideSupportContact: Boolean(emailSupport?.hideContactBox),
     clientLogo: client.branding.logo,
     clientLogoAlt: client.branding.logoAlt,
     startUrl,
@@ -129,9 +138,9 @@ function getClientEmailPayload() {
   };
 }
 
-function getApplicationEmailPayload(values: ApplicationFormValues) {
+function getApplicationEmailPayload(values: ApplicationFormValues, clientId?: ClientId) {
   return {
-    ...getClientEmailPayload(),
+    ...getClientEmailPayload(clientId),
     toEmail: getStringValue(values, "email"),
     firstName: getStringValue(values, "first-name"),
     lastName: getStringValue(values, "last-name"),
@@ -141,12 +150,14 @@ function getApplicationEmailPayload(values: ApplicationFormValues) {
 function getInsuranceAdministratorFromName(
   _payload: ReturnType<typeof getClientEmailPayload>,
 ) {
+  void _payload;
   return "Insurance Administrator";
 }
 
 function getAdvisorNotificationsFromName(
   _payload: ReturnType<typeof getClientEmailPayload>,
 ) {
+  void _payload;
   return "Insurance Administrator";
 }
 
@@ -200,12 +211,12 @@ function getBaseEmailHtml(options: { title: string; bodyHtml: string }) {
   </head>
 
   <body style="margin:0; padding:0; background-color:#eef2f7; font-family:Arial, Helvetica, sans-serif; color:#111827;">
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#eef2f7; margin:0; padding:28px 12px;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; background-color:#eef2f7; margin:0; padding:28px 12px;">
       <tr>
         <td align="center">
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px; background-color:#ffffff; border-radius:28px; overflow:hidden;">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; max-width:600px; background-color:#ffffff; border-radius:28px; overflow:hidden;">
             <tr>
-              <td style="padding:32px 32px 0; color:#111827; font-size:16px; line-height:1.55;">
+              <td style="font-family:Arial, Helvetica, sans-serif; padding:32px 32px 0; color:#111827; font-size:16px; line-height:1.55;">
                 ${options.bodyHtml}
               </td>
             </tr>
@@ -218,10 +229,10 @@ function getBaseEmailHtml(options: { title: string; bodyHtml: string }) {
 }
 
 function getButtonHtml(label: string, href: string) {
-  return `<table role="presentation" cellspacing="0" cellpadding="0" style="margin:28px 0;">
+  return `<table role="presentation" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; margin:28px 0;">
     <tr>
-      <td align="center" style="border-radius:999px; background-color:#006fff;">
-        <a href="${escapeHtml(href)}" style="display:inline-block; padding:17px 28px; color:#ffffff; font-size:16px; line-height:1; font-weight:700; text-decoration:none; border-radius:999px;">
+      <td align="center" style="font-family:Arial, Helvetica, sans-serif; border-radius:999px; background-color:#006fff;">
+        <a href="${escapeHtml(href)}" style="font-family:Arial, Helvetica, sans-serif; display:inline-block; padding:17px 28px; color:#ffffff; font-size:16px; line-height:1; font-weight:700; text-decoration:none; border-radius:999px;">
           ${escapeHtml(label)}
         </a>
       </td>
@@ -234,7 +245,7 @@ function getTelHref(phone: string) {
 }
 
 function getVerifyIdentityNoticeHtml() {
-  return `<p style="margin:0 0 16px; font-size:14px; line-height:1.5; color:#374151;">
+  return `<p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 16px; font-size:16px; line-height:1.55; color:#374151;">
     To access your application information, you will be asked to verify your identity using the email and phone number provided in your application.
   </p>`;
 }
@@ -277,23 +288,23 @@ function getDecisionBoxHtml(
     entry.applicant,
   );
 
-  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 14px; border:1px solid #d1d5db; border-radius:14px;">
+  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; margin:0 0 14px; border:1px solid #d1d5db; border-radius:14px;">
     <tr>
-      <td style="padding:16px 18px;">
+      <td style="font-family:Arial, Helvetica, sans-serif; padding:16px 18px;">
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
           <tr>
-            <td style="font-size:15px; font-weight:700; color:#111827;">
+            <td style="font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:700; color:#111827;">
               ${escapeHtml(entry.coverage.name)}
             </td>
-            <td align="right" style="white-space:nowrap;">
-              <span style="display:inline-block; padding:3px 10px; border-radius:999px; background-color:${colors.background}; color:${colors.color}; font-size:12px; font-weight:700;">
+            <td align="right" style="font-family:Arial, Helvetica, sans-serif; white-space:nowrap;">
+              <span style="font-family:Arial, Helvetica, sans-serif; display:inline-block; padding:3px 10px; border-radius:999px; background-color:${colors.background}; color:${colors.color}; font-size:12px; font-weight:700;">
                 ${escapeHtml(status.label)}
               </span>
             </td>
           </tr>
         </table>
 
-        <p style="margin:8px 0 10px; font-size:13px; line-height:1.4; color:#6b7280;">
+        <p style="font-family:Arial, Helvetica, sans-serif; margin:8px 0 10px; font-size:13px; line-height:1.4; color:#6b7280;">
           ${escapeHtml(applicantLabel)} coverage${
             amountRequested
               ? ` &middot; Requested: ${escapeHtml(formatCurrencyAmount(amountRequested))}`
@@ -301,7 +312,7 @@ function getDecisionBoxHtml(
           }
         </p>
 
-        <p style="margin:0; font-size:13px; line-height:1.5; color:#374151;">
+        <p style="font-family:Arial, Helvetica, sans-serif; margin:0; font-size:13px; line-height:1.5; color:#374151;">
           ${escapeHtml(status.description)}
         </p>
       </td>
@@ -315,56 +326,67 @@ function getDecisionBoxesHtml(values: ApplicationFormValues) {
 
   if (entries.length === 0) return "";
 
-  return `<p style="margin:0 0 4px; font-size:18px; line-height:1.3; font-weight:700; color:#111827;">
+  return `<p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 4px; font-size:18px; line-height:1.3; font-weight:700; color:#111827;">
       Coverage decisions
     </p>
-    <p style="margin:0 0 16px; font-size:14px; line-height:1.5; color:#6b7280;">
+    <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 16px; font-size:14px; line-height:1.5; color:#6b7280;">
       Review the current status for each coverage you applied for.
     </p>
     ${entries.map((entry, index) => getDecisionBoxHtml(entry, index, values)).join("")}`;
 }
 
-function getSupportHtml(tpaName: string, tpaPhone: string, tpaEmail: string) {
+function getSupportHtml(tpaName: string, tpaPhone: string, tpaEmail: string, tpaWebsite?: string) {
   const phoneHref = getTelHref(tpaPhone);
 
-  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:28px 0 0; background-color:${theme.palette.support.main}; border:1px solid ${theme.palette.support.border}; border-radius:16px;">
+  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; margin:28px 0 0; background-color:${theme.palette.support.main}; border:1px solid ${theme.palette.support.border}; border-radius:16px;">
     <tr>
-      <td style="padding:22px 22px 20px; color:#12233d;">
-        <p style="margin:0 0 18px; color:#071b3a; font-size:18px; line-height:1.25; font-weight:700;">
+      <td style="font-family:Arial, Helvetica, sans-serif; padding:22px 22px 20px; color:#12233d;">
+        <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 18px; color:#071b3a; font-size:18px; line-height:1.25; font-weight:700;">
           Questions? We’re here to help.
         </p>
 
-        <p style="margin:0 0 14px; color:#12233d; font-size:16px; line-height:1.45; font-weight:400;">
+        <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 14px; color:#12233d; font-size:16px; line-height:1.45; font-weight:400;">
           ${escapeHtml(tpaName)} Insurance Administrator
         </p>
 
-        <p style="margin:0 0 12px; color:#12233d; font-size:16px; line-height:1.45; font-weight:700;">
+        <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 12px; color:#12233d; font-size:16px; line-height:1.45; font-weight:700;">
           Call:
-          <a href="tel:${escapeHtml(phoneHref)}" style="color:#006fff; font-weight:700; text-decoration:none;">
+          <a href="tel:${escapeHtml(phoneHref)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; font-weight:700; text-decoration:none;">
             ${escapeHtml(tpaPhone)}
           </a>
         </p>
 
-        <p style="margin:0; color:#12233d; font-size:16px; line-height:1.45; font-weight:700;">
+        <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 ${tpaWebsite ? "12px" : "0"}; color:#12233d; font-size:16px; line-height:1.45; font-weight:700;">
           Email:
-          <a href="mailto:${escapeHtml(tpaEmail)}" style="color:#006fff; font-weight:700; text-decoration:none;">
+          <a href="mailto:${escapeHtml(tpaEmail)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; font-weight:700; text-decoration:none;">
             ${escapeHtml(tpaEmail)}
           </a>
         </p>
+
+        ${
+          tpaWebsite
+            ? `<p style="font-family:Arial, Helvetica, sans-serif; margin:0; color:#12233d; font-size:16px; line-height:1.45; font-weight:700;">
+          Website:
+          <a href="${escapeHtml(getNormalizedWebsiteUrl(tpaWebsite))}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; font-weight:700; text-decoration:none;">
+            ${escapeHtml(tpaWebsite)}
+          </a>
+        </p>`
+            : ""
+        }
       </td>
     </tr>
   </table>`;
 }
 
 function getNoticeHtml(title: string, body: string) {
-  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:20px 0 0; background-color:${theme.palette.notice.main}; border:1px solid ${theme.palette.notice.border}; border-radius:16px;">
+  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; margin:20px 0 0; background-color:${theme.palette.notice.main}; border:1px solid ${theme.palette.notice.border}; border-radius:16px;">
     <tr>
-      <td style="padding:22px 22px 20px; color:#7a2e0c;">
-        <p style="margin:0 0 18px; color:#7a2e0c; font-size:18px; line-height:1.25; font-weight:700;">
+      <td style="font-family:Arial, Helvetica, sans-serif; padding:22px 22px 20px; color:#7a2e0c;">
+        <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 18px; color:#7a2e0c; font-size:18px; line-height:1.25; font-weight:700;">
           ${escapeHtml(title)}
         </p>
 
-        <p style="margin:0; color:#7a2e0c; font-size:16px; line-height:1.55;">
+        <p style="font-family:Arial, Helvetica, sans-serif; margin:0; color:#7a2e0c; font-size:16px; line-height:1.55;">
           ${escapeHtml(body)}
         </p>
       </td>
@@ -373,16 +395,16 @@ function getNoticeHtml(title: string, body: string) {
 }
 
 function getNylFooterHtml() {
-  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:28px 0 0; border-top:1px solid #d1d5db; padding-top:18px;">
+  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; margin:28px 0 0; border-top:1px solid #d1d5db; padding-top:18px;">
     <tr>
-      <td style="padding-top:18px; vertical-align:top; width:50px;">
-        <img src="/logo.svg" alt="New York Life" width="50" height="50" style="display:block; width:50px; height:50px; border:0; outline:none; text-decoration:none; border-radius:2px;" />
+      <td style="font-family:Arial, Helvetica, sans-serif; padding-top:18px; vertical-align:top; width:50px;">
+        <img src="/logo.svg" alt="New York Life" width="50" height="50" style="font-family:Arial, Helvetica, sans-serif; display:block; width:50px; height:50px; border:0; outline:none; text-decoration:none; border-radius:2px;" />
       </td>
-      <td style="padding-top:18px; padding-left:14px; vertical-align:top;">
-        <p style="margin:0 0 4px; font-size:11px; line-height:1.4; font-weight:700; color:#111827;">Underwritten By:</p>
-        <p style="margin:0 0 4px; font-size:11px; line-height:1.4; color:#111827;">New York Life Insurance Company</p>
-        <p style="margin:0 0 4px; font-size:11px; line-height:1.4; color:#111827;">51 Madison Avenue New York, New York 10010</p>
-        <p style="margin:0; font-size:10px; line-height:1.4; color:#6b7280;">NEW YORK LIFE and the NEW YORK LIFE Box Logo are trademarks of New York Life Insurance Company.</p>
+      <td style="font-family:Arial, Helvetica, sans-serif; padding-top:18px; padding-left:14px; vertical-align:top;">
+        <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 4px; font-size:11px; line-height:1.4; font-weight:700; color:#111827;">Underwritten By:</p>
+        <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 4px; font-size:11px; line-height:1.4; color:#111827;">New York Life Insurance Company</p>
+        <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 4px; font-size:11px; line-height:1.4; color:#111827;">51 Madison Avenue New York, New York 10010</p>
+        <p style="font-family:Arial, Helvetica, sans-serif; margin:0; font-size:10px; line-height:1.4; color:#6b7280;">NEW YORK LIFE and the NEW YORK LIFE Box Logo are trademarks of New York Life Insurance Company.</p>
       </td>
     </tr>
   </table>`;
@@ -390,8 +412,8 @@ function getNylFooterHtml() {
 
 function getNoReplyHtml() {
   return `${getNylFooterHtml()}
-  <div style="margin:18px 0 24px; padding-top:14px;">
-    <p style="margin:0; color:#6b7280; font-size:13px; line-height:1.45;">
+  <div style="font-family:Arial, Helvetica, sans-serif; margin:18px 0 24px; padding-top:14px;">
+    <p style="font-family:Arial, Helvetica, sans-serif; margin:0; color:#6b7280; font-size:13px; line-height:1.45;">
       Please note: This is an automated message. Replies to this email are not monitored.
     </p>
   </div>`;
@@ -452,17 +474,17 @@ function buildAutosaveEmailHtml(
   return getBaseEmailHtml({
     title: "Your insurance application is being saved",
     bodyHtml: `
-      <p style="margin:0 0 24px; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 24px; font-size:16px; line-height:1.55;">
         Dear ${fullName},
       </p>
 
-      <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
         Your insurance application through <strong>${escapeHtml(
           payload.associationName,
         )}</strong> has been automatically saved so you don’t lose your progress.
       </p>
 
-      <p style="margin:0 0 28px; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 28px; font-size:16px; line-height:1.55;">
         You can return to complete your application within the next <strong>10 calendar days.</strong>
       </p>
 
@@ -470,21 +492,75 @@ function buildAutosaveEmailHtml(
 
       ${getButtonHtml("Continue my application", payload.resumeUrl)}
 
-      <p style="margin:0 0 10px; color:#374151; font-size:15px; line-height:1.5;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 10px; color:#374151; font-size:15px; line-height:1.5;">
         Or copy and paste this website address into your browser:
       </p>
 
-      <p style="margin:0 0 28px; font-size:15px; line-height:1.5; color:#006fff; word-break:break-all;">
-        <a href="${escapeHtml(payload.resumeUrl)}" style="color:#006fff; text-decoration:none;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 28px; font-size:15px; line-height:1.5; color:#006fff; word-break:break-all;">
+        <a href="${escapeHtml(payload.resumeUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:none;">
           ${escapeHtml(payload.resumeDisplayUrl)}
         </a>
       </p>
 
-      <p style="margin:0; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0; font-size:16px; line-height:1.55;">
         We look forward to serving your insurance needs.
       </p>
 
-      ${getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail)}
+      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite)}
+      ${getNoticeHtml(
+        "Your application will be saved for 10 days.",
+        `For your security, your saved application will be deleted on ${formatMockDate(purgeDate)} . After that, you’ll need to begin a new application.`,
+      )}
+      ${getNoReplyHtml()}
+    `,
+  });
+}
+function buildApplicationSentToApplicantEmailHtml(
+  payload: ReturnType<typeof getApplicationEmailPayload>,
+) {
+  const fullName = escapeHtml(
+    getDisplayName(MOCK_APPLICANT_FIRST_NAME, MOCK_APPLICANT_LAST_NAME),
+  );
+  const saveDate = new Date();
+  const purgeDate = addDays(saveDate, 9);
+  const advisorEmail = `advisor@${payload.clientAcronym.toLowerCase()}.com`;
+
+  return getBaseEmailHtml({
+    title: "Your insurance application is ready to complete and sign",
+    bodyHtml: `
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 24px; font-size:16px; line-height:1.55;">
+        Dear ${fullName},
+      </p>
+
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
+        Your insurance application through <strong>${escapeHtml(
+          payload.associationName,
+        )}</strong> has been prepared and is ready to complete and sign.
+      </p>
+
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 28px; font-size:16px; line-height:1.55;">
+        Please complete the rest of your application within the next <strong>10 calendar days.</strong>
+      </p>
+
+      ${getVerifyIdentityNoticeHtml()}
+
+      ${getButtonHtml("Continue my application", payload.resumeUrl)}
+
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 10px; color:#374151; font-size:15px; line-height:1.5;">
+        Or copy and paste this website address into your browser:
+      </p>
+
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 28px; font-size:15px; line-height:1.5; color:#006fff; word-break:break-all;">
+        <a href="${escapeHtml(payload.resumeUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:none;">
+          ${escapeHtml(payload.resumeDisplayUrl)}
+        </a>
+      </p>
+
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0; font-size:16px; line-height:1.55;">
+        We look forward to serving your insurance needs.
+      </p>
+
+      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, advisorEmail, payload.tpaWebsite)}
       ${getNoticeHtml(
         "Your application will be saved for 10 days.",
         `For your security, your saved application will be deleted on ${formatMockDate(purgeDate)} . After that, you’ll need to begin a new application.`,
@@ -505,34 +581,34 @@ function buildReceiptEmailHtml(
   return getBaseEmailHtml({
     title: "Thank you! We’ve received your insurance request",
     bodyHtml: `
-      <p style="margin:0 0 24px; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 24px; font-size:16px; line-height:1.55;">
         Dear ${fullName},
       </p>
 
-      <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
         Your insurance application through <strong>${escapeHtml(
           payload.associationName,
         )}</strong> has been received and we’ve begun processing your application.
       </p>
 
-      <p style="margin:0 0 24px; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 24px; font-size:16px; line-height:1.55;">
         If you have any questions, please use the contact information below and refer to your confirmation number: <strong>${escapeHtml(confirmationNumber)}</strong>
       </p>
 
       ${getDecisionBoxesHtml(values)}
 
-      ${getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail)}
+      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite)}
       ${getNoReplyHtml()}
     `,
   });
 }
-function buildResumeMagicLinkEmailHtml() {
-  const payload = getClientEmailPayload();
+function buildResumeMagicLinkEmailHtml(clientId?: ClientId) {
+  const payload = getClientEmailPayload(clientId);
 
   return getBaseEmailHtml({
     title: "Your requested link to continue your application",
     bodyHtml: `
-      <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
         A request has been made to return to an insurance application in progress through <strong>${escapeHtml(
           payload.associationName,
         )}</strong>. Click the link below to continue to your application.
@@ -540,15 +616,15 @@ function buildResumeMagicLinkEmailHtml() {
 
       ${getButtonHtml("Verify my email", payload.resumeMagicLinkUrl)}
 
-      <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
         This link will expire in <strong>10 minutes.</strong>
       </p>
 
-      <p style="margin:0 0 8px; font-size:16px; line-height:1.55; font-weight:700;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 8px; font-size:16px; line-height:1.55; font-weight:700;">
         Didn’t request a link?
       </p>
 
-      <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
         If you did not request a link, you may ignore this message. Access to application information will only be granted with verification.
       </p>
 
@@ -556,21 +632,21 @@ function buildResumeMagicLinkEmailHtml() {
     `,
   });
 }
-function buildPendingReminderEmailHtml() {
-  const payload = getClientEmailPayload();
+function buildPendingReminderEmailHtml(clientId?: ClientId) {
+  const payload = getClientEmailPayload(clientId);
   const startDate = new Date();
   const purgeDate = addDays(startDate, 9);
 
   return getBaseEmailHtml({
     title: "Your insurance application is ready to be completed",
     bodyHtml: `
-      <p style="margin:0 0 24px; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 24px; font-size:16px; line-height:1.55;">
         Dear ${escapeHtml(
           getDisplayName(MOCK_APPLICANT_FIRST_NAME, MOCK_APPLICANT_LAST_NAME),
         )},
       </p>
 
-      <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
         We noticed you haven’t finished your <strong>${escapeHtml(
           payload.associationName,
         )}</strong> insurance application. Good news—your progress has been saved.
@@ -580,21 +656,21 @@ function buildPendingReminderEmailHtml() {
 
       ${getButtonHtml("Continue my application", payload.resumeUrl)}
 
-      <p style="margin:0 0 10px; color:#374151; font-size:15px; line-height:1.5;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 10px; color:#374151; font-size:15px; line-height:1.5;">
         Or copy and paste this website address into your browser:
       </p>
 
-      <p style="margin:0 0 28px; font-size:15px; line-height:1.5; color:#006fff; word-break:break-all;">
-        <a href="${escapeHtml(payload.resumeUrl)}" style="color:#006fff; text-decoration:none;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 28px; font-size:15px; line-height:1.5; color:#006fff; word-break:break-all;">
+        <a href="${escapeHtml(payload.resumeUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:none;">
           ${escapeHtml(payload.resumeDisplayUrl)}
         </a>
       </p>
 
-      <p style="margin:0; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0; font-size:16px; line-height:1.55;">
         We look forward to serving your insurance needs.
       </p>
 
-      ${getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail)}
+      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite)}
       ${getNoticeHtml(
         "Your application will be saved for 10 days.",
         `For your security, your saved application will be deleted on ${formatMockDate(
@@ -605,51 +681,51 @@ function buildPendingReminderEmailHtml() {
     `,
   });
 }
-function buildPurgeReminderEmailHtml() {
-  const payload = getClientEmailPayload();
+function buildPurgeReminderEmailHtml(clientId?: ClientId) {
+  const payload = getClientEmailPayload(clientId);
 
   return getBaseEmailHtml({
     title: "Your insurance application progress",
     bodyHtml: `
-      <p style="margin:0 0 24px; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 24px; font-size:16px; line-height:1.55;">
         Dear ${escapeHtml(
           getDisplayName(MOCK_APPLICANT_FIRST_NAME, MOCK_APPLICANT_LAST_NAME),
         )},
       </p>
 
-      <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
         Your insurance application through <strong>${escapeHtml(
           payload.associationName,
         )}</strong> has expired and has been securely deleted in accordance with our data retention policy. Application data is saved for you for 10 days to complete until it is deleted.
       </p>
 
-      <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
         If you’d still like to apply, you can start a new application.
       </p>
 
       ${getButtonHtml("Start my application", payload.startUrl)}
 
-      <p style="margin:0 0 10px; color:#374151; font-size:15px; line-height:1.5;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 10px; color:#374151; font-size:15px; line-height:1.5;">
         Or copy and paste this website address into your browser:
       </p>
 
-      <p style="margin:0 0 28px; font-size:15px; line-height:1.5; color:#006fff; word-break:break-all;">
-        <a href="${escapeHtml(payload.startUrl)}" style="color:#006fff; text-decoration:none;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 28px; font-size:15px; line-height:1.5; color:#006fff; word-break:break-all;">
+        <a href="${escapeHtml(payload.startUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:none;">
           ${escapeHtml(payload.startUrl)}
         </a>
       </p>
 
-      <p style="margin:0 0 20px; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 20px; font-size:16px; line-height:1.55;">
         If you have questions about your insurance options, we’re happy to help and provide additional information.
       </p>
 
-      <p style="margin:0; font-size:16px; line-height:1.55;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:0; font-size:16px; line-height:1.55;">
         We look forward to serving your insurance needs.
       </p>
 
-      ${getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail)}
+      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite)}
 
-      <div style="margin:20px 0; border-top:1px dashed #d1d5db;"></div>
+      <div style="font-family:Arial, Helvetica, sans-serif; margin:20px 0; border-top:1px dashed #d1d5db;"></div>
 
       ${getNoReplyHtml()}
     `,
@@ -686,10 +762,10 @@ function buildAdvisorEmailHtml(options: {
   const detailRows = details
     .map(
       ([label, value]) => `<tr>
-        <td style="padding:12px 14px; border-bottom:1px solid #e5e7eb; color:#4b5563; font-size:13px; font-weight:700; width:38%;">
+        <td style="font-family:Arial, Helvetica, sans-serif; padding:12px 14px; border-bottom:1px solid #e5e7eb; color:#4b5563; font-size:13px; font-weight:700; width:38%;">
           ${escapeHtml(label)}
         </td>
-        <td style="padding:12px 14px; border-bottom:1px solid #e5e7eb; color:#111827; font-size:13px;">
+        <td style="font-family:Arial, Helvetica, sans-serif; padding:12px 14px; border-bottom:1px solid #e5e7eb; color:#111827; font-size:13px;">
           ${escapeHtml(value)}
         </td>
       </tr>`,
@@ -699,15 +775,15 @@ function buildAdvisorEmailHtml(options: {
   return getBaseEmailHtml({
     title: options.title,
     bodyHtml: `
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #d1d5db; border-radius:14px; overflow:hidden;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; border:1px solid #d1d5db; border-radius:14px; overflow:hidden;">
         <tr>
-          <td colspan="2" style="padding:12px 14px; background-color:#f5f5f5; color:#111827; font-size:13px; font-weight:700; border-bottom:1px solid #d1d5db;">
+          <td colspan="2" style="font-family:Arial, Helvetica, sans-serif; padding:12px 14px; background-color:#f5f5f5; color:#111827; font-size:13px; font-weight:700; border-bottom:1px solid #d1d5db;">
             Association: ${escapeHtml(options.payload.associationName)}
           </td>
         </tr>
         <tr>
-          <td colspan="2" style="padding:12px 14px; background-color:#f5f5f5; color:#111827; font-size:14px; font-weight:700; border-bottom:1px solid #d1d5db;">
-            <span style="display:inline-flex; align-items:center; gap:8px;">
+          <td colspan="2" style="font-family:Arial, Helvetica, sans-serif; padding:12px 14px; background-color:#f5f5f5; color:#111827; font-size:14px; font-weight:700; border-bottom:1px solid #d1d5db;">
+            <span style="font-family:Arial, Helvetica, sans-serif; display:inline-flex; align-items:center; gap:8px;">
               ${getAdvisorStatusIconSvg(options.statusLabel)}
               <span>${escapeHtml(options.statusLabel)}</span>
             </span>
@@ -716,9 +792,9 @@ function buildAdvisorEmailHtml(options: {
         ${detailRows}
       </table>
 
-      <p style="margin:20px 0 0; font-size:14px; line-height:1.55; color:#111827;">
+      <p style="font-family:Arial, Helvetica, sans-serif; margin:20px 0 0; font-size:16px; line-height:1.55; color:#111827;">
         Access the ${escapeHtml(options.payload.clientAcronym)} Advisor Portal to start a new application or take action on an application in progress:
-        <a href="${escapeHtml(options.payload.resumeUrl)}" style="color:#006fff; text-decoration:none;">
+        <a href="${escapeHtml(options.payload.resumeUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:none;">
           ${escapeHtml(options.payload.resumeDisplayUrl)}
         </a>
       </p>
@@ -728,8 +804,8 @@ function buildAdvisorEmailHtml(options: {
   });
 }
 
-function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
-  const payload = getClientEmailPayload();
+function getAlwaysVisibleMockEmails(clientId?: ClientId): MockEmailPreview[] {
+  const payload = getClientEmailPayload(clientId);
   const now = new Date().toISOString();
 
   const sampleApplicantPayload = {
@@ -764,7 +840,7 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
       toEmail: MOCK_APPLICANT_EMAIL,
       subject: "Your insurance application is ready to be completed",
       createdAt: now,
-      html: buildPendingReminderEmailHtml(),
+      html: buildPendingReminderEmailHtml(clientId),
     },
     {
       id: "sample-purge-reminder",
@@ -775,7 +851,7 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
       toEmail: MOCK_APPLICANT_EMAIL,
       subject: "Your insurance application progress",
       createdAt: now,
-      html: buildPurgeReminderEmailHtml(),
+      html: buildPurgeReminderEmailHtml(clientId),
     },
     {
       id: "sample-receipt",
@@ -801,7 +877,7 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
       toEmail: MOCK_APPLICANT_EMAIL,
       subject: "Your requested link to continue your application",
       createdAt: now,
-      html: buildResumeMagicLinkEmailHtml(),
+      html: buildResumeMagicLinkEmailHtml(clientId),
     },
     {
       id: "advisor-sent-for-signature",
@@ -818,6 +894,17 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
         statusLabel: "Application sent for signature",
         payload,
       }),
+    },
+    {
+      id: "advisor-sent-to-applicant",
+      type: "advisor-sent-to-applicant",
+      clientId: payload.clientId,
+      fromName: getInsuranceAdministratorFromName(payload),
+      fromEmail: MOCK_FROM_EMAIL,
+      toEmail: MOCK_APPLICANT_EMAIL,
+      subject: "Your insurance application is ready to complete and sign",
+      createdAt: now,
+      html: buildApplicationSentToApplicantEmailHtml(sampleApplicantPayload),
     },
     {
       id: "advisor-pending-reminder",
@@ -872,12 +959,12 @@ function getAlwaysVisibleMockEmails(): MockEmailPreview[] {
   ];
 }
 
-export function readMockEmailPreviews() {
-  const activeClientId = getClientEmailPayload().clientId;
+export function readMockEmailPreviews(clientId?: ClientId) {
+  const activeClientId = getClientEmailPayload(clientId).clientId;
   const storedPreviews = getStoredMockEmails().filter(
     (storedPreview) => storedPreview.clientId === activeClientId,
   );
-  const alwaysVisiblePreviews = getAlwaysVisibleMockEmails();
+  const alwaysVisiblePreviews = getAlwaysVisibleMockEmails(clientId);
 
   return [
     ...storedPreviews,
@@ -888,12 +975,6 @@ export function readMockEmailPreviews() {
         ),
     ),
   ];
-}
-
-export function getMockEmailAudience(
-  preview: MockEmailPreview,
-): MockEmailAudience {
-  return preview.type.startsWith("advisor-") ? "advisor" : "applicant";
 }
 
 export function subscribeToMockEmailPreviews(onStoreChange: () => void) {

@@ -271,10 +271,7 @@ export function useCoverageState() {
 
   // ── Applicant helpers ──────────────────────────────────────────────────
   const getVisibleApplicants = useCallback(
-    (
-      applicants: CoverageApplicantId[],
-      _coverageId?: string,
-    ): CoverageApplicantId[] => {
+    (applicants: CoverageApplicantId[]): CoverageApplicantId[] => {
       return applicants.filter((a) => {
         if (a === "member") return true;
         if (a === "spouse") return selectedDependents.includes("spouse");
@@ -307,8 +304,9 @@ export function useCoverageState() {
 
   // Cleanup timers on unmount
   useEffect(() => {
+    const rateCalculationTimers = rateCalculationTimersRef.current;
     return () => {
-      Object.values(rateCalculationTimersRef.current).forEach((timerId) => {
+      Object.values(rateCalculationTimers).forEach((timerId) => {
         window.clearTimeout(timerId);
       });
       if (productsLoadingTimerRef.current != null) {
@@ -360,10 +358,7 @@ export function useCoverageState() {
     let hasChanges = false;
 
     for (const coverage of categoryProducts) {
-      const visibleApplicants = getVisibleApplicants(
-        coverage.applicants,
-        coverage.id,
-      );
+      const visibleApplicants = getVisibleApplicants(coverage.applicants);
       for (const applicantId of visibleApplicants) {
         const key = `${coverage.id}:${applicantId}`;
         if (nextAmounts[key] == null) {
@@ -462,7 +457,7 @@ export function useCoverageState() {
       );
     }
 
-    let nextAmounts = { ...storedAmounts };
+    const nextAmounts = { ...storedAmounts };
     if (isAdding) {
       const coverage = categoryProducts.find((c) => c.id === coverageId);
       if (coverage) {
@@ -554,10 +549,16 @@ export function useCoverageState() {
     });
   }
 
-  function handleWaitingPeriodChange(coverageId: string, value: string) {
+  function handleWaitingPeriodChange(
+    coverageId: string,
+    value: string,
+    applicantId?: CoverageApplicantId,
+  ) {
     const coverage = categoryProducts.find((c) => c.id === coverageId);
     if (coverage) {
-      const applicants = productApplicants[coverageId] ?? [];
+      const applicants = applicantId
+        ? [applicantId]
+        : (productApplicants[coverageId] ?? []);
       applicants.forEach((applicantId) => {
         beginRateCalculation(`${coverageId}:${applicantId}`);
       });
@@ -565,15 +566,21 @@ export function useCoverageState() {
     setPageValues({
       coverageWaitingPeriods: {
         ...storedWaitingPeriods,
-        [coverageId]: value,
+        [applicantId ? `${coverageId}:${applicantId}` : coverageId]: value,
       },
     });
   }
 
-  function handleMaxBenefitPeriodChange(coverageId: string, value: string) {
+  function handleMaxBenefitPeriodChange(
+    coverageId: string,
+    value: string,
+    applicantId?: CoverageApplicantId,
+  ) {
     const coverage = categoryProducts.find((c) => c.id === coverageId);
     if (coverage) {
-      const applicants = productApplicants[coverageId] ?? [];
+      const applicants = applicantId
+        ? [applicantId]
+        : (productApplicants[coverageId] ?? []);
       applicants.forEach((applicantId) => {
         beginRateCalculation(`${coverageId}:${applicantId}`);
       });
@@ -581,7 +588,7 @@ export function useCoverageState() {
     setPageValues({
       coverageMaxBenefitPeriods: {
         ...storedMaxBenefitPeriods,
-        [coverageId]: value,
+        [applicantId ? `${coverageId}:${applicantId}` : coverageId]: value,
       },
     });
   }

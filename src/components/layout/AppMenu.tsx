@@ -23,7 +23,7 @@ import CoverageNeedsCalculator from "../forms/CoverageNeedsCalculator";
 import QuickDecisionDrawerContent, {
   QuickDecisionMark,
 } from "../content/QuickDecisionExplainer";
-import { useState } from "react";
+import { useId, useState } from "react";
 import type { ClientConfig } from "../../config/clients/types";
 import { router } from "../../app/router";
 import { APP_MENU_SECTION_TITLE_SX } from "../../app/theme";
@@ -41,6 +41,7 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
   const [isQuickDecisionOpen, setIsQuickDecisionOpen] = useState(false);
 
   const phone = client.support.phone;
+  const menuTitleId = useId();
 
   function handleNavigate(path: string) {
     onClose();
@@ -53,6 +54,7 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
         anchor="right"
         open={open}
         onClose={onClose}
+        slotProps={{ paper: { "aria-labelledby": menuTitleId } }}
         sx={{
           "& .MuiDrawer-paper": {
             width: { xs: "80vw", sm: 420 },
@@ -70,7 +72,7 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
               gap: 1,
             }}
           >
-            <Typography variant="subtitle1" fontWeight={700}>
+            <Typography variant="subtitle1" fontWeight={700} id={menuTitleId}>
               Menu
             </Typography>
             <IconButton

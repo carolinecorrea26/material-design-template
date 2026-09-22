@@ -4,7 +4,7 @@ export type FormTemplate = "single" | "multi";
 
 const TEMPLATE_QUERY_PARAM = "template";
 const TEMPLATE_STORAGE_KEY = "activeFormTemplate";
-const DEFAULT_TEMPLATE: FormTemplate = "multi";
+export const DEFAULT_TEMPLATE: FormTemplate = "multi";
 
 function isTemplate(v: string | null): v is FormTemplate {
   return v === "single" || v === "multi";

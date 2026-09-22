@@ -34,6 +34,7 @@ export default function PageNav({
         size="large"
         fullWidth
         disabled={isTransitioning || disabled}
+        aria-label={isTransitioning ? `${nextLabel} — submitting` : undefined}
         endIcon={!isTransitioning ? <ArrowForwardRoundedIcon /> : undefined}
         sx={(theme) => ({
           "&.Mui-disabled": {
@@ -45,7 +46,7 @@ export default function PageNav({
         })}
       >
         {isTransitioning ? (
-          <CircularProgress size={20} color="inherit" />
+          <CircularProgress size={20} color="inherit" aria-hidden />
         ) : (
           nextLabel
         )}

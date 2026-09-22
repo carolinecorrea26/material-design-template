@@ -15,6 +15,7 @@ export const pageFields: Partial<Record<PageId, FieldId[]>> = {
     "state-province",
     "birth-date",
     "dependents",
+    "spouse-membership",
     "spouse-first-name",
     "spouse-last-name",
     "spouse-birth-date",

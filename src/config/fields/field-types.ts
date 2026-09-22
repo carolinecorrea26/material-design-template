@@ -181,6 +181,7 @@ export type FieldId =
   | "waepa-member-first-name"
   | "waepa-member-last-name"
   | "waepa-member-id"
+  | "asce-member-id"
   | "avma-vet-college"
   | "avma-graduation-year"
   | "avma-occupation"

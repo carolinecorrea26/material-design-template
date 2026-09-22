@@ -152,12 +152,24 @@ export type ReceiptContent = {
     databaseUnavailable: DecisionStatusContent;
   };
   documentsNote: string;
+  confirmationNumberLabel: string;
+  documentDownloadLabels: {
+    application: string;
+    payment: string;
+    quickDecision: string;
+  };
   summaryLabels: {
     status: string;
     applying: string;
     requested: string;
     submittedStatus: string;
     defaultApplicant: string;
+    productSingular: string;
+    productPlural: string;
+  };
+  coverageCardLabels: {
+    coverageSuffix: string;
+    requested: string;
   };
   coverageDecisions: {
     title: string;

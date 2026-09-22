@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Box, Button, Divider, Stack } from "@mui/material";
 import PageAlert from "../components/feedback/PageAlert";
 import CoverageCategorySelector from "../components/forms/CoverageCategorySelector";
@@ -214,17 +214,14 @@ function CoveragePageContent({
   isTpaVerified: boolean;
   onOpenPortfolio: () => void;
 }) {
-  // Use a ref so the callback always has the latest showProducts value
-  const showProductsRef = useRef(state.showProducts);
-  showProductsRef.current = state.showProducts;
   const [pageError, setPageError] = useState<string | null>(null);
 
-  const handleCoverageQuestionChange = useCallback(() => {
-    if (showProductsRef.current) {
+  function handleCoverageQuestionChange() {
+    if (state.showProducts) {
       state.setShowProducts(false);
     }
     setPageError(null);
-  }, [state.setShowProducts]);
+  }
 
   return (
     <>

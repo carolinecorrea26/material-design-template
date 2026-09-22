@@ -3,7 +3,6 @@ import {
   Alert,
   Box,
   Divider,
-  Link,
   Stack,
   Tab,
   Tabs,
@@ -223,9 +222,7 @@ export default function CoverageOptionsPanel({
                       value={category.id}
                       icon={<IconComponent sx={{ fontSize: "1.25rem" }} />}
                       iconPosition={variant === "page" ? "start" : undefined}
-                      aria-label={
-                        variant === "drawer" ? category.label : undefined
-                      }
+                      aria-label={category.label}
                       label={
                         variant === "page" ? (
                           <Box
@@ -286,14 +283,11 @@ export default function CoverageOptionsPanel({
                     {activeGroup.products.map((product) => (
                       <Box key={product.id}>
                         <Stack spacing={0.4}>
-                          <Link
-                            href="#"
-                            underline="hover"
-                            onClick={(event) => event.preventDefault()}
+                          <Typography
+                            component="span"
                             sx={{
                               fontWeight: 700,
                               color: "primary.main",
-                              cursor: "pointer",
                               width: "fit-content",
                             }}
                           >
@@ -301,7 +295,7 @@ export default function CoverageOptionsPanel({
                             {product.underwritingType === "QD" && (
                               <QuickDecisionIndicator />
                             )}
-                          </Link>
+                          </Typography>
                           <Typography variant="body2" color="text.secondary">
                             {product.description ?? product.definition}
                           </Typography>

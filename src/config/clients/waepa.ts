@@ -1,8 +1,11 @@
 import type { ClientConfig } from "./types";
+import { waepaTpaVerificationFlow } from "./waepaFlowOverrides";
 
 export const waepaClient: ClientConfig = {
   id: "waepa",
-  themeColor: "dark-blue",
+  clientGroupId: "waepa",
+  siteLabel: "Multi-step (default)",
+  theme: { type: "preset", preset: "dark-blue" },
   branding: {
     name: "Worldwide Assurance for Employees of Public Agencies",
     acronym: "WAEPA",
@@ -75,6 +78,11 @@ export const waepaClient: ClientConfig = {
       },
     },
     allCategoriesExpanded: true,
+  },
+  flows: {
+    overrides: {
+      tpaVerification: waepaTpaVerificationFlow,
+    },
   },
   fields: {
     coverage: {

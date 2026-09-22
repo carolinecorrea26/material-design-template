@@ -13,6 +13,7 @@ import SectionDivider from "../components/layout/SectionDivider";
 
 import QuoteCalculator from "../components/forms/QuoteCalculator";
 import type { FieldDefinition } from "../config/fields/types";
+import FieldGrid from "../components/layout/FieldGrid";
 import {
   coverageOptionsAvailableHelpItem,
   // groupInsuranceHelpItem,
@@ -86,15 +87,9 @@ function renderFieldGrid(
   errors: Parameters<typeof FieldRenderer>[0]["errors"],
 ) {
   return (
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-        gap: { xs: 0, sm: 2 },
-      }}
-    >
+    <FieldGrid>
       {fields.map((field) => renderField(field, control, errors))}
-    </Box>
+    </FieldGrid>
   );
 }
 
@@ -343,20 +338,13 @@ export default function Membership() {
 
             {showMembershipFollowUpFields && (
               <>
-                <Box
-                  sx={{
-                    display: "grid",
-                    gridTemplateColumns: {
-                      xs: "1fr",
-                      sm: hasTitleField ? "120px 1fr 1fr" : "1fr 1fr",
-                    },
-                    gap: { xs: 0, sm: 2 },
-                  }}
+                <FieldGrid
+                  columns={hasTitleField ? "120px 1fr 1fr" : "equal"}
                 >
                   {nameFields.map((field) =>
                     renderField(field, control, errors),
                   )}
-                </Box>
+                </FieldGrid>
 
                 {contactFields.map((field) =>
                   renderField(field, control, errors),
@@ -368,6 +356,8 @@ export default function Membership() {
                       label={
                         client.id === "ama" && membershipValue === "spouse"
                           ? "Physician Information"
+                          : client.id === "asce"
+                            ? "Additional Membership Information"
                           : "Membership Information"
                       }
                       variant="subsection"
@@ -398,16 +388,7 @@ export default function Membership() {
                           control,
                           errors,
                         )}
-                        <Box
-                          sx={{
-                            display: "grid",
-                            gridTemplateColumns: {
-                              xs: "1fr",
-                              sm: "120px 1fr 1fr",
-                            },
-                            gap: { xs: 0, sm: 2 },
-                          }}
-                        >
+                        <FieldGrid columns="120px 1fr 1fr">
                           {renderField(
                             fieldById(additionalFields, "ama-physician-title"),
                             control,
@@ -429,7 +410,7 @@ export default function Membership() {
                             control,
                             errors,
                           )}
-                        </Box>
+                        </FieldGrid>
                         {renderField(
                           fieldById(
                             additionalFields,

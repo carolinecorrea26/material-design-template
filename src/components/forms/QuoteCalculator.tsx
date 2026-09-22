@@ -25,7 +25,7 @@ import CoverageCategorySelector from "./CoverageCategorySelector";
 import SelectionGroup from "./SelectionGroup";
 import SectionDivider from "../layout/SectionDivider";
 import CategoryHeader from "../layout/CategoryHeader";
-import RateFrequencyToggle from "../ui/RateFrequencyToggle";
+import RateFrequencyControl from "../ui/RateFrequencyControl";
 import EligibilityFields, {
   type EligibilityValues,
   validateEligibility,
@@ -266,6 +266,7 @@ export default function QuoteCalculator({
           behavior: "smooth",
           block: "start",
         });
+        productsSectionRef.current?.focus();
       });
     }, 1000);
   }
@@ -499,13 +500,25 @@ export default function QuoteCalculator({
                     required
                     error={fieldsAttempted && !!fieldErrors.gender}
                   >
-                    <FormLabel required sx={{ mb: 1 }}>
+                    <FormLabel required id="quote-gender-label" sx={{ mb: 1 }}>
                       Gender
                     </FormLabel>
-                    <Stack spacing={1.5}>
+                    <Stack
+                      spacing={1.5}
+                      role="radiogroup"
+                      aria-labelledby="quote-gender-label"
+                      aria-describedby={
+                        fieldsAttempted && fieldErrors.gender
+                          ? "quote-gender-helper"
+                          : undefined
+                      }
+                    >
                       {(["male", "female"] as const).map((val) => (
                         <SelectionGroup
                           key={val}
+                          role="radio"
+                          aria-checked={gender === val}
+                          tabIndex={gender === val ? 0 : -1}
                           onClick={() => {
                             setGender(val);
                             handleQuoteFieldChange();
@@ -521,6 +534,8 @@ export default function QuoteCalculator({
                           <Radio
                             checked={gender === val}
                             size="small"
+                            tabIndex={-1}
+                            aria-hidden
                             sx={{ p: 0, pointerEvents: "none" }}
                           />
                           <Box
@@ -538,7 +553,9 @@ export default function QuoteCalculator({
                       ))}
                     </Stack>
                     {fieldsAttempted && fieldErrors.gender && (
-                      <FormHelperText>{fieldErrors.gender}</FormHelperText>
+                      <FormHelperText id="quote-gender-helper">
+                        {fieldErrors.gender}
+                      </FormHelperText>
                     )}
                   </FormControl>
                 )}
@@ -548,13 +565,25 @@ export default function QuoteCalculator({
                     required
                     error={fieldsAttempted && !!fieldErrors.smoker}
                   >
-                    <FormLabel required sx={{ mb: 1 }}>
+                    <FormLabel required id="quote-smoker-label" sx={{ mb: 1 }}>
                       Do you use nicotine products?
                     </FormLabel>
-                    <Stack spacing={1.5}>
+                    <Stack
+                      spacing={1.5}
+                      role="radiogroup"
+                      aria-labelledby="quote-smoker-label"
+                      aria-describedby={
+                        fieldsAttempted && fieldErrors.smoker
+                          ? "quote-smoker-helper"
+                          : undefined
+                      }
+                    >
                       {(["yes", "no"] as const).map((val) => (
                         <SelectionGroup
                           key={val}
+                          role="radio"
+                          aria-checked={smoker === val}
+                          tabIndex={smoker === val ? 0 : -1}
                           onClick={() => {
                             setSmoker(val);
                             handleQuoteFieldChange();
@@ -570,6 +599,8 @@ export default function QuoteCalculator({
                           <Radio
                             checked={smoker === val}
                             size="small"
+                            tabIndex={-1}
+                            aria-hidden
                             sx={{ p: 0, pointerEvents: "none" }}
                           />
                           <Box
@@ -587,7 +618,9 @@ export default function QuoteCalculator({
                       ))}
                     </Stack>
                     {fieldsAttempted && fieldErrors.smoker && (
-                      <FormHelperText>{fieldErrors.smoker}</FormHelperText>
+                      <FormHelperText id="quote-smoker-helper">
+                        {fieldErrors.smoker}
+                      </FormHelperText>
                     )}
                   </FormControl>
                 )}
@@ -718,11 +751,17 @@ export default function QuoteCalculator({
 
         {/* ── Products ── */}
         {showProducts && selectedCategories.length > 0 && (
-          <Stack spacing={2} ref={productsSectionRef}>
+          <Stack spacing={2} ref={productsSectionRef} tabIndex={-1}>
             <Divider />
             {productsLoading ? (
-              <Stack spacing={2} alignItems="center" sx={{ py: 4 }}>
-                <CircularProgress size={28} />
+              <Stack
+                spacing={2}
+                alignItems="center"
+                sx={{ py: 4 }}
+                role="status"
+                aria-live="polite"
+              >
+                <CircularProgress size={28} aria-hidden />
                 <Typography variant="body2" color="text.secondary">
                   Loading your coverage options…
                 </Typography>
@@ -838,48 +877,11 @@ export default function QuoteCalculator({
               )}
 
               {showRateFrequencyToggle && (
-                <Stack
-                  direction="row"
-                  spacing={0.75}
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <Typography
-                    variant="caption"
-                    fontWeight={700}
-                    color={
-                      rateFrequency === "monthly"
-                        ? "primary.main"
-                        : "text.secondary"
-                    }
-                  >
-                    Monthly
-                  </Typography>
-                  <RateFrequencyToggle
-                    checked={rateFrequency === "annual"}
-                    onChange={(e) =>
-                      setRateFrequency(
-                        e.target.checked ? "annual" : "monthly",
-                      )
-                    }
-                    slotProps={{
-                      input: {
-                        "aria-label": "Toggle between monthly and annual",
-                      },
-                    }}
-                  />
-                  <Typography
-                    variant="caption"
-                    fontWeight={700}
-                    color={
-                      rateFrequency === "annual"
-                        ? "primary.main"
-                        : "text.secondary"
-                    }
-                  >
-                    Annual
-                  </Typography>
-                </Stack>
+                <RateFrequencyControl
+                  value={rateFrequency}
+                  onChange={setRateFrequency}
+                  ariaLabel="Toggle between monthly and annual"
+                />
               )}
 
               <Button

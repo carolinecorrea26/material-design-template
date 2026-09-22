@@ -24,10 +24,10 @@ import QuickDecisionDrawerContent, {
   QuickDecisionMark,
 } from "../components/content/QuickDecisionExplainer";
 import { ApplicationReviewDrawerContent } from "../content/helpContent";
-import { getContent, resolveTemplate } from "../content";
+import { buildContent, getContent, resolveTemplate } from "../content";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getPagePath } from "../config/pages";
-import type { HomePageVariant } from "../config/clients/types";
+import type { ClientConfig, HomePageVariant } from "../config/clients/types";
 import { getFormTemplate } from "../config/template/resolveTemplate";
 import Membership from "./Membership";
 
@@ -54,7 +54,7 @@ const FADE_IN_SECTION_SX = (delay: number) => ({
   animation: `${fadeInUp} 0.7s ease-out ${delay}s forwards`,
 });
 
-const content = getContent();
+const activeContent = getContent();
 
 // ── Home page quote card ───────────────────────────────────────────────────
 // Collects DOB/ZIP/State, then opens the QuoteCalculator drawer pre-filled.
@@ -100,10 +100,10 @@ function HomeQuoteSection({ onOpenQuote }: HomeQuoteSectionProps) {
       <Stack spacing={2.25} sx={{ p: { xs: 2.5, sm: 3 } }}>
         <Box>
           <Typography variant="h2" paddingBottom={0.5}>
-            {content.home.quoteSection.title}
+            {activeContent.home.quoteSection.title}
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            {content.home.quoteSection.description}
+            {activeContent.home.quoteSection.description}
           </Typography>
         </Box>
 
@@ -141,13 +141,15 @@ const VALID_VARIANTS: HomePageVariant[] = [
   "welcome-back",
 ];
 
-export default function Home() {
-  const isSingleTemplate = getFormTemplate() === "single";
-  const client = getActiveClient();
+export default function Home({ previewClient }: { previewClient?: ClientConfig } = {}) {
+  const isPreview = Boolean(previewClient);
+  const isSingleTemplate = !isPreview && getFormTemplate() === "single";
+  const client = previewClient ?? getActiveClient();
+  const content = previewClient ? buildContent(previewClient.id) : activeContent;
   const [searchParams] = useSearchParams();
   const urlVariant = searchParams.get("variant") as HomePageVariant | null;
   const variant: HomePageVariant =
-    urlVariant && VALID_VARIANTS.includes(urlVariant)
+    !isPreview && urlVariant && VALID_VARIANTS.includes(urlVariant)
       ? urlVariant
       : (client.features?.homePageVariant ?? "default");
   const showQuoteTool = !isSingleTemplate && variant === "default";
@@ -267,7 +269,12 @@ export default function Home() {
               <Typography variant="body1" color="text.secondary">
                 {variant === "welcome-back"
                   ? content.home.hero.welcomeBackDescription
-                  : resolveTemplate(content.home.hero.description)}
+                  : previewClient
+                    ? content.home.hero.description
+                        .replace(/\{\{clientName\}\}/g, previewClient.branding.name)
+                        .replace(/\{\{clientAcronym\}\}/g, previewClient.branding.acronym)
+                        .replace(/\{\{associationName\}\}/g, previewClient.branding.name)
+                    : resolveTemplate(content.home.hero.description)}
               </Typography>
             </Stack>
 

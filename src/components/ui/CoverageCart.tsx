@@ -28,7 +28,7 @@ import type {
 } from "../../config/coverages/types";
 import type { EstimatedRateFrequency } from "../../config/clients/types";
 import QuickDecisionIndicator from "./QuickDecisionIndicator";
-import RateFrequencyToggle from "./RateFrequencyToggle";
+import RateFrequencyControl from "./RateFrequencyControl";
 import TotalCostSummary, {
   type TotalCostSummaryItem,
 } from "./TotalCostSummary";
@@ -278,7 +278,8 @@ function CoverageCartDrawer({
       !Array.isArray(values.productApplicants)
         ? (values.productApplicants as Record<string, unknown>)
         : {};
-    const { [coverageId]: _, ...nextProductApplicants } = currentProductApplicants;
+    const nextProductApplicants = { ...currentProductApplicants };
+    delete nextProductApplicants[coverageId];
     setPageValues({
       coverageSelections: nextSelections,
       productApplicants: nextProductApplicants as Record<string, string[]>,
@@ -711,38 +712,11 @@ function CoverageCartInline({
           />
 
           {showRateFrequencyToggle && (
-            <Stack
-              direction="row"
-              spacing={0.75}
-              alignItems="center"
+            <RateFrequencyControl
+              value={rateFrequency}
+              onChange={onFrequencyToggle}
               justifyContent="end"
-            >
-              <Typography
-                variant="caption"
-                fontWeight={700}
-                color={rateFrequency === "monthly" ? "primary.main" : "text.secondary"}
-              >
-                Monthly
-              </Typography>
-              <RateFrequencyToggle
-                checked={rateFrequency === "annual"}
-                onChange={(e) =>
-                  onFrequencyToggle(e.target.checked ? "annual" : "monthly")
-                }
-                slotProps={{
-                  input: {
-                    "aria-label": "Toggle estimated cost between monthly and annual",
-                  },
-                }}
-              />
-              <Typography
-                variant="caption"
-                fontWeight={700}
-                color={rateFrequency === "annual" ? "primary.main" : "text.secondary"}
-              >
-                Annual
-              </Typography>
-            </Stack>
+            />
           )}
         </>
       )}

@@ -2,7 +2,7 @@ import type { ClientConfig } from "./types";
 
 export const demoClient: ClientConfig = {
   id: "demo",
-  themeColor: "default",
+  theme: { type: "preset", preset: "default" },
   branding: {
     name: "Demo Client",
     acronym: "DEMO",

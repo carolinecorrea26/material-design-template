@@ -31,12 +31,24 @@ export const receiptDefaults: ReceiptContent = {
   },
   documentsNote:
     "Please save a copy of your application documents before leaving this page. For security purposes, a digital copy will not be sent by email.",
+  confirmationNumberLabel: "Confirmation number:",
+  documentDownloadLabels: {
+    application: "Application PDF",
+    payment: "Payment PDF",
+    quickDecision: "QuickDecision PDF",
+  },
   summaryLabels: {
     status: "Status",
     applying: "Applying",
     requested: "Requested",
     submittedStatus: "Submitted",
     defaultApplicant: "Member",
+    productSingular: "product",
+    productPlural: "products",
+  },
+  coverageCardLabels: {
+    coverageSuffix: "coverage",
+    requested: "Requested:",
   },
   coverageDecisions: {
     title: "Coverage decisions",

@@ -13,6 +13,7 @@ export type ClientId =
   | "demo"
   | "abe"
   | "ama"
+  | "asce"
   | "avma"
   | "csea"
   | "isitrust"

@@ -30,6 +30,7 @@ import {
 } from "../utils/zipToStateProvince";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { getActiveClient } from "../config/client/getActiveClient";
+import FieldGrid from "../components/layout/FieldGrid";
 
 const childMapping = {
   fields: [
@@ -301,13 +302,7 @@ function EligibilityFields({
                     );
                   })}
 
-                  <Box
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-                      gap: { xs: 0, sm: 2 },
-                    }}
-                  >
+                  <FieldGrid>
                     {section.fieldIds
                       .filter((fieldId) => nameFields.includes(fieldId))
                       .map((fieldId) => {
@@ -322,7 +317,7 @@ function EligibilityFields({
                           />
                         );
                       })}
-                  </Box>
+                  </FieldGrid>
 
                   {afterName.map((fieldId) => {
                     const field = allFields.find((f) => f.id === fieldId);

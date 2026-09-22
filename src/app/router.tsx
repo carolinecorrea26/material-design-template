@@ -3,7 +3,8 @@
 import type { ComponentType } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import AppShell, { type AppShellVariant } from "../components/layout/AppShell";
-import { getPagePath } from "../config/pages";
+import InternalPageShell from "../components/layout/InternalPageShell";
+import { getPagePath, pages } from "../config/pages";
 import type { PageId } from "../types";
 import Home from "../pages/Home";
 import Membership from "../pages/Membership";
@@ -28,8 +29,13 @@ import AdvisorLogin from "../pages/AdvisorLogin";
 import AdvisorSendConfirmation from "../pages/AdvisorSendConfirmation";
 import ApplicationEditConfirmation from "../pages/ApplicationEditConfirmation";
 import MockEmailPreview from "../pages/MockEmailPreview";
-import InformationArchitecture from "../pages/InformationArchitecture";
+import SiteDetails from "../pages/SiteDetails";
+import SiteFeatures from "../pages/SiteFeatures";
 import DesignSystem from "../pages/DesignSystem";
+import PortalAdmin from "../pages/PortalAdmin";
+import PortalTemplateProject from "../pages/PortalTemplateProject";
+import PortalRequirementsProject from "../pages/PortalRequirementsProject";
+import Cms from "../pages/Cms";
 
 /**
  * Maps each page ID to its React component.
@@ -59,11 +65,16 @@ const pageComponents: Record<PageId, ComponentType> = {
   "advisor-send-confirmation": AdvisorSendConfirmation,
   "application-edit-confirmation": ApplicationEditConfirmation,
   "mock-email-preview": MockEmailPreview,
-  "information-architecture": InformationArchitecture,
+  "site-features": SiteFeatures,
+  "site-details": SiteDetails,
   "design-system": DesignSystem,
+  "portal-admin": PortalAdmin,
+  "portal-template-project": PortalTemplateProject,
+  "portal-requirements-project": PortalRequirementsProject,
+  cms: Cms,
 };
 
-/** Pages that get their own route. Internal-only pages are excluded. */
+/** Pages that get their own route. */
 const routedPageIds: PageId[] = [
   "home",
   "membership",
@@ -88,9 +99,16 @@ const routedPageIds: PageId[] = [
   "advisor-send-confirmation",
   "application-edit-confirmation",
   "mock-email-preview",
-  "information-architecture",
+  "site-features",
+  "site-details",
   "design-system",
+  "portal-admin",
+  "portal-template-project",
+  "portal-requirements-project",
+  "cms",
 ];
+
+const pageTypeById = new Map(pages.map((page) => [page.id, page.type]));
 
 const pageVariants: Partial<Record<PageId, AppShellVariant>> = {
   home: "homepage",
@@ -110,8 +128,10 @@ export const router = createBrowserRouter(
     return {
       path: getPagePath(pageId),
       element:
-        pageId === "mock-email-preview" ? (
-          <PageComponent />
+        pageTypeById.get(pageId) === "internal" ? (
+          <InternalPageShell pageId={pageId}>
+            <PageComponent />
+          </InternalPageShell>
         ) : (
           <AppShell variant={variant}>
             <PageComponent />

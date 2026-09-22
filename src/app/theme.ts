@@ -1,6 +1,9 @@
 import type React from "react";
 import { createTheme, responsiveFontSizes } from "@mui/material/styles";
-import type { ThemeColorId } from "../config/clients/types";
+import type {
+  ClientThemeConfig,
+  ThemeColorId,
+} from "../config/clients/types";
 
 type ResponsiveCSSProperties = React.CSSProperties & {
   [key: `@media ${string}`]: React.CSSProperties;
@@ -75,6 +78,13 @@ export const CARD_RADIUS = "16px";
 /** Single source-of-truth body/header/input text color. */
 export const TEXT_PRIMARY = "#353b48";
 
+const TEXT_SECONDARY = "#49596f";
+const WHITE = "#ffffff";
+const SUBTLE_BACKGROUND = "#f5f8fd";
+const SURFACE_BACKGROUND = "#eef1f4";
+const FORM_SECTION_LABEL_COLOR = "#00388c";
+const STEP_CONNECTOR_COLOR = "#d7dee8";
+
 /** Single source-of-truth border color for all field inputs. */
 export const FIELD_BORDER_COLOR = "rgba(52, 59, 72, 0.23)";
 
@@ -89,27 +99,55 @@ const themeColorPalettes: Record<
     main: "#0668ff",
     light: "#5c94ff",
     dark: "#034cba",
-    contrastText: "#ffffff",
+    contrastText: WHITE,
   },
   teal: {
     main: "#0882a1",
     light: "#39a4bf",
     dark: "#005b70",
-    contrastText: "#ffffff",
+    contrastText: WHITE,
   },
   purple: {
     main: "#3f51b5",
     light: "#7986cb",
     dark: "#283593",
-    contrastText: "#ffffff",
+    contrastText: WHITE,
   },
   "dark-blue": {
     main: "#045aab",
     light: "#316493",
     dark: "#002f5b",
-    contrastText: "#ffffff",
+    contrastText: WHITE,
   },
 };
+
+const paletteTools = createTheme();
+
+function resolvePrimaryPalette(
+  config: ClientThemeConfig | ThemeColorId,
+) {
+  const normalizedConfig: ClientThemeConfig =
+    typeof config === "string"
+      ? { type: "preset", preset: config }
+      : config;
+
+  if (normalizedConfig.type === "preset") {
+    return (
+      themeColorPalettes[normalizedConfig.preset] ?? themeColorPalettes.default
+    );
+  }
+
+  if (!/^#[\da-f]{3}([\da-f]{3})?$/i.test(normalizedConfig.primary)) {
+    throw new Error(
+      `Invalid custom theme primary color: ${normalizedConfig.primary}`,
+    );
+  }
+
+  return paletteTools.palette.augmentColor({
+    color: { main: normalizedConfig.primary },
+    name: "primary",
+  });
+}
 
 export type CreateAppThemeOptions = {
   /**
@@ -126,13 +164,15 @@ export type CreateAppThemeOptions = {
 };
 
 export function createAppTheme(
-  colorId: ThemeColorId = "default",
+  themeConfig: ClientThemeConfig | ThemeColorId = {
+    type: "preset",
+    preset: "default",
+  },
   { forceMobileLayout = false }: CreateAppThemeOptions = {},
 ) {
-  const primaryPalette =
-    themeColorPalettes[colorId] ?? themeColorPalettes.default;
+  const primaryPalette = resolvePrimaryPalette(themeConfig);
 
-  let theme = createTheme({
+  const theme = createTheme({
     spacing: 8,
     shape: { borderRadius: 8 },
 
@@ -148,25 +188,25 @@ export function createAppTheme(
         main: "#009465",
         light: "#33b88d",
         dark: "#007a53",
-        contrastText: "#ffffff",
+        contrastText: WHITE,
       },
       error: { main: "#ed0a0a" },
       text: {
         primary: TEXT_PRIMARY,
-        secondary: "#49596f",
+        secondary: TEXT_SECONDARY,
         disabled: "#99a4b5",
         tertiary: "#5b7090",
       },
       background: {
         default: "#f9fafc",
-        paper: "#ffffff",
-        subtle: "#f5f8fd",
-        surface: "#eef1f4",
+        paper: WHITE,
+        subtle: SUBTLE_BACKGROUND,
+        surface: SURFACE_BACKGROUND,
         iconBadge: "#c9d6eb",
       },
-      action: { selected: "#eef1f4" },
+      action: { selected: SURFACE_BACKGROUND },
       divider: "rgba(52, 59, 72, 0.12)",
-      panel: { main: "#f5f8fd", border: "rgba(0, 22, 57, 0.08)" },
+      panel: { main: SUBTLE_BACKGROUND, border: "rgba(0, 22, 57, 0.08)" },
       notice: { main: "#fffcf0", border: "#e9e3cb" },
       support: { main: "#ecf3ff", border: "#c8d5ea" },
     },
@@ -215,7 +255,11 @@ export function createAppTheme(
       body2: { color: TEXT_PRIMARY },
       subtitle1: { fontWeight: 500, color: TEXT_PRIMARY },
       subtitle2: { fontWeight: 600, color: TEXT_PRIMARY },
-      overline: { fontWeight: 700, letterSpacing: "0.5px", color: "#00388c" },
+      overline: {
+        fontWeight: 700,
+        letterSpacing: "0.5px",
+        color: FORM_SECTION_LABEL_COLOR,
+      },
       button: { textTransform: "none", fontWeight: 700 },
 
       formPageTitle: {
@@ -232,7 +276,7 @@ export function createAppTheme(
         fontWeight: 700,
         textTransform: "uppercase",
         letterSpacing: "0.5px",
-        color: "#00388c",
+        color: FORM_SECTION_LABEL_COLOR,
       },
       formBackLink: { fontSize: "0.875rem", fontWeight: 700, lineHeight: 1.5 },
       formTransitionStatus: {
@@ -324,7 +368,7 @@ export function createAppTheme(
         styleOverrides: {
           root: {
             padding: "8px 0",
-            color: "#49596f",
+            color: TEXT_SECONDARY,
             "@media (min-width:900px)": { padding: 3 },
           },
         },
@@ -332,11 +376,13 @@ export function createAppTheme(
       MuiStepConnector: {
         styleOverrides: {
           root: { marginLeft: 15 },
-          line: { borderColor: "#d7dee8" },
+          line: { borderColor: STEP_CONNECTOR_COLOR },
         },
       },
       MuiStepContent: {
-        styleOverrides: { root: { marginLeft: 15, borderColor: "#d7dee8" } },
+        styleOverrides: {
+          root: { marginLeft: 15, borderColor: STEP_CONNECTOR_COLOR },
+        },
       },
       MuiAlert: { styleOverrides: { root: { borderRadius: CARD_RADIUS } } },
 
@@ -588,7 +634,7 @@ export function createAppTheme(
           },
           colorDefault: ({ ownerState }) => ({
             ...(ownerState.variant === "filled" && {
-              backgroundColor: "#eef1f4",
+              backgroundColor: SURFACE_BACKGROUND,
             }),
           }),
         },
@@ -602,7 +648,7 @@ export function createAppTheme(
 const theme = createAppTheme();
 export default theme;
 
-export const SECTION_SURFACE_BG = "#eef1f4";
+export const SECTION_SURFACE_BG = SURFACE_BACKGROUND;
 export const APP_MENU_SECTION_TITLE_SX = {
   typography: "subtitle2",
   color: "text.primary",

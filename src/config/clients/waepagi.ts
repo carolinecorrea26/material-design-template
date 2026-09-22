@@ -2,7 +2,9 @@ import type { ClientConfig } from "./types";
 
 export const waepagiClient: ClientConfig = {
   id: "waepagi",
-  themeColor: "dark-blue",
+  clientGroupId: "waepa",
+  siteLabel: "Single-page (GI)",
+  theme: { type: "preset", preset: "dark-blue" },
   branding: {
     name: "Worldwide Assurance for Employees of Public Agencies",
     acronym: "WAEPA",

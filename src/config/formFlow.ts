@@ -255,6 +255,7 @@ export function getFormProgressPercent(
   pageId: PageId,
   _values?: ApplicationFormValues,
 ) {
+  void _values;
   const flow = getResolvedFormFlow();
   const staticFlowNoReceipt = flow.filter((id) => id !== "receipt");
 

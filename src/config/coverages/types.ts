@@ -18,6 +18,11 @@ export type RiderDefinition = {
   hasAmount?: boolean;
   minAmount?: number;
   maxAmount?: number;
+  spouseMinAmount?: number;
+  spouseMaxAmount?: number;
+  childMinAmount?: number;
+  childMaxAmount?: number;
+  applicants?: CoverageApplicantId[];
   /** Multiplier applied to the base premium when this rider is selected (e.g. 0.05 = +5%) */
   premiumFactor: number;
 };
@@ -38,6 +43,8 @@ export type CoverageDefinition = {
   code: string;
   categoryId: CoverageCategoryId;
   name: string;
+  /** External product brochure or certificate URL. */
+  brochureUrl?: string;
   featured?: boolean;
   underwritingType: CoverageUnderwritingType;
   definition: string;
@@ -76,5 +83,11 @@ export type CoverageDefinition = {
   }[];
   riders?: RiderDefinition[];
   waitingPeriodOptions?: WaitingPeriodOption[];
+  waitingPeriodOptionsByApplicant?: Partial<
+    Record<CoverageApplicantId, WaitingPeriodOption[]>
+  >;
   maxBenefitPeriodOptions?: MaxBenefitPeriodOption[];
+  maxBenefitPeriodOptionsByApplicant?: Partial<
+    Record<CoverageApplicantId, MaxBenefitPeriodOption[]>
+  >;
 };

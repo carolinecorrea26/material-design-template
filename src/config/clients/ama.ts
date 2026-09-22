@@ -2,8 +2,8 @@ import type { ClientConfig } from "./types";
 
 export const amaClient: ClientConfig = {
   id: "ama",
-  // themeColor: "dark-blue",
-  themeColor: "default",
+  // theme: { type: "preset", preset: "dark-blue" },
+  theme: { type: "preset", preset: "default" },
   branding: {
     name: "American Medical Association",
     acronym: "AMA",

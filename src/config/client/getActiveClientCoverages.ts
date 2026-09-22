@@ -23,6 +23,7 @@ export function getClientCoverages(client: ClientConfig) {
       return {
         ...coverage,
         name: override?.name ?? coverage.name,
+        brochureUrl: override?.brochureUrl ?? coverage.brochureUrl,
         categoryId: override?.categoryId ?? coverage.categoryId,
         minAmount: range?.min ?? coverage.minAmount,
         maxAmount: range?.max ?? coverage.maxAmount,
@@ -42,8 +43,14 @@ export function getClientCoverages(client: ClientConfig) {
         riders: override?.riders ?? coverage.riders,
         waitingPeriodOptions:
           override?.waitingPeriodOptions ?? coverage.waitingPeriodOptions,
+        waitingPeriodOptionsByApplicant:
+          override?.waitingPeriodOptionsByApplicant ??
+          coverage.waitingPeriodOptionsByApplicant,
         maxBenefitPeriodOptions:
           override?.maxBenefitPeriodOptions ?? coverage.maxBenefitPeriodOptions,
+        maxBenefitPeriodOptionsByApplicant:
+          override?.maxBenefitPeriodOptionsByApplicant ??
+          coverage.maxBenefitPeriodOptionsByApplicant,
         applicants: override?.applicants ?? coverage.applicants,
         underwritingType:
           override?.underwritingType ?? coverage.underwritingType,

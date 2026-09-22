@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ProductCard from "../components/layout/ProductCard";
 import {
   Alert,
@@ -6,15 +6,12 @@ import {
   Button,
   Checkbox,
   Divider,
-  FormControl,
-  FormLabel,
-  Radio,
   Stack,
   Tab,
   Tabs,
   Typography,
 } from "@mui/material";
-import SelectionGroup from "../components/forms/SelectionGroup";
+import RadioSelectionGroup from "../components/forms/RadioSelectionGroup";
 import AddIcon from "@mui/icons-material/Add";
 import { useForm, type Control, type FieldErrors } from "react-hook-form";
 import DynamicListItem from "../components/forms/DynamicListItem";
@@ -38,6 +35,7 @@ import { useApplicationForm } from "../app/ApplicationFormContext";
 import { beneficiaryHelpItems } from "../content/helpContent";
 import FormHelpChips from "../components/content/HelpChips";
 import { getContent } from "../content";
+import FieldGrid from "../components/layout/FieldGrid";
 
 const content = getContent();
 
@@ -256,14 +254,15 @@ export default function Beneficiary() {
       ELIGIBLE_CATEGORY_IDS.has(coverage.categoryId),
   );
 
-  const selectedDependents = Array.isArray(values.dependents)
-    ? values.dependents
-    : [];
+  const selectedDependents = useMemo(
+    () => (Array.isArray(values.dependents) ? values.dependents : []),
+    [values.dependents],
+  );
 
-  function isApplicantSelectedForProduct(
+  const isApplicantSelectedForProduct = useCallback((
     coverageId: string,
     applicantId: CoverageApplicantId,
-  ): boolean {
+  ): boolean => {
     // If the dependent type is no longer selected on eligibility, never show it
     if (applicantId === "spouse" && !selectedDependents.includes("spouse"))
       return false;
@@ -283,7 +282,7 @@ export default function Beneficiary() {
     if (applicantId === "spouse") return selectedDependents.includes("spouse");
     if (applicantId === "child") return selectedDependents.includes("child");
     return false;
-  }
+  }, [productApplicants, selectedDependents]);
 
   const applicantProducts = useMemo(() => {
     const byApplicant: Record<"member" | "spouse", ProductContext[]> = {
@@ -320,7 +319,7 @@ export default function Beneficiary() {
     }
 
     return byApplicant;
-  }, [selectedCoverages, storedAmounts, productApplicants, selectedDependents]);
+  }, [selectedCoverages, storedAmounts, isApplicantSelectedForProduct]);
 
   const [activeProduct, setActiveProduct] = useState<ProductContext | null>(
     null,
@@ -328,12 +327,19 @@ export default function Beneficiary() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);
 
+  // Focus the product's "Add Beneficiary" button after a removal, since the
+  // removed row's own Remove button (which held focus) is unmounted immediately.
+  const addBeneficiaryButtonRefs = useRef<
+    Record<string, HTMLButtonElement | null>
+  >({});
+
   // Local form for beneficiary modal fields (same pattern as DynamicList)
   const {
     control: modalControl,
     handleSubmit: handleModalSubmit,
     reset: resetModalForm,
     setValue: setModalValue,
+    setError: setModalFieldError,
     watch: watchModal,
     formState: { errors: modalErrors },
   } = useForm<Record<string, string>>({
@@ -442,6 +448,9 @@ export default function Beneficiary() {
       productKey,
       current.filter((item) => item.id !== itemId),
     );
+    requestAnimationFrame(() => {
+      addBeneficiaryButtonRefs.current[productKey]?.focus();
+    });
   }
 
   function getFilteredListForDesignation(
@@ -525,15 +534,17 @@ export default function Beneficiary() {
 
     if (modalBeneficiaryType === "individual") {
       if (!Number.isFinite(parsedShare) || parsedShare <= 0) {
-        setModalError("Enter a valid share percentage greater than 0.");
+        const message = "Enter a valid share percentage greater than 0.";
+        setModalError(message);
+        setModalFieldError("share", { type: "manual", message });
         return;
       }
 
       const unassignedShare = getShareRemaining(currentList, modalDesignation);
       if (parsedShare > unassignedShare) {
-        setModalError(
-          `Share exceeds available unassigned percentage (${unassignedShare}%).`,
-        );
+        const message = `Share exceeds available unassigned percentage (${unassignedShare}%).`;
+        setModalError(message);
+        setModalFieldError("share", { type: "manual", message });
         return;
       }
     }
@@ -638,6 +649,11 @@ export default function Beneficiary() {
                     onRemove={() =>
                       removeBeneficiary(product.productKey, item.id)
                     }
+                    itemLabel={`${getBeneficiaryDisplayName(item)}${
+                      item.beneficiaryType === "individual"
+                        ? ` (${item.share}%)`
+                        : ""
+                    }`}
                   >
                     <Typography variant="subtitle2">
                       {getBeneficiaryDisplayName(item)}
@@ -660,6 +676,9 @@ export default function Beneficiary() {
             </Alert>
           ) : (
             <Button
+              ref={(el) => {
+                addBeneficiaryButtonRefs.current[product.productKey] = el;
+              }}
               variant="outlined"
               fullWidth
               startIcon={<AddIcon />}
@@ -941,65 +960,19 @@ export default function Beneficiary() {
                     </Alert>
                   )}
 
-                  <FormControl
+                  <RadioSelectionGroup
+                    name="beneficiary-type"
+                    label="Beneficiary Type"
+                    options={[
+                      { value: "individual", label: "Individual" },
+                      { value: "trust", label: "Trust" },
+                    ]}
+                    value={modalBeneficiaryType}
+                    onChange={(value) =>
+                      setModalBeneficiaryType(value as BeneficiaryType)
+                    }
                     disabled={remainingDesignationSlots === 0 && !editingId}
-                  >
-                    <FormLabel>Beneficiary Type</FormLabel>
-                    <Stack
-                      spacing={1}
-                      sx={{ mt: 1 }}
-                      role="radiogroup"
-                      aria-label="Beneficiary Type"
-                    >
-                      {(
-                        [
-                          { value: "individual", label: "Individual" },
-                          { value: "trust", label: "Trust" },
-                        ] as { value: BeneficiaryType; label: string }[]
-                      ).map((option) => {
-                        const isDisabled =
-                          remainingDesignationSlots === 0 && !editingId;
-                        return (
-                          <SelectionGroup
-                            key={option.value}
-                            role="radio"
-                            aria-checked={modalBeneficiaryType === option.value}
-                            tabIndex={
-                              modalBeneficiaryType === option.value ? 0 : -1
-                            }
-                            onClick={() => {
-                              if (!isDisabled)
-                                setModalBeneficiaryType(option.value);
-                            }}
-                            onKeyDown={(e) => {
-                              if (
-                                !isDisabled &&
-                                (e.key === " " || e.key === "Enter")
-                              ) {
-                                e.preventDefault();
-                                setModalBeneficiaryType(option.value);
-                              }
-                            }}
-                          >
-                            <Radio
-                              checked={modalBeneficiaryType === option.value}
-                              disabled={isDisabled}
-                              size="small"
-                              sx={{ p: 0, pointerEvents: "none" }}
-                              aria-hidden
-                            />
-                            <Box
-                              component="span"
-                              className="SelectionGroup-label"
-                              sx={{ fontSize: "0.875rem" }}
-                            >
-                              {option.label}
-                            </Box>
-                          </SelectionGroup>
-                        );
-                      })}
-                    </Stack>
-                  </FormControl>
+                  />
 
                   {modalBeneficiaryType === "individual" &&
                     individualBlocked && (
@@ -1020,13 +993,7 @@ export default function Beneficiary() {
 
                   {modalBeneficiaryType === "individual" ? (
                     <>
-                      <Box
-                        sx={{
-                          display: "grid",
-                          gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-                          gap: { xs: 0, sm: 2 },
-                        }}
-                      >
+                      <FieldGrid>
                         {BENEFICIARY_INDIVIDUAL_FIELDS.filter(
                           (f) => f.id === "firstName" || f.id === "lastName",
                         ).map((f) => (
@@ -1051,7 +1018,7 @@ export default function Beneficiary() {
                             }
                           />
                         ))}
-                      </Box>
+                      </FieldGrid>
 
                       {BENEFICIARY_INDIVIDUAL_FIELDS.filter(
                         (f) => f.id === "relationship",

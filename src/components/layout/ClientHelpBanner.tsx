@@ -203,7 +203,11 @@ export default function ClientHelpBanner({ client }: ClientHelpBannerProps) {
           }}
         >
           Schedule a Call
-          <IconButton onClick={() => setScheduleOpen(false)} size="small">
+          <IconButton
+            onClick={() => setScheduleOpen(false)}
+            aria-label="Close schedule a call dialog"
+            size="small"
+          >
             <CloseIcon />
           </IconButton>
         </DialogTitle>

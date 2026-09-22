@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import QuickDecisionDrawerContent, {
@@ -11,6 +11,7 @@ import QuickDecisionDrawerContent, {
  */
 export default function QuickDecisionInfoBox() {
   const [expanded, setExpanded] = useState(false);
+  const contentId = useId();
 
   const toggleExpanded = () => setExpanded((prev) => !prev);
 
@@ -43,6 +44,8 @@ export default function QuickDecisionInfoBox() {
             component="span"
             role="button"
             tabIndex={0}
+            aria-expanded={expanded}
+            aria-controls={contentId}
             onClick={toggleExpanded}
             onKeyDown={(event) => {
               if (event.key === "Enter" || event.key === " ") {
@@ -64,7 +67,7 @@ export default function QuickDecisionInfoBox() {
         </Typography>
 
         {expanded && (
-          <Box sx={{ mt: 1.5 }}>
+          <Box id={contentId} sx={{ mt: 1.5 }}>
             <QuickDecisionDrawerContent plainMark />
           </Box>
         )}

@@ -6,6 +6,7 @@ import type { ClientId } from "../../types";
 import type { FieldDefinition } from "../fields/types";
 import type { PageSectionId } from "../pageSections/types";
 import type { FormTemplate } from "../template/resolveTemplate";
+import type { FlowDefinition, FlowId } from "../../content/docs/flows/types";
 
 export type FieldId = string;
 
@@ -23,6 +24,7 @@ export type ClientSupport = {
   email?: string;
   website?: string;
   address?: {
+    organization?: string;
     street?: string;
     city?: string;
     state?: string;
@@ -49,6 +51,11 @@ export type ClientRiderConfig = {
   hasAmount?: boolean;
   minAmount?: number;
   maxAmount?: number;
+  spouseMinAmount?: number;
+  spouseMaxAmount?: number;
+  childMinAmount?: number;
+  childMaxAmount?: number;
+  applicants?: ("member" | "spouse" | "child")[];
   premiumFactor: number;
 };
 
@@ -94,10 +101,18 @@ export type ProductContentBlock =
 
 export type ClientCoverageOverrides = {
   name?: string;
+  /** External product brochure or certificate URL. */
+  brochureUrl?: string;
   categoryId?: CoverageCategoryId;
   riders?: ClientRiderConfig[];
   waitingPeriodOptions?: ClientWaitingPeriodConfig[];
+  waitingPeriodOptionsByApplicant?: Partial<
+    Record<"member" | "spouse" | "child", ClientWaitingPeriodConfig[]>
+  >;
   maxBenefitPeriodOptions?: ClientMaxBenefitPeriodConfig[];
+  maxBenefitPeriodOptionsByApplicant?: Partial<
+    Record<"member" | "spouse" | "child", ClientMaxBenefitPeriodConfig[]>
+  >;
   applicants?: ("member" | "spouse" | "child")[];
   coverageNote?: string;
   featured?: boolean;
@@ -192,6 +207,26 @@ export type HomePageVariant = "default" | "hero-image" | "welcome-back";
 
 export type ThemeColorId = "default" | "teal" | "purple" | "dark-blue";
 
+export type ClientThemeConfig =
+  | {
+      type: "preset";
+      preset: ThemeColorId;
+      primary?: never;
+    }
+  | {
+      type: "custom";
+      primary: `#${string}`;
+      preset?: never;
+    };
+
+/** Single labeled source for ThemeColorId, so a new theme value only needs updating here and in theme.ts. */
+export const themeColorLabels: Record<ThemeColorId, string> = {
+  default: "Default",
+  teal: "Teal",
+  purple: "Purple",
+  "dark-blue": "Dark Blue",
+};
+
 export type ClientFeatures = {
   chat?: boolean;
   chatUrl?: string;
@@ -226,19 +261,69 @@ export type ClientApplicantLabels = {
   child?: string;
 };
 
+export type ClientSiteUrls = {
+  testing?: string;
+  preProduction?: string;
+  production?: string;
+};
+
+
+export type ClientFlows = {
+  /** Client-specific replacements for global flow definitions. Resolved through resolveClientFlows. */
+  overrides?: Partial<Record<FlowId, FlowDefinition>>;
+};
+
+export type ClientEmailSupportOverride = {
+  phone?: string;
+  email?: string;
+  website?: string;
+};
+
+export type ClientEmailContactOverride = {
+  name?: string;
+  acronym?: string;
+};
+
+export type ClientEmailSupport = {
+  /** When true, suppresses the "Questions? We're here to help" contact box in this client's outbound emails. */
+  hideContactBox?: boolean;
+  /** Overrides the client-configured phone/email/website shown in the email support box. */
+  supportOverride?: ClientEmailSupportOverride;
+  /** Overrides the client-configured name/acronym used for the contact shown in the email support box. */
+  contactOverride?: ClientEmailContactOverride;
+};
+
 export type ClientConfig = {
   id: ClientId;
+  /**
+   * Groups multiple ClientConfig entries as sites of one logical client for
+   * site-selection UI (e.g. Site Details' client picker). Defaults to `id`
+   * when omitted, i.e. every client is its own single-site group unless
+   * stated otherwise. See src/config/clients/clientGroups.ts.
+   */
+  clientGroupId?: string;
+  /** Short label distinguishing this site within its clientGroupId (e.g. "Multi-step (default)"). */
+  siteLabel?: string;
   branding: ClientBranding;
   support: ClientSupport;
   pages: ClientPages;
   coverages: ClientCoverages;
   fields: ClientFields;
+  /** Client-specific flow overrides; global flows remain the baseline source of truth. */
+  flows?: ClientFlows;
+  /** Per-client configuration for the "Questions? We're here to help" contact box in outbound emails. */
+  emailSupport?: ClientEmailSupport;
   /** @deprecated Content is now managed in src/content/. This field is unused. */
   content?: ClientContent;
   features?: ClientFeatures;
-  themeColor?: ThemeColorId;
+  /** Site-level brand color input. Semantic and neutral colors remain application-controlled. */
+  theme?: ClientThemeConfig;
   licenseInfo?: string[];
   coverageQuestions?: ClientCoverageQuestions;
   /** Override default applicant section header labels. Max 20 chars each. */
   applicantLabels?: ClientApplicantLabels;
+  /** Deployment environment links for this client's site. Unset until provisioned. */
+  siteUrls?: ClientSiteUrls;
+  /** Query-string parameters (from src/content/docs/urlParameters.ts) this client actually uses in live URLs. Unset/empty until confirmed. */
+  urlParametersInUse?: string[];
 };

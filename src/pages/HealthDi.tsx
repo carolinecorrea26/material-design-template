@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { Box, FormLabel, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import FormRoutePage, { type FormRouteRenderProps } from "../app/RoutePage";
 import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
 import {
   isApplicantApplying,
   shouldShowApplicantLabel,
 } from "../utils/applicantVisibility";
-import FieldRenderer from "../components/forms/FieldRenderer";
-import DynamicList from "../components/forms/DynamicList";
+import YesNoDetailList, {
+  type YesNoDetailQuestion,
+} from "../components/forms/YesNoDetailList";
 import AppDrawer from "../components/layout/AppDrawer";
 import FormHelpChips from "../components/content/HelpChips";
 import type { FieldDefinition } from "../config/fields/types";
@@ -365,59 +366,26 @@ function QuestionSet({
   allFields,
 }: QuestionSetProps) {
   const suffix = applicant === "spouse" ? "-spouse" : "";
+  const questions: YesNoDetailQuestion[] = QUESTIONS.flatMap((question) => {
+    const answerId = `health-di-${question.key}${suffix}`;
+    const field = allFields.find((entry) => entry.id === answerId);
+    return field
+      ? [{
+          field,
+          listName: `${answerId}-details`,
+          mapping: question.mapping as YesNoDetailQuestion["mapping"],
+          renderItem: question.renderItem,
+        }]
+      : [];
+  });
 
   return (
-    <Stack component="ol" spacing={3} sx={{ listStyle: "none", pl: 0 }}>
-      {QUESTIONS.map((q, index) => {
-        const answerId = `health-di-${q.key}${suffix}`;
-        const listName = `health-di-${q.key}${suffix}-details`;
-        const isYes = watchedValues[answerId] === "yes";
-        const questionField = allFields.find((f) => f.id === answerId);
-        if (!questionField) return null;
-
-        return (
-          <Box
-            key={answerId}
-            component="li"
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "auto 1fr",
-              columnGap: 1.5,
-              alignItems: "start",
-            }}
-          >
-            <Box component="span" sx={{ fontWeight: 500, textAlign: "right" }}>
-              {index + 1}.
-            </Box>
-
-            <Stack spacing={2}>
-              <Box>
-                <FormLabel required sx={{ display: "inline-block", mb: 1 }}>
-                  {questionField.label}
-                </FormLabel>
-                <FieldRenderer
-                  field={questionField}
-                  control={control}
-                  errors={errors}
-                  hideLabel
-                  margin="none"
-                />
-              </Box>
-
-              {isYes && (
-                <DynamicList
-                  control={control}
-                  name={listName}
-                  label="details"
-                  mapping={q.mapping as any}
-                  renderItem={q.renderItem}
-                />
-              )}
-            </Stack>
-          </Box>
-        );
-      })}
-    </Stack>
+    <YesNoDetailList
+      questions={questions}
+      control={control}
+      errors={errors}
+      watchedValues={watchedValues}
+    />
   );
 }
 

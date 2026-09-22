@@ -1,12 +1,10 @@
-import type { ClientPageFieldConfig } from "../fields/types";
+import type { ClientPageFieldConfig, ConditionalFieldDefinition } from "../fields/types";
 import { fieldCatalog } from "../fields";
 import type { ClientId } from "../../types";
 
-export type MembershipClientFieldConfig = ClientPageFieldConfig & {
-  showTitleField?: boolean;
-};
+export type MembershipClientFieldConfig = ClientPageFieldConfig;
 
-const waepaExtraFields = [
+const waepaExtraFields: ConditionalFieldDefinition[] = [
   fieldCatalog["waepa-declaration"],
   fieldCatalog["waepa-attestation"],
   fieldCatalog["waepa-employer"],
@@ -16,7 +14,10 @@ const waepaExtraFields = [
   fieldCatalog["waepa-member-first-name"],
   fieldCatalog["waepa-member-last-name"],
   fieldCatalog["waepa-member-id"],
-];
+].map((field) => ({
+  ...field,
+  visibleWhen: [{ fieldId: "membership", equals: "new" }],
+}));
 
 const avmaExtraFields = [
   fieldCatalog["avma-vet-college"],
@@ -24,26 +25,31 @@ const avmaExtraFields = [
   fieldCatalog["avma-occupation"],
 ];
 
+const asceExtraFields = [fieldCatalog["asce-member-id"]];
+
 const cseaExtraFields = [
   fieldCatalog["csea-performing-duties"],
   fieldCatalog["csea-occupation-group"],
 ];
 
-const amaExtraFields = [
+const amaExtraFields: ConditionalFieldDefinition[] = [
   fieldCatalog["ama-physician-type"],
   fieldCatalog["ama-physician-title"],
   fieldCatalog["ama-physician-first-name"],
   fieldCatalog["ama-physician-last-name"],
   fieldCatalog["ama-physician-birth-date"],
   fieldCatalog["ama-physician-email"],
-];
+].map((field) => ({
+  ...field,
+  visibleWhen: [{ fieldId: "membership", equals: "spouse" }],
+}));
 
 export const membershipClientFields: Partial<
   Record<ClientId, MembershipClientFieldConfig>
 > = {
   demo: {
-    showTitleField: false,
     overrides: {
+      title: { hidden: true },
       membership: {
         label: "Are you an active member of Demo Insurance?",
       },
@@ -51,8 +57,8 @@ export const membershipClientFields: Partial<
     extraFields: [],
   },
   abe: {
-    showTitleField: false,
     overrides: {
+      title: { hidden: true },
       membership: {
         label:
           "Are you an active member of a State, Local, or Specialty Bar Association?",
@@ -60,8 +66,8 @@ export const membershipClientFields: Partial<
     },
     extraFields: [],
   },
+  // ama is the one client that shows the "title" field — no title override needed.
   ama: {
-    showTitleField: true,
     overrides: {
       membership: {
         label: "I am a (select one)",
@@ -79,9 +85,19 @@ export const membershipClientFields: Partial<
     },
     extraFields: amaExtraFields,
   },
-  avma: {
-    showTitleField: false,
+  asce: {
     overrides: {
+      title: { hidden: true },
+      membership: {
+        label:
+          "Are you a member of the American Society of Civil Engineers?",
+      },
+    },
+    extraFields: asceExtraFields,
+  },
+  avma: {
+    overrides: {
+      title: { hidden: true },
       membership: {
         label:
           "Are you a member of the American Veterinary Medical Association?",
@@ -90,8 +106,8 @@ export const membershipClientFields: Partial<
     extraFields: avmaExtraFields,
   },
   csea: {
-    showTitleField: false,
     overrides: {
+      title: { hidden: true },
       membership: {
         label: "Are you a member of the CSEA?",
       },
@@ -99,8 +115,8 @@ export const membershipClientFields: Partial<
     extraFields: cseaExtraFields,
   },
   isitrust: {
-    showTitleField: false,
     overrides: {
+      title: { hidden: true },
       membership: {
         label: "I am a member of:",
         inputType: "searchable-select",
@@ -198,8 +214,8 @@ export const membershipClientFields: Partial<
     extraFields: [],
   },
   nso: {
-    showTitleField: false,
     overrides: {
+      title: { hidden: true },
       membership: {
         label: "Are you a nurse?",
       },
@@ -207,8 +223,8 @@ export const membershipClientFields: Partial<
     extraFields: [],
   },
   waepa: {
-    showTitleField: false,
     overrides: {
+      title: { hidden: true },
       membership: {
         label:
           "Are you a current WAEPA member, or are you becoming a new member?",
@@ -221,5 +237,12 @@ export const membershipClientFields: Partial<
       },
     },
     extraFields: waepaExtraFields,
+  },
+  // No membership-specific label override for waepagi (uses the global default),
+  // but it still hides "title" like every client except ama.
+  waepagi: {
+    overrides: {
+      title: { hidden: true },
+    },
   },
 };

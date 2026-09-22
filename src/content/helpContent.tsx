@@ -72,6 +72,7 @@ export function GroupInsuranceDrawerContent({
 }: {
   associationName: string;
 }) {
+  void _associationName;
   const groupHelp = getContent().help.groupInsurance;
   return (
     <Stack spacing={2}>

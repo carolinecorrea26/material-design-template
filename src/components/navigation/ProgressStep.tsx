@@ -296,7 +296,11 @@ export default function ProgressStep({
                   : "#94a3b8";
 
               return (
-                <Step key={step.id} completed={isCompleted}>
+                <Step
+                  key={step.id}
+                  completed={isCompleted}
+                  aria-current={isActive ? "step" : undefined}
+                >
                   <StepLabel
                     onClick={
                       isClickable

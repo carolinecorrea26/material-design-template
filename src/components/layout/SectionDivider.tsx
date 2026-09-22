@@ -48,7 +48,7 @@ export default function SectionDivider({
   sx,
 }: SectionHeaderProps) {
   // Apply variant presets
-  const chipVariant = variant === "subsection" ? "outlined" : chipVariantProp;
+  const chipVariant = variant === "subsection" ? "filled" : chipVariantProp;
   const chipColor = variant === "subsection" ? "default" : chipColorProp;
   const size = variant === "subsection" ? "small" : sizeProp;
   const isSmall = size === "small";
@@ -89,7 +89,7 @@ export default function SectionDivider({
         <Chip
           label={label}
           color={chipColor}
-          variant={chipVariant === "filled" ? "outlined" : "filled"}
+          variant={chipVariant === "filled" ? "filled" : "outlined"}
           size="small"
           icon={Icon ? <Icon /> : undefined}
           sx={chipSx}

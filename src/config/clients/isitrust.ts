@@ -2,7 +2,7 @@ import type { ClientConfig } from "./types";
 
 export const isitrustClient: ClientConfig = {
   id: "isitrust",
-  themeColor: "dark-blue",
+  theme: { type: "preset", preset: "dark-blue" },
   branding: {
     name: "Insurance Specialists, Inc.",
     acronym: "ISITRUST",

@@ -45,15 +45,40 @@ export const pages = [
     path: "/application-edit-confirmation",
     type: "form",
   },
-  { id: "mock-email-preview", path: "/mock-email-preview", type: "receipt" },
+  { id: "mock-email-preview", path: "/mock-email-preview", type: "internal" },
   {
-    id: "information-architecture",
-    path: "/information-architecture",
+    id: "site-features",
+    path: "/portal-admin/site-features",
+    type: "internal",
+  },
+  {
+    id: "site-details",
+    path: "/site-details",
     type: "internal",
   },
   {
     id: "design-system",
     path: "/design-system",
+    type: "internal",
+  },
+  {
+    id: "portal-admin",
+    path: "/portal-admin",
+    type: "internal",
+  },
+  {
+    id: "cms",
+    path: "/portal-admin/cms",
+    type: "internal",
+  },
+  {
+    id: "portal-template-project",
+    path: "/portal-template-project",
+    type: "internal",
+  },
+  {
+    id: "portal-requirements-project",
+    path: "/portal-requirements-project",
     type: "internal",
   },
   { id: "profile", path: "/profile", type: "form", groupId: "profile" },

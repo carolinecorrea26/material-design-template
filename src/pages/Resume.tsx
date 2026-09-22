@@ -1,23 +1,23 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import {
-  Alert,
   Box,
   Button,
   CircularProgress,
-  Link,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import MailLockRounded from "@mui/icons-material/MailLockRounded";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import PageTitle from "../components/layout/PageTitle";
+import PageHeader from "../components/layout/PageHeader";
+import PageShell from "../components/layout/PageShell";
 import FormShell from "../components/layout/FormShell";
 import { getPageSubhead, getPageTitle, getPagePath } from "../config/pages";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import { sendResumeMagicLinkMockEmail } from "../utils/mockEmail";
-import { formatCountdown } from "../utils/formatCountdown";
+import useCountdown from "../hooks/useCountdown";
+import ExpiringCodeAlert from "../components/feedback/ExpiringCodeAlert";
+import ResendCountdownRow from "../components/feedback/ResendCountdownRow";
 
 export default function Resume() {
   const navigate = useNavigate();
@@ -40,35 +40,7 @@ export default function Resume() {
   const [emailError, setEmailError] = useState<string | null>(null);
   const [isEmailSending, setIsEmailSending] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
-  const [secondsLeft, setSecondsLeft] = useState(600);
-
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    if (!emailSent) {
-      return undefined;
-    }
-
-    timerRef.current = setInterval(() => {
-      setSecondsLeft((previousSeconds) => {
-        if (previousSeconds <= 1) {
-          if (timerRef.current) {
-            clearInterval(timerRef.current);
-          }
-
-          return 0;
-        }
-
-        return previousSeconds - 1;
-      });
-    }, 1000);
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    };
-  }, [emailSent]);
+  const { secondsLeft, reset: resetCountdown, restart } = useCountdown(600);
 
   function handleEmailSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -96,41 +68,30 @@ export default function Resume() {
         return;
       }
 
-      setSecondsLeft(600);
+      restart();
       setEmailSent(true);
     }, 1500);
   }
 
   function handleResendLink() {
     setEmailSent(false);
-    setSecondsLeft(600);
+    resetCountdown();
   }
 
   return (
-    <Stack
-      spacing={2}
-      sx={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "flex-start",
-        px: { xs: 2, sm: 3 },
-        py: { xs: 4, sm: 6 },
-      }}
-    >
-      <Box sx={{ width: "100%", maxWidth: 600 }}>
+    <Box sx={{ flex: 1, px: { xs: 2, sm: 3 }, py: { xs: 4, sm: 6 } }}>
+      <PageShell title={getPageTitle("resume")} maxWidth={600} noTitle>
         <FormShell
           sx={{
             px: { xs: 2, sm: 4 },
             py: 6,
           }}
         >
-          <Box sx={{ mb: 2 }}>
-            <PageTitle
-              title={getPageTitle("resume")}
-              subhead={getPageSubhead("resume")}
-              onBack={() => navigate(-1)}
-            />
-          </Box>
+          <PageHeader
+            title={getPageTitle("resume")}
+            subhead={getPageSubhead("resume")}
+            onBack={() => navigate(-1)}
+          />
 
           {isEmailSending ? (
             <Box
@@ -151,71 +112,24 @@ export default function Resume() {
             </Box>
           ) : emailSent ? (
             <Stack spacing={2} sx={{ py: 1 }}>
-              {secondsLeft === 0 ? (
-                <Alert severity="error">
-                  Your secure link has expired.{" "}
-                  <Link
-                    href="#"
-                    underline="hover"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      handleResendLink();
-                    }}
-                    sx={{
-                      fontSize: "inherit",
-                      verticalAlign: "baseline",
-                    }}
-                  >
-                    Resend link
-                  </Link>
-                </Alert>
-              ) : (
-                <Alert severity="success" icon={<MailLockRounded />}>
+              <ExpiringCodeAlert
+                secondsLeft={secondsLeft}
+                kind="link"
+                onResend={handleResendLink}
+                activeIcon={<MailLockRounded />}
+              >
                   A secure link has been sent to{" "}
                   <Box component="span" sx={{ fontWeight: 700 }}>
                     {emailAddress}
                   </Box>
                   . Open your email and click the link to continue.
-                </Alert>
-              )}
+              </ExpiringCodeAlert>
 
-              <Stack
-                direction="row"
-                spacing={0.5}
-                alignItems="center"
-                justifyContent="space-between"
-                sx={{ px: 0.5 }}
-              >
-                <Typography
-                  variant="body2"
-                  color={secondsLeft === 0 ? "error" : "text.secondary"}
-                  sx={{ fontSize: "0.8125rem" }}
-                >
-                  {secondsLeft === 0 ? (
-                    "Link expired"
-                  ) : (
-                    <>
-                      Link expires in{" "}
-                      <Box component="span" sx={{ fontWeight: 700 }}>
-                        {formatCountdown(secondsLeft)}
-                      </Box>
-                    </>
-                  )}
-                </Typography>
-
-                <Button
-                  variant="text"
-                  size="small"
-                  startIcon={<RefreshRoundedIcon />}
-                  onClick={handleResendLink}
-                  sx={{
-                    textTransform: "none",
-                    fontSize: "0.8125rem",
-                  }}
-                >
-                  Resend link
-                </Button>
-              </Stack>
+              <ResendCountdownRow
+                secondsLeft={secondsLeft}
+                kind="link"
+                onResend={handleResendLink}
+              />
             </Stack>
           ) : (
             <Box
@@ -260,7 +174,7 @@ export default function Resume() {
             </Box>
           )}
         </FormShell>
-      </Box>
-    </Stack>
+      </PageShell>
+    </Box>
   );
 }

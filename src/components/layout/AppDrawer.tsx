@@ -9,7 +9,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 
 type AppDrawerProps = {
   open: boolean;
@@ -17,6 +17,8 @@ type AppDrawerProps = {
   /** Optional title shown in the standard drawer header with a close button.
    *  Omit when the content manages its own header. */
   title?: ReactNode;
+  /** Accessible name for the drawer when `title` is omitted or is not plain text. */
+  ariaLabel?: string;
   /** Use SwipeableDrawer on mobile (recommended for user-initiated drawers). */
   swipeable?: boolean;
   children: ReactNode;
@@ -26,12 +28,20 @@ export default function AppDrawer({
   open,
   onClose,
   title,
+  ariaLabel,
   swipeable = false,
   children,
 }: AppDrawerProps) {
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const anchor = isDesktop ? "right" : "bottom";
+  const titleId = useId();
+  const paperAriaProps =
+    title != null
+      ? { "aria-labelledby": titleId }
+      : ariaLabel
+        ? { "aria-label": ariaLabel }
+        : {};
 
   const content = (
     <Box
@@ -60,7 +70,9 @@ export default function AppDrawer({
             bgcolor: "background.paper",
           }}
         >
-          <Typography variant="h6">{title}</Typography>
+          <Typography variant="h6" id={titleId}>
+            {title}
+          </Typography>
           <IconButton onClick={onClose} aria-label="Close drawer">
             <CloseRoundedIcon />
           </IconButton>
@@ -89,6 +101,7 @@ export default function AppDrawer({
         onClose={onClose}
         onOpen={() => {}}
         disableSwipeToOpen
+        slotProps={{ paper: { ...paperAriaProps } }}
         sx={{
           "& .MuiDrawer-paper": {
             borderTopLeftRadius: 16,
@@ -102,7 +115,12 @@ export default function AppDrawer({
   }
 
   return (
-    <Drawer anchor={anchor} open={open} onClose={onClose}>
+    <Drawer
+      anchor={anchor}
+      open={open}
+      onClose={onClose}
+      slotProps={{ paper: { ...paperAriaProps } }}
+    >
       {content}
     </Drawer>
   );

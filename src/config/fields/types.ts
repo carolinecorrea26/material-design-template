@@ -1,3 +1,5 @@
+import type { SectionVisibilityRule } from "../pageSections/types";
+
 export type FieldOption = {
   value: string;
   label: string;
@@ -182,6 +184,7 @@ export type FieldId =
   | "waepa-member-first-name"
   | "waepa-member-last-name"
   | "waepa-member-id"
+  | "asce-member-id"
   | "avma-vet-college"
   | "avma-graduation-year"
   | "avma-occupation"
@@ -217,9 +220,14 @@ export type FieldDefinition = {
   showPhoneTypeSelector?: boolean;
 };
 
+export type ConditionalFieldDefinition = FieldDefinition & {
+  /** Only included when every rule matches current form values (see evaluateVisibilityRules). Omitted/empty = always included. */
+  visibleWhen?: SectionVisibilityRule[];
+};
+
 export type ClientPageFieldConfig = {
   overrides?: Partial<
     Record<string, Partial<FieldDefinition> & { hidden?: boolean }>
   >;
-  extraFields?: FieldDefinition[];
+  extraFields?: ConditionalFieldDefinition[];
 };

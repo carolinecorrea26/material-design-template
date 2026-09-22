@@ -91,6 +91,8 @@ export default function CoverageNeedsCalculator() {
 
       {hasInput && (
         <Box
+          role="status"
+          aria-live="polite"
           sx={{
             p: 2,
             borderRadius: 2,

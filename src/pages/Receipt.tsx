@@ -175,7 +175,7 @@ export default function Receipt() {
             </Typography>
 
             <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
-              <span color="text.secondary">Confirmation number:</span>{" "}
+              <span color="text.secondary">{receiptContent.confirmationNumberLabel}</span>{" "}
               <strong>{confirmationNumber || "-"}</strong>
             </Typography>
 
@@ -194,14 +194,14 @@ export default function Receipt() {
                 startIcon={<FileDownloadRoundedIcon />}
                 disableElevation
               >
-                Application PDF
+                {receiptContent.documentDownloadLabels.application}
               </Button>
 
               <Button
                 variant="outlined"
                 startIcon={<FileDownloadRoundedIcon />}
               >
-                Payment PDF
+                {receiptContent.documentDownloadLabels.payment}
               </Button>
 
               {shouldShowQuickDecisionDownload && (
@@ -209,7 +209,7 @@ export default function Receipt() {
                   variant="outlined"
                   startIcon={<FileDownloadRoundedIcon />}
                 >
-                  QuickDecision PDF
+                  {receiptContent.documentDownloadLabels.quickDecision}
                 </Button>
               )}
             </Stack>
@@ -273,8 +273,10 @@ export default function Receipt() {
               }}
               noWrap
             >
-              {orderedDecisionEntries.length} product
-              {orderedDecisionEntries.length !== 1 ? "s" : ""}
+              {orderedDecisionEntries.length}
+              {orderedDecisionEntries.length === 1
+                ? ` ${receiptContent.summaryLabels.productSingular}`
+                : ` ${receiptContent.summaryLabels.productPlural}`}
             </Typography>
           </Box>
         </Box>
@@ -385,9 +387,9 @@ export default function Receipt() {
                         color="text.secondary"
                         sx={{ mb: 2 }}
                       >
-                        {applicantLabel} coverage
+                        {applicantLabel} {receiptContent.coverageCardLabels.coverageSuffix}
                         {coverageAmountRequested
-                          ? ` · Requested: ${formatCurrencyAmount(coverageAmountRequested)}`
+                          ? ` · ${receiptContent.coverageCardLabels.requested} ${formatCurrencyAmount(coverageAmountRequested)}`
                           : ""}
                       </Typography>
 

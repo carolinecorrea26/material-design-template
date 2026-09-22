@@ -35,7 +35,15 @@ export default function AppSnackbar({
           : { vertical: "top", horizontal: "center" }
       }
     >
-      <Alert onClose={onClose} severity={severity} variant="filled">
+      <Alert
+        onClose={onClose}
+        severity={severity}
+        variant="filled"
+        // Error and warning use assertive live regions; info/success use polite.
+        role={
+          severity === "error" || severity === "warning" ? "alert" : "status"
+        }
+      >
         {message}
       </Alert>
     </Snackbar>

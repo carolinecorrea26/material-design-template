@@ -14,7 +14,6 @@ type PageLayoutProps = {
   aboveHeader?: ReactNode;
   headerOverride?: ReactNode;
   noTitle?: boolean;
-  noContainer?: boolean;
 };
 
 export default function PageShell({

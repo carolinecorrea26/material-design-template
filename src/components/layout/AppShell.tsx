@@ -58,11 +58,33 @@ export default function AppShell({
         backgroundColor: "background.default",
       }}
     >
+      <Box
+        component="a"
+        href="#main-content"
+        sx={{
+          position: "absolute",
+          left: 8,
+          top: -48,
+          zIndex: 2000,
+          px: 2,
+          py: 1,
+          bgcolor: "background.paper",
+          color: "text.primary",
+          borderRadius: 1,
+          boxShadow: 3,
+          transition: "top 0.15s ease-in-out",
+          "&:focus": {
+            top: 8,
+          },
+        }}
+      >
+        Skip to main content
+      </Box>
+      {showCookieBanner && <CookieDialog onClose={handleCloseCookieBanner} />}
       <AppHeader client={client} variant={variant} />
       <AppBody>{children}</AppBody>
       <AppFooter client={client} />
       <DevTools />
-      {showCookieBanner && <CookieDialog onClose={handleCloseCookieBanner} />}
     </Box>
   );
 }

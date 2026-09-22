@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Box, Button, DialogContentText } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import {
@@ -12,7 +12,7 @@ import DynamicListItem from "./DynamicListItem";
 import AppModal from "../layout/AppModal";
 import type { FieldDefinition } from "../../config/fields/types";
 
-type DynamicListFieldMapping<T extends Record<string, string>> = {
+export type DynamicListFieldMapping<T extends Record<string, string>> = {
   fields: FieldDefinition[];
   fieldToKey: T;
   /** Field IDs to render side-by-side in a 2-column grid inside the dialog. */
@@ -42,7 +42,6 @@ export default function DynamicList<T extends Record<string, string>>({
   mapping,
   renderItem,
   getItemLabel,
-  minItems: _minItems = 0,
   maxItems = 10,
 }: DynamicListProps<T>) {
   const { fields, append, remove, update } = useFieldArray({
@@ -53,6 +52,8 @@ export default function DynamicList<T extends Record<string, string>>({
   const [showForm, setShowForm] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [removeIndex, setRemoveIndex] = useState<number | null>(null);
+  const [statusMessage, setStatusMessage] = useState("");
+  const addButtonRef = useRef<HTMLButtonElement>(null);
 
   const defaultFormValues = Object.fromEntries(
     mapping.fields.map((f) => [f.id, ""]),
@@ -89,8 +90,10 @@ export default function DynamicList<T extends Record<string, string>>({
     }
     if (editingIndex !== null) {
       update(editingIndex, item);
+      setStatusMessage(`${label} updated.`);
     } else {
       append(item);
+      setStatusMessage(`${label} added.`);
     }
     setShowForm(false);
     reset(defaultFormValues);
@@ -109,9 +112,17 @@ export default function DynamicList<T extends Record<string, string>>({
 
   const handleRemoveConfirm = () => {
     if (removeIndex !== null) {
+      setStatusMessage(
+        removeItemLabel
+          ? `${removeItemLabel} removed.`
+          : `${label} removed.`,
+      );
       remove(removeIndex);
     }
     setRemoveIndex(null);
+    requestAnimationFrame(() => {
+      addButtonRef.current?.focus();
+    });
   };
 
   const handleRemoveCancel = () => {
@@ -152,6 +163,7 @@ export default function DynamicList<T extends Record<string, string>>({
 
       {fields.length < maxItems && (
         <Button
+          ref={addButtonRef}
           onClick={handleAdd}
           variant="outlined"
           size="medium"
@@ -161,6 +173,21 @@ export default function DynamicList<T extends Record<string, string>>({
           Add {label}
         </Button>
       )}
+
+      <Box
+        role="status"
+        aria-live="polite"
+        sx={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          overflow: "hidden",
+          clip: "rect(0 0 0 0)",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {statusMessage}
+      </Box>
 
       {/* Add / Edit dialog */}
       <AppModal

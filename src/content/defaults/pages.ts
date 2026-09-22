@@ -122,13 +122,29 @@ export const pagesDefaults: Partial<PagesContent> = {
     title: "Mock Email Preview",
     navTitle: "Mock email preview",
   },
-  "information-architecture": {
-    title: "Information Architecture",
-    navTitle: "Information architecture",
+  "site-details": {
+    title: "Site Details",
+    navTitle: "Site Details",
   },
   "design-system": {
     title: "Design System",
     navTitle: "Design system",
+  },
+  "portal-admin": {
+    title: "Portal Admin",
+    navTitle: "Portal Admin",
+  },
+  cms: {
+    title: "CMS",
+    navTitle: "CMS",
+  },
+  "portal-template-project": {
+    title: "Portal Site Template (v3) Project",
+    navTitle: "Portal Site Template (v3) Project",
+  },
+  "portal-requirements-project": {
+    title: "Portal Admin Project",
+    navTitle: "Portal Admin Project",
   },
   profile: {
     title: "About you",

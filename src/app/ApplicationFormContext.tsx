@@ -32,7 +32,10 @@ type ApplicationFormContextValue = {
 
 export const STORAGE_KEY = "applicationFormValues";
 
-const ApplicationFormContext =
+// Exported (not just the hook) so Storybook stories for consumers like
+// ProgressStep can supply fixed demo values without going through the real
+// provider's sessionStorage-backed persistence.
+export const ApplicationFormContext =
   createContext<ApplicationFormContextValue | null>(null);
 
 type ApplicationFormProviderProps = {

@@ -2,14 +2,12 @@ import { useState, type FormEvent } from "react";
 import {
   Box,
   Button,
-  FormControl,
-  FormLabel,
-  Stack,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import PageTitle from "../components/layout/PageTitle";
+import PageHeader from "../components/layout/PageHeader";
+import PageShell from "../components/layout/PageShell";
 import FormShell from "../components/layout/FormShell";
-import SelectionGroup from "../components/forms/SelectionGroup";
+import RadioSelectionGroup from "../components/forms/RadioSelectionGroup";
 import { getPagePath, getPageTitle } from "../config/pages";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 
@@ -33,25 +31,15 @@ export default function ResumeMethod() {
   }
 
   return (
-    <Stack
-      spacing={2}
-      sx={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "flex-start",
-        px: { xs: 2, sm: 3 },
-        py: { xs: 4, sm: 6 },
-      }}
-    >
-      <Box sx={{ width: "100%", maxWidth: 600 }}>
+    <Box sx={{ flex: 1, px: { xs: 2, sm: 3 }, py: { xs: 4, sm: 6 } }}>
+      <PageShell title={getPageTitle("resume-method")} maxWidth={600} noTitle>
         <FormShell
           sx={{
             px: { xs: 2, sm: 4 },
             py: 6,
           }}
         >
-          <Box sx={{ mb: 2 }}>
-            <PageTitle
+          <PageHeader
               title={getPageTitle("resume-method")}
               subhead={
                 <>
@@ -70,8 +58,7 @@ export default function ResumeMethod() {
                   .
                 </>
               }
-            />
-          </Box>
+          />
 
           <Box
             component="form"
@@ -79,63 +66,14 @@ export default function ResumeMethod() {
             noValidate
             sx={{ py: 1 }}
           >
-            <FormControl fullWidth>
-              <FormLabel
-                required={methodField?.required}
-                sx={{ display: "block", mb: 1 }}
-                id="resume-delivery-method-label"
-              >
-                {methodField?.label}
-              </FormLabel>
-
-              <Box
-                role="radiogroup"
-                aria-labelledby="resume-delivery-method-label"
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%",
-                  gap: 1,
-                  mt: 1,
-                }}
-              >
-                {(methodField?.options ?? []).map((option) => {
-                  const checked = deliveryMethod === option.value;
-                  return (
-                    <SelectionGroup
-                      key={option.value}
-                      role="radio"
-                      aria-checked={checked}
-                      tabIndex={checked ? 0 : -1}
-                      onClick={() => setDeliveryMethod(option.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === " " || e.key === "Enter") {
-                          e.preventDefault();
-                          setDeliveryMethod(option.value);
-                        }
-                      }}
-                    >
-                      <Box
-                        component="input"
-                        type="radio"
-                        name="resume-delivery-method"
-                        value={option.value}
-                        checked={checked}
-                        onChange={() => setDeliveryMethod(option.value)}
-                        sx={{ accentColor: "primary.main" }}
-                      />
-                      <Box
-                        component="span"
-                        className="SelectionGroup-label"
-                        sx={{ ml: 1.5 }}
-                      >
-                        {option.label}
-                      </Box>
-                    </SelectionGroup>
-                  );
-                })}
-              </Box>
-            </FormControl>
+            <RadioSelectionGroup
+              name="resume-delivery-method"
+              label={methodField?.label ?? "Delivery method"}
+              options={methodField?.options ?? []}
+              value={deliveryMethod}
+              onChange={setDeliveryMethod}
+              required={methodField?.required}
+            />
 
             <Box
               sx={{
@@ -156,7 +94,7 @@ export default function ResumeMethod() {
             </Box>
           </Box>
         </FormShell>
-      </Box>
-    </Stack>
+      </PageShell>
+    </Box>
   );
 }

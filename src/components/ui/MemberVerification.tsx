@@ -87,10 +87,15 @@ function MethodStep({
         would like to complete verification.
       </Typography>
       <FormControl>
-        <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
+        <Typography
+          variant="subtitle2"
+          id="verification-method-label"
+          sx={{ mb: 1, fontWeight: 600 }}
+        >
           Choose how to provide verification
         </Typography>
         <RadioGroup
+          aria-labelledby="verification-method-label"
           value={method}
           onChange={(e) => setMethod(e.target.value as VerificationMethod)}
         >
@@ -185,11 +190,16 @@ function SecurityQuestionsStep({
       </Typography>
       {SECURITY_QUESTIONS.map((q) => (
         <Box key={q.id}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+          <Typography
+            variant="subtitle2"
+            id={`security-question-${q.id}-label`}
+            sx={{ fontWeight: 600, mb: 1 }}
+          >
             {q.question}
           </Typography>
           <FormControl fullWidth>
             <RadioGroup
+              aria-labelledby={`security-question-${q.id}-label`}
               value={answers[q.id] ?? ""}
               onChange={(e) =>
                 setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))

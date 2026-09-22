@@ -1,6 +1,7 @@
 import type { ClientConfig } from "./types";
 import { abeClient } from "./abe";
 import { amaClient } from "./ama";
+import { asceClient } from "./asce";
 import { avmaClient } from "./avma";
 import { cseaClient } from "./csea";
 import { demoClient } from "./demo";
@@ -13,6 +14,7 @@ export const clients = {
   demo: demoClient,
   abe: abeClient,
   ama: amaClient,
+  asce: asceClient,
   avma: avmaClient,
   csea: cseaClient,
   nso: nsoClient,

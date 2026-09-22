@@ -1,27 +1,25 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import {
-  Alert,
   Box,
   Button,
-  Link,
-  Stack,
   TextField,
-  Typography,
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
-import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getPagePath, getPageTitle } from "../config/pages";
-import { formatCountdown } from "../utils/formatCountdown";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import {
   useApplicationForm,
   type ApplicationFormValues,
 } from "../app/ApplicationFormContext";
 import type { ClientId } from "../types";
-import PageTitle from "../components/layout/PageTitle";
+import PageHeader from "../components/layout/PageHeader";
+import PageShell from "../components/layout/PageShell";
 import FormShell from "../components/layout/FormShell";
+import useCountdown from "../hooks/useCountdown";
+import ExpiringCodeAlert from "../components/feedback/ExpiringCodeAlert";
+import ResendCountdownRow from "../components/feedback/ResendCountdownRow";
 
 const MOCK_SAVED_APPLICATIONS: Record<string, ApplicationFormValues> = {
   "returning.user@example.com": {
@@ -72,31 +70,19 @@ export default function ResumeCode() {
   const [phoneCodeError, setPhoneCodeError] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [verifySuccess, setVerifySuccess] = useState(false);
-  const [secondsLeft, setSecondsLeft] = useState(300);
-
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const { secondsLeft, start: startCountdown, restart } = useCountdown(300);
+  const [resendConfirmationVisible, setResendConfirmationVisible] =
+    useState(false);
 
   useEffect(() => {
-    timerRef.current = setInterval(() => {
-      setSecondsLeft((previousSeconds) => {
-        if (previousSeconds <= 1) {
-          if (timerRef.current) {
-            clearInterval(timerRef.current);
-          }
+    startCountdown();
+  }, [startCountdown]);
 
-          return 0;
-        }
-
-        return previousSeconds - 1;
-      });
-    }, 1000);
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    };
-  }, []);
+  function handleResendCode() {
+    restart();
+    setPhoneCodeError(null);
+    setResendConfirmationVisible(true);
+  }
 
   function handleVerifySubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -136,25 +122,15 @@ export default function ResumeCode() {
   }
 
   return (
-    <Stack
-      spacing={2}
-      sx={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "flex-start",
-        px: { xs: 2, sm: 3 },
-        py: { xs: 4, sm: 6 },
-      }}
-    >
-      <Box sx={{ width: "100%", maxWidth: 600 }}>
+    <Box sx={{ flex: 1, px: { xs: 2, sm: 3 }, py: { xs: 4, sm: 6 } }}>
+      <PageShell title={getPageTitle("resume-code")} maxWidth={600} noTitle>
         <FormShell
           sx={{
             px: { xs: 2, sm: 4 },
             py: 6,
           }}
         >
-          <Box sx={{ mb: 2 }}>
-            <PageTitle
+          <PageHeader
               title={getPageTitle("resume-code")}
               subhead={
                 <>
@@ -173,8 +149,7 @@ export default function ResumeCode() {
                 </>
               }
               onBack={() => navigate(getPagePath("resume-method"))}
-            />
-          </Box>
+          />
 
           <Box
             component="form"
@@ -182,24 +157,15 @@ export default function ResumeCode() {
             noValidate
             sx={{ py: 1 }}
           >
-            {secondsLeft === 0 && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                Your verification code has expired.{" "}
-                <Link
-                  href="#"
-                  underline="hover"
-                  onClick={(event) => {
-                    event.preventDefault();
-                  }}
-                  sx={{
-                    fontSize: "inherit",
-                    verticalAlign: "baseline",
-                  }}
-                >
-                  Resend code
-                </Link>
-              </Alert>
-            )}
+            <Box sx={{ mb: secondsLeft === 0 || resendConfirmationVisible ? 2 : 0 }}>
+              <ExpiringCodeAlert
+                secondsLeft={secondsLeft}
+                kind="code"
+                onResend={handleResendCode}
+                showConfirmation={resendConfirmationVisible}
+                confirmationMessage="A new verification code has been sent."
+              />
+            </Box>
 
             <TextField
               fullWidth
@@ -214,6 +180,10 @@ export default function ResumeCode() {
                 if (phoneCodeError) {
                   setPhoneCodeError(null);
                 }
+
+                if (resendConfirmationVisible) {
+                  setResendConfirmationVisible(false);
+                }
               }}
               inputProps={{
                 inputMode: "numeric",
@@ -223,44 +193,13 @@ export default function ResumeCode() {
               helperText={phoneCodeError ?? undefined}
             />
 
-            <Stack
-              direction="row"
-              spacing={0.5}
-              justifyContent="space-between"
-              alignItems="center"
-              sx={{
-                mt: 1,
-                px: 0.5,
-                mb: 3,
-              }}
-            >
-              <Typography
-                variant="body2"
-                color={secondsLeft === 0 ? "error" : "text.secondary"}
-                sx={{ fontSize: "0.8125rem" }}
-              >
-                {secondsLeft === 0 ? (
-                  "Code expired"
-                ) : (
-                  <>
-                    Code expires in{" "}
-                    <Box component="span" sx={{ fontWeight: 700 }}>
-                      {formatCountdown(secondsLeft)}
-                    </Box>
-                  </>
-                )}
-              </Typography>
-
-              <Button
-                variant="text"
-                size="small"
-                startIcon={<RefreshRoundedIcon />}
-                onClick={() => {}}
-                sx={{ fontSize: "0.8125rem" }}
-              >
-                Resend code
-              </Button>
-            </Stack>
+            <Box sx={{ mt: 1, mb: 3 }}>
+              <ResendCountdownRow
+                secondsLeft={secondsLeft}
+                kind="code"
+                onResend={handleResendCode}
+              />
+            </Box>
 
             <Box
               sx={{
@@ -302,7 +241,7 @@ export default function ResumeCode() {
             </Box>
           </Box>
         </FormShell>
-      </Box>
-    </Stack>
+      </PageShell>
+    </Box>
   );
 }
