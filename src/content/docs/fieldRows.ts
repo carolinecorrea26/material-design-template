@@ -165,6 +165,203 @@ function getFieldValidation(field?: {
 
 export function getCustomPageFieldRows(pageId: PageId): FieldRow[] | null {
   switch (pageId) {
+    case "home":
+      return [
+        {
+          sectionId: "home-quote-entry",
+          sectionLabel: "Home quote entry",
+          applicant: "member",
+          fieldId: "home-quote-birth-date",
+          label: "Date of Birth",
+          inputType: "date",
+          required: "Yes",
+          options: "—",
+          visibleWhen: "Home quote entry is shown",
+          storybook: {
+            label: "EligibilityFields",
+            storyId: "coverage-commerce-eligibilityfields--default",
+          },
+        },
+        {
+          sectionId: "home-quote-entry",
+          sectionLabel: "Home quote entry",
+          applicant: "member",
+          fieldId: "home-quote-zip-postal-code",
+          label: "ZIP / Postal Code",
+          inputType: "text",
+          required: "Yes",
+          options: "—",
+          visibleWhen: "Home quote entry is shown",
+          storybook: {
+            label: "EligibilityFields",
+            storyId: "coverage-commerce-eligibilityfields--default",
+          },
+        },
+        {
+          sectionId: "home-quote-entry",
+          sectionLabel: "Home quote entry",
+          applicant: "member",
+          fieldId: "home-quote-state",
+          label: "State",
+          inputType: "dropdown",
+          required: "Yes",
+          options: "US states",
+          visibleWhen: "Home quote entry is shown",
+          storybook: {
+            label: "EligibilityFields",
+            storyId: "coverage-commerce-eligibilityfields--default",
+          },
+        },
+        ...[
+          ["quote-birth-date", "Date of Birth", "date", "—"],
+          ["quote-zip-postal-code", "ZIP / Postal Code", "text", "—"],
+          ["quote-state", "State", "dropdown", "US states"],
+        ].map(([fieldId, label, inputType, options]) => ({
+          sectionId: "quote-calculator-eligibility",
+          sectionLabel: "Quote Calculator — eligibility",
+          applicant: "member",
+          fieldId,
+          label,
+          inputType,
+          required: "Yes",
+          options,
+          visibleWhen: "Quote Calculator collects eligibility (Membership entry)",
+          storybook: {
+            label: "QuoteCalculator",
+            storyId: "coverage-commerce-quotecalculator--collects-eligibility",
+          },
+        })),
+        {
+          sectionId: "quote-calculator",
+          sectionLabel: "Quote Calculator",
+          applicant: "member",
+          fieldId: "quote-coverage-categories",
+          label: "Coverage categories",
+          inputType: "multi-select",
+          required: "Yes",
+          options: "Dynamic: enabled coverage categories",
+          visibleWhen: "More than one coverage category is available",
+          storybook: {
+            label: "CoverageCategorySelector",
+            storyId: "coverage-commerce-coveragecategoryselector--default",
+          },
+        },
+        ...[
+          ["quote-gender", "Gender", "radio", "Male, Female"],
+          ["quote-smoker", "Do you use nicotine products?", "radio", "Yes, No"],
+          ["quote-average-monthly-income", "Average monthly income", "currency", "—"],
+          ["quote-hours-worked-per-week", "# Hours You Work/Week", "number", "—"],
+          ["quote-monthly-business-expenses", "Average monthly business expenses", "currency", "—"],
+          ["quote-business-expense-responsibility", "% you are responsible for", "percent", "—"],
+        ].map(([fieldId, label, inputType, options]) => ({
+          sectionId: "quote-calculator-questions",
+          sectionLabel: "Quote Calculator — coverage questions",
+          applicant: "member",
+          fieldId,
+          label,
+          inputType,
+          required: "Yes (when shown)",
+          options,
+          visibleWhen: "Selected coverage category requires this question",
+          storybook: {
+            label: "QuoteCalculator",
+            storyId: "coverage-commerce-quotecalculator--eligibility-already-known",
+          },
+        })),
+        {
+          sectionId: "quote-calculator-products",
+          sectionLabel: "Quote Calculator — products",
+          applicant: "member",
+          fieldId: "quote-product-selection",
+          label: "Select for myself",
+          inputType: "checkbox",
+          required: "No",
+          options: "—",
+          visibleWhen: "Quote products are displayed (repeated per product)",
+          storybook: {
+            label: "EstimatorProductCard",
+            storyId: "coverage-commerce-estimatorproductcard--unselected",
+          },
+        },
+        {
+          sectionId: "quote-calculator-products",
+          sectionLabel: "Quote Calculator — products",
+          applicant: "member",
+          fieldId: "quote-benefit-amount",
+          label: "Benefit Amount",
+          inputType: "dropdown",
+          required: "Yes (when product shown)",
+          options: "Dynamic: product amount range",
+          visibleWhen: "Quote products are displayed (repeated per product)",
+          storybook: {
+            label: "EstimatorProductCard",
+            storyId: "coverage-commerce-estimatorproductcard--selected",
+          },
+        },
+        {
+          sectionId: "quote-calculator-summary",
+          sectionLabel: "Quote Calculator — summary",
+          applicant: "—",
+          fieldId: "quote-rate-frequency",
+          label: "Estimated cost frequency",
+          inputType: "switch",
+          required: "No",
+          options: "Monthly, Annual",
+          visibleWhen: "Client enables the quote frequency toggle",
+          storybook: {
+            label: "RateFrequencyControl",
+            storyId: "coverage-commerce-ratefrequencycontrol--interactive",
+          },
+        },
+      ];
+    case "resume":
+      return [
+        {
+          sectionId: "resume",
+          sectionLabel: "Resume application",
+          applicant: "—",
+          fieldId: "resume-email",
+          label: fieldCatalog["resume-email"].label,
+          inputType: "email",
+          required: fieldCatalog["resume-email"].required ? "Yes" : "No",
+          options: "—",
+          visibleWhen: "Always visible",
+          componentLabel: "MUI TextField (inline)",
+        },
+      ];
+    case "resume-method":
+      return [
+        {
+          sectionId: "resume-method",
+          sectionLabel: "Resume delivery method",
+          applicant: "—",
+          fieldId: "resume-delivery-method",
+          label: fieldCatalog["resume-delivery-method"].label,
+          inputType: "radio",
+          required: fieldCatalog["resume-delivery-method"].required ? "Yes" : "No",
+          options: formatOptions("resume-delivery-method"),
+          visibleWhen: "Always visible",
+          storybook: {
+            label: "RadioSelectionGroup",
+            storyId: "forms-radioselectiongroup--interactive",
+          },
+        },
+      ];
+    case "resume-code":
+      return [
+        {
+          sectionId: "resume-code",
+          sectionLabel: "Resume verification",
+          applicant: "—",
+          fieldId: "resume-security-code",
+          label: fieldCatalog["resume-security-code"].label,
+          inputType: "text",
+          required: fieldCatalog["resume-security-code"].required ? "Yes" : "No",
+          options: "—",
+          visibleWhen: "Always visible",
+          componentLabel: "MUI TextField (inline)",
+        },
+      ];
     case "review":
       return [
         {
@@ -865,6 +1062,54 @@ export const eligibilityChildFields: FieldRow[] = [
   },
 ];
 
+/** Disability-company fields rendered in Profile's member/spouse DynamicLists. */
+export const profileDisabilityCompanyFields: FieldRow[] = [
+  {
+    sectionId: "disability-companies",
+    sectionLabel: "Other disability coverage companies",
+    applicant: "member / spouse",
+    fieldId: "di-company-name",
+    label: "Company",
+    inputType: "text",
+    required: "Yes",
+    options: "—",
+    visibleWhen: "Applicant has existing disability insurance",
+  },
+  {
+    sectionId: "disability-companies",
+    sectionLabel: "Other disability coverage companies",
+    applicant: "member / spouse",
+    fieldId: "di-company-monthly-benefit",
+    label: "Monthly Benefit Amount",
+    inputType: "currency",
+    required: "Yes",
+    options: "—",
+    visibleWhen: "Applicant has existing disability insurance",
+  },
+  {
+    sectionId: "disability-companies",
+    sectionLabel: "Other disability coverage companies",
+    applicant: "member / spouse",
+    fieldId: "di-company-benefit-period",
+    label: "Benefit Period",
+    inputType: "text",
+    required: "Yes",
+    options: "—",
+    visibleWhen: "Applicant has existing disability insurance",
+  },
+  {
+    sectionId: "disability-companies",
+    sectionLabel: "Other disability coverage companies",
+    applicant: "member / spouse",
+    fieldId: "di-company-waiting-period",
+    label: "Waiting Period",
+    inputType: "text",
+    required: "Yes",
+    options: "—",
+    visibleWhen: "Applicant has existing disability insurance",
+  },
+];
+
 /** Coverage product card fields (rendered in ProductCatalog per product) */
 export const coverageProductFields: FieldRow[] = [
   {
@@ -983,6 +1228,7 @@ export function getPageFieldRows(pageId: PageId): FieldRow[] {
   const customRows = getCustomPageFieldRows(pageId);
   if (customRows) {
     return customRows.map((row) => {
+      if (row.storybook || row.componentLabel) return row;
       if (row.fieldId === "beneficiary-type") {
         return {
           ...row,
@@ -1065,6 +1311,40 @@ export function getPageFieldRows(pageId: PageId): FieldRow[] {
         },
       })),
     ];
+  if (pageId === "profile") {
+    return [
+      ...rows,
+      ...profileDisabilityCompanyFields.map((row) =>
+        withStorybookReference(
+          row,
+          {
+            id: row.fieldId,
+            label: row.label,
+            inputType: "text",
+            format: row.inputType === "currency" ? "currency" : undefined,
+            required: true,
+          },
+        ),
+      ),
+    ];
+  }
+  if (pageId === "advisor-login") {
+    return [
+      {
+        sectionId: "advisor-login-mode",
+        sectionLabel: "Advisor login mode",
+        applicant: "—",
+        fieldId: "advisor-flow-type",
+        label: "Application Type",
+        inputType: "tabs",
+        required: "Yes",
+        options: "Start, Continue",
+        visibleWhen: "Always visible",
+        componentLabel: "MUI Tabs (inline)",
+      },
+      ...rows,
+    ];
+  }
   return rows;
 }
 

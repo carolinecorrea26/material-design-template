@@ -170,6 +170,64 @@ export function getConfigurationDefaultDisplay(config: Pick<ConfigRow, "name">):
   return CONFIGURATION_DEFAULT_DISPLAY[config.name] ?? "None";
 }
 
+/**
+ * Values accepted by each provisioning setting. Free-form settings describe
+ * their supported shape here so the reference table is useful for both enum
+ * choices and structured configuration objects.
+ */
+const CONFIGURATION_AVAILABLE_OPTIONS: Partial<Record<string, string>> = {
+  "ClientConfig.branding": "name; acronym; logo asset path; logo alt text",
+  "ClientConfig.theme":
+    "Preset: default, teal, purple, dark-blue; or custom primary color: #RRGGBB",
+  "ClientConfig.applicantLabels":
+    "member, spouse, child — custom text up to 20 characters each",
+  "ClientConfig.support.phone / phoneDisplay / phoneHours":
+    "phone; phoneDisplay; optional phoneHours — free-form text",
+  "ClientConfig.support.email / website / address":
+    "email; website URL/domain; address: organization, street, city, state, ZIP",
+  "ClientConfig.licenseInfo[]": "Zero or more disclosure strings, in display order",
+  "ClientConfig.emailSupport.hideContactBox": "Show contact box; Hide contact box",
+  "ClientConfig.emailSupport.supportOverride":
+    "phone; email; website — each optional and independently inherited",
+  "ClientConfig.emailSupport.contactOverride":
+    "name; acronym — each optional and independently inherited",
+  "ClientConfig.features.homePageVariant":
+    "default; quoteFirst; hero-image; welcome-back",
+  "ClientConfig.features.defaultTemplate": "single; multi",
+  "ClientConfig.features.chat / chatUrl": "Disabled; Enabled with a valid chat URL",
+  "ClientConfig.features.scheduleUrl": "None; valid scheduling URL",
+  "ClientConfig.features.linkUrl / linkLabel": "None; valid URL with a custom label",
+  "ClientConfig.pages.requirements.beneficiary / payment": "required; optional; none",
+  "ClientConfig.coverages.categorySectionLabels / allCategoriesExpanded":
+    "Labels for LI, AD, DI, OO, SH; accordions collapsed or expanded",
+  "ClientConfig.coverages.additionalCoverageWarning":
+    "applyForAdditional; applyForTotal",
+  "ClientConfig.coverages.enabled / overrides":
+    "Products: li-term, li-10yr, li-15yr, li-20yr, li-50plus, li-add, li-preferred, li-premier-accident, li-group-term, di-ltd-plus, di-ltd, di-mtd, di-step-rated, di-level-rated, di-short-term, oo-professional, oo-office-overhead, sh-critical-illness, sh-hospital-money, sh-hospital-income. Overrides: name, brochure URL, category (LI/AD/DI/OO/SH), identifiers, situs, riders, waiting/benefit periods, applicants (member/spouse/child), notes, featured, underwriting (FUW/GI/NA/QD/SI/TELE), warning, structured content",
+  "ClientConfig.coverages.coverageAmounts[productId]":
+    "Selection: range (min/max/increment), amount list, or labeled option list; scope: all, member, spouse, child, or applicant class; dependent calculation: percentage or fixed",
+  "overrides[].waitingPeriodOptions / maxBenefitPeriodOptions":
+    "Waiting period: label, value, days; maximum benefit period: label, value; optionally scoped to member, spouse, or child",
+  "overrides[].riders":
+    "id; name; description; optional amount selections; applicants (member/spouse/child); premium factor",
+  "ClientConfig.estimatedRateDisplay":
+    "Frequency toggle: shown or hidden; default frequency: monthly or annual",
+  "productEstimatedCostBreakdown / policyFee / childApplicantRider":
+    "Breakdown enabled or disabled; policy fee label + monthly/annual amount; child rider enabled or disabled + label + monthly/annual amount",
+  "ClientConfig.coverageQuestions":
+    "Always-show or remove-default section IDs; per-category additions for LI, AD, DI, OO, SH",
+  "ClientConfig.coverages.hideSmokerQuestion":
+    "Show smoker/nicotine question; Hide smoker/nicotine question",
+  "ClientConfig.fields[pageId].extra / hidden / required / overrides":
+    "Per page: extra, hidden, or required registered field IDs; overrides for label, placeholder, helper text, and options",
+  "ClientConfig.fields.eligibility.extra":
+    "Zero or more registered eligibility field IDs",
+};
+
+export function getConfigurationAvailableOptions(config: Pick<ConfigRow, "name">): string {
+  return CONFIGURATION_AVAILABLE_OPTIONS[config.name] ?? "No configurable values documented";
+}
+
 const REQUIRED_CONFIGURATION_NAMES = new Set([
   "ClientConfig.branding",
   "ClientConfig.coverages.enabled / overrides",
@@ -198,7 +256,7 @@ const configurationInventory: ConfigRow[] = [
     label: "Site theme",
     name: "ClientConfig.theme",
     description:
-      "Selects an approved preset (default, teal, purple, dark-blue) or provides one custom primary brand color. The application derives the supporting primary palette; semantic and neutral colors remain global.",
+      "Sets the site's primary brand color. The application derives the supporting primary palette; semantic and neutral colors remain global.",
     sourcePath: "src/config/clients/*.ts / src/app/theme.ts",
     scope: "Client Configurable",
     usedIn: "ThemeProvider (global)",
@@ -280,7 +338,7 @@ const configurationInventory: ConfigRow[] = [
     label: "Landing Page variant",
     name: "ClientConfig.features.homePageVariant",
     description:
-      "Selects the Landing Page composition. Three variants: default (inline quote tool + How Applying Works + Coverage Options), hero-image (hero + How Applying Works + Coverage Options, no inline quote), welcome-back (hero image only; How Applying Works and Coverage Options hidden).",
+      "Selects the Landing Page composition, including the placement of the quote experience and supporting content.",
     sourcePath: "src/config/clients/*.ts / src/pages/Home.tsx",
     scope: "Client Configurable",
     usedIn: "Home page",
@@ -290,7 +348,7 @@ const configurationInventory: ConfigRow[] = [
     label: "Default form template",
     name: "ClientConfig.features.defaultTemplate",
     description:
-      "Selects the client's default form template ('single' or 'multi', falls back to 'multi'). 'single' forces the whole app into its narrow/mobile-width responsive layout (via createAppTheme's forceMobileLayout option, regardless of actual browser width) and renders Home's hero directly followed by the real Membership page instead of a separate landing step. Overrideable per-session by the ?template= URL parameter. See the URL Parameters 'template' row for full behavior.",
+      "Selects the client's default form layout. The compact layout forces the app into its narrow responsive presentation and places Membership directly after the Home hero. Overrideable per session by the ?template= URL parameter.",
     sourcePath:
       "src/config/clients/*.ts / src/config/template/resolveTemplate.ts / src/app/theme.ts / src/pages/Home.tsx",
     scope: "Client Configurable",
@@ -351,7 +409,7 @@ const configurationInventory: ConfigRow[] = [
     label: "How Applying Works content",
     name: "content.home.howApplyingWorks / applyingSteps",
     description:
-      "Title, description, and step array (title, body, imageSrc, imageAlt) for the How Applying Works section. Present on default and hero-image variants; hidden on welcome-back.",
+      "Title, description, and step array (title and body) for the How Applying Works section. Present on default and hero-image variants; hidden on welcome-back.",
     sourcePath: "src/content/defaults/home.ts / src/content/clients/*.ts",
     scope: "Client Configurable",
     usedIn: "Home page, How Applying Works modal",
@@ -382,7 +440,7 @@ const configurationInventory: ConfigRow[] = [
     label: "Beneficiary & Payment page mode",
     name: "ClientConfig.pages.requirements.beneficiary / payment",
     description:
-      "Controls whether Beneficiary and Payment pages are required, optional, or excluded (none). 'none' removes the page from routing, stepper, breadcrumbs, and Review. 'optional' shows a preliminary Yes/No prompt. The older pages.excluded and pages.optional arrays are deprecated.",
+      "Controls whether Beneficiary and Payment participate in the application flow. Excluded pages are removed from routing, the stepper, breadcrumbs, and Review; non-required pages begin with a Yes/No prompt. The older pages.excluded and pages.optional arrays are deprecated.",
     sourcePath: "src/config/clients/*.ts",
     scope: "Client Configurable",
     usedIn: "Router, formFlow, ProgressStep, Review",
@@ -434,7 +492,7 @@ const configurationInventory: ConfigRow[] = [
     label: "Coverage amount basis",
     name: "ClientConfig.coverages.additionalCoverageWarning",
     description:
-      "Controls whether applicants enter an additional amount or a total coverage amount. Values: applyForAdditional (default) or applyForTotal.",
+      "Controls whether applicants enter an additional amount or a total coverage amount.",
     sourcePath: "src/config/clients/*.ts",
     scope: "Client Configurable",
     usedIn: "ProductCatalog, coverage amount logic",
@@ -485,7 +543,7 @@ const configurationInventory: ConfigRow[] = [
     label: "Enabled products & overrides",
     name: "ClientConfig.coverages.enabled / overrides",
     description:
-      "Array of enabled product IDs and per-product overrides: display name, category, description, featured flag, underwriting type (FUW / GI / NA / QD / SI), eligible applicant types, coverage note, product warning, structured content, and per-applicant notes.",
+      "Selects the products offered by the site and applies per-product presentation, eligibility, identifier, underwriting, and supporting-content overrides.",
     sourcePath: "src/config/clients/*.ts / src/config/coverages/index.ts",
     scope: "Client Configurable",
     usedIn: "ProductCatalog, QuoteModal, health routing",
@@ -495,7 +553,7 @@ const configurationInventory: ConfigRow[] = [
     label: "Scoped coverage amounts",
     name: "ClientConfig.coverages.coverageAmounts[productId]",
     description:
-      "Per-product scoped selections supporting multiple ranges, explicit amount lists, text options, client-defined applicant classes, and derived dependent coverage.",
+      "Defines the coverage amounts available for each product and applicant scope, including derived dependent coverage.",
     sourcePath: "src/config/coverages/index.ts → coverageAmounts",
     scope: "Client Configurable",
     usedIn: "ProductCatalog, CoverageCart, QuoteModal",
@@ -505,7 +563,7 @@ const configurationInventory: ConfigRow[] = [
     label: "Waiting period & benefit period options",
     name: "overrides[].waitingPeriodOptions / maxBenefitPeriodOptions",
     description:
-      "Available elimination/waiting periods (label, value, days) and maximum benefit periods for applicable DI/OO products.",
+      "Defines the elimination/waiting periods and maximum benefit periods offered for applicable DI/OO products.",
     sourcePath: "src/config/coverages/index.ts → overrides",
     scope: "Client Configurable",
     usedIn: "ProductCatalog",
@@ -515,7 +573,7 @@ const configurationInventory: ConfigRow[] = [
     label: "Rider definitions",
     name: "overrides[].riders",
     description:
-      "Per-product rider definitions: name, description, hasAmount, min/max amount, premiumFactor, and health-routing rules. Rider IDs must be stable across config changes.",
+      "Defines the riders offered per product and their pricing and health-routing behavior. Rider IDs must be stable across config changes.",
     sourcePath: "src/config/coverages/index.ts → overrides[].riders",
     scope: "Client Configurable",
     usedIn: "ProductCatalog, form flow health routing",
@@ -536,7 +594,7 @@ const configurationInventory: ConfigRow[] = [
     label: "Cost breakdown & supplemental fees",
     name: "productEstimatedCostBreakdown / policyFee / childApplicantRider",
     description:
-      "Enables supplemental cost line items beneath product estimates: policy fee (label + monthly/annual amount) and child applicant rider fee.",
+      "Controls supplemental cost line items beneath product estimates.",
     sourcePath: "src/config/clients/*.ts",
     scope: "Client Configurable",
     usedIn: "ProductCostBreakdown, CoverageCart",
@@ -579,7 +637,7 @@ const configurationInventory: ConfigRow[] = [
     label: "Per-page field overrides",
     name: "ClientConfig.fields[pageId].extra / hidden / required / overrides",
     description:
-      "Per-client, per-page field configuration: add supported fields, hide fields, make fields required, or override supported field properties (label, placeholder, helperText, options). Hidden fields must not be required. Field IDs must exist in the catalog.",
+      "Controls field presence, requirement, and presentation per client and page. Hidden fields must not be required, and field IDs must exist in the catalog.",
     sourcePath: "src/config/clients/*.ts",
     scope: "Client Configurable",
     usedIn: "FieldRenderer, pageSections",

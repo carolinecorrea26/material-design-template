@@ -203,7 +203,11 @@ export type ClientContent = {
   >;
 };
 
-export type HomePageVariant = "default" | "hero-image" | "welcome-back";
+export type HomePageVariant =
+  | "default"
+  | "hero-image"
+  | "welcome-back"
+  | "quoteFirst";
 
 export type ThemeColorId = "default" | "teal" | "purple" | "dark-blue";
 

@@ -35,6 +35,7 @@ import { SURFACE_SX } from "../config/constants";
 
 type DrawerId = "application-review" | "quick-decision" | null;
 const PAGE_MAX_WIDTH = 1200;
+const QUOTE_FIRST_MAX_WIDTH = 1040;
 const SINGLE_TEMPLATE_HERO_MAX_WIDTH = 700;
 const SINGLE_TEMPLATE_FORM_MAX_WIDTH = 800;
 
@@ -139,13 +140,18 @@ const VALID_VARIANTS: HomePageVariant[] = [
   "default",
   "hero-image",
   "welcome-back",
+  "quoteFirst",
 ];
 
-export default function Home({ previewClient }: { previewClient?: ClientConfig } = {}) {
+export default function Home({
+  previewClient,
+}: { previewClient?: ClientConfig } = {}) {
   const isPreview = Boolean(previewClient);
   const isSingleTemplate = !isPreview && getFormTemplate() === "single";
   const client = previewClient ?? getActiveClient();
-  const content = previewClient ? buildContent(previewClient.id) : activeContent;
+  const content = previewClient
+    ? buildContent(previewClient.id)
+    : activeContent;
   const [searchParams] = useSearchParams();
   const urlVariant = searchParams.get("variant") as HomePageVariant | null;
   const variant: HomePageVariant =
@@ -153,6 +159,7 @@ export default function Home({ previewClient }: { previewClient?: ClientConfig }
       ? urlVariant
       : (client.features?.homePageVariant ?? "default");
   const showQuoteTool = !isSingleTemplate && variant === "default";
+  const showQuoteFirst = !isSingleTemplate && variant === "quoteFirst";
   const showHeroImage =
     !isSingleTemplate &&
     (variant === "hero-image" || variant === "welcome-back");
@@ -195,201 +202,331 @@ export default function Home({ previewClient }: { previewClient?: ClientConfig }
           pb: { xs: 4, md: 6 },
         }}
       >
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns:
-              showQuoteTool || showHeroImage
-                ? { xs: "1fr", md: "minmax(0, 450px) minmax(0, 500px)" }
-                : "1fr",
-            gap: { xs: 2.5, md: 3.5 },
-            alignItems: "start",
-            width: "100%",
-            maxWidth: isSingleTemplate
-              ? SINGLE_TEMPLATE_HERO_MAX_WIDTH
-              : undefined,
-            mx: isSingleTemplate ? "auto" : undefined,
-            ...FADE_IN_SECTION_SX(0),
-          }}
-        >
+        {showQuoteFirst ? (
           <Stack
-            spacing={2}
+            spacing={{ xs: 3, md: 4 }}
             sx={{
-              alignSelf: "flex-start",
-              maxWidth: showQuoteTool || showHeroImage ? 800 : 760,
-              justifySelf:
-                showQuoteTool || showHeroImage
-                  ? { xs: "center", md: "stretch" }
-                  : "center",
-              textAlign:
-                showQuoteTool || showHeroImage
-                  ? "left"
-                  : { xs: "left", md: "center" },
-              alignItems:
-                showQuoteTool || showHeroImage
-                  ? "flex-start"
-                  : { xs: "flex-start", md: "center" },
-              px: { xs: 1.5, sm: 3, md: 0 },
-              pb: 2,
+              width: "100%",
+              maxWidth: QUOTE_FIRST_MAX_WIDTH,
+              alignSelf: "center",
+              ...FADE_IN_SECTION_SX(0),
             }}
           >
-            <Chip
-              icon={
-                <VerifiedUserOutlinedIcon
-                  sx={{ fontSize: "1rem !important" }}
-                />
-              }
-              label={content.home.hero.tagline}
-              variant="outlined"
-              sx={{
-                borderColor: "divider",
-                bgcolor: "background.default",
-                fontSize: "0.75rem",
-                height: "auto",
-                py: 0.5,
-                borderRadius: "999px",
-                "& .MuiChip-label": { px: 1.5, py: 0.25 },
-                "& .MuiChip-icon": { color: "primary.main" },
-              }}
-            />
-
-            <Stack spacing={1.5}>
-              <Typography
-                variant="h1"
-                sx={
-                  isSingleTemplate
-                    ? { fontSize: "2.5rem", lineHeight: 1.15 }
-                    : undefined
+            <Stack
+              spacing={1.5}
+              alignItems="center"
+              textAlign="center"
+              sx={{ maxWidth: 760, width: "100%", alignSelf: "center" }}
+            >
+              <Chip
+                icon={
+                  <VerifiedUserOutlinedIcon
+                    sx={{ fontSize: "1rem !important" }}
+                  />
                 }
-              >
-                {variant === "welcome-back"
-                  ? content.home.hero.welcomeBackTitle
-                  : content.home.hero.title}
+                label={content.home.hero.tagline}
+                variant="outlined"
+                sx={{
+                  borderColor: "divider",
+                  bgcolor: "background.default",
+                  borderRadius: "999px",
+                  "& .MuiChip-icon": { color: "primary.main" },
+                }}
+              />
+              <Typography variant="h1">
+                Find the right coverage for your needs.
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                {variant === "welcome-back"
-                  ? content.home.hero.welcomeBackDescription
-                  : previewClient
-                    ? content.home.hero.description
-                        .replace(/\{\{clientName\}\}/g, previewClient.branding.name)
-                        .replace(/\{\{clientAcronym\}\}/g, previewClient.branding.acronym)
-                        .replace(/\{\{associationName\}\}/g, previewClient.branding.name)
-                    : resolveTemplate(content.home.hero.description)}
+                Answer a few questions to get an instant estimate. No
+                obligation. {client.branding.acronym} member rates.
               </Typography>
             </Stack>
 
-            {!isSingleTemplate && (
-              <Stack
-                direction="row"
-                spacing={1.5}
-                alignItems="center"
-                useFlexGap
-                sx={{ flexWrap: "wrap" }}
-                mb={1.5}
+            <Box
+              sx={{
+                ...SURFACE_SX,
+                p: { xs: 2, sm: 3.5, md: 4 },
+                borderColor: "rgba(7, 104, 255, 0.18)",
+                background:
+                  "linear-gradient(135deg, #f4f8ff 0%, #ffffff 58%, #f7fbff 100%)",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: {
+                    xs: "minmax(0, 1fr)",
+                    md: "minmax(280px, 0.72fr) minmax(0, 1.28fr)",
+                  },
+                  gap: { xs: 0, md: 3 },
+                  alignItems: "stretch",
+                }}
               >
-                <Button
-                  component={RouterLink}
-                  to={getPagePath(
-                    variant === "welcome-back" ? "resume" : "membership",
-                  )}
-                  variant="contained"
-                  size="large"
-                  // endIcon={<ArrowRightAltRoundedIcon />}
+                <Box
+                  aria-hidden="true"
                   sx={{
-                    width: { xs: "100%", sm: "auto" },
-                    px: 3.5,
-                    py: "16px",
-                    fontWeight: 700,
-                    whiteSpace: "nowrap",
-                    flexShrink: 0,
+                    display: { xs: "none", md: "block" },
+                    position: "relative",
+                    height: 560,
+                    alignSelf: "start",
+                    overflow: "hidden",
+                    borderRadius: 3,
+                    bgcolor: "grey.100",
                   }}
                 >
-                  {variant === "welcome-back"
-                    ? "Continue Application"
-                    : content.home.hero.ctaLabel}
-                </Button>
-
-                {variant === "welcome-back" ? (
-                  <Button
-                    component={RouterLink}
-                    to={getPagePath("membership")}
-                    variant="outlined"
-                    size="large"
+                  <Box
+                    component="img"
+                    src="/quote.jpg"
+                    alt=""
                     sx={{
-                      width: { xs: "100%", sm: "auto" },
-                      px: 3.5,
-                      py: "16px",
-                      whiteSpace: "nowrap",
-                      flexShrink: 0,
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      objectPosition: "center",
                     }}
-                  >
-                    New Application
-                  </Button>
-                ) : (
-                  <Button
-                    variant="outlined"
-                    size="large"
-                    sx={{
-                      width: { xs: "100%", sm: "auto" },
-                      px: 3.5,
-                      py: "16px",
-                      whiteSpace: "nowrap",
-                      flexShrink: 0,
-                    }}
-                    onClick={() => {
-                      howApplyingWorksRef.current?.scrollIntoView({
-                        behavior: "smooth",
-                      });
-                    }}
-                  >
-                    {content.home.hero.secondaryCtaLabel}
-                  </Button>
-                )}
-              </Stack>
-            )}
+                  />
+                </Box>
 
-            {!isSingleTemplate &&
-              (variant === "default" || variant === "hero-image") && (
-                <Typography variant="body2" color="text.secondary">
-                  {content.home.hero.resumePrompt}{" "}
-                  <Link
-                    component={RouterLink}
-                    to={getPagePath("resume")}
-                    variant="body2"
-                    color="primary"
-                    sx={{ textDecoration: "none", fontWeight: 700 }}
-                  >
-                    {content.home.hero.resumeLinkLabel}
-                  </Link>
-                </Typography>
-              )}
+                <QuoteCalculator
+                  open
+                  onClose={() => undefined}
+                  collectEligibility
+                  displayMode="inline"
+                />
+              </Box>
+            </Box>
+
+            <Stack spacing={1} alignItems="center" textAlign="center">
+              <Typography variant="body2" color="text.secondary">
+                Ready to begin your application?{" "}
+                <Link
+                  component={RouterLink}
+                  to={getPagePath("membership")}
+                  sx={{ fontWeight: 700 }}
+                >
+                  Start →
+                </Link>
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Already started an application?{" "}
+                <Link
+                  component={RouterLink}
+                  to={getPagePath("resume")}
+                  sx={{ fontWeight: 700 }}
+                >
+                  Continue →
+                </Link>
+              </Typography>
+            </Stack>
           </Stack>
-
-          {showQuoteTool && (
-            <HomeQuoteSection
-              onOpenQuote={(eligibility) => {
-                setQuoteEligibility(eligibility);
-                setQuoteDrawerOpen(true);
-              }}
-            />
-          )}
-          {showHeroImage && (
-            <Box
-              component="img"
-              src={`/client/${client.id}/hero.png`}
-              alt={`${client.branding.name} hero`}
+        ) : (
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns:
+                showQuoteTool || showHeroImage
+                  ? { xs: "1fr", md: "minmax(0, 450px) minmax(0, 500px)" }
+                  : "1fr",
+              gap: { xs: 2.5, md: 3.5 },
+              alignItems: "start",
+              width: "100%",
+              maxWidth: isSingleTemplate
+                ? SINGLE_TEMPLATE_HERO_MAX_WIDTH
+                : undefined,
+              mx: isSingleTemplate ? "auto" : undefined,
+              ...FADE_IN_SECTION_SX(0),
+            }}
+          >
+            <Stack
+              spacing={2}
               sx={{
-                display: "block",
-                width: "100%",
-                maxWidth: 500,
-                height: "auto",
-                borderRadius: 4,
-                objectFit: "cover",
-                mx: { xs: "auto", md: 0 },
+                alignSelf: "flex-start",
+                maxWidth: showQuoteTool || showHeroImage ? 800 : 760,
+                justifySelf:
+                  showQuoteTool || showHeroImage
+                    ? { xs: "center", md: "stretch" }
+                    : "center",
+                textAlign:
+                  showQuoteTool || showHeroImage
+                    ? "left"
+                    : { xs: "left", md: "center" },
+                alignItems:
+                  showQuoteTool || showHeroImage
+                    ? "flex-start"
+                    : { xs: "flex-start", md: "center" },
+                px: { xs: 1.5, sm: 3, md: 0 },
+                pb: 2,
               }}
-            />
-          )}
-        </Box>
+            >
+              <Chip
+                icon={
+                  <VerifiedUserOutlinedIcon
+                    sx={{ fontSize: "1rem !important" }}
+                  />
+                }
+                label={content.home.hero.tagline}
+                variant="outlined"
+                sx={{
+                  borderColor: "divider",
+                  bgcolor: "background.default",
+                  fontSize: "0.75rem",
+                  height: "auto",
+                  py: 0.5,
+                  borderRadius: "999px",
+                  "& .MuiChip-label": { px: 1.5, py: 0.25 },
+                  "& .MuiChip-icon": { color: "primary.main" },
+                }}
+              />
+
+              <Stack spacing={1.5}>
+                <Typography
+                  variant="h1"
+                  sx={
+                    isSingleTemplate
+                      ? { fontSize: "2.5rem", lineHeight: 1.15 }
+                      : undefined
+                  }
+                >
+                  {variant === "welcome-back"
+                    ? content.home.hero.welcomeBackTitle
+                    : content.home.hero.title}
+                </Typography>
+                <Typography variant="body1" color="text.secondary">
+                  {variant === "welcome-back"
+                    ? content.home.hero.welcomeBackDescription
+                    : previewClient
+                      ? content.home.hero.description
+                          .replace(
+                            /\{\{clientName\}\}/g,
+                            previewClient.branding.name,
+                          )
+                          .replace(
+                            /\{\{clientAcronym\}\}/g,
+                            previewClient.branding.acronym,
+                          )
+                          .replace(
+                            /\{\{associationName\}\}/g,
+                            previewClient.branding.name,
+                          )
+                      : resolveTemplate(content.home.hero.description)}
+                </Typography>
+              </Stack>
+
+              {!isSingleTemplate && (
+                <Stack
+                  direction="row"
+                  spacing={1.5}
+                  alignItems="center"
+                  useFlexGap
+                  sx={{ flexWrap: "wrap" }}
+                  mb={1.5}
+                >
+                  <Button
+                    component={RouterLink}
+                    to={getPagePath(
+                      variant === "welcome-back" ? "resume" : "membership",
+                    )}
+                    variant="contained"
+                    size="large"
+                    // endIcon={<ArrowRightAltRoundedIcon />}
+                    sx={{
+                      width: { xs: "100%", sm: "auto" },
+                      px: 3.5,
+                      py: "16px",
+                      fontWeight: 700,
+                      whiteSpace: "nowrap",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {variant === "welcome-back"
+                      ? "Continue Application"
+                      : content.home.hero.ctaLabel}
+                  </Button>
+
+                  {variant === "welcome-back" ? (
+                    <Button
+                      component={RouterLink}
+                      to={getPagePath("membership")}
+                      variant="outlined"
+                      size="large"
+                      sx={{
+                        width: { xs: "100%", sm: "auto" },
+                        px: 3.5,
+                        py: "16px",
+                        whiteSpace: "nowrap",
+                        flexShrink: 0,
+                      }}
+                    >
+                      New Application
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outlined"
+                      size="large"
+                      sx={{
+                        width: { xs: "100%", sm: "auto" },
+                        px: 3.5,
+                        py: "16px",
+                        whiteSpace: "nowrap",
+                        flexShrink: 0,
+                      }}
+                      onClick={() => {
+                        howApplyingWorksRef.current?.scrollIntoView({
+                          behavior: "smooth",
+                        });
+                      }}
+                    >
+                      {content.home.hero.secondaryCtaLabel}
+                    </Button>
+                  )}
+                </Stack>
+              )}
+
+              {!isSingleTemplate &&
+                (variant === "default" || variant === "hero-image") && (
+                  <Typography variant="body2" color="text.secondary">
+                    {content.home.hero.resumePrompt}{" "}
+                    <Link
+                      component={RouterLink}
+                      to={getPagePath("resume")}
+                      variant="body2"
+                      color="primary"
+                      sx={{ textDecoration: "none", fontWeight: 700 }}
+                    >
+                      {content.home.hero.resumeLinkLabel}
+                    </Link>
+                  </Typography>
+                )}
+            </Stack>
+
+            {showQuoteTool && (
+              <HomeQuoteSection
+                onOpenQuote={(eligibility) => {
+                  setQuoteEligibility(eligibility);
+                  setQuoteDrawerOpen(true);
+                }}
+              />
+            )}
+            {showHeroImage && (
+              <Box
+                component="img"
+                src={`/client/${client.id}/hero.png`}
+                alt={`${client.branding.name} hero`}
+                sx={{
+                  display: "block",
+                  width: "100%",
+                  maxWidth: 500,
+                  height: "auto",
+                  borderRadius: 4,
+                  objectFit: "cover",
+                  mx: { xs: "auto", md: 0 },
+                }}
+              />
+            )}
+          </Box>
+        )}
 
         {isSingleTemplate && (
           <Box sx={FADE_IN_SECTION_SX(0.15)}>

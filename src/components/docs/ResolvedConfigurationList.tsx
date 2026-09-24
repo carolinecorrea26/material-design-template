@@ -145,7 +145,7 @@ export default function ResolvedConfigurationList({
                       whiteSpace: "normal !important",
                     }}
                   >
-                    <Chip label={row.page.label} size="small" variant="outlined" />
+                    {row.page.label}
                   </TableCell>
                   <TableCell
                     sx={{

@@ -61,3 +61,17 @@ export const EligibilityAlreadyKnown: StoryObj = {
 export const CustomTitle: StoryObj = {
   render: () => <QuoteCalculatorDemo collectEligibility title="Get a quick quote" />,
 };
+
+export const InlineHomepage: StoryObj = {
+  name: "Inline progressive flow (quote-first homepage)",
+  render: () => (
+    <Box sx={{ maxWidth: 840, mx: "auto", p: { xs: 2, sm: 4 } }}>
+      <QuoteCalculator
+        open
+        onClose={() => undefined}
+        collectEligibility
+        displayMode="inline"
+      />
+    </Box>
+  ),
+};

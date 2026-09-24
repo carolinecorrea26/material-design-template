@@ -78,7 +78,7 @@ const globalPages = getGlobalPages()
 // from what Client Site Details' per-client Fields table starts from.
 // ---------------------------------------------------------------------------
 
-const globalFieldsByPage = formFlow
+const globalFieldsByPage = siteDetailsPageOrder
   .filter((pageId) => !pagesWithNoFields.has(pageId))
   .map((pageId) => ({
     pageId,
@@ -372,8 +372,6 @@ export default function GlobalSiteDetailsPanel({
                                   borderTop: showCategory && i !== 0 ? "2px solid" : undefined,
                                   borderTopColor: showCategory && i !== 0 ? "divider" : undefined,
                                   whiteSpace: "normal !important",
-                                  fontFamily: "monospace",
-                                  fontSize: "0.75rem",
                                 }}
                               >
                                 <Link
@@ -756,6 +754,7 @@ export default function GlobalSiteDetailsPanel({
                   rows={configurationsData}
                   compact
                   showDefaults
+                  showAvailableOptions
                 />
               </Box>
 

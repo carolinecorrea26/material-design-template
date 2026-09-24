@@ -8,6 +8,7 @@ import useResizableColumns from "./useResizableColumns";
 
 import TruncatedString from "./TruncatedString";
 import {
+  getConfigurationAvailableOptions,
   getConfigurationDefaultDisplay,
   getConfigurationPage,
   getConfigurationRequirement,
@@ -26,6 +27,7 @@ export default function ConfigReferenceList({
   groups,
   compact = false,
   showDefaults = false,
+  showAvailableOptions = false,
 }: {
   rows: ConfigRow[];
   groups?: string[];
@@ -33,6 +35,8 @@ export default function ConfigReferenceList({
   compact?: boolean;
   /** Add a user-facing template default column to the compact reference. */
   showDefaults?: boolean;
+  /** Add the complete set or supported shape of values accepted by each setting. */
+  showAvailableOptions?: boolean;
 }) {
   const [filter, setFilter] = useState("");
   const [pageFilter, setPageFilter] = useState(ALL_PAGES);
@@ -40,6 +44,7 @@ export default function ConfigReferenceList({
     page: 160,
     configuration: 200,
     description: 300,
+    availableOptions: 320,
     defaultValue: 220,
     requirement: 130,
     source: 200,
@@ -77,7 +82,7 @@ export default function ConfigReferenceList({
       (row) =>
         (pageFilter === ALL_PAGES || getConfigurationPage(row).id === pageFilter) &&
         (!lc ||
-          `${row.group} ${row.label} ${row.name} ${row.description} ${row.sourcePath} ${row.scope} ${row.usedIn}`
+          `${row.group} ${row.label} ${row.name} ${row.description} ${getConfigurationAvailableOptions(row)} ${row.sourcePath} ${row.scope} ${row.usedIn}`
             .toLowerCase()
             .includes(lc)),
     );
@@ -103,6 +108,7 @@ export default function ConfigReferenceList({
             <col style={{ width: widths.page }} />
             <col style={{ width: widths.configuration }} />
             <col style={{ width: widths.description }} />
+            {showAvailableOptions && <col style={{ width: widths.availableOptions }} />}
             {showDefaults && <col style={{ width: widths.defaultValue }} />}
             {showDefaults && <col style={{ width: widths.requirement }} />}
             {!compact && (
@@ -130,6 +136,14 @@ export default function ConfigReferenceList({
               >
                 Description
               </ResizableHeaderCell>
+              {showAvailableOptions && (
+                <ResizableHeaderCell
+                  width={widths.availableOptions}
+                  onResize={(w) => resize("availableOptions", w)}
+                >
+                  Available options
+                </ResizableHeaderCell>
+              )}
               {showDefaults && (
                 <ResizableHeaderCell
                   width={widths.defaultValue}
@@ -177,7 +191,7 @@ export default function ConfigReferenceList({
                       whiteSpace: "normal !important",
                     }}
                   >
-                    <Chip label={getConfigurationPage(config).label} size="small" variant="outlined" />
+                    {getConfigurationPage(config).label}
                   </TableCell>
                   <TableCell
                     sx={{
@@ -217,6 +231,19 @@ export default function ConfigReferenceList({
                   >
                     <TruncatedString value={config.description} threshold={160} />
                   </TableCell>
+                  {showAvailableOptions && (
+                    <TableCell
+                      sx={{
+                        whiteSpace: "normal !important",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      <TruncatedString
+                        value={getConfigurationAvailableOptions(config)}
+                        threshold={220}
+                      />
+                    </TableCell>
+                  )}
                   {showDefaults && (
                     <TableCell
                       sx={{

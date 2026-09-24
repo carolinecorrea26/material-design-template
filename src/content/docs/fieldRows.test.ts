@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { formFlow } from "../../config/formFlow";
 import { clients } from "../../config/clients";
-import { resolveClientFields } from "../../config/resolvers";
+import { getSiteDetailsPageOrder, resolveClientFields } from "../../config/resolvers";
+import { pageFields } from "../../config/fields/pageFields";
+import type { PageId } from "../../types";
 import {
   getFieldDisplayType,
   getPageFieldRows,
@@ -43,7 +44,7 @@ describe("getFieldDisplayType", () => {
   });
 
   it("documents every displayed field with a real ID and rendering component", () => {
-    const rows = formFlow
+    const rows = getSiteDetailsPageOrder()
       .filter((pageId) => !pagesWithNoFields.has(pageId))
       .flatMap((pageId) =>
         getPageFieldRows(pageId).filter((row) => !isClientSpecificField(row.fieldId)),
@@ -93,5 +94,52 @@ describe("getFieldDisplayType", () => {
     );
 
     expect(undocumented).toEqual([]);
+  });
+
+  it("includes Home quote, Quote Calculator, resume, and advisor controls", () => {
+    const homeRows = getPageFieldRows("home");
+
+    expect(homeRows).toHaveLength(16);
+    expect(homeRows.map((row) => row.fieldId)).toEqual(
+      expect.arrayContaining([
+        "home-quote-birth-date",
+        "home-quote-zip-postal-code",
+        "home-quote-state",
+        "quote-coverage-categories",
+        "quote-gender",
+        "quote-smoker",
+        "quote-average-monthly-income",
+        "quote-hours-worked-per-week",
+        "quote-monthly-business-expenses",
+        "quote-business-expense-responsibility",
+        "quote-product-selection",
+        "quote-benefit-amount",
+        "quote-rate-frequency",
+      ]),
+    );
+    expect(getPageFieldRows("resume").map((row) => row.fieldId)).toEqual(["resume-email"]);
+    expect(getPageFieldRows("resume-method").map((row) => row.fieldId)).toEqual([
+      "resume-delivery-method",
+    ]);
+    expect(getPageFieldRows("resume-code").map((row) => row.fieldId)).toEqual([
+      "resume-security-code",
+    ]);
+    expect(getPageFieldRows("advisor-login")[0]).toMatchObject({
+      fieldId: "advisor-flow-type",
+      inputType: "tabs",
+    });
+  });
+
+  it("includes every field registered to a page", () => {
+    const missing = Object.entries(pageFields).flatMap(([pageId, fieldIds]) => {
+      const documentedIds = new Set(
+        getPageFieldRows(pageId as PageId).map((row) => row.fieldId),
+      );
+      return (fieldIds ?? [])
+        .filter((fieldId) => !documentedIds.has(fieldId))
+        .map((fieldId) => `${pageId}:${fieldId}`);
+    });
+
+    expect(missing).toEqual([]);
   });
 });

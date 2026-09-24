@@ -25,6 +25,7 @@ import CoverageCategorySelector from "./CoverageCategorySelector";
 import SelectionGroup from "./SelectionGroup";
 import SectionDivider from "../layout/SectionDivider";
 import CategoryHeader from "../layout/CategoryHeader";
+import PageHeader from "../layout/PageHeader";
 import RateFrequencyControl from "../ui/RateFrequencyControl";
 import EligibilityFields, {
   type EligibilityValues,
@@ -62,6 +63,23 @@ import { formatCurrencyInput } from "../../utils/formatting/currency";
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
 
+const INLINE_STEP_COPY = [
+  {
+    title: "About you",
+    subhead:
+      "Tell us a little about yourself to see the coverage available to you.",
+  },
+  {
+    title: "Coverage needs",
+    subhead: "Choose the coverage you'd like included in your estimate.",
+  },
+  {
+    title: "Your quote",
+    subhead:
+      "Review your coverage options and estimated rates, then continue when you're ready.",
+  },
+] as const;
+
 export type QuoteCalculatorInitialValues = {
   birthday: string;
   zipCode: string;
@@ -72,6 +90,9 @@ type QuoteCalculatorProps = {
   open: boolean;
   onClose: () => void;
   title?: string;
+  /** Keep the existing drawer by default; homepage variants can render the
+   * same calculator state and business logic directly in the page. */
+  displayMode?: "drawer" | "inline";
   /**
    * When provided, DOB/ZIP/State fields are shown inside the calculator
    * (Membership page trigger). When omitted, those fields are not shown
@@ -92,10 +113,20 @@ export default function QuoteCalculator({
   title = "How much does it cost?",
   collectEligibility = false,
   initialEligibility,
+  displayMode = "drawer",
 }: QuoteCalculatorProps) {
   const navigate = useNavigate();
   const activeClient = useMemo(() => getActiveClient(), []);
   const coverages = useMemo(() => getActiveClientCoverages(), []);
+  const availableCategories = useMemo(
+    () =>
+      coverageCategories.filter((category) =>
+        coverages.some((coverage) => coverage.categoryId === category.id),
+      ),
+    [coverages],
+  );
+  const singleAvailableCategory =
+    availableCategories.length === 1 ? availableCategories[0] : null;
   const rateDisplayConfig = activeClient.coverages.estimatedRateDisplay;
   const showRateFrequencyToggle =
     rateDisplayConfig?.showFrequencyToggle === true;
@@ -114,11 +145,13 @@ export default function QuoteCalculator({
   );
   const [eligibilityAttempted, setEligibilityAttempted] = useState(false);
   const [ageError, setAgeError] = useState("");
+  const [inlineStep, setInlineStep] = useState(0);
+  const [categoryAttempted, setCategoryAttempted] = useState(false);
 
   // ── Coverage category selection ───────────────────────────────────────────
   const [selectedCategories, setSelectedCategories] = useState<
     CoverageCategoryId[]
-  >([]);
+  >(() => (singleAvailableCategory ? [singleAvailableCategory.id] : []));
 
   const {
     needsGender: categoryNeedsGender,
@@ -181,6 +214,9 @@ export default function QuoteCalculator({
   );
   const rateTimersRef = useRef<Record<string, number>>({});
   const productsSectionRef = useRef<HTMLDivElement>(null);
+  const inlineRootRef = useRef<HTMLDivElement>(null);
+  const previousInlineStepRef = useRef(inlineStep);
+  const shouldReanchorInlineRef = useRef(false);
 
   const categoryProducts = useMemo(
     () =>
@@ -261,14 +297,56 @@ export default function QuoteCalculator({
     initAmountsForProducts(categoryProducts);
     setTimeout(() => {
       setProductsLoading(false);
-      requestAnimationFrame(() => {
-        productsSectionRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
+      if (displayMode === "drawer") {
+        requestAnimationFrame(() => {
+          productsSectionRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+          productsSectionRef.current?.focus();
         });
-        productsSectionRef.current?.focus();
-      });
+      }
     }, 1000);
+  }
+
+  useEffect(() => {
+    if (
+      displayMode !== "inline" ||
+      previousInlineStepRef.current === inlineStep
+    ) {
+      return;
+    }
+    previousInlineStepRef.current = inlineStep;
+    if (!shouldReanchorInlineRef.current) return;
+    shouldReanchorInlineRef.current = false;
+    requestAnimationFrame(() => {
+      inlineRootRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  }, [displayMode, inlineStep]);
+
+  function handleInlineContinue() {
+    const inlineRootTop =
+      inlineRootRef.current?.getBoundingClientRect().top ?? 0;
+    shouldReanchorInlineRef.current = inlineRootTop < -160;
+
+    if (inlineStep === 0) {
+      setEligibilityAttempted(true);
+      const { ageError: newAgeError, isValid } =
+        validateEligibility(eligibilityValues);
+      setAgeError(newAgeError);
+      if (!isValid) return;
+      setInlineStep(1);
+      return;
+    }
+
+    setCategoryAttempted(true);
+    setFieldsAttempted(true);
+    if (selectedCategories.length === 0 || !isFieldsValid) return;
+    if (!showProducts) handleGetEstimates();
+    setInlineStep(2);
   }
 
   // Auto-reveal when no additional fields needed
@@ -458,35 +536,68 @@ export default function QuoteCalculator({
     rateFrequency === "annual"
       ? Math.round(grandTotal * 12 * 100) / 100
       : grandTotal;
+  const inlineStepCopy =
+    inlineStep === 1 && singleAvailableCategory
+      ? {
+          title: "Coverage details",
+          subhead: `Answer a few questions about your ${singleAvailableCategory.label.toLowerCase()} coverage.`,
+        }
+      : INLINE_STEP_COPY[inlineStep];
 
-  return (
-    <AppDrawer open={open} onClose={onClose} title={title}>
-      <Stack spacing={3}>
-        {/* ── Eligibility fields (Membership page trigger only) ── */}
-        {collectEligibility && (
-          <EligibilityFields
-            values={eligibilityValues}
-            onChange={(next) =>
-              setEligibilityValues((prev) => ({ ...prev, ...next }))
+  const calculatorContent = (
+    <Stack spacing={3}>
+        {displayMode === "inline" && (
+          <PageHeader
+            title={inlineStepCopy.title}
+            subhead={inlineStepCopy.subhead}
+            onBack={
+              inlineStep > 0
+                ? () => {
+                    shouldReanchorInlineRef.current = false;
+                    setInlineStep((step) => step - 1);
+                  }
+                : undefined
             }
-            attempted={eligibilityAttempted}
-            ageError={ageError}
-            idPrefix="qc"
           />
         )}
 
-        {/* ── Category selection ── */}
-        <CoverageCategorySelector
-          categories={coverageCategories.filter((cat) =>
-            coverages.some((c) => c.categoryId === cat.id),
+        {/* ── Eligibility fields (Membership page trigger only) ── */}
+        {collectEligibility &&
+          (displayMode === "drawer" || inlineStep === 0) && (
+            <EligibilityFields
+              values={eligibilityValues}
+              onChange={(next) =>
+                setEligibilityValues((prev) => ({ ...prev, ...next }))
+              }
+              attempted={eligibilityAttempted}
+              ageError={ageError}
+              idPrefix="qc"
+            />
           )}
-          selectedIds={selectedCategories}
-          onToggle={handleCategoryToggle}
-        />
+
+        {/* ── Category selection ── */}
+        {(displayMode === "drawer" || inlineStep === 1) && (
+          <>
+            {!singleAvailableCategory && (
+              <CoverageCategorySelector
+                categories={availableCategories}
+                selectedIds={selectedCategories}
+                onToggle={handleCategoryToggle}
+              />
+            )}
+            {categoryAttempted && selectedCategories.length === 0 && (
+              <Alert severity="error">
+                Select at least one coverage category.
+              </Alert>
+            )}
+          </>
+        )}
 
         {/* ── Additional fields grouped by section (gender/smoker=Personal, income/hours=Work, expenses=Business) ── */}
-        {needsAdditionalFields && selectedCategories.length > 0 && (
-          <Stack spacing={2}>
+        {needsAdditionalFields &&
+          selectedCategories.length > 0 &&
+          (displayMode === "drawer" || inlineStep === 1) && (
+            <Stack spacing={2}>
             {/* Personal details section */}
             {(categoryNeedsGender || categoryNeedsSmoker) && (
               <>
@@ -729,7 +840,7 @@ export default function QuoteCalculator({
               </>
             )}
 
-            {!showProducts && (
+            {!showProducts && displayMode === "drawer" && (
               <Button
                 variant="contained"
                 size="large"
@@ -738,11 +849,11 @@ export default function QuoteCalculator({
                 See my quote
               </Button>
             )}
-          </Stack>
-        )}
+            </Stack>
+          )}
 
         {/* ── Empty state ── */}
-        {selectedCategories.length === 0 && (
+        {displayMode === "drawer" && selectedCategories.length === 0 && (
           <EmptyState
             title="Your estimated cost will appear here"
             body="Select a coverage category to see your estimated cost."
@@ -750,7 +861,9 @@ export default function QuoteCalculator({
         )}
 
         {/* ── Products ── */}
-        {showProducts && selectedCategories.length > 0 && (
+        {showProducts &&
+          selectedCategories.length > 0 &&
+          (displayMode === "drawer" || inlineStep === 2) && (
           <Stack spacing={2} ref={productsSectionRef} tabIndex={-1}>
             <Divider />
             {productsLoading ? (
@@ -859,7 +972,8 @@ export default function QuoteCalculator({
         {showProducts &&
           !productsLoading &&
           selectedCategories.length > 0 &&
-          !isHoursIneligible && (
+          !isHoursIneligible &&
+          (displayMode === "drawer" || inlineStep === 2) && (
             <Stack spacing={1.5}>
               {grandTotal > 0 && (
                 <TotalCostSummary
@@ -891,13 +1005,85 @@ export default function QuoteCalculator({
                 fullWidth
                 endIcon={<ArrowRightAltRoundedIcon />}
                 onClick={handleApply}
-                sx={{ mt: 1 }}
+                sx={{ mt: 1, display: displayMode === "inline" ? "none" : undefined }}
               >
                 Apply for coverage
               </Button>
             </Stack>
           )}
+
+        {displayMode === "inline" && (
+          <Stack
+            direction="row"
+            justifyContent="flex-end"
+            sx={{
+              pt: 2.5,
+              borderTop: 1,
+              borderColor: "divider",
+            }}
+          >
+            <Button
+              variant="contained"
+              size="large"
+              fullWidth
+              endIcon={
+                inlineStep === 2 ? <ArrowRightAltRoundedIcon /> : undefined
+              }
+              onClick={inlineStep === 2 ? handleApply : handleInlineContinue}
+              disabled={inlineStep === 2 && (productsLoading || isHoursIneligible)}
+            >
+              {inlineStep === 2 ? "Apply for coverage" : "Continue"}
+            </Button>
+          </Stack>
+        )}
+    </Stack>
+  );
+
+  if (displayMode === "inline") {
+    return (
+      <Stack ref={inlineRootRef} spacing={2.5} sx={{ scrollMarginTop: 24 }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          spacing={2}
+        >
+          <Typography
+            variant="overline"
+            sx={{ color: "primary.main", fontWeight: 800, letterSpacing: 1.1 }}
+          >
+            Get an instant quote
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            aria-live="polite"
+          >
+            Step {inlineStep + 1} of 3
+          </Typography>
+        </Stack>
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: 760,
+            alignSelf: "center",
+            p: { xs: 2, sm: 3, md: 3.5 },
+            bgcolor: "background.paper",
+            border: 1,
+            borderColor: "divider",
+            borderRadius: 3,
+            boxShadow: "0 12px 32px rgba(20, 42, 74, 0.08)",
+          }}
+        >
+          {calculatorContent}
+        </Box>
       </Stack>
+    );
+  }
+
+  return (
+    <AppDrawer open={open} onClose={onClose} title={title}>
+      {calculatorContent}
     </AppDrawer>
   );
 }

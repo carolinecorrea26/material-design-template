@@ -22,20 +22,14 @@ export const homeDefaults: HomeContent = {
     {
       title: "Apply online in minutes",
       body: "Complete our online application to apply for coverage that fits your needs. Review your options and see your estimated cost.",
-      imageSrc: "/1-apply.svg",
-      imageAlt: "Apply online",
     },
     {
       title: "Answer health questions",
       body: "Some coverages require health information. We may ask questions during the application, or a representative may follow up to collect your health history. If a medical exam is needed, it's scheduled at no cost to you.",
-      imageSrc: "/2-medical.svg",
-      imageAlt: "Answer health questions",
     },
     {
       title: "Get your decision",
       body: "Once all information is received and reviewed, you'll get a decision from New York Life. If approved, you'll receive a certificate of insurance with a 30-day free look period.",
-      imageSrc: "/3-decision.svg",
-      imageAlt: "Get your decision",
     },
   ],
   coverageOptions: {

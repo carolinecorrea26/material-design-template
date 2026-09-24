@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from "react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, useMediaQuery } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import AppDrawer from "../layout/AppDrawer";
 import QuickDecisionDrawerContent, {
   InlineDrawerLink,
@@ -7,6 +8,10 @@ import QuickDecisionDrawerContent, {
 } from "../content/QuickDecisionExplainer";
 import { ApplicationReviewDrawerContent } from "../../content/helpContent";
 import { getContent } from "../../content";
+import ApplicationPreview, {
+  APPLICATION_PREVIEW_STEPS,
+  useApplicationPreviewStep,
+} from "../home/ApplicationPreview";
 
 const content = getContent();
 
@@ -24,8 +29,16 @@ export default function HowApplyingWorksPanel({
   onOpenQuickDecision,
 }: HowApplyingWorksPanelProps) {
   const [subDrawer, setSubDrawer] = useState<SubDrawerId>(null);
+  const prefersReducedMotion = useMediaQuery(
+    "(prefers-reduced-motion: reduce)",
+    { noSsr: true },
+  );
   const applyingSteps = content.home.applyingSteps;
   const isDrawer = variant === "drawer";
+  const displayedPreviewStep = useApplicationPreviewStep({
+    reducedMotion: prefersReducedMotion,
+    enabled: !isDrawer,
+  });
 
   const openApplicationReview =
     variant === "drawer"
@@ -66,7 +79,16 @@ export default function HowApplyingWorksPanel({
 
   return (
     <>
-      <Stack spacing={4}>
+      <Stack
+        spacing={4}
+        sx={(theme) => ({
+          p: isDrawer ? 0 : { xs: 3, sm: 4, md: 5 },
+          borderRadius: isDrawer ? 0 : 3,
+          bgcolor: isDrawer
+            ? "transparent"
+            : alpha(theme.palette.success.main, 0.065),
+        })}
+      >
         {variant === "page" ? (
           <Stack spacing={1} sx={{ textAlign: { xs: "center", md: "left" } }}>
             <Typography variant="h2">
@@ -82,72 +104,69 @@ export default function HowApplyingWorksPanel({
           </Typography>
         )}
 
-        <Stack spacing={6}>
-          {applyingSteps.map((step, index) => (
-            <Box
-              key={index}
-              sx={{
-                padding: isDrawer ? "0 1.5rem" : { xs: "0 1.5rem", md: "0 2rem" },
-              }}
-            >
-              <Stack
-                direction={isDrawer ? "column" : { xs: "column", sm: "row" }}
-                spacing={isDrawer ? 3 : { xs: 3, sm: 5 }}
-                alignItems={
-                  isDrawer ? "flex-start" : { xs: "flex-start", sm: "center" }
-                }
-              >
-                <Box
-                  sx={{
-                    flexShrink: 0,
-                    alignSelf: isDrawer ? "center" : { xs: "center", sm: "auto" },
-                  }}
-                >
-                  <Box
-                    component="img"
-                    src={step.imageSrc}
-                    alt={step.imageAlt}
-                    sx={{
-                      display: "block",
-                      width: isDrawer
-                        ? "96px"
-                        : { xs: "120px", sm: "100px", md: "120px" },
-                      height: isDrawer
-                        ? "96px"
-                        : { xs: "120px", sm: "100px", md: "120px" },
-                      objectFit: "contain",
-                    }}
-                  />
-                </Box>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: isDrawer
+              ? "1fr"
+              : { xs: "1fr", md: "minmax(0, 1fr) minmax(280px, 380px)" },
+            gap: isDrawer ? 0 : { xs: 5, md: 7 },
+            alignItems: "center",
+          }}
+        >
+          <Stack
+            spacing={isDrawer ? 4 : 1.5}
+            sx={{ order: 1 }}
+          >
+            {applyingSteps.map((step, index) => {
+              const isActive =
+                !isDrawer &&
+                APPLICATION_PREVIEW_STEPS[index] === displayedPreviewStep;
 
-                <Box sx={{ width: "100%" }}>
+              return (
+                <Box
+                  key={index}
+                  sx={(theme) => ({
+                    px: isDrawer ? 1.5 : 2,
+                    py: isDrawer ? 0 : 1.75,
+                    borderLeft: isDrawer ? 0 : "3px solid",
+                    borderColor: isActive ? "primary.main" : "transparent",
+                    borderRadius: isDrawer ? 0 : "0 12px 12px 0",
+                    bgcolor: isActive
+                      ? alpha(theme.palette.primary.main, 0.055)
+                      : "transparent",
+                    transition: prefersReducedMotion
+                      ? "none"
+                      : "background-color 240ms ease, border-color 240ms ease",
+                  })}
+                >
                   <Stack spacing={1}>
-                    <Stack
-                      direction="row"
-                      spacing={1.5}
-                      alignItems="center"
-                      justifyContent={
-                        isDrawer ? "center" : { xs: "center", sm: "flex-start" }
-                      }
-                    >
+                    <Stack direction="row" spacing={1.5} alignItems="center">
                       <Box
+                        aria-hidden="true"
                         sx={{
                           width: 28,
                           height: 28,
                           borderRadius: "50%",
-                          bgcolor: "primary.main",
-                          color: "#fff",
+                          bgcolor: isActive ? "primary.main" : "background.iconBadge",
+                          color: isActive ? "primary.contrastText" : "text.primary",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           fontSize: "0.85rem",
                           fontWeight: 700,
                           flexShrink: 0,
+                          transition: prefersReducedMotion
+                            ? "none"
+                            : "background-color 240ms ease, color 240ms ease",
                         }}
                       >
                         {index + 1}
                       </Box>
-                      <Typography variant={isDrawer ? "h5" : "h4"}>
+                      <Typography
+                        variant={isDrawer ? "h5" : "h4"}
+                        color={isActive ? "primary.dark" : "text.primary"}
+                      >
                         {step.title}
                       </Typography>
                     </Stack>
@@ -155,21 +174,26 @@ export default function HowApplyingWorksPanel({
                     <Typography
                       variant="body1"
                       color="text.secondary"
-                      sx={{
-                        textAlign: isDrawer
-                          ? "justify"
-                          : { xs: "justify", sm: "left" },
-                      }}
+                      sx={{ pl: isDrawer ? 0 : 5.5 }}
                     >
                       {step.body}
                       {stepBodyExtra(index)}
                     </Typography>
                   </Stack>
                 </Box>
-              </Stack>
+              );
+            })}
+          </Stack>
+
+          {!isDrawer && (
+            <Box sx={{ order: 2 }}>
+              <ApplicationPreview
+                activeStep={displayedPreviewStep}
+                reducedMotion={prefersReducedMotion}
+              />
             </Box>
-          ))}
-        </Stack>
+          )}
+        </Box>
       </Stack>
 
       {variant === "drawer" && (

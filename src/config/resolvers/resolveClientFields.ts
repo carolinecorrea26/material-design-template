@@ -1,6 +1,5 @@
 import type { PageId } from "../../types";
 import type { ClientConfig } from "../clients/types";
-import { formFlow } from "../formFlow";
 import {
   getPageFieldRows,
   applyClientFieldDiff,
@@ -10,6 +9,7 @@ import {
 } from "../../content/docs/fieldRows";
 import { getPageTitle } from "../pages";
 import type { ResolutionStatus } from "./types";
+import { getSiteDetailsPageOrder } from "./resolveClientPages";
 
 export type ResolvedField = {
   fieldId: string;
@@ -79,7 +79,7 @@ export function resolveClientFieldsForPage(
 /** Resolves fields for every page in the form flow that has user-interactive fields. */
 export function resolveClientFields(client: ClientConfig): ResolvedFieldPage[] {
   const result: ResolvedFieldPage[] = [];
-  for (const pageId of formFlow) {
+  for (const pageId of getSiteDetailsPageOrder()) {
     if (pagesWithNoFields.has(pageId)) continue;
     const fields = resolveClientFieldsForPage(pageId, client);
     if (fields.length > 0) {

@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import { getPagePath } from "../../config/pages";
 import type { ClientId } from "../../types";
+import MobilePreviewFrame from "../ui/MobilePreviewFrame";
 
 export function getClientPrototypeUrl(clientId: ClientId): string {
   const appBaseUrl = new URL(import.meta.env.BASE_URL, window.location.origin);
@@ -35,19 +36,10 @@ export default function MobileSitePreview({
         <Typography variant="subtitle1" component="h3" sx={{ fontWeight: 800, mb: 1.5 }}>
           Site Preview
         </Typography>
-        <Box
-          sx={{
-            width: "100%",
-            maxWidth: 390,
-            mx: "auto",
-            p: { xs: 0.75, sm: 1 },
-            boxSizing: "border-box",
-            border: "1px solid",
-            borderColor: "divider",
-            borderRadius: 4,
-            bgcolor: "grey.200",
-            boxShadow: "0 10px 24px rgba(15, 23, 42, 0.12)",
-          }}
+        <MobilePreviewFrame
+          maxWidth={390}
+          viewportHeight={{ xs: 600, sm: 720 }}
+          showDeviceChrome={false}
         >
           <Box
             key={previewUrl}
@@ -57,13 +49,12 @@ export default function MobileSitePreview({
             sx={{
               display: "block",
               width: "100%",
-              height: { xs: 600, sm: 720 },
+              height: "100%",
               border: 0,
-              borderRadius: 3,
               bgcolor: "background.paper",
             }}
           />
-        </Box>
+        </MobilePreviewFrame>
       </CardContent>
     </Card>
   );

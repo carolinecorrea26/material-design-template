@@ -23,8 +23,6 @@ export type HomeContent = {
   applyingSteps: Array<{
     title: string;
     body: string;
-    imageSrc: string;
-    imageAlt: string;
   }>;
   coverageOptions: {
     title: string;

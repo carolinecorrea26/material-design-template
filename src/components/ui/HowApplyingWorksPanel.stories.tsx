@@ -7,10 +7,8 @@ import HowApplyingWorksPanel from "./HowApplyingWorksPanel";
  * explainer in two shapes: full-width `page` variant (Home page) or a
  * narrower `drawer` variant (AppMenu), which also manages its own
  * QuickDecision/Application-Review sub-drawers when the step text contains
- * a linked term. The Phase 1 audit flagged the decorative numbered-circle
- * badges (1, 2, 3...) as not `aria-hidden` — left as-is here, since fixing
- * it wasn't in this component's assigned scope ("Document," not
- * "Fix-then-document," per the audit's action key).
+ * a linked term. The page variant pairs the copy with the synchronized,
+ * scripted application preview; the drawer keeps a compact text-only shape.
  */
 const meta = {
   title: "Coverage & Commerce/HowApplyingWorksPanel",
