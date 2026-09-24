@@ -375,14 +375,6 @@ export const componentsData: ComponentRow[] = [
     storybookId: "layout-productcard--unselected",
   },
   {
-    name: "QuoteModal",
-    category: "layout",
-    description:
-      "Quote/rate comparison modal containing EstimatorProductCard entries per product. Confirmed dead code as of the 2026-09 Storybook audit — a repo-wide grep found zero render sites outside a documentation demo, and it appears to duplicate QuoteCalculator. Kept in the repo but intentionally not given a Storybook story.",
-    sourcePath: "src/components/layout/QuoteModal.tsx",
-    usedIn: "Not rendered anywhere (dead code — previously claimed \"Coverage page, AppHeader\", unconfirmed by grep)",
-  },
-  {
     name: "SectionDivider",
     category: "layout",
     description: "Chip-based or text section header divider.",

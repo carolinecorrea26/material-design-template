@@ -54,7 +54,7 @@ import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
 
 type ResolvedCoverage = ReturnType<typeof getActiveClientCoverages>[number];
 import { getMaxAggregateNotes } from "../../config/coverageConstants";
-import { resolveClientId } from "../../config/client/resolveClientId";
+import { getActiveSite } from "../../data";
 
 function toMonthlyAmount(config?: ClientAmountByFrequency): number {
   if (!config) return 0;
@@ -246,7 +246,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
     hasSpouse,
   } = props;
 
-  const clientId = resolveClientId();
+  const siteId = getActiveSite().id;
   const client = getActiveClient();
 
   const categorySectionLabelOverrides = client.coverages.categorySectionLabels;
@@ -365,7 +365,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                 );
                 if (productsInCategory.length === 0) return null;
 
-                const notes = getMaxAggregateNotes(categoryId, clientId);
+                const notes = getMaxAggregateNotes(categoryId, siteId);
 
                 return (
                   <Stack spacing={2} key={categoryId}>

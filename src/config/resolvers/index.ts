@@ -35,6 +35,11 @@ export {
 } from "./resolveClientConfigurations";
 
 export {
+  resolveCoverageQuestionSections,
+  type ResolveCoverageQuestionSectionsOptions,
+} from "./resolveCoverageQuestionSections";
+
+export {
   summarizeClientOverrides,
   type OverrideSummaryDomain,
   type OverrideSummaryItem,

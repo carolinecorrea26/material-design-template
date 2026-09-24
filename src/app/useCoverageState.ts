@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { coverageCategories } from "../config/coverageCategories";
+import { getCategoryRequirements } from "../config/coverageQuestionRequirements";
 import type { CoverageCategoryId } from "../config/coverages/types";
 import type { CoverageApplicantId } from "../config/coverages/types";
 import type { EstimatedRateFrequency } from "../config/clients/types";
@@ -108,15 +109,14 @@ export function useCoverageState() {
   });
 
   // ── Category needs ─────────────────────────────────────────────────────
-  const categoryNeedsGender = selectedCategories.some(
-    (c) => c === "LI" || c === "DI",
-  );
-  const categoryNeedsSmoker = selectedCategories.some(
-    (c) => c === "LI" || c === "SH",
-  );
-  const categoryNeedsDi = selectedCategories.includes("DI");
-  const categoryNeedsOo = selectedCategories.includes("OO");
-  const categoryNeedsHours = categoryNeedsDi || categoryNeedsOo;
+  const {
+    needsGender: categoryNeedsGender,
+    needsSmoker: categoryNeedsSmoker,
+    needsDi: categoryNeedsDi,
+    needsOo: categoryNeedsOo,
+    needsHours: categoryNeedsHours,
+    needsAdditionalFields: hasCanonicalCategoryQuestions,
+  } = getCategoryRequirements(selectedCategories);
 
   const clientCoverageQuestions = activeClient.coverageQuestions;
 
@@ -126,10 +126,7 @@ export function useCoverageState() {
           (clientCoverageQuestions[catId]?.length ?? 0) > 0 ||
           (clientCoverageQuestions.always?.length ?? 0) > 0,
       )
-    : categoryNeedsGender ||
-      categoryNeedsSmoker ||
-      categoryNeedsDi ||
-      categoryNeedsOo;
+    : hasCanonicalCategoryQuestions;
 
   // ── Dependents ─────────────────────────────────────────────────────────
   const selectedDependents = useMemo<string[]>(

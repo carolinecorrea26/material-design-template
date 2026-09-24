@@ -9,6 +9,10 @@ import { sectionLabels } from "../config/pageSections";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { getSelectedCategoryIds } from "../config/formFlow";
 import FieldGrid from "../components/layout/FieldGrid";
+import {
+  contactCarryForwardTransition,
+  executeApplicationTransition,
+} from "../config/applicationTransitions";
 
 const streetRow = new Set(["street-address", "apt-suite"]);
 const cityStateZipRow = new Set(["city", "state", "zip-code"]);
@@ -30,18 +34,18 @@ export default function Contact() {
     (cat) => cat === "DI" || cat === "OO",
   );
 
-  const defaultValueOverrides: Record<string, string> = {};
-  if (!values["state"] && values["state-province"]) {
-    defaultValueOverrides["state"] = values["state-province"] as string;
-  }
-  if (!values["zip-code"] && values["zip-postal-code"]) {
-    defaultValueOverrides["zip-code"] = values["zip-postal-code"] as string;
-  }
+  const defaultValueOverrides = executeApplicationTransition(
+    contactCarryForwardTransition,
+    values,
+    values,
+  );
 
   return (
     <FormRoutePage
       pageId="contact"
-      defaultValueOverrides={defaultValueOverrides}
+      defaultValueOverrides={
+        defaultValueOverrides as Record<string, string | boolean | string[]>
+      }
     >
       {({
         control,

@@ -54,7 +54,11 @@ import { getActiveClientCoverages } from "../../config/client/getActiveClientCov
 import type { EstimatedRateFrequency } from "../../config/clients/types";
 import { getPagePath } from "../../config/pages";
 import { sectionLabels } from "../../config/pageSections";
-import { STORAGE_KEY } from "../../app/ApplicationFormContext";
+import { useApplicationForm } from "../../app/ApplicationFormContext";
+import {
+  executeApplicationTransition,
+  quoteApplyTransition,
+} from "../../config/applicationTransitions";
 import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
 import { getCoverageAmountRange } from "../../utils/coverageAmounts";
 import { generateAmountChoices } from "../../utils/generateAmountChoices";
@@ -116,6 +120,7 @@ export default function QuoteCalculator({
   displayMode = "drawer",
 }: QuoteCalculatorProps) {
   const navigate = useNavigate();
+  const { values, setPageValues } = useApplicationForm();
   const activeClient = useMemo(() => getActiveClient(), []);
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const availableCategories = useMemo(
@@ -478,54 +483,27 @@ export default function QuoteCalculator({
       ? eligibilityValues.state
       : (initialEligibility?.state ?? "");
 
-    const formValues: Record<string, unknown> = {};
-    if (effectiveBirthday) formValues["birth-date"] = effectiveBirthday;
-    if (effectiveZip) formValues["zip-postal-code"] = effectiveZip;
-    if (effectiveState) formValues["state-province"] = effectiveState;
-
-    if (categoryNeedsGender && gender) formValues["gender"] = gender;
-    if (categoryNeedsSmoker && smoker) formValues["smoker"] = smoker;
-    if (categoryNeedsDi) {
-      if (avgIncome) formValues["average-monthly-income"] = avgIncome;
-      if (hoursPerWeek) formValues["hours-worked-per-week"] = hoursPerWeek;
-    }
-    if (categoryNeedsOo) {
-      if (hoursPerWeek) formValues["hours-worked-per-week"] = hoursPerWeek;
-      if (monthlyExpenses)
-        formValues["monthly-business-expenses"] = monthlyExpenses;
-      if (responsibilityPct)
-        formValues["business-expense-responsibility"] = responsibilityPct;
-    }
-
-    formValues["coverageSelections"] = selectedProducts.map((p) => p.id);
-    formValues["selectedCategoryChips"] = selectedCategories;
-
-    const applicantsMap: Record<string, CoverageApplicantId[]> = {};
-    const amountsMap: Record<string, number> = {};
-    for (const product of selectedProducts) {
-      const applicants = productApplicants[product.id] ?? [];
-      applicantsMap[product.id] = applicants;
-      for (const applicant of applicants) {
-        const key = `${product.id}:${applicant}`;
-        amountsMap[key] = amountsByKey[key] ?? 0;
-      }
-    }
-    formValues["productApplicants"] = applicantsMap;
-    formValues["coverageAmounts"] = amountsMap;
-
-    const existing = window.sessionStorage.getItem(STORAGE_KEY);
-    let existingValues: Record<string, unknown> = {};
-    if (existing) {
-      try {
-        existingValues = JSON.parse(existing);
-      } catch {
-        /* ignore */
-      }
-    }
-    window.sessionStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ ...existingValues, ...formValues }),
+    const applicationValues = executeApplicationTransition(
+      quoteApplyTransition,
+      {
+        birthday: effectiveBirthday,
+        zipCode: effectiveZip,
+        state: effectiveState,
+        gender,
+        smoker,
+        averageMonthlyIncome: avgIncome,
+        hoursWorkedPerWeek: hoursPerWeek,
+        monthlyBusinessExpenses: monthlyExpenses,
+        businessExpenseResponsibility: responsibilityPct,
+        selectedCategories,
+        selectedProductIds: selectedProducts.map((product) => product.id),
+        productApplicants,
+        coverageAmounts: amountsByKey,
+        hideSmokerQuestion: activeClient.coverages.hideSmokerQuestion,
+      },
+      values,
     );
+    setPageValues(applicationValues);
 
     onClose();
     navigate(getPagePath("membership"));

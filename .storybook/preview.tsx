@@ -3,6 +3,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { MemoryRouter } from "react-router-dom";
 import { createAppTheme } from "../src/app/theme";
 import type { ThemeColorId } from "../src/config/clients/types";
+import { ApplicationSessionProvider } from "../src/app/ApplicationSessionContext";
 
 /**
  * Shared app chrome for every story: router context (many shared components
@@ -18,12 +19,14 @@ const preview: Preview = {
   decorators: [
     (Story, context) => (
       <MemoryRouter>
-        <ThemeProvider
-          theme={createAppTheme(context.globals.themeColor as ThemeColorId)}
-        >
-          <CssBaseline />
-          <Story />
-        </ThemeProvider>
+        <ApplicationSessionProvider>
+          <ThemeProvider
+            theme={createAppTheme(context.globals.themeColor as ThemeColorId)}
+          >
+            <CssBaseline />
+            <Story />
+          </ThemeProvider>
+        </ApplicationSessionProvider>
       </MemoryRouter>
     ),
   ],

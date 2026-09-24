@@ -7,7 +7,7 @@ import type { CoverageAmountAssignment } from "../coverages/types";
 import type { CoverageDefinition } from "../coverages/types";
 import { coverages } from "../coverages";
 import { getClientCoverages } from "../client/getActiveClientCoverages";
-import { coverageUnlocksPage } from "../formFlow";
+import { coverageUnlocksPage } from "../flowGates";
 import { HEALTH_PAGE_IDS } from "../progressSteps";
 import type { ResolutionStatus } from "./types";
 

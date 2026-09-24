@@ -12,9 +12,12 @@ import {
   Typography,
 } from "@mui/material";
 import { Check, Settings, SwapHoriz } from "@mui/icons-material";
-import { clients } from "../config/clients";
-import { getActiveClient } from "../config/client/getActiveClient";
-import type { ClientId } from "../types";
+import {
+  getActiveSite,
+  getClientForSite,
+  siteEntities,
+  type SiteId,
+} from "../data";
 import {
   type ApplicationFormValues,
   useApplicationForm,
@@ -27,7 +30,7 @@ import { getResolvedFormFlow } from "../config/formFlow";
 import { generateFormDataUpToPage } from "./utils/generateFormData";
 import { router } from "../app/router";
 
-const CLIENT_QUERY_PARAM = "client";
+const SITE_QUERY_PARAM = "site";
 
 const FORM_PAGE_PATHS = new Set([
   "/membership",
@@ -45,16 +48,20 @@ const FORM_PAGE_PATHS = new Set([
   "/payment",
 ]);
 
-function switchClient(clientId: ClientId) {
+function switchSite(siteId: SiteId) {
   const url = new URL(window.location.href);
-  url.searchParams.set(CLIENT_QUERY_PARAM, clientId);
-  window.sessionStorage.setItem("activeClientId", clientId);
+  url.searchParams.set(SITE_QUERY_PARAM, siteId);
+  url.searchParams.delete("client");
+  window.sessionStorage.setItem("activeSiteId", siteId);
+  window.sessionStorage.removeItem("activeClientId");
   window.location.replace(url.toString());
 }
 
-function clearClientOverride() {
+function clearSiteOverride() {
   const url = new URL(window.location.href);
-  url.searchParams.delete(CLIENT_QUERY_PARAM);
+  url.searchParams.delete(SITE_QUERY_PARAM);
+  url.searchParams.delete("client");
+  window.sessionStorage.removeItem("activeSiteId");
   window.sessionStorage.removeItem("activeClientId");
   window.location.replace(url.toString());
 }
@@ -80,23 +87,24 @@ export default function DevTools() {
   const [jumpPageAnchorEl, setJumpPageAnchorEl] =
     React.useState<null | HTMLElement>(null);
 
-  const currentClient = getActiveClient();
+  const currentSite = getActiveSite();
+  const currentClient = getClientForSite(currentSite.id)!;
   const isFormPage = FORM_PAGE_PATHS.has(window.location.pathname);
   const hasUrlOverride = new URLSearchParams(window.location.search).has(
-    "client",
+    SITE_QUERY_PARAM,
   );
 
   const handleResetApp = () => {
-    const clientId = window.sessionStorage.getItem("activeClientId");
+    const siteId = window.sessionStorage.getItem("activeSiteId");
     const devMode = window.sessionStorage.getItem(DEVMODE_STORAGE_KEY);
     resetValues();
     window.sessionStorage.clear();
     window.localStorage.clear();
-    if (clientId) window.sessionStorage.setItem("activeClientId", clientId);
+    if (siteId) window.sessionStorage.setItem("activeSiteId", siteId);
     if (devMode) window.sessionStorage.setItem(DEVMODE_STORAGE_KEY, devMode);
     const url = new URL("/", window.location.origin);
     url.searchParams.set("reset", String(Date.now()));
-    if (clientId) url.searchParams.set("client", clientId);
+    if (siteId) url.searchParams.set(SITE_QUERY_PARAM, siteId);
     if (devMode === "true") url.searchParams.set("dev", "true");
     window.location.replace(url.toString());
   };
@@ -207,11 +215,11 @@ export default function DevTools() {
                 variant="caption"
                 sx={{ color: "text.secondary", mb: 1, display: "block" }}
               >
-                CLIENT
+                SITE
               </Typography>
 
               <Chip
-                label={currentClient.branding.name}
+                label={`${currentClient.acronym} — ${currentSite.name}`}
                 size="small"
                 color={hasUrlOverride ? "primary" : "default"}
                 variant={hasUrlOverride ? "filled" : "outlined"}
@@ -229,22 +237,24 @@ export default function DevTools() {
               >
                 <Box sx={{ px: 2, py: 1 }}>
                   <Typography variant="caption" color="text.secondary">
-                    Switch Client
+                    Switch Site
                   </Typography>
                 </Box>
 
                 <Divider />
 
-                {Object.entries(clients).map(([id, client]) => (
+                {siteEntities.map((site) => {
+                  const client = getClientForSite(site.id)!;
+                  return (
                   <MenuItem
-                    key={id}
+                    key={site.id}
                     onClick={() => {
                       setAnchorEl(null);
-                      if (id !== currentClient.id) {
-                        switchClient(id as ClientId);
+                      if (site.id !== currentSite.id) {
+                        switchSite(site.id);
                       }
                     }}
-                    selected={currentClient.id === id}
+                    selected={currentSite.id === site.id}
                   >
                     <Box
                       sx={{
@@ -256,25 +266,26 @@ export default function DevTools() {
                     >
                       <Box sx={{ flex: 1 }}>
                         <Typography variant="body2">
-                          {client.branding.name}
+                          {client.name} — {site.name}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
-                          {id}
+                          {site.id}
                         </Typography>
                       </Box>
-                      {currentClient.id === id ? (
+                      {currentSite.id === site.id ? (
                         <Check fontSize="small" color="primary" />
                       ) : null}
                     </Box>
                   </MenuItem>
-                ))}
+                  );
+                })}
 
                 {hasUrlOverride && <Divider />}
                 {hasUrlOverride && (
                   <MenuItem
                     onClick={() => {
                       setAnchorEl(null);
-                      clearClientOverride();
+                      clearSiteOverride();
                     }}
                   >
                     <Typography variant="body2" color="error">

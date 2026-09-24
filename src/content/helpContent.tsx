@@ -68,16 +68,18 @@ export function ApplicationReviewDrawerContent({
 }
 
 export function GroupInsuranceDrawerContent({
-  associationName: _associationName,
+  associationName,
 }: {
   associationName: string;
 }) {
-  void _associationName;
   const groupHelp = getContent().help.groupInsurance;
   return (
     <Stack spacing={2}>
       <Typography variant="body2" color="text.secondary">
-        {resolveTemplate(groupHelp.intro)}
+        {resolveTemplate(groupHelp.intro).replace(
+          /\{\{associationName\}\}/g,
+          associationName,
+        )}
       </Typography>
 
       <Box>

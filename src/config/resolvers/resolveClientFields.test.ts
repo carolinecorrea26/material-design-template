@@ -53,7 +53,7 @@ describe("resolveClientFieldsForPage", () => {
     const field = fields.find((f) => f.fieldId === "waepa-declaration");
     expect(field?.status).toBe("client-specific");
     expect(field?.included).toBe(true);
-    expect(field?.row.visibleWhen).toBe("membership = new");
+    expect(field?.row.visibleWhen).toContain("membership equals new");
   });
 
   it("adds ASCE's required membership ID field", () => {

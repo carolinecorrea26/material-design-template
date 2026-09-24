@@ -259,11 +259,6 @@ function CoveragePageContent({
           allFields={allFields}
           pageSections={pageSections}
           selectedCategories={state.selectedCategories}
-          categoryNeedsGender={state.categoryNeedsGender}
-          categoryNeedsSmoker={state.categoryNeedsSmoker}
-          categoryNeedsDi={state.categoryNeedsDi}
-          categoryNeedsOo={state.categoryNeedsOo}
-          categoryNeedsHours={state.categoryNeedsHours}
           hasSpouse={state.hasSpouse}
           onFieldChange={handleCoverageQuestionChange}
           coverageQuestions={state.clientCoverageQuestions}

@@ -17,7 +17,7 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import type { ClientId } from "../../types";
+import type { SiteId } from "../../data";
 import AppModal from "../layout/AppModal";
 import ClientNote, { CLIENT_HIGHLIGHT_BG } from "./ClientNote";
 import ResponsiveTableContainer from "./ResponsiveTableContainer";
@@ -44,16 +44,16 @@ const FLOW_CHIP_COLOR = {
 
 /**
  * Flow / Email / Description / When sent / Notes table for the mock email
- * catalog, resolved against a given client (the "demo" placeholder client for
- * the Global tab, or a real client for the Client tab). The Email column
+ * catalog, resolved against a given Site (the demo Site for the Global tab,
+ * or the selected Site for the Client tab). The Email column
  * opens a modal with a mockup + raw HTML preview, shared by both panels.
  */
 export default function EmailTemplatesTable({
-  clientId,
+  siteId,
   highlightedIds,
   overrideNote,
 }: {
-  clientId: ClientId;
+  siteId: SiteId;
   /** Row ids to render with the client-override yellow highlight. */
   highlightedIds?: Set<string>;
   /** Chip label shown under the email name for highlighted rows. */
@@ -64,7 +64,7 @@ export default function EmailTemplatesTable({
   const [search, setSearch] = useState("");
   const [emailType, setEmailType] = useState<EmailTypeFilter>(ALL_EMAIL_TYPES);
   const [previews, setPreviews] = useState<MockEmailPreviewData[]>(() =>
-    readMockEmailPreviews(clientId),
+    readMockEmailPreviews(siteId),
   );
   const { widths, resize } = useResizableColumns({
     flow: 120,
@@ -86,14 +86,14 @@ export default function EmailTemplatesTable({
   }, [emailType, search]);
 
   useEffect(() => {
-    setPreviews(readMockEmailPreviews(clientId));
-  }, [clientId]);
+    setPreviews(readMockEmailPreviews(siteId));
+  }, [siteId]);
 
   useEffect(() => {
     return subscribeToMockEmailPreviews(() => {
-      setPreviews(readMockEmailPreviews(clientId));
+      setPreviews(readMockEmailPreviews(siteId));
     });
-  }, [clientId]);
+  }, [siteId]);
 
   const openPreview = useMemo(
     () =>

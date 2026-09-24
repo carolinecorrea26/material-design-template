@@ -18,11 +18,13 @@ import { sendResumeMagicLinkMockEmail } from "../utils/mockEmail";
 import useCountdown from "../hooks/useCountdown";
 import ExpiringCodeAlert from "../components/feedback/ExpiringCodeAlert";
 import ResendCountdownRow from "../components/feedback/ResendCountdownRow";
+import { useApplicationSession } from "../app/ApplicationSessionContext";
 
 export default function Resume() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const fields = getClientPageFields("resume");
+  const { setAdvisorApplicantFlow } = useApplicationSession();
 
   // When flow=advisor, skip the email-entry step and go directly to Review
   // in advisor-applicant mode. The review page then adjusts edit behavior.
@@ -30,9 +32,9 @@ export default function Resume() {
 
   useEffect(() => {
     if (!isAdvisorFlow) {
-      window.sessionStorage.removeItem("advisorApplicantFlow");
+      setAdvisorApplicantFlow(false);
     }
-  }, [isAdvisorFlow]);
+  }, [isAdvisorFlow, setAdvisorApplicantFlow]);
 
   const emailField = fields.find((field) => field.id === "resume-email");
 
@@ -63,7 +65,7 @@ export default function Resume() {
       if (isAdvisorFlow) {
         // Advisor-flow resumes skip the verification step and go straight to
         // review in advisor-applicant mode.
-        window.sessionStorage.setItem("advisorApplicantFlow", "true");
+        setAdvisorApplicantFlow(true);
         navigate(`${getPagePath("review")}?flow=advisor`);
         return;
       }

@@ -9,6 +9,9 @@ import {
 import { withApplicantsApplying } from "../utils/applicantsApplying";
 import { generateFormDataUpToPage } from "../dev/utils/generateFormData";
 import type { PageId } from "../types";
+import type { AssociationId } from "../data/model";
+import { resolveSiteId } from "../data/activeSite";
+import { resolveActiveAssociationFromApplication } from "../data/activeAssociation";
 
 const AUTOFILL_QUERY_PARAM = "autofill";
 
@@ -28,6 +31,8 @@ type ApplicationFormContextValue = {
   values: ApplicationFormValues;
   setPageValues: (pageValues: ApplicationFormValues) => void;
   resetValues: () => void;
+  activeAssociationId?: AssociationId | null;
+  setActiveAssociationId?: (associationId: AssociationId | null) => void;
 };
 
 export const STORAGE_KEY = "applicationFormValues";
@@ -84,13 +89,25 @@ function loadStoredValues(): ApplicationFormValues {
 export function ApplicationFormProvider({
   children,
 }: ApplicationFormProviderProps) {
-  const [values, setValues] = useState<ApplicationFormValues>(loadStoredValues);
+  const [initialValues] = useState<ApplicationFormValues>(loadStoredValues);
+  const [values, setValues] = useState<ApplicationFormValues>(initialValues);
+  const [activeAssociationId, setActiveAssociationId] = useState<AssociationId | null>(
+    () =>
+      resolveActiveAssociationFromApplication(resolveSiteId(), initialValues)
+        .association?.id ?? null,
+  );
 
   useEffect(() => {
     window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(values));
   }, [values]);
 
   function setPageValues(pageValues: ApplicationFormValues) {
+    if (Object.hasOwn(pageValues, "membership")) {
+      setActiveAssociationId(
+        resolveActiveAssociationFromApplication(resolveSiteId(), pageValues)
+          .association?.id ?? null,
+      );
+    }
     setValues(
       (currentValues) =>
         withApplicantsApplying({
@@ -102,6 +119,9 @@ export function ApplicationFormProvider({
 
   function resetValues() {
     setValues({});
+    setActiveAssociationId(
+      resolveActiveAssociationFromApplication(resolveSiteId()).association?.id ?? null,
+    );
     window.sessionStorage.removeItem(STORAGE_KEY);
   }
 
@@ -110,8 +130,10 @@ export function ApplicationFormProvider({
       values,
       setPageValues,
       resetValues,
+      activeAssociationId,
+      setActiveAssociationId,
     }),
-    [values],
+    [activeAssociationId, values],
   );
 
   return (

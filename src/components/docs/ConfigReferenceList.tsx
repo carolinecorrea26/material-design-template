@@ -41,6 +41,7 @@ export default function ConfigReferenceList({
   const [filter, setFilter] = useState("");
   const [pageFilter, setPageFilter] = useState(ALL_PAGES);
   const { widths, resize } = useResizableColumns({
+    configurationId: 220,
     page: 160,
     configuration: 200,
     description: 300,
@@ -82,7 +83,7 @@ export default function ConfigReferenceList({
       (row) =>
         (pageFilter === ALL_PAGES || getConfigurationPage(row).id === pageFilter) &&
         (!lc ||
-          `${row.group} ${row.label} ${row.name} ${row.description} ${getConfigurationAvailableOptions(row)} ${row.sourcePath} ${row.scope} ${row.usedIn}`
+          `${row.id} ${row.group} ${row.label} ${row.name} ${row.description} ${getConfigurationAvailableOptions(row)} ${row.sourcePath} ${row.scope} ${row.usedIn}`
             .toLowerCase()
             .includes(lc)),
     );
@@ -105,6 +106,7 @@ export default function ConfigReferenceList({
       <ResponsiveTableContainer>
         <Table size="small" sx={{ tableLayout: "fixed", width: "max-content" }}>
           <colgroup>
+            <col style={{ width: widths.configurationId }} />
             <col style={{ width: widths.page }} />
             <col style={{ width: widths.configuration }} />
             <col style={{ width: widths.description }} />
@@ -121,6 +123,12 @@ export default function ConfigReferenceList({
           </colgroup>
           <TableHead>
             <TableRow>
+              <ResizableHeaderCell
+                width={widths.configurationId}
+                onResize={(w) => resize("configurationId", w)}
+              >
+                Configuration ID
+              </ResizableHeaderCell>
               <ResizableHeaderCell width={widths.page} onResize={(w) => resize("page", w)}>
                 Page
               </ResizableHeaderCell>
@@ -182,8 +190,11 @@ export default function ConfigReferenceList({
             {rows.map((config) => {
               return (
                 <TableRow
-                  key={config.label + config.name}
+                  key={config.id}
                 >
+                  <TableCell sx={{ verticalAlign: "top", fontFamily: "monospace", fontSize: "0.75rem" }}>
+                    {config.id}
+                  </TableCell>
                   <TableCell
                     sx={{
                       verticalAlign: "top",

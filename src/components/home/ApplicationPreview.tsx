@@ -350,10 +350,10 @@ export default function ApplicationPreview({
   reducedMotion = false,
 }: ApplicationPreviewProps) {
   return (
-    <Box aria-hidden="true" sx={{ width: "100%", maxWidth: 310, mx: "auto" }}>
+    <Box aria-hidden="true" sx={{ width: "100%", maxWidth: 300, mx: "auto" }}>
       <MobilePreviewFrame
-        maxWidth={310}
-        viewportHeight={438}
+        maxWidth={300}
+        viewportHeight={450}
         frameColor="text.primary"
       >
         <Box

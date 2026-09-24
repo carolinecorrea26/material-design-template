@@ -7,7 +7,7 @@ import type { CoverageCategoryId } from "../../config/coverageCategories";
 /**
  * CoverageCategorySelector is a multi-select toggle list for coverage
  * categories, used on the Coverage page, QuoteCalculator, and (formerly)
- * QuoteModal. It's a controlled component — selection state and toggling
+ * QuoteCalculator. It's a controlled component — selection state and toggling
  * live entirely in the consumer, which is why every story below manages its
  * own useState. Rows use a custom role="checkbox"/aria-checked SelectionGroup
  * pattern rather than native checkboxes, matching FieldRenderer's own

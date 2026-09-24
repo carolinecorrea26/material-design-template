@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReportRoundedIcon from "@mui/icons-material/ReportRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import PrintOutlinedIcon from "@mui/icons-material/PrintOutlined";
@@ -20,7 +20,7 @@ import { getContent } from "../content";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import ConfirmationDialog from "../components/layout/ConfirmationDialog";
 import SendApplicationDialog from "../components/layout/SendApplicationDialog";
-import { useReviewSubmitted } from "../app/useReviewSubmitted";
+import { useApplicationSession } from "../app/ApplicationSessionContext";
 import { getPagePath } from "../config/pages";
 
 const reviewContent = getContent().review;
@@ -31,12 +31,21 @@ const requestEditDialogContent =
 export default function Review() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { isReviewSubmitted } = useReviewSubmitted();
+  const {
+    reviewSubmitted: isReviewSubmitted,
+    advisorApplicantFlow,
+    setAdvisorApplicantFlow,
+  } = useApplicationSession();
   const [editTargetPageId, setEditTargetPageId] = useState<PageId | null>(null);
   const [sendBackDialogOpen, setSendBackDialogOpen] = useState(false);
   const isAdvisorApplicantFlow =
-    searchParams.get("flow") === "advisor" ||
-    window.sessionStorage.getItem("advisorApplicantFlow") === "true";
+    searchParams.get("flow") === "advisor" || advisorApplicantFlow;
+
+  useEffect(() => {
+    if (searchParams.get("flow") === "advisor") {
+      setAdvisorApplicantFlow(true);
+    }
+  }, [searchParams, setAdvisorApplicantFlow]);
 
   // Dummy advisor email used as the send-back target.
   const advisorEmail = "advisor@example.com";

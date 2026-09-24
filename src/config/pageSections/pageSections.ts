@@ -28,7 +28,8 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       pageId: "coverage",
       applicant: "self",
       fieldIds: ["tobacco-last-used", "tobacco-products"],
-      visibleWhen: [{ fieldId: "smoker", equals: "yes" }],
+      visibilityConditionId: "condition-member-smoker",
+      presentation: "conditional",
     },
     {
       id: "selfCoverageWorkIncome",
@@ -54,17 +55,15 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       description: sectionLabels.personalDetails,
       applicant: "spouse",
       fieldIds: ["spouse-gender", "spouse-smoker"],
-      visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
+      visibilityConditionId: "condition-spouse-selected",
     },
     {
       id: "spouseCoverageTobacco",
       pageId: "coverage",
       applicant: "spouse",
       fieldIds: ["spouse-tobacco-last-used", "spouse-tobacco-products"],
-      visibleWhen: [
-        { fieldId: "dependents", includes: "spouse" },
-        { fieldId: "spouse-smoker", equals: "yes" },
-      ],
+      visibilityConditionId: "condition-spouse-smoker",
+      presentation: "conditional",
     },
     {
       id: "spouseCoverageWorkIncome",
@@ -75,7 +74,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
         "spouse-hours-worked-per-week",
         "spouse-average-monthly-income",
       ],
-      visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
+      visibilityConditionId: "condition-spouse-selected",
     },
   ],
 
@@ -118,7 +117,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
         "spouse-last-name",
         "spouse-birth-date",
       ],
-      visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
+      visibilityConditionId: "condition-spouse-selected",
     },
     {
       id: "childSection",
@@ -126,7 +125,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       title: applicantSectionTitles.child,
       applicant: "child",
       fieldIds: [],
-      visibleWhen: [{ fieldId: "dependents", includes: "child" }],
+      visibilityConditionId: "condition-child-selected",
     },
   ],
 
@@ -167,7 +166,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       title: applicantSectionTitles.spouse,
       applicant: "spouse",
       fieldIds: ["spouse-phone", "spouse-email"],
-      visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
+      visibilityConditionId: "condition-spouse-selected",
     },
   ],
 
@@ -194,21 +193,21 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       pageId: "profile",
       applicant: "self",
       fieldIds: ["drivers-license-number", "drivers-license-state"],
-      visibleWhen: [{ fieldId: "has-drivers-license", equals: "yes" }],
+      visibilityConditionId: "condition-member-has-drivers-license",
     },
     {
       id: "profilePersonalSelfOutsideUs",
       pageId: "profile",
       applicant: "self",
       fieldIds: ["outside-us-months", "outside-us-country"],
-      visibleWhen: [{ fieldId: "intend-live-outside-us", equals: "yes" }],
+      visibilityConditionId: "condition-member-lives-outside-us",
     },
     {
       id: "profilePersonalSelfTravelOutsideUs",
       pageId: "profile",
       applicant: "self",
       fieldIds: ["travel-outside-us-country"],
-      visibleWhen: [{ fieldId: "travel-outside-us-six-months", equals: "yes" }],
+      visibilityConditionId: "condition-member-travels-outside-us",
     },
     {
       id: "profilePersonalSelfPhysician",
@@ -285,7 +284,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
         "spouse-intend-live-outside-us",
         "spouse-travel-outside-us-six-months",
       ],
-      visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
+      visibilityConditionId: "condition-spouse-selected",
     },
     {
       id: "profilePersonalSpouseDriversLicense",
@@ -295,30 +294,21 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
         "spouse-drivers-license-number",
         "spouse-drivers-license-state",
       ],
-      visibleWhen: [
-        { fieldId: "dependents", includes: "spouse" },
-        { fieldId: "spouse-has-drivers-license", equals: "yes" },
-      ],
+      visibilityConditionId: "condition-spouse-has-drivers-license",
     },
     {
       id: "profilePersonalSpouseOutsideUs",
       pageId: "profile",
       applicant: "spouse",
       fieldIds: ["spouse-outside-us-months", "spouse-outside-us-country"],
-      visibleWhen: [
-        { fieldId: "dependents", includes: "spouse" },
-        { fieldId: "spouse-intend-live-outside-us", equals: "yes" },
-      ],
+      visibilityConditionId: "condition-spouse-lives-outside-us",
     },
     {
       id: "profilePersonalSpouseTravelOutsideUs",
       pageId: "profile",
       applicant: "spouse",
       fieldIds: ["spouse-travel-outside-us-country"],
-      visibleWhen: [
-        { fieldId: "dependents", includes: "spouse" },
-        { fieldId: "spouse-travel-outside-us-six-months", equals: "yes" },
-      ],
+      visibilityConditionId: "condition-spouse-travels-outside-us",
     },
     {
       id: "profilePersonalSpousePhysician",
@@ -335,7 +325,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
         "spouse-medical-state",
         "spouse-medical-zip-code",
       ],
-      visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
+      visibilityConditionId: "condition-spouse-selected",
     },
     {
       id: "profileFinancialSpouse",
@@ -352,7 +342,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
         "spouse-is-replacing-disability-insurance",
         "spouse-disability-replacement-amount",
       ],
-      visibleWhen: [{ fieldId: "dependents", includes: "spouse" }],
+      visibilityConditionId: "condition-spouse-selected",
     },
   ],
 
@@ -361,13 +351,13 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       id: "advisorLoginNew",
       pageId: "advisor-login",
       fieldIds: ["advisor-email", "advisor-phone", "advisor-code"],
-      visibleWhen: [{ fieldId: "advisor-flow-type", equals: "new" }],
+      visibilityConditionId: "condition-advisor-new-application",
     },
     {
       id: "advisorLoginSaved",
       pageId: "advisor-login",
       fieldIds: ["applicant-email"],
-      visibleWhen: [{ fieldId: "advisor-flow-type", equals: "saved" }],
+      visibilityConditionId: "condition-advisor-saved-application",
     },
   ],
 };

@@ -1,7 +1,12 @@
 import type { PageId } from "../../types";
 import type { FieldId } from "./types";
 
-export const pageFields: Partial<Record<PageId, FieldId[]>> = {
+/**
+ * Canonical page placement and base rendering order. Field definitions live
+ * only in fieldCatalog; consumers resolve definitions and scope overrides
+ * through resolvedFieldRegistry.
+ */
+export const pageFieldOrder: Partial<Record<PageId, FieldId[]>> = {
   membership: [
     "membership",
     "title",

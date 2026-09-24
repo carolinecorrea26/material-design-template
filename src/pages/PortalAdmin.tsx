@@ -2,12 +2,18 @@ import { useState } from "react";
 import type { ComponentType } from "react";
 import {
   Box,
+  Button,
   Card,
   CardActionArea,
   CardContent,
   Stack,
   Tab,
   Tabs,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   Typography,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
@@ -26,6 +32,13 @@ import {
   type ProjectStatus,
   type ProjectSummary,
 } from "../content/docs/portalProject";
+import {
+  getAssociationsForClient,
+  getClientsForTpa,
+  getSitesForClient,
+  tpaEntities,
+} from "../data";
+import ResponsiveTableContainer from "../components/docs/ResponsiveTableContainer";
 
 type PortalTab = "information" | "projects";
 
@@ -147,12 +160,19 @@ export default function PortalAdmin() {
     >
       <Stack spacing={3}>
         <Box>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 800, mb: 1 }}>
-            Portal Admin
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Documentation and administration hub for the Portal template.
-          </Typography>
+          <Stack direction={{ xs: "column", sm: "row" }} gap={2} alignItems={{ sm: "flex-start" }} justifyContent="space-between">
+            <Box>
+              <Typography variant="h4" component="h1" sx={{ fontWeight: 800, mb: 1 }}>
+                Portal Admin
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Documentation and administration hub for the Portal template.
+              </Typography>
+            </Box>
+            <Button component={RouterLink} to="/admin-center" variant="contained" endIcon={<ArrowForwardRoundedIcon />}>
+              Explore New Admin Center
+            </Button>
+          </Stack>
         </Box>
 
         <Tabs
@@ -165,19 +185,20 @@ export default function PortalAdmin() {
         </Tabs>
 
         {activeTab === "information" && (
-          <Box
-            component="section"
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "1fr",
-                sm: "repeat(2, minmax(0, 1fr))",
-                lg: "repeat(5, minmax(0, 1fr))",
-              },
-              gap: 2,
-            }}
-          >
-            {portalInfoCards.map((card) => (
+          <Stack spacing={3}>
+            <Box
+              component="section"
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  sm: "repeat(2, minmax(0, 1fr))",
+                  lg: "repeat(5, minmax(0, 1fr))",
+                },
+                gap: 2,
+              }}
+            >
+              {portalInfoCards.map((card) => (
               <Card key={card.id} variant="outlined" sx={{ borderRadius: 3 }}>
                 <CardActionArea component={RouterLink} to={card.path} sx={{ height: "100%" }}>
                   <CardContent>
@@ -202,8 +223,58 @@ export default function PortalAdmin() {
                   </CardContent>
                 </CardActionArea>
               </Card>
-            ))}
-          </Box>
+              ))}
+            </Box>
+
+            <Box component="section">
+              <Typography variant="h5" component="h2" sx={{ fontWeight: 800, mb: 0.5 }}>
+                TPA → Client → Site hierarchy
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                Canonical administration identities. Provisional compatibility TPAs are clearly
+                marked until authoritative TPA records are supplied.
+              </Typography>
+              <ResponsiveTableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>TPA ID</TableCell>
+                      <TableCell>TPA Name</TableCell>
+                      <TableCell>Acronym</TableCell>
+                      <TableCell>Client Count</TableCell>
+                      <TableCell>Contact</TableCell>
+                      <TableCell>Clients / Sites / Associations</TableCell>
+                      <TableCell>Status</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {tpaEntities.map((tpa) => {
+                      const clients = getClientsForTpa(tpa.id);
+                      return (
+                        <TableRow key={tpa.id}>
+                          <TableCell sx={{ fontFamily: "monospace" }}>{tpa.id}</TableCell>
+                          <TableCell>{tpa.name}</TableCell>
+                          <TableCell>{tpa.acronym ?? "—"}</TableCell>
+                          <TableCell>{clients.length}</TableCell>
+                          <TableCell>
+                            {[tpa.support?.contactName, tpa.support?.email, tpa.support?.phoneDisplay]
+                              .filter(Boolean)
+                              .join(" · ") || "—"}
+                          </TableCell>
+                          <TableCell>
+                            {clients.map((client) =>
+                              `${client.acronym}: ${getSitesForClient(client.id).length} site(s), ${getAssociationsForClient(client.id).length} association(s)`,
+                            ).join("; ")}
+                          </TableCell>
+                          <TableCell>{tpa.provisional ? "Provisional" : "Confirmed"}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </ResponsiveTableContainer>
+            </Box>
+          </Stack>
         )}
 
         {activeTab === "projects" && (

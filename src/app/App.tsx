@@ -4,7 +4,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import { RouterProvider } from "react-router-dom";
 import { ApplicationFormProvider } from "./ApplicationFormContext";
-import { ReviewSubmittedProvider } from "./useReviewSubmitted";
+import { ApplicationSessionProvider } from "./ApplicationSessionContext";
 import { createAppTheme } from "./theme";
 import { router } from "./router";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -24,9 +24,9 @@ export default function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <ApplicationFormProvider>
-          <ReviewSubmittedProvider>
+          <ApplicationSessionProvider>
             <RouterProvider router={router} />
-          </ReviewSubmittedProvider>
+          </ApplicationSessionProvider>
         </ApplicationFormProvider>
       </ThemeProvider>
     </LocalizationProvider>

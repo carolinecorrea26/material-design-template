@@ -1,4 +1,4 @@
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 import {
   AppBar,
@@ -29,12 +29,14 @@ import { getFormProgressPercent, isFormPage } from "../../config/formFlow";
 import type { ClientConfig } from "../../config/clients/types";
 import type { PageId } from "../../types";
 import { useApplicationForm } from "../../app/ApplicationFormContext";
+import { useApplicationSession } from "../../app/ApplicationSessionContext";
 import { router } from "../../app/router";
 import CoverageCart, { useCoverageCartBadge } from "../ui/CoverageCart";
 import type { AppShellVariant } from "./AppShell";
 import ClientHelpBanner from "./ClientHelpBanner";
 import { getContent } from "../../content";
 import { getCoverageAmountRange } from "../../utils/coverageAmounts";
+import { getActiveSite, resolveEffectiveBranding } from "../../data";
 
 const coverageDetailsContent = getContent().dialogs.coverageDetails;
 
@@ -132,7 +134,12 @@ export default function AppHeader({
   >("cart-icon");
   const [activeCoverage, setActiveCoverage] =
     useState<CoverageDefinition | null>(null);
-  const { values } = useApplicationForm();
+  const { values, activeAssociationId } = useApplicationForm();
+  const { reviewSubmitted } = useApplicationSession();
+  const effectiveBranding = resolveEffectiveBranding({
+    siteId: getActiveSite().id,
+    associationId: activeAssociationId,
+  });
   const summaryBadgeCount = useCoverageCartBadge();
 
   const pathname = useSyncExternalStore(
@@ -142,6 +149,8 @@ export default function AppHeader({
   );
 
   const trigger = useScrollTrigger({ threshold: 8 });
+
+  useEffect(() => setImageError(false), [effectiveBranding.logo]);
 
   const normalizedPath =
     pathname.length > 1 && pathname.endsWith("/")
@@ -168,7 +177,7 @@ export default function AppHeader({
     currentPageId !== undefined &&
     currentPageId !== "home" &&
     currentPageId !== "receipt" &&
-    window.sessionStorage.getItem("reviewSubmitted") !== "true";
+    !reviewSubmitted;
 
   return (
     <>
@@ -214,13 +223,13 @@ export default function AppHeader({
                     sx={{ cursor: "pointer" }}
                     onClick={() => void router.navigate("/")}
                   >
-                    {client.branding.name}
+                    {effectiveBranding.name}
                   </Typography>
                 ) : (
                   <Box
                     component="img"
-                    src={client.branding.logo}
-                    alt={client.branding.logoAlt}
+                    src={effectiveBranding.logo}
+                    alt={effectiveBranding.logoAlt}
                     onError={() => setImageError(true)}
                     onClick={() => void router.navigate("/")}
                     sx={{

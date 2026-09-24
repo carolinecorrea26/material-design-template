@@ -6,19 +6,28 @@ import type { UseFormSetValue } from "react-hook-form";
 
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getPageSectionNote } from "../config/pages";
-import type { ApplicationFormValues } from "../app/ApplicationFormContext";
+import {
+  type ApplicationFormValues,
+  useApplicationForm,
+} from "../app/ApplicationFormContext";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import FormRoutePage from "../app/RoutePage";
 import SectionDivider from "../components/layout/SectionDivider";
 
 import QuoteCalculator from "../components/forms/QuoteCalculator";
 import type { FieldDefinition } from "../config/fields/types";
+import { shouldShowMembershipFollowUpFields } from "../config/clientFields/membershipFollowUpVisibility";
 import FieldGrid from "../components/layout/FieldGrid";
 import {
   coverageOptionsAvailableHelpItem,
   // groupInsuranceHelpItem,
   howApplyingWorksHelpItem,
 } from "../content/helpContent";
+import {
+  getActiveSite,
+  resolveActiveAssociation,
+  resolveActiveAssociationFromApplication,
+} from "../data";
 
 type MembershipFormValue = string | boolean | string[];
 type MembershipSetValue = UseFormSetValue<Record<string, MembershipFormValue>>;
@@ -131,21 +140,21 @@ function WAEPAAdditionalFields({
         clearFields(setValue, waepaConditionalFieldIds),
       )}
 
-      {selectedQualification === "federal-active" && (
+      {employerField && startDateField && (
         <>
           {renderField(employerField, control, errors)}
           {renderField(startDateField, control, errors)}
         </>
       )}
 
-      {selectedQualification === "federal-annuitant" && (
+      {retiredEmployerField && retirementDateField && (
         <>
           {renderField(retiredEmployerField, control, errors)}
           {renderField(retirementDateField, control, errors)}
         </>
       )}
 
-      {associateMembershipAlert && (
+      {memberIdField && (
         <>
           <Alert severity="info">{associateMembershipAlert}</Alert>
           {renderFieldGrid(
@@ -164,6 +173,8 @@ function WAEPAAdditionalFields({
 
 export default function Membership() {
   const client = getActiveClient();
+  const site = getActiveSite();
+  const { setActiveAssociationId } = useApplicationForm();
   const pageId = "membership";
   const [quoteOpen, setQuoteOpen] = useState(false);
 
@@ -209,11 +220,23 @@ export default function Membership() {
         </>
       }
       initialTransitionMessage="Loading your membership application..."
-      disableNextButton={(values) =>
-        client.id !== "ama" &&
-        client.id !== "waepa" &&
-        values.membership === "no"
-      }
+      disableNextButton={(values) => {
+        const associationResolution = resolveActiveAssociationFromApplication(
+          site.id,
+          values,
+        );
+        if (
+          site.associationSelection?.mode === "url-parameter" &&
+          associationResolution.status !== "resolved"
+        ) {
+          return true;
+        }
+        return (
+          client.id !== "ama" &&
+          client.id !== "waepa" &&
+          values.membership === "no"
+        );
+      }}
     >
       {({ control, errors, watchedValues, allFields, setValue }) => {
         const membershipField = allFields.find(
@@ -224,6 +247,15 @@ export default function Membership() {
         );
 
         const membershipValue = watchedValues.membership;
+        const associationResolution = resolveActiveAssociationFromApplication(
+          site.id,
+          watchedValues,
+        );
+        const associationLinkError =
+          site.associationSelection?.mode === "url-parameter" &&
+          associationResolution.status !== "resolved"
+            ? associationResolution.message
+            : undefined;
 
         const showMembershipIneligibleAlert =
           client.id !== "ama" &&
@@ -231,11 +263,12 @@ export default function Membership() {
           membershipValue === "no";
 
         const showMembershipFollowUpFields =
-          client.id === "ama"
-            ? Boolean(membershipValue)
-            : client.id === "waepa"
-              ? membershipValue === "current" || membershipValue === "new"
-              : membershipValue === "yes";
+          shouldShowMembershipFollowUpFields({
+            clientId: client.id,
+            selectionMode: site.associationSelection?.mode,
+            membershipValue,
+            associationStatus: associationResolution.status,
+          });
 
         const hasTitleField = remainingFields.some(
           (field) => field.id === "title",
@@ -250,16 +283,37 @@ export default function Membership() {
           (field) => !defaultMemberInformationFieldIds.has(field.id),
         );
         const hasAdditionalFields = additionalFields.length > 0;
+        const hasAmaPhysicianFields = additionalFields.some((field) =>
+          field.id.startsWith("ama-physician-"),
+        );
+        const hasWaepaFields = additionalFields.some((field) =>
+          field.id.startsWith("waepa-"),
+        );
 
         return (
           <>
+            {associationLinkError && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {associationLinkError} Please request a valid application link.
+              </Alert>
+            )}
             {membershipField && (
               <FieldRenderer
                 key={membershipField.id}
                 field={membershipField}
                 control={control}
                 errors={errors}
-                onValueChange={() => {
+                onValueChange={(nextValue) => {
+                  if (
+                    site.associationSelection?.mode === "select" &&
+                    typeof nextValue === "string"
+                  ) {
+                    setActiveAssociationId?.(
+                      resolveActiveAssociation(site.id, {
+                        selectedAssociationId: nextValue,
+                      }).association?.id ?? null,
+                    );
+                  }
                   if (client.id === "waepa") {
                     clearWAEPAFields(setValue);
                   }
@@ -354,7 +408,7 @@ export default function Membership() {
                   <Box sx={{ mt: 3 }}>
                     <SectionDivider
                       label={
-                        client.id === "ama" && membershipValue === "spouse"
+                        hasAmaPhysicianFields
                           ? "Physician Information"
                           : client.id === "asce"
                             ? "Additional Membership Information"
@@ -362,7 +416,7 @@ export default function Membership() {
                       }
                       variant="subsection"
                     />
-                    {client.id === "ama" && membershipValue === "spouse" && (
+                    {hasAmaPhysicianFields && (
                       <Alert severity="info" sx={{ mt: 1 }}>
                         To apply as a spouse of a physician, please include the
                         physician&apos;s information below.
@@ -373,7 +427,7 @@ export default function Membership() {
                         {getPageSectionNote(pageId, "membershipInformation")}
                       </Alert>
                     )}
-                    {client.id === "waepa" ? (
+                    {hasWaepaFields ? (
                       <WAEPAAdditionalFields
                         fields={additionalFields}
                         control={control}
@@ -381,7 +435,7 @@ export default function Membership() {
                         qualificationValue={watchedValues["waepa-attestation"]}
                         setValue={setValue}
                       />
-                    ) : client.id === "ama" ? (
+                    ) : hasAmaPhysicianFields ? (
                       <Stack spacing={0} sx={{ mt: 1 }}>
                         {renderField(
                           fieldById(additionalFields, "ama-physician-type"),

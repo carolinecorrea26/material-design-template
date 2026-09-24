@@ -1,25 +1,25 @@
 import { useMemo } from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import { getPagePath } from "../../config/pages";
-import type { ClientId } from "../../types";
+import type { SiteId } from "../../data";
 import MobilePreviewFrame from "../ui/MobilePreviewFrame";
 
-export function getClientPrototypeUrl(clientId: ClientId): string {
+export function getSitePrototypeUrl(siteId: SiteId): string {
   const appBaseUrl = new URL(import.meta.env.BASE_URL, window.location.origin);
   const homePath = getPagePath("home").replace(/^\/+/, "");
   const url = new URL(homePath, appBaseUrl);
-  url.searchParams.set("client", clientId);
+  url.searchParams.set("site", siteId);
   return url.toString();
 }
 
 export default function MobileSitePreview({
-  clientId,
+  siteId,
   clientName,
 }: {
-  clientId: ClientId;
+  siteId: SiteId;
   clientName: string;
 }) {
-  const previewUrl = useMemo(() => getClientPrototypeUrl(clientId), [clientId]);
+  const previewUrl = useMemo(() => getSitePrototypeUrl(siteId), [siteId]);
 
   return (
     <Card

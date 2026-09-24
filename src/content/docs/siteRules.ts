@@ -1,17 +1,17 @@
+import type { RuleDefinition, SiteId } from "../../data";
+import {
+  contactCarryForwardTransition,
+  describeApplicationTransition,
+  quoteApplyTransition,
+} from "../../config/applicationTransitions";
+
 // ---------------------------------------------------------------------------
 // Site rules data
 //
 // Extracted from src/pages/InformationArchitecture.tsx (Site Rules section).
 // ---------------------------------------------------------------------------
 
-export type SiteRule = {
-  area: string;
-  rule: string;
-  behavior: string;
-  ref: string;
-};
-
-export const siteRules: SiteRule[] = [
+const siteRuleInventory: Omit<RuleDefinition, "id">[] = [
   {
     area: "Application flow",
     rule: "Resolved next/back navigation",
@@ -31,20 +31,20 @@ export const siteRules: SiteRule[] = [
     rule: "Client page mode = none",
     behavior:
       "If Beneficiary or Payment is configured as none, the page is skipped from the active form flow.",
-    ref: "src/config/formFlow.ts; getClientPageRequirement",
+    ref: "src/config/flowGates.ts; src/config/client/getClientPageRequirement.ts",
   },
   {
     area: "Application flow",
     rule: "Beneficiary routing",
     behavior:
       "Beneficiary is shown only when selected coverage includes Life (LI) or Accidental Death (AD), unless the page is configured as none.",
-    ref: "src/config/formFlow.ts",
+    ref: "src/config/flowGates.ts",
   },
   {
     area: "Application flow",
     rule: "Health SI routing",
-    behavior: "Shown when LI (SI) or DI (SI) underwriting is selected.",
-    ref: "src/config/formFlow.ts",
+    behavior: "Shown when a selected coverage has SI underwriting.",
+    ref: "src/config/flowGates.ts",
   },
   {
     area: "Application flow",
@@ -57,29 +57,29 @@ export const siteRules: SiteRule[] = [
     area: "Application flow",
     rule: "Health TELE SUPP routing",
     behavior:
-      "Shown when LI (UW), DI (UW), or OO (UW) underwriting is selected.",
-    ref: "src/config/formFlow.ts",
+      "health-li is shown for selected LI + TELE coverage; health-di is shown for selected DI + TELE coverage.",
+    ref: "src/config/flowGates.ts",
   },
   {
     area: "Application flow",
     rule: "Health CI routing",
     behavior:
       "Shown when a Critical Illness product is selected. (Page not yet implemented in prototype.)",
-    ref: "src/config/formFlow.ts",
+    ref: "src/content/docs/siteRules.ts (documented future rule; page not implemented)",
   },
   {
     area: "Application flow",
     rule: "Health UW CIR routing",
     behavior:
-      "Shown when LI (UW) is selected with a CIR rider, or when a CIR rider is selected standalone.",
-    ref: "src/config/formFlow.ts",
+      "Shown when a CIR rider is selected.",
+    ref: "src/config/flowGates.ts",
   },
   {
     area: "Application flow",
     rule: "Health QD routing",
     behavior:
-      "Shown when LI (QD) and/or DI (QD) is selected. Renders as QD LI, QD DI, or a combined QD LI+DI page depending on which products are selected.",
-    ref: "src/config/formFlow.ts",
+      "Shown when a selected coverage has QD underwriting. Renders as QD LI, QD DI, or a combined QD LI+DI page depending on which products are selected.",
+    ref: "src/config/flowGates.ts",
   },
   {
     area: "Application flow",
@@ -220,6 +220,8 @@ export const siteRules: SiteRule[] = [
     behavior:
       "When the Child dependent section is visible, an info alert under the section header states that only unmarried children are eligible for coverage.",
     ref: "src/pages/Eligibility.tsx",
+    type: "conditional",
+    conditionIds: ["condition-child-selected"],
   },
   {
     area: "Eligibility",
@@ -241,6 +243,8 @@ export const siteRules: SiteRule[] = [
     behavior:
       "The user first selects one or more coverage categories via a multi-select chip list. Selecting a category may surface additional required questions (tobacco use, income, hours). When all required questions are answered, a 'See my coverage options' button appears. Clicking it validates the form and, if valid, reveals the product catalog. Changing a category selection or question answer after products are shown collapses the catalog and requires another click.",
     ref: "src/pages/Coverage.tsx; src/app/useCoverageState.ts; src/components/forms/CoverageCategorySelector.tsx",
+    type: "conditional",
+    conditionIds: ["condition-member-smoker", "condition-spouse-smoker"],
   },
   {
     area: "Coverage",
@@ -311,6 +315,18 @@ export const siteRules: SiteRule[] = [
     behavior:
       "The quote drawer's estimated cost panel now renders via the same TotalCostSummary component used on the Coverage page and in the coverage cart drawer, instead of a bespoke box. Like the Coverage page's inline cart, the panel is hidden entirely until at least one product/applicant has been added (no 'Added coverage will appear here' placeholder); the rate-frequency toggle and Apply button remain visible whenever products are shown.",
     ref: "src/components/forms/QuoteCalculator.tsx; src/components/ui/TotalCostSummary.tsx",
+  },
+  {
+    area: "Home / Quote tool",
+    rule: "Apply initializes the application",
+    behavior: `When a user applies from a quote, collected quote information and selected coverage initialize the application through the canonical quote.apply transition. Targets: ${describeApplicationTransition(quoteApplyTransition)}.`,
+    ref: "src/config/applicationTransitions/applicationTransitions.ts (quoteApplyTransition)",
+  },
+  {
+    area: "Contact",
+    rule: "Eligibility address carry-forward",
+    behavior: `When Contact is entered, existing Eligibility location values preset empty Contact location fields without overwriting user-entered Contact values. Targets: ${describeApplicationTransition(contactCarryForwardTransition)}.`,
+    ref: "src/config/applicationTransitions/applicationTransitions.ts (contactCarryForwardTransition)",
   },
   {
     area: "Feedback",
@@ -409,6 +425,11 @@ export const siteRules: SiteRule[] = [
     behavior:
       "Answers to controlling fields reveal follow-up fields inline within a left-bordered ConditionalGroup container. Changing the controlling answer back collapses the group. Examples: driver license Yes reveals license number/state; is-self-employed Yes reveals self-employment sub-questions; existing life insurance Yes reveals amount and replacement fields. Some follow-ups are themselves controls for deeper nested groups.",
     ref: "src/pages/Profile.tsx; src/components/forms/ConditionalGroup.tsx",
+    type: "conditional",
+    conditionIds: [
+      "condition-member-has-drivers-license",
+      "condition-spouse-has-drivers-license",
+    ],
   },
   {
     area: "Profile",
@@ -421,8 +442,15 @@ export const siteRules: SiteRule[] = [
     area: "Profile",
     rule: "Outside-U.S. follow-up",
     behavior:
-      "Spouse outside-U.S. residence/travel questions reveal country/month follow-ups only for affirmative responses.",
+      "Member and spouse outside-U.S. residence/travel questions reveal country/month follow-ups only for affirmative responses.",
     ref: "src/pages/Profile.tsx",
+    type: "conditional",
+    conditionIds: [
+      "condition-member-lives-outside-us",
+      "condition-member-travels-outside-us",
+      "condition-spouse-lives-outside-us",
+      "condition-spouse-travels-outside-us",
+    ],
   },
   {
     area: "Profile",
@@ -498,15 +526,19 @@ export const siteRules: SiteRule[] = [
     area: "Advisor flow",
     rule: "Send-to-applicant dialog",
     behavior:
-      "When the advisor clicks Next on Profile, the onBeforeNext hook opens a SendApplicationDialog titled 'Send to applicant for review' showing the applicant name and email. Clicking Send navigates to Advisor Send Confirmation; Cancel stays on Profile.",
-    ref: "src/pages/Profile.tsx; src/components/layout/SendApplicationDialog.tsx",
+      "New Application mode displays advisor credential fields on Advisor Login. When the advisor later clicks Next on Profile, the onBeforeNext hook opens a SendApplicationDialog titled 'Send to applicant for review' showing the applicant name and email. Clicking Send navigates to Advisor Send Confirmation; Cancel stays on Profile.",
+    ref: "src/pages/AdvisorLogin.tsx; src/pages/Profile.tsx; src/components/layout/SendApplicationDialog.tsx",
+    type: "conditional",
+    conditionIds: ["condition-advisor-new-application"],
   },
   {
     area: "Advisor flow",
     rule: "Advisor-mode Review edit dialog",
     behavior:
-      "In advisor-applicant flow, clicking an edit icon on Review opens a SendApplicationDialog titled 'Request edit to application' showing the advisor email only. Clicking Send navigates to Application Edit Confirmation; Cancel stays on Review.",
-    ref: "src/pages/Review.tsx; src/components/layout/SendApplicationDialog.tsx",
+      "Saved Application mode displays applicant email on Advisor Login. In advisor-applicant flow, clicking an edit icon on Review opens a SendApplicationDialog titled 'Request edit to application' showing the advisor email only. Clicking Send navigates to Application Edit Confirmation; Cancel stays on Review.",
+    ref: "src/pages/AdvisorLogin.tsx; src/pages/Review.tsx; src/components/layout/SendApplicationDialog.tsx",
+    type: "conditional",
+    conditionIds: ["condition-advisor-saved-application"],
   },
   {
     area: "Landing Page",
@@ -540,7 +572,7 @@ export const siteRules: SiteRule[] = [
     area: "Header",
     rule: "Chat/cart suppression after review submitted",
     behavior:
-      "The Chat and Coverage Cart header actions are hidden once sessionStorage.reviewSubmitted is 'true', in addition to being hidden on the Home and Receipt pages.",
+      "The Chat and Coverage Cart header actions are hidden once ApplicationSessionContext reports that review was submitted, in addition to being hidden on the Home and Receipt pages.",
     ref: "src/components/layout/AppHeader.tsx",
   },
   {
@@ -561,7 +593,7 @@ export const siteRules: SiteRule[] = [
     area: "Progress/navigation",
     rule: "Advisor-applicant steps locked",
     behavior:
-      "When sessionStorage.advisorApplicantFlow is 'true' (applicant entered via resume?flow=advisor), the stepper/breadcrumb progress UI locks navigation to all steps except application-review and esign-submit, regardless of completed state.",
+      "When ApplicationSessionContext is in advisor-applicant mode (the applicant entered via resume?flow=advisor), the stepper/breadcrumb progress UI locks navigation to all steps except application-review and esign-submit, regardless of completed state.",
     ref: "src/components/navigation/ProgressStep.tsx",
   },
   {
@@ -613,4 +645,97 @@ export const siteRules: SiteRule[] = [
       "Menu provides Continue Saved Application, How Applying Works, About Coverage, Needs Calculator, About QuickDecision and client Contact information. Each tool closes the main menu drawer and opens a standalone AppDrawer (How Applying Works and About Coverage render HowApplyingWorksPanel / CoverageOptionsPanel in 'drawer' variant).",
     ref: "src/components/layout/AppMenu.tsx; src/components/ui/HowApplyingWorksPanel.tsx; src/components/ui/CoverageOptionsPanel.tsx",
   },
+  {
+    area: "Eligibility",
+    rule: "Spouse selection displays spouse information",
+    behavior:
+      "When Spouse is selected as a dependent, display the applicant-specific spouse sections and fields; post-Coverage applicant selection gates still apply separately.",
+    ref: "src/config/pageSections/pageSections.ts; src/config/conditions/conditions.ts",
+    type: "conditional",
+    scope: "global",
+    conditionIds: ["condition-spouse-selected"],
+  },
+  {
+    area: "Membership",
+    rule: "AMA spouse displays physician information",
+    behavior:
+      "When AMA membership is Spouse of Physician, display the physician information section.",
+    ref: "src/config/conditions/conditions.ts; src/config/clientFields/membership.ts",
+    type: "conditional",
+    scope: "site",
+    siteIds: ["ama-default"],
+    conditionIds: ["condition-membership-ama-spouse"],
+  },
+  {
+    area: "Membership",
+    rule: "WAEPA new member displays member information",
+    behavior:
+      "When WAEPA membership is New Member, display the declaration and member qualification information.",
+    ref: "src/config/conditions/conditions.ts; src/config/clientFields/membership.ts",
+    type: "conditional",
+    scope: "site",
+    siteIds: ["waepa-standard"],
+    conditionIds: ["condition-membership-waepa-new"],
+  },
+  {
+    area: "Membership",
+    rule: "WAEPA active federal employee fields",
+    behavior:
+      "When the WAEPA qualification is active federal employee, display employer and start-date fields.",
+    ref: "src/config/conditions/conditions.ts; src/config/clientFields/membership.ts",
+    type: "conditional",
+    scope: "site",
+    siteIds: ["waepa-standard"],
+    conditionIds: ["condition-waepa-federal-active"],
+  },
+  {
+    area: "Membership",
+    rule: "WAEPA federal annuitant fields",
+    behavior:
+      "When the WAEPA qualification is federal annuitant, display retired-employer and retirement-date fields.",
+    ref: "src/config/conditions/conditions.ts; src/config/clientFields/membership.ts",
+    type: "conditional",
+    scope: "site",
+    siteIds: ["waepa-standard"],
+    conditionIds: ["condition-waepa-federal-annuitant"],
+  },
+  {
+    area: "Membership",
+    rule: "WAEPA associate member information",
+    behavior:
+      "When the WAEPA qualification is spouse-associate or child-associate, display associated-member information.",
+    ref: "src/config/conditions/conditions.ts; src/config/clientFields/membership.ts",
+    type: "conditional",
+    scope: "site",
+    siteIds: ["waepa-standard"],
+    conditionIds: ["condition-waepa-associated-member"],
+  },
 ];
+
+function ruleId(area: string, rule: string): RuleDefinition["id"] {
+  return `rule-${`${area}-${rule}`
+    .replace(/[^a-zA-Z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .toLowerCase()}`;
+}
+
+export const siteRules: RuleDefinition[] = siteRuleInventory.map((entry) => ({
+  ...entry,
+  id: ruleId(entry.area, entry.rule),
+  type: entry.type ?? "behavioral",
+  scope: entry.scope ?? "global",
+}));
+
+export function getApplicableSiteRules({
+  clientId,
+  siteId,
+}: {
+  clientId: string;
+  siteId: SiteId;
+}): RuleDefinition[] {
+  return siteRules.filter((rule) => {
+    if ((rule.scope ?? "global") === "global") return true;
+    if (rule.scope === "client") return rule.clientIds?.includes(clientId) ?? false;
+    return rule.siteIds?.includes(siteId) ?? false;
+  });
+}

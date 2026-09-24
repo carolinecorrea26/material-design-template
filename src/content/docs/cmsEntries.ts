@@ -1,5 +1,9 @@
-import type { ClientId } from "../../types";
-import { clients } from "../../config/clients";
+import {
+  getLegacyClientConfigForSite,
+  getLegacyClientIdForSite,
+  siteEntities,
+  type SiteId,
+} from "../../data";
 import { avmaClient } from "../../config/clients/avma";
 import type { ProductContentBlock } from "../../config/clients/types";
 import { getSiteDetailsPageOrder } from "../../config/resolvers";
@@ -64,8 +68,8 @@ export type CmsEntry = {
   status: "Published";
   lastModified: null;
   globalValue: string;
-  effectiveValue: (clientId: ClientId) => string;
-  overridden: (clientId: ClientId) => boolean;
+  effectiveValue: (siteId: SiteId) => string;
+  overridden: (siteId: SiteId) => boolean;
   /** Stable source sequence used after page and component-type grouping. */
   sourceOrder: number;
 };
@@ -85,12 +89,12 @@ const globalContent: SiteContent = {
   statusMessages: statusMessagesDefaults,
 };
 
-const contentByClient = new Map<ClientId, SiteContent>();
-function contentFor(clientId: ClientId): SiteContent {
-  let content = contentByClient.get(clientId);
+const contentBySite = new Map<SiteId, SiteContent>();
+function contentFor(siteId: SiteId): SiteContent {
+  let content = contentBySite.get(siteId);
   if (!content) {
-    content = buildContent(clientId);
-    contentByClient.set(clientId, content);
+    content = buildContent(siteId);
+    contentBySite.set(siteId, content);
   }
   return content;
 }
@@ -110,7 +114,7 @@ function externalEntry(
   location: string,
   componentType: CmsComponentType,
   globalValue: string,
-  effectiveValue: (clientId: ClientId) => string,
+  effectiveValue: (siteId: SiteId) => string,
   storybookId = "application-patterns-page-coverage-audit--all-routes",
   sourceOrder = Number.MAX_SAFE_INTEGER,
 ): CmsEntry {
@@ -126,7 +130,7 @@ function externalEntry(
     lastModified: null,
     globalValue,
     effectiveValue,
-    overridden: (clientId) => effectiveValue(clientId) !== globalValue,
+    overridden: (siteId) => effectiveValue(siteId) !== globalValue,
     sourceOrder,
   };
 }
@@ -592,18 +596,20 @@ function managedEntry(path: string, sourceOrder: number): CmsEntry {
     status: "Published",
     lastModified: null,
     globalValue: rawGlobal === undefined ? "—" : resolveForDisplay(rawGlobal),
-    effectiveValue: (clientId) => {
-      const value = valueAtPath(contentFor(clientId), path);
-      return value === undefined ? "—" : resolveForDisplay(value, clients[clientId].branding);
+    effectiveValue: (siteId) => {
+      const value = valueAtPath(contentFor(siteId), path);
+      return value === undefined
+        ? "—"
+        : resolveForDisplay(value, getLegacyClientConfigForSite(siteId).branding);
     },
-    overridden: (clientId) => valueAtPath(contentFor(clientId), path) !== rawGlobal,
+    overridden: (siteId) => valueAtPath(contentFor(siteId), path) !== rawGlobal,
     sourceOrder,
   };
 }
 
 const managedPaths = new Set<string>();
 collectStringPaths(globalContent, "", managedPaths);
-(Object.keys(clients) as ClientId[]).forEach((clientId) => collectStringPaths(contentFor(clientId), "", managedPaths));
+siteEntities.forEach((site) => collectStringPaths(contentFor(site.id), "", managedPaths));
 
 const managedEntries = Array.from(managedPaths)
   .filter(isManagedPublicPath)
@@ -616,7 +622,7 @@ const legalDocumentEntries: CmsEntry[] = [
     "Global - Terms of Use Document",
     "Legal document",
     flattenLegalDocument(globalContent.footer.termsOfUseContent),
-    (clientId) => flattenLegalDocument(contentFor(clientId).footer.termsOfUseContent),
+    (siteId) => flattenLegalDocument(contentFor(siteId).footer.termsOfUseContent),
     "content-legaldoclist--terms-of-use",
     0,
   ),
@@ -626,7 +632,7 @@ const legalDocumentEntries: CmsEntry[] = [
     "Global - Privacy Notice Document",
     "Legal document",
     flattenLegalDocument(globalContent.footer.privacyNoticeContent),
-    (clientId) => flattenLegalDocument(contentFor(clientId).footer.privacyNoticeContent),
+    (siteId) => flattenLegalDocument(contentFor(siteId).footer.privacyNoticeContent),
     "content-legaldoclist--privacy-notice",
     1,
   ),
@@ -639,10 +645,11 @@ const externalEntries: CmsEntry[] = [
     "Home - Hero Section",
     "Default homepage variant",
     "—",
-    (clientId) => {
-      const variant = clients[clientId].features?.homePageVariant ?? "default";
+    (siteId) => {
+      const legacyClientId = getLegacyClientIdForSite(siteId);
+      const variant = getLegacyClientConfigForSite(siteId).features?.homePageVariant ?? "default";
       return variant === "hero-image" || variant === "welcome-back"
-        ? `/client/${clientId}/hero.png`
+        ? `/client/${legacyClientId}/hero.png`
         : "—";
     },
     "application-patterns-page-coverage-audit--all-routes",
@@ -653,8 +660,8 @@ const externalEntries: CmsEntry[] = [
     "Global - Header & Footer Branding",
     "Branding",
     "—",
-    (clientId) => {
-      const { logo, logoAlt } = clients[clientId].branding;
+    (siteId) => {
+      const { logo, logoAlt } = getLegacyClientConfigForSite(siteId).branding;
       return `${logo} (alt: "${logoAlt}")`;
     },
     "foundations-branding--branding",
@@ -665,8 +672,8 @@ const externalEntries: CmsEntry[] = [
     "Global - Footer",
     "Footer content",
     "—",
-    (clientId) => {
-      const info = clients[clientId].licenseInfo;
+    (siteId) => {
+      const info = getLegacyClientConfigForSite(siteId).licenseInfo;
       return info && info.length > 0 ? info.join(" / ") : "—";
     },
     "layout-appfooter--default",
@@ -677,8 +684,8 @@ const externalEntries: CmsEntry[] = [
     "Coverage - AVMA Hospital Indemnity Product",
     "Section content",
     "—",
-    (clientId) =>
-      clientId === "avma"
+    (siteId) =>
+      getLegacyClientIdForSite(siteId) === "avma"
         ? flattenProductContent(avmaClient.coverages.overrides?.["sh-hospital-income"]?.productContent)
         : "—",
     "coverage-commerce-productcatalog--interactive",
@@ -689,12 +696,13 @@ const externalEntries: CmsEntry[] = [
     "Coverage - Coverage Options Drawer",
     "Document",
     "—",
-    (clientId) => {
-      if (clientId === "avma") {
+    (siteId) => {
+      const legacyClientId = getLegacyClientIdForSite(siteId);
+      if (legacyClientId === "avma") {
         return "https://avmainsuranceservices.com/Downloads/AVMA/Applications/AVMA-SC-APP-LOAN-FORM.pdf";
       }
-      if (clientId === "csea") return "/client/csea/li-clerical.pdf";
-      return `/client/${clientId}/brochure.pdf`;
+      if (legacyClientId === "csea") return "/client/csea/li-clerical.pdf";
+      return `/client/${legacyClientId}/brochure.pdf`;
     },
     "coverage-commerce-coverageoptionspanel--page-variant",
   ),
@@ -704,7 +712,10 @@ const externalEntries: CmsEntry[] = [
     "Coverage - Coverage Options Drawer",
     "Document",
     "—",
-    (clientId) => (clientId === "csea" ? "/client/csea/di-clerical.pdf" : "—"),
+    (siteId) =>
+      getLegacyClientIdForSite(siteId) === "csea"
+        ? "/client/csea/di-clerical.pdf"
+        : "—",
     "coverage-commerce-coverageoptionspanel--page-variant",
   ),
   externalEntry(
@@ -806,9 +817,9 @@ function consolidateCmsEntries(entries: CmsEntry[]): CmsEntry[] {
     return {
       ...first,
       globalValue: joinValues(group.map((entry) => entry.globalValue)),
-      effectiveValue: (clientId) =>
-        joinValues(group.map((entry) => entry.effectiveValue(clientId))),
-      overridden: (clientId) => group.some((entry) => entry.overridden(clientId)),
+      effectiveValue: (siteId) =>
+        joinValues(group.map((entry) => entry.effectiveValue(siteId))),
+      overridden: (siteId) => group.some((entry) => entry.overridden(siteId)),
       sourceOrder: Math.min(...group.map((entry) => entry.sourceOrder)),
     };
   });

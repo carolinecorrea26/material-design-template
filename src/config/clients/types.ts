@@ -244,8 +244,8 @@ export type ClientFeatures = {
 /**
  * Defines how coverage question sections are shown per category.
  *
- * The default behavior uses hardcoded section sets in CoverageQuestions
- * (defaultPersonalSections, defaultWorkIncomeSections, defaultBusinessSections).
+ * The default behavior is resolved centrally by
+ * resolveCoverageQuestionSections.
  * Clients can layer on top of defaults in three ways:
  *
  * - `always`: sections always shown when any category is selected (additive)

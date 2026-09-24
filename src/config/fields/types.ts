@@ -1,4 +1,4 @@
-import type { SectionVisibilityRule } from "../pageSections/types";
+import type { ConditionId } from "../conditions/types";
 
 export type FieldOption = {
   value: string;
@@ -218,16 +218,6 @@ export type FieldDefinition = {
   phoneTypeFieldId?: string;
   /** Whether to show the companion phone type selector (default: true) */
   showPhoneTypeSelector?: boolean;
-};
-
-export type ConditionalFieldDefinition = FieldDefinition & {
-  /** Only included when every rule matches current form values (see evaluateVisibilityRules). Omitted/empty = always included. */
-  visibleWhen?: SectionVisibilityRule[];
-};
-
-export type ClientPageFieldConfig = {
-  overrides?: Partial<
-    Record<string, Partial<FieldDefinition> & { hidden?: boolean }>
-  >;
-  extraFields?: ConditionalFieldDefinition[];
+  /** Canonical executable visibility source for any configurable field. */
+  visibilityConditionId?: ConditionId;
 };

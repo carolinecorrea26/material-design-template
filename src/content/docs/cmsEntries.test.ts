@@ -97,8 +97,8 @@ describe("cmsEntries", () => {
     const heroImage = cmsEntries.find((entry) => entry.id === "home-hero-image");
 
     expect(heroImage?.globalValue).toBe("—");
-    expect(heroImage?.effectiveValue("demo")).toBe("/client/demo/hero.png");
-    expect(heroImage?.effectiveValue("isitrust")).toBe("—");
+    expect(heroImage?.effectiveValue("demo-default")).toBe("/client/demo/hero.png");
+    expect(heroImage?.effectiveValue("isitrust-default")).toBe("—");
     expect(cmsEntries.some((entry) => entry.globalValue.includes("enabled per client"))).toBe(false);
   });
 });

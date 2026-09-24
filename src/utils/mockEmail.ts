@@ -1,8 +1,15 @@
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
-import { getActiveClient } from "../config/client/getActiveClient";
-import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
-import { clients } from "../config/clients";
 import theme from "../app/theme";
+import {
+  getActiveSite,
+  getClientForSite,
+  getLegacyClientConfigForSite,
+  getSiteIdForLegacyClient,
+  resolveActiveAssociationFromApplication,
+  resolveEffectiveBranding,
+  resolveSiteCoverage,
+  type SiteId,
+} from "../data";
 import type { ClientId } from "../types";
 import {
   getCoverageAmountRequested,
@@ -30,6 +37,7 @@ export type MockEmailPreview = {
   id: string;
   type: MockEmailType;
   clientId: string;
+  siteId: SiteId;
   fromName: string;
   fromEmail: string;
   toEmail: string;
@@ -102,45 +110,59 @@ function getNormalizedWebsiteUrl(website?: string) {
     : `https://${trimmedWebsite}`;
 }
 
-function getResumeUrl(clientId: string) {
-  return new URL(`/resume?client=${clientId}`, window.location.origin).toString();
+function getResumeUrl(siteId: SiteId) {
+  return new URL(`/resume?site=${siteId}`, window.location.origin).toString();
 }
 
 function getResumeDisplayUrl(clientAcronym: string) {
   return `${clientAcronym.toLowerCase()}.nylinsure.com/resume`;
 }
 
-function getClientEmailPayload(clientId?: ClientId) {
-  const client = clientId ? clients[clientId] : getActiveClient();
-  const startUrl = getNormalizedWebsiteUrl(client.support.website);
-  const emailSupport = client.emailSupport;
+function getClientEmailPayload(
+  siteId: SiteId = getActiveSite().id,
+  values: ApplicationFormValues = {},
+) {
+  const legacyConfig = getLegacyClientConfigForSite(siteId);
+  const client = getClientForSite(siteId)!;
+  const association = resolveActiveAssociationFromApplication(
+    siteId,
+    values,
+  ).association;
+  const branding = resolveEffectiveBranding({
+    siteId,
+    associationId: association?.id,
+  });
+  const startUrl = getNormalizedWebsiteUrl(legacyConfig.support.website);
+  const emailSupport = legacyConfig.emailSupport;
 
   return {
     clientId: client.id,
-    associationName: client.branding.name,
-    clientAcronym: client.branding.acronym,
-    tpaName: emailSupport?.contactOverride?.name || client.branding.name,
-    tpaAcronym: emailSupport?.contactOverride?.acronym || client.branding.acronym,
+    siteId,
+    associationId: association?.id,
+    associationName: association?.name ?? client.name,
+    clientAcronym: client.acronym,
+    tpaName: emailSupport?.contactOverride?.name || client.name,
+    tpaAcronym: emailSupport?.contactOverride?.acronym || client.acronym,
     tpaPhone:
       emailSupport?.supportOverride?.phone ||
-      client.support.phoneDisplay ||
-      client.support.phone ||
+      legacyConfig.support.phoneDisplay ||
+      legacyConfig.support.phone ||
       "",
-    tpaEmail: emailSupport?.supportOverride?.email || client.support.email || "",
-    tpaWebsite: emailSupport?.supportOverride?.website || client.support.website || "",
+    tpaEmail: emailSupport?.supportOverride?.email || legacyConfig.support.email || "",
+    tpaWebsite: emailSupport?.supportOverride?.website || legacyConfig.support.website || "",
     hideSupportContact: Boolean(emailSupport?.hideContactBox),
-    clientLogo: client.branding.logo,
-    clientLogoAlt: client.branding.logoAlt,
+    clientLogo: branding.logo,
+    clientLogoAlt: branding.logoAlt,
     startUrl,
-    resumeUrl: getResumeUrl(client.id),
-    resumeDisplayUrl: getResumeDisplayUrl(client.branding.acronym),
+    resumeUrl: getResumeUrl(siteId),
+    resumeDisplayUrl: getResumeDisplayUrl(client.acronym),
     resumeMagicLinkUrl: `${startUrl}/resume-method`,
   };
 }
 
-function getApplicationEmailPayload(values: ApplicationFormValues, clientId?: ClientId) {
+function getApplicationEmailPayload(values: ApplicationFormValues, siteId?: SiteId) {
   return {
-    ...getClientEmailPayload(clientId),
+    ...getClientEmailPayload(siteId, values),
     toEmail: getStringValue(values, "email"),
     firstName: getStringValue(values, "first-name"),
     lastName: getStringValue(values, "last-name"),
@@ -170,8 +192,22 @@ function getStoredMockEmails(): MockEmailPreview[] {
     const rawValue = window.localStorage.getItem(MOCK_EMAIL_PREVIEWS_KEY);
     if (!rawValue) return [];
 
-    const parsedValue = JSON.parse(rawValue);
-    return Array.isArray(parsedValue) ? parsedValue : [];
+    const parsedValue = JSON.parse(rawValue) as unknown;
+    if (!Array.isArray(parsedValue)) return [];
+    return parsedValue.flatMap((value) => {
+      if (!value || typeof value !== "object") return [];
+      const preview = value as Partial<MockEmailPreview>;
+      if (typeof preview.siteId === "string") {
+        return [preview as MockEmailPreview];
+      }
+      if (typeof preview.clientId !== "string") return [];
+      return [
+        {
+          ...preview,
+          siteId: getSiteIdForLegacyClient(preview.clientId as ClientId),
+        } as MockEmailPreview,
+      ];
+    });
   } catch {
     return [];
   }
@@ -320,8 +356,8 @@ function getDecisionBoxHtml(
   </table>`;
 }
 
-function getDecisionBoxesHtml(values: ApplicationFormValues) {
-  const coverages = getActiveClientCoverages();
+function getDecisionBoxesHtml(values: ApplicationFormValues, siteId: SiteId) {
+  const coverages = resolveSiteCoverage(siteId).map((coverage) => coverage.effective);
   const entries = getOrderedDecisionEntries(values, coverages);
 
   if (entries.length === 0) return "";
@@ -595,15 +631,15 @@ function buildReceiptEmailHtml(
         If you have any questions, please use the contact information below and refer to your confirmation number: <strong>${escapeHtml(confirmationNumber)}</strong>
       </p>
 
-      ${getDecisionBoxesHtml(values)}
+      ${getDecisionBoxesHtml(values, payload.siteId)}
 
       ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite)}
       ${getNoReplyHtml()}
     `,
   });
 }
-function buildResumeMagicLinkEmailHtml(clientId?: ClientId) {
-  const payload = getClientEmailPayload(clientId);
+function buildResumeMagicLinkEmailHtml(siteId?: SiteId) {
+  const payload = getClientEmailPayload(siteId);
 
   return getBaseEmailHtml({
     title: "Your requested link to continue your application",
@@ -632,8 +668,8 @@ function buildResumeMagicLinkEmailHtml(clientId?: ClientId) {
     `,
   });
 }
-function buildPendingReminderEmailHtml(clientId?: ClientId) {
-  const payload = getClientEmailPayload(clientId);
+function buildPendingReminderEmailHtml(siteId?: SiteId) {
+  const payload = getClientEmailPayload(siteId);
   const startDate = new Date();
   const purgeDate = addDays(startDate, 9);
 
@@ -681,8 +717,8 @@ function buildPendingReminderEmailHtml(clientId?: ClientId) {
     `,
   });
 }
-function buildPurgeReminderEmailHtml(clientId?: ClientId) {
-  const payload = getClientEmailPayload(clientId);
+function buildPurgeReminderEmailHtml(siteId?: SiteId) {
+  const payload = getClientEmailPayload(siteId);
 
   return getBaseEmailHtml({
     title: "Your insurance application progress",
@@ -804,8 +840,8 @@ function buildAdvisorEmailHtml(options: {
   });
 }
 
-function getAlwaysVisibleMockEmails(clientId?: ClientId): MockEmailPreview[] {
-  const payload = getClientEmailPayload(clientId);
+function getAlwaysVisibleMockEmails(siteId: SiteId = getActiveSite().id): MockEmailPreview[] {
+  const payload = getClientEmailPayload(siteId);
   const now = new Date().toISOString();
 
   const sampleApplicantPayload = {
@@ -816,7 +852,7 @@ function getAlwaysVisibleMockEmails(clientId?: ClientId): MockEmailPreview[] {
   };
 
   const sampleReceiptValues: ApplicationFormValues = {
-    coverageSelections: getActiveClientCoverages().map((coverage) => coverage.id),
+    coverageSelections: resolveSiteCoverage(siteId).map((coverage) => coverage.effective.id),
   };
 
   return [
@@ -824,6 +860,7 @@ function getAlwaysVisibleMockEmails(clientId?: ClientId): MockEmailPreview[] {
       id: "sample-autosave",
       type: "autosave",
       clientId: payload.clientId,
+      siteId: payload.siteId,
       fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
@@ -835,28 +872,31 @@ function getAlwaysVisibleMockEmails(clientId?: ClientId): MockEmailPreview[] {
       id: "sample-pending-reminder",
       type: "pending-reminder",
       clientId: payload.clientId,
+      siteId: payload.siteId,
       fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
       subject: "Your insurance application is ready to be completed",
       createdAt: now,
-      html: buildPendingReminderEmailHtml(clientId),
+      html: buildPendingReminderEmailHtml(siteId),
     },
     {
       id: "sample-purge-reminder",
       type: "purge-reminder",
       clientId: payload.clientId,
+      siteId: payload.siteId,
       fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
       subject: "Your insurance application progress",
       createdAt: now,
-      html: buildPurgeReminderEmailHtml(clientId),
+      html: buildPurgeReminderEmailHtml(siteId),
     },
     {
       id: "sample-receipt",
       type: "receipt",
       clientId: payload.clientId,
+      siteId: payload.siteId,
       fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
@@ -872,17 +912,19 @@ function getAlwaysVisibleMockEmails(clientId?: ClientId): MockEmailPreview[] {
       id: "sample-resume-magic-link",
       type: "resume-magic-link",
       clientId: payload.clientId,
+      siteId: payload.siteId,
       fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
       subject: "Your requested link to continue your application",
       createdAt: now,
-      html: buildResumeMagicLinkEmailHtml(clientId),
+      html: buildResumeMagicLinkEmailHtml(siteId),
     },
     {
       id: "advisor-sent-for-signature",
       type: "advisor-sent-for-signature",
       clientId: payload.clientId,
+      siteId: payload.siteId,
       fromName: getAdvisorNotificationsFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_ADVISOR_EMAIL,
@@ -899,6 +941,7 @@ function getAlwaysVisibleMockEmails(clientId?: ClientId): MockEmailPreview[] {
       id: "advisor-sent-to-applicant",
       type: "advisor-sent-to-applicant",
       clientId: payload.clientId,
+      siteId: payload.siteId,
       fromName: getInsuranceAdministratorFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_APPLICANT_EMAIL,
@@ -910,6 +953,7 @@ function getAlwaysVisibleMockEmails(clientId?: ClientId): MockEmailPreview[] {
       id: "advisor-pending-reminder",
       type: "advisor-pending-reminder",
       clientId: payload.clientId,
+      siteId: payload.siteId,
       fromName: getAdvisorNotificationsFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_ADVISOR_EMAIL,
@@ -926,6 +970,7 @@ function getAlwaysVisibleMockEmails(clientId?: ClientId): MockEmailPreview[] {
       id: "advisor-edit-request",
       type: "advisor-edit-request",
       clientId: payload.clientId,
+      siteId: payload.siteId,
       fromName: getAdvisorNotificationsFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_ADVISOR_EMAIL,
@@ -943,6 +988,7 @@ function getAlwaysVisibleMockEmails(clientId?: ClientId): MockEmailPreview[] {
       id: "advisor-application-complete",
       type: "advisor-application-complete",
       clientId: payload.clientId,
+      siteId: payload.siteId,
       fromName: getAdvisorNotificationsFromName(payload),
       fromEmail: MOCK_FROM_EMAIL,
       toEmail: MOCK_ADVISOR_EMAIL,
@@ -959,12 +1005,11 @@ function getAlwaysVisibleMockEmails(clientId?: ClientId): MockEmailPreview[] {
   ];
 }
 
-export function readMockEmailPreviews(clientId?: ClientId) {
-  const activeClientId = getClientEmailPayload(clientId).clientId;
+export function readMockEmailPreviews(siteId: SiteId = getActiveSite().id) {
   const storedPreviews = getStoredMockEmails().filter(
-    (storedPreview) => storedPreview.clientId === activeClientId,
+    (storedPreview) => storedPreview.siteId === siteId,
   );
-  const alwaysVisiblePreviews = getAlwaysVisibleMockEmails(clientId);
+  const alwaysVisiblePreviews = getAlwaysVisibleMockEmails(siteId);
 
   return [
     ...storedPreviews,
@@ -1010,6 +1055,7 @@ export async function sendAutosaveMockEmail(values: ApplicationFormValues) {
     id: getGeneratedMockEmailId("autosave"),
     type: "autosave",
     clientId: payload.clientId,
+    siteId: payload.siteId,
     fromName: getInsuranceAdministratorFromName(payload),
     fromEmail: MOCK_FROM_EMAIL,
     toEmail: payload.toEmail,
@@ -1031,6 +1077,7 @@ export async function sendReceiptMockEmail(
     id: getGeneratedMockEmailId("receipt"),
     type: "receipt",
     clientId: payload.clientId,
+    siteId: payload.siteId,
     fromName: getInsuranceAdministratorFromName(payload),
     fromEmail: MOCK_FROM_EMAIL,
     toEmail: payload.toEmail,
@@ -1050,6 +1097,7 @@ export async function sendResumeMagicLinkMockEmail(emailAddress: string) {
     id: getGeneratedMockEmailId("resume-magic-link"),
     type: "resume-magic-link",
     clientId: payload.clientId,
+    siteId: payload.siteId,
     fromName: getInsuranceAdministratorFromName(payload),
     fromEmail: MOCK_FROM_EMAIL,
     toEmail: trimmedEmailAddress,

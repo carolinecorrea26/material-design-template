@@ -18,12 +18,18 @@ import ResizableHeaderCell from "./ResizableHeaderCell";
 import SearchField from "./SearchField";
 import useResizableColumns from "./useResizableColumns";
 import { CLIENT_HIGHLIGHT_BG } from "./ClientNote";
+import { formatConditionDefinition, type ConditionId } from "../../config/conditions";
+import { formatConditionVisibilityTargets } from "../../config/conditions/conditionTargets";
 
 export type RuleRow = {
+  id: string;
   area: string;
   rule: string;
   behavior: string;
   ref: string;
+  type?: "behavioral" | "conditional";
+  scope?: "global" | "client" | "site";
+  conditionIds?: ConditionId[];
 };
 
 /**
@@ -51,10 +57,14 @@ export default function RuleReferenceList({
 }) {
   const [filter, setFilter] = useState("");
   const { widths, resize } = useResizableColumns({
+    ruleId: 240,
     area: 160,
     rule: 180,
     behavior: 300,
     ref: 220,
+    type: 110,
+    scope: 100,
+    executable: 320,
   });
 
   const areaRows = areas ? allRows.filter((r) => areas.includes(r.area)) : allRows;
@@ -62,7 +72,7 @@ export default function RuleReferenceList({
     if (!filter) return areaRows;
     const lc = filter.toLowerCase();
     return areaRows.filter((r) =>
-      `${r.area} ${r.rule} ${r.behavior} ${r.ref}`.toLowerCase().includes(lc),
+      `${r.id} ${r.area} ${r.rule} ${r.behavior} ${r.ref} ${r.type} ${r.scope} ${r.conditionIds?.join(" ") ?? ""}`.toLowerCase().includes(lc),
     );
   }, [areaRows, filter]);
 
@@ -75,13 +85,20 @@ export default function RuleReferenceList({
         <ResponsiveTableContainer>
           <Table size="small" sx={{ tableLayout: "fixed", width: "max-content" }}>
             <colgroup>
+              <col style={{ width: widths.ruleId }} />
               <col style={{ width: widths.area }} />
               <col style={{ width: widths.rule }} />
               <col style={{ width: widths.behavior }} />
+              <col style={{ width: widths.type }} />
+              <col style={{ width: widths.scope }} />
+              <col style={{ width: widths.executable }} />
               <col style={{ width: widths.ref }} />
             </colgroup>
             <TableHead>
               <TableRow>
+                <ResizableHeaderCell width={widths.ruleId} onResize={(w) => resize("ruleId", w)}>
+                  Rule ID
+                </ResizableHeaderCell>
                 <ResizableHeaderCell width={widths.area} onResize={(w) => resize("area", w)}>
                   Area
                 </ResizableHeaderCell>
@@ -90,6 +107,15 @@ export default function RuleReferenceList({
                 </ResizableHeaderCell>
                 <ResizableHeaderCell width={widths.behavior} onResize={(w) => resize("behavior", w)}>
                   Behavior
+                </ResizableHeaderCell>
+                <ResizableHeaderCell width={widths.type} onResize={(w) => resize("type", w)}>
+                  Type
+                </ResizableHeaderCell>
+                <ResizableHeaderCell width={widths.scope} onResize={(w) => resize("scope", w)}>
+                  Scope
+                </ResizableHeaderCell>
+                <ResizableHeaderCell width={widths.executable} onResize={(w) => resize("executable", w)}>
+                  Executable condition
                 </ResizableHeaderCell>
                 <ResizableHeaderCell width={widths.ref} onResize={(w) => resize("ref", w)}>
                   Implementation Reference
@@ -100,7 +126,10 @@ export default function RuleReferenceList({
               {rows.map((row, i) => {
                 const showArea = i === 0 || rows[i - 1].area !== row.area;
                 return (
-                  <TableRow key={i} sx={highlightAll ? { bgcolor: CLIENT_HIGHLIGHT_BG } : undefined}>
+                  <TableRow key={row.id} sx={highlightAll ? { bgcolor: CLIENT_HIGHLIGHT_BG } : undefined}>
+                    <TableCell sx={{ verticalAlign: "top", fontFamily: "monospace", fontSize: "0.75rem" }}>
+                      {row.id}
+                    </TableCell>
                     <TableCell
                       sx={{
                         verticalAlign: "top",
@@ -136,6 +165,21 @@ export default function RuleReferenceList({
                       }}
                     >
                       {row.behavior}
+                    </TableCell>
+                    <TableCell sx={{ verticalAlign: "top" }}>
+                      <Chip size="small" label={row.type ?? "behavioral"} variant="outlined" />
+                    </TableCell>
+                    <TableCell sx={{ verticalAlign: "top", textTransform: "capitalize" }}>
+                      {row.scope ?? "global"}
+                    </TableCell>
+                    <TableCell sx={{ verticalAlign: "top", whiteSpace: "normal !important" }}>
+                      {row.conditionIds?.length
+                        ? row.conditionIds.map((id) => (
+                            <Typography key={id} variant="caption" sx={{ display: "block", fontFamily: "monospace" }}>
+                              {id}: {formatConditionDefinition(id)} → {formatConditionVisibilityTargets(id)}
+                            </Typography>
+                          ))
+                        : "No — documented behavior"}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -221,12 +265,16 @@ export default function RuleReferenceList({
                 <ResponsiveTableContainer>
                   <Table size="small" sx={{ tableLayout: "fixed", width: "max-content" }}>
                     <colgroup>
+                      <col style={{ width: widths.ruleId }} />
                       <col style={{ width: widths.rule }} />
                       <col style={{ width: widths.behavior }} />
                       <col style={{ width: widths.ref }} />
                     </colgroup>
                     <TableHead>
                       <TableRow>
+                        <ResizableHeaderCell width={widths.ruleId} onResize={(w) => resize("ruleId", w)}>
+                          Rule ID
+                        </ResizableHeaderCell>
                         <ResizableHeaderCell width={widths.rule} onResize={(w) => resize("rule", w)}>
                           Rule
                         </ResizableHeaderCell>
@@ -242,8 +290,11 @@ export default function RuleReferenceList({
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {grouped[area].map((row, i) => (
-                        <TableRow key={i}>
+                      {grouped[area].map((row) => (
+                        <TableRow key={row.id}>
+                          <TableCell sx={{ verticalAlign: "top", fontFamily: "monospace", fontSize: "0.75rem" }}>
+                            {row.id}
+                          </TableCell>
                           <TableCell
                             sx={{ verticalAlign: "top", fontWeight: 600, fontSize: "0.8125rem", whiteSpace: "normal !important" }}
                           >

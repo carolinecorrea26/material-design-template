@@ -1,29 +1,22 @@
 // ---------------------------------------------------------------------------
-// Page field rows + active-client field diff
+// Page field documentation projections
 //
 // Extracted from src/pages/InformationArchitecture.tsx (Fields section).
 //
-// Deviation from a pure copy/paste: in the original source, applyClientFieldDiff
-// and applyMembershipClientFieldDiff closed over a module-level
-// `const activeClient = getActiveClient()` singleton. Here both functions take
-// the client explicitly as a parameter instead, so this module has no
-// module-level active-client singleton of its own. getCustomPageFieldRows and
-// getPageFieldRows did not reference activeClient in the original source, so
-// they are unchanged (still client-agnostic, building the base row set).
+// Effective Client/Site merging belongs to resolvedFieldRegistry. This module
+// describes base layouts and projects already-resolved definitions into rows.
 // ---------------------------------------------------------------------------
 
 import { fieldCatalog } from "../../config/fields";
 import { pageSections, sectionLabels } from "../../config/pageSections";
 import { applicantSectionTitles } from "../../config/formSectionTitle";
-import type { SectionVisibilityRule } from "../../config/pageSections/types";
 import type { FieldDefinition } from "../../config/fields/types";
-import { membershipClientFields } from "../../config/clientFields/membership";
 import {
   getFieldStorybookReference,
   type FieldStorybookReference,
 } from "./fieldStorybook";
-import type { ClientConfig } from "../../config/clients/types";
 import type { PageId } from "../../types";
+import { formatConditionDefinition, type ConditionId } from "../../config/conditions";
 
 // ---------------------------------------------------------------------------
 // Helpers (local to this module — mirror the identically named helpers in
@@ -31,27 +24,8 @@ import type { PageId } from "../../types";
 // getPageFieldRows/getFieldValidation depend on them).
 // ---------------------------------------------------------------------------
 
-function formatValue(value: unknown) {
-  if (Array.isArray(value)) return value.join(", ");
-  if (value === true) return "Yes";
-  if (value === false) return "No";
-  if (value == null || value === "") return "—";
-  return String(value);
-}
-
-function formatVisibleWhen(rules?: SectionVisibilityRule[]) {
-  if (!rules || rules.length === 0) return "Always visible";
-  return rules
-    .map((rule) => {
-      if ("equals" in rule)
-        return `${rule.fieldId} = ${formatValue(rule.equals)}`;
-      if ("notEquals" in rule)
-        return `${rule.fieldId} ≠ ${formatValue(rule.notEquals)}`;
-      if ("includes" in rule)
-        return `${rule.fieldId} includes ${formatValue(rule.includes)}`;
-      return "Conditional";
-    })
-    .join(" AND ");
+function formatVisibility(conditionId?: ConditionId) {
+  return conditionId ? formatConditionDefinition(conditionId) : "Always visible";
 }
 
 function formatOptions(fieldId: string) {
@@ -1267,7 +1241,7 @@ export function getPageFieldRows(pageId: PageId): FieldRow[] {
     return section.fieldIds.map((fieldId) => {
       const field = fieldCatalog[fieldId];
       const isClientConfigured = clientConfiguredFields.has(fieldId);
-      let visibleWhen = formatVisibleWhen(section.visibleWhen);
+      let visibleWhen = formatVisibility(section.visibilityConditionId);
       if (isClientConfigured) {
         visibleWhen =
           visibleWhen === "Always visible"
@@ -1379,142 +1353,21 @@ export function mergeFieldOverrideIntoRow(
   }, mergedDefinition);
 }
 
-export type ClientFieldDiffResult = {
-  /** Rows actually shown to this client, in table order. */
-  rows: FieldRow[];
-  /** Rows hidden for this client — excluded from `rows`, reported separately. */
-  hiddenRows: FieldRow[];
-};
-
-/**
- * Annotates the generic pageSections/fieldCatalog-driven rows for a page with
- * the given client's real ClientFields config (extra/hidden/required/overrides):
- * merges override values into the displayed label/type/required/options,
- * excludes fields hidden for this client (returned separately in `hiddenRows`),
- * and appends rows for client-only fields. Pages with hand-authored rows
- * (see getCustomPageFieldRows) aren't backed by ClientFields and are left as-is.
- */
-export function applyClientFieldDiff(
-  pageId: PageId,
-  rows: FieldRow[],
-  client: ClientConfig,
-): ClientFieldDiffResult {
-  if (getCustomPageFieldRows(pageId)) return { rows, hiddenRows: [] };
-  if (pageId === "membership") return applyMembershipClientFieldDiff(rows, client);
-
-  const clientPageConfig = client.fields[pageId];
-  if (!clientPageConfig) return { rows, hiddenRows: [] };
-
-  const hidden = new Set(clientPageConfig.hidden ?? []);
-  const required = new Set(clientPageConfig.required ?? []);
-  const overrides = clientPageConfig.overrides ?? {};
-  const extra = new Set(clientPageConfig.extra ?? []);
-
-  const visibleRows: FieldRow[] = [];
-  const hiddenRows: FieldRow[] = [];
-
-  for (const row of rows) {
-    if (row.fieldId === "—") {
-      visibleRows.push(row);
-      continue;
-    }
-    if (hidden.has(row.fieldId)) {
-      hiddenRows.push({ ...row, clientNote: "Hidden for this client" });
-      continue;
-    }
-    const notes: string[] = [];
-    let nextRow = row;
-    if (extra.has(row.fieldId)) notes.push("Added for this client");
-    if (required.has(row.fieldId) && row.required !== "Yes")
-      notes.push("Required for this client");
-    const override = overrides[row.fieldId];
-    if (override) {
-      notes.push(`Overridden: ${Object.keys(override).join(", ")}`);
-      nextRow = mergeFieldOverrideIntoRow(nextRow, override);
-    }
-    visibleRows.push(
-      notes.length > 0 ? { ...nextRow, clientNote: notes.join(" · ") } : row,
-    );
-  }
-
-  const presentIds = new Set(rows.map((r) => r.fieldId));
-  const extraRows: FieldRow[] = [...extra]
-    .filter((id) => !presentIds.has(id))
-    .map((id) => {
-      const base = fieldCatalog[id as keyof typeof fieldCatalog];
-      const override = overrides[id];
-      const merged = override ? { ...base, ...override } : base;
-      return withStorybookReference({
-        sectionId: "client-extra",
-        sectionLabel: "Client-added fields",
-        applicant: "—",
-        fieldId: id,
-        label: merged?.label ?? id,
-        inputType: getFieldDisplayType(merged),
-        required: merged?.required ? "Yes" : "No",
-        options:
-          merged?.options && merged.options.length > 0
-            ? merged.options.map((o) => o.label).join(", ")
-            : "—",
-        visibleWhen: "Always visible",
-        clientNote: "Added for this client",
-      }, merged);
-    });
-
-  return { rows: [...visibleRows, ...extraRows], hiddenRows };
-}
-
-/** Membership uses its own client-field mechanism (membershipClientFields), separate from ClientFields. */
-export function applyMembershipClientFieldDiff(
-  rows: FieldRow[],
-  client: ClientConfig,
-): ClientFieldDiffResult {
-  const config = membershipClientFields[client.id];
-  const overrides = config?.overrides ?? {};
-  const extraFields = config?.extraFields ?? [];
-
-  const visibleRows: FieldRow[] = [];
-  const hiddenRows: FieldRow[] = [];
-
-  for (const row of rows) {
-    if (row.fieldId === "—") {
-      visibleRows.push(row);
-      continue;
-    }
-    const override = overrides[row.fieldId];
-    if (override?.hidden) {
-      hiddenRows.push({ ...row, clientNote: "Hidden for this client" });
-      continue;
-    }
-    if (override) {
-      const keys = Object.keys(override).filter((k) => k !== "hidden");
-      if (keys.length > 0) {
-        const merged = mergeFieldOverrideIntoRow(row, override);
-        visibleRows.push({ ...merged, clientNote: `Overridden: ${keys.join(", ")}` });
-        continue;
-      }
-    }
-    visibleRows.push(row);
-  }
-
-  const presentIds = new Set(rows.map((r) => r.fieldId));
-  const extraRows: FieldRow[] = extraFields
-    .filter((f) => !presentIds.has(f.id))
-    .map((f) => withStorybookReference({
-      sectionId: "client-extra",
-      sectionLabel: "Client-added fields",
-      applicant: "—",
-      fieldId: f.id,
-      label: f.label,
-      inputType: getFieldDisplayType(f),
-      required: f.required ? "Yes" : "No",
-      options:
-        f.options && f.options.length > 0
-          ? f.options.map((o) => o.label).join(", ")
-          : "—",
-      visibleWhen: formatVisibleWhen(f.visibleWhen),
-      clientNote: "Added for this client",
-    }, f));
-
-  return { rows: [...visibleRows, ...extraRows], hiddenRows };
+/** Creates a documentation projection for a resolved field not in the base page layout. */
+export function createFieldRowFromDefinition(field: FieldDefinition): FieldRow {
+  return withStorybookReference({
+    sectionId: "client-extra",
+    sectionLabel: "Client-added fields",
+    applicant: "—",
+    fieldId: field.id,
+    label: field.label,
+    inputType: getFieldDisplayType(field),
+    required: field.required ? "Yes" : "No",
+    options:
+      field.options && field.options.length > 0
+        ? field.options.map((option) => option.label).join(", ")
+        : "—",
+    visibleWhen: formatVisibility(field.visibilityConditionId),
+    clientNote: "Added for this client",
+  }, field);
 }

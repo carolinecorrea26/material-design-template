@@ -45,7 +45,7 @@ type EstimatorProductCardProps = {
 };
 
 /**
- * Product card used inside the quote estimator (QuoteCalculator, QuoteModal).
+ * Product card used inside the quote estimator (QuoteCalculator).
  * Simplified version of the full ProductCard in ProductCatalog — member-only,
  * no riders, no waiting periods.
  */

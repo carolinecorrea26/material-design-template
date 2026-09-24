@@ -36,6 +36,16 @@ import PortalAdmin from "../pages/PortalAdmin";
 import PortalTemplateProject from "../pages/PortalTemplateProject";
 import PortalRequirementsProject from "../pages/PortalRequirementsProject";
 import Cms from "../pages/Cms";
+import AdminCenterShell from "../components/admin/AdminCenterShell";
+import AdminHome from "../pages/admin/AdminHome";
+import SitesWorkspace from "../pages/admin/SitesWorkspace";
+import PortalLibrary from "../pages/admin/PortalLibrary";
+import ChangesWorkspace from "../pages/admin/ChangesWorkspace";
+import ReleasesWorkspace from "../pages/admin/ReleasesWorkspace";
+import SiteBuilderWorkspace from "../pages/admin/SiteBuilderWorkspace";
+import ApplicationsWorkspace from "../pages/admin/ApplicationsWorkspace";
+import AnalyticsWorkspace from "../pages/admin/AnalyticsWorkspace";
+import AdministrationWorkspace from "../pages/admin/AdministrationWorkspace";
 
 /**
  * Maps each page ID to its React component.
@@ -121,7 +131,8 @@ const pageVariants: Partial<Record<PageId, AppShellVariant>> = {
 };
 
 export const router = createBrowserRouter(
-  routedPageIds.map((pageId) => {
+  [
+    ...routedPageIds.map((pageId) => {
     const PageComponent = pageComponents[pageId];
     const variant = pageVariants[pageId] ?? "applicationForm";
 
@@ -138,6 +149,26 @@ export const router = createBrowserRouter(
           </AppShell>
         ),
     };
-  }),
+    }),
+    {
+      path: "/admin-center",
+      element: <AdminCenterShell />,
+      children: [
+        { index: true, element: <AdminHome /> },
+        { path: "sites", element: <SitesWorkspace /> },
+        { path: "library", element: <PortalLibrary /> },
+        { path: "library/:domainId", element: <PortalLibrary /> },
+        { path: "changes", element: <ChangesWorkspace /> },
+        { path: "changes/:changeId", element: <ChangesWorkspace /> },
+        { path: "releases", element: <ReleasesWorkspace /> },
+        { path: "releases/:releaseId", element: <ReleasesWorkspace /> },
+        { path: "site-builder", element: <SiteBuilderWorkspace /> },
+        { path: "applications", element: <ApplicationsWorkspace /> },
+        { path: "applications/:applicationId", element: <ApplicationsWorkspace /> },
+        { path: "analytics", element: <AnalyticsWorkspace /> },
+        { path: "administration", element: <AdministrationWorkspace /> },
+      ],
+    },
+  ],
   { basename: import.meta.env.BASE_URL },
 );

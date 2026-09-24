@@ -7,7 +7,7 @@ import QuoteCalculator from "./QuoteCalculator";
  * QuoteCalculator is a self-contained drawer quote tool (it wraps its own
  * AppDrawer, unlike ProductCatalog which is fully prop-driven) — category
  * selection → eligibility → coverage questions → per-product estimate →
- * "Apply" hands off to the Membership page via sessionStorage. Triggered
+ * "Apply" hands off to the Membership page through ApplicationFormContext. Triggered
  * from the Home page and Membership page. `collectEligibility` toggles
  * whether DOB/ZIP/State fields are collected inside the drawer itself
  * (Membership trigger) versus assumed already known and passed via

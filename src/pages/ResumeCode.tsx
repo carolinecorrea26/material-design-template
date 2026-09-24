@@ -6,20 +6,26 @@ import {
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { getActiveClient } from "../config/client/getActiveClient";
 import { getPagePath, getPageTitle } from "../config/pages";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import {
   useApplicationForm,
   type ApplicationFormValues,
 } from "../app/ApplicationFormContext";
-import type { ClientId } from "../types";
+import {
+  getActiveSite,
+  getAssociationsForSite,
+  getLegacyClientIdForSite,
+  getSite,
+  type SiteId,
+} from "../data";
 import PageHeader from "../components/layout/PageHeader";
 import PageShell from "../components/layout/PageShell";
 import FormShell from "../components/layout/FormShell";
 import useCountdown from "../hooks/useCountdown";
 import ExpiringCodeAlert from "../components/feedback/ExpiringCodeAlert";
 import ResendCountdownRow from "../components/feedback/ResendCountdownRow";
+import { useApplicationSession } from "../app/ApplicationSessionContext";
 
 const MOCK_SAVED_APPLICATIONS: Record<string, ApplicationFormValues> = {
   "returning.user@example.com": {
@@ -31,15 +37,19 @@ const MOCK_SAVED_APPLICATIONS: Record<string, ApplicationFormValues> = {
   },
 };
 
-function getMembershipPrefill(clientId: ClientId): string {
-  if (clientId === "ama") return "physician";
-  if (clientId === "waepa") return "current";
+function getMembershipPrefill(siteId: SiteId): string {
+  const legacyClientId = getLegacyClientIdForSite(siteId);
+  if (legacyClientId === "ama") return "physician";
+  if (legacyClientId === "waepa") return "current";
+  if (getSite(siteId)?.associationSelection?.mode === "select") {
+    return getAssociationsForSite(siteId)[0]?.id ?? "";
+  }
   return "yes";
 }
 
 function getSavedApplicationForEmail(
   emailAddress: string,
-  clientId: ClientId,
+  siteId: SiteId,
 ): ApplicationFormValues {
   const normalizedEmail = emailAddress.trim().toLowerCase();
 
@@ -52,7 +62,7 @@ function getSavedApplicationForEmail(
 
   return {
     ...savedValues,
-    membership: getMembershipPrefill(clientId),
+    membership: getMembershipPrefill(siteId),
   };
 }
 
@@ -60,8 +70,9 @@ export default function ResumeCode() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isAdvisorFlow = searchParams.get("flow") === "advisor";
-  const client = getActiveClient();
+  const site = getActiveSite();
   const { setPageValues } = useApplicationForm();
+  const { setAdvisorApplicantFlow } = useApplicationSession();
 
   const fields = getClientPageFields("resume-code");
   const codeField = fields.find((field) => field.id === "resume-security-code");
@@ -102,13 +113,13 @@ export default function ResumeCode() {
       window.setTimeout(() => {
         const savedApplication = getSavedApplicationForEmail(
           "returning.user@example.com",
-          client.id,
+          site.id,
         );
 
         setPageValues(savedApplication);
 
         if (isAdvisorFlow) {
-          window.sessionStorage.setItem("advisorApplicantFlow", "true");
+          setAdvisorApplicantFlow(true);
           navigate(getPagePath("review"), {
             state: { resumeLoaded: true },
           });

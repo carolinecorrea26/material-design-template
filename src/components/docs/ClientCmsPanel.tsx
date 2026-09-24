@@ -9,29 +9,32 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import type { ClientId } from "../../types";
-import { clientGroups, getClientGroupForSiteId, type ClientGroup } from "../../config/clients/clientGroups";
+import {
+  clientEntities,
+  getSiteIdForLegacyClient,
+  getSitesForClient,
+  type Client,
+  type Site,
+} from "../../data";
 import { cmsEntries } from "../../content/docs/cmsEntries";
 import CmsContentTable from "./CmsContentTable";
 import { CLIENT_HIGHLIGHT_BG, CLIENT_HIGHLIGHT_BORDER } from "./ClientNote";
 
-const DEFAULT_CLIENT_ID: ClientId = "demo";
+const DEFAULT_SITE_ID = getSiteIdForLegacyClient("demo");
 
 export default function ClientCmsPanel() {
-  const [selectedGroup, setSelectedGroup] = useState<ClientGroup>(() =>
-    getClientGroupForSiteId(DEFAULT_CLIENT_ID),
-  );
-  const [selectedSiteId, setSelectedSiteId] = useState<ClientId>(DEFAULT_CLIENT_ID);
+  const [selectedClient, setSelectedClient] = useState<Client>(() => clientEntities.find((client) => client.id === "demo")!);
+  const [selectedSiteId, setSelectedSiteId] = useState(DEFAULT_SITE_ID);
 
-  const handleGroupChange = useCallback((nextGroup: ClientGroup | null) => {
-    if (!nextGroup) return;
-    setSelectedGroup(nextGroup);
-    setSelectedSiteId(nextGroup.sites[0].id);
+  const handleClientChange = useCallback((nextClient: Client | null) => {
+    if (!nextClient) return;
+    setSelectedClient(nextClient);
+    setSelectedSiteId(getSitesForClient(nextClient.id)[0].id);
   }, []);
 
-  const handleSiteChange = useCallback((nextSite: ClientId | null) => {
+  const handleSiteChange = useCallback((nextSite: Site | null) => {
     if (!nextSite) return;
-    setSelectedSiteId(nextSite);
+    setSelectedSiteId(nextSite.id);
   }, []);
 
   const rows = useMemo(
@@ -90,25 +93,25 @@ export default function ClientCmsPanel() {
           </Typography>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mt: 2 }}>
             <Autocomplete
-              options={clientGroups}
-              value={selectedGroup}
-              onChange={(_, value) => handleGroupChange(value)}
+              options={clientEntities}
+              value={selectedClient}
+              onChange={(_, value) => handleClientChange(value)}
               disableClearable
-              getOptionLabel={(option) => `${option.branding.acronym} - ${option.branding.name}`}
-              getOptionKey={(option) => option.groupId}
-              isOptionEqualToValue={(option, value) => option.groupId === value.groupId}
+              getOptionLabel={(option) => `${option.acronym} - ${option.name}`}
+              getOptionKey={(option) => option.id}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
               sx={{ flex: 1, maxWidth: 420 }}
               renderInput={(params) => (
                 <TextField {...params} label="Client" placeholder="Search clients…" />
               )}
             />
             <Autocomplete
-              options={selectedGroup.sites}
-              value={selectedGroup.sites.find((s) => s.id === selectedSiteId) ?? selectedGroup.sites[0]}
-              onChange={(_, value) => handleSiteChange(value?.id ?? null)}
+              options={getSitesForClient(selectedClient.id)}
+              value={getSitesForClient(selectedClient.id).find((s) => s.id === selectedSiteId) ?? getSitesForClient(selectedClient.id)[0]}
+              onChange={(_, value) => handleSiteChange(value)}
               disableClearable
-              disabled={selectedGroup.sites.length <= 1}
-              getOptionLabel={(option) => option.siteLabel ?? "Default"}
+              disabled={getSitesForClient(selectedClient.id).length <= 1}
+              getOptionLabel={(option) => option.name}
               getOptionKey={(option) => option.id}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               sx={{ flex: 1, maxWidth: 320 }}

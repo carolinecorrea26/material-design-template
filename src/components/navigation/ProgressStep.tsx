@@ -20,6 +20,7 @@ import {
 } from "../../config/progressSteps";
 import type { PageId } from "../../types";
 import { useApplicationForm } from "../../app/ApplicationFormContext";
+import { useApplicationSession } from "../../app/ApplicationSessionContext";
 
 import { getPageNavTitle } from "../../config/pages";
 
@@ -88,6 +89,7 @@ function getBreadcrumbEntries(
 export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
   const navigate = useNavigate();
   const { values } = useApplicationForm();
+  const { reviewSubmitted, advisorApplicantFlow } = useApplicationSession();
   const [pendingCompletedPageId, setPendingCompletedPageId] =
     useState<PageId | null>(null);
 
@@ -131,12 +133,6 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
     (entry) => entry.containsCurrentPage,
   );
 
-  // After review is submitted, disable breadcrumb navigation
-  const reviewSubmittedForBreadcrumbs =
-    window.sessionStorage.getItem("reviewSubmitted") === "true";
-  const advisorApplicantModeForBreadcrumbs =
-    window.sessionStorage.getItem("advisorApplicantFlow") === "true";
-
   return (
     <Breadcrumbs
       separator={
@@ -167,7 +163,8 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
             HEALTH_PAGE_IDS.includes(pendingCompletedPageId));
         const isCompleted =
           index < currentEntryIndex || isPendingCompletedEntry;
-        const isClickable = isCompleted && !reviewSubmittedForBreadcrumbs && !advisorApplicantModeForBreadcrumbs;
+        const isClickable =
+          isCompleted && !reviewSubmitted && !advisorApplicantFlow;
 
         return (
           <Box
@@ -215,21 +212,12 @@ export default function ProgressStep({
 }: FormVerticalStepperProps) {
   const navigate = useNavigate();
   const { values } = useApplicationForm();
+  const { reviewSubmitted, advisorApplicantFlow } = useApplicationSession();
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
 
   const activeSteps = getActiveProgressSteps(values);
   const activeStep = getActiveProgressStepIndex(pageId, values);
-
-  // After review is submitted, disable navigation to prior steps
-  const reviewSubmitted =
-    window.sessionStorage.getItem("reviewSubmitted") === "true";
-
-  // In the advisor-applicant flow the applicant cannot navigate back to
-  // advisor-completed steps (Getting Started, Coverage, Profile).
-  // We use a sessionStorage flag set when the applicant enters via resume?flow=advisor.
-  const advisorApplicantMode =
-    window.sessionStorage.getItem("advisorApplicantFlow") === "true";
 
   return (
     <Box
@@ -287,7 +275,9 @@ export default function ProgressStep({
               // In advisor-applicant mode, only the application-review step and beyond
               // are accessible — earlier advisor-completed steps are locked.
               const isAdvisorLockedStep =
-                advisorApplicantMode && step.id !== "application-review" && step.id !== "esign-submit";
+                advisorApplicantFlow &&
+                step.id !== "application-review" &&
+                step.id !== "esign-submit";
               const isClickable = isCompleted && !reviewSubmitted && !isAdvisorLockedStep;
               const stepLabelColor = isActive
                 ? "text.primary"

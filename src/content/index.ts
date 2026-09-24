@@ -1,5 +1,10 @@
-import { getActiveClient } from "../config/client/getActiveClient";
-import type { ClientId } from "../types";
+import { getActiveSite } from "../data/activeSite";
+import {
+  getAssociationsForSite,
+  getClientForSite,
+  getSiteIdForLegacyClient,
+} from "../data/registry";
+import type { AssociationId, SiteId } from "../data/model";
 import type { SiteContent } from "./types";
 import type { DeepPartial } from "./types-util";
 import {
@@ -16,7 +21,7 @@ import {
   dialogsDefaults,
   statusMessagesDefaults,
 } from "./defaults";
-import { clientContentOverrides } from "./clients";
+import { siteContentOverrides } from "./clients";
 
 /**
  * Deep merges a base object with a partial override object.
@@ -58,8 +63,8 @@ function deepMerge<T extends Record<string, unknown>>(
   return result;
 }
 
-export function buildContent(clientId: ClientId): SiteContent {
-  const overrides = clientContentOverrides[clientId];
+export function buildContent(siteId: SiteId): SiteContent {
+  const overrides = siteContentOverrides[siteId];
 
   return {
     home: deepMerge(
@@ -116,8 +121,8 @@ export function buildContent(clientId: ClientId): SiteContent {
 let cachedContent: SiteContent | null = null;
 
 /**
- * Returns the fully resolved site content for the active client.
- * Merges default content with any client-specific overrides.
+ * Returns the fully resolved content for the active Site.
+ * Merges default content with Site-specific overrides.
  *
  * Content is cached after the first call since the active client
  * does not change during a session.
@@ -125,8 +130,7 @@ let cachedContent: SiteContent | null = null;
 export function getContent(): SiteContent {
   if (cachedContent) return cachedContent;
 
-  const client = getActiveClient();
-  cachedContent = buildContent(client.id);
+  cachedContent = buildContent(getActiveSite().id);
   return cachedContent;
 }
 
@@ -135,14 +139,28 @@ export function getContent(): SiteContent {
  * Supported placeholders:
  * - {{clientName}} - Active client's full name
  * - {{clientAcronym}} - Active client's acronym
- * - {{associationName}} - Same as clientName (used in help content)
+ * - {{associationName}} - Active canonical Association, falling back to Client name
  */
-export function resolveTemplate(template: string): string {
-  const client = getActiveClient();
+export function resolveTemplate(
+  template: string,
+  associationId?: AssociationId | null,
+): string {
+  const site = getActiveSite();
+  const client = getClientForSite(site.id)!;
+  const association = associationId
+    ? getAssociationsForSite(site.id).find(
+        (candidate) => candidate.id === associationId,
+      )
+    : undefined;
   return template
-    .replace(/\{\{clientName\}\}/g, client.branding.name)
-    .replace(/\{\{clientAcronym\}\}/g, client.branding.acronym)
-    .replace(/\{\{associationName\}\}/g, client.branding.name);
+    .replace(/\{\{clientName\}\}/g, client.name)
+    .replace(/\{\{clientAcronym\}\}/g, client.acronym)
+    .replace(/\{\{associationName\}\}/g, association?.name ?? client.name);
+}
+
+/** Temporary adapter for Storybook/design previews that still supply a legacy config ID. */
+export function buildContentForLegacyClient(legacyClientId: Parameters<typeof getSiteIdForLegacyClient>[0]) {
+  return buildContent(getSiteIdForLegacyClient(legacyClientId));
 }
 
 export type { SiteContent } from "./types";

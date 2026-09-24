@@ -1,6 +1,7 @@
 import type { PageId } from "../../types";
 import type { FieldId } from "../fields/types";
 import type { ApplicantSectionId } from "../formSectionTitle";
+import type { ConditionId } from "../conditions/types";
 
 export type PageSectionId =
   | "default"
@@ -34,20 +35,6 @@ export type PageSectionId =
   | "advisorLoginNew"
   | "advisorLoginSaved";
 
-export type SectionVisibilityRule =
-  | {
-      fieldId: FieldId;
-      equals: string | boolean | number;
-    }
-  | {
-      fieldId: FieldId;
-      notEquals: string | boolean | number;
-    }
-  | {
-      fieldId: FieldId;
-      includes: string;
-    };
-
 export type PageSectionConfig = {
   id: PageSectionId;
   pageId: PageId;
@@ -55,5 +42,8 @@ export type PageSectionConfig = {
   description?: string;
   applicant?: ApplicantSectionId;
   fieldIds: FieldId[];
-  visibleWhen?: SectionVisibilityRule[];
+  /** Canonical executable WHEN; the section itself is the WHAT target. */
+  visibilityConditionId?: ConditionId;
+  /** Rendering treatment owned by the section, independent of its condition ID. */
+  presentation?: "default" | "conditional";
 };

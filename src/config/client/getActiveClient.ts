@@ -1,7 +1,5 @@
-import { clients } from "../clients/index";
-import { resolveClientId } from "./resolveClientId";
+import { getActiveSiteClientConfig } from "../../data/activeSite";
 
 export function getActiveClient() {
-  const clientId = resolveClientId();
-  return clients[clientId];
+  return getActiveSiteClientConfig();
 }

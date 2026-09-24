@@ -7,8 +7,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import type { ClientId } from "../../types";
-import { clients } from "../../config/clients";
+import { getLegacyClientConfigForSite, type SiteId } from "../../data";
 import { CLIENT_HIGHLIGHT_BG, CLIENT_HIGHLIGHT_BORDER } from "./ClientNote";
 import ResponsiveTableContainer from "./ResponsiveTableContainer";
 
@@ -72,8 +71,8 @@ export function GlobalEmailConfigurationTable() {
   );
 }
 
-export function ClientEmailConfigurationTable({ clientId }: { clientId: ClientId }) {
-  const client = clients[clientId];
+export function ClientEmailConfigurationTable({ siteId }: { siteId: SiteId }) {
+  const client = getLegacyClientConfigForSite(siteId);
   const hideContactBox = Boolean(client.emailSupport?.hideContactBox);
   const supportOverride = client.emailSupport?.supportOverride;
   const contactOverride = client.emailSupport?.contactOverride;

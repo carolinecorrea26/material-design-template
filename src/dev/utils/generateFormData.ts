@@ -5,6 +5,7 @@ import { getActiveClientCoverages } from "../../config/client/getActiveClientCov
 import { getCoverageAmountRange } from "../../utils/coverageAmounts";
 import type { CoverageApplicantId } from "../../config/coverages/types";
 import type { ApplicationFormValues } from "../../app/ApplicationFormContext";
+import { getFlowGateDefinition } from "../../config/flowGates";
 
 /**
  * Picks a sample amount within a coverage's min/max range, snapped to its step.
@@ -171,38 +172,37 @@ export function generateFormDataUpToPage(
       }
     }
 
-    // health-cir is gated on a selected CIR rider rather than a coverage
-    // selection — seed one on a coverage that offers it so the page isn't
-    // skipped when jumping straight to it.
-    if (targetPageId === "health-cir" && !values.coverageRiders) {
-      const coverageWithCirRider = coverages.find((c) =>
-        c.riders?.some((r) => r.id === "cir"),
+    // Rider-gated pages need a selected rider in addition to a coverage.
+    const targetGate = getFlowGateDefinition(targetPageId)?.gate;
+    if (targetGate?.kind === "selected-rider" && !values.coverageRiders) {
+      const coverageWithTargetRider = coverages.find((c) =>
+        c.riders?.some((r) => r.id === targetGate.riderId),
       );
 
-      if (coverageWithCirRider) {
-        if (!coverageSelections.includes(coverageWithCirRider.id)) {
-          coverageSelections.push(coverageWithCirRider.id);
+      if (coverageWithTargetRider) {
+        if (!coverageSelections.includes(coverageWithTargetRider.id)) {
+          coverageSelections.push(coverageWithTargetRider.id);
           values.coverageSelections = coverageSelections;
         }
 
         const productApplicants = values.productApplicants as
           | Record<string, string[]>
           | undefined;
-        if (!productApplicants?.[coverageWithCirRider.id]) {
+        if (!productApplicants?.[coverageWithTargetRider.id]) {
           values.productApplicants = {
             ...productApplicants,
-            [coverageWithCirRider.id]: ["member"],
+            [coverageWithTargetRider.id]: ["member"],
           };
         }
 
-        const cirMemberKey = `${coverageWithCirRider.id}:member`;
-        if (!(cirMemberKey in coverageAmounts)) {
-          (coverageAmounts as Record<string, number>)[cirMemberKey] =
-            pickSampleAmount(coverageWithCirRider, "member");
+        const riderMemberKey = `${coverageWithTargetRider.id}:member`;
+        if (!(riderMemberKey in coverageAmounts)) {
+          (coverageAmounts as Record<string, number>)[riderMemberKey] =
+            pickSampleAmount(coverageWithTargetRider, "member");
         }
 
         values.coverageRiders = {
-          [`${coverageWithCirRider.id}:cir:member`]: true,
+          [`${coverageWithTargetRider.id}:${targetGate.riderId}:member`]: true,
         };
       }
     }

@@ -21,6 +21,8 @@ export function getConfigurationGroupAnchor(group: string): string {
 }
 
 export type ConfigRow = {
+  /** Stable relational identifier. `name` remains the implementation key. */
+  id: `config-${string}`;
   group: string;
   label: string;
   name: string; // code-style key shown as secondary identifier
@@ -59,7 +61,7 @@ const CONFIGURATION_PAGE_BY_NAME: Partial<Record<string, ConfigurationPage>> = {
   },
   "ClientConfig.coverages.additionalCoverageWarning": { id: "coverage", label: "Coverage" },
   "content.coverage.categoryDescriptions": { id: "coverage", label: "Coverage" },
-  "categoryMaxAggregateNotes / clientMaxAggregateNoteOverrides": {
+  "categoryMaxAggregateNotes / siteMaxAggregateNoteOverrides": {
     id: "coverage",
     label: "Coverage",
   },
@@ -139,7 +141,7 @@ const CONFIGURATION_DEFAULT_DISPLAY: Partial<Record<string, string>> = {
     "Standard category labels; collapsed",
   "ClientConfig.coverages.additionalCoverageWarning": "Apply for additional coverage",
   "content.coverage.categoryDescriptions": "Shared category descriptions from the global content defaults",
-  "categoryMaxAggregateNotes / clientMaxAggregateNoteOverrides":
+  "categoryMaxAggregateNotes / siteMaxAggregateNoteOverrides":
     "Life: $2,000,000 aggregate maximum for member and spouse; no note for other categories",
   setCoverageAmount: "None",
   setCoverageOrder: "None",
@@ -239,7 +241,9 @@ export function getConfigurationRequirement(
   return REQUIRED_CONFIGURATION_NAMES.has(config.name) ? "Required" : "Optional";
 }
 
-const configurationInventory: ConfigRow[] = [
+type ConfigRowSource = Omit<ConfigRow, "id">;
+
+const configurationInventory: ConfigRowSource[] = [
   // ── A. Client identity & branding ─────────────────────────────────────────
   {
     group: "Client identity & branding",
@@ -510,7 +514,7 @@ const configurationInventory: ConfigRow[] = [
   {
     group: "Coverage categories",
     label: "Max aggregate coverage note (info alert)",
-    name: "categoryMaxAggregateNotes / clientMaxAggregateNoteOverrides",
+    name: "categoryMaxAggregateNotes / siteMaxAggregateNoteOverrides",
     description:
       "Info alert shown at the top of a coverage category's product list stating the maximum aggregate amount available per member/spouse/child across policies (e.g. LI's $2,000,000 cap). Defaults apply per category unless a client override maps the category to a replacement note object or null to suppress it entirely. WAEPA overrides LI with member/spouse-only text (\"The maximum available for a member/spouse is $2,000,000.\"); AVMA overrides LI with member/spouse/child text noting the Basic Protection Package exclusion.",
     sourcePath: "src/config/coverageConstants.ts (getMaxAggregateNotes)",
@@ -546,7 +550,7 @@ const configurationInventory: ConfigRow[] = [
       "Selects the products offered by the site and applies per-product presentation, eligibility, identifier, underwriting, and supporting-content overrides.",
     sourcePath: "src/config/clients/*.ts / src/config/coverages/index.ts",
     scope: "Client Configurable",
-    usedIn: "ProductCatalog, QuoteModal, health routing",
+    usedIn: "ProductCatalog, QuoteCalculator, health routing",
   },
   {
     group: "Products & coverage options",
@@ -556,7 +560,7 @@ const configurationInventory: ConfigRow[] = [
       "Defines the coverage amounts available for each product and applicant scope, including derived dependent coverage.",
     sourcePath: "src/config/coverages/index.ts → coverageAmounts",
     scope: "Client Configurable",
-    usedIn: "ProductCatalog, CoverageCart, QuoteModal",
+    usedIn: "ProductCatalog, CoverageCart, QuoteCalculator",
   },
   {
     group: "Products & coverage options",
@@ -587,7 +591,7 @@ const configurationInventory: ConfigRow[] = [
       "Controls the monthly/annual frequency toggle and default frequency for estimated cost display.",
     sourcePath: "src/config/clients/*.ts",
     scope: "Client Configurable",
-    usedIn: "CoverageCart, QuoteModal, TotalCostSummary",
+    usedIn: "CoverageCart, QuoteCalculator, TotalCostSummary",
   },
   {
     group: "Premium & estimated cost",
@@ -616,10 +620,10 @@ const configurationInventory: ConfigRow[] = [
     label: "Hide smoker/nicotine question (quote tool)",
     name: "ClientConfig.coverages.hideSmokerQuestion",
     description:
-      "When true, suppresses the smoker/nicotine-use question in the standalone quote tool (QuoteModal drawer and the home page's QuoteCalculator) for LI/SH category selections, regardless of category. Does not affect the real Coverage page application flow (useCoverageState), which always asks the smoker question for LI/SH — WAEPA's underwriting still requires it there, only their public quote estimator omits it.",
-    sourcePath: "src/config/coverageConstants.ts (getCategoryRequirements)",
+      "When true, filters smoker/nicotine-use fields from the canonical category-question requirements used by QuoteCalculator. It does not redefine which coverage categories require smoker data.",
+    sourcePath: "src/config/coverageQuestionRequirements.ts",
     scope: "Client Configurable",
-    usedIn: "QuoteModal, QuoteCalculator",
+    usedIn: "QuoteCalculator",
   },
   // ── K. Field configuration ────────────────────────────────────────────────
   {
@@ -721,7 +725,7 @@ const configurationInventory: ConfigRow[] = [
     label: "Page sections catalog",
     name: "pageSections",
     description:
-      "Section-to-field mappings per page with visibleWhen rules and applicant scoping. Client configuration should reference section IDs only; structural definitions belong here.",
+      "Section-to-field mappings per page with canonical visibilityConditionId references and applicant scoping. Client configuration should reference section IDs only; structural definitions belong here.",
     sourcePath: "src/config/pageSections/pageSections.ts",
     scope: "Client Configurable",
     usedIn: "FieldRenderer, CoverageQuestions, ApplicationDocumentPreview",
@@ -741,10 +745,10 @@ const configurationInventory: ConfigRow[] = [
     label: "Client site configs",
     name: "src/config/clients/ (10 configs)",
     description:
-      "Full per-client configuration objects combining branding, support, features, pages, coverages, fields, estimatedRateDisplay, and content overrides. Resolved at runtime by getActiveClient().",
+      "Legacy configuration objects combining branding, support, features, pages, coverages, fields, and estimatedRateDisplay. Site-based resolvers adapt these while the remaining configuration domains are normalized incrementally.",
     sourcePath: "src/config/clients/",
     scope: "Client Configurable",
-    usedIn: "getActiveClient(), all page rendering, theme, routing",
+    usedIn: "Site compatibility adapters and remaining page rendering",
   },
   {
     group: "Shared infrastructure",
@@ -765,7 +769,7 @@ const configurationInventory: ConfigRow[] = [
  */
 const NON_OPTION_NAMES = new Set([
   "ClientConfig.coverages.categories",
-  "categoryMaxAggregateNotes / clientMaxAggregateNoteOverrides",
+  "categoryMaxAggregateNotes / siteMaxAggregateNoteOverrides",
   "fieldCatalog",
   "formFlow",
   "pages / pageGroups / progressSteps",
@@ -775,13 +779,24 @@ const NON_OPTION_NAMES = new Set([
   "src/content/defaults/",
 ]);
 
-export const configurationsData: ConfigRow[] = configurationInventory.filter(
-  (row) =>
-    row.scope === "Client Configurable" &&
-    !row.name.startsWith("content.") &&
-    !row.sourcePath.startsWith("Planned") &&
-    !NON_OPTION_NAMES.has(row.name),
-);
+function configurationId(name: string): ConfigRow["id"] {
+  return `config-${name
+    .replace(/ClientConfig\.?/g, "")
+    .replace(/\[\]/g, "-list")
+    .replace(/[^a-zA-Z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .toLowerCase()}`;
+}
+
+export const configurationsData: ConfigRow[] = configurationInventory
+  .filter(
+    (row) =>
+      row.scope === "Client Configurable" &&
+      !row.name.startsWith("content.") &&
+      !row.sourcePath.startsWith("Planned") &&
+      !NON_OPTION_NAMES.has(row.name),
+  )
+  .map((row) => ({ ...row, id: configurationId(row.name) }));
 
 /**
  * Distinct `group` values from configurationsData, ordered to roughly follow

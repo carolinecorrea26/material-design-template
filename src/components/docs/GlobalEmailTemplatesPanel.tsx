@@ -1,11 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material";
-import type { ClientId } from "../../types";
+import type { SiteId } from "../../data";
 import EmailTemplatesTable from "./EmailTemplatesTable";
 import { GlobalEmailConfigurationTable } from "./EmailConfigurationTable";
 import SectionTabs from "./SectionTabs";
 
 /** Generic placeholder client used to render Global tab previews, so they're not tied to any real client's branding/support info. */
-const GLOBAL_EMAIL_CLIENT_ID: ClientId = "demo";
+const GLOBAL_EMAIL_SITE_ID: SiteId = "demo-default";
 
 export default function GlobalEmailTemplatesPanel() {
   return (
@@ -29,7 +29,7 @@ export default function GlobalEmailTemplatesPanel() {
         defaultTabId="global-email-templates-subsection"
       >
         <Box id="global-email-templates-subsection">
-          <EmailTemplatesTable clientId={GLOBAL_EMAIL_CLIENT_ID} />
+          <EmailTemplatesTable siteId={GLOBAL_EMAIL_SITE_ID} />
         </Box>
 
         <Box id="global-email-configuration-subsection">

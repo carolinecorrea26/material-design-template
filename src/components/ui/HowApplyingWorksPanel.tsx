@@ -86,7 +86,7 @@ export default function HowApplyingWorksPanel({
           borderRadius: isDrawer ? 0 : 3,
           bgcolor: isDrawer
             ? "transparent"
-            : alpha(theme.palette.success.main, 0.065),
+            : alpha(theme.palette.primary.main, 0.065),
         })}
       >
         {variant === "page" ? (
@@ -109,8 +109,8 @@ export default function HowApplyingWorksPanel({
             display: "grid",
             gridTemplateColumns: isDrawer
               ? "1fr"
-              : { xs: "1fr", md: "minmax(0, 1fr) minmax(280px, 380px)" },
-            gap: isDrawer ? 0 : { xs: 5, md: 7 },
+              : { xs: "1fr", md: "minmax(0, 1fr) minmax(270px, 350px)" },
+            gap: isDrawer ? 0 : { xs: 5, md: 6 },
             alignItems: "center",
           }}
         >
@@ -164,7 +164,7 @@ export default function HowApplyingWorksPanel({
                         {index + 1}
                       </Box>
                       <Typography
-                        variant={isDrawer ? "h5" : "h4"}
+                        variant="h5"
                         color={isActive ? "primary.dark" : "text.primary"}
                       >
                         {step.title}
@@ -172,7 +172,7 @@ export default function HowApplyingWorksPanel({
                     </Stack>
 
                     <Typography
-                      variant="body1"
+                      variant={isDrawer ? "body1" : "body2"}
                       color="text.secondary"
                       sx={{ pl: isDrawer ? 0 : 5.5 }}
                     >

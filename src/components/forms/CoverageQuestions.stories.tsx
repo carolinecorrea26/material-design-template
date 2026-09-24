@@ -36,12 +36,6 @@ function CoverageQuestionsDemo({
   const { control, formState } = useForm({ mode: "onChange" });
   const watchedValues = useWatch({ control });
 
-  const categoryNeedsGender = selectedCategories.some((c) => c === "LI" || c === "DI");
-  const categoryNeedsSmoker = selectedCategories.some((c) => c === "LI" || c === "SH");
-  const categoryNeedsDi = selectedCategories.includes("DI");
-  const categoryNeedsOo = selectedCategories.includes("OO");
-  const categoryNeedsHours = categoryNeedsDi || categoryNeedsOo;
-
   return (
     <Box sx={{ maxWidth: 640 }}>
       <CoverageQuestions
@@ -51,11 +45,6 @@ function CoverageQuestionsDemo({
         allFields={allFields}
         pageSections={pageSections}
         selectedCategories={selectedCategories}
-        categoryNeedsGender={categoryNeedsGender}
-        categoryNeedsSmoker={categoryNeedsSmoker}
-        categoryNeedsDi={categoryNeedsDi}
-        categoryNeedsOo={categoryNeedsOo}
-        categoryNeedsHours={categoryNeedsHours}
         hasSpouse={hasSpouse}
       />
     </Box>

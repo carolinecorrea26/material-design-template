@@ -9,6 +9,10 @@ import {
 import { generateFormDataUpToPage } from "../../dev/utils/generateFormData";
 import { createAppTheme } from "../../app/theme";
 import type { PageId } from "../../types";
+import {
+  ApplicationSessionContext,
+  type ApplicationSessionContextValue,
+} from "../../app/ApplicationSessionContext";
 
 /**
  * ProgressStep is the outer step navigator FormRoutePage wraps every gated
@@ -36,13 +40,28 @@ export default meta;
 
 type Story = StoryObj;
 
-function withDemoValues(values: ApplicationFormValues, children: ReactNode) {
+function withDemoValues(
+  values: ApplicationFormValues,
+  children: ReactNode,
+  session: Partial<ApplicationSessionContextValue> = {},
+) {
+  const sessionValue: ApplicationSessionContextValue = {
+    reviewSubmitted: false,
+    advisorApplicantFlow: false,
+    markReviewSubmitted: () => {},
+    setAdvisorApplicantFlow: () => {},
+    resetApplicationSession: () => {},
+    ...session,
+  };
+
   return (
-    <ApplicationFormContext.Provider
-      value={{ values, setPageValues: () => {}, resetValues: () => {} }}
-    >
-      {children}
-    </ApplicationFormContext.Provider>
+    <ApplicationSessionContext.Provider value={sessionValue}>
+      <ApplicationFormContext.Provider
+        value={{ values, setPageValues: () => {}, resetValues: () => {} }}
+      >
+        {children}
+      </ApplicationFormContext.Provider>
+    </ApplicationSessionContext.Provider>
   );
 }
 
@@ -135,8 +154,6 @@ export const Mobile: Story = {
 export const LockedAfterReviewSubmitted: Story = {
   name: "Locked — after Review has been submitted",
   render: () => {
-    window.sessionStorage.setItem("reviewSubmitted", "true");
-    window.sessionStorage.removeItem("advisorApplicantFlow");
     const pageId = "payment" as PageId;
     const values = generateFormDataUpToPage(pageId);
     return withDemoValues(
@@ -144,13 +161,14 @@ export const LockedAfterReviewSubmitted: Story = {
       <ProgressStep pageId={pageId}>
         <DemoPageContent label="Payment page content" />
       </ProgressStep>,
+      { reviewSubmitted: true },
     );
   },
   parameters: {
     docs: {
       description: {
         story:
-          "Once review has been submitted (a sessionStorage flag both ProgressStep and RoutePage read directly), completed earlier steps stop being clickable — click one to confirm nothing navigates. This prevents editing answers behind a submitted application without adding a second confirmation dialog.",
+          "Once review has been submitted, ApplicationSessionContext locks completed earlier steps — click one to confirm nothing navigates. This prevents editing answers behind a submitted application without adding a second confirmation dialog.",
       },
     },
   },
@@ -159,8 +177,6 @@ export const LockedAfterReviewSubmitted: Story = {
 export const AdvisorApplicantHandoff: Story = {
   name: "Locked — advisor-completed steps during applicant handoff",
   render: () => {
-    window.sessionStorage.removeItem("reviewSubmitted");
-    window.sessionStorage.setItem("advisorApplicantFlow", "true");
     const pageId = "review" as PageId;
     const values = generateFormDataUpToPage(pageId);
     return withDemoValues(
@@ -168,13 +184,14 @@ export const AdvisorApplicantHandoff: Story = {
       <ProgressStep pageId={pageId}>
         <DemoPageContent label="Review page content" />
       </ProgressStep>,
+      { advisorApplicantFlow: true },
     );
   },
   parameters: {
     docs: {
       description: {
         story:
-          'When an applicant resumes via an advisor-sent link (resume?flow=advisor), Getting Started/Coverage/Profile are locked even though they show as completed — only Review and E-sign stay clickable. This is a second, independent lock mechanism from "submitted" above; both are checked directly via sessionStorage rather than through ApplicationFormContext.',
+          'When an applicant resumes via an advisor-sent link (resume?flow=advisor), ApplicationSessionContext locks Getting Started/Coverage/Profile even though they show as completed — only Review and E-sign stay clickable. This remains independent from the "submitted" lock above.',
       },
     },
   },

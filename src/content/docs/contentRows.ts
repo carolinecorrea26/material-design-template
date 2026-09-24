@@ -1,5 +1,5 @@
 import { isValidElement } from "react";
-import type { ClientId } from "../../types";
+import type { SiteId } from "../../data";
 import { buildContent, type SiteContent } from "../index";
 import {
   homeDefaults,
@@ -15,14 +15,14 @@ import {
   dialogsDefaults,
   statusMessagesDefaults,
 } from "../defaults";
-import { clientContentOverrides } from "../clients";
+import { siteContentOverrides } from "../clients";
 
 export type FlatContentRow = {
   path: string;
   /** null indicates a non-string leaf (number, boolean, React node, etc.). */
   value: string | null;
   defaultsFile: string;
-  /** True when this path is overridden by the given client's content overrides. */
+  /** True when this path is overridden by the given Site's content overrides. */
   clientOverridden: boolean;
 };
 
@@ -127,14 +127,14 @@ export const defaultContentByPath: Map<string, string | null> = (() => {
 })();
 
 /**
- * Flattens the given client's resolved content into rows, marking which
- * paths that client overrides. Used by the CMS page — independent of the
- * session-resolved "active client" so any client can be inspected without
+ * Flattens the given Site's resolved content into rows, marking which
+ * paths that Site overrides. Used by the CMS page — independent of the
+ * session-resolved active Site so any Site can be inspected without
  * navigating/reloading.
  */
-export function getFlatContentRows(clientId: ClientId): FlatContentRow[] {
-  const content = buildContent(clientId);
-  const clientOverrides = clientContentOverrides[clientId];
+export function getFlatContentRows(siteId: SiteId): FlatContentRow[] {
+  const content = buildContent(siteId);
+  const siteOverrides = siteContentOverrides[siteId];
 
   const rows: FlatContentRowDraft[] = [];
   for (const { key, defaultsFile } of contentKeys) {
@@ -149,6 +149,6 @@ export function getFlatContentRows(clientId: ClientId): FlatContentRow[] {
     .filter((row) => !ERROR_MESSAGE_CONTENT_PATHS.has(row.path))
     .map((row) => ({
       ...row,
-      clientOverridden: getValueAtContentPath(clientOverrides, row.path),
+      clientOverridden: getValueAtContentPath(siteOverrides, row.path),
     }));
 }

@@ -24,12 +24,14 @@ import QuickDecisionDrawerContent, {
   QuickDecisionMark,
 } from "../components/content/QuickDecisionExplainer";
 import { ApplicationReviewDrawerContent } from "../content/helpContent";
-import { buildContent, getContent, resolveTemplate } from "../content";
+import { buildContentForLegacyClient, getContent, resolveTemplate } from "../content";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getPagePath } from "../config/pages";
 import type { ClientConfig, HomePageVariant } from "../config/clients/types";
 import { getFormTemplate } from "../config/template/resolveTemplate";
 import Membership from "./Membership";
+import { useApplicationForm } from "../app/ApplicationFormContext";
+import { getActiveSite, resolveEffectiveBranding } from "../data";
 
 import { SURFACE_SX } from "../config/constants";
 
@@ -149,8 +151,15 @@ export default function Home({
   const isPreview = Boolean(previewClient);
   const isSingleTemplate = !isPreview && getFormTemplate() === "single";
   const client = previewClient ?? getActiveClient();
+  const { activeAssociationId } = useApplicationForm();
+  const effectiveBranding = previewClient
+    ? previewClient.branding
+    : resolveEffectiveBranding({
+        siteId: getActiveSite().id,
+        associationId: activeAssociationId,
+      });
   const content = previewClient
-    ? buildContent(previewClient.id)
+    ? buildContentForLegacyClient(previewClient.id)
     : activeContent;
   const [searchParams] = useSearchParams();
   const urlVariant = searchParams.get("variant") as HomePageVariant | null;
@@ -410,7 +419,10 @@ export default function Home({
                             /\{\{associationName\}\}/g,
                             previewClient.branding.name,
                           )
-                      : resolveTemplate(content.home.hero.description)}
+                      : resolveTemplate(
+                          content.home.hero.description,
+                          activeAssociationId,
+                        )}
                 </Typography>
               </Stack>
 
@@ -576,8 +588,8 @@ export default function Home({
                   <Stack direction="column" spacing={2} alignItems="start">
                     <Box
                       component="img"
-                      src={client.branding.logo}
-                      alt={client.branding.logoAlt}
+                      src={effectiveBranding.logo}
+                      alt={effectiveBranding.logoAlt}
                       sx={{
                         display: "block",
                         height: 30,

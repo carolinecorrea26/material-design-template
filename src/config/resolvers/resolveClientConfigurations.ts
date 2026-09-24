@@ -105,6 +105,7 @@ function isAtDefault(name: string, value: unknown): boolean {
 }
 
 export type ResolvedConfiguration = {
+  configurationId: ConfigRow["id"];
   key: string;
   group: string;
   label: string;
@@ -141,6 +142,7 @@ export function resolveClientConfigurations(client: ClientConfig): ResolvedConfi
     }
 
     return {
+      configurationId: row.id,
       key: row.name,
       group: row.group,
       label: row.label,

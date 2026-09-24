@@ -216,10 +216,3 @@ export type FieldDefinition = {
   /** Whether to show the companion phone type selector (default: true) */
   showPhoneTypeSelector?: boolean;
 };
-
-export type ClientPageFieldConfig = {
-  overrides?: Partial<
-    Record<string, Partial<FieldDefinition> & { hidden?: boolean }>
-  >;
-  extraFields?: FieldDefinition[];
-};

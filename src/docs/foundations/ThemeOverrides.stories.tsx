@@ -141,9 +141,7 @@ export const MuiThemeOverrides = () => (
           itself. The className is applied independently by 8 separate call
           sites across <code>FieldRenderer.tsx</code> (×3),{" "}
           <code>CoverageCategorySelector.tsx</code>,{" "}
-          <code>QuoteCalculator.tsx</code> (×2), <code>QuoteModal.tsx</code>{" "}
-          (×2, one with its own conflicting inline <code>sx</code>{" "}
-          font-size),
+          <code>QuoteCalculator.tsx</code> (×2),
           <code>ResumeMethod.tsx</code>, and <code>Beneficiary.tsx</code>.
           Fixing this properly means giving <code>SelectionGroup</code> a{" "}
           <code>label</code> prop and updating all 8 call sites — a real,

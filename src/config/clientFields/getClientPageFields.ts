@@ -1,74 +1,76 @@
 import type { PageId } from "../../types";
-import { getActiveClient } from "../client/getActiveClient";
 import type { ApplicationFormValues } from "../../app/ApplicationFormContext";
-import { getPageFields } from "../fields/getPageFields";
-import { fieldCatalog } from "../fields";
 import type { FieldDefinition } from "../fields/types";
-import { evaluateVisibilityRules } from "../pageSections/evaluateVisibilityRules";
-import { membershipClientFields } from "./membership";
+import { resolveVisibleFields } from "../conditions";
+import { getResolvedFieldsForSite } from "../fields/resolvedFieldRegistry";
+import {
+  type ActiveAssociationResolution,
+  type Association,
+  type Site,
+  getActiveSite,
+  getAssociationsForSite,
+  resolveActiveAssociationFromApplication,
+} from "../../data";
+
+export function resolveAssociationMembershipField(
+  field: FieldDefinition,
+  site: Site,
+  associations: Association[],
+  associationResolution: ActiveAssociationResolution,
+): FieldDefinition {
+  if (field.id !== "membership") return field;
+  if (site.associationSelection?.mode === "select") {
+    return {
+      ...field,
+      label: "I am a member of",
+      inputType: "searchable-select",
+      labelVariant: "standard",
+      placeholder: "Search or select association",
+      options: associations.map((association) => ({
+        label: association.name,
+        value: association.id,
+      })),
+    };
+  }
+  if (
+    site.associationSelection?.mode === "url-parameter" &&
+    associationResolution.status === "resolved"
+  ) {
+    return {
+      ...field,
+      label: `Are you a member of ${associationResolution.association!.name}?`,
+      inputType: "radio",
+      options: [
+        { label: "Yes", value: "yes" },
+        { label: "No", value: "no" },
+      ],
+    };
+  }
+  return field;
+}
 
 export function getClientPageFields(
   pageId: PageId,
   values?: ApplicationFormValues,
 ) {
-  const client = getActiveClient();
-  const baseFields = getPageFields(pageId);
-
-  if (pageId !== "membership") {
-    const clientPageConfig = client.fields[pageId];
-    if (
-      !clientPageConfig?.extra?.length &&
-      !clientPageConfig?.overrides &&
-      !clientPageConfig?.hidden?.length
-    ) {
-      return baseFields;
-    }
-
-    const overrides = clientPageConfig?.overrides ?? {};
-    const mergedBase = baseFields.map((field) => {
-      const override = overrides[field.id];
-      return override ? { ...field, ...override } : field;
-    });
-
-    const extraFields = (clientPageConfig?.extra ?? [])
-      .map((id) => {
-        const base = fieldCatalog[id as keyof typeof fieldCatalog];
-        if (!base) return null;
-        const override = overrides[id];
-        return override ? { ...base, ...override } : base;
-      })
-      .filter((f): f is FieldDefinition => Boolean(f));
-
-    const hidden = new Set<string>(clientPageConfig?.hidden ?? []);
-    return [...mergedBase, ...extraFields].filter(
-      (field) => !hidden.has(field.id),
-    );
-  }
-
-  const clientConfig = membershipClientFields[client.id];
-  const overrides = clientConfig?.overrides ?? {};
-  const extraFields = clientConfig?.extraFields ?? [];
-
-  const mergedFields = baseFields.map((field) => {
-    const override = overrides[field.id];
-
-    if (!override) {
-      return field;
-    }
-
-    return {
-      ...field,
-      ...override,
-    };
-  });
-
-  const visibleFields = mergedFields.filter(
-    (field) => !overrides[field.id]?.hidden,
+  const site = getActiveSite();
+  const visibleFields = resolveVisibleFields(
+    getResolvedFieldsForSite(pageId, site.id),
+    values ?? {},
   );
 
-  const visibleExtraFields = extraFields.filter((field) =>
-    evaluateVisibilityRules(field.visibleWhen, values ?? {}),
+  if (pageId !== "membership") return visibleFields;
+
+  const siteAssociations = getAssociationsForSite(site.id);
+  const associationResolution = resolveActiveAssociationFromApplication(site.id, values);
+  const associationMembershipFields = visibleFields.map((field) =>
+    resolveAssociationMembershipField(
+      field,
+      site,
+      siteAssociations,
+      associationResolution,
+    ),
   );
 
-  return [...visibleFields, ...visibleExtraFields];
+  return associationMembershipFields;
 }

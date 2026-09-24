@@ -25,6 +25,7 @@ export type UrlParameterEntry = {
   newValues: string[];
   newBehavior: string[];
   notes: string;
+  sourceRefs?: string[];
 };
 
 // Current-template parameter inventory: migrated / modified / removed / TBD
@@ -230,12 +231,22 @@ export const urlParameters: UrlParameterEntry[] = [
       "Expansion of existing functionality under discussion: Preselects association dropdown on eligibility page (for use with specific cases only). (Current functionality example is CAT to preset association and logo. New functionality to preset dropdown, like with TIE.)",
     ],
     status: "Migrated",
-    newValues: ["xyz"],
+    newValues: [
+      "A canonical Association ID assigned to the active Site (for example, akron-bar-association).",
+    ],
     newBehavior: [
-      "Presets the association logo and membership attestation field to the association set in the URL parameter.",
+      "Resolves the value against enabled SiteAssociation records for the active Site; arbitrary strings are rejected.",
+      "The resolved Association supplies the membership attestation name and can supply the displayed logo when the Site enables Association branding.",
+      "A missing or invalid required value produces a blocking validation state instead of choosing an arbitrary Association.",
     ],
     notes:
-      "Clients such as TIE will not use the association parameter; they will instead have search capability in select fields.",
+      "Valid values are Site-specific and come from canonical Association relationships, not from this documentation table. Sites using select mode instead generate searchable options from the same relationships.",
+    sourceRefs: [
+      "src/data/associations.ts",
+      "src/data/registry.ts",
+      "src/data/resolvers.ts",
+      "src/config/clientFields/getClientPageFields.ts",
+    ],
   },
   {
     parameter: "campaign",
@@ -372,6 +383,29 @@ export const urlParametersAdditional: UrlParameterAdditionalEntry[] = [
     ],
   },
   {
+    parameter: "site",
+    currentTemplate: "Not listed in current parameter inventory.",
+    status: "New — Prototype/Configuration Utility",
+    newValues: [
+      "demo-default",
+      "abe-default",
+      "ama-default",
+      "asce-default",
+      "avma-default",
+      "csea-default",
+      "isitrust-default",
+      "nso-default",
+      "waepa-standard",
+      "waepa-gi",
+    ],
+    newBehavior: [
+      "Selects the active Site. The Site resolves its owning Client and effective configuration; a valid value is stored for subsequent navigation during the session.",
+    ],
+    notes:
+      "This is the normalized runtime identity. During migration, admin links also emit the legacy client parameter and old client-only links remain supported.",
+    sourceRefs: ["src/data/activeSite.ts", "src/data/registry.ts"],
+  },
+  {
     parameter: "client",
     currentTemplate: "Not listed in current parameter inventory.",
     status: "New — Prototype/Configuration Utility",
@@ -388,13 +422,13 @@ export const urlParametersAdditional: UrlParameterAdditionalEntry[] = [
       "waepagi",
     ],
     newBehavior: [
-      "Overrides the active client configuration used by the prototype. A valid URL client ID is stored in session storage and remains the active client for subsequent navigation during the session.",
+      "Backward-compatible alias that maps a legacy client configuration ID to its Site ID. A valid value remains supported for existing prototype links.",
     ],
     notes:
-      "If the URL value is not a valid configured client ID, it is not used. If no valid URL override exists, the prototype uses the previously stored client ID when available, otherwise the default client is demo. Production use/status is TBD; this currently functions as a prototype/configuration-selection mechanism.",
+      "Deprecated as the primary identity in favor of site. The waepa value maps to waepa-standard and waepagi maps to waepa-gi. If neither site nor client is valid, the stored Site is used, then demo-default.",
     sourceRefs: [
-      "src/config/client/resolveClientId.ts",
-      "src/config/clients/index.ts",
+      "src/data/activeSite.ts",
+      "src/data/registry.ts",
       "src/dev/DevTools.tsx",
     ],
   },
@@ -450,6 +484,16 @@ export const urlParameterSourceSummary: {
   classification: string;
   productionStatus: string;
 }[] = [
+  {
+    parameter: "association",
+    classification: "Canonical Association selection",
+    productionStatus: "Implemented for Site-configured URL-parameter mode",
+  },
+  {
+    parameter: "site",
+    classification: "Prototype/site configuration override",
+    productionStatus: "New normalized identity; TBD for production",
+  },
   {
     parameter: "template",
     classification: "User-facing form template selection",

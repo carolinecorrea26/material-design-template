@@ -141,7 +141,7 @@ export type ResolvedPage = {
  * Resolves a single page's Global → Override → Effective visibility for the
  * given client. Health pages are gated by coverage selection at runtime
  * (not by ClientConfig.pages), so they're always "inherited"/included here —
- * see coverageUnlocksPage in formFlow.ts for the actual gating logic.
+ * see coverageUnlocksPage in flowGates.ts for the actual gating logic.
  */
 export function resolvePageVisibility(
   pageId: PageId,

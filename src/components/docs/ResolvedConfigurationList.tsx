@@ -47,6 +47,7 @@ export default function ResolvedConfigurationList({
   const [filter, setFilter] = useState("");
   const [pageFilter, setPageFilter] = useState(ALL_PAGES);
   const { widths, resize } = useResizableColumns({
+    configurationId: 220,
     page: 160,
     setting: 200,
     description: 300,
@@ -83,7 +84,7 @@ export default function ResolvedConfigurationList({
       (row) =>
         (pageFilter === ALL_PAGES || row.page.id === pageFilter) &&
         (!lc ||
-          `${row.page.label} ${row.label} ${row.key} ${row.global.description}`
+          `${row.configurationId} ${row.page.label} ${row.label} ${row.key} ${row.global.description}`
             .toLowerCase()
             .includes(lc)),
     );
@@ -100,6 +101,7 @@ export default function ResolvedConfigurationList({
       <ResponsiveTableContainer>
         <Table size="small" sx={{ tableLayout: "fixed", width: "max-content" }}>
           <colgroup>
+            <col style={{ width: widths.configurationId }} />
             <col style={{ width: widths.page }} />
             <col style={{ width: widths.setting }} />
             <col style={{ width: widths.description }} />
@@ -110,6 +112,12 @@ export default function ResolvedConfigurationList({
           </colgroup>
           <TableHead>
             <TableRow>
+              <ResizableHeaderCell
+                width={widths.configurationId}
+                onResize={(w) => resize("configurationId", w)}
+              >
+                Configuration ID
+              </ResizableHeaderCell>
               <ResizableHeaderCell width={widths.page} onResize={(w) => resize("page", w)}>
                 Page
               </ResizableHeaderCell>
@@ -137,7 +145,10 @@ export default function ResolvedConfigurationList({
             {filteredRows.map((row) => {
               const overridden = row.status === "overridden";
               return (
-                <TableRow key={row.key} sx={overridden ? { bgcolor: CLIENT_HIGHLIGHT_BG } : undefined}>
+                <TableRow key={row.configurationId} sx={overridden ? { bgcolor: CLIENT_HIGHLIGHT_BG } : undefined}>
+                  <TableCell sx={{ verticalAlign: "top", fontFamily: "monospace", fontSize: "0.75rem" }}>
+                    {row.configurationId}
+                  </TableCell>
                   <TableCell
                     sx={{
                       verticalAlign: "top",

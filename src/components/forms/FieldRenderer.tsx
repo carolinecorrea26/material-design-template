@@ -48,18 +48,12 @@ type FieldRendererProps = {
   errors: FieldErrors<FormValues>;
   hideLabel?: boolean;
   margin?: "none" | "dense" | "normal";
-  onValueChange?: () => void;
+  onValueChange?: (value?: string | boolean | string[]) => void;
 };
 
 type FieldStatusState = {
   hasError?: boolean;
 };
-
-const CURRENCY_FIELD_IDS = new Set([
-  "average-monthly-income",
-  "spouse-average-monthly-income",
-  "monthly-business-expenses",
-]);
 
 const SSN_HELPER_TEXT =
   "We protect your personal information using industry-standard security measures and only use it as described in our";
@@ -88,7 +82,7 @@ function renderSsnHelperText() {
 }
 
 function isCurrencyField(field: FieldDefinition) {
-  return field.format === "currency" || CURRENCY_FIELD_IDS.has(field.id);
+  return field.format === "currency";
 }
 
 const SEARCHABLE_SELECT_OPTION_THRESHOLD = 10;
@@ -107,7 +101,7 @@ function getEffectiveInputType(field: FieldDefinition) {
 }
 
 function isZipOrPostalField(field: FieldDefinition) {
-  return field.id.includes("zip") || field.autoComplete === "postal-code";
+  return field.autoComplete === "postal-code";
 }
 
 function getValidationRules(field: FieldDefinition) {
@@ -721,13 +715,13 @@ export default function FieldRenderer({
                       tabIndex={checked ? 0 : -1}
                       onClick={() => {
                         controllerField.onChange(option.value);
-                        onValueChange?.();
+                        onValueChange?.(option.value);
                       }}
                       onKeyDown={(e) => {
                         if (e.key === " " || e.key === "Enter") {
                           e.preventDefault();
                           controllerField.onChange(option.value);
-                          onValueChange?.();
+                          onValueChange?.(option.value);
                         }
                       }}
                     >
@@ -913,7 +907,7 @@ export default function FieldRenderer({
               }
               onChange={(_, option) => {
                 controllerField.onChange(option?.value ?? "");
-                onValueChange?.();
+                onValueChange?.(option?.value ?? "");
               }}
               onBlur={controllerField.onBlur}
               disabled={field.disabled}

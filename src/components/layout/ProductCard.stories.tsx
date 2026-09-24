@@ -5,7 +5,7 @@ import ProductCard from "./ProductCard";
 /**
  * ProductCard is the bordered card wrapper underneath every product row —
  * ProductCatalog's full card, EstimatorProductCard's simplified card,
- * QuoteModal, Beneficiary, Payment, Receipt. `selected` swaps the border and
+ * QuoteCalculator, Beneficiary, Payment, Receipt. `selected` swaps the border and
  * background tint to a green "chosen" treatment.
  */
 const meta = {

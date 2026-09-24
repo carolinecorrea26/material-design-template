@@ -17,20 +17,33 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { formFlow, coverageUnlocksPage } from "../../config/formFlow";
+import { formFlow } from "../../config/formFlow";
+import { coverageUnlocksPage } from "../../config/flowGates";
 import { HEALTH_PAGE_IDS } from "../../config/progressSteps";
-import type { ClientId, PageId } from "../../types";
+import type { PageId } from "../../types";
 import { themeColorLabels } from "../../config/clients/types";
-import { clientGroups, getClientGroupForSiteId, type ClientGroup } from "../../config/clients/clientGroups";
+import {
+  getClientsForTpa,
+  getAssociation,
+  getClientForSite,
+  getSiteAssociations,
+  getSiteIdForLegacyClient,
+  getSitesForClient,
+  getTpaForClient,
+  tpaEntities,
+  type Client,
+  type Site,
+  type Tpa,
+} from "../../data";
 import { DEFAULT_TEMPLATE } from "../../config/template/resolveTemplate";
 import { getActiveClient } from "../../config/client/getActiveClient";
 import { getCoverageCategorySectionLabel } from "../../config/coverageCategories";
 import type { CoverageCategoryId } from "../../config/coverageCategories";
-import { useApplicationForm, STORAGE_KEY } from "../../app/ApplicationFormContext";
+import { useApplicationForm } from "../../app/ApplicationFormContext";
 import { router } from "../../app/router";
 import { generateFormDataUpToPage } from "../../dev/utils/generateFormData";
 import { getActiveClientCoverages } from "../../config/client/getActiveClientCoverages";
-import { findClientIdUnlockingPage } from "../../config/client/findClientForPage";
+import { findSiteIdUnlockingPage } from "../../config/client/findClientForPage";
 import {
   resolveClientPages,
   resolvePageVisibility,
@@ -61,12 +74,14 @@ import TruncatedString from "./TruncatedString";
 import FlowDiagram from "./flows/FlowDiagram";
 import { formatCoverageAmounts } from "../../utils/coverageAmounts";
 import { formatProductIdentifiers } from "../../utils/coverageIdentifiers";
-import MobileSitePreview, { getClientPrototypeUrl } from "./MobileSitePreview";
+import MobileSitePreview, { getSitePrototypeUrl } from "./MobileSitePreview";
+import OverridesSummary from "./OverridesSummary";
+import { getApplicableSiteRules } from "../../content/docs/siteRules";
 
 // ---------------------------------------------------------------------------
 // Active site (drives all "client-specific" highlighting below).
-// Resolved the same way the rest of the app resolves it: ?client= URL param,
-// falling back to sessionStorage, falling back to "demo".
+// Resolved from ?site=, with the legacy ?client= identity supported only by
+// the compatibility resolver.
 // ---------------------------------------------------------------------------
 const activeClient = getActiveClient();
 
@@ -77,6 +92,8 @@ const activeClient = getActiveClient();
 // ---------------------------------------------------------------------------
 
 type ClientCoverageRow = {
+  siteCoverageId: string;
+  siteId: string;
   id: string;
   code: string;
   name: string;
@@ -130,6 +147,8 @@ function formatCoverageRow(
     (activeClient.applicantClassifications ?? []).map(({ id, label }) => [id, label]),
   );
   return {
+    siteCoverageId: `${getSiteIdForLegacyClient(activeClient.id)}--${resolved.id}`,
+    siteId: getSiteIdForLegacyClient(activeClient.id),
     id: resolved.id,
     code: effective.code,
     name: effective.name,
@@ -199,21 +218,28 @@ const schemaOnlyConfigurationCount =
 
 const resolvedFlows = resolveClientFlows(activeClient);
 const overridesSummary = summarizeClientOverrides(activeClient);
-const totalClientRuleCount = overridesSummary.reduce((sum, d) => sum + d.overriddenCount, 0);
-const effectiveClientRules = overridesSummary.flatMap((domain) =>
-  domain.items.map((item) => ({
-    area: domain.label,
-    rule: item.label,
-    behavior: item.detail,
-    ref: `Effective ${domain.label.toLowerCase()} configuration`,
-  })),
-);
 
 // ---------------------------------------------------------------------------
 // Site information
 // ---------------------------------------------------------------------------
 
-const activeClientGroup = getClientGroupForSiteId(activeClient.id);
+const activeSiteId = getSiteIdForLegacyClient(activeClient.id);
+const activeSite = getSitesForClient(getClientForSite(activeSiteId)!.id).find(
+  (site) => site.id === activeSiteId,
+)!;
+const activeCanonicalClient = getClientForSite(activeSite.id)!;
+const activeTpa = getTpaForClient(activeCanonicalClient.id)!;
+const applicableSiteRules = getApplicableSiteRules({
+  clientId: activeCanonicalClient.id,
+  siteId: activeSite.id,
+});
+const activeClientSites = getSitesForClient(activeCanonicalClient.id);
+const activeSiteAssociationRows = getSiteAssociations(activeSite.id).map(
+  (relationship) => ({
+    relationship,
+    association: getAssociation(relationship.associationId)!,
+  }),
+);
 const showsHeroImage =
   activeClient.features?.homePageVariant === "hero-image" ||
   activeClient.features?.homePageVariant === "welcome-back";
@@ -242,38 +268,49 @@ export default function ClientSiteDetailsPanel({
 }: {
   onNavigateToGlobal: (anchorId?: string) => void;
 }) {
-  const { setPageValues } = useApplicationForm();
+  const { values, setPageValues } = useApplicationForm();
   const [pageSearch, setPageSearch] = useState("");
   const [selectedPage, setSelectedPage] = useState(ALL_PAGES);
   const [fieldFilter, setFieldFilter] = useState("");
   const [fieldPageFilter, setFieldPageFilter] = useState(ALL_PAGES);
   const [coverageFilter, setCoverageFilter] = useState("");
   const [logoError, setLogoError] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState<ClientGroup>(activeClientGroup);
-  const [selectedSiteId, setSelectedSiteId] = useState<ClientId>(activeClient.id);
+  const [selectedClient, setSelectedClient] = useState<Client>(activeCanonicalClient);
+  const [selectedTpa, setSelectedTpa] = useState<Tpa>(activeTpa);
+  const [selectedSiteId, setSelectedSiteId] = useState(activeSite.id);
 
-  const navigateToSite = useCallback((siteId: ClientId) => {
-    if (siteId === activeClient.id) return;
+  const navigateToSite = useCallback((site: Site) => {
+    if (site.id === activeSite.id) return;
     const url = new URL(window.location.pathname, window.location.origin);
-    url.searchParams.set("client", siteId);
+    url.searchParams.set("site", site.id);
     window.location.href = url.toString();
   }, []);
 
-  const handleGroupChange = useCallback(
-    (nextGroup: ClientGroup | null) => {
-      if (!nextGroup) return;
-      setSelectedGroup(nextGroup);
-      const nextSite = nextGroup.sites[0];
+  const handleClientChange = useCallback(
+    (nextClient: Client | null) => {
+      if (!nextClient) return;
+      setSelectedClient(nextClient);
+      const nextSite = getSitesForClient(nextClient.id)[0];
       setSelectedSiteId(nextSite.id);
-      navigateToSite(nextSite.id);
+      navigateToSite(nextSite);
     },
     [navigateToSite],
   );
 
+  const handleTpaChange = useCallback(
+    (nextTpa: Tpa | null) => {
+      if (!nextTpa) return;
+      setSelectedTpa(nextTpa);
+      const nextClient = getClientsForTpa(nextTpa.id)[0];
+      if (nextClient) handleClientChange(nextClient);
+    },
+    [handleClientChange],
+  );
+
   const handleSiteChange = useCallback(
-    (nextSite: ClientId | null) => {
+    (nextSite: Site | null) => {
       if (!nextSite) return;
-      setSelectedSiteId(nextSite);
+      setSelectedSiteId(nextSite.id);
       navigateToSite(nextSite);
     },
     [navigateToSite],
@@ -338,7 +375,7 @@ export default function ClientSiteDetailsPanel({
   });
 
   // Application form pages assume prior steps (coverage selection, etc.)
-  // already ran and populated sessionStorage. Jumping to them directly from
+  // already ran and populated application state. Jumping to them directly from
   // this IA table would otherwise render with no questions, tabs, or
   // progress bar, so seed plausible dummy data up to that page first — the
   // same approach the Dev Tools "Jump to Page" action uses.
@@ -358,11 +395,11 @@ export default function ClientSiteDetailsPanel({
         );
 
         if (!activeClientUnlocksPage) {
-          const unlockingClientId = findClientIdUnlockingPage(pageId);
+          const unlockingSiteId = findSiteIdUnlockingPage(pageId);
 
-          if (unlockingClientId) {
+          if (unlockingSiteId) {
             const url = new URL(path, window.location.origin);
-            url.searchParams.set("client", unlockingClientId);
+            url.searchParams.set("site", unlockingSiteId);
             url.searchParams.set("autofill", pageId);
             window.location.href = url.toString();
             return;
@@ -371,17 +408,12 @@ export default function ClientSiteDetailsPanel({
       }
 
       const formData = generateFormDataUpToPage(pageId);
-      const current = JSON.parse(
-        window.sessionStorage.getItem(STORAGE_KEY) ?? "{}",
-      ) as typeof formData;
-      const nextValues = { ...current, ...formData };
-
-      window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(nextValues));
+      const nextValues = { ...values, ...formData };
       setPageValues(nextValues);
 
       void router.navigate(path);
     },
-    [setPageValues],
+    [setPageValues, values],
   );
 
   const fieldsByPage = useMemo(
@@ -434,6 +466,8 @@ export default function ClientSiteDetailsPanel({
   });
 
   const { widths: coverageColumnWidths, resize: resizeCoverageColumn } = useResizableColumns({
+    siteCoverageId: 260,
+    siteId: 180,
     id: 120,
     code: 100,
     name: 220,
@@ -472,7 +506,7 @@ export default function ClientSiteDetailsPanel({
   }, [urlParamInUseFilter]);
 
   const prototypeUrl = useMemo(() => {
-    return getClientPrototypeUrl(activeClient.id);
+    return getSitePrototypeUrl(activeSite.id);
   }, []);
 
   const clientUrlParametersInUse = activeClient.urlParametersInUse ?? [];
@@ -481,7 +515,7 @@ export default function ClientSiteDetailsPanel({
     <Stack spacing={3}>
       <Box>
         <Chip
-          label={`Active client: ${activeClient.branding.name} (${activeClient.id})`}
+          label={`Active site: ${activeSite.name} (${activeSite.id})`}
           color="primary"
           variant="outlined"
           sx={{ mb: 2 }}
@@ -526,34 +560,45 @@ export default function ClientSiteDetailsPanel({
         <CardContent>
           <Box>
             <Typography variant="h6" component="h2" sx={{ fontWeight: 800 }}>
-              Select a client
+              Select TPA, client, and site
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-              Choose which client — and, for clients with more than one active site, which
-              site — to view. The page updates as soon as you pick one.
+              Choose the canonical TPA, then its client and site. Single-item selectors remain
+              visible so the full hierarchy is explicit.
             </Typography>
           </Box>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mt: 2 }}>
             <Autocomplete
-              options={clientGroups}
-              value={selectedGroup}
-              onChange={(_, value) => handleGroupChange(value)}
+              options={tpaEntities}
+              value={selectedTpa}
+              onChange={(_, value) => handleTpaChange(value)}
               disableClearable
-              getOptionLabel={(option) => `${option.branding.acronym} - ${option.branding.name}`}
-              getOptionKey={(option) => option.groupId}
-              isOptionEqualToValue={(option, value) => option.groupId === value.groupId}
+              getOptionLabel={(option) => option.acronym ? `${option.acronym} - ${option.name}` : option.name}
+              getOptionKey={(option) => option.id}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              sx={{ flex: 1, maxWidth: 420 }}
+              renderInput={(params) => <TextField {...params} label="TPA" />}
+            />
+            <Autocomplete
+              options={getClientsForTpa(selectedTpa.id)}
+              value={selectedClient}
+              onChange={(_, value) => handleClientChange(value)}
+              disableClearable
+              getOptionLabel={(option) => `${option.acronym} - ${option.name}`}
+              getOptionKey={(option) => option.id}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
               sx={{ flex: 1, maxWidth: 420 }}
               renderInput={(params) => (
                 <TextField {...params} label="Client" placeholder="Search clients…" />
               )}
             />
             <Autocomplete
-              options={selectedGroup.sites}
-              value={selectedGroup.sites.find((s) => s.id === selectedSiteId) ?? selectedGroup.sites[0]}
-              onChange={(_, value) => handleSiteChange(value?.id ?? null)}
+              options={getSitesForClient(selectedClient.id)}
+              value={getSitesForClient(selectedClient.id).find((s) => s.id === selectedSiteId) ?? getSitesForClient(selectedClient.id)[0]}
+              onChange={(_, value) => handleSiteChange(value)}
               disableClearable
-              disabled={selectedGroup.sites.length <= 1}
-              getOptionLabel={(option) => option.siteLabel ?? "Default"}
+              disabled={getSitesForClient(selectedClient.id).length <= 1}
+              getOptionLabel={(option) => option.name}
               getOptionKey={(option) => option.id}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               sx={{ flex: 1, maxWidth: 320 }}
@@ -578,16 +623,44 @@ export default function ClientSiteDetailsPanel({
               alignItems={{ xs: "center", xl: "flex-start" }}
             >
               <MobileSitePreview
-                clientId={activeClient.id}
+                siteId={activeSite.id}
                 clientName={activeClient.branding.name}
               />
               <Box sx={{ width: "100%", minWidth: 0 }}>
                 <SectionTabs
                   tabs={[
+                    { id: "tpa-information-subsection", label: "TPA Information" },
                     { id: "client-information-subsection", label: "Client Information" },
                     { id: "site-information-subsection", label: "Site Information" },
+                    { id: "associations-subsection", label: `Associations (${activeSiteAssociationRows.length})` },
                   ]}
                 >
+              <Box id="tpa-information-subsection">
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  Canonical TPA identity. This record is separate from Client branding and support.
+                </Typography>
+                <Table size="small" sx={{ maxWidth: 640 }}>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 700, width: 180 }}>TPA ID</TableCell>
+                      <TableCell sx={{ fontFamily: "monospace" }}>{activeTpa.id}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
+                      <TableCell>{activeTpa.name}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 700 }}>Acronym</TableCell>
+                      <TableCell>{activeTpa.acronym ?? "—"}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
+                      <TableCell>{activeTpa.provisional ? "Provisional mapping" : "Confirmed"}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Box>
+
               {/* CLIENT INFORMATION */}
               <Box id="client-information-subsection">
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -611,6 +684,14 @@ export default function ClientSiteDetailsPanel({
                   </Box>
                   <Table size="small" sx={{ maxWidth: 640 }}>
                     <TableBody>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 700, width: 180 }}>Client ID</TableCell>
+                        <TableCell sx={{ fontFamily: "monospace" }}>{activeCanonicalClient.id}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 700 }}>TPA ID</TableCell>
+                        <TableCell sx={{ fontFamily: "monospace" }}>{activeCanonicalClient.tpaId}</TableCell>
+                      </TableRow>
                       <TableRow>
                         <TableCell sx={{ fontWeight: 700, width: 180 }}>Name</TableCell>
                         <TableCell>{activeClient.branding.name}</TableCell>
@@ -661,6 +742,18 @@ export default function ClientSiteDetailsPanel({
                 </Typography>
                 <Table size="small" sx={{ maxWidth: 640 }}>
                   <TableBody>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 700, width: 180 }}>Site ID</TableCell>
+                      <TableCell sx={{ fontFamily: "monospace" }}>{activeSite.id}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 700 }}>Client ID</TableCell>
+                      <TableCell sx={{ fontFamily: "monospace" }}>{activeSite.clientId}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 700 }}>Site name</TableCell>
+                      <TableCell>{activeSite.name}</TableCell>
+                    </TableRow>
                     <TableRow sx={showsHeroImage ? { bgcolor: CLIENT_HIGHLIGHT_BG } : undefined}>
                       <TableCell sx={{ fontWeight: 700, width: 180, verticalAlign: "top" }}>
                         Hero image
@@ -742,15 +835,81 @@ export default function ClientSiteDetailsPanel({
                       <TableCell sx={{ fontWeight: 700 }}>Template configured</TableCell>
                       <TableCell>
                         {templateLabel}
-                        {activeClientGroup.sites.length > 1 && (
+                        {activeClientSites.length > 1 && (
                           <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
-                            {activeClient.siteLabel ?? "Default"} site
+                            {activeSite.name}
                           </Typography>
                         )}
                       </TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
+              </Box>
+
+              <Box id="associations-subsection">
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  Canonical Associations enabled for this Site. Selection and branding are Site configuration; Association records are not duplicated here.
+                </Typography>
+                <Table size="small" sx={{ mb: 2 }}>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 700, width: 220 }}>Selection Mode</TableCell>
+                      <TableCell>{activeSite.associationSelection?.mode ?? "Not configured"}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 700 }}>Association URL Parameter</TableCell>
+                      <TableCell>
+                        {activeSite.associationSelection?.mode === "url-parameter"
+                          ? activeSite.associationSelection.urlParameter ?? "association"
+                          : "—"}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 700 }}>Use Association Logo</TableCell>
+                      <TableCell>{activeSite.associationBranding?.useAssociationLogo ? "Yes" : "No"}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 700 }}>Default/Fixed Association</TableCell>
+                      <TableCell sx={{ fontFamily: "monospace" }}>
+                        {activeSite.associationSelection?.fixedAssociationId ?? "—"}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+                <ResponsiveTableContainer>
+                  <Table size="small" sx={{ minWidth: 900 }}>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Site Association ID</TableCell>
+                        <TableCell>Association ID</TableCell>
+                        <TableCell>Full Name</TableCell>
+                        <TableCell>Acronym</TableCell>
+                        <TableCell>Logo</TableCell>
+                        <TableCell>Enabled</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {activeSiteAssociationRows.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={6} color="text.secondary">
+                            No canonical Association relationship is configured for this Site.
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        activeSiteAssociationRows.map(({ relationship, association }) => (
+                          <TableRow key={relationship.id}>
+                            <TableCell sx={{ fontFamily: "monospace" }}>{relationship.id}</TableCell>
+                            <TableCell sx={{ fontFamily: "monospace" }}>{association.id}</TableCell>
+                            <TableCell>{association.name}</TableCell>
+                            <TableCell>{association.acronym ?? "—"}</TableCell>
+                            <TableCell sx={{ fontFamily: "monospace" }}>{association.logo ?? "—"}</TableCell>
+                            <TableCell>{relationship.enabled ? "Yes" : "No"}</TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </ResponsiveTableContainer>
               </Box>
                 </SectionTabs>
               </Box>
@@ -764,7 +923,7 @@ export default function ClientSiteDetailsPanel({
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               The global template resolved for this client. Non-default pages, fields, coverage,
-              configuration and client rules are highlighted in yellow.
+              configuration and overrides are highlighted in yellow.
             </Typography>
             <SectionTabs
               tabs={[
@@ -774,7 +933,8 @@ export default function ClientSiteDetailsPanel({
                 { id: "effective-flows-section", label: "Flows" },
                 { id: "effective-configuration-table", label: `Configuration Options (${resolvableConfigurations.length})` },
                 { id: "effective-url-parameters", label: "URL Parameters" },
-                { id: "effective-client-rules", label: `Rules (${totalClientRuleCount})` },
+                { id: "effective-overrides", label: "Overrides" },
+                { id: "effective-client-rules", label: `Rules (${applicableSiteRules.length})` },
                 { id: "effective-validation", label: "Validation" },
               ]}
               defaultTabId="effective-pages-table"
@@ -1255,6 +1415,18 @@ export default function ClientSiteDetailsPanel({
                               <TableHead>
                                 <TableRow>
                                   <ResizableHeaderCell
+                                    width={coverageColumnWidths.siteCoverageId}
+                                    onResize={(w) => resizeCoverageColumn("siteCoverageId", w)}
+                                  >
+                                    Site Coverage ID
+                                  </ResizableHeaderCell>
+                                  <ResizableHeaderCell
+                                    width={coverageColumnWidths.siteId}
+                                    onResize={(w) => resizeCoverageColumn("siteId", w)}
+                                  >
+                                    Site ID
+                                  </ResizableHeaderCell>
+                                  <ResizableHeaderCell
                                     width={coverageColumnWidths.id}
                                     onResize={(w) => resizeCoverageColumn("id", w)}
                                   >
@@ -1333,7 +1505,13 @@ export default function ClientSiteDetailsPanel({
                               </TableHead>
                               <TableBody>
                                 {rows.map((row) => (
-                                  <TableRow key={row.id}>
+                                  <TableRow key={row.siteCoverageId}>
+                                    <TableCell sx={{ fontFamily: "monospace", fontSize: "0.75rem", whiteSpace: "normal !important" }}>
+                                      {row.siteCoverageId}
+                                    </TableCell>
+                                    <TableCell sx={{ fontFamily: "monospace", fontSize: "0.75rem", whiteSpace: "normal !important" }}>
+                                      {row.siteId}
+                                    </TableCell>
                                     <TableCell
                                       sx={{
                                         fontFamily: "monospace",
@@ -1533,14 +1711,22 @@ export default function ClientSiteDetailsPanel({
                       </ResponsiveTableContainer>
                     </Stack>
               </Box>
+              <Box id="effective-overrides">
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  Effective configuration differences from the Global Template. Overrides are
+                  configuration data and are not automatically business rules.
+                </Typography>
+                <SubsectionHeader title="Overrides" />
+                <OverridesSummary domains={overridesSummary} />
+              </Box>
+
               <Box id="effective-client-rules">
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  Client-owned rules are the effective choices that differ from global behavior.
-                  Each is derived from the same page, field, coverage, flow and configuration
-                  resolvers used by the other tabs.
+                  Applicable global rules plus rules explicitly scoped to this Client or Site.
+                  Executable rules link to the same canonical conditions used by runtime visibility.
                 </Typography>
-                <SubsectionHeader title="Client Rules" count={effectiveClientRules.length} />
-                <RuleReferenceList rows={effectiveClientRules} flat highlightAll />
+                <SubsectionHeader title="Applicable Rules" count={applicableSiteRules.length} />
+                <RuleReferenceList rows={applicableSiteRules} flat />
               </Box>
 
               <Box id="effective-validation">

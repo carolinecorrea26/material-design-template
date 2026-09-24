@@ -18,7 +18,7 @@ import {
 import { getPageInfoNote, getPageSubhead, getPageTitle } from "../config/pages";
 import { getPageSections } from "../config/pageSections";
 import type { PageSectionConfig } from "../config/pageSections/types";
-import { evaluateVisibilityRules } from "../config/pageSections/evaluateVisibilityRules";
+import { resolveVisibilityCondition } from "../config/conditions";
 import type { FieldDefinition } from "../config/fields/types";
 import {
   type ApplicationFormValues,
@@ -40,6 +40,7 @@ import {
   MESSAGE_DURATION,
 } from "../config/transitionMessages";
 import { sendAutosaveMockEmail } from "../utils/mockEmail";
+import { useApplicationSession } from "./ApplicationSessionContext";
 
 import PageTransitionSkeleton from "../components/feedback/PageTransitionSkeleton";
 import ProgressSavedSnackbar from "../components/feedback/ProgressSavedSnackbar";
@@ -155,7 +156,7 @@ export function isSectionVisible(
     return false;
   }
 
-  return evaluateVisibilityRules(section.visibleWhen, values);
+  return resolveVisibilityCondition(section, values);
 }
 
 function getDevValue(field: {
@@ -238,6 +239,7 @@ export default function FormRoutePage({
   const navigate = useNavigate();
   const location = useLocation();
   const { values, setPageValues } = useApplicationForm();
+  const { reviewSubmitted, markReviewSubmitted } = useApplicationSession();
 
   const [showProgressSaved, setShowProgressSaved] = useState(false);
 
@@ -459,8 +461,7 @@ export default function FormRoutePage({
     }
 
     if (pageId === "review") {
-      window.sessionStorage.setItem("reviewSubmitted", "true");
-      window.dispatchEvent(new Event("reviewsubmitted"));
+      markReviewSubmitted();
     }
 
     const shouldContinue = onBeforeNext?.({
@@ -529,8 +530,6 @@ export default function FormRoutePage({
   const resolvedInfoNote = getPageInfoNote(pageId);
 
   // After review is submitted, disable back navigation on post-review pages
-  const reviewSubmitted =
-    window.sessionStorage.getItem("reviewSubmitted") === "true";
   const flow = getResolvedFormFlow();
   const reviewIndex = flow.indexOf("review");
   const currentIndex = flow.indexOf(pageId);

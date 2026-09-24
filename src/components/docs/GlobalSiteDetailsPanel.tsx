@@ -375,7 +375,7 @@ export default function GlobalSiteDetailsPanel({
                                 }}
                               >
                                 <Link
-                                  href={`${page.path}?client=demo${formFlow.includes(page.id) ? `&autofill=${page.id}` : ""}`}
+                                  href={`${page.path}?site=demo-default${formFlow.includes(page.id) ? `&autofill=${page.id}` : ""}`}
                                   sx={{ fontWeight: 700 }}
                                 >
                                   {page.id}
@@ -1029,8 +1029,8 @@ export default function GlobalSiteDetailsPanel({
           {/* RULES */}
               <Box id="behavioral-rules-subsection">
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  Rules owned by the global application template. Client-specific rules are shown
-                  on the effective client site.
+                  Complete requirements inventory. Scope identifies globally applicable rules and
+                  Client/Site-specific rules; executable rows link to canonical conditions.
                 </Typography>
                 <SubsectionHeader title="Behavioral Rules" count={siteRules.length} />
                 <RuleReferenceList rows={siteRules} flat />

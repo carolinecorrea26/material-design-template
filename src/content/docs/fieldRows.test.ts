@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { clients } from "../../config/clients";
 import { getSiteDetailsPageOrder, resolveClientFields } from "../../config/resolvers";
-import { pageFields } from "../../config/fields/pageFields";
-import type { PageId } from "../../types";
+import { fieldCatalog } from "../../config/fields";
+import { getResolvedFieldRegistry } from "../../config/fields/resolvedFieldRegistry";
 import {
   getFieldDisplayType,
   getPageFieldRows,
@@ -130,16 +130,11 @@ describe("getFieldDisplayType", () => {
     });
   });
 
-  it("includes every field registered to a page", () => {
-    const missing = Object.entries(pageFields).flatMap(([pageId, fieldIds]) => {
-      const documentedIds = new Set(
-        getPageFieldRows(pageId as PageId).map((row) => row.fieldId),
-      );
-      return (fieldIds ?? [])
-        .filter((fieldId) => !documentedIds.has(fieldId))
-        .map((fieldId) => `${pageId}:${fieldId}`);
-    });
-
-    expect(missing).toEqual([]);
+  it("resolves every renderable registration from a canonical definition", () => {
+    expect(
+      getResolvedFieldRegistry()
+        .filter((registration) => !fieldCatalog[registration.fieldId])
+        .map(({ siteId, pageId, fieldId }) => `${siteId}:${pageId}:${fieldId}`),
+    ).toEqual([]);
   });
 });
