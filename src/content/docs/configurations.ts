@@ -10,6 +10,7 @@
 // ---------------------------------------------------------------------------
 
 export type ConfigurationScope = "Global" | "Client Configurable";
+export type ConfigurationRequirement = "Required" | "Optional";
 
 export function getConfigurationGroupAnchor(group: string): string {
   return `configuration-group-${group
@@ -65,7 +66,7 @@ const CONFIGURATION_PAGE_BY_NAME: Partial<Record<string, ConfigurationPage>> = {
   setCoverageAmount: { id: "coverage", label: "Coverage" },
   setCoverageOrder: { id: "coverage", label: "Coverage" },
   "ClientConfig.coverages.enabled / overrides": { id: "coverage", label: "Coverage" },
-  "ranges[productId] (min / max / amountStep / spouse* / child*)": {
+  "ClientConfig.coverages.coverageAmounts[productId]": {
     id: "coverage",
     label: "Coverage",
   },
@@ -107,20 +108,20 @@ export function getConfigurationPage(config: Pick<ConfigRow, "name">): Configura
  * the shipped template, not whether an override object happens to be absent.
  */
 const CONFIGURATION_DEFAULT_DISPLAY: Partial<Record<string, string>> = {
-  "ClientConfig.branding": "No shared identity — client name, acronym, logo, and logo alt text are required per client.",
-  "ClientConfig.theme": "Primary blue (#0668FF; light #5C94FF; dark #034CBA)",
+  "ClientConfig.branding": "None",
+  "ClientConfig.theme": "NYL blue (#0668FF)",
   "ClientConfig.applicantLabels": "You; Your Spouse; Your Child(ren)",
-  "ClientConfig.support.phone / phoneDisplay / phoneHours": "No shared contact details — supplied per client.",
-  "ClientConfig.support.email / website / address": "No shared contact details — supplied per client.",
+  "ClientConfig.support.phone / phoneDisplay / phoneHours": "None",
+  "ClientConfig.support.email / website / address": "None",
   "ClientConfig.licenseInfo[]": "None",
-  "ClientConfig.emailSupport.hideContactBox": "No — show the contact box",
-  "ClientConfig.emailSupport.supportOverride": "None — use the client's standard support details",
-  "ClientConfig.emailSupport.contactOverride": "None — use the client's standard name and acronym",
-  "ClientConfig.features.homePageVariant": "Default — inline quote tool, How Applying Works, and Coverage Options",
+  "ClientConfig.emailSupport.hideContactBox": "Show contact box",
+  "ClientConfig.emailSupport.supportOverride": "Client support details",
+  "ClientConfig.emailSupport.contactOverride": "Client name and acronym",
+  "ClientConfig.features.homePageVariant": "Default",
   "ClientConfig.features.defaultTemplate": "Multi-step",
-  "ClientConfig.features.chat / chatUrl": "Disabled; no chat URL",
-  "ClientConfig.features.scheduleUrl": "None — Schedule a call is hidden",
-  "ClientConfig.features.linkUrl / linkLabel": "None — custom action is hidden",
+  "ClientConfig.features.chat / chatUrl": "Disabled",
+  "ClientConfig.features.scheduleUrl": "None",
+  "ClientConfig.features.linkUrl / linkLabel": "None",
   "content.home.hero.*":
     'Tagline: “Simple • Secure • Member-only rates”; title: “Safeguard your financial future.”; subtext: “Coverage designed exclusively for {client name} members. Get started today!”; primary CTA: “Begin application”; secondary CTA: “Learn more”; resume prompt/link: “Already started an application?” / “Continue here”',
   "content.home.clientSection": "None — section is hidden",
@@ -130,30 +131,30 @@ const CONFIGURATION_DEFAULT_DISPLAY: Partial<Record<string, string>> = {
     '“Your coverage options” / “Learn more about the coverage available to you.”',
   "content.home.nylCredentials":
     'New York Life Insurance Company — “A trusted name for over 180 years”; A++ / AAA / Aa1 / AA+ ratings; reports as of 09/30/2025',
-  "ClientConfig.pages.requirements.beneficiary / payment": "Both pages required",
+  "ClientConfig.pages.requirements.beneficiary / payment": "Required",
   formFlow: "Home, Membership, Eligibility, Coverage, Profile, Beneficiary, Contact, Review, E-sign, applicable Health page(s), Payment, Receipt",
   "pages / pageGroups / progressSteps": "Canonical registered-page, page-group, and progress-step definitions",
   "ClientConfig.coverages.categories": "No global enabled-category list — supplied per client",
   "ClientConfig.coverages.categorySectionLabels / allCategoriesExpanded":
-    "Life; Accidental Death and Dismemberment; Disability; Office Overhead; Supplemental Health; accordions collapsed",
+    "Standard category labels; collapsed",
   "ClientConfig.coverages.additionalCoverageWarning": "Apply for additional coverage",
   "content.coverage.categoryDescriptions": "Shared category descriptions from the global content defaults",
   "categoryMaxAggregateNotes / clientMaxAggregateNoteOverrides":
     "Life: $2,000,000 aggregate maximum for member and spouse; no note for other categories",
-  setCoverageAmount: "Not configured — applicant can change the amount",
-  setCoverageOrder: "Not configured",
-  "ClientConfig.coverages.enabled / overrides": "No global product selection or product overrides — supplied per client",
-  "ranges[productId] (min / max / amountStep / spouse* / child*)": "No global ranges — supplied per client/product",
+  setCoverageAmount: "None",
+  setCoverageOrder: "None",
+  "ClientConfig.coverages.enabled / overrides": "None",
+  "ClientConfig.coverages.coverageAmounts[productId]": "Product defaults",
   "overrides[].waitingPeriodOptions / maxBenefitPeriodOptions": "Product defaults; no client override",
   "overrides[].riders": "Product defaults; no client override",
-  "ClientConfig.estimatedRateDisplay": "Monthly display; frequency toggle hidden",
-  "productEstimatedCostBreakdown / policyFee / childApplicantRider": "Disabled; no supplemental fees",
+  "ClientConfig.estimatedRateDisplay": "Monthly; toggle hidden",
+  "productEstimatedCostBreakdown / policyFee / childApplicantRider": "Disabled",
   "ClientConfig.coverageQuestions": "Shared default personal, work/income, and business question sections",
   "ClientConfig.coverages.hideSmokerQuestion": "No — show smoker/nicotine question when applicable",
   fieldCatalog: "Shared field catalog definitions",
-  "ClientConfig.fields[pageId].extra / hidden / required / overrides": "Shared page fields with no client overrides",
+  "ClientConfig.fields[pageId].extra / hidden / required / overrides": "No overrides",
   "ClientConfig.fields.eligibility.extra": "None",
-  setState: "Not configured — applicant can select state",
+  setState: "None",
   "content.pages[pageId].title / subhead / navTitle / infoNote": "Shared page titles, subheads, navigation titles, and info notes from src/content/defaults/pages.ts",
   "content.pages[pageId].sectionNotes": "None unless defined in shared page content",
   "content.help": "Shared help-panel content from src/content/defaults/help.ts",
@@ -166,10 +167,21 @@ const CONFIGURATION_DEFAULT_DISPLAY: Partial<Record<string, string>> = {
 };
 
 export function getConfigurationDefaultDisplay(config: Pick<ConfigRow, "name">): string {
-  return CONFIGURATION_DEFAULT_DISPLAY[config.name] ?? "No global default configured";
+  return CONFIGURATION_DEFAULT_DISPLAY[config.name] ?? "None";
 }
 
-export const configurationsData: ConfigRow[] = [
+const REQUIRED_CONFIGURATION_NAMES = new Set([
+  "ClientConfig.branding",
+  "ClientConfig.coverages.enabled / overrides",
+]);
+
+export function getConfigurationRequirement(
+  config: Pick<ConfigRow, "name">,
+): ConfigurationRequirement {
+  return REQUIRED_CONFIGURATION_NAMES.has(config.name) ? "Required" : "Optional";
+}
+
+const configurationInventory: ConfigRow[] = [
   // ── A. Client identity & branding ─────────────────────────────────────────
   {
     group: "Client identity & branding",
@@ -480,11 +492,11 @@ export const configurationsData: ConfigRow[] = [
   },
   {
     group: "Products & coverage options",
-    label: "Coverage amount ranges",
-    name: "ranges[productId] (min / max / amountStep / spouse* / child*)",
+    label: "Scoped coverage amounts",
+    name: "ClientConfig.coverages.coverageAmounts[productId]",
     description:
-      "Per-product coverage amount ranges and step increments for member, spouse, and child applicants. Generated options must not exceed the configured maximum.",
-    sourcePath: "src/config/coverages/index.ts → ranges",
+      "Per-product scoped selections supporting multiple ranges, explicit amount lists, text options, client-defined applicant classes, and derived dependent coverage.",
+    sourcePath: "src/config/coverages/index.ts → coverageAmounts",
     scope: "Client Configurable",
     usedIn: "ProductCatalog, CoverageCart, QuoteModal",
   },
@@ -687,6 +699,31 @@ export const configurationsData: ConfigRow[] = [
     usedIn: "All content-consuming components",
   },
 ];
+
+/**
+ * Actual site configuration options. Content editing, global constants,
+ * derived category behavior, structural catalogs, and unimplemented ideas
+ * intentionally stay out of this list so provisioning choices are explicit.
+ */
+const NON_OPTION_NAMES = new Set([
+  "ClientConfig.coverages.categories",
+  "categoryMaxAggregateNotes / clientMaxAggregateNoteOverrides",
+  "fieldCatalog",
+  "formFlow",
+  "pages / pageGroups / progressSteps",
+  "pageSections",
+  "constants / coverageConstants",
+  "src/config/clients/ (10 configs)",
+  "src/content/defaults/",
+]);
+
+export const configurationsData: ConfigRow[] = configurationInventory.filter(
+  (row) =>
+    row.scope === "Client Configurable" &&
+    !row.name.startsWith("content.") &&
+    !row.sourcePath.startsWith("Planned") &&
+    !NON_OPTION_NAMES.has(row.name),
+);
 
 /**
  * Distinct `group` values from configurationsData, ordered to roughly follow

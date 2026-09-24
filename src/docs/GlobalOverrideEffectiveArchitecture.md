@@ -111,7 +111,7 @@ interface ResolvedField {
 interface ResolvedCoverage {
   id: CoverageId;
   global?: CoverageDefinition;             // absent only if catalog entry removed
-  override?: ClientCoverageOverrides & { range?: ClientCoverageRangeConfig };
+  override?: ClientCoverageOverrides & { coverageAmounts?: CoverageAmountAssignment[] };
   effective: CoverageDefinition;            // same shape getClientCoverages already returns
   status: ResolutionStatus;
 }

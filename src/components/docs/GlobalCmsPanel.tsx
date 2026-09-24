@@ -5,7 +5,10 @@ import CmsContentTable from "./CmsContentTable";
 
 export default function GlobalCmsPanel() {
   const rows = useMemo(
-    () => cmsEntries.map((entry) => ({ entry, value: entry.globalValue, overridden: false })),
+    () =>
+      cmsEntries
+        .filter((entry) => entry.globalValue !== "—")
+        .map((entry) => ({ entry, value: entry.globalValue, overridden: false })),
     [],
   );
 

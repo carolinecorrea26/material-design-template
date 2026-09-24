@@ -1,4 +1,5 @@
 import type { ClientConfig } from "./types";
+import { rangeAssignments } from "../coverages/amounts";
 
 export const cseaClient: ClientConfig = {
   id: "csea",
@@ -30,8 +31,8 @@ export const cseaClient: ClientConfig = {
   coverages: {
     categories: ["DI"],
     enabled: ["di-ltd"],
-    ranges: {
-      "di-ltd": { min: 1000, max: 10000 },
+    coverageAmounts: {
+      "di-ltd": rangeAssignments({ member: [1000, 10000] }),
     },
     descriptions: {
       "di-ltd":

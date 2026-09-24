@@ -18,6 +18,10 @@ import { applicantSectionTitles } from "../../config/formSectionTitle";
 import type { SectionVisibilityRule } from "../../config/pageSections/types";
 import type { FieldDefinition } from "../../config/fields/types";
 import { membershipClientFields } from "../../config/clientFields/membership";
+import {
+  getFieldStorybookReference,
+  type FieldStorybookReference,
+} from "./fieldStorybook";
 import type { ClientConfig } from "../../config/clients/types";
 import type { PageId } from "../../types";
 
@@ -54,6 +58,25 @@ function formatOptions(fieldId: string) {
   const field = fieldCatalog[fieldId as keyof typeof fieldCatalog];
   if (!field?.options || field.options.length === 0) return "—";
   return field.options.map((option) => option.label).join(", ");
+}
+
+/** The control a user actually sees, including FieldRenderer's format variants. */
+export function getFieldDisplayType(field?: Partial<FieldDefinition>): string {
+  if (!field) return "—";
+  if (field.multiline) return "textarea";
+  if (field.format === "email") return "email";
+  if (field.format === "phone") return "phone";
+  if (field.format === "currency") return "currency";
+  if (field.format === "percent" || field.inputType === "percent") return "percent";
+  if (field.format === "ssn") return "ssn";
+  if (field.format === "month-year") return "month-year";
+  if (
+    field.inputType === "searchable-select" ||
+    (field.inputType === "dropdown" && (field.options?.length ?? 0) >= 10)
+  ) {
+    return "searchable-select";
+  }
+  return field.inputType ?? "—";
 }
 
 // ---------------------------------------------------------------------------
@@ -93,7 +116,28 @@ export type FieldRow = {
   clientNote?: string;
   /** Validation applied to this field, derived from its format/required metadata. */
   validation?: string;
+  /** Exact Storybook story for the component that renders this row. */
+  storybook?: FieldStorybookReference;
+  /** Production component when the row is rendered inline and has no dedicated story. */
+  componentLabel?: string;
+  /** Effective field metadata used to keep client overrides linked to the correct story. */
+  fieldDefinition?: FieldDefinition;
 };
+
+function withStorybookReference(row: FieldRow, definition?: FieldDefinition): FieldRow {
+  const fieldDefinition =
+    definition ??
+    ({
+      id: row.fieldId,
+      label: row.label,
+      inputType: row.inputType === "text (multiline)" ? "text" : row.inputType,
+      multiline: row.inputType === "text (multiline)" || undefined,
+      format: row.fieldId.endsWith("-onset") ? "month-year" : undefined,
+    } as FieldDefinition);
+  const storybook = getFieldStorybookReference(fieldDefinition);
+  const resolvedRow = { ...row, inputType: getFieldDisplayType(fieldDefinition) };
+  return storybook ? { ...resolvedRow, fieldDefinition, storybook } : resolvedRow;
+}
 
 /** Generic validation messages for format-constrained fields (src/config/fields/types.ts FieldDefinition.format), matched against the global "Field" entries in errorMessages below. */
 export const FORMAT_VALIDATION_MESSAGE: Partial<Record<string, string>> = {
@@ -166,8 +210,8 @@ export function getCustomPageFieldRows(pageId: PageId): FieldRow[] | null {
           sectionLabel: "Beneficiary modal",
           applicant: "—",
           fieldId: "beneficiary-type",
-          label: "Beneficiary type toggle",
-          inputType: "toggle-button",
+          label: "Beneficiary Type",
+          inputType: "radio",
           required: "Yes",
           options: "Individual, Trust",
           visibleWhen: "Always visible",
@@ -222,7 +266,7 @@ export function getCustomPageFieldRows(pageId: PageId): FieldRow[] | null {
           applicant: "—",
           fieldId: "beneficiary-share",
           label: "% Share",
-          inputType: "number",
+          inputType: "percent",
           required: "Yes",
           options: "—",
           visibleWhen: "beneficiary-type = Individual",
@@ -554,7 +598,7 @@ export function getCustomPageFieldRows(pageId: PageId): FieldRow[] | null {
           fieldId: "health-li-physicianAddress",
           label: "Name and Address of Physician/Hospital",
           inputType: "text (multiline)",
-          required: "Yes",
+          required: "No",
           options: "—",
           visibleWhen: "Any health-li question = Yes",
         },
@@ -672,7 +716,7 @@ export function getCustomPageFieldRows(pageId: PageId): FieldRow[] | null {
           fieldId: "health-di-physicianAddress",
           label: "Name and Address of Physician/Hospital",
           inputType: "text (multiline)",
-          required: "Yes",
+          required: "No",
           options: "—",
           visibleWhen: "Any health-di question = Yes",
         },
@@ -842,7 +886,7 @@ export const coverageProductFields: FieldRow[] = [
     label: "Benefit Amount",
     inputType: "dropdown",
     required: "Yes (if selected)",
-    options: "Dynamic: product min–max by amountStep",
+    options: "Dynamic: scoped ranges, explicit amounts, or plan options",
     visibleWhen: "coverage-add-checkbox = checked",
   },
   {
@@ -937,25 +981,42 @@ function resolveSectionLabel(section: {
 
 export function getPageFieldRows(pageId: PageId): FieldRow[] {
   const customRows = getCustomPageFieldRows(pageId);
-  if (customRows) return customRows;
+  if (customRows) {
+    return customRows.map((row) => {
+      if (row.fieldId === "beneficiary-type") {
+        return {
+          ...row,
+          storybook: {
+            label: "RadioSelectionGroup",
+            storyId: "forms-radioselectiongroup--beneficiary-type",
+          },
+        };
+      }
+      if (row.fieldId === "beneficiary-designation") {
+        return { ...row, componentLabel: "MUI Tabs (inline)" };
+      }
+      if (row.fieldId === "beneficiary-share") {
+        return withStorybookReference(
+          row,
+          {
+            id: row.fieldId,
+            label: row.label,
+            inputType: "text",
+            inputMode: "numeric",
+            format: "percent",
+            required: true,
+          },
+        );
+      }
+      return withStorybookReference(row);
+    });
+  }
 
   const sections = pageSections[pageId] ?? [];
   if (sections.length === 0) return [];
   const rows = sections.flatMap((section) => {
     if (section.fieldIds.length === 0) {
-      return [
-        {
-          sectionId: section.id,
-          sectionLabel: resolveSectionLabel(section),
-          applicant: section.applicant ?? "—",
-          fieldId: "—",
-          label: "Dynamic/repeating content",
-          inputType: "—",
-          required: "—",
-          options: "—",
-          visibleWhen: formatVisibleWhen(section.visibleWhen),
-        },
-      ];
+      return [];
     }
     return section.fieldIds.map((fieldId) => {
       const field = fieldCatalog[fieldId];
@@ -967,23 +1028,43 @@ export function getPageFieldRows(pageId: PageId): FieldRow[] {
             ? "Client-configured (shown if client enables it)"
             : `${visibleWhen} + Client-configured`;
       }
-      return {
+      const row = withStorybookReference({
         sectionId: section.id,
         sectionLabel: resolveSectionLabel(section),
         applicant: section.applicant ?? "—",
         fieldId,
         label: field?.label ?? fieldId,
-        inputType: field?.inputType ?? "—",
+        inputType: getFieldDisplayType(field),
         required: field?.required ? "Yes" : "No",
         options: formatOptions(fieldId),
         visibleWhen,
         validation: getFieldValidation(field),
-      };
+      }, field);
+      if (pageId === "eligibility" && fieldId === "zip-postal-code") {
+        return {
+          ...row,
+          storybook: undefined,
+          fieldDefinition: undefined,
+          componentLabel: "MUI TextField (inline)",
+        };
+      }
+      return row;
     });
   });
 
-  if (pageId === "eligibility") return [...rows, ...eligibilityChildFields];
-  if (pageId === "coverage") return [...rows, ...coverageProductFields];
+  if (pageId === "eligibility")
+    return [...rows, ...eligibilityChildFields.map((row) => withStorybookReference(row))];
+  if (pageId === "coverage")
+    return [
+      ...rows,
+      ...coverageProductFields.map((row) => ({
+        ...row,
+        storybook: {
+          label: "ProductCatalog",
+          storyId: "coverage-commerce-productcatalog--interactive",
+        },
+      })),
+    ];
   return rows;
 }
 
@@ -996,10 +1077,13 @@ export function mergeFieldOverrideIntoRow(
   row: FieldRow,
   override: Partial<FieldDefinition>,
 ): FieldRow {
-  return {
+  const mergedDefinition = row.fieldDefinition
+    ? { ...row.fieldDefinition, ...override }
+    : ({ id: row.fieldId, label: row.label, inputType: row.inputType, ...override } as FieldDefinition);
+  return withStorybookReference({
     ...row,
     label: override.label ?? row.label,
-    inputType: override.inputType ?? row.inputType,
+    inputType: getFieldDisplayType(mergedDefinition),
     required:
       override.required !== undefined
         ? override.required
@@ -1012,7 +1096,7 @@ export function mergeFieldOverrideIntoRow(
           ? override.options.map((o) => o.label).join(", ")
           : "—"
         : row.options,
-  };
+  }, mergedDefinition);
 }
 
 export type ClientFieldDiffResult = {
@@ -1080,13 +1164,13 @@ export function applyClientFieldDiff(
       const base = fieldCatalog[id as keyof typeof fieldCatalog];
       const override = overrides[id];
       const merged = override ? { ...base, ...override } : base;
-      return {
+      return withStorybookReference({
         sectionId: "client-extra",
         sectionLabel: "Client-added fields",
         applicant: "—",
         fieldId: id,
         label: merged?.label ?? id,
-        inputType: merged?.inputType ?? "—",
+        inputType: getFieldDisplayType(merged),
         required: merged?.required ? "Yes" : "No",
         options:
           merged?.options && merged.options.length > 0
@@ -1094,7 +1178,7 @@ export function applyClientFieldDiff(
             : "—",
         visibleWhen: "Always visible",
         clientNote: "Added for this client",
-      };
+      }, merged);
     });
 
   return { rows: [...visibleRows, ...extraRows], hiddenRows };
@@ -1136,13 +1220,13 @@ export function applyMembershipClientFieldDiff(
   const presentIds = new Set(rows.map((r) => r.fieldId));
   const extraRows: FieldRow[] = extraFields
     .filter((f) => !presentIds.has(f.id))
-    .map((f) => ({
+    .map((f) => withStorybookReference({
       sectionId: "client-extra",
       sectionLabel: "Client-added fields",
       applicant: "—",
       fieldId: f.id,
       label: f.label,
-      inputType: f.inputType,
+      inputType: getFieldDisplayType(f),
       required: f.required ? "Yes" : "No",
       options:
         f.options && f.options.length > 0
@@ -1150,7 +1234,7 @@ export function applyMembershipClientFieldDiff(
           : "—",
       visibleWhen: formatVisibleWhen(f.visibleWhen),
       clientNote: "Added for this client",
-    }));
+    }, f));
 
   return { rows: [...visibleRows, ...extraRows], hiddenRows };
 }

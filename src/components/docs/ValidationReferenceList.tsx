@@ -2,11 +2,13 @@ import { useMemo, useState } from "react";
 import { Box, Stack, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { errorMessages, errorMessagePageOrder } from "../../content/docs/errorMessages";
 import SearchField from "./SearchField";
+import PageFilterSelect, { ALL_PAGES } from "./PageFilterSelect";
 import ResponsiveTableContainer from "./ResponsiveTableContainer";
 import ResizableHeaderCell from "./ResizableHeaderCell";
 import SubsectionHeader from "./SubsectionHeader";
 import TruncatedString from "./TruncatedString";
 import useResizableColumns from "./useResizableColumns";
+import { getSiteDetailsPageOrder } from "../../config/resolvers";
 
 export default function ValidationReferenceList({
   includedPageIds,
@@ -14,10 +16,17 @@ export default function ValidationReferenceList({
   includedPageIds?: ReadonlySet<string>;
 }) {
   const [filter, setFilter] = useState("");
+  const [pageFilter, setPageFilter] = useState(ALL_PAGES);
   const { widths, resize } = useResizableColumns({ page: 140, trigger: 300, message: 240 });
 
   const { pageLabel, pageRows, fieldRows } = useMemo(() => {
-    const order = Object.fromEntries(errorMessagePageOrder.map((page, index) => [page.key, index]));
+    const canonicalOrder = getSiteDetailsPageOrder();
+    const order = Object.fromEntries(
+      errorMessagePageOrder.map((page) => [
+        page.key,
+        page.key === "global" ? canonicalOrder.length : canonicalOrder.indexOf(page.key),
+      ]),
+    );
     const labels = Object.fromEntries(errorMessagePageOrder.map((page) => [page.key, page.label]));
     const rowsFor = (level: "Page" | "Field") =>
       errorMessages
@@ -35,17 +44,42 @@ export default function ValidationReferenceList({
     return { pageLabel: labels, pageRows: rowsFor("Page"), fieldRows: rowsFor("Field") };
   }, [includedPageIds]);
 
+  const pageOptions = useMemo(() => {
+    const availablePages = new Set([...pageRows, ...fieldRows].map((row) => row.page));
+    return errorMessagePageOrder
+      .filter((page) => availablePages.has(page.key))
+      .sort((a, b) => {
+        const order = getSiteDetailsPageOrder();
+        const rank = (key: string) =>
+          key === "global" ? order.length : order.findIndex((pageId) => pageId === key);
+        return rank(a.key) - rank(b.key);
+      })
+      .map((page) => ({ value: page.key, label: page.label }));
+  }, [fieldRows, pageRows]);
+
   const filterRows = (rows: typeof pageRows) => {
     if (!filter) return rows;
     const query = filter.toLowerCase();
-    return rows.filter((row) =>
-      `${pageLabel[row.page]} ${row.trigger} ${row.message}`.toLowerCase().includes(query),
+    return rows.filter(
+      (row) =>
+        (pageFilter === ALL_PAGES || row.page === pageFilter) &&
+        (!query ||
+          `${pageLabel[row.page]} ${row.trigger} ${row.message}`
+            .toLowerCase()
+            .includes(query)),
     );
   };
 
   return (
     <Stack spacing={2}>
-      <SearchField value={filter} onChange={setFilter} placeholder="Filter validation messages…" />
+      <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+        <SearchField
+          value={filter}
+          onChange={setFilter}
+          placeholder="Search validation messages…"
+        />
+        <PageFilterSelect value={pageFilter} onChange={setPageFilter} options={pageOptions} />
+      </Stack>
       <Stack spacing={3}>
         {[
           { title: "Page-level errors", rows: filterRows(pageRows) },

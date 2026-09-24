@@ -3,12 +3,14 @@ import { Box, Chip, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typ
 import ResponsiveTableContainer from "./ResponsiveTableContainer";
 import ResizableHeaderCell from "./ResizableHeaderCell";
 import SearchField from "./SearchField";
+import PageFilterSelect, { ALL_PAGES } from "./PageFilterSelect";
 import useResizableColumns from "./useResizableColumns";
 
 import TruncatedString from "./TruncatedString";
 import {
   getConfigurationDefaultDisplay,
   getConfigurationPage,
+  getConfigurationRequirement,
   type ConfigRow,
 } from "../../content/docs/configurations";
 import { getSiteDetailsPageOrder } from "../../config/resolvers";
@@ -33,11 +35,13 @@ export default function ConfigReferenceList({
   showDefaults?: boolean;
 }) {
   const [filter, setFilter] = useState("");
+  const [pageFilter, setPageFilter] = useState(ALL_PAGES);
   const { widths, resize } = useResizableColumns({
     page: 160,
     configuration: 200,
     description: 300,
     defaultValue: 220,
+    requirement: 130,
     source: 200,
     scope: 150,
     usedIn: 160,
@@ -58,16 +62,26 @@ export default function ConfigReferenceList({
       return normalizedRankA - normalizedRankB || a.originalIndex - b.originalIndex;
     })
     .map(({ row }) => row);
+  const pageOptions = Array.from(
+    new Map(
+      orderedRows.map((row) => {
+        const page = getConfigurationPage(row);
+        return [page.id, { value: page.id, label: page.label }];
+      }),
+    ).values(),
+  );
 
   const rows = useMemo(() => {
-    if (!filter) return orderedRows;
     const lc = filter.toLowerCase();
-    return orderedRows.filter((r) =>
-      `${r.group} ${r.label} ${r.name} ${r.description} ${r.sourcePath} ${r.scope} ${r.usedIn}`
-        .toLowerCase()
-        .includes(lc),
+    return orderedRows.filter(
+      (row) =>
+        (pageFilter === ALL_PAGES || getConfigurationPage(row).id === pageFilter) &&
+        (!lc ||
+          `${row.group} ${row.label} ${row.name} ${row.description} ${row.sourcePath} ${row.scope} ${row.usedIn}`
+            .toLowerCase()
+            .includes(lc)),
     );
-  }, [orderedRows, filter]);
+  }, [orderedRows, filter, pageFilter]);
 
   if (orderedRows.length === 0) return null;
 
@@ -79,7 +93,10 @@ export default function ConfigReferenceList({
           <strong>Client Configurable</strong> for settings that may vary by client.
         </Typography>
       )}
-      <SearchField value={filter} onChange={setFilter} placeholder="Filter configuration…" />
+      <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+        <SearchField value={filter} onChange={setFilter} placeholder="Search configuration…" />
+        <PageFilterSelect value={pageFilter} onChange={setPageFilter} options={pageOptions} />
+      </Stack>
       <ResponsiveTableContainer>
         <Table size="small" sx={{ tableLayout: "fixed", width: "max-content" }}>
           <colgroup>
@@ -87,6 +104,7 @@ export default function ConfigReferenceList({
             <col style={{ width: widths.configuration }} />
             <col style={{ width: widths.description }} />
             {showDefaults && <col style={{ width: widths.defaultValue }} />}
+            {showDefaults && <col style={{ width: widths.requirement }} />}
             {!compact && (
               <>
                 <col style={{ width: widths.source }} />
@@ -118,6 +136,14 @@ export default function ConfigReferenceList({
                   onResize={(w) => resize("defaultValue", w)}
                 >
                   Default value
+                </ResizableHeaderCell>
+              )}
+              {showDefaults && (
+                <ResizableHeaderCell
+                  width={widths.requirement}
+                  onResize={(w) => resize("requirement", w)}
+                >
+                  Setup
                 </ResizableHeaderCell>
               )}
               {!compact && (
@@ -199,6 +225,16 @@ export default function ConfigReferenceList({
                       }}
                     >
                       <TruncatedString value={getConfigurationDefaultDisplay(config)} threshold={180} />
+                    </TableCell>
+                  )}
+                  {showDefaults && (
+                    <TableCell sx={{ verticalAlign: "top" }}>
+                      <Chip
+                        label={getConfigurationRequirement(config)}
+                        size="small"
+                        color={getConfigurationRequirement(config) === "Required" ? "warning" : "default"}
+                        variant="outlined"
+                      />
                     </TableCell>
                   )}
                   {!compact && (

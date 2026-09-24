@@ -9,6 +9,7 @@ export {
   getGlobalPages,
   applicationPageOrder,
   getSiteDetailsPageOrder,
+  getSiteDetailsPageLabel,
   type ResolvedPage,
   type PageCategory,
   type GlobalPageInfo,

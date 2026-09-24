@@ -15,7 +15,12 @@ import {
 } from "@mui/material";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import { getPagePath, getPageTitle } from "../../config/pages";
-import { getGlobalPages, getSiteDetailsPageOrder } from "../../config/resolvers";
+import {
+  getGlobalPages,
+  getSiteDetailsPageLabel,
+  getSiteDetailsPageOrder,
+} from "../../config/resolvers";
+import { getStorybookStoryUrl } from "../../config/storybook";
 import { formFlow } from "../../config/formFlow";
 import {
   getPageFieldRows,
@@ -23,6 +28,8 @@ import {
   pagesWithNoFields,
 } from "../../content/docs/fieldRows";
 import { coverages } from "../../config/coverages";
+import { formatCoverageAmounts } from "../../utils/coverageAmounts";
+import { formatProductIdentifiers } from "../../utils/coverageIdentifiers";
 import { coverageCategories, getCoverageCategorySectionLabel } from "../../config/coverageCategories";
 import SectionTabs from "./SectionTabs";
 import TruncatedString from "./TruncatedString";
@@ -30,6 +37,7 @@ import SubsectionHeader from "./SubsectionHeader";
 import ResponsiveTableContainer from "./ResponsiveTableContainer";
 import ResizableHeaderCell from "./ResizableHeaderCell";
 import SearchField from "./SearchField";
+import PageFilterSelect, { ALL_PAGES } from "./PageFilterSelect";
 import useResizableColumns from "./useResizableColumns";
 import ConfigReferenceList from "./ConfigReferenceList";
 import RuleReferenceList from "./RuleReferenceList";
@@ -98,12 +106,6 @@ const totalGlobalFieldCount = globalFieldsByPage.reduce((sum, p) => sum + p.rows
 // enabled/disabled framing, no overrides.
 // ---------------------------------------------------------------------------
 
-function formatAmountRange(min?: number, max?: number): string {
-  if (min == null && max == null) return "—";
-  const fmt = (n?: number) => (n != null ? `$${n.toLocaleString()}` : "?");
-  return `${fmt(min)} – ${fmt(max)}`;
-}
-
 /**
  * The Global Site Details tab — the client-independent template model
  * (Application structure, Configuration, Behavior). Site Features / Capabilities
@@ -118,7 +120,8 @@ export default function GlobalSiteDetailsPanel({
   onNavigateToClientTab: () => void;
 }) {
   // Pages table — search + resizable columns
-  const [pageFilter, setPageFilter] = useState("");
+  const [pageSearch, setPageSearch] = useState("");
+  const [selectedPage, setSelectedPage] = useState(ALL_PAGES);
   const { widths: pagesWidths, resize: resizePagesColumn } = useResizableColumns({
     category: 130,
     page: 140,
@@ -127,39 +130,54 @@ export default function GlobalSiteDetailsPanel({
     breadcrumb: 160,
   });
   const filteredGlobalPages = useMemo(() => {
-    if (!pageFilter) return globalPages;
-    const lc = pageFilter.toLowerCase();
-    return globalPages.filter((p) =>
-      `${p.id} ${p.title} ${p.category} ${p.step} ${p.breadcrumb}`.toLowerCase().includes(lc),
+    const lc = pageSearch.toLowerCase();
+    return globalPages.filter(
+      (page) =>
+        (selectedPage === ALL_PAGES || page.id === selectedPage) &&
+        (!lc ||
+          `${page.id} ${page.title} ${page.category} ${page.step} ${page.breadcrumb}`
+            .toLowerCase()
+            .includes(lc)),
     );
-  }, [pageFilter]);
+  }, [pageSearch, selectedPage]);
+  const pageOptions = useMemo(
+    () => globalPages.map((page) => ({ value: page.id, label: getSiteDetailsPageLabel(page.id) })),
+    [],
+  );
 
   // Fields table — search + resizable columns
   const [fieldFilter, setFieldFilter] = useState("");
+  const [fieldPageFilter, setFieldPageFilter] = useState(ALL_PAGES);
   const { widths: fieldsWidths, resize: resizeFieldsColumn } = useResizableColumns({
     page: 140,
-    section: 120,
     fieldId: 160,
     label: 220,
     type: 110,
     required: 90,
     options: 260,
-    visibleWhen: 200,
-    applicant: 130,
-    validation: 200,
+    component: 190,
   });
   const filteredGlobalFieldsByPage = useMemo(() => {
-    if (!fieldFilter) return globalFieldsByPage;
     const lc = fieldFilter.toLowerCase();
     return globalFieldsByPage
+      .filter((page) => fieldPageFilter === ALL_PAGES || page.pageId === fieldPageFilter)
       .map((page) => ({
         ...page,
         rows: page.rows.filter((r) =>
+          !lc ||
           `${r.fieldId} ${r.label} ${r.inputType} ${r.sectionLabel}`.toLowerCase().includes(lc),
         ),
       }))
       .filter((page) => page.rows.length > 0);
-  }, [fieldFilter]);
+  }, [fieldFilter, fieldPageFilter]);
+  const fieldPageOptions = useMemo(
+    () =>
+      globalFieldsByPage.map((page) => ({
+        value: page.pageId,
+        label: getSiteDetailsPageLabel(page.pageId),
+      })),
+    [],
+  );
   const filteredGlobalFieldCount = useMemo(
     () => filteredGlobalFieldsByPage.reduce((sum, p) => sum + p.rows.length, 0),
     [filteredGlobalFieldsByPage],
@@ -171,11 +189,12 @@ export default function GlobalSiteDetailsPanel({
     id: 140,
     code: 100,
     name: 220,
+    gNumber: 150,
+    planCode: 120,
+    situs: 100,
     underwriting: 120,
     applicants: 140,
-    memberRange: 130,
-    spouseRange: 130,
-    childRange: 130,
+    amounts: 300,
     riders: 200,
     definition: 220,
   });
@@ -273,11 +292,18 @@ export default function GlobalSiteDetailsPanel({
       >
               <Box id="pages-subsection">
                 <Stack spacing={2}>
-                  <SearchField
-                    value={pageFilter}
-                    onChange={setPageFilter}
-                    placeholder="Filter pages…"
-                  />
+                  <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+                    <SearchField
+                      value={pageSearch}
+                      onChange={setPageSearch}
+                      placeholder="Search pages…"
+                    />
+                    <PageFilterSelect
+                      value={selectedPage}
+                      onChange={setSelectedPage}
+                      options={pageOptions}
+                    />
+                  </Stack>
                   <ResponsiveTableContainer>
                     <Table size="small" sx={{ tableLayout: "fixed", width: "max-content" }}>
                       <colgroup>
@@ -350,7 +376,12 @@ export default function GlobalSiteDetailsPanel({
                                   fontSize: "0.75rem",
                                 }}
                               >
-                                {page.id}
+                                <Link
+                                  href={`${page.path}?client=demo${formFlow.includes(page.id) ? `&autofill=${page.id}` : ""}`}
+                                  sx={{ fontWeight: 700 }}
+                                >
+                                  {page.id}
+                                </Link>
                               </TableCell>
                               <TableCell sx={{ whiteSpace: "normal !important" }}>
                                 {page.title}
@@ -372,11 +403,18 @@ export default function GlobalSiteDetailsPanel({
 
               <Box id="fields-subsection">
                 <Stack spacing={2}>
-                  <SearchField
-                    value={fieldFilter}
-                    onChange={setFieldFilter}
-                    placeholder="Filter fields…"
-                  />
+                  <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+                    <SearchField
+                      value={fieldFilter}
+                      onChange={setFieldFilter}
+                      placeholder="Search fields…"
+                    />
+                    <PageFilterSelect
+                      value={fieldPageFilter}
+                      onChange={setFieldPageFilter}
+                      options={fieldPageOptions}
+                    />
+                  </Stack>
                   <ResponsiveTableContainer>
                     <Table size="small" sx={{ tableLayout: "fixed", width: "max-content" }}>
                       <colgroup>
@@ -391,12 +429,6 @@ export default function GlobalSiteDetailsPanel({
                             onResize={(w) => resizeFieldsColumn("page", w)}
                           >
                             Page
-                          </ResizableHeaderCell>
-                          <ResizableHeaderCell
-                            width={fieldsWidths.section}
-                            onResize={(w) => resizeFieldsColumn("section", w)}
-                          >
-                            Section
                           </ResizableHeaderCell>
                           <ResizableHeaderCell
                             width={fieldsWidths.fieldId}
@@ -429,22 +461,10 @@ export default function GlobalSiteDetailsPanel({
                             Options
                           </ResizableHeaderCell>
                           <ResizableHeaderCell
-                            width={fieldsWidths.visibleWhen}
-                            onResize={(w) => resizeFieldsColumn("visibleWhen", w)}
+                            width={fieldsWidths.component}
+                            onResize={(w) => resizeFieldsColumn("component", w)}
                           >
-                            Visible when
-                          </ResizableHeaderCell>
-                          <ResizableHeaderCell
-                            width={fieldsWidths.applicant}
-                            onResize={(w) => resizeFieldsColumn("applicant", w)}
-                          >
-                            Applicant scope
-                          </ResizableHeaderCell>
-                          <ResizableHeaderCell
-                            width={fieldsWidths.validation}
-                            onResize={(w) => resizeFieldsColumn("validation", w)}
-                          >
-                            Validation
+                            Component
                           </ResizableHeaderCell>
                         </TableRow>
                       </TableHead>
@@ -453,10 +473,7 @@ export default function GlobalSiteDetailsPanel({
                           page.rows.map((row, index) => (
                             <TableRow key={`${page.pageId}-${row.sectionId}-${row.fieldId}-${index}`}>
                               <TableCell sx={{ whiteSpace: "normal !important" }}>
-                                {page.pageTitle}
-                              </TableCell>
-                              <TableCell sx={{ whiteSpace: "normal !important" }}>
-                                {row.sectionLabel}
+                                {getSiteDetailsPageLabel(page.pageId)}
                               </TableCell>
                               <TableCell sx={{ whiteSpace: "normal !important" }}>
                                 {row.fieldId}
@@ -474,13 +491,17 @@ export default function GlobalSiteDetailsPanel({
                                 <TruncatedString value={row.options} threshold={140} />
                               </TableCell>
                               <TableCell sx={{ whiteSpace: "normal !important" }}>
-                                <TruncatedString value={row.visibleWhen} threshold={140} />
-                              </TableCell>
-                              <TableCell sx={{ whiteSpace: "normal !important" }}>
-                                {row.applicant}
-                              </TableCell>
-                              <TableCell sx={{ whiteSpace: "normal !important" }}>
-                                <TruncatedString value={row.validation ?? "—"} threshold={140} />
+                                {row.storybook ? (
+                                  <Link
+                                    href={getStorybookStoryUrl(row.storybook.storyId)}
+                                    target="_blank"
+                                    rel="noopener"
+                                  >
+                                    {row.storybook.label}
+                                  </Link>
+                                ) : (
+                                  row.componentLabel ?? "—"
+                                )}
                               </TableCell>
                             </TableRow>
                           )),
@@ -540,6 +561,15 @@ export default function GlobalSiteDetailsPanel({
                                 >
                                   Name
                                 </ResizableHeaderCell>
+                                <ResizableHeaderCell width={coverageWidths.gNumber} onResize={(w) => resizeCoverageColumn("gNumber", w)}>
+                                  G-number
+                                </ResizableHeaderCell>
+                                <ResizableHeaderCell width={coverageWidths.planCode} onResize={(w) => resizeCoverageColumn("planCode", w)}>
+                                  Plan Code
+                                </ResizableHeaderCell>
+                                <ResizableHeaderCell width={coverageWidths.situs} onResize={(w) => resizeCoverageColumn("situs", w)}>
+                                  Group Policy Situs
+                                </ResizableHeaderCell>
                                 <ResizableHeaderCell
                                   width={coverageWidths.underwriting}
                                   onResize={(w) => resizeCoverageColumn("underwriting", w)}
@@ -553,22 +583,10 @@ export default function GlobalSiteDetailsPanel({
                                   Applicants
                                 </ResizableHeaderCell>
                                 <ResizableHeaderCell
-                                  width={coverageWidths.memberRange}
-                                  onResize={(w) => resizeCoverageColumn("memberRange", w)}
+                                  width={coverageWidths.amounts}
+                                  onResize={(w) => resizeCoverageColumn("amounts", w)}
                                 >
-                                  Member range
-                                </ResizableHeaderCell>
-                                <ResizableHeaderCell
-                                  width={coverageWidths.spouseRange}
-                                  onResize={(w) => resizeCoverageColumn("spouseRange", w)}
-                                >
-                                  Spouse range
-                                </ResizableHeaderCell>
-                                <ResizableHeaderCell
-                                  width={coverageWidths.childRange}
-                                  onResize={(w) => resizeCoverageColumn("childRange", w)}
-                                >
-                                  Child range
+                                  Coverage Amounts
                                 </ResizableHeaderCell>
                                 <ResizableHeaderCell
                                   width={coverageWidths.riders}
@@ -596,13 +614,14 @@ export default function GlobalSiteDetailsPanel({
                                   <TableCell sx={{ whiteSpace: "normal !important" }}>
                                     {c.name}
                                   </TableCell>
+                                  <TableCell sx={{ whiteSpace: "pre-line !important" }}><TruncatedString value={formatProductIdentifiers(c.gNumber)} threshold={120} /></TableCell>
+                                  <TableCell sx={{ whiteSpace: "pre-line !important" }}><TruncatedString value={formatProductIdentifiers(c.planCode)} threshold={120} /></TableCell>
+                                  <TableCell sx={{ whiteSpace: "normal !important" }}>{c.groupPolicySitus ?? "—"}</TableCell>
                                   <TableCell sx={{ whiteSpace: "normal !important" }}>{c.underwritingType}</TableCell>
                                   <TableCell sx={{ whiteSpace: "normal !important" }}>
                                     <TruncatedString value={c.applicants.join(", ")} threshold={120} />
                                   </TableCell>
-                                  <TableCell sx={{ whiteSpace: "normal !important" }}>{formatAmountRange(c.minAmount, c.maxAmount)}</TableCell>
-                                  <TableCell sx={{ whiteSpace: "normal !important" }}>{formatAmountRange(c.spouseMinAmount, c.spouseMaxAmount)}</TableCell>
-                                  <TableCell sx={{ whiteSpace: "normal !important" }}>{formatAmountRange(c.childMinAmount, c.childMaxAmount)}</TableCell>
+                                  <TableCell sx={{ whiteSpace: "pre-line !important" }}><TruncatedString value={formatCoverageAmounts(c)} threshold={220} /></TableCell>
                                   <TableCell sx={{ whiteSpace: "normal !important" }}>
                                     <TruncatedString
                                       value={
@@ -726,7 +745,11 @@ export default function GlobalSiteDetailsPanel({
           {/* CONFIGURATION OPTIONS */}
               <Box id="configuration-options-subsection">
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  Every supported configuration, what it controls, and its template default.
+                  Site provisioning choices only. <strong>Required</strong> settings must be supplied
+                  for a usable site; <strong>Optional</strong> settings may be omitted and inherit the
+                  template default shown here. Editable content, global constants, and behavior
+                  derived from the selected products are documented elsewhere rather than presented
+                  as configuration options.
                 </Typography>
                 <SubsectionHeader title="Configuration Options" count={configurationsData.length} />
                 <ConfigReferenceList

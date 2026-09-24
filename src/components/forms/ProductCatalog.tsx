@@ -956,8 +956,7 @@ function ProductCard({
 
                                 {rider.hasAmount &&
                                   isChecked &&
-                                  rider.minAmount != null &&
-                                  rider.maxAmount != null && (
+                                  rider.coverageAmounts && (
                                     <FormControl
                                       margin="normal"
                                       sx={{ ml: 4, minWidth: 250 }}
@@ -985,21 +984,7 @@ function ProductCard({
                                         {generateAmountChoices(
                                           {
                                             ...coverage,
-                                            minAmount: rider.minAmount,
-                                            maxAmount: rider.maxAmount,
-                                            spouseMinAmount:
-                                              rider.spouseMinAmount ??
-                                              rider.minAmount,
-                                            spouseMaxAmount:
-                                              rider.spouseMaxAmount ??
-                                              rider.maxAmount,
-                                            childMinAmount:
-                                              rider.childMinAmount ??
-                                              rider.minAmount,
-                                            childMaxAmount:
-                                              rider.childMaxAmount ??
-                                              rider.maxAmount,
-                                            amountStep: coverage.amountStep,
+                                            coverageAmounts: rider.coverageAmounts,
                                           },
                                           applicantId,
                                         ).map((amt) => (

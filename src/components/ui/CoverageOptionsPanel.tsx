@@ -24,6 +24,7 @@ import type {
 } from "../../config/coverages/types";
 import { formatUSD } from "../../utils/formatUSD";
 import { SURFACE_SX } from "../../config/constants";
+import { getCoverageAmountRange } from "../../utils/coverageAmounts";
 
 const content = getContent();
 
@@ -31,22 +32,23 @@ const PAGE_GRADIENT =
   "linear-gradient(135deg, #f4f8ff 0%, #ffffff 52%, #f7fbff 100%)";
 
 function formatCoverageRange(coverage: CoverageDefinition) {
-  if (coverage.minAmount == null && coverage.maxAmount == null) {
+  const { minAmount, maxAmount } = getCoverageAmountRange(coverage);
+  if (minAmount == null && maxAmount == null) {
     return "Coverage amount varies by selection.";
   }
 
-  if (coverage.minAmount != null && coverage.maxAmount != null) {
-    return `${formatUSD(coverage.minAmount, 0)} - ${formatUSD(
-      coverage.maxAmount,
+  if (minAmount != null && maxAmount != null) {
+    return `${formatUSD(minAmount, 0)} - ${formatUSD(
+      maxAmount,
       0,
     )}`;
   }
 
-  if (coverage.minAmount != null) {
-    return `Starting at ${formatUSD(coverage.minAmount, 0)}`;
+  if (minAmount != null) {
+    return `Starting at ${formatUSD(minAmount, 0)}`;
   }
 
-  return `Up to ${formatUSD(coverage.maxAmount ?? 0, 0)}`;
+  return `Up to ${formatUSD(maxAmount ?? 0, 0)}`;
 }
 
 function getApplicantLabel(applicant: CoverageApplicantId): string {

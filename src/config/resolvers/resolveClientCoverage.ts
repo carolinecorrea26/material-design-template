@@ -2,8 +2,8 @@ import type { CoverageId, PageId } from "../../types";
 import type {
   ClientConfig,
   ClientCoverageOverrides,
-  ClientCoverageRangeConfig,
 } from "../clients/types";
+import type { CoverageAmountAssignment } from "../coverages/types";
 import type { CoverageDefinition } from "../coverages/types";
 import { coverages } from "../coverages";
 import { getClientCoverages } from "../client/getActiveClientCoverages";
@@ -16,7 +16,7 @@ export type ResolvedCoverage = {
   global: CoverageDefinition;
   /** Present only when this client configures a range, description, and/or property override for this coverage. */
   override?: (ClientCoverageOverrides & { description?: string }) & {
-    range?: ClientCoverageRangeConfig;
+    coverageAmounts?: CoverageAmountAssignment[];
   };
   /** Merged result — same shape getClientCoverages returns, reused rather than re-derived here. */
   effective: CoverageDefinition;
@@ -44,15 +44,25 @@ export function resolveClientCoverage(client: ClientConfig): ResolvedCoverage[] 
     const id = base.id as CoverageId;
     const enabled = enabledIds.has(id);
     const override = client.coverages.overrides?.[id];
-    const range = client.coverages.ranges?.[id];
+    const coverageAmounts = client.coverages.coverageAmounts?.[id];
     const description = client.coverages.descriptions?.[id];
+    const effective = effectiveById.get(id) ?? base;
 
     const clientDiffs: string[] = [];
-    if (override) clientDiffs.push(...Object.keys(override));
-    if (range) clientDiffs.push("range");
-    if (description) clientDiffs.push("description");
-
-    const effective = effectiveById.get(id) ?? base;
+    if (override) {
+      clientDiffs.push(
+        ...Object.keys(override).filter(
+          (key) =>
+            JSON.stringify(effective[key as keyof CoverageDefinition]) !==
+            JSON.stringify(base[key as keyof CoverageDefinition]),
+        ),
+      );
+    }
+    if (
+      coverageAmounts &&
+      JSON.stringify(effective.coverageAmounts) !== JSON.stringify(base.coverageAmounts)
+    ) clientDiffs.push("coverageAmounts");
+    if (description && description !== base.description) clientDiffs.push("description");
     const healthPagesUnlocked = HEALTH_PAGE_IDS.filter((pageId) =>
       coverageUnlocksPage(pageId, effective),
     );
@@ -61,7 +71,9 @@ export function resolveClientCoverage(client: ClientConfig): ResolvedCoverage[] 
       id,
       global: base,
       override:
-        clientDiffs.length > 0 ? { ...override, range, description } : undefined,
+        clientDiffs.length > 0
+          ? { ...override, coverageAmounts, description }
+          : undefined,
       effective,
       status: !enabled ? "disabled" : clientDiffs.length > 0 ? "overridden" : "inherited",
       healthPagesUnlocked,

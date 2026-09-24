@@ -18,7 +18,6 @@ import {
   Typography,
 } from "@mui/material";
 import { formFlow, coverageUnlocksPage } from "../../config/formFlow";
-import { getPagePath } from "../../config/pages";
 import { HEALTH_PAGE_IDS } from "../../config/progressSteps";
 import type { ClientId, PageId } from "../../types";
 import { themeColorLabels } from "../../config/clients/types";
@@ -36,17 +35,20 @@ import {
   resolveClientPages,
   resolvePageVisibility,
   resolvePageBreadcrumbLabel,
+  getSiteDetailsPageLabel,
   resolveClientFields,
   resolveClientCoverage,
   resolveClientConfigurations,
   resolveClientFlows,
   summarizeClientOverrides,
-  applicationPageOrder,
+  getSiteDetailsPageOrder,
   type ResolvedCoverage,
 } from "../../config/resolvers";
+import { getStorybookStoryUrl } from "../../config/storybook";
 import { urlParameters } from "../../content/docs/urlParameters";
 import { CLIENT_HIGHLIGHT_BG, CLIENT_HIGHLIGHT_BORDER } from "./ClientNote";
 import SearchField from "./SearchField";
+import PageFilterSelect, { ALL_PAGES } from "./PageFilterSelect";
 import ResponsiveTableContainer from "./ResponsiveTableContainer";
 import ResizableHeaderCell from "./ResizableHeaderCell";
 import useResizableColumns from "./useResizableColumns";
@@ -57,6 +59,9 @@ import ValidationReferenceList from "./ValidationReferenceList";
 import SubsectionHeader from "./SubsectionHeader";
 import TruncatedString from "./TruncatedString";
 import FlowDiagram from "./flows/FlowDiagram";
+import { formatCoverageAmounts } from "../../utils/coverageAmounts";
+import { formatProductIdentifiers } from "../../utils/coverageIdentifiers";
+import MobileSitePreview, { getClientPrototypeUrl } from "./MobileSitePreview";
 
 // ---------------------------------------------------------------------------
 // Active site (drives all "client-specific" highlighting below).
@@ -78,9 +83,10 @@ type ClientCoverageRow = {
   categoryId: CoverageCategoryId;
   underwritingType: string;
   applicants: string;
-  memberRange: string;
-  spouseRange: string;
-  childRange: string;
+  gNumber: string;
+  planCode: string;
+  groupPolicySitus: string;
+  coverageAmounts: string;
   riders: string;
   waitingPeriods: string;
   maxBenefitPeriods: string;
@@ -89,12 +95,6 @@ type ClientCoverageRow = {
   notes: string;
   clientDiffs: string[];
 };
-
-function formatAmountRange(min?: number, max?: number): string {
-  if (min == null && max == null) return "—";
-  const fmt = (n?: number) => (n != null ? `$${n.toLocaleString()}` : "?");
-  return `${fmt(min)} – ${fmt(max)}`;
-}
 
 /** Beneficiary designation requirement for the active client — not tracked per-product in this prototype, so it's the same for every coverage row. */
 const beneficiaryRequirement = resolvePageVisibility(
@@ -126,6 +126,9 @@ function formatCoverageRow(
   ).flatMap(([applicant, options]) =>
     (options ?? []).map((option) => `${applicant}: ${option.label}`),
   );
+  const classLabels = Object.fromEntries(
+    (activeClient.applicantClassifications ?? []).map(({ id, label }) => [id, label]),
+  );
   return {
     id: resolved.id,
     code: effective.code,
@@ -133,17 +136,12 @@ function formatCoverageRow(
     categoryId: effective.categoryId,
     underwritingType: effective.underwritingType,
     applicants: effective.applicants.join(", "),
+    gNumber: formatProductIdentifiers(effective.gNumber, classLabels),
+    planCode: formatProductIdentifiers(effective.planCode, classLabels),
+    groupPolicySitus: effective.groupPolicySitus ?? "—",
+    coverageAmounts: formatCoverageAmounts(effective, classLabels),
     beneficiaryRequired: beneficiaryRequiredLabel,
     healthFlowTriggered: resolved.healthPagesUnlocked.join(", ") || "—",
-    memberRange: formatAmountRange(effective.minAmount, effective.maxAmount),
-    spouseRange: formatAmountRange(
-      effective.spouseMinAmount,
-      effective.spouseMaxAmount,
-    ),
-    childRange: formatAmountRange(
-      effective.childMinAmount,
-      effective.childMaxAmount,
-    ),
     riders: riders.length > 0 ? riders.map((r) => r.name).join(", ") : "—",
     waitingPeriods:
       waitingPeriods.length > 0 || applicantWaitingPeriods.length > 0
@@ -229,7 +227,7 @@ const usesNonDefaultTheme =
 // Main component
 // ---------------------------------------------------------------------------
 
-const categoryOrder = ["application", "resume", "advisor"];
+const siteDetailsPageOrder = getSiteDetailsPageOrder();
 
 /**
  * The Client Site Details tab — one client's site, resolved against the
@@ -245,8 +243,10 @@ export default function ClientSiteDetailsPanel({
   onNavigateToGlobal: (anchorId?: string) => void;
 }) {
   const { setPageValues } = useApplicationForm();
-  const [pageFilter, setPageFilter] = useState("");
+  const [pageSearch, setPageSearch] = useState("");
+  const [selectedPage, setSelectedPage] = useState(ALL_PAGES);
   const [fieldFilter, setFieldFilter] = useState("");
+  const [fieldPageFilter, setFieldPageFilter] = useState(ALL_PAGES);
   const [coverageFilter, setCoverageFilter] = useState("");
   const [logoError, setLogoError] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<ClientGroup>(activeClientGroup);
@@ -293,33 +293,35 @@ export default function ClientSiteDetailsPanel({
           included: page.effective.included,
           visibleWhen: page.effective.visibleWhen,
           clientOverridden: page.status !== "inherited",
-        })),
+        }))
+        .sort(
+          (a, b) =>
+            siteDetailsPageOrder.indexOf(a.id) - siteDetailsPageOrder.indexOf(b.id),
+        ),
     [],
   );
 
   const filteredPages = useMemo(() => {
-    const lc = pageFilter.toLowerCase();
-    const filtered = lc
-      ? allPagesFlat.filter((p) =>
-          `${p.id} ${p.title} ${p.category} ${p.path} ${p.step} ${p.breadcrumb}`
+    const lc = pageSearch.toLowerCase();
+    return allPagesFlat.filter(
+      (page) =>
+        (selectedPage === ALL_PAGES || page.id === selectedPage) &&
+        (!lc ||
+          `${page.id} ${page.title} ${page.category} ${page.path} ${page.step} ${page.breadcrumb}`
             .toLowerCase()
-            .includes(lc),
+            .includes(lc)),
+    );
+  }, [pageSearch, selectedPage, allPagesFlat]);
+  const pageOptions = useMemo(
+    () =>
+      [...allPagesFlat]
+        .sort(
+          (a, b) =>
+            siteDetailsPageOrder.indexOf(a.id) - siteDetailsPageOrder.indexOf(b.id),
         )
-      : allPagesFlat;
-
-    return [...filtered].sort((a, b) => {
-      const catA = categoryOrder.indexOf(a.category);
-      const catB = categoryOrder.indexOf(b.category);
-      if (catA !== catB) return catA - catB;
-      // Within application pages, preserve flow order
-      if (a.category === "application") {
-        const ia = applicationPageOrder.indexOf(a.id);
-        const ib = applicationPageOrder.indexOf(b.id);
-        return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
-      }
-      return 0;
-    });
-  }, [pageFilter, allPagesFlat]);
+        .map((page) => ({ value: page.id, label: getSiteDetailsPageLabel(page.id) })),
+    [allPagesFlat],
+  );
 
   const totalPageCount = filteredPages.length;
   const includedEffectivePageIds = useMemo(
@@ -394,34 +396,40 @@ export default function ClientSiteDetailsPanel({
   );
 
   const filteredFieldsByPage = useMemo(() => {
-    if (!fieldFilter) return fieldsByPage;
     const lc = fieldFilter.toLowerCase();
     return fieldsByPage
+      .filter((page) => fieldPageFilter === ALL_PAGES || page.pageId === fieldPageFilter)
       .map((page) => ({
         ...page,
         rows: page.rows.filter((r) =>
+          !lc ||
           `${r.fieldId} ${r.label} ${r.inputType} ${r.sectionLabel}`
             .toLowerCase()
             .includes(lc),
         ),
       }))
       .filter((page) => page.rows.length > 0);
-  }, [fieldFilter, fieldsByPage]);
+  }, [fieldFilter, fieldPageFilter, fieldsByPage]);
+  const fieldPageOptions = useMemo(
+    () =>
+      fieldsByPage.map((page) => ({
+        value: page.pageId,
+        label: getSiteDetailsPageLabel(page.pageId),
+      })),
+    [fieldsByPage],
+  );
   const totalFieldCount = useMemo(
     () => filteredFieldsByPage.reduce((sum, p) => sum + p.rows.length, 0),
     [filteredFieldsByPage],
   );
   const { widths: fieldsColumnWidths, resize: resizeFieldsColumn } = useResizableColumns({
     page: 100,
-    section: 90,
     fieldId: 160,
     label: 220,
     type: 110,
     required: 90,
     options: 300,
-    visibleWhen: 220,
-    applicantScope: 130,
-    validation: 220,
+    component: 190,
     client: 160,
   });
 
@@ -429,11 +437,12 @@ export default function ClientSiteDetailsPanel({
     id: 120,
     code: 100,
     name: 220,
+    gNumber: 150,
+    planCode: 120,
+    situs: 100,
     underwriting: 120,
     applicants: 140,
-    memberRange: 130,
-    spouseRange: 130,
-    childRange: 130,
+    amounts: 300,
     riders: 200,
     beneficiaryRequired: 160,
     healthFlow: 160,
@@ -463,9 +472,7 @@ export default function ClientSiteDetailsPanel({
   }, [urlParamInUseFilter]);
 
   const prototypeUrl = useMemo(() => {
-    const url = new URL(getPagePath("home"), window.location.origin);
-    url.searchParams.set("client", activeClient.id);
-    return url.toString();
+    return getClientPrototypeUrl(activeClient.id);
   }, []);
 
   const clientUrlParametersInUse = activeClient.urlParametersInUse ?? [];
@@ -565,12 +572,22 @@ export default function ClientSiteDetailsPanel({
               Client identity, branding and support, followed by this site's URLs, theme and
               configured template.
             </Typography>
-            <SectionTabs
-              tabs={[
-                { id: "client-information-subsection", label: "Client Information" },
-                { id: "site-information-subsection", label: "Site Information" },
-              ]}
+            <Stack
+              direction={{ xs: "column", xl: "row" }}
+              spacing={3}
+              alignItems={{ xs: "center", xl: "flex-start" }}
             >
+              <MobileSitePreview
+                clientId={activeClient.id}
+                clientName={activeClient.branding.name}
+              />
+              <Box sx={{ width: "100%", minWidth: 0 }}>
+                <SectionTabs
+                  tabs={[
+                    { id: "client-information-subsection", label: "Client Information" },
+                    { id: "site-information-subsection", label: "Site Information" },
+                  ]}
+                >
               {/* CLIENT INFORMATION */}
               <Box id="client-information-subsection">
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -735,7 +752,9 @@ export default function ClientSiteDetailsPanel({
                   </TableBody>
                 </Table>
               </Box>
-            </SectionTabs>
+                </SectionTabs>
+              </Box>
+            </Stack>
           </Box>
 
           {/* EFFECTIVE SITE */}
@@ -766,11 +785,18 @@ export default function ClientSiteDetailsPanel({
                   Every page in the global template: which pages exist, their sequence/breadcrumb in the application flow, and — via Visible When — whether the active client includes, makes optional, or excludes each one. Overrides are highlighted.
                 </Typography>
                 <Stack spacing={2}>
-                  <SearchField
-                    value={pageFilter}
-                    onChange={setPageFilter}
-                    placeholder="Filter pages…"
-                  />
+                  <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+                    <SearchField
+                      value={pageSearch}
+                      onChange={setPageSearch}
+                      placeholder="Search pages…"
+                    />
+                    <PageFilterSelect
+                      value={selectedPage}
+                      onChange={setSelectedPage}
+                      options={pageOptions}
+                    />
+                  </Stack>
                   <ResponsiveTableContainer>
                     <Table size="small" sx={{ tableLayout: "fixed", width: "max-content" }}>
                       <colgroup>
@@ -962,11 +988,18 @@ export default function ClientSiteDetailsPanel({
                   Every field in the global template after this client's additions, hidden fields, required-state changes, and supported property overrides are applied. Overrides are highlighted.
                 </Typography>
                 <Stack spacing={2}>
-                  <SearchField
-                    value={fieldFilter}
-                    onChange={setFieldFilter}
-                    placeholder="Filter fields…"
-                  />
+                  <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+                    <SearchField
+                      value={fieldFilter}
+                      onChange={setFieldFilter}
+                      placeholder="Search fields…"
+                    />
+                    <PageFilterSelect
+                      value={fieldPageFilter}
+                      onChange={setFieldPageFilter}
+                      options={fieldPageOptions}
+                    />
+                  </Stack>
                   <ResponsiveTableContainer>
                     <Table
                       size="small"
@@ -985,13 +1018,6 @@ export default function ClientSiteDetailsPanel({
                             sx={{ position: "sticky", top: 0, zIndex: 2 }}
                           >
                             Page
-                          </ResizableHeaderCell>
-                          <ResizableHeaderCell
-                            width={fieldsColumnWidths.section}
-                            onResize={(w) => resizeFieldsColumn("section", w)}
-                            sx={{ position: "sticky", top: 0, zIndex: 2 }}
-                          >
-                            Section
                           </ResizableHeaderCell>
                           <ResizableHeaderCell
                             width={fieldsColumnWidths.fieldId}
@@ -1029,29 +1055,11 @@ export default function ClientSiteDetailsPanel({
                             Options
                           </ResizableHeaderCell>
                           <ResizableHeaderCell
-                            width={fieldsColumnWidths.visibleWhen}
-                            onResize={(w) =>
-                              resizeFieldsColumn("visibleWhen", w)
-                            }
+                            width={fieldsColumnWidths.component}
+                            onResize={(w) => resizeFieldsColumn("component", w)}
                             sx={{ position: "sticky", top: 0, zIndex: 2 }}
                           >
-                            Visible when
-                          </ResizableHeaderCell>
-                          <ResizableHeaderCell
-                            width={fieldsColumnWidths.applicantScope}
-                            onResize={(w) =>
-                              resizeFieldsColumn("applicantScope", w)
-                            }
-                            sx={{ position: "sticky", top: 0, zIndex: 2 }}
-                          >
-                            Applicant scope
-                          </ResizableHeaderCell>
-                          <ResizableHeaderCell
-                            width={fieldsColumnWidths.validation}
-                            onResize={(w) => resizeFieldsColumn("validation", w)}
-                            sx={{ position: "sticky", top: 0, zIndex: 2 }}
-                          >
-                            Validation
+                            Component
                           </ResizableHeaderCell>
                           <ResizableHeaderCell
                             width={fieldsColumnWidths.client}
@@ -1076,12 +1084,7 @@ export default function ClientSiteDetailsPanel({
                               <TableCell
                                 sx={{ whiteSpace: "normal !important" }}
                               >
-                                {resolvePageBreadcrumbLabel(page.pageId)}
-                              </TableCell>
-                              <TableCell
-                                sx={{ whiteSpace: "normal !important" }}
-                              >
-                                {row.sectionLabel}
+                                {getSiteDetailsPageLabel(page.pageId)}
                               </TableCell>
                               <TableCell
                                 sx={{ whiteSpace: "normal !important" }}
@@ -1097,15 +1100,17 @@ export default function ClientSiteDetailsPanel({
                                 <TruncatedString value={row.options} threshold={140} />
                               </TableCell>
                               <TableCell sx={{ whiteSpace: "normal !important" }}>
-                                <TruncatedString value={row.visibleWhen} threshold={140} />
-                              </TableCell>
-                              <TableCell
-                                sx={{ whiteSpace: "normal !important" }}
-                              >
-                                {row.applicant}
-                              </TableCell>
-                              <TableCell sx={{ whiteSpace: "normal !important" }}>
-                                <TruncatedString value={row.validation ?? "—"} threshold={140} />
+                                {row.storybook ? (
+                                  <Link
+                                    href={getStorybookStoryUrl(row.storybook.storyId)}
+                                    target="_blank"
+                                    rel="noopener"
+                                  >
+                                    {row.storybook.label}
+                                  </Link>
+                                ) : (
+                                  row.componentLabel ?? "—"
+                                )}
                               </TableCell>
                               <TableCell sx={{ whiteSpace: "normal !important" }}>
                                 <TruncatedString value={row.clientNote ?? "—"} threshold={140} />
@@ -1267,6 +1272,15 @@ export default function ClientSiteDetailsPanel({
                                   >
                                     Name
                                   </ResizableHeaderCell>
+                                  <ResizableHeaderCell width={coverageColumnWidths.gNumber} onResize={(w) => resizeCoverageColumn("gNumber", w)}>
+                                    G-number
+                                  </ResizableHeaderCell>
+                                  <ResizableHeaderCell width={coverageColumnWidths.planCode} onResize={(w) => resizeCoverageColumn("planCode", w)}>
+                                    Plan Code
+                                  </ResizableHeaderCell>
+                                  <ResizableHeaderCell width={coverageColumnWidths.situs} onResize={(w) => resizeCoverageColumn("situs", w)}>
+                                    Group Policy Situs
+                                  </ResizableHeaderCell>
                                   <ResizableHeaderCell
                                     width={coverageColumnWidths.underwriting}
                                     onResize={(w) => resizeCoverageColumn("underwriting", w)}
@@ -1280,22 +1294,10 @@ export default function ClientSiteDetailsPanel({
                                     Applicants
                                   </ResizableHeaderCell>
                                   <ResizableHeaderCell
-                                    width={coverageColumnWidths.memberRange}
-                                    onResize={(w) => resizeCoverageColumn("memberRange", w)}
+                                    width={coverageColumnWidths.amounts}
+                                    onResize={(w) => resizeCoverageColumn("amounts", w)}
                                   >
-                                    Member range
-                                  </ResizableHeaderCell>
-                                  <ResizableHeaderCell
-                                    width={coverageColumnWidths.spouseRange}
-                                    onResize={(w) => resizeCoverageColumn("spouseRange", w)}
-                                  >
-                                    Spouse range
-                                  </ResizableHeaderCell>
-                                  <ResizableHeaderCell
-                                    width={coverageColumnWidths.childRange}
-                                    onResize={(w) => resizeCoverageColumn("childRange", w)}
-                                  >
-                                    Child range
+                                    Coverage Amounts
                                   </ResizableHeaderCell>
                                   <ResizableHeaderCell
                                     width={coverageColumnWidths.riders}
@@ -1331,14 +1333,7 @@ export default function ClientSiteDetailsPanel({
                               </TableHead>
                               <TableBody>
                                 {rows.map((row) => (
-                                  <TableRow
-                                    key={row.id}
-                                    sx={
-                                      row.clientDiffs.length > 0
-                                        ? { bgcolor: CLIENT_HIGHLIGHT_BG }
-                                        : undefined
-                                    }
-                                  >
+                                  <TableRow key={row.id}>
                                     <TableCell
                                       sx={{
                                         fontFamily: "monospace",
@@ -1360,30 +1355,32 @@ export default function ClientSiteDetailsPanel({
                                     <TableCell
                                       sx={{
                                         whiteSpace: "normal !important",
+                                        ...(row.clientDiffs.includes("name") ? { bgcolor: CLIENT_HIGHLIGHT_BG } : {}),
                                       }}
                                     >
                                       {row.name}
                                     </TableCell>
-                                    <TableCell sx={{ whiteSpace: "normal !important" }}>{row.underwritingType}</TableCell>
-                                    <TableCell sx={{ whiteSpace: "normal !important" }}>
+                                    <TableCell sx={{ whiteSpace: "pre-line !important", ...(row.clientDiffs.includes("gNumber") ? { bgcolor: CLIENT_HIGHLIGHT_BG } : {}) }}><TruncatedString value={row.gNumber} threshold={120} /></TableCell>
+                                    <TableCell sx={{ whiteSpace: "pre-line !important", ...(row.clientDiffs.includes("planCode") ? { bgcolor: CLIENT_HIGHLIGHT_BG } : {}) }}><TruncatedString value={row.planCode} threshold={120} /></TableCell>
+                                    <TableCell sx={{ whiteSpace: "normal !important", ...(row.clientDiffs.includes("groupPolicySitus") ? { bgcolor: CLIENT_HIGHLIGHT_BG } : {}) }}>{row.groupPolicySitus}</TableCell>
+                                    <TableCell sx={{ whiteSpace: "normal !important", ...(row.clientDiffs.includes("underwritingType") ? { bgcolor: CLIENT_HIGHLIGHT_BG } : {}) }}>{row.underwritingType}</TableCell>
+                                    <TableCell sx={{ whiteSpace: "normal !important", ...((row.clientDiffs.includes("applicants") || row.clientDiffs.includes("coverageAmounts")) ? { bgcolor: CLIENT_HIGHLIGHT_BG } : {}) }}>
                                       <TruncatedString value={row.applicants} threshold={120} />
                                     </TableCell>
-                                    <TableCell sx={{ whiteSpace: "normal !important" }}>{row.memberRange}</TableCell>
-                                    <TableCell sx={{ whiteSpace: "normal !important" }}>{row.spouseRange}</TableCell>
-                                    <TableCell sx={{ whiteSpace: "normal !important" }}>{row.childRange}</TableCell>
-                                    <TableCell sx={{ whiteSpace: "normal !important" }}>
+                                    <TableCell sx={{ whiteSpace: "pre-line !important", ...(row.clientDiffs.includes("coverageAmounts") ? { bgcolor: CLIENT_HIGHLIGHT_BG } : {}) }}><TruncatedString value={row.coverageAmounts} threshold={220} /></TableCell>
+                                    <TableCell sx={{ whiteSpace: "normal !important", ...(row.clientDiffs.includes("riders") ? { bgcolor: CLIENT_HIGHLIGHT_BG } : {}) }}>
                                       <TruncatedString value={row.riders} threshold={130} />
                                     </TableCell>
                                     <TableCell sx={{ whiteSpace: "normal !important" }}>
                                       {row.beneficiaryRequired}
                                     </TableCell>
-                                    <TableCell sx={{ whiteSpace: "normal !important" }}>
+                                    <TableCell sx={{ whiteSpace: "normal !important", ...((row.clientDiffs.includes("underwritingType") || row.clientDiffs.includes("riders")) ? { bgcolor: CLIENT_HIGHLIGHT_BG } : {}) }}>
                                       <TruncatedString value={row.healthFlowTriggered} threshold={130} />
                                     </TableCell>
-                                    <TableCell sx={{ whiteSpace: "normal !important" }}>
+                                    <TableCell sx={{ whiteSpace: "normal !important", ...((row.clientDiffs.includes("description") || row.clientDiffs.includes("coverageNote")) ? { bgcolor: CLIENT_HIGHLIGHT_BG } : {}) }}>
                                       <TruncatedString value={row.notes} threshold={150} />
                                     </TableCell>
-                                    <TableCell sx={{ whiteSpace: "normal !important" }}>
+                                    <TableCell sx={{ whiteSpace: "normal !important", ...(row.clientDiffs.length > 0 ? { bgcolor: CLIENT_HIGHLIGHT_BG } : {}) }}>
                                       <TruncatedString
                                         value={row.clientDiffs.length > 0 ? `Overridden: ${row.clientDiffs.join(", ")}` : "—"}
                                         threshold={140}
@@ -1419,8 +1416,9 @@ export default function ClientSiteDetailsPanel({
               {/* EFFECTIVE CONFIGURATION */}
               <Box id="effective-configuration-table">
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  This client's effective value for every setting with live per-client resolution.
-                  Values that differ from the default are highlighted.
+                  This client's effective value for each site configuration option. Required settings
+                  must be supplied; optional settings may inherit the displayed default. Values that
+                  differ from the default are highlighted.
                 </Typography>
                 <ResolvedConfigurationList
                   rows={resolvableConfigurations}

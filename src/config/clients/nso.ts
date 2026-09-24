@@ -1,4 +1,5 @@
 import type { ClientConfig } from "./types";
+import { rangeAssignments } from "../coverages/amounts";
 
 export const nsoClient: ClientConfig = {
   id: "nso",
@@ -31,13 +32,13 @@ export const nsoClient: ClientConfig = {
   coverages: {
     categories: ["LI", "AD", "DI"],
     enabled: ["li-term", "li-10yr", "li-20yr", "li-50plus", "li-add", "di-ltd"],
-    ranges: {
-      "li-term": { min: 50000, max: 500000 },
-      "li-10yr": { min: 50000, max: 500000 },
-      "li-20yr": { min: 50000, max: 1000000 },
-      "li-50plus": { min: 25000, max: 250000 },
-      "li-add": { min: 25000, max: 500000 },
-      "di-ltd": { min: 1000, max: 5000 },
+    coverageAmounts: {
+      "li-term": rangeAssignments({ member: [50000, 500000] }),
+      "li-10yr": rangeAssignments({ member: [50000, 500000] }),
+      "li-20yr": rangeAssignments({ member: [50000, 1000000] }),
+      "li-50plus": rangeAssignments({ member: [25000, 250000] }),
+      "li-add": rangeAssignments({ member: [25000, 500000] }),
+      "di-ltd": rangeAssignments({ member: [1000, 5000] }),
     },
     overrides: {
       "li-term": {

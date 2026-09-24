@@ -30,7 +30,8 @@ export default function Cms() {
           <Typography variant="body1" color="text.secondary" sx={{ mt: 1, maxWidth: 920 }}>
             Content management reference — the global template's managed content, or, scoped to
             one client, that client's resolved content and how it differs from the global
-            template. Read-only in this prototype.
+            template. Copy displayed together in one component or document appears in one table
+            row, in display order. Read-only in this prototype.
           </Typography>
         </Box>
 

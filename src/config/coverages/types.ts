@@ -2,6 +2,58 @@ export type CoverageCategoryId = "LI" | "AD" | "DI" | "OO" | "SH";
 
 export type CoverageApplicantId = "member" | "spouse" | "child";
 
+/** A reusable selector for applicant- and client-defined-class-specific values. */
+export type CoverageScope = {
+  applicantType?: CoverageApplicantId;
+  applicantClassId?: string;
+};
+
+export type ScopedValue<T> = {
+  scope?: CoverageScope;
+  value: T;
+};
+
+export type ProductIdentifierSet = {
+  primary?: string;
+  dummy?: string;
+  xml?: string;
+  pdf?: string;
+};
+
+export type PlanCodeIdentifierSet = {
+  primary: string;
+  dummy?: string;
+};
+
+/** Default identifiers plus optional applicant/class-specific variants. */
+export type ScopedIdentifierSet<T extends ProductIdentifierSet> = T & {
+  scoped?: ScopedValue<T>[];
+};
+
+export type CoverageAmountSelection =
+  | { type: "range"; min: number; max: number; increment: number }
+  | { type: "amountList"; values: number[] }
+  | {
+      type: "optionList";
+      options: Array<{ value: string; label: string }>;
+    };
+
+export type DerivedCoverageCalculation =
+  | { type: "percentage"; value: number }
+  | { type: "fixed"; value: number };
+
+export type CoverageAmountAssignment = {
+  scope?: CoverageScope;
+  /** Multiple entries allow disjoint ranges with different increments. */
+  selections?: CoverageAmountSelection[];
+  /** Used when this applicant's coverage is derived rather than selected independently. */
+  derivedFrom?: {
+    applicantType: "member" | "spouse";
+    applicantClassId?: string;
+    calculation: DerivedCoverageCalculation;
+  };
+};
+
 export type CoverageUnderwritingType =
   | "FUW"
   | "GI"
@@ -16,12 +68,7 @@ export type RiderDefinition = {
   description: string;
   /** If true, the rider also has a coverage amount selection */
   hasAmount?: boolean;
-  minAmount?: number;
-  maxAmount?: number;
-  spouseMinAmount?: number;
-  spouseMaxAmount?: number;
-  childMinAmount?: number;
-  childMaxAmount?: number;
+  coverageAmounts?: CoverageAmountAssignment[];
   applicants?: CoverageApplicantId[];
   /** Multiplier applied to the base premium when this rider is selected (e.g. 0.05 = +5%) */
   premiumFactor: number;
@@ -43,6 +90,11 @@ export type CoverageDefinition = {
   code: string;
   categoryId: CoverageCategoryId;
   name: string;
+  /** Backend product identifiers; scoped variants override the default for matching applicants/classes. */
+  gNumber?: ScopedIdentifierSet<ProductIdentifierSet>;
+  planCode: ScopedIdentifierSet<PlanCodeIdentifierSet>;
+  /** Policy-issuing jurisdiction; independent from residency availability rules. */
+  groupPolicySitus?: string;
   /** External product brochure or certificate URL. */
   brochureUrl?: string;
   featured?: boolean;
@@ -67,15 +119,7 @@ export type CoverageDefinition = {
     | { type: "section"; heading: string; body: string[] }
   >;
   applicants: CoverageApplicantId[];
-  minAmount?: number;
-  maxAmount?: number;
-  amountStep?: number;
-  spouseMinAmount?: number;
-  spouseMaxAmount?: number;
-  spouseAmountStep?: number;
-  childMinAmount?: number;
-  childMaxAmount?: number;
-  childAmountStep?: number;
+  coverageAmounts?: CoverageAmountAssignment[];
   options: {
     id: string;
     type: string;

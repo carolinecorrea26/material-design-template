@@ -1,4 +1,5 @@
 import type { ClientConfig } from "./types";
+import { rangeAssignments } from "../coverages/amounts";
 
 export const waepagiClient: ClientConfig = {
   id: "waepagi",
@@ -33,9 +34,9 @@ export const waepagiClient: ClientConfig = {
   coverages: {
     categories: ["LI", "DI"],
     enabled: ["li-group-term", "di-short-term"],
-    ranges: {
-      "li-group-term": { min: 50000, max: 500000 },
-      "di-short-term": { min: 1000, max: 4000 },
+    coverageAmounts: {
+      "li-group-term": rangeAssignments({ member: [50000, 500000] }),
+      "di-short-term": rangeAssignments({ member: [1000, 4000] }),
     },
     descriptions: {
       "li-group-term":

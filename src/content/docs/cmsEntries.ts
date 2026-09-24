@@ -151,6 +151,24 @@ function flattenProductContent(blocks: ProductContentBlock[] | undefined): strin
     .join(" ");
 }
 
+function flattenLegalDocument(
+  document: SiteContent["footer"]["termsOfUseContent"],
+): string {
+  const sections = document.sections.map((section) => {
+    if (section.type === "list") return section.items.join("\n");
+    if (section.type === "address") return section.lines.join("\n");
+    return section.text;
+  });
+
+  return [
+    document.title,
+    ...sections,
+    document.revision ? `Revision: ${document.revision}` : undefined,
+  ]
+    .filter((value): value is string => Boolean(value))
+    .join("\n\n");
+}
+
 const PUBLIC_PAGE_LABELS: Record<string, string> = {
   home: "Home",
   membership: "Membership",
@@ -175,6 +193,36 @@ const PUBLIC_PAGE_LABELS: Record<string, string> = {
   "advisor-send-confirmation": "Advisor Portal",
   "application-edit-confirmation": "Advisor Portal",
 };
+
+const PAGE_COMPONENT_LABELS: Record<string, string> = {
+  resume: "Resume Entry",
+  "resume-method": "Verification Method",
+  "resume-code": "Verification Code",
+  "advisor-login": "Advisor Login",
+  "advisor-send-confirmation": "Send Confirmation",
+  "application-edit-confirmation": "Edit Confirmation",
+};
+
+// Page content belongs in the CMS only when the experience actually renders it.
+// Home uses its hero content rather than pages.home, and navTitle is only read
+// by the multi-page vertical-stepper breadcrumbs for these routes.
+const DISPLAYED_NAV_TITLE_PAGE_IDS = new Set([
+  "membership",
+  "eligibility",
+  "beneficiary",
+  "contact",
+  "profile",
+  "review",
+  "payment",
+]);
+
+// These pages render a different subhead source (or no subhead) in their page
+// implementation, so their pages.*.subhead value is configuration metadata.
+const NON_RENDERED_PAGE_SUBHEAD_IDS = new Set([
+  "receipt",
+  "resume-method",
+  "resume-code",
+]);
 
 function titleCase(value: string): string {
   return value
@@ -215,12 +263,27 @@ function collectStringPaths(value: unknown, prefix: string, paths: Set<string>):
 function isManagedPublicPath(path: string): boolean {
   const segments = pathSegments(path);
   if (segments.at(-1) === "type") return false;
+  // Legal documents are represented as one CMS item apiece rather than one
+  // item for every heading, paragraph, list item, address line, and revision.
+  if (
+    path.startsWith("footer.termsOfUseContent.") ||
+    path.startsWith("footer.privacyNoticeContent.")
+  ) {
+    return false;
+  }
   // These are legacy copies of the canonical shared applicant labels. They are
   // not read by the UI, but recursive collection used to expose all three
   // copies as separate CMS rows.
   if (path.startsWith("coverage.applicantLabels.")) return false;
   if (path.startsWith("shared.applicantSectionTitles.")) return false;
-  return segments[0] !== "pages" || Boolean(PUBLIC_PAGE_LABELS[segments[1]]);
+  if (segments[0] !== "pages") return true;
+
+  const [, pageId, field] = segments;
+  if (!PUBLIC_PAGE_LABELS[pageId]) return false;
+  if (pageId === "home") return false;
+  if (field === "navTitle") return DISPLAYED_NAV_TITLE_PAGE_IDS.has(pageId);
+  if (field === "subhead") return !NON_RENDERED_PAGE_SUBHEAD_IDS.has(pageId);
+  return true;
 }
 
 function contentTypeForPath(path: string): CmsContentType {
@@ -313,16 +376,27 @@ function locationForPath(path: string): string {
 
   if (root === "pages") {
     const page = PUBLIC_PAGE_LABELS[section] ?? titleCase(section);
-    if (field === "title") return `${page} - Page Title`;
-    if (field === "subhead") return `${page} - Page Subtitle`;
-    if (field === "navTitle") return `${page} - Navigation Label`;
+    const componentPrefix = PAGE_COMPONENT_LABELS[section];
+    if (field === "title") return `${page} - ${componentPrefix ? `${componentPrefix} ` : ""}Page Title`;
+    if (field === "subhead") {
+      return `${page} - ${componentPrefix ? `${componentPrefix} ` : ""}Page Subtitle`;
+    }
+    if (field === "navTitle") {
+      return `${page} - ${componentPrefix ? `${componentPrefix} ` : ""}Navigation Label`;
+    }
     if (field === "infoNote") return `${page} - Page Information Note`;
     if (field === "sectionNotes") return `${page} - ${titleCase(p[3] ?? "Section")} Note`;
     return `${page} - Page Content`;
   }
 
   if (root === "home") {
-    if (section === "hero") return "Home - Hero Section";
+    if (section === "reviewProcessLinkLabel") return "Home - Review Process Link";
+    if (section === "hero") {
+      if (field === "ctaLabel") return "Home - Primary Hero Button";
+      if (field === "secondaryCtaLabel") return "Home - Secondary Hero Button";
+      if (field === "resumeLinkLabel") return "Home - Resume Application Link";
+      return "Home - Hero Section";
+    }
     if (section === "howApplyingWorks") return "Home - 'How does applying work?' Section";
     if (section === "applyingSteps") return `Home - 'How does applying work?' Step ${Number(field) + 1}`;
     if (section === "coverageOptions") return "Home - 'Your coverage options' Section";
@@ -337,7 +411,9 @@ function locationForPath(path: string): string {
     if (section === "decisionStatuses") return `Receipt - '${titleCase(field)}' Decision Status`;
     if (section === "summaryLabels") return "Receipt - Application Summary";
     if (section === "coverageCardLabels") return "Receipt - Coverage Decision Card";
-    if (section === "documentDownloadLabels") return "Receipt - Document Download Actions";
+    if (section === "documentDownloadLabels") {
+      return `Receipt - ${titleCase(field)} PDF Download Button`;
+    }
     if (section === "confirmationNumberLabel") return "Receipt - Confirmation Number";
     if (section === "coverageDecisions") return "Receipt - Coverage Decisions Section";
     if (section === "whatHappensNext") return "Receipt - 'What happens next?' Section";
@@ -353,6 +429,12 @@ function locationForPath(path: string): string {
   }
 
   if (root === "help") {
+    if (section === "beneficiary" && field === "whatIs") {
+      return "Beneficiary - What Is a Beneficiary Drawer";
+    }
+    if (section === "beneficiary" && field === "percentageShare") {
+      return "Beneficiary - Percentage Share Drawer";
+    }
     const locations: Record<string, string> = {
       howApplyingWorks: "Home - 'How does applying work?' Drawer",
       applicationReview: "Home - Application Review Drawer",
@@ -377,6 +459,10 @@ function locationForPath(path: string): string {
   if (root === "navigation") {
     if (section === "progressStepLabels") return "Global - Progress Stepper";
     if (section === "backMessage") return "Global - Back Navigation";
+    if (section === "transitionMessages") {
+      return `Global - ${titleCase(field)} Page Transition Messages`;
+    }
+    if (section === "transitionDefaults") return "Global - Default Page Transition Messages";
     return "Global - Page Transition Messages";
   }
 
@@ -523,18 +609,41 @@ const managedEntries = Array.from(managedPaths)
   .filter(isManagedPublicPath)
   .map(managedEntry);
 
+const legalDocumentEntries: CmsEntry[] = [
+  externalEntry(
+    "managed-footer-terms-of-use-content",
+    "Document",
+    "Global - Terms of Use Document",
+    "Legal document",
+    flattenLegalDocument(globalContent.footer.termsOfUseContent),
+    (clientId) => flattenLegalDocument(contentFor(clientId).footer.termsOfUseContent),
+    "content-legaldoclist--terms-of-use",
+    0,
+  ),
+  externalEntry(
+    "managed-footer-privacy-notice-content",
+    "Document",
+    "Global - Privacy Notice Document",
+    "Legal document",
+    flattenLegalDocument(globalContent.footer.privacyNoticeContent),
+    (clientId) => flattenLegalDocument(contentFor(clientId).footer.privacyNoticeContent),
+    "content-legaldoclist--privacy-notice",
+    1,
+  ),
+];
+
 const externalEntries: CmsEntry[] = [
   externalEntry(
     "home-hero-image",
     "Image",
     "Home - Hero Section",
     "Default homepage variant",
-    'Not shown by default — enabled per client via features.homePageVariant ("hero-image" or "welcome-back").',
+    "—",
     (clientId) => {
       const variant = clients[clientId].features?.homePageVariant ?? "default";
       return variant === "hero-image" || variant === "welcome-back"
-        ? `/client/${clientId}/hero.png (shown — ${variant} variant)`
-        : 'Not shown by default — enabled per client via features.homePageVariant ("hero-image" or "welcome-back").';
+        ? `/client/${clientId}/hero.png`
+        : "—";
     },
     "application-patterns-page-coverage-audit--all-routes",
   ),
@@ -543,7 +652,7 @@ const externalEntries: CmsEntry[] = [
     "Image",
     "Global - Header & Footer Branding",
     "Branding",
-    "No global logo — each client provides its own.",
+    "—",
     (clientId) => {
       const { logo, logoAlt } = clients[clientId].branding;
       return `${logo} (alt: "${logoAlt}")`;
@@ -579,7 +688,7 @@ const externalEntries: CmsEntry[] = [
     "Document",
     "Coverage - Coverage Options Drawer",
     "Document",
-    "No global brochure — each client provides its own coverage brochure/certificate PDF.",
+    "—",
     (clientId) => {
       if (clientId === "avma") {
         return "https://avmainsuranceservices.com/Downloads/AVMA/Applications/AVMA-SC-APP-LOAN-FORM.pdf";
@@ -662,7 +771,54 @@ function cmsComponentTypeRank(componentType: CmsComponentType): number {
   return COMPONENT_TYPE_ORDER.indexOf(componentType);
 }
 
-export const cmsEntries: CmsEntry[] = [...managedEntries, ...externalEntries].sort(
+const INDEPENDENT_COMPONENT_TYPES = new Set<CmsComponentType>([
+  "Button",
+  "Applicant label",
+  "Form label",
+  "Validation message",
+  "Progress stepper",
+]);
+
+function consolidateCmsEntries(entries: CmsEntry[]): CmsEntry[] {
+  const groups = new Map<string, CmsEntry[]>();
+
+  for (const entry of entries) {
+    const key = [
+      entry.type,
+      entry.page,
+      entry.componentType,
+      entry.component,
+      entry.storybookId,
+      INDEPENDENT_COMPONENT_TYPES.has(entry.componentType) ? entry.id : "",
+    ].join("\u0000");
+    groups.set(key, [...(groups.get(key) ?? []), entry]);
+  }
+
+  const joinValues = (values: string[]) => {
+    const displayedValues = values.filter((value) => value !== "—");
+    return (displayedValues.length > 0 ? displayedValues : ["—"]).join("\n\n");
+  };
+
+  return Array.from(groups.values()).map((group) => {
+    const first = group[0];
+    if (group.length === 1) return first;
+
+    return {
+      ...first,
+      globalValue: joinValues(group.map((entry) => entry.globalValue)),
+      effectiveValue: (clientId) =>
+        joinValues(group.map((entry) => entry.effectiveValue(clientId))),
+      overridden: (clientId) => group.some((entry) => entry.overridden(clientId)),
+      sourceOrder: Math.min(...group.map((entry) => entry.sourceOrder)),
+    };
+  });
+}
+
+export const cmsEntries: CmsEntry[] = consolidateCmsEntries([
+  ...managedEntries,
+  ...legalDocumentEntries,
+  ...externalEntries,
+]).sort(
   (a, b) =>
     cmsPageRank(a.page) - cmsPageRank(b.page) ||
     cmsComponentTypeRank(a.componentType) - cmsComponentTypeRank(b.componentType) ||

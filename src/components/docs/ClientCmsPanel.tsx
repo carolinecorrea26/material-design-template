@@ -36,11 +36,12 @@ export default function ClientCmsPanel() {
 
   const rows = useMemo(
     () =>
-      cmsEntries.map((entry) => ({
-        entry,
-        value: entry.effectiveValue(selectedSiteId),
-        overridden: entry.overridden(selectedSiteId),
-      })),
+      cmsEntries.flatMap((entry) => {
+        const value = entry.effectiveValue(selectedSiteId);
+        return value === "—"
+          ? []
+          : [{ entry, value, overridden: entry.overridden(selectedSiteId) }];
+      }),
     [selectedSiteId],
   );
 

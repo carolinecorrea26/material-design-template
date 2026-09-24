@@ -1,4 +1,5 @@
 import type { ClientConfig } from "./types";
+import { rangeAssignments } from "../coverages/amounts";
 
 export const isitrustClient: ClientConfig = {
   id: "isitrust",
@@ -41,17 +42,17 @@ export const isitrustClient: ClientConfig = {
       "sh-critical-illness",
       "sh-hospital-income",
     ],
-    ranges: {
-      "li-group-term": { min: 50000, max: 500000 },
-      "li-50plus": { min: 25000, max: 300000 },
-      "li-10yr": { min: 50000, max: 500000 },
-      "li-20yr": { min: 50000, max: 1000000 },
-      "li-add": { min: 25000, max: 500000 },
-      "di-ltd": { min: 1000, max: 10000 },
-      "di-short-term": { min: 500, max: 5000 },
-      "oo-professional": { min: 1000, max: 10000 },
-      "sh-critical-illness": { min: 10000, max: 75000 },
-      "sh-hospital-income": { min: 500, max: 3000 },
+    coverageAmounts: {
+      "li-group-term": rangeAssignments({ member: [50000, 500000] }),
+      "li-50plus": rangeAssignments({ member: [25000, 300000] }),
+      "li-10yr": rangeAssignments({ member: [50000, 500000] }),
+      "li-20yr": rangeAssignments({ member: [50000, 1000000] }),
+      "li-add": rangeAssignments({ member: [25000, 500000] }),
+      "di-ltd": rangeAssignments({ member: [1000, 10000] }),
+      "di-short-term": rangeAssignments({ member: [500, 5000] }),
+      "oo-professional": rangeAssignments({ member: [1000, 10000] }),
+      "sh-critical-illness": rangeAssignments({ member: [10000, 75000] }),
+      "sh-hospital-income": rangeAssignments({ member: [500, 3000] }),
     },
     descriptions: {
       "li-group-term":

@@ -1,4 +1,5 @@
 import type { ClientConfig } from "./types";
+import { rangeAssignments } from "../coverages/amounts";
 
 const chatUrl =
   "https://app.five9.com/clients/consoles/ChatConsole/index.html?title=Chat&tenant=Pearl%20Insurance&profiles=ASCE%20-%20Current%2CASCE%20-%20New%20or%20Additional&showProfiles=true&autostart=true&profileLabel=Are%20you%20looking%20for%20help%20with%20Current%20or%20New%2FAdditional%20coverage%3F&theme=default-theme.css&surveyOptions=%7B%22showComment%22%3Afalse%2C%22requireComment%22%3Afalse%7D&fields=%7B%22name%22%3A%7B%22value%22%3A%22Chat%20User%22%2C%22show%22%3Afalse%2C%22label%22%3A%22Name%22%7D%2C%22email%22%3A%7B%22value%22%3A%22%22%2C%22show%22%3Atrue%2C%22label%22%3A%22Email%22%7D%2C%22Chat.First_Name%22%3A%7B%22value%22%3A%22%22%2C%22show%22%3Atrue%2C%22label%22%3A%22First%20Name%22%2C%22required%22%3Atrue%7D%2C%22Chat.Last_Name%22%3A%7B%22value%22%3A%22%22%2C%22show%22%3Atrue%2C%22label%22%3A%22Last%20Name%22%2C%22required%22%3Atrue%7D%2C%22UserLocale%22%3A%7B%22value%22%3A%22en%22%2C%22show%22%3Afalse%7D%7D&playSoundOnMessage=true&allowCustomerToControlSoundPlay=false&showEmailButton=false&hideDuringAfterHours=true&useBusinessHours=false&showPrintButton=true&allowUsabilityMenu=false&enableCallback=false&allowRequestLiveAgent=false&namespace=asceinsurance.com&ga=G-XYD9Q953HL";
@@ -32,52 +33,44 @@ export const asceClient: ClientConfig = {
       payment: "required",
     },
   },
+  applicantClassifications: [
+    { id: "associate-member", label: "Associate Member", applicantType: "member" },
+    { id: "retired-member", label: "Retired Member", applicantType: "member" },
+  ],
   coverages: {
     categories: ["LI", "AD", "DI"],
     enabled: ["li-term", "li-10yr", "li-20yr", "li-add", "di-ltd"],
-    ranges: {
-      "li-term": {
-        min: 0,
-        max: 1000000,
-        spouseMin: 0,
-        spouseMax: 1000000,
-        childMin: 10000,
-        childMax: 10000,
-      },
-      "li-10yr": {
-        min: 100000,
-        max: 2000000,
-        spouseMin: 100000,
-        spouseMax: 2000000,
-        childMin: 10000,
-        childMax: 10000,
-      },
-      "li-20yr": {
-        min: 100000,
-        max: 2000000,
-        spouseMin: 100000,
-        spouseMax: 2000000,
-        childMin: 10000,
-        childMax: 10000,
-      },
-      "li-add": {
-        min: 50000,
-        max: 500000,
-        spouseMin: 50000,
-        spouseMax: 250000,
-        childMin: 10000,
-        childMax: 10000,
-      },
-      "di-ltd": {
-        min: 150,
-        max: 8550,
-        spouseMin: 500,
-        spouseMax: 500,
-      },
+    coverageAmounts: {
+      "li-term": rangeAssignments({
+        member: [0, 1000000, 10000],
+        spouse: [0, 1000000, 10000],
+        child: [10000, 10000, 1],
+      }),
+      "li-10yr": rangeAssignments({
+        member: [100000, 2000000, 10000],
+        spouse: [100000, 2000000, 10000],
+        child: [10000, 10000, 1],
+      }),
+      "li-20yr": rangeAssignments({
+        member: [100000, 2000000, 10000],
+        spouse: [100000, 2000000, 10000],
+        child: [10000, 10000, 1],
+      }),
+      "li-add": rangeAssignments({
+        member: [50000, 500000, 10000],
+        spouse: [50000, 250000, 10000],
+        child: [10000, 10000, 1],
+      }),
+      "di-ltd": rangeAssignments({
+        member: [150, 8550, 50],
+        spouse: [500, 500, 1],
+      }),
     },
     overrides: {
       "li-term": {
         name: "Group Term Life Insurance",
+        gNumber: { primary: "G-10500-1" },
+        planCode: { primary: "101" },
         brochureUrl:
           "https://asceinsurance.com/Downloads/ASCE/brochures/ASCE-Term-Life-Brochure.pdf",
         underwritingType: "QD",
@@ -89,10 +82,10 @@ export const asceClient: ClientConfig = {
             description:
               "Chronic illness coverage from $50,000 to $1,000,000 for members and $25,000 to $1,000,000 for spouses.",
             hasAmount: true,
-            minAmount: 50000,
-            maxAmount: 1000000,
-            spouseMinAmount: 25000,
-            spouseMaxAmount: 1000000,
+            coverageAmounts: rangeAssignments({
+              member: [50000, 1000000, 10000],
+              spouse: [25000, 1000000, 10000],
+            }),
             applicants: ["member", "spouse"],
             premiumFactor: 0.05,
           },
@@ -100,6 +93,8 @@ export const asceClient: ClientConfig = {
       },
       "li-10yr": {
         name: "Group 10-Year Level Term Life Insurance",
+        gNumber: { primary: "G-29137-0" },
+        planCode: { primary: "102" },
         brochureUrl:
           "https://asceinsurance.com/Downloads/ASCE/brochures/ASCE-10-or-20-Year-Level-Term-Life-Brochure.pdf",
         underwritingType: "QD",
@@ -107,6 +102,8 @@ export const asceClient: ClientConfig = {
       },
       "li-20yr": {
         name: "Group 20-Year Level Term Life Insurance",
+        gNumber: { primary: "G-29253-0" },
+        planCode: { primary: "121" },
         brochureUrl:
           "https://asceinsurance.com/Downloads/ASCE/brochures/ASCE-10-or-20-Year-Level-Term-Life-Brochure.pdf",
         underwritingType: "QD",

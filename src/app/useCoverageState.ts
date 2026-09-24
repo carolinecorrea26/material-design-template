@@ -7,34 +7,17 @@ import type { CoverageApplicantId } from "../config/coverages/types";
 import type { EstimatedRateFrequency } from "../config/clients/types";
 import { useApplicationForm } from "./ApplicationFormContext";
 import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
-import { getCoverageAmountRange } from "../utils/coverageAmounts";
-import { generateAmountChoices as generateAmountChoicesBase } from "../utils/generateAmountChoices";
+import { getCoverageAmountChoices } from "../utils/coverageAmounts";
 import { RATE_CALCULATION_DELAY_MS } from "../config/coverageConstants";
 
 function generateAmountChoices(
   coverage: {
     categoryId: CoverageCategoryId;
-    minAmount?: number;
-    maxAmount?: number;
-    amountStep?: number;
-    spouseMinAmount?: number;
-    spouseMaxAmount?: number;
-    spouseAmountStep?: number;
-    childMinAmount?: number;
-    childMaxAmount?: number;
-    childAmountStep?: number;
+    coverageAmounts?: import("../config/coverages/types").CoverageAmountAssignment[];
   },
   applicantId: CoverageApplicantId = "member",
 ): number[] {
-  const { minAmount, maxAmount, step } = getCoverageAmountRange(
-    coverage,
-    applicantId,
-  );
-
-  return generateAmountChoicesBase(coverage.categoryId, minAmount, maxAmount, {
-    includeZero: true,
-    step,
-  });
+  return [0, ...getCoverageAmountChoices(coverage, applicantId)];
 }
 
 export function getDisplayedPremium(

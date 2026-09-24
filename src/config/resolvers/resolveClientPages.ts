@@ -80,6 +80,17 @@ export function getSiteDetailsPageOrder(): PageId[] {
     .map((page) => page.id);
 }
 
+/** Stable admin label for a page; unlike page title/nav copy, this is not client-editable. */
+export function getSiteDetailsPageLabel(pageId: PageId): string {
+  const uppercaseTokens = new Set(["si", "li", "qd", "di", "cir"]);
+  return pageId
+    .split("-")
+    .map((part) =>
+      uppercaseTokens.has(part) ? part.toUpperCase() : part.charAt(0).toUpperCase() + part.slice(1),
+    )
+    .join(" ");
+}
+
 export type GlobalPageInfo = {
   id: PageId;
   title: string;

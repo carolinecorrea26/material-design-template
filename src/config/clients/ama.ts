@@ -1,4 +1,5 @@
 import type { ClientConfig } from "./types";
+import { rangeAssignments } from "../coverages/amounts";
 
 export const amaClient: ClientConfig = {
   id: "ama",
@@ -45,30 +46,22 @@ export const amaClient: ClientConfig = {
       "oo-office-overhead",
       "sh-hospital-income",
     ],
-    ranges: {
-      "li-20yr": { min: 100000, max: 4000000, amountStep: 25000 },
-      "li-15yr": { min: 100000, max: 4000000, amountStep: 25000 },
-      "li-10yr": { min: 100000, max: 4000000, amountStep: 25000 },
-      "li-term": { min: 100000, max: 1000000, amountStep: 25000 },
-      "li-preferred": { min: 25000, max: 3000000, amountStep: 25000 },
-      "li-premier-accident": {
-        min: 500000,
-        max: 1000000,
-        amountStep: 250000,
-        spouseMin: 200000,
-        spouseMax: 500000,
-        spouseAmountStep: 25000,
-      },
-      "di-level-rated": { min: 100, max: 15000, amountStep: 100 },
-      "oo-office-overhead": { min: 1000, max: 20000, amountStep: 1000 },
-      "sh-hospital-income": {
-        min: 100,
-        max: 600,
-        amountStep: 100,
-        spouseMin: 100,
-        spouseMax: 600,
-        spouseAmountStep: 100,
-      },
+    coverageAmounts: {
+      "li-20yr": rangeAssignments({ member: [100000, 4000000, 25000] }),
+      "li-15yr": rangeAssignments({ member: [100000, 4000000, 25000] }),
+      "li-10yr": rangeAssignments({ member: [100000, 4000000, 25000] }),
+      "li-term": rangeAssignments({ member: [100000, 1000000, 25000] }),
+      "li-preferred": rangeAssignments({ member: [25000, 3000000, 25000] }),
+      "li-premier-accident": rangeAssignments({
+        member: [500000, 1000000, 250000],
+        spouse: [200000, 500000, 25000],
+      }),
+      "di-level-rated": rangeAssignments({ member: [100, 15000, 100] }),
+      "oo-office-overhead": rangeAssignments({ member: [1000, 20000, 1000] }),
+      "sh-hospital-income": rangeAssignments({
+        member: [100, 600, 100],
+        spouse: [100, 600, 100],
+      }),
     },
     descriptions: {
       "li-20yr":

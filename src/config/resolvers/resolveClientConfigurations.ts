@@ -16,12 +16,9 @@ export function classifyConfigurable(scope: ConfigurationScope): ConfigurableKin
 }
 
 /**
- * Live-value accessors for configuration rows whose `name` maps directly to
- * a ClientConfig property. Deliberately partial: rows backed by `content.*`
- * (client content overlays, not ClientConfig) or by static/globally-governed
- * data have no per-client value to read here and are left unmapped — see
- * the architecture doc's note on ResolvedConfiguration being the "loosest"
- * of the four resolved types.
+ * Live-value accessors for the supported site configuration options. The
+ * public configuration list is intentionally limited to rows with a direct
+ * ClientConfig value so Global and Client views describe the same choices.
  */
 const CONFIG_ACCESSORS: Partial<Record<string, (client: ClientConfig) => unknown>> = {
   "ClientConfig.branding": (c) => c.branding,
@@ -64,7 +61,7 @@ const CONFIG_ACCESSORS: Partial<Record<string, (client: ClientConfig) => unknown
     enabled: c.coverages.enabled,
     overrides: c.coverages.overrides,
   }),
-  "ranges[productId] (min / max / amountStep / spouse* / child*)": (c) => c.coverages.ranges,
+  "ClientConfig.coverages.coverageAmounts[productId]": (c) => c.coverages.coverageAmounts,
   "overrides[].waitingPeriodOptions / maxBenefitPeriodOptions": (c) => c.coverages.overrides,
   "overrides[].riders": (c) => c.coverages.overrides,
   "ClientConfig.estimatedRateDisplay": (c) => c.coverages.estimatedRateDisplay,
@@ -125,11 +122,7 @@ export type ResolvedConfiguration = {
 };
 
 /**
- * Resolves the configuration schema (configurationsData) against a given
- * client. Unlike the other three resolvers, most rows describe a *setting*
- * rather than a single overridable value, so only rows with a direct
- * ClientConfig accessor get a real override/effective/status; the rest
- * report their schema-level kind only (see CONFIG_ACCESSORS above).
+ * Resolves every supported site configuration option against a client.
  */
 export function resolveClientConfigurations(client: ClientConfig): ResolvedConfiguration[] {
   return configurationsData.map((row): ResolvedConfiguration => {

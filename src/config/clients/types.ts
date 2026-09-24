@@ -1,5 +1,12 @@
 import type { CoverageCategoryId } from "../coverageCategories";
-import type { CoverageUnderwritingType } from "../coverages/types";
+import type {
+  CoverageAmountAssignment,
+  CoverageApplicantId,
+  CoverageUnderwritingType,
+  PlanCodeIdentifierSet,
+  ProductIdentifierSet,
+  ScopedIdentifierSet,
+} from "../coverages/types";
 import type { CoverageId } from "../../types";
 import type { PageId } from "../../types";
 import type { ClientId } from "../../types";
@@ -49,12 +56,7 @@ export type ClientRiderConfig = {
   name: string;
   description: string;
   hasAmount?: boolean;
-  minAmount?: number;
-  maxAmount?: number;
-  spouseMinAmount?: number;
-  spouseMaxAmount?: number;
-  childMinAmount?: number;
-  childMaxAmount?: number;
+  coverageAmounts?: CoverageAmountAssignment[];
   applicants?: ("member" | "spouse" | "child")[];
   premiumFactor: number;
 };
@@ -68,18 +70,6 @@ export type ClientWaitingPeriodConfig = {
 export type ClientMaxBenefitPeriodConfig = {
   label: string;
   value: string;
-};
-
-export type ClientCoverageRangeConfig = {
-  min?: number;
-  max?: number;
-  amountStep?: number;
-  spouseMin?: number;
-  spouseMax?: number;
-  spouseAmountStep?: number;
-  childMin?: number;
-  childMax?: number;
-  childAmountStep?: number;
 };
 
 export type CoverageApplicantNotes = Partial<
@@ -104,6 +94,9 @@ export type ClientCoverageOverrides = {
   /** External product brochure or certificate URL. */
   brochureUrl?: string;
   categoryId?: CoverageCategoryId;
+  gNumber?: ScopedIdentifierSet<ProductIdentifierSet>;
+  planCode?: ScopedIdentifierSet<PlanCodeIdentifierSet>;
+  groupPolicySitus?: string;
   riders?: ClientRiderConfig[];
   waitingPeriodOptions?: ClientWaitingPeriodConfig[];
   waitingPeriodOptionsByApplicant?: Partial<
@@ -153,7 +146,8 @@ export type ClientProductEstimatedCostBreakdown = {
 export type ClientCoverages = {
   categories?: CoverageCategoryId[];
   enabled?: CoverageId[];
-  ranges?: Partial<Record<CoverageId, ClientCoverageRangeConfig>>;
+  /** Replaces global amount assignments with the same exact scope; unmatched scopes are inherited. */
+  coverageAmounts?: Partial<Record<CoverageId, CoverageAmountAssignment[]>>;
   descriptions?: Partial<Record<CoverageId, string>>;
   overrides?: Partial<Record<CoverageId, ClientCoverageOverrides>>;
   /** When true, all coverage category accordions are expanded by default. */
@@ -171,6 +165,12 @@ export type ClientCoverages = {
   categorySectionLabels?: Partial<Record<CoverageCategoryId, string>>;
   /** When true, the quote tool and coverage questions skip the smoker/nicotine question for this client. */
   hideSmokerQuestion?: boolean;
+};
+
+export type ApplicantClassification = {
+  id: string;
+  label: string;
+  applicantType: CoverageApplicantId;
 };
 
 export type ClientFields = Partial<
@@ -308,6 +308,8 @@ export type ClientConfig = {
   support: ClientSupport;
   pages: ClientPages;
   coverages: ClientCoverages;
+  /** Stable client-owned labels referenced by scoped coverage configuration. */
+  applicantClassifications?: ApplicantClassification[];
   fields: ClientFields;
   /** Client-specific flow overrides; global flows remain the baseline source of truth. */
   flows?: ClientFlows;

@@ -1,4 +1,5 @@
 import type { ClientConfig } from "./types";
+import { rangeAssignments } from "../coverages/amounts";
 
 export const abeClient: ClientConfig = {
   id: "abe",
@@ -45,18 +46,18 @@ export const abeClient: ClientConfig = {
       "sh-critical-illness",
       "sh-hospital-money",
     ],
-    ranges: {
-      "li-term": { min: 50000, max: 500000 },
-      "li-10yr": { min: 50000, max: 500000 },
-      "li-20yr": { min: 50000, max: 1000000 },
-      "li-50plus": { min: 50000, max: 500000 },
-      "li-add": { min: 25000, max: 500000 },
-      "di-ltd-plus": { min: 1000, max: 5000 },
-      "di-ltd": { min: 1000, max: 5000 },
-      "di-mtd": { min: 1000, max: 4000 },
-      "oo-professional": { min: 500, max: 3000 },
-      "sh-critical-illness": { min: 10000, max: 50000 },
-      "sh-hospital-money": { min: 100, max: 500 },
+    coverageAmounts: {
+      "li-term": rangeAssignments({ member: [50000, 500000] }),
+      "li-10yr": rangeAssignments({ member: [50000, 500000] }),
+      "li-20yr": rangeAssignments({ member: [50000, 1000000] }),
+      "li-50plus": rangeAssignments({ member: [50000, 500000] }),
+      "li-add": rangeAssignments({ member: [25000, 500000] }),
+      "di-ltd-plus": rangeAssignments({ member: [1000, 5000] }),
+      "di-ltd": rangeAssignments({ member: [1000, 5000] }),
+      "di-mtd": rangeAssignments({ member: [1000, 4000] }),
+      "oo-professional": rangeAssignments({ member: [500, 3000] }),
+      "sh-critical-illness": rangeAssignments({ member: [10000, 50000] }),
+      "sh-hospital-money": rangeAssignments({ member: [100, 500] }),
     },
     overrides: {
       "li-term": {

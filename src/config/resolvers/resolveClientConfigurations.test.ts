@@ -28,20 +28,19 @@ describe("resolveClientConfigurations", () => {
     expect(theme?.page.label).toBe("Global");
   });
 
-  it("assigns page-owned settings to the canonical page list", () => {
+  it("assigns page-owned configuration settings to the canonical page list", () => {
     const resolved = resolveClientConfigurations(clients.demo);
-    const hero = resolved.find((r) => r.key === "content.home.hero.*");
-    expect(hero?.page).toEqual({ id: "home", label: "Home" });
-    expect(hero?.global.defaultDisplay).toContain("Safeguard your financial future.");
-    expect(hero?.global.defaultDisplay).toContain(
-      "Coverage designed exclusively for {client name} members. Get started today!",
+    const homeVariant = resolved.find(
+      (r) => r.key === "ClientConfig.features.homePageVariant",
     );
+    expect(homeVariant?.page).toEqual({ id: "home", label: "Home" });
+    expect(homeVariant?.global.defaultDisplay).toBe("Default");
   });
 
-  it("schema-only rows (no live accessor, or not client-configurable) report inherited without fabricating a value", () => {
+  it("excludes editable content and global implementation details from site configuration", () => {
     const resolved = resolveClientConfigurations(clients.demo);
-    const rules = resolved.find((r) => r.key === "content.navigation");
-    expect(rules?.liveValueAvailable).toBe(false);
-    expect(rules?.status).toBe("inherited");
+    expect(resolved.some((r) => r.key.startsWith("content."))).toBe(false);
+    expect(resolved.some((r) => r.key === "ClientConfig.coverages.categories")).toBe(false);
+    expect(resolved.some((r) => r.key === "fieldCatalog")).toBe(false);
   });
 });

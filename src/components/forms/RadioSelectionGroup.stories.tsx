@@ -29,6 +29,23 @@ export const Interactive = () => {
   );
 };
 
+export const BeneficiaryType = () => {
+  const [value, setValue] = useState("individual");
+  return (
+    <RadioSelectionGroup
+      name="beneficiary-type"
+      label="Beneficiary Type"
+      options={[
+        { value: "individual", label: "Individual" },
+        { value: "trust", label: "Trust" },
+      ]}
+      value={value}
+      onChange={setValue}
+      required
+    />
+  );
+};
+
 export const Disabled = () => (
   <RadioSelectionGroup
     name="beneficiary-type"

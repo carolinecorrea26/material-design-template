@@ -3,11 +3,13 @@ import { Chip, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typograp
 import ResponsiveTableContainer from "./ResponsiveTableContainer";
 import ResizableHeaderCell from "./ResizableHeaderCell";
 import SearchField from "./SearchField";
+import PageFilterSelect, { ALL_PAGES } from "./PageFilterSelect";
 import useResizableColumns from "./useResizableColumns";
 import { CLIENT_HIGHLIGHT_BG, CLIENT_HIGHLIGHT_BORDER } from "./ClientNote";
 import type { ResolvedConfiguration } from "../../config/resolvers";
 import TruncatedString from "./TruncatedString";
 import { getSiteDetailsPageOrder } from "../../config/resolvers";
+import { getConfigurationRequirement } from "../../content/docs/configurations";
 
 /** Renders an unknown resolved config value (primitive/array/object) as a compact, readable string. */
 function formatConfigValue(value: unknown): string {
@@ -43,11 +45,13 @@ export default function ResolvedConfigurationList({
   rows: ResolvedConfiguration[];
 }) {
   const [filter, setFilter] = useState("");
+  const [pageFilter, setPageFilter] = useState(ALL_PAGES);
   const { widths, resize } = useResizableColumns({
     page: 160,
     setting: 200,
     description: 300,
     defaultValue: 200,
+    requirement: 130,
     effective: 200,
     status: 110,
   });
@@ -64,20 +68,35 @@ export default function ResolvedConfigurationList({
       return pageRank(a.row.page.id) - pageRank(b.row.page.id) || a.originalIndex - b.originalIndex;
     })
     .map(({ row }) => row);
+  const pageOptions = Array.from(
+    new Map(
+      orderedRows.map((row) => [
+        row.page.id,
+        { value: row.page.id, label: row.page.label },
+      ]),
+    ).values(),
+  );
 
   const filteredRows = useMemo(() => {
-    if (!filter) return orderedRows;
     const lc = filter.toLowerCase();
-    return orderedRows.filter((r) =>
-      `${r.page.label} ${r.label} ${r.key} ${r.global.description}`.toLowerCase().includes(lc),
+    return orderedRows.filter(
+      (row) =>
+        (pageFilter === ALL_PAGES || row.page.id === pageFilter) &&
+        (!lc ||
+          `${row.page.label} ${row.label} ${row.key} ${row.global.description}`
+            .toLowerCase()
+            .includes(lc)),
     );
-  }, [orderedRows, filter]);
+  }, [orderedRows, filter, pageFilter]);
 
   if (rows.length === 0) return null;
 
   return (
     <Stack spacing={1.5}>
-      <SearchField value={filter} onChange={setFilter} placeholder="Filter configuration…" />
+      <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+        <SearchField value={filter} onChange={setFilter} placeholder="Search configuration…" />
+        <PageFilterSelect value={pageFilter} onChange={setPageFilter} options={pageOptions} />
+      </Stack>
       <ResponsiveTableContainer>
         <Table size="small" sx={{ tableLayout: "fixed", width: "max-content" }}>
           <colgroup>
@@ -85,6 +104,7 @@ export default function ResolvedConfigurationList({
             <col style={{ width: widths.setting }} />
             <col style={{ width: widths.description }} />
             <col style={{ width: widths.defaultValue }} />
+            <col style={{ width: widths.requirement }} />
             <col style={{ width: widths.effective }} />
             <col style={{ width: widths.status }} />
           </colgroup>
@@ -101,6 +121,9 @@ export default function ResolvedConfigurationList({
               </ResizableHeaderCell>
               <ResizableHeaderCell width={widths.defaultValue} onResize={(w) => resize("defaultValue", w)}>
                 Default value
+              </ResizableHeaderCell>
+              <ResizableHeaderCell width={widths.requirement} onResize={(w) => resize("requirement", w)}>
+                Setup
               </ResizableHeaderCell>
               <ResizableHeaderCell width={widths.effective} onResize={(w) => resize("effective", w)}>
                 Effective
@@ -159,6 +182,14 @@ export default function ResolvedConfigurationList({
                     <TruncatedString
                       value={row.global.defaultDisplay}
                       threshold={150}
+                    />
+                  </TableCell>
+                  <TableCell sx={{ verticalAlign: "top" }}>
+                    <Chip
+                      label={getConfigurationRequirement({ name: row.key })}
+                      size="small"
+                      color={getConfigurationRequirement({ name: row.key }) === "Required" ? "warning" : "default"}
+                      variant="outlined"
                     />
                   </TableCell>
                   <TableCell

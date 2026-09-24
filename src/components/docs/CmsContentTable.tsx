@@ -18,6 +18,7 @@ import type { CmsEntry } from "../../content/docs/cmsEntries";
 import { getStorybookStoryUrl } from "../../config/storybook";
 import ResponsiveTableContainer from "./ResponsiveTableContainer";
 import SearchField from "./SearchField";
+import PageFilterSelect, { ALL_PAGES } from "./PageFilterSelect";
 import TruncatedString from "./TruncatedString";
 import { CLIENT_HIGHLIGHT_BG } from "./ClientNote";
 
@@ -32,7 +33,7 @@ const ALL = "All";
 export default function CmsContentTable({ rows }: { rows: CmsTableRow[] }) {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>(ALL);
-  const [pageFilter, setPageFilter] = useState<string>(ALL);
+  const [pageFilter, setPageFilter] = useState<string>(ALL_PAGES);
   const [componentTypeFilter, setComponentTypeFilter] = useState<string>(ALL);
   const [componentFilter, setComponentFilter] = useState<string>(ALL);
   const [statusFilter, setStatusFilter] = useState<string>(ALL);
@@ -42,7 +43,11 @@ export default function CmsContentTable({ rows }: { rows: CmsTableRow[] }) {
     [rows],
   );
   const pageOptions = useMemo(
-    () => [ALL, ...Array.from(new Set(rows.map((r) => r.entry.page)))],
+    () =>
+      Array.from(new Set(rows.map((row) => row.entry.page))).map((page) => ({
+        value: page,
+        label: page,
+      })),
     [rows],
   );
   const componentOptions = useMemo(
@@ -62,7 +67,7 @@ export default function CmsContentTable({ rows }: { rows: CmsTableRow[] }) {
     const lc = search.trim().toLowerCase();
     return rows.filter(({ entry, value }) => {
       if (typeFilter !== ALL && entry.type !== typeFilter) return false;
-      if (pageFilter !== ALL && entry.page !== pageFilter) return false;
+      if (pageFilter !== ALL_PAGES && entry.page !== pageFilter) return false;
       if (componentTypeFilter !== ALL && entry.componentType !== componentTypeFilter) return false;
       if (componentFilter !== ALL && entry.component !== componentFilter) return false;
       if (statusFilter !== ALL && entry.status !== statusFilter) return false;
@@ -96,20 +101,7 @@ export default function CmsContentTable({ rows }: { rows: CmsTableRow[] }) {
             ))}
           </Select>
         </FormControl>
-        <FormControl size="small" sx={{ minWidth: 220 }}>
-          <InputLabel>Page</InputLabel>
-          <Select
-            label="Page"
-            value={pageFilter}
-            onChange={(e) => setPageFilter(e.target.value)}
-          >
-            {pageOptions.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <PageFilterSelect value={pageFilter} onChange={setPageFilter} options={pageOptions} />
         <FormControl size="small" sx={{ minWidth: 240 }}>
           <InputLabel>Component Type</InputLabel>
           <Select

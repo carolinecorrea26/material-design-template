@@ -34,6 +34,7 @@ import CoverageCart, { useCoverageCartBadge } from "../ui/CoverageCart";
 import type { AppShellVariant } from "./AppShell";
 import ClientHelpBanner from "./ClientHelpBanner";
 import { getContent } from "../../content";
+import { getCoverageAmountRange } from "../../utils/coverageAmounts";
 
 const coverageDetailsContent = getContent().dialogs.coverageDetails;
 
@@ -50,16 +51,17 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
 });
 
 function formatCoverageRange(coverage: CoverageDefinition) {
-  if (coverage.minAmount == null && coverage.maxAmount == null) {
+  const { minAmount, maxAmount } = getCoverageAmountRange(coverage);
+  if (minAmount == null && maxAmount == null) {
     return "Amount varies by selection.";
   }
-  if (coverage.minAmount != null && coverage.maxAmount != null) {
-    return `${currencyFormatter.format(coverage.minAmount)} - ${currencyFormatter.format(coverage.maxAmount)}`;
+  if (minAmount != null && maxAmount != null) {
+    return `${currencyFormatter.format(minAmount)} - ${currencyFormatter.format(maxAmount)}`;
   }
-  if (coverage.minAmount != null) {
-    return `Starting at ${currencyFormatter.format(coverage.minAmount)}`;
+  if (minAmount != null) {
+    return `Starting at ${currencyFormatter.format(minAmount)}`;
   }
-  return `Up to ${currencyFormatter.format(coverage.maxAmount ?? 0)}`;
+  return `Up to ${currencyFormatter.format(maxAmount ?? 0)}`;
 }
 
 function formatApplicants(applicants: CoverageDefinition["applicants"]) {
