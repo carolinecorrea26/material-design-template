@@ -1,0 +1,4648 @@
+{
+  "scope": "Proposed hierarchy mapping only; not an applied schema or authorized identity merge",
+  "businessRules": {
+    "hierarchy": [
+      "TPA",
+      "Association",
+      "Site"
+    ],
+    "clientIsBusinessEntity": false,
+    "amaHasAssociationSelector": false,
+    "applicationAssociationSelectionMaximum": 1
+  },
+  "sourceIdsAreExportIdsNotVerifiedDeployedUuids": true,
+  "sources": [
+    {
+      "file": "/tmp/portal-hierarchy-mapping/database.json",
+      "sha256": "c28e223e9cb155a5af69fd28549d9636271dbf8edaa77aee7a685f80d6fbeb47"
+    },
+    {
+      "file": "/tmp/portal-hierarchy-mapping/operations-data.json",
+      "sha256": "1221e5e63dae8ff86903ec5ea9bbc92569deb56730ed288752da2d4cc5ea1cb8"
+    }
+  ],
+  "counts": {
+    "hostingAssociationCandidates": 95,
+    "lowerAssociationRows": 127,
+    "sites": 10,
+    "siteAssociationAssignments": 30,
+    "sourceOnlyHostingCandidates": 86,
+    "selectableAssociationCandidates": 25,
+    "directColumnsImpacted": 23,
+    "ownershipDifferencesBetweenExports": 7
+  },
+  "hostingAssociationCandidates": [
+    {
+      "sourceTable": "clients",
+      "sourceId": "demo",
+      "sourceKey": "demo",
+      "name": "Demo Client",
+      "sourceOrganizationId": "tpa-demo",
+      "sourceOrganizationKey": "tpa-demo",
+      "sourceOrganizationName": "Demo administrator",
+      "localOrganizationId": "tpa-demo",
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "unresolved-site-association-context",
+      "siteKeys": [
+        "demo"
+      ],
+      "existingAssociationRows": [],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "abe",
+      "sourceKey": "abe",
+      "name": "American Bar Endowment",
+      "sourceOrganizationId": "mcr.tpa.abe",
+      "sourceOrganizationKey": "mcr.tpa.abe",
+      "sourceOrganizationName": "American Bar Endowment",
+      "localOrganizationId": "tpa-abe",
+      "ownershipDiffersBetweenExports": true,
+      "proposedRole": "hosting-association",
+      "classification": "unresolved-site-association-context",
+      "siteKeys": [
+        "abe"
+      ],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.abe.7",
+          "key": "mcr.association.abe.7",
+          "name": "ABE\nAmerican Bar Association",
+          "sourceReference": "Associations!A7:C7"
+        },
+        {
+          "id": "mcr.association.abe.8",
+          "key": "mcr.association.abe.8",
+          "name": "ABE\nAmerican Bar Association",
+          "sourceReference": "Associations!A8:C8"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "ama",
+      "sourceKey": "ama",
+      "name": "American Medical Association",
+      "sourceOrganizationId": "mcr.tpa.amaia",
+      "sourceOrganizationKey": "mcr.tpa.amaia",
+      "sourceOrganizationName": "AMA Insurance Agency, Inc.",
+      "localOrganizationId": "tpa-ama",
+      "ownershipDiffersBetweenExports": true,
+      "proposedRole": "hosting-association",
+      "classification": "business-confirmed-single-association",
+      "siteKeys": [
+        "ama"
+      ],
+      "existingAssociationRows": [
+        {
+          "id": "american-medical-association",
+          "key": "american-medical-association",
+          "name": "American Medical Association",
+          "sourceReference": "prototype:associations/american-medical-association"
+        },
+        {
+          "id": "mcr.association.ama.15",
+          "key": "mcr.association.ama.15",
+          "name": "AMA\nAmerican Medical Association\n\nAMAGI and SI",
+          "sourceReference": "Associations!A15:C15"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "asce",
+      "sourceKey": "asce",
+      "name": "American Society of Civil Engineers",
+      "sourceOrganizationId": "tpa-asce",
+      "sourceOrganizationKey": "tpa-asce",
+      "sourceOrganizationName": "Pearl Insurance",
+      "localOrganizationId": "tpa-asce",
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "observed-fixed-context-setup",
+      "siteKeys": [
+        "asce"
+      ],
+      "existingAssociationRows": [
+        {
+          "id": "american-society-of-civil-engineers",
+          "key": "american-society-of-civil-engineers",
+          "name": "American Society of Civil Engineers",
+          "sourceReference": "prototype:associations/american-society-of-civil-engineers"
+        },
+        {
+          "id": "mcr.association.asce.16",
+          "key": "mcr.association.asce.16",
+          "name": "ASCE\nAmerican Society of Civil Engineers",
+          "sourceReference": "Associations!A16:C16"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "avma",
+      "sourceKey": "avma",
+      "name": "American Veterinary Medical Association",
+      "sourceOrganizationId": "tpa-asce",
+      "sourceOrganizationKey": "tpa-asce",
+      "sourceOrganizationName": "Pearl Insurance",
+      "localOrganizationId": "tpa-avma",
+      "ownershipDiffersBetweenExports": true,
+      "proposedRole": "hosting-association",
+      "classification": "observed-fixed-context-setup",
+      "siteKeys": [
+        "avma"
+      ],
+      "existingAssociationRows": [
+        {
+          "id": "american-veterinary-medical-association",
+          "key": "american-veterinary-medical-association",
+          "name": "American Veterinary Medical Association",
+          "sourceReference": "prototype:associations/american-veterinary-medical-association"
+        },
+        {
+          "id": "mcr.association.avma.352",
+          "key": "mcr.association.avma.352",
+          "name": "AVMA LIFE Trust - \nBe sure to reference AVMA LIFE Trust in the website.  See Column D.  Their Logo is not adequate per NYL Legal without specifying Trust.",
+          "sourceReference": "Associations!A352:C352"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "csea",
+      "sourceKey": "csea",
+      "name": "CSEA Group Sponsored Insurance Program",
+      "sourceOrganizationId": "mcr.tpa.pca",
+      "sourceOrganizationKey": "mcr.tpa.pca",
+      "sourceOrganizationName": "Pearl Carroll & Associates, LLC",
+      "localOrganizationId": "tpa-csea",
+      "ownershipDiffersBetweenExports": true,
+      "proposedRole": "hosting-association",
+      "classification": "unresolved-site-association-context",
+      "siteKeys": [
+        "csea"
+      ],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.csea.60",
+          "key": "mcr.association.csea.60",
+          "name": "CSEA",
+          "sourceReference": "Associations!A60:C60"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "nso",
+      "sourceKey": "nso",
+      "name": "Nurses Services Organization",
+      "sourceOrganizationId": "mcr.tpa.asg",
+      "sourceOrganizationKey": "mcr.tpa.asg",
+      "sourceOrganizationName": "ASG",
+      "localOrganizationId": "tpa-nso",
+      "ownershipDiffersBetweenExports": true,
+      "proposedRole": "hosting-association",
+      "classification": "unresolved-site-association-context",
+      "siteKeys": [
+        "nso"
+      ],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.nso.356",
+          "key": "mcr.association.nso.356",
+          "name": "Nurses Services Organization",
+          "sourceReference": "Associations!A356:C356"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "isitrust",
+      "sourceKey": "isitrust",
+      "name": "Insurance Specialists, Inc.",
+      "sourceOrganizationId": "mcr.tpa.isi",
+      "sourceOrganizationKey": "mcr.tpa.isi",
+      "sourceOrganizationName": "ISI",
+      "localOrganizationId": "tpa-isitrust",
+      "ownershipDiffersBetweenExports": true,
+      "proposedRole": "hosting-association",
+      "classification": "observed-multi-association-site-setup",
+      "siteKeys": [
+        "isitrust"
+      ],
+      "existingAssociationRows": [
+        {
+          "id": "akron-bar-association",
+          "key": "akron-bar-association",
+          "name": "Akron Bar Association",
+          "sourceReference": "prototype:associations/akron-bar-association"
+        },
+        {
+          "id": "alabama-state-bar",
+          "key": "alabama-state-bar",
+          "name": "Alabama State Bar",
+          "sourceReference": "prototype:associations/alabama-state-bar"
+        },
+        {
+          "id": "american-mountain-guides-association",
+          "key": "american-mountain-guides-association",
+          "name": "American Mountain Guides Association",
+          "sourceReference": "prototype:associations/american-mountain-guides-association"
+        },
+        {
+          "id": "american-osteopathic-association",
+          "key": "american-osteopathic-association",
+          "name": "American Osteopathic Association",
+          "sourceReference": "prototype:associations/american-osteopathic-association"
+        },
+        {
+          "id": "american-society-of-acupuncturists",
+          "key": "american-society-of-acupuncturists",
+          "name": "American Society of Acupuncturists",
+          "sourceReference": "prototype:associations/american-society-of-acupuncturists"
+        },
+        {
+          "id": "atlanta-bar-association",
+          "key": "atlanta-bar-association",
+          "name": "Atlanta Bar Association",
+          "sourceReference": "prototype:associations/atlanta-bar-association"
+        },
+        {
+          "id": "bar-association-of-metropolitan-st-louis",
+          "key": "bar-association-of-metropolitan-st-louis",
+          "name": "Bar Association of Metropolitan St. Louis",
+          "sourceReference": "prototype:associations/bar-association-of-metropolitan-st-louis"
+        },
+        {
+          "id": "dekalb-bar-association",
+          "key": "dekalb-bar-association",
+          "name": "DeKalb Bar Association",
+          "sourceReference": "prototype:associations/dekalb-bar-association"
+        },
+        {
+          "id": "ga-trial-lawyers-association",
+          "key": "ga-trial-lawyers-association",
+          "name": "GA Trial Lawyers Association",
+          "sourceReference": "prototype:associations/ga-trial-lawyers-association"
+        },
+        {
+          "id": "indianapolis-bar-association",
+          "key": "indianapolis-bar-association",
+          "name": "Indianapolis Bar Association",
+          "sourceReference": "prototype:associations/indianapolis-bar-association"
+        },
+        {
+          "id": "kansas-bar-association",
+          "key": "kansas-bar-association",
+          "name": "Kansas Bar Association",
+          "sourceReference": "prototype:associations/kansas-bar-association"
+        },
+        {
+          "id": "los-angeles-county-bar-association",
+          "key": "los-angeles-county-bar-association",
+          "name": "Los Angeles County Bar Association",
+          "sourceReference": "prototype:associations/los-angeles-county-bar-association"
+        },
+        {
+          "id": "louisiana-dental-association",
+          "key": "louisiana-dental-association",
+          "name": "Louisiana Dental Association",
+          "sourceReference": "prototype:associations/louisiana-dental-association"
+        },
+        {
+          "id": "ma-nurses-association",
+          "key": "ma-nurses-association",
+          "name": "MA Nurses Association",
+          "sourceReference": "prototype:associations/ma-nurses-association"
+        },
+        {
+          "id": "ms-association-for-justice",
+          "key": "ms-association-for-justice",
+          "name": "MS Association for Justice",
+          "sourceReference": "prototype:associations/ms-association-for-justice"
+        },
+        {
+          "id": "ms-dental-association",
+          "key": "ms-dental-association",
+          "name": "MS Dental Association",
+          "sourceReference": "prototype:associations/ms-dental-association"
+        },
+        {
+          "id": "ms-society-of-cpas",
+          "key": "ms-society-of-cpas",
+          "name": "MS Society of CPAs",
+          "sourceReference": "prototype:associations/ms-society-of-cpas"
+        },
+        {
+          "id": "maricopa-county-bar-association",
+          "key": "maricopa-county-bar-association",
+          "name": "Maricopa County Bar Association",
+          "sourceReference": "prototype:associations/maricopa-county-bar-association"
+        },
+        {
+          "id": "missouri-society-of-cpas",
+          "key": "missouri-society-of-cpas",
+          "name": "Missouri Society of CPAs",
+          "sourceReference": "prototype:associations/missouri-society-of-cpas"
+        },
+        {
+          "id": "national-press-club",
+          "key": "national-press-club",
+          "name": "National Press Club",
+          "sourceReference": "prototype:associations/national-press-club"
+        },
+        {
+          "id": "new-haven-county-bar-association",
+          "key": "new-haven-county-bar-association",
+          "name": "New Haven County Bar Association",
+          "sourceReference": "prototype:associations/new-haven-county-bar-association"
+        },
+        {
+          "id": "orange-county-bar-association-of-ca",
+          "key": "orange-county-bar-association-of-ca",
+          "name": "Orange County Bar Association of CA",
+          "sourceReference": "prototype:associations/orange-county-bar-association-of-ca"
+        },
+        {
+          "id": "student-osteopathic-medical-association",
+          "key": "student-osteopathic-medical-association",
+          "name": "Student Osteopathic Medical Association",
+          "sourceReference": "prototype:associations/student-osteopathic-medical-association"
+        },
+        {
+          "id": "us-equestrian-federation",
+          "key": "us-equestrian-federation",
+          "name": "US Equestrian Federation",
+          "sourceReference": "prototype:associations/us-equestrian-federation"
+        },
+        {
+          "id": "usa-fencing",
+          "key": "usa-fencing",
+          "name": "USA Fencing",
+          "sourceReference": "prototype:associations/usa-fencing"
+        },
+        {
+          "id": "mcr.association.isi.387",
+          "key": "mcr.association.isi.387",
+          "name": "ISIExpress/ISITrust",
+          "sourceReference": "Associations!A387:C387"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "waepa",
+      "sourceKey": "waepa",
+      "name": "Worldwide Assurance for Employees of Public Agencies",
+      "sourceOrganizationId": "mcr.tpa.waepa",
+      "sourceOrganizationKey": "mcr.tpa.waepa",
+      "sourceOrganizationName": "Worldwide Assurance for Employees of Public Agencies, Inc.",
+      "localOrganizationId": "tpa-waepa",
+      "ownershipDiffersBetweenExports": true,
+      "proposedRole": "hosting-association",
+      "classification": "observed-fixed-context-setup",
+      "siteKeys": [
+        "waepa",
+        "waepa-gi"
+      ],
+      "existingAssociationRows": [
+        {
+          "id": "waepa",
+          "key": "waepa",
+          "name": "Worldwide Assurance for Employees of Public Agencies",
+          "sourceReference": "prototype:associations/waepa"
+        },
+        {
+          "id": "mcr.association.waepa.346",
+          "key": "mcr.association.waepa.346",
+          "name": "Worldwide Assurance for Employees of Public Agencies",
+          "sourceReference": "Associations!A346:C346"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.aafp",
+      "sourceKey": "mcr.client.aafp",
+      "name": "AAFP\nAmerican Academy of Family Physicians",
+      "sourceOrganizationId": "mcr.tpa.aafpis",
+      "sourceOrganizationKey": "mcr.tpa.aafpis",
+      "sourceOrganizationName": "AAFP Insurance Services, Inc.",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.aafp.2",
+          "key": "mcr.association.aafp.2",
+          "name": "AAFP\nAmerican Academy of Family Physicians",
+          "sourceReference": "Associations!A2:C2"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.aao",
+      "sourceKey": "mcr.client.aao",
+      "name": "AAO\nAmerican Association of Orthodontists",
+      "sourceOrganizationId": "mcr.tpa.lockton",
+      "sourceOrganizationKey": "mcr.tpa.lockton",
+      "sourceOrganizationName": "Lockton Affinity, LLC",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.aao.3",
+          "key": "mcr.association.aao.3",
+          "name": "AAO\nAmerican Association of Orthodontists",
+          "sourceReference": "Associations!A3:C3"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.aaosi",
+      "sourceKey": "mcr.client.aaosi",
+      "name": "AAO\nAmerican Association of Orthodontists",
+      "sourceOrganizationId": "mcr.tpa.lockton",
+      "sourceOrganizationKey": "mcr.tpa.lockton",
+      "sourceOrganizationName": "Lockton Affinity, LLC",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.aaosi.4",
+          "key": "mcr.association.aaosi.4",
+          "name": "AAO\nAmerican Association of Orthodontists",
+          "sourceReference": "Associations!A4:C4"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.aap",
+      "sourceKey": "mcr.client.aap",
+      "name": "AAP\nAmerican Academy of Pediatrics",
+      "sourceOrganizationId": "mcr.tpa.usi",
+      "sourceOrganizationKey": "mcr.tpa.usi",
+      "sourceOrganizationName": "USI Affinity",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.aap.5",
+          "key": "mcr.association.aap.5",
+          "name": "AAP\nAmerican Academy of Pediatrics",
+          "sourceReference": "Associations!A5:C5"
+        },
+        {
+          "id": "mcr.association.aap.6",
+          "key": "mcr.association.aap.6",
+          "name": "AAPGI\nAmerican Academy of Pediatrics",
+          "sourceReference": "Associations!A6:C6"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.achs",
+      "sourceKey": "mcr.client.achs",
+      "name": "AChs\nAmerican Chemical Society",
+      "sourceOrganizationId": "tpa-asce",
+      "sourceOrganizationKey": "tpa-asce",
+      "sourceOrganizationName": "Pearl Insurance",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.achs.9",
+          "key": "mcr.association.achs.9",
+          "name": "AChs\nAmerican Chemical Society",
+          "sourceReference": "Associations!A9:C9"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.achsgi",
+      "sourceKey": "mcr.client.achsgi",
+      "name": "AChs\nAmerican Chemical Society",
+      "sourceOrganizationId": "tpa-asce",
+      "sourceOrganizationKey": "tpa-asce",
+      "sourceOrganizationName": "Pearl Insurance",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.achsgi.10",
+          "key": "mcr.association.achsgi.10",
+          "name": "AChs\nAmerican Chemical Society",
+          "sourceReference": "Associations!A10:C10"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.achsncgi",
+      "sourceKey": "mcr.client.achsncgi",
+      "name": "AChs\nAmerican Chemical Society",
+      "sourceOrganizationId": "tpa-asce",
+      "sourceOrganizationKey": "tpa-asce",
+      "sourceOrganizationName": "Pearl Insurance",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.achsncgi.11",
+          "key": "mcr.association.achsncgi.11",
+          "name": "AChs\nAmerican Chemical Society",
+          "sourceReference": "Associations!A11:C11"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.acs",
+      "sourceKey": "mcr.client.acs",
+      "name": "ACS\nAmerican College of Surgeons\nACSQD - same info",
+      "sourceOrganizationId": "mcr.tpa.amwins",
+      "sourceOrganizationKey": "mcr.tpa.amwins",
+      "sourceOrganizationName": "AmWins",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.acs.12",
+          "key": "mcr.association.acs.12",
+          "name": "ACS\nAmerican College of Surgeons\nACSQD - same info",
+          "sourceReference": "Associations!A12:C12"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.acsinitiategi",
+      "sourceKey": "mcr.client.acsinitiategi",
+      "name": "ACSInitiateGI",
+      "sourceOrganizationId": "mcr.tpa.amwins",
+      "sourceOrganizationKey": "mcr.tpa.amwins",
+      "sourceOrganizationName": "AmWins",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.acsinitiategi.13",
+          "key": "mcr.association.acsinitiategi.13",
+          "name": "ACSInitiateGI",
+          "sourceReference": "Associations!A13:C13"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.acsposttraininggi",
+      "sourceKey": "mcr.client.acsposttraininggi",
+      "name": "ACSPostTrainingGI\n\nAmerican College of Surgeons",
+      "sourceOrganizationId": "mcr.tpa.amwins",
+      "sourceOrganizationKey": "mcr.tpa.amwins",
+      "sourceOrganizationName": "AmWins",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.acsposttraininggi.14",
+          "key": "mcr.association.acsposttraininggi.14",
+          "name": "ACSPostTrainingGI\n\nAmerican College of Surgeons",
+          "sourceReference": "Associations!A14:C14"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.ascegi",
+      "sourceKey": "mcr.client.ascegi",
+      "name": "ASCEGI\nAmerican Society of Civil Engineers",
+      "sourceOrganizationId": "tpa-asce",
+      "sourceOrganizationKey": "tpa-asce",
+      "sourceOrganizationName": "Pearl Insurance",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.ascegi.17",
+          "key": "mcr.association.ascegi.17",
+          "name": "ASCEGI\nAmerican Society of Civil Engineers",
+          "sourceReference": "Associations!A17:C17"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.ascencgi",
+      "sourceKey": "mcr.client.ascencgi",
+      "name": "ASCEGI\nAmerican Society of Civil Engineers",
+      "sourceOrganizationId": "tpa-asce",
+      "sourceOrganizationKey": "tpa-asce",
+      "sourceOrganizationName": "Pearl Insurance",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.ascencgi.18",
+          "key": "mcr.association.ascencgi.18",
+          "name": "ASCEGI\nAmerican Society of Civil Engineers",
+          "sourceReference": "Associations!A18:C18"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.caa",
+      "sourceKey": "mcr.client.caa",
+      "name": "CAA\nColumbia Alumni Association",
+      "sourceOrganizationId": "mcr.tpa.amwins",
+      "sourceOrganizationKey": "mcr.tpa.amwins",
+      "sourceOrganizationName": "AmWins",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.caa.19",
+          "key": "mcr.association.caa.19",
+          "name": "CAA\nColumbia Alumni Association",
+          "sourceReference": "Associations!A19:C19"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.caagi",
+      "sourceKey": "mcr.client.caagi",
+      "name": "CAA (GI)\nColumbia Alumni Association",
+      "sourceOrganizationId": "mcr.tpa.amwins",
+      "sourceOrganizationKey": "mcr.tpa.amwins",
+      "sourceOrganizationName": "AmWins",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.caagi.20",
+          "key": "mcr.association.caagi.20",
+          "name": "CAA (GI)\nColumbia Alumni Association",
+          "sourceReference": "Associations!A20:C20"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.crbg",
+      "sourceKey": "mcr.client.crbg",
+      "name": "CRBG\nCompass Benefits Group  (Federal Employees)",
+      "sourceOrganizationId": "mcr.tpa.crbg",
+      "sourceOrganizationKey": "mcr.tpa.crbg",
+      "sourceOrganizationName": "CRBG",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.crbg.21",
+          "key": "mcr.association.crbg.21",
+          "name": "CRBG\nCompass Benefits Group  (Federal Employees)",
+          "sourceReference": "Associations!A21:C21"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.nada",
+      "sourceKey": "mcr.client.nada",
+      "name": "NADA\nNational Automobile Dealers Association",
+      "sourceOrganizationId": "mcr.tpa.ftj",
+      "sourceOrganizationKey": "mcr.tpa.ftj",
+      "sourceOrganizationName": "FTJ",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.nada.22",
+          "key": "mcr.association.nada.22",
+          "name": "NADA\nNational Automobile Dealers Association",
+          "sourceReference": "Associations!A22:C22"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.nadaee",
+      "sourceKey": "mcr.client.nadaee",
+      "name": "NADA GI\nNational Automobile Dealers Association",
+      "sourceOrganizationId": "mcr.tpa.ftj",
+      "sourceOrganizationKey": "mcr.tpa.ftj",
+      "sourceOrganizationName": "FTJ",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.nadaee.23",
+          "key": "mcr.association.nadaee.23",
+          "name": "NADA GI\nNational Automobile Dealers Association",
+          "sourceReference": "Associations!A23:C23"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.okba",
+      "sourceKey": "mcr.client.okba",
+      "name": "OPIT\nOklahoma Professional Insurance Trust",
+      "sourceOrganizationId": "mcr.tpa.beale",
+      "sourceOrganizationKey": "mcr.tpa.beale",
+      "sourceOrganizationName": "Beale",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.okba.24",
+          "key": "mcr.association.okba.24",
+          "name": "OPIT\nOklahoma Professional Insurance Trust",
+          "sourceReference": "Associations!A24:C24"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.aiit",
+      "sourceKey": "mcr.client.aiit",
+      "name": "AIIT\nAppraisal Institute Insurance Trust\n(Formerly known as REAGIT\nReal Estate Appraisers Group Insurance Trust)",
+      "sourceOrganizationId": "tpa-asce",
+      "sourceOrganizationKey": "tpa-asce",
+      "sourceOrganizationName": "Pearl Insurance",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.aiit.25",
+          "key": "mcr.association.aiit.25",
+          "name": "AIIT\nAppraisal Institute Insurance Trust\n(Formerly known as REAGIT\nReal Estate Appraisers Group Insurance Trust)",
+          "sourceReference": "Associations!A25:C25"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.aiitgi",
+      "sourceKey": "mcr.client.aiitgi",
+      "name": "AIITGI",
+      "sourceOrganizationId": "tpa-asce",
+      "sourceOrganizationKey": "tpa-asce",
+      "sourceOrganizationName": "Pearl Insurance",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.aiitgi.26",
+          "key": "mcr.association.aiitgi.26",
+          "name": "AIITGI",
+          "sourceReference": "Associations!A26:C26"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.itp",
+      "sourceKey": "mcr.client.itp",
+      "name": "SASS",
+      "sourceOrganizationId": "mcr.tpa.hbi",
+      "sourceOrganizationKey": "mcr.tpa.hbi",
+      "sourceOrganizationName": "Hbi",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.itp.27",
+          "key": "mcr.association.itp.27",
+          "name": "SASS",
+          "sourceReference": "Associations!A27:C27"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.itpsi",
+      "sourceKey": "mcr.client.itpsi",
+      "name": "SASS-SI",
+      "sourceOrganizationId": "mcr.tpa.sass",
+      "sourceOrganizationKey": "mcr.tpa.sass",
+      "sourceOrganizationName": "Sass",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.itpsi.30",
+          "key": "mcr.association.itpsi.30",
+          "name": "SASS-SI",
+          "sourceReference": "Associations!A30:C30"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.spe",
+      "sourceKey": "mcr.client.spe",
+      "name": "SPE\nSociety of Petroleum Engineers",
+      "sourceOrganizationId": "mcr.tpa.agia",
+      "sourceOrganizationKey": "mcr.tpa.agia",
+      "sourceOrganizationName": "AGIA",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.spe.31",
+          "key": "mcr.association.spe.31",
+          "name": "SPE\nSociety of Petroleum Engineers",
+          "sourceReference": "Associations!A31:C31"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.txcpa",
+      "sourceKey": "mcr.client.txcpa",
+      "name": "TXCPA\nTexas Society of Certified Public Accountants",
+      "sourceOrganizationId": "mcr.tpa.ftj",
+      "sourceOrganizationKey": "mcr.tpa.ftj",
+      "sourceOrganizationName": "FTJ",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.txcpa.32",
+          "key": "mcr.association.txcpa.32",
+          "name": "TXCPA\nTexas Society of Certified Public Accountants",
+          "sourceReference": "Associations!A32:C32"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.ibm",
+      "sourceKey": "mcr.client.ibm",
+      "name": "IBM\nCredit Union Group Trust (LifeRing)",
+      "sourceOrganizationId": "mcr.tpa.amwins",
+      "sourceOrganizationKey": "mcr.tpa.amwins",
+      "sourceOrganizationName": "AmWins",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.ibm.33",
+          "key": "mcr.association.ibm.33",
+          "name": "IBM\nCredit Union Group Trust (LifeRing)",
+          "sourceReference": "Associations!A33:C33"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.apwudigi",
+      "sourceKey": "mcr.client.apwudigi",
+      "name": "American Postal Workers Union",
+      "sourceOrganizationId": "mcr.tpa.alliant",
+      "sourceOrganizationKey": "mcr.tpa.alliant",
+      "sourceOrganizationName": "Alliant",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.apwudigi.34",
+          "key": "mcr.association.apwudigi.34",
+          "name": "American Postal Workers Union",
+          "sourceReference": "Associations!A34:C34"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.geo",
+      "sourceKey": "mcr.client.geo",
+      "name": "GeoCare\nSociety of Economic Geologists",
+      "sourceOrganizationId": "mcr.tpa.agia",
+      "sourceOrganizationKey": "mcr.tpa.agia",
+      "sourceOrganizationName": "AGIA",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.geo.35",
+          "key": "mcr.association.geo.35",
+          "name": "GeoCare\nSociety of Economic Geologists",
+          "sourceReference": "Associations!A35:C35"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.apsit",
+      "sourceKey": "mcr.client.apsit",
+      "name": "APSIT\nAmerican Physical Society Insurance Trust",
+      "sourceOrganizationId": "tpa-asce",
+      "sourceOrganizationKey": "tpa-asce",
+      "sourceOrganizationName": "Pearl Insurance",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.apsit.46",
+          "key": "mcr.association.apsit.46",
+          "name": "APSIT\nAmerican Physical Society Insurance Trust",
+          "sourceReference": "Associations!A46:C46"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.cseacap",
+      "sourceKey": "mcr.client.cseacap",
+      "name": "CSEACAP",
+      "sourceOrganizationId": "mcr.tpa.pca",
+      "sourceOrganizationKey": "mcr.tpa.pca",
+      "sourceOrganizationName": "Pearl Carroll & Associates, LLC",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.cseacap.61",
+          "key": "mcr.association.cseacap.61",
+          "name": "CSEACAP",
+          "sourceReference": "Associations!A61:C61"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.lsba",
+      "sourceKey": "mcr.client.lsba",
+      "name": "Gilsbar\nLouisiana State Bar",
+      "sourceOrganizationId": "mcr.tpa.gilsbar",
+      "sourceOrganizationKey": "mcr.tpa.gilsbar",
+      "sourceOrganizationName": "Gilsbar",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.lsba.62",
+          "key": "mcr.association.lsba.62",
+          "name": "Gilsbar\nLouisiana State Bar",
+          "sourceReference": "Associations!A62:C62"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.tie",
+      "sourceKey": "mcr.client.tie",
+      "name": "TIE\nTrust for Insuring Educators",
+      "sourceOrganizationId": "mcr.tpa.ftj",
+      "sourceOrganizationKey": "mcr.tpa.ftj",
+      "sourceOrganizationName": "FTJ",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.tie.63",
+          "key": "mcr.association.tie.63",
+          "name": "TIE\nTrust for Insuring Educators",
+          "sourceReference": "Associations!A63:C63"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.nysba",
+      "sourceKey": "mcr.client.nysba",
+      "name": "NYSBA/NYSBAGI",
+      "sourceOrganizationId": "mcr.tpa.usi",
+      "sourceOrganizationKey": "mcr.tpa.usi",
+      "sourceOrganizationName": "USI Affinity",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.nysba.131",
+          "key": "mcr.association.nysba.131",
+          "name": "NYSBA/NYSBAGI",
+          "sourceReference": "Associations!A131:C131"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.oma",
+      "sourceKey": "mcr.client.oma",
+      "name": "Ontario Medical Association",
+      "sourceOrganizationId": "mcr.tpa.manulife",
+      "sourceOrganizationKey": "mcr.tpa.manulife",
+      "sourceOrganizationName": "Manulife",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.oma.132",
+          "key": "mcr.association.oma.132",
+          "name": "Ontario Medical Association",
+          "sourceReference": "Associations!A132:C132"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.agit",
+      "sourceKey": "mcr.client.agit",
+      "name": "Mercer  Alumni",
+      "sourceOrganizationId": "mcr.tpa.marsh-ares-amba-on-portal",
+      "sourceOrganizationKey": "mcr.tpa.marsh-ares-amba-on-portal",
+      "sourceOrganizationName": "Marsh-ARES\nAMBA- on Portal",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.agit.133",
+          "key": "mcr.association.agit.133",
+          "name": "Mercer  Alumni",
+          "sourceReference": "Associations!A133:C133"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.agitsi",
+      "sourceKey": "mcr.client.agitsi",
+      "name": "Mercer  Alumni - SI",
+      "sourceOrganizationId": "mcr.tpa.marsh",
+      "sourceOrganizationKey": "mcr.tpa.marsh",
+      "sourceOrganizationName": "Marsh",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.agitsi.195",
+          "key": "mcr.association.agitsi.195",
+          "name": "Mercer  Alumni - SI",
+          "sourceReference": "Associations!A195:C195"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.aia",
+      "sourceKey": "mcr.client.aia",
+      "name": "AIA Trust\nAmerican Institute of Architects Trust",
+      "sourceOrganizationId": "mcr.tpa.hbi",
+      "sourceOrganizationKey": "mcr.tpa.hbi",
+      "sourceOrganizationName": "Hbi",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.aia.227",
+          "key": "mcr.association.aia.227",
+          "name": "AIA Trust\nAmerican Institute of Architects Trust",
+          "sourceReference": "Associations!A227:C227"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.aiche",
+      "sourceKey": "mcr.client.aiche",
+      "name": "American Institute of Chemical Engineers",
+      "sourceOrganizationId": "mcr.tpa.asg",
+      "sourceOrganizationKey": "mcr.tpa.asg",
+      "sourceOrganizationName": "ASG",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.aiche.229",
+          "key": "mcr.association.aiche.229",
+          "name": "American Institute of Chemical Engineers",
+          "sourceReference": "Associations!A229:C229"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.akc",
+      "sourceKey": "mcr.client.akc",
+      "name": "Loyal Legacy Plan Administrator",
+      "sourceOrganizationId": "mcr.tpa.loyal-legacy-plan-administrator",
+      "sourceOrganizationKey": "mcr.tpa.loyal-legacy-plan-administrator",
+      "sourceOrganizationName": "Loyal Legacy Plan Administrator",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.akc.230",
+          "key": "mcr.association.akc.230",
+          "name": "Loyal Legacy Plan Administrator",
+          "sourceReference": "Associations!A230:C230"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.cap",
+      "sourceKey": "mcr.client.cap",
+      "name": "College of American Pathologists",
+      "sourceOrganizationId": "mcr.tpa.asg",
+      "sourceOrganizationKey": "mcr.tpa.asg",
+      "sourceOrganizationName": "ASG",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.cap.231",
+          "key": "mcr.association.cap.231",
+          "name": "College of American Pathologists",
+          "sourceReference": "Associations!A231:C231"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.cat",
+      "sourceKey": "mcr.client.cat",
+      "name": "Collegiate alumni Trust",
+      "sourceOrganizationId": "mcr.tpa.meyer",
+      "sourceOrganizationKey": "mcr.tpa.meyer",
+      "sourceOrganizationName": "Meyer",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.cat.232",
+          "key": "mcr.association.cat.232",
+          "name": "Collegiate alumni Trust",
+          "sourceReference": "Associations!A232:C232"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.catgi",
+      "sourceKey": "mcr.client.catgi",
+      "name": "Collegiate alumni Trust (GI)",
+      "sourceOrganizationId": "mcr.tpa.meyer",
+      "sourceOrganizationKey": "mcr.tpa.meyer",
+      "sourceOrganizationName": "Meyer",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.catgi.344",
+          "key": "mcr.association.catgi.344",
+          "name": "Collegiate alumni Trust (GI)",
+          "sourceReference": "Associations!A344:C344"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.waepagi",
+      "sourceKey": "mcr.client.waepagi",
+      "name": "Worldwide Assurance for Employees of Public Agencies",
+      "sourceOrganizationId": "mcr.tpa.waepa",
+      "sourceOrganizationKey": "mcr.tpa.waepa",
+      "sourceOrganizationName": "Worldwide Assurance for Employees of Public Agencies, Inc.",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.waepagi.347",
+          "key": "mcr.association.waepagi.347",
+          "name": "Worldwide Assurance for Employees of Public Agencies",
+          "sourceReference": "Associations!A347:C347"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.waepaconfgi",
+      "sourceKey": "mcr.client.waepaconfgi",
+      "name": "Worldwide Assurance for Employees of Public Agencies",
+      "sourceOrganizationId": "mcr.tpa.waepa",
+      "sourceOrganizationKey": "mcr.tpa.waepa",
+      "sourceOrganizationName": "Worldwide Assurance for Employees of Public Agencies, Inc.",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.waepaconfgi.348",
+          "key": "mcr.association.waepaconfgi.348",
+          "name": "Worldwide Assurance for Employees of Public Agencies",
+          "sourceReference": "Associations!A348:C348"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.waepaupgrade",
+      "sourceKey": "mcr.client.waepaupgrade",
+      "name": "Worldwide Assurance for Employees of Public Agencies",
+      "sourceOrganizationId": "mcr.tpa.waepa",
+      "sourceOrganizationKey": "mcr.tpa.waepa",
+      "sourceOrganizationName": "Worldwide Assurance for Employees of Public Agencies, Inc.",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.waepaupgrade.349",
+          "key": "mcr.association.waepaupgrade.349",
+          "name": "Worldwide Assurance for Employees of Public Agencies",
+          "sourceReference": "Associations!A349:C349"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.waepachildgi",
+      "sourceKey": "mcr.client.waepachildgi",
+      "name": "Worldwide Assurance for Employees of Public Agencies",
+      "sourceOrganizationId": "mcr.tpa.waepa",
+      "sourceOrganizationKey": "mcr.tpa.waepa",
+      "sourceOrganizationName": "Worldwide Assurance for Employees of Public Agencies, Inc.",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.waepachildgi.350",
+          "key": "mcr.association.waepachildgi.350",
+          "name": "Worldwide Assurance for Employees of Public Agencies",
+          "sourceReference": "Associations!A350:C350"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.apta",
+      "sourceKey": "mcr.client.apta",
+      "name": "American Physical Therapy Association",
+      "sourceOrganizationId": "mcr.tpa.asg",
+      "sourceOrganizationKey": "mcr.tpa.asg",
+      "sourceOrganizationName": "ASG",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.apta.351",
+          "key": "mcr.association.apta.351",
+          "name": "American Physical Therapy Association",
+          "sourceReference": "Associations!A351:C351"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.avmalifegi",
+      "sourceKey": "mcr.client.avmalifegi",
+      "name": "AVMA LIFE Trust",
+      "sourceOrganizationId": "tpa-asce",
+      "sourceOrganizationKey": "tpa-asce",
+      "sourceOrganizationName": "Pearl Insurance",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.avmalifegi.353",
+          "key": "mcr.association.avmalifegi.353",
+          "name": "AVMA LIFE Trust",
+          "sourceReference": "Associations!A353:C353"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.avmalifetrustgrad",
+      "sourceKey": "mcr.client.avmalifetrustgrad",
+      "name": "AVMA LIFE Trust",
+      "sourceOrganizationId": "tpa-asce",
+      "sourceOrganizationKey": "tpa-asce",
+      "sourceOrganizationName": "Pearl Insurance",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.avmalifetrustgrad.354",
+          "key": "mcr.association.avmalifetrustgrad.354",
+          "name": "AVMA LIFE Trust",
+          "sourceReference": "Associations!A354:C354"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.avmastudent",
+      "sourceKey": "mcr.client.avmastudent",
+      "name": "AVMA LIFE Trust",
+      "sourceOrganizationId": "tpa-asce",
+      "sourceOrganizationKey": "tpa-asce",
+      "sourceOrganizationName": "Pearl Insurance",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.avmastudent.355",
+          "key": "mcr.association.avmastudent.355",
+          "name": "AVMA LIFE Trust",
+          "sourceReference": "Associations!A355:C355"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.hpso",
+      "sourceKey": "mcr.client.hpso",
+      "name": "Healthcare Providers Service Organization",
+      "sourceOrganizationId": "mcr.tpa.asg",
+      "sourceOrganizationKey": "mcr.tpa.asg",
+      "sourceOrganizationName": "ASG",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.hpso.357",
+          "key": "mcr.association.hpso.357",
+          "name": "Healthcare Providers Service Organization",
+          "sourceReference": "Associations!A357:C357"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.nspe",
+      "sourceKey": "mcr.client.nspe",
+      "name": "NSPE\nNational Society of Professional Engineers",
+      "sourceOrganizationId": "tpa-asce",
+      "sourceOrganizationKey": "tpa-asce",
+      "sourceOrganizationName": "Pearl Insurance",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.nspe.358",
+          "key": "mcr.association.nspe.358",
+          "name": "NSPE\nNational Society of Professional Engineers",
+          "sourceReference": "Associations!A358:C358"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.aoa",
+      "sourceKey": "mcr.client.aoa",
+      "name": "AOA\nAmerican Optometric Association",
+      "sourceOrganizationId": "mcr.tpa.agia-az",
+      "sourceOrganizationKey": "mcr.tpa.agia-az",
+      "sourceOrganizationName": "AGIA AZ",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.aoa.359",
+          "key": "mcr.association.aoa.359",
+          "name": "AOA\nAmerican Optometric Association",
+          "sourceReference": "Associations!A359:C359"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.ruaa",
+      "sourceKey": "mcr.client.ruaa",
+      "name": "Rutgers University Alumni Associciation",
+      "sourceOrganizationId": "mcr.tpa.selman",
+      "sourceOrganizationKey": "mcr.tpa.selman",
+      "sourceOrganizationName": "Selman",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.ruaa.360",
+          "key": "mcr.association.ruaa.360",
+          "name": "Rutgers University Alumni Associciation",
+          "sourceReference": "Associations!A360:C360"
+        },
+        {
+          "id": "mcr.association.ruaa.361",
+          "key": "mcr.association.ruaa.361",
+          "name": "Rutgers University Alumni Associciation\n(RUAAGI)",
+          "sourceReference": "Associations!A361:C361"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.calsea",
+      "sourceKey": "mcr.client.calsea",
+      "name": "CSEA California State Employees Association",
+      "sourceOrganizationId": "mcr.tpa.agia",
+      "sourceOrganizationKey": "mcr.tpa.agia",
+      "sourceOrganizationName": "AGIA",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.calsea.362",
+          "key": "mcr.association.calsea.362",
+          "name": "CSEA California State Employees Association",
+          "sourceReference": "Associations!A362:C362"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.calsearet",
+      "sourceKey": "mcr.client.calsearet",
+      "name": "CSEA California State Employees Association",
+      "sourceOrganizationId": "mcr.tpa.agia",
+      "sourceOrganizationKey": "mcr.tpa.agia",
+      "sourceOrganizationName": "AGIA",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.calsearet.363",
+          "key": "mcr.association.calsearet.363",
+          "name": "CSEA California State Employees Association",
+          "sourceReference": "Associations!A363:C363"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.ieee",
+      "sourceKey": "mcr.client.ieee",
+      "name": "IEEE",
+      "sourceOrganizationId": "mcr.tpa.amba",
+      "sourceOrganizationKey": "mcr.tpa.amba",
+      "sourceOrganizationName": "AMBA",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.ieee.364",
+          "key": "mcr.association.ieee.364",
+          "name": "IEEE",
+          "sourceReference": "Associations!A364:C364"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.acog",
+      "sourceKey": "mcr.client.acog",
+      "name": "ACOG",
+      "sourceOrganizationId": "tpa-asce",
+      "sourceOrganizationKey": "tpa-asce",
+      "sourceOrganizationName": "Pearl Insurance",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.acog.365",
+          "key": "mcr.association.acog.365",
+          "name": "ACOG",
+          "sourceReference": "Associations!A365:C365"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.calbar",
+      "sourceKey": "mcr.client.calbar",
+      "name": "Cal Bar",
+      "sourceOrganizationId": "mcr.tpa.amba",
+      "sourceOrganizationKey": "mcr.tpa.amba",
+      "sourceOrganizationName": "AMBA",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.calbar.366",
+          "key": "mcr.association.calbar.366",
+          "name": "Cal Bar",
+          "sourceReference": "Associations!A366:C366"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.aana",
+      "sourceKey": "mcr.client.aana",
+      "name": "American Association of Nurse Anesthesis",
+      "sourceOrganizationId": "mcr.tpa.hbi",
+      "sourceOrganizationKey": "mcr.tpa.hbi",
+      "sourceOrganizationName": "Hbi",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.aana.367",
+          "key": "mcr.association.aana.367",
+          "name": "American Association of Nurse Anesthesis",
+          "sourceReference": "Associations!A367:C367"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.crnastudent",
+      "sourceKey": "mcr.client.crnastudent",
+      "name": "AANA (CRNA Program)",
+      "sourceOrganizationId": "mcr.tpa.hbi",
+      "sourceOrganizationKey": "mcr.tpa.hbi",
+      "sourceOrganizationName": "Hbi",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.crnastudent.368",
+          "key": "mcr.association.crnastudent.368",
+          "name": "AANA (CRNA Program)",
+          "sourceReference": "Associations!A368:C368"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.nycla",
+      "sourceKey": "mcr.client.nycla",
+      "name": "New York County Lawyers Association",
+      "sourceOrganizationId": "mcr.tpa.asg",
+      "sourceOrganizationKey": "mcr.tpa.asg",
+      "sourceOrganizationName": "ASG",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.nycla.369",
+          "key": "mcr.association.nycla.369",
+          "name": "New York County Lawyers Association",
+          "sourceReference": "Associations!A369:C369"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.aad",
+      "sourceKey": "mcr.client.aad",
+      "name": "American Academy of Dermatology",
+      "sourceOrganizationId": "mcr.tpa.asg",
+      "sourceOrganizationKey": "mcr.tpa.asg",
+      "sourceOrganizationName": "ASG",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.aad.370",
+          "key": "mcr.association.aad.370",
+          "name": "American Academy of Dermatology",
+          "sourceReference": "Associations!A370:C370"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.acp",
+      "sourceKey": "mcr.client.acp",
+      "name": "Amerrican College of Physians",
+      "sourceOrganizationId": "mcr.tpa.agia",
+      "sourceOrganizationKey": "mcr.tpa.agia",
+      "sourceOrganizationName": "AGIA",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.acp.371",
+          "key": "mcr.association.acp.371",
+          "name": "Amerrican College of Physians",
+          "sourceReference": "Associations!A371:C371"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.asme",
+      "sourceKey": "mcr.client.asme",
+      "name": "The American Society of Mechanical Engineers",
+      "sourceOrganizationId": "mcr.tpa.marsh-now-amba",
+      "sourceOrganizationKey": "mcr.tpa.marsh-now-amba",
+      "sourceOrganizationName": "Marsh(now AMBA)",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.asme.372",
+          "key": "mcr.association.asme.372",
+          "name": "The American Society of Mechanical Engineers",
+          "sourceReference": "Associations!A372:C372"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.asmegi",
+      "sourceKey": "mcr.client.asmegi",
+      "name": "The American Society of Mechanical Engineers",
+      "sourceOrganizationId": "mcr.tpa.amba",
+      "sourceOrganizationKey": "mcr.tpa.amba",
+      "sourceOrganizationName": "AMBA",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.asmegi.373",
+          "key": "mcr.association.asmegi.373",
+          "name": "The American Society of Mechanical Engineers",
+          "sourceReference": "Associations!A373:C373"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.nar",
+      "sourceKey": "mcr.client.nar",
+      "name": "National Association of REALTORS®",
+      "sourceOrganizationId": "mcr.tpa.instpa",
+      "sourceOrganizationKey": "mcr.tpa.instpa",
+      "sourceOrganizationName": "InsTPA",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.nar.374",
+          "key": "mcr.association.nar.374",
+          "name": "National Association of REALTORS®",
+          "sourceReference": "Associations!A374:C374"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.nargi",
+      "sourceKey": "mcr.client.nargi",
+      "name": "National Association of REALTORS®",
+      "sourceOrganizationId": "mcr.tpa.instpa",
+      "sourceOrganizationKey": "mcr.tpa.instpa",
+      "sourceOrganizationName": "InsTPA",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.nargi.375",
+          "key": "mcr.association.nargi.375",
+          "name": "National Association of REALTORS®",
+          "sourceReference": "Associations!A375:C375"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.lifehelp",
+      "sourceKey": "mcr.client.lifehelp",
+      "name": "LifeHelp",
+      "sourceOrganizationId": "mcr.tpa.lifehelp",
+      "sourceOrganizationKey": "mcr.tpa.lifehelp",
+      "sourceOrganizationName": "LifeHelp",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.lifehelp.376",
+          "key": "mcr.association.lifehelp.376",
+          "name": "LifeHelp",
+          "sourceReference": "Associations!A376:C376"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.apwu",
+      "sourceKey": "mcr.client.apwu",
+      "name": "American Postal Workers Union",
+      "sourceOrganizationId": "mcr.tpa.alliant",
+      "sourceOrganizationKey": "mcr.tpa.alliant",
+      "sourceOrganizationName": "Alliant",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.apwu.377",
+          "key": "mcr.association.apwu.377",
+          "name": "American Postal Workers Union",
+          "sourceReference": "Associations!A377:C377"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.apwuadd",
+      "sourceKey": "mcr.client.apwuadd",
+      "name": "American Postal Workers Union",
+      "sourceOrganizationId": "mcr.tpa.alliant",
+      "sourceOrganizationKey": "mcr.tpa.alliant",
+      "sourceOrganizationName": "Alliant",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.apwuadd.378",
+          "key": "mcr.association.apwuadd.378",
+          "name": "American Postal Workers Union",
+          "sourceReference": "Associations!A378:C378"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.aptagradassist",
+      "sourceKey": "mcr.client.aptagradassist",
+      "name": "American Physical Therapy Association",
+      "sourceOrganizationId": "mcr.tpa.asg",
+      "sourceOrganizationKey": "mcr.tpa.asg",
+      "sourceOrganizationName": "ASG",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.aptagradassist.379",
+          "key": "mcr.association.aptagradassist.379",
+          "name": "American Physical Therapy Association",
+          "sourceReference": "Associations!A379:C379"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.acep",
+      "sourceKey": "mcr.client.acep",
+      "name": "American College of Emergency Physicians",
+      "sourceOrganizationId": "mcr.tpa.hbi",
+      "sourceOrganizationKey": "mcr.tpa.hbi",
+      "sourceOrganizationName": "Hbi",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.acep.381",
+          "key": "mcr.association.acep.381",
+          "name": "American College of Emergency Physicians",
+          "sourceReference": "Associations!A381:C381"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.aaop",
+      "sourceKey": "mcr.client.aaop",
+      "name": "AAOp",
+      "sourceOrganizationId": "mcr.tpa.marsh",
+      "sourceOrganizationKey": "mcr.tpa.marsh",
+      "sourceOrganizationName": "Marsh",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.aaop.382",
+          "key": "mcr.association.aaop.382",
+          "name": "AAOp",
+          "sourceReference": "Associations!A382:C382"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.nysscpa",
+      "sourceKey": "mcr.client.nysscpa",
+      "name": "NYSSCPA",
+      "sourceOrganizationId": "tpa-asce",
+      "sourceOrganizationKey": "tpa-asce",
+      "sourceOrganizationName": "Pearl Insurance",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.nysscpa.383",
+          "key": "mcr.association.nysscpa.383",
+          "name": "NYSSCPA",
+          "sourceReference": "Associations!A383:C383"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.aptagi",
+      "sourceKey": "mcr.client.aptagi",
+      "name": "American Physical Therapy Association (APTA)",
+      "sourceOrganizationId": "mcr.tpa.asg",
+      "sourceOrganizationKey": "mcr.tpa.asg",
+      "sourceOrganizationName": "ASG",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.aptagi.384",
+          "key": "mcr.association.aptagi.384",
+          "name": "American Physical Therapy Association (APTA)",
+          "sourceReference": "Associations!A384:C384"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.asae",
+      "sourceKey": "mcr.client.asae",
+      "name": "ASAE",
+      "sourceOrganizationId": "mcr.tpa.aon",
+      "sourceOrganizationKey": "mcr.tpa.aon",
+      "sourceOrganizationName": "AON",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.asae.385",
+          "key": "mcr.association.asae.385",
+          "name": "ASAE",
+          "sourceReference": "Associations!A385:C385"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.atpe",
+      "sourceKey": "mcr.client.atpe",
+      "name": "ISI - ATPE",
+      "sourceOrganizationId": "mcr.tpa.isi",
+      "sourceOrganizationKey": "mcr.tpa.isi",
+      "sourceOrganizationName": "ISI",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.atpe.388",
+          "key": "mcr.association.atpe.388",
+          "name": "ISI - ATPE",
+          "sourceReference": "Associations!A388:C388"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.ncsfa",
+      "sourceKey": "mcr.client.ncsfa",
+      "name": "ISI - NCSFA",
+      "sourceOrganizationId": "mcr.tpa.isi",
+      "sourceOrganizationKey": "mcr.tpa.isi",
+      "sourceOrganizationName": "ISI",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.ncsfa.389",
+          "key": "mcr.association.ncsfa.389",
+          "name": "ISI - NCSFA",
+          "sourceReference": "Associations!A389:C389"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.auic",
+      "sourceKey": "mcr.client.auic",
+      "name": "Association of United Internet Consumers",
+      "sourceOrganizationId": "mcr.tpa.instpa",
+      "sourceOrganizationKey": "mcr.tpa.instpa",
+      "sourceOrganizationName": "InsTPA",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.auic.390",
+          "key": "mcr.association.auic.390",
+          "name": "Association of United Internet Consumers",
+          "sourceReference": "Associations!A390:C390"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.apharm",
+      "sourceKey": "mcr.client.apharm",
+      "name": "Apharm",
+      "sourceOrganizationId": "mcr.tpa.aon",
+      "sourceOrganizationKey": "mcr.tpa.aon",
+      "sourceOrganizationName": "AON",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.apharm.391",
+          "key": "mcr.association.apharm.391",
+          "name": "Apharm",
+          "sourceReference": "Associations!A391:C391"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.roa",
+      "sourceKey": "mcr.client.roa",
+      "name": "Reserve Organization of America",
+      "sourceOrganizationId": "mcr.tpa.amba",
+      "sourceOrganizationKey": "mcr.tpa.amba",
+      "sourceOrganizationName": "AMBA",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.roa.392",
+          "key": "mcr.association.roa.392",
+          "name": "Reserve Organization of America",
+          "sourceReference": "Associations!A392:C392"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.moaa",
+      "sourceKey": "mcr.client.moaa",
+      "name": "MOAA",
+      "sourceOrganizationId": "mcr.tpa.amba",
+      "sourceOrganizationKey": "mcr.tpa.amba",
+      "sourceOrganizationName": "AMBA",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.moaa.393",
+          "key": "mcr.association.moaa.393",
+          "name": "MOAA",
+          "sourceReference": "Associations!A393:C393"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.npmhu",
+      "sourceKey": "mcr.client.npmhu",
+      "name": "National Postal Mail Handlers Union",
+      "sourceOrganizationId": "mcr.tpa.alliant",
+      "sourceOrganizationKey": "mcr.tpa.alliant",
+      "sourceOrganizationName": "Alliant",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.npmhu.394",
+          "key": "mcr.association.npmhu.394",
+          "name": "National Postal Mail Handlers Union",
+          "sourceReference": "Associations!A394:C394"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.baer",
+      "sourceKey": "mcr.client.baer",
+      "name": "CSFEWBC",
+      "sourceOrganizationId": "mcr.tpa.selman",
+      "sourceOrganizationKey": "mcr.tpa.selman",
+      "sourceOrganizationName": "Selman",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.baer.395",
+          "key": "mcr.association.baer.395",
+          "name": "CSFEWBC",
+          "sourceReference": "Associations!A395:C395"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.usba",
+      "sourceKey": "mcr.client.usba",
+      "name": "USBA",
+      "sourceOrganizationId": "mcr.tpa.usba",
+      "sourceOrganizationKey": "mcr.tpa.usba",
+      "sourceOrganizationName": "USBA",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.usba.396",
+          "key": "mcr.association.usba.396",
+          "name": "USBA",
+          "sourceReference": "Associations!A396:C396"
+        },
+        {
+          "id": "mcr.association.usba.397",
+          "key": "mcr.association.usba.397",
+          "name": "IEEEWL",
+          "sourceReference": "Associations!A397:C397"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    },
+    {
+      "sourceTable": "clients",
+      "sourceId": "mcr.client.amta",
+      "sourceKey": "mcr.client.amta",
+      "name": "American Massage Therapy Association",
+      "sourceOrganizationId": "mcr.tpa.agia",
+      "sourceOrganizationKey": "mcr.tpa.agia",
+      "sourceOrganizationName": "AGIA",
+      "localOrganizationId": null,
+      "ownershipDiffersBetweenExports": false,
+      "proposedRole": "hosting-association",
+      "classification": "source-only-no-site-do-not-activate",
+      "siteKeys": [],
+      "existingAssociationRows": [
+        {
+          "id": "mcr.association.amta.398",
+          "key": "mcr.association.amta.398",
+          "name": "American Massage Therapy Association",
+          "sourceReference": "Associations!A398:C398"
+        }
+      ],
+      "mappedIdentityStatus": "candidate-key-only-no-deployed-uuid-or-merge-established"
+    }
+  ],
+  "existingAssociationRows": [
+    {
+      "sourceTable": "associations",
+      "sourceId": "american-medical-association",
+      "sourceKey": "american-medical-association",
+      "sourceHostingKey": "ama",
+      "name": "American Medical Association",
+      "sourceReference": "prototype:associations/american-medical-association",
+      "observedRole": "fixed-association-context-profile",
+      "proposedAction": "candidate-alias-or-profile-of-hosting-association-preserve-source-id",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "ama",
+          "context": "fixed-context-no-selector",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "american-society-of-civil-engineers",
+      "sourceKey": "american-society-of-civil-engineers",
+      "sourceHostingKey": "asce",
+      "name": "American Society of Civil Engineers",
+      "sourceReference": "prototype:associations/american-society-of-civil-engineers",
+      "observedRole": "fixed-association-context-profile",
+      "proposedAction": "candidate-alias-or-profile-of-hosting-association-preserve-source-id",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "asce",
+          "context": "fixed-context-no-selector",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "american-veterinary-medical-association",
+      "sourceKey": "american-veterinary-medical-association",
+      "sourceHostingKey": "avma",
+      "name": "American Veterinary Medical Association",
+      "sourceReference": "prototype:associations/american-veterinary-medical-association",
+      "observedRole": "fixed-association-context-profile",
+      "proposedAction": "candidate-alias-or-profile-of-hosting-association-preserve-source-id",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "avma",
+          "context": "fixed-context-no-selector",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "waepa",
+      "sourceKey": "waepa",
+      "sourceHostingKey": "waepa",
+      "name": "Worldwide Assurance for Employees of Public Agencies",
+      "sourceReference": "prototype:associations/waepa",
+      "observedRole": "fixed-association-context-profile",
+      "proposedAction": "candidate-alias-or-profile-of-hosting-association-preserve-source-id",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "waepa",
+          "context": "fixed-context-no-selector",
+          "enabled": true
+        },
+        {
+          "siteKey": "waepa-gi",
+          "context": "fixed-context-no-selector",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "akron-bar-association",
+      "sourceKey": "akron-bar-association",
+      "sourceHostingKey": "isitrust",
+      "name": "Akron Bar Association",
+      "sourceReference": "prototype:associations/akron-bar-association",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "alabama-state-bar",
+      "sourceKey": "alabama-state-bar",
+      "sourceHostingKey": "isitrust",
+      "name": "Alabama State Bar",
+      "sourceReference": "prototype:associations/alabama-state-bar",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "american-mountain-guides-association",
+      "sourceKey": "american-mountain-guides-association",
+      "sourceHostingKey": "isitrust",
+      "name": "American Mountain Guides Association",
+      "sourceReference": "prototype:associations/american-mountain-guides-association",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "american-osteopathic-association",
+      "sourceKey": "american-osteopathic-association",
+      "sourceHostingKey": "isitrust",
+      "name": "American Osteopathic Association",
+      "sourceReference": "prototype:associations/american-osteopathic-association",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "american-society-of-acupuncturists",
+      "sourceKey": "american-society-of-acupuncturists",
+      "sourceHostingKey": "isitrust",
+      "name": "American Society of Acupuncturists",
+      "sourceReference": "prototype:associations/american-society-of-acupuncturists",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "atlanta-bar-association",
+      "sourceKey": "atlanta-bar-association",
+      "sourceHostingKey": "isitrust",
+      "name": "Atlanta Bar Association",
+      "sourceReference": "prototype:associations/atlanta-bar-association",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "bar-association-of-metropolitan-st-louis",
+      "sourceKey": "bar-association-of-metropolitan-st-louis",
+      "sourceHostingKey": "isitrust",
+      "name": "Bar Association of Metropolitan St. Louis",
+      "sourceReference": "prototype:associations/bar-association-of-metropolitan-st-louis",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "dekalb-bar-association",
+      "sourceKey": "dekalb-bar-association",
+      "sourceHostingKey": "isitrust",
+      "name": "DeKalb Bar Association",
+      "sourceReference": "prototype:associations/dekalb-bar-association",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "ga-trial-lawyers-association",
+      "sourceKey": "ga-trial-lawyers-association",
+      "sourceHostingKey": "isitrust",
+      "name": "GA Trial Lawyers Association",
+      "sourceReference": "prototype:associations/ga-trial-lawyers-association",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "indianapolis-bar-association",
+      "sourceKey": "indianapolis-bar-association",
+      "sourceHostingKey": "isitrust",
+      "name": "Indianapolis Bar Association",
+      "sourceReference": "prototype:associations/indianapolis-bar-association",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "kansas-bar-association",
+      "sourceKey": "kansas-bar-association",
+      "sourceHostingKey": "isitrust",
+      "name": "Kansas Bar Association",
+      "sourceReference": "prototype:associations/kansas-bar-association",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "los-angeles-county-bar-association",
+      "sourceKey": "los-angeles-county-bar-association",
+      "sourceHostingKey": "isitrust",
+      "name": "Los Angeles County Bar Association",
+      "sourceReference": "prototype:associations/los-angeles-county-bar-association",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "louisiana-dental-association",
+      "sourceKey": "louisiana-dental-association",
+      "sourceHostingKey": "isitrust",
+      "name": "Louisiana Dental Association",
+      "sourceReference": "prototype:associations/louisiana-dental-association",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "ma-nurses-association",
+      "sourceKey": "ma-nurses-association",
+      "sourceHostingKey": "isitrust",
+      "name": "MA Nurses Association",
+      "sourceReference": "prototype:associations/ma-nurses-association",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "ms-association-for-justice",
+      "sourceKey": "ms-association-for-justice",
+      "sourceHostingKey": "isitrust",
+      "name": "MS Association for Justice",
+      "sourceReference": "prototype:associations/ms-association-for-justice",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "ms-dental-association",
+      "sourceKey": "ms-dental-association",
+      "sourceHostingKey": "isitrust",
+      "name": "MS Dental Association",
+      "sourceReference": "prototype:associations/ms-dental-association",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "ms-society-of-cpas",
+      "sourceKey": "ms-society-of-cpas",
+      "sourceHostingKey": "isitrust",
+      "name": "MS Society of CPAs",
+      "sourceReference": "prototype:associations/ms-society-of-cpas",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "maricopa-county-bar-association",
+      "sourceKey": "maricopa-county-bar-association",
+      "sourceHostingKey": "isitrust",
+      "name": "Maricopa County Bar Association",
+      "sourceReference": "prototype:associations/maricopa-county-bar-association",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "missouri-society-of-cpas",
+      "sourceKey": "missouri-society-of-cpas",
+      "sourceHostingKey": "isitrust",
+      "name": "Missouri Society of CPAs",
+      "sourceReference": "prototype:associations/missouri-society-of-cpas",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "national-press-club",
+      "sourceKey": "national-press-club",
+      "sourceHostingKey": "isitrust",
+      "name": "National Press Club",
+      "sourceReference": "prototype:associations/national-press-club",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "new-haven-county-bar-association",
+      "sourceKey": "new-haven-county-bar-association",
+      "sourceHostingKey": "isitrust",
+      "name": "New Haven County Bar Association",
+      "sourceReference": "prototype:associations/new-haven-county-bar-association",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "orange-county-bar-association-of-ca",
+      "sourceKey": "orange-county-bar-association-of-ca",
+      "sourceHostingKey": "isitrust",
+      "name": "Orange County Bar Association of CA",
+      "sourceReference": "prototype:associations/orange-county-bar-association-of-ca",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "student-osteopathic-medical-association",
+      "sourceKey": "student-osteopathic-medical-association",
+      "sourceHostingKey": "isitrust",
+      "name": "Student Osteopathic Medical Association",
+      "sourceReference": "prototype:associations/student-osteopathic-medical-association",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "us-equestrian-federation",
+      "sourceKey": "us-equestrian-federation",
+      "sourceHostingKey": "isitrust",
+      "name": "US Equestrian Federation",
+      "sourceReference": "prototype:associations/us-equestrian-federation",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "usa-fencing",
+      "sourceKey": "usa-fencing",
+      "sourceHostingKey": "isitrust",
+      "name": "USA Fencing",
+      "sourceReference": "prototype:associations/usa-fencing",
+      "observedRole": "association-offered-on-multi-association-site",
+      "proposedAction": "candidate-separate-association-with-explicit-membership-link",
+      "mergeAuthorized": false,
+      "assignments": [
+        {
+          "siteKey": "isitrust",
+          "context": "multi-association-context",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.aafp.2",
+      "sourceKey": "mcr.association.aafp.2",
+      "sourceHostingKey": "mcr.client.aafp",
+      "name": "AAFP\nAmerican Academy of Family Physicians",
+      "sourceReference": "Associations!A2:C2",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.aao.3",
+      "sourceKey": "mcr.association.aao.3",
+      "sourceHostingKey": "mcr.client.aao",
+      "name": "AAO\nAmerican Association of Orthodontists",
+      "sourceReference": "Associations!A3:C3",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.aaosi.4",
+      "sourceKey": "mcr.association.aaosi.4",
+      "sourceHostingKey": "mcr.client.aaosi",
+      "name": "AAO\nAmerican Association of Orthodontists",
+      "sourceReference": "Associations!A4:C4",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.aap.5",
+      "sourceKey": "mcr.association.aap.5",
+      "sourceHostingKey": "mcr.client.aap",
+      "name": "AAP\nAmerican Academy of Pediatrics",
+      "sourceReference": "Associations!A5:C5",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.aap.6",
+      "sourceKey": "mcr.association.aap.6",
+      "sourceHostingKey": "mcr.client.aap",
+      "name": "AAPGI\nAmerican Academy of Pediatrics",
+      "sourceReference": "Associations!A6:C6",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.abe.7",
+      "sourceKey": "mcr.association.abe.7",
+      "sourceHostingKey": "abe",
+      "name": "ABE\nAmerican Bar Association",
+      "sourceReference": "Associations!A7:C7",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.abe.8",
+      "sourceKey": "mcr.association.abe.8",
+      "sourceHostingKey": "abe",
+      "name": "ABE\nAmerican Bar Association",
+      "sourceReference": "Associations!A8:C8",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.achs.9",
+      "sourceKey": "mcr.association.achs.9",
+      "sourceHostingKey": "mcr.client.achs",
+      "name": "AChs\nAmerican Chemical Society",
+      "sourceReference": "Associations!A9:C9",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.achsgi.10",
+      "sourceKey": "mcr.association.achsgi.10",
+      "sourceHostingKey": "mcr.client.achsgi",
+      "name": "AChs\nAmerican Chemical Society",
+      "sourceReference": "Associations!A10:C10",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.achsncgi.11",
+      "sourceKey": "mcr.association.achsncgi.11",
+      "sourceHostingKey": "mcr.client.achsncgi",
+      "name": "AChs\nAmerican Chemical Society",
+      "sourceReference": "Associations!A11:C11",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.acs.12",
+      "sourceKey": "mcr.association.acs.12",
+      "sourceHostingKey": "mcr.client.acs",
+      "name": "ACS\nAmerican College of Surgeons\nACSQD - same info",
+      "sourceReference": "Associations!A12:C12",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.acsinitiategi.13",
+      "sourceKey": "mcr.association.acsinitiategi.13",
+      "sourceHostingKey": "mcr.client.acsinitiategi",
+      "name": "ACSInitiateGI",
+      "sourceReference": "Associations!A13:C13",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.acsposttraininggi.14",
+      "sourceKey": "mcr.association.acsposttraininggi.14",
+      "sourceHostingKey": "mcr.client.acsposttraininggi",
+      "name": "ACSPostTrainingGI\n\nAmerican College of Surgeons",
+      "sourceReference": "Associations!A14:C14",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.ama.15",
+      "sourceKey": "mcr.association.ama.15",
+      "sourceHostingKey": "ama",
+      "name": "AMA\nAmerican Medical Association\n\nAMAGI and SI",
+      "sourceReference": "Associations!A15:C15",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.asce.16",
+      "sourceKey": "mcr.association.asce.16",
+      "sourceHostingKey": "asce",
+      "name": "ASCE\nAmerican Society of Civil Engineers",
+      "sourceReference": "Associations!A16:C16",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.ascegi.17",
+      "sourceKey": "mcr.association.ascegi.17",
+      "sourceHostingKey": "mcr.client.ascegi",
+      "name": "ASCEGI\nAmerican Society of Civil Engineers",
+      "sourceReference": "Associations!A17:C17",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.ascencgi.18",
+      "sourceKey": "mcr.association.ascencgi.18",
+      "sourceHostingKey": "mcr.client.ascencgi",
+      "name": "ASCEGI\nAmerican Society of Civil Engineers",
+      "sourceReference": "Associations!A18:C18",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.caa.19",
+      "sourceKey": "mcr.association.caa.19",
+      "sourceHostingKey": "mcr.client.caa",
+      "name": "CAA\nColumbia Alumni Association",
+      "sourceReference": "Associations!A19:C19",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.caagi.20",
+      "sourceKey": "mcr.association.caagi.20",
+      "sourceHostingKey": "mcr.client.caagi",
+      "name": "CAA (GI)\nColumbia Alumni Association",
+      "sourceReference": "Associations!A20:C20",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.crbg.21",
+      "sourceKey": "mcr.association.crbg.21",
+      "sourceHostingKey": "mcr.client.crbg",
+      "name": "CRBG\nCompass Benefits Group  (Federal Employees)",
+      "sourceReference": "Associations!A21:C21",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.nada.22",
+      "sourceKey": "mcr.association.nada.22",
+      "sourceHostingKey": "mcr.client.nada",
+      "name": "NADA\nNational Automobile Dealers Association",
+      "sourceReference": "Associations!A22:C22",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.nadaee.23",
+      "sourceKey": "mcr.association.nadaee.23",
+      "sourceHostingKey": "mcr.client.nadaee",
+      "name": "NADA GI\nNational Automobile Dealers Association",
+      "sourceReference": "Associations!A23:C23",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.okba.24",
+      "sourceKey": "mcr.association.okba.24",
+      "sourceHostingKey": "mcr.client.okba",
+      "name": "OPIT\nOklahoma Professional Insurance Trust",
+      "sourceReference": "Associations!A24:C24",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.aiit.25",
+      "sourceKey": "mcr.association.aiit.25",
+      "sourceHostingKey": "mcr.client.aiit",
+      "name": "AIIT\nAppraisal Institute Insurance Trust\n(Formerly known as REAGIT\nReal Estate Appraisers Group Insurance Trust)",
+      "sourceReference": "Associations!A25:C25",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.aiitgi.26",
+      "sourceKey": "mcr.association.aiitgi.26",
+      "sourceHostingKey": "mcr.client.aiitgi",
+      "name": "AIITGI",
+      "sourceReference": "Associations!A26:C26",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.itp.27",
+      "sourceKey": "mcr.association.itp.27",
+      "sourceHostingKey": "mcr.client.itp",
+      "name": "SASS",
+      "sourceReference": "Associations!A27:C27",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.itpsi.30",
+      "sourceKey": "mcr.association.itpsi.30",
+      "sourceHostingKey": "mcr.client.itpsi",
+      "name": "SASS-SI",
+      "sourceReference": "Associations!A30:C30",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.spe.31",
+      "sourceKey": "mcr.association.spe.31",
+      "sourceHostingKey": "mcr.client.spe",
+      "name": "SPE\nSociety of Petroleum Engineers",
+      "sourceReference": "Associations!A31:C31",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.txcpa.32",
+      "sourceKey": "mcr.association.txcpa.32",
+      "sourceHostingKey": "mcr.client.txcpa",
+      "name": "TXCPA\nTexas Society of Certified Public Accountants",
+      "sourceReference": "Associations!A32:C32",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.ibm.33",
+      "sourceKey": "mcr.association.ibm.33",
+      "sourceHostingKey": "mcr.client.ibm",
+      "name": "IBM\nCredit Union Group Trust (LifeRing)",
+      "sourceReference": "Associations!A33:C33",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.apwudigi.34",
+      "sourceKey": "mcr.association.apwudigi.34",
+      "sourceHostingKey": "mcr.client.apwudigi",
+      "name": "American Postal Workers Union",
+      "sourceReference": "Associations!A34:C34",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.geo.35",
+      "sourceKey": "mcr.association.geo.35",
+      "sourceHostingKey": "mcr.client.geo",
+      "name": "GeoCare\nSociety of Economic Geologists",
+      "sourceReference": "Associations!A35:C35",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.apsit.46",
+      "sourceKey": "mcr.association.apsit.46",
+      "sourceHostingKey": "mcr.client.apsit",
+      "name": "APSIT\nAmerican Physical Society Insurance Trust",
+      "sourceReference": "Associations!A46:C46",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.csea.60",
+      "sourceKey": "mcr.association.csea.60",
+      "sourceHostingKey": "csea",
+      "name": "CSEA",
+      "sourceReference": "Associations!A60:C60",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.cseacap.61",
+      "sourceKey": "mcr.association.cseacap.61",
+      "sourceHostingKey": "mcr.client.cseacap",
+      "name": "CSEACAP",
+      "sourceReference": "Associations!A61:C61",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.lsba.62",
+      "sourceKey": "mcr.association.lsba.62",
+      "sourceHostingKey": "mcr.client.lsba",
+      "name": "Gilsbar\nLouisiana State Bar",
+      "sourceReference": "Associations!A62:C62",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.tie.63",
+      "sourceKey": "mcr.association.tie.63",
+      "sourceHostingKey": "mcr.client.tie",
+      "name": "TIE\nTrust for Insuring Educators",
+      "sourceReference": "Associations!A63:C63",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.nysba.131",
+      "sourceKey": "mcr.association.nysba.131",
+      "sourceHostingKey": "mcr.client.nysba",
+      "name": "NYSBA/NYSBAGI",
+      "sourceReference": "Associations!A131:C131",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.oma.132",
+      "sourceKey": "mcr.association.oma.132",
+      "sourceHostingKey": "mcr.client.oma",
+      "name": "Ontario Medical Association",
+      "sourceReference": "Associations!A132:C132",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.agit.133",
+      "sourceKey": "mcr.association.agit.133",
+      "sourceHostingKey": "mcr.client.agit",
+      "name": "Mercer  Alumni",
+      "sourceReference": "Associations!A133:C133",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.agitsi.195",
+      "sourceKey": "mcr.association.agitsi.195",
+      "sourceHostingKey": "mcr.client.agitsi",
+      "name": "Mercer  Alumni - SI",
+      "sourceReference": "Associations!A195:C195",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.aia.227",
+      "sourceKey": "mcr.association.aia.227",
+      "sourceHostingKey": "mcr.client.aia",
+      "name": "AIA Trust\nAmerican Institute of Architects Trust",
+      "sourceReference": "Associations!A227:C227",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.aiche.229",
+      "sourceKey": "mcr.association.aiche.229",
+      "sourceHostingKey": "mcr.client.aiche",
+      "name": "American Institute of Chemical Engineers",
+      "sourceReference": "Associations!A229:C229",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.akc.230",
+      "sourceKey": "mcr.association.akc.230",
+      "sourceHostingKey": "mcr.client.akc",
+      "name": "Loyal Legacy Plan Administrator",
+      "sourceReference": "Associations!A230:C230",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.cap.231",
+      "sourceKey": "mcr.association.cap.231",
+      "sourceHostingKey": "mcr.client.cap",
+      "name": "College of American Pathologists",
+      "sourceReference": "Associations!A231:C231",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.cat.232",
+      "sourceKey": "mcr.association.cat.232",
+      "sourceHostingKey": "mcr.client.cat",
+      "name": "Collegiate alumni Trust",
+      "sourceReference": "Associations!A232:C232",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.catgi.344",
+      "sourceKey": "mcr.association.catgi.344",
+      "sourceHostingKey": "mcr.client.catgi",
+      "name": "Collegiate alumni Trust (GI)",
+      "sourceReference": "Associations!A344:C344",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.waepa.346",
+      "sourceKey": "mcr.association.waepa.346",
+      "sourceHostingKey": "waepa",
+      "name": "Worldwide Assurance for Employees of Public Agencies",
+      "sourceReference": "Associations!A346:C346",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.waepagi.347",
+      "sourceKey": "mcr.association.waepagi.347",
+      "sourceHostingKey": "mcr.client.waepagi",
+      "name": "Worldwide Assurance for Employees of Public Agencies",
+      "sourceReference": "Associations!A347:C347",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.waepaconfgi.348",
+      "sourceKey": "mcr.association.waepaconfgi.348",
+      "sourceHostingKey": "mcr.client.waepaconfgi",
+      "name": "Worldwide Assurance for Employees of Public Agencies",
+      "sourceReference": "Associations!A348:C348",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.waepaupgrade.349",
+      "sourceKey": "mcr.association.waepaupgrade.349",
+      "sourceHostingKey": "mcr.client.waepaupgrade",
+      "name": "Worldwide Assurance for Employees of Public Agencies",
+      "sourceReference": "Associations!A349:C349",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.waepachildgi.350",
+      "sourceKey": "mcr.association.waepachildgi.350",
+      "sourceHostingKey": "mcr.client.waepachildgi",
+      "name": "Worldwide Assurance for Employees of Public Agencies",
+      "sourceReference": "Associations!A350:C350",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.apta.351",
+      "sourceKey": "mcr.association.apta.351",
+      "sourceHostingKey": "mcr.client.apta",
+      "name": "American Physical Therapy Association",
+      "sourceReference": "Associations!A351:C351",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.avma.352",
+      "sourceKey": "mcr.association.avma.352",
+      "sourceHostingKey": "avma",
+      "name": "AVMA LIFE Trust - \nBe sure to reference AVMA LIFE Trust in the website.  See Column D.  Their Logo is not adequate per NYL Legal without specifying Trust.",
+      "sourceReference": "Associations!A352:C352",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.avmalifegi.353",
+      "sourceKey": "mcr.association.avmalifegi.353",
+      "sourceHostingKey": "mcr.client.avmalifegi",
+      "name": "AVMA LIFE Trust",
+      "sourceReference": "Associations!A353:C353",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.avmalifetrustgrad.354",
+      "sourceKey": "mcr.association.avmalifetrustgrad.354",
+      "sourceHostingKey": "mcr.client.avmalifetrustgrad",
+      "name": "AVMA LIFE Trust",
+      "sourceReference": "Associations!A354:C354",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.avmastudent.355",
+      "sourceKey": "mcr.association.avmastudent.355",
+      "sourceHostingKey": "mcr.client.avmastudent",
+      "name": "AVMA LIFE Trust",
+      "sourceReference": "Associations!A355:C355",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.nso.356",
+      "sourceKey": "mcr.association.nso.356",
+      "sourceHostingKey": "nso",
+      "name": "Nurses Services Organization",
+      "sourceReference": "Associations!A356:C356",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.hpso.357",
+      "sourceKey": "mcr.association.hpso.357",
+      "sourceHostingKey": "mcr.client.hpso",
+      "name": "Healthcare Providers Service Organization",
+      "sourceReference": "Associations!A357:C357",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.nspe.358",
+      "sourceKey": "mcr.association.nspe.358",
+      "sourceHostingKey": "mcr.client.nspe",
+      "name": "NSPE\nNational Society of Professional Engineers",
+      "sourceReference": "Associations!A358:C358",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.aoa.359",
+      "sourceKey": "mcr.association.aoa.359",
+      "sourceHostingKey": "mcr.client.aoa",
+      "name": "AOA\nAmerican Optometric Association",
+      "sourceReference": "Associations!A359:C359",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.ruaa.360",
+      "sourceKey": "mcr.association.ruaa.360",
+      "sourceHostingKey": "mcr.client.ruaa",
+      "name": "Rutgers University Alumni Associciation",
+      "sourceReference": "Associations!A360:C360",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.ruaa.361",
+      "sourceKey": "mcr.association.ruaa.361",
+      "sourceHostingKey": "mcr.client.ruaa",
+      "name": "Rutgers University Alumni Associciation\n(RUAAGI)",
+      "sourceReference": "Associations!A361:C361",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.calsea.362",
+      "sourceKey": "mcr.association.calsea.362",
+      "sourceHostingKey": "mcr.client.calsea",
+      "name": "CSEA California State Employees Association",
+      "sourceReference": "Associations!A362:C362",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.calsearet.363",
+      "sourceKey": "mcr.association.calsearet.363",
+      "sourceHostingKey": "mcr.client.calsearet",
+      "name": "CSEA California State Employees Association",
+      "sourceReference": "Associations!A363:C363",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.ieee.364",
+      "sourceKey": "mcr.association.ieee.364",
+      "sourceHostingKey": "mcr.client.ieee",
+      "name": "IEEE",
+      "sourceReference": "Associations!A364:C364",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.acog.365",
+      "sourceKey": "mcr.association.acog.365",
+      "sourceHostingKey": "mcr.client.acog",
+      "name": "ACOG",
+      "sourceReference": "Associations!A365:C365",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.calbar.366",
+      "sourceKey": "mcr.association.calbar.366",
+      "sourceHostingKey": "mcr.client.calbar",
+      "name": "Cal Bar",
+      "sourceReference": "Associations!A366:C366",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.aana.367",
+      "sourceKey": "mcr.association.aana.367",
+      "sourceHostingKey": "mcr.client.aana",
+      "name": "American Association of Nurse Anesthesis",
+      "sourceReference": "Associations!A367:C367",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.crnastudent.368",
+      "sourceKey": "mcr.association.crnastudent.368",
+      "sourceHostingKey": "mcr.client.crnastudent",
+      "name": "AANA (CRNA Program)",
+      "sourceReference": "Associations!A368:C368",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.nycla.369",
+      "sourceKey": "mcr.association.nycla.369",
+      "sourceHostingKey": "mcr.client.nycla",
+      "name": "New York County Lawyers Association",
+      "sourceReference": "Associations!A369:C369",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.aad.370",
+      "sourceKey": "mcr.association.aad.370",
+      "sourceHostingKey": "mcr.client.aad",
+      "name": "American Academy of Dermatology",
+      "sourceReference": "Associations!A370:C370",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.acp.371",
+      "sourceKey": "mcr.association.acp.371",
+      "sourceHostingKey": "mcr.client.acp",
+      "name": "Amerrican College of Physians",
+      "sourceReference": "Associations!A371:C371",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.asme.372",
+      "sourceKey": "mcr.association.asme.372",
+      "sourceHostingKey": "mcr.client.asme",
+      "name": "The American Society of Mechanical Engineers",
+      "sourceReference": "Associations!A372:C372",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.asmegi.373",
+      "sourceKey": "mcr.association.asmegi.373",
+      "sourceHostingKey": "mcr.client.asmegi",
+      "name": "The American Society of Mechanical Engineers",
+      "sourceReference": "Associations!A373:C373",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.nar.374",
+      "sourceKey": "mcr.association.nar.374",
+      "sourceHostingKey": "mcr.client.nar",
+      "name": "National Association of REALTORS®",
+      "sourceReference": "Associations!A374:C374",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.nargi.375",
+      "sourceKey": "mcr.association.nargi.375",
+      "sourceHostingKey": "mcr.client.nargi",
+      "name": "National Association of REALTORS®",
+      "sourceReference": "Associations!A375:C375",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.lifehelp.376",
+      "sourceKey": "mcr.association.lifehelp.376",
+      "sourceHostingKey": "mcr.client.lifehelp",
+      "name": "LifeHelp",
+      "sourceReference": "Associations!A376:C376",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.apwu.377",
+      "sourceKey": "mcr.association.apwu.377",
+      "sourceHostingKey": "mcr.client.apwu",
+      "name": "American Postal Workers Union",
+      "sourceReference": "Associations!A377:C377",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.apwuadd.378",
+      "sourceKey": "mcr.association.apwuadd.378",
+      "sourceHostingKey": "mcr.client.apwuadd",
+      "name": "American Postal Workers Union",
+      "sourceReference": "Associations!A378:C378",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.aptagradassist.379",
+      "sourceKey": "mcr.association.aptagradassist.379",
+      "sourceHostingKey": "mcr.client.aptagradassist",
+      "name": "American Physical Therapy Association",
+      "sourceReference": "Associations!A379:C379",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.acep.381",
+      "sourceKey": "mcr.association.acep.381",
+      "sourceHostingKey": "mcr.client.acep",
+      "name": "American College of Emergency Physicians",
+      "sourceReference": "Associations!A381:C381",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.aaop.382",
+      "sourceKey": "mcr.association.aaop.382",
+      "sourceHostingKey": "mcr.client.aaop",
+      "name": "AAOp",
+      "sourceReference": "Associations!A382:C382",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.nysscpa.383",
+      "sourceKey": "mcr.association.nysscpa.383",
+      "sourceHostingKey": "mcr.client.nysscpa",
+      "name": "NYSSCPA",
+      "sourceReference": "Associations!A383:C383",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.aptagi.384",
+      "sourceKey": "mcr.association.aptagi.384",
+      "sourceHostingKey": "mcr.client.aptagi",
+      "name": "American Physical Therapy Association (APTA)",
+      "sourceReference": "Associations!A384:C384",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.asae.385",
+      "sourceKey": "mcr.association.asae.385",
+      "sourceHostingKey": "mcr.client.asae",
+      "name": "ASAE",
+      "sourceReference": "Associations!A385:C385",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.isi.387",
+      "sourceKey": "mcr.association.isi.387",
+      "sourceHostingKey": "isitrust",
+      "name": "ISIExpress/ISITrust",
+      "sourceReference": "Associations!A387:C387",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.atpe.388",
+      "sourceKey": "mcr.association.atpe.388",
+      "sourceHostingKey": "mcr.client.atpe",
+      "name": "ISI - ATPE",
+      "sourceReference": "Associations!A388:C388",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.ncsfa.389",
+      "sourceKey": "mcr.association.ncsfa.389",
+      "sourceHostingKey": "mcr.client.ncsfa",
+      "name": "ISI - NCSFA",
+      "sourceReference": "Associations!A389:C389",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.auic.390",
+      "sourceKey": "mcr.association.auic.390",
+      "sourceHostingKey": "mcr.client.auic",
+      "name": "Association of United Internet Consumers",
+      "sourceReference": "Associations!A390:C390",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.apharm.391",
+      "sourceKey": "mcr.association.apharm.391",
+      "sourceHostingKey": "mcr.client.apharm",
+      "name": "Apharm",
+      "sourceReference": "Associations!A391:C391",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.roa.392",
+      "sourceKey": "mcr.association.roa.392",
+      "sourceHostingKey": "mcr.client.roa",
+      "name": "Reserve Organization of America",
+      "sourceReference": "Associations!A392:C392",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.moaa.393",
+      "sourceKey": "mcr.association.moaa.393",
+      "sourceHostingKey": "mcr.client.moaa",
+      "name": "MOAA",
+      "sourceReference": "Associations!A393:C393",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.npmhu.394",
+      "sourceKey": "mcr.association.npmhu.394",
+      "sourceHostingKey": "mcr.client.npmhu",
+      "name": "National Postal Mail Handlers Union",
+      "sourceReference": "Associations!A394:C394",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.baer.395",
+      "sourceKey": "mcr.association.baer.395",
+      "sourceHostingKey": "mcr.client.baer",
+      "name": "CSFEWBC",
+      "sourceReference": "Associations!A395:C395",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.usba.396",
+      "sourceKey": "mcr.association.usba.396",
+      "sourceHostingKey": "mcr.client.usba",
+      "name": "USBA",
+      "sourceReference": "Associations!A396:C396",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.usba.397",
+      "sourceKey": "mcr.association.usba.397",
+      "sourceHostingKey": "mcr.client.usba",
+      "name": "IEEEWL",
+      "sourceReference": "Associations!A397:C397",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    },
+    {
+      "sourceTable": "associations",
+      "sourceId": "mcr.association.amta.398",
+      "sourceKey": "mcr.association.amta.398",
+      "sourceHostingKey": "mcr.client.amta",
+      "name": "American Massage Therapy Association",
+      "sourceReference": "Associations!A398:C398",
+      "observedRole": "unassigned-evidence-or-definition",
+      "proposedAction": "preserve-unresolved-do-not-promote-to-membership-choice",
+      "mergeAuthorized": false,
+      "assignments": []
+    }
+  ],
+  "sites": [
+    {
+      "sourceId": "demo",
+      "siteKey": "demo",
+      "sourceOwnerKey": "demo",
+      "proposedHostingAssociationKey": "demo",
+      "pageTemplateType": "multi",
+      "existingAssociationSelection": null,
+      "associationContext": "not-configured-do-not-infer",
+      "evidenceStatus": "repository-observation-only",
+      "assignedAssociations": [],
+      "applicationSelectionLimit": 1
+    },
+    {
+      "sourceId": "abe",
+      "siteKey": "abe",
+      "sourceOwnerKey": "abe",
+      "proposedHostingAssociationKey": "abe",
+      "pageTemplateType": "multi",
+      "existingAssociationSelection": null,
+      "associationContext": "not-configured-do-not-infer",
+      "evidenceStatus": "repository-observation-only",
+      "assignedAssociations": [],
+      "applicationSelectionLimit": 1
+    },
+    {
+      "sourceId": "ama",
+      "siteKey": "ama",
+      "sourceOwnerKey": "ama",
+      "proposedHostingAssociationKey": "ama",
+      "pageTemplateType": "multi",
+      "existingAssociationSelection": {
+        "mode": "fixed",
+        "fixedAssociationId": "american-medical-association"
+      },
+      "associationContext": "fixed-context-no-selector",
+      "evidenceStatus": "single-association-business-confirmed",
+      "assignedAssociations": [
+        {
+          "sourceId": "ama--american-medical-association",
+          "assignmentKey": "ama--american-medical-association",
+          "associationKey": "american-medical-association",
+          "enabled": true
+        }
+      ],
+      "applicationSelectionLimit": 1
+    },
+    {
+      "sourceId": "asce",
+      "siteKey": "asce",
+      "sourceOwnerKey": "asce",
+      "proposedHostingAssociationKey": "asce",
+      "pageTemplateType": "multi",
+      "existingAssociationSelection": {
+        "mode": "fixed",
+        "fixedAssociationId": "american-society-of-civil-engineers"
+      },
+      "associationContext": "fixed-context-no-selector",
+      "evidenceStatus": "repository-observation-only",
+      "assignedAssociations": [
+        {
+          "sourceId": "asce--american-society-of-civil-engineers",
+          "assignmentKey": "asce--american-society-of-civil-engineers",
+          "associationKey": "american-society-of-civil-engineers",
+          "enabled": true
+        }
+      ],
+      "applicationSelectionLimit": 1
+    },
+    {
+      "sourceId": "avma",
+      "siteKey": "avma",
+      "sourceOwnerKey": "avma",
+      "proposedHostingAssociationKey": "avma",
+      "pageTemplateType": "multi",
+      "existingAssociationSelection": {
+        "mode": "fixed",
+        "fixedAssociationId": "american-veterinary-medical-association"
+      },
+      "associationContext": "fixed-context-no-selector",
+      "evidenceStatus": "repository-observation-only",
+      "assignedAssociations": [
+        {
+          "sourceId": "avma--american-veterinary-medical-association",
+          "assignmentKey": "avma--american-veterinary-medical-association",
+          "associationKey": "american-veterinary-medical-association",
+          "enabled": true
+        }
+      ],
+      "applicationSelectionLimit": 1
+    },
+    {
+      "sourceId": "csea",
+      "siteKey": "csea",
+      "sourceOwnerKey": "csea",
+      "proposedHostingAssociationKey": "csea",
+      "pageTemplateType": "single",
+      "existingAssociationSelection": null,
+      "associationContext": "not-configured-do-not-infer",
+      "evidenceStatus": "repository-observation-only",
+      "assignedAssociations": [],
+      "applicationSelectionLimit": 1
+    },
+    {
+      "sourceId": "nso",
+      "siteKey": "nso",
+      "sourceOwnerKey": "nso",
+      "proposedHostingAssociationKey": "nso",
+      "pageTemplateType": "multi",
+      "existingAssociationSelection": null,
+      "associationContext": "not-configured-do-not-infer",
+      "evidenceStatus": "repository-observation-only",
+      "assignedAssociations": [],
+      "applicationSelectionLimit": 1
+    },
+    {
+      "sourceId": "isitrust",
+      "siteKey": "isitrust",
+      "sourceOwnerKey": "isitrust",
+      "proposedHostingAssociationKey": "isitrust",
+      "pageTemplateType": "multi",
+      "existingAssociationSelection": {
+        "mode": "select"
+      },
+      "associationContext": "multi-association-context",
+      "evidenceStatus": "repository-observation-only",
+      "assignedAssociations": [
+        {
+          "sourceId": "isitrust--akron-bar-association",
+          "assignmentKey": "isitrust--akron-bar-association",
+          "associationKey": "akron-bar-association",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--alabama-state-bar",
+          "assignmentKey": "isitrust--alabama-state-bar",
+          "associationKey": "alabama-state-bar",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--american-mountain-guides-association",
+          "assignmentKey": "isitrust--american-mountain-guides-association",
+          "associationKey": "american-mountain-guides-association",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--american-osteopathic-association",
+          "assignmentKey": "isitrust--american-osteopathic-association",
+          "associationKey": "american-osteopathic-association",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--american-society-of-acupuncturists",
+          "assignmentKey": "isitrust--american-society-of-acupuncturists",
+          "associationKey": "american-society-of-acupuncturists",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--atlanta-bar-association",
+          "assignmentKey": "isitrust--atlanta-bar-association",
+          "associationKey": "atlanta-bar-association",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--bar-association-of-metropolitan-st-louis",
+          "assignmentKey": "isitrust--bar-association-of-metropolitan-st-louis",
+          "associationKey": "bar-association-of-metropolitan-st-louis",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--dekalb-bar-association",
+          "assignmentKey": "isitrust--dekalb-bar-association",
+          "associationKey": "dekalb-bar-association",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--ga-trial-lawyers-association",
+          "assignmentKey": "isitrust--ga-trial-lawyers-association",
+          "associationKey": "ga-trial-lawyers-association",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--indianapolis-bar-association",
+          "assignmentKey": "isitrust--indianapolis-bar-association",
+          "associationKey": "indianapolis-bar-association",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--kansas-bar-association",
+          "assignmentKey": "isitrust--kansas-bar-association",
+          "associationKey": "kansas-bar-association",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--los-angeles-county-bar-association",
+          "assignmentKey": "isitrust--los-angeles-county-bar-association",
+          "associationKey": "los-angeles-county-bar-association",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--louisiana-dental-association",
+          "assignmentKey": "isitrust--louisiana-dental-association",
+          "associationKey": "louisiana-dental-association",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--ma-nurses-association",
+          "assignmentKey": "isitrust--ma-nurses-association",
+          "associationKey": "ma-nurses-association",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--ms-association-for-justice",
+          "assignmentKey": "isitrust--ms-association-for-justice",
+          "associationKey": "ms-association-for-justice",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--ms-dental-association",
+          "assignmentKey": "isitrust--ms-dental-association",
+          "associationKey": "ms-dental-association",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--ms-society-of-cpas",
+          "assignmentKey": "isitrust--ms-society-of-cpas",
+          "associationKey": "ms-society-of-cpas",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--maricopa-county-bar-association",
+          "assignmentKey": "isitrust--maricopa-county-bar-association",
+          "associationKey": "maricopa-county-bar-association",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--missouri-society-of-cpas",
+          "assignmentKey": "isitrust--missouri-society-of-cpas",
+          "associationKey": "missouri-society-of-cpas",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--national-press-club",
+          "assignmentKey": "isitrust--national-press-club",
+          "associationKey": "national-press-club",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--new-haven-county-bar-association",
+          "assignmentKey": "isitrust--new-haven-county-bar-association",
+          "associationKey": "new-haven-county-bar-association",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--orange-county-bar-association-of-ca",
+          "assignmentKey": "isitrust--orange-county-bar-association-of-ca",
+          "associationKey": "orange-county-bar-association-of-ca",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--student-osteopathic-medical-association",
+          "assignmentKey": "isitrust--student-osteopathic-medical-association",
+          "associationKey": "student-osteopathic-medical-association",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--us-equestrian-federation",
+          "assignmentKey": "isitrust--us-equestrian-federation",
+          "associationKey": "us-equestrian-federation",
+          "enabled": true
+        },
+        {
+          "sourceId": "isitrust--usa-fencing",
+          "assignmentKey": "isitrust--usa-fencing",
+          "associationKey": "usa-fencing",
+          "enabled": true
+        }
+      ],
+      "applicationSelectionLimit": 1
+    },
+    {
+      "sourceId": "waepa",
+      "siteKey": "waepa",
+      "sourceOwnerKey": "waepa",
+      "proposedHostingAssociationKey": "waepa",
+      "pageTemplateType": "multi",
+      "existingAssociationSelection": {
+        "mode": "fixed",
+        "fixedAssociationId": "waepa"
+      },
+      "associationContext": "fixed-context-no-selector",
+      "evidenceStatus": "repository-observation-only",
+      "assignedAssociations": [
+        {
+          "sourceId": "waepa--waepa",
+          "assignmentKey": "waepa--waepa",
+          "associationKey": "waepa",
+          "enabled": true
+        }
+      ],
+      "applicationSelectionLimit": 1
+    },
+    {
+      "sourceId": "waepa-gi",
+      "siteKey": "waepa-gi",
+      "sourceOwnerKey": "waepa",
+      "proposedHostingAssociationKey": "waepa",
+      "pageTemplateType": "single",
+      "existingAssociationSelection": {
+        "mode": "fixed",
+        "fixedAssociationId": "waepa"
+      },
+      "associationContext": "fixed-context-no-selector",
+      "evidenceStatus": "repository-observation-only",
+      "assignedAssociations": [
+        {
+          "sourceId": "waepa-gi--waepa",
+          "assignmentKey": "waepa-gi--waepa",
+          "associationKey": "waepa",
+          "enabled": true
+        }
+      ],
+      "applicationSelectionLimit": 1
+    }
+  ],
+  "scalarImpact": [
+    {
+      "table": "analytics_measurements",
+      "column": "client_id",
+      "source": "supabase/migrations/202609240002_analytics_domain.sql:12",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "applicants",
+      "column": "client_id",
+      "source": "supabase/migrations/202610120002_application_relationships.sql:9",
+      "proposedMeaning": "Applicant tenant context: hosting versus actual Association ownership still requires an application-model decision"
+    },
+    {
+      "table": "application_applicants",
+      "column": "client_id",
+      "source": "supabase/migrations/202610120002_application_relationships.sql:21",
+      "proposedMeaning": "Applicant tenant context: hosting versus actual Association ownership still requires an application-model decision"
+    },
+    {
+      "table": "associations",
+      "column": "client_key",
+      "source": "supabase/migrations/202609240003_portal_library.sql:15",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "branding_profiles",
+      "column": "client_key",
+      "source": "supabase/migrations/202609240003_portal_library.sql:352",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "client_environment_links",
+      "column": "client_key",
+      "source": "supabase/migrations/202609280001_canonical_normalization.sql:709",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "clients",
+      "column": "organization_id",
+      "source": "supabase/migrations/202609240001_initial_portal_schema.sql:13",
+      "proposedMeaning": "TPA ownership on the hosting Association"
+    },
+    {
+      "table": "configuration_values",
+      "column": "client_key",
+      "source": "supabase/migrations/202609240003_portal_library.sql:324",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "content_values",
+      "column": "client_key",
+      "source": "supabase/migrations/202609240003_portal_library.sql:338",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "flag_assignments",
+      "column": "client_key",
+      "source": "supabase/migrations/202609280001_canonical_normalization.sql:99",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "migration_schedules",
+      "column": "client_key",
+      "source": "supabase/migrations/202610050001_migration_schedule.sql:2",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "pattern_assignments",
+      "column": "client_key",
+      "source": "supabase/migrations/202609280001_canonical_normalization.sql:245",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "product_amount_rules",
+      "column": "client_key",
+      "source": "supabase/migrations/202609280001_canonical_normalization.sql:400",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "product_clients",
+      "column": "client_key",
+      "source": "supabase/migrations/202609280001_canonical_normalization.sql:183",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "product_identifiers",
+      "column": "client_key",
+      "source": "supabase/migrations/202609240003_portal_library.sql:99",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "product_riders",
+      "column": "client_key",
+      "source": "supabase/migrations/202609240003_portal_library.sql:85",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "rule_assignments",
+      "column": "client_key",
+      "source": "supabase/migrations/202609240003_portal_library.sql:311",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "site_builder_drafts",
+      "column": "client_id",
+      "source": "supabase/migrations/202609240001_initial_portal_schema.sql:70",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "site_field_configurations",
+      "column": "client_key",
+      "source": "supabase/migrations/202609240003_portal_library.sql:259",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "site_flows",
+      "column": "client_key",
+      "source": "supabase/migrations/202609240003_portal_library.sql:297",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "sites",
+      "column": "client_id",
+      "source": "supabase/migrations/202609240001_initial_portal_schema.sql:18",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "support_profiles",
+      "column": "client_key",
+      "source": "supabase/migrations/202609240003_portal_library.sql:365",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    },
+    {
+      "table": "url_usages",
+      "column": "client_key",
+      "source": "supabase/migrations/202609280001_canonical_normalization.sql:802",
+      "proposedMeaning": "Hosting Association context; preserve original ownership until crosswalk is resolved"
+    }
+  ],
+  "indirectImpact": [
+    {
+      "table": "user_scopes",
+      "field": "scope_type/scope_id",
+      "issue": "Client discriminator becomes Association scope; each existing polymorphic target requires a typed crosswalk"
+    },
+    {
+      "table": "site_associations",
+      "field": "site_key/association_key",
+      "issue": "Separate multi-association offerings from fixed singleton aliases; do not infer selector from row count"
+    },
+    {
+      "table": "application_associations",
+      "field": "association_key and site context",
+      "issue": "Resolve historical selected or fixed context to one canonical Association, retaining original source identity"
+    },
+    {
+      "table": "site_policies",
+      "field": "definition.associationSelection",
+      "issue": "Fixed mode is automatic context; select and url-parameter modes offer multi-association context"
+    },
+    {
+      "table": "organization_profiles",
+      "field": "definition.administrationContacts[].clientKey",
+      "issue": "Contact target refers to hosting Association after reconciliation"
+    },
+    {
+      "table": "requirement_targets",
+      "field": "target_table/target_key/target_column",
+      "issue": "Evidence links to old tables/keys remain identifiable after canonical mapping"
+    },
+    {
+      "table": "semantic_requirements",
+      "field": "subject_table/subject_key/value",
+      "issue": "Preserve and translate typed Association/Site subjects and embedded targets explicitly"
+    },
+    {
+      "table": "audit_events",
+      "field": "entity_type/entity_id and value JSON",
+      "issue": "Retain historical old identities; no global replacement inside log JSON"
+    },
+    {
+      "table": "change_items",
+      "field": "entity_type/entity_id and value JSON",
+      "issue": "Preserve historical targets through entity crosswalk"
+    }
+  ]
+}

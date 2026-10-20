@@ -19,17 +19,20 @@ import EligibilityFields, {
 } from "../components/forms/EligibilityFields";
 import AppDrawer from "../components/layout/AppDrawer";
 import CoverageOptionsPanel from "../components/ui/CoverageOptionsPanel";
+import { getApplyingWorksPresentation, showSinglePageArtwork } from "../config/homepagePresentation";
 import HowApplyingWorksPanel from "../components/ui/HowApplyingWorksPanel";
 import QuickDecisionDrawerContent, {
   QuickDecisionMark,
 } from "../components/content/QuickDecisionExplainer";
 import { ApplicationReviewDrawerContent } from "../content/helpContent";
-import { buildContentForLegacyClient, getContent, resolveTemplate } from "../content";
+import { buildContentForClientAlias, getContent, resolveTemplate } from "../content";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getPagePath } from "../config/pages";
 import type { ClientConfig, HomePageVariant } from "../config/clients/types";
 import { getFormTemplate } from "../config/template/resolveTemplate";
-import Membership from "./Membership";
+import SinglePageApplication from "../app/SinglePageApplication";
+import HeroClouds from "../components/home/HeroClouds";
+import type { PageId } from "../types";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { getActiveSite, resolveEffectiveBranding } from "../data";
 
@@ -38,7 +41,6 @@ import { SURFACE_SX } from "../config/constants";
 type DrawerId = "application-review" | "quick-decision" | null;
 const PAGE_MAX_WIDTH = 1200;
 const QUOTE_FIRST_MAX_WIDTH = 1040;
-const SINGLE_TEMPLATE_HERO_MAX_WIDTH = 700;
 const SINGLE_TEMPLATE_FORM_MAX_WIDTH = 800;
 
 const fadeInUp = keyframes`
@@ -147,9 +149,11 @@ const VALID_VARIANTS: HomePageVariant[] = [
 
 export default function Home({
   previewClient,
-}: { previewClient?: ClientConfig } = {}) {
+  initialFormPageId,
+  previewTemplate = "multi",
+}: { previewClient?: ClientConfig; initialFormPageId?: PageId; previewTemplate?: "single" | "multi" } = {}) {
   const isPreview = Boolean(previewClient);
-  const isSingleTemplate = !isPreview && getFormTemplate() === "single";
+  const isSingleTemplate = (isPreview ? previewTemplate : getFormTemplate()) === "single";
   const client = previewClient ?? getActiveClient();
   const { activeAssociationId } = useApplicationForm();
   const effectiveBranding = previewClient
@@ -159,7 +163,7 @@ export default function Home({
         associationId: activeAssociationId,
       });
   const content = previewClient
-    ? buildContentForLegacyClient(previewClient.id)
+    ? buildContentForClientAlias(previewClient.id)
     : activeContent;
   const [searchParams] = useSearchParams();
   const urlVariant = searchParams.get("variant") as HomePageVariant | null;
@@ -167,6 +171,7 @@ export default function Home({
     !isPreview && urlVariant && VALID_VARIANTS.includes(urlVariant)
       ? urlVariant
       : (client.features?.homePageVariant ?? "default");
+  const showArtwork = showSinglePageArtwork(isSingleTemplate ? "single" : "multi", client.features);
   const showQuoteTool = !isSingleTemplate && variant === "default";
   const showQuoteFirst = !isSingleTemplate && variant === "quoteFirst";
   const showHeroImage =
@@ -197,17 +202,19 @@ export default function Home({
     activeDrawer != null ? DRAWER_CONFIG[activeDrawer].title : "";
 
   return (
-    <Box sx={{ width: "100%", flex: 1 }}>
+    <Box sx={{ width: "100%", flex: 1, position: "relative", isolation: "isolate" }}>
+      {showArtwork && <HeroClouds />}
       <Stack
         spacing={isSingleTemplate ? 3 : { xs: 12, md: 10 }}
         sx={{
+          position: "relative",
           width: "100%",
           maxWidth: isSingleTemplate
             ? SINGLE_TEMPLATE_FORM_MAX_WIDTH
             : PAGE_MAX_WIDTH,
           mx: "auto",
           px: { xs: 2, sm: 3, md: 4 },
-          pt: { xs: 1.5, md: 3 },
+          pt: showArtwork ? "110px" : { xs: 1.5, md: 3 },
           pb: { xs: 4, md: 6 },
         }}
       >
@@ -342,7 +349,7 @@ export default function Home({
               alignItems: "start",
               width: "100%",
               maxWidth: isSingleTemplate
-                ? SINGLE_TEMPLATE_HERO_MAX_WIDTH
+                ? SINGLE_TEMPLATE_FORM_MAX_WIDTH
                 : undefined,
               mx: isSingleTemplate ? "auto" : undefined,
               ...FADE_IN_SECTION_SX(0),
@@ -352,7 +359,8 @@ export default function Home({
               spacing={2}
               sx={{
                 alignSelf: "flex-start",
-                maxWidth: showQuoteTool || showHeroImage ? 800 : 760,
+                width: isSingleTemplate ? "100%" : undefined,
+                maxWidth: isSingleTemplate ? "100%" : showQuoteTool || showHeroImage ? 800 : 760,
                 justifySelf:
                   showQuoteTool || showHeroImage
                     ? { xs: "center", md: "stretch" }
@@ -365,7 +373,7 @@ export default function Home({
                   showQuoteTool || showHeroImage
                     ? "flex-start"
                     : { xs: "flex-start", md: "center" },
-                px: { xs: 1.5, sm: 3, md: 0 },
+                px: isSingleTemplate ? 0 : { xs: 1.5, sm: 3, md: 0 },
                 pb: 2,
               }}
             >
@@ -398,12 +406,16 @@ export default function Home({
                       : undefined
                   }
                 >
-                  {variant === "welcome-back"
+                  {isSingleTemplate
+                    ? `Coverage designed for ${effectiveBranding.acronym} members.`
+                    : variant === "welcome-back"
                     ? content.home.hero.welcomeBackTitle
                     : content.home.hero.title}
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                  {variant === "welcome-back"
+                  {isSingleTemplate
+                    ? `Underwritten by New York Life Insurance Company and tailored exclusively for ${effectiveBranding.name} members. Get started below!`
+                    : variant === "welcome-back"
                     ? content.home.hero.welcomeBackDescription
                     : previewClient
                       ? content.home.hero.description
@@ -540,9 +552,9 @@ export default function Home({
           </Box>
         )}
 
-        {isSingleTemplate && (
-          <Box sx={FADE_IN_SECTION_SX(0.15)}>
-            <Membership />
+        {isSingleTemplate && !isPreview && (
+          <Box sx={{ ...FADE_IN_SECTION_SX(0.15), width: "100%", maxWidth: SINGLE_TEMPLATE_FORM_MAX_WIDTH, mx: "auto", alignSelf: "center" }}>
+            <SinglePageApplication initialPageId={initialFormPageId} />
           </Box>
         )}
 
@@ -550,6 +562,7 @@ export default function Home({
           <Box ref={howApplyingWorksRef} sx={FADE_IN_SECTION_SX(0.15)}>
             <HowApplyingWorksPanel
               variant="page"
+              presentation={getApplyingWorksPresentation(client.features)}
               onOpenApplicationReview={() =>
                 setActiveDrawer("application-review")
               }

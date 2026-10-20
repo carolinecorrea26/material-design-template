@@ -1,3 +1,6 @@
+import { resolveRatePresentation } from "../../domain/ratePresentation";
+import ReferenceRateTableLink from "./ReferenceRateTableLink";
+import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
 import type { ReactNode } from "react";
 import {
   Box,
@@ -7,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { CARD_RADIUS } from "../../app/theme";
-import { formatUSD } from "../../utils/formatUSD";
+import EstimatedRate from "./EstimatedRate";
 
 export type TotalCostSummaryItem = {
   id: string;
@@ -23,6 +26,7 @@ type TotalCostPanelProps = {
   totalSuffix?: string;
   isCalculating?: boolean;
   disclaimer?: ReactNode;
+  title?: string;
 };
 
 /**
@@ -38,7 +42,11 @@ export default function TotalCostSummary({
   totalSuffix = "/mo",
   isCalculating = false,
   disclaimer,
+  title = "Total Estimated Cost",
 }: TotalCostPanelProps) {
+  const library = getPrototypeLibrary();
+  const references = items.map(item => library ? resolveRatePresentation(library.site, item.id).referenceTable : null);
+  const referenceOnly = items.length > 0 && references.every(Boolean);
   return (
     <Box
       role="status"
@@ -52,10 +60,10 @@ export default function TotalCostSummary({
     >
       <Stack spacing={1}>
         <Typography variant="subtitle2" fontWeight={700}>
-          Total Estimated Cost<sup>1</sup>
+          {title}<sup>1</sup>
         </Typography>
 
-        {items.map((item) => (
+        {items.map((item, index) => (
           <Stack
             key={item.id}
             direction="row"
@@ -66,7 +74,7 @@ export default function TotalCostSummary({
             <Typography variant="body2" color="text.secondary">
               {item.name}
             </Typography>
-            {item.isCalculating ? (
+            {references[index] ? <ReferenceRateTableLink table={references[index]!} /> : item.isCalculating ? (
               <CircularProgress
                 size={14}
                 thickness={4}
@@ -74,21 +82,14 @@ export default function TotalCostSummary({
                 sx={{ color: "primary.main" }}
               />
             ) : (
-              <Typography
-                variant="body2"
-                fontWeight={700}
-                sx={{ whiteSpace: "nowrap" }}
-              >
-                {formatUSD(item.amount)}
-                {item.suffix ?? totalSuffix}
-              </Typography>
+              <EstimatedRate amount={item.amount} suffix={item.suffix ?? totalSuffix} variant="body2" fontWeight={700} sx={{ color: "text.primary" }} />
             )}
           </Stack>
         ))}
 
-        <Divider />
+        {!referenceOnly && <Divider />}
 
-        <Stack
+        {!referenceOnly && <Stack
           direction="row"
           justifyContent="space-between"
           alignItems="baseline"
@@ -104,19 +105,9 @@ export default function TotalCostSummary({
               sx={{ color: "success.main" }}
             />
           ) : (
-            <Typography
-              variant="subtitle1"
-              sx={{
-                fontWeight: 900,
-                color: "success.main",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {formatUSD(total)}
-              {totalSuffix}
-            </Typography>
+            <EstimatedRate amount={total} suffix={totalSuffix} variant="subtitle1" sx={{ fontWeight: 900, color: "success.main" }} />
           )}
-        </Stack>
+        </Stack>}
 
         {disclaimer && (
           <Typography variant="caption" color="text.secondary">

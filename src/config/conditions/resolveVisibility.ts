@@ -32,5 +32,8 @@ export function resolveVisibleFields<T extends FieldDefinition>(
   fields: T[],
   values: ApplicationFormValues,
 ): T[] {
-  return fields.filter((field) => resolveVisibilityCondition(field, values));
+  return fields.filter((field) => resolveVisibilityCondition(field, values)).map(field => {
+    const excluded = new Set((field.optionExclusions ?? []).filter(rule => evaluateConditionDefinition(rule.conditionId, values)).flatMap(rule => rule.values));
+    return excluded.size === 0 ? field : { ...field, options: field.options?.filter(option => !excluded.has(option.value)) };
+  });
 }

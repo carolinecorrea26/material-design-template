@@ -1,3 +1,6 @@
+import { requiresFinancialQuestionnaire } from "../domain/financialQuestionnaire";
+import { getPrototypeLibrary } from "../domain/prototypeLibrary";
+import { disabilityCompanyMapping } from "../config/fields/profileListFields";
 import { useMemo, useRef, useState } from "react";
 import { Alert, Box, Typography } from "@mui/material";
 import FormRoutePage, {
@@ -77,52 +80,6 @@ const spousePendingLifeFollowup = new Set([
 ]);
 
 // Dynamic list field definitions for disability insurance companies
-const disabilityCompanyFields: FieldDefinition[] = [
-  {
-    id: "di-company-name",
-    label: "Company",
-    inputType: "text",
-    labelVariant: "floating",
-    required: true,
-  },
-  {
-    id: "di-company-monthly-benefit",
-    label: "Monthly Benefit Amount",
-    inputType: "text",
-    format: "currency",
-    inputMode: "numeric",
-    labelVariant: "floating",
-    required: true,
-    helperText:
-      "You can find your current coverage amount in your recent statement from your carrier.",
-  },
-  {
-    id: "di-company-benefit-period",
-    label: "Benefit Period",
-    inputType: "text",
-    placeholder: "Age 65 or older, 1-5 year, etc.",
-    labelVariant: "floating",
-    required: true,
-  },
-  {
-    id: "di-company-waiting-period",
-    label: "Waiting Period",
-    inputType: "text",
-    placeholder: "30 days, 60 days, etc",
-    labelVariant: "floating",
-    required: true,
-  },
-];
-
-const disabilityCompanyMapping = {
-  fields: disabilityCompanyFields,
-  fieldToKey: {
-    "di-company-name": "company",
-    "di-company-monthly-benefit": "monthlyBenefitAmount",
-    "di-company-benefit-period": "benefitPeriod",
-    "di-company-waiting-period": "waitingPeriod",
-  } as const,
-};
 
 const otherCoverageInfoNote =
   "Please indicate if you currently hold an active insurance policy with any carrier, including through your employer. Other insurance you have today can impact the amount of coverage you may be approved for.";
@@ -248,7 +205,13 @@ export default function Profile() {
           const selfHasDisability = hasCoverage("member", "DI");
           const spouseHasLife = hasCoverage("spouse", "LI");
           const spouseHasDisability = hasCoverage("spouse", "DI");
-          const selfHasDIOver2000 = hasCoverage("member", "DI", 2000);
+          const selectedMemberProducts = new Set(Object.entries(storedAmounts).flatMap(([key, amount]) => {
+            const parsed = parseCoverageAmountKey(key);
+            return parsed?.applicant === "member" && selectedCoverageIdSet.has(parsed.coverageId) && toNumericAmount(amount) > 0 ? [parsed.coverageId] : [];
+          }));
+          const financialQuestionnaireRequired = requiresFinancialQuestionnaire(
+            getPrototypeLibrary()?.site.configuration.products ?? [], selectedMemberProducts,
+          );
 
           const visibleSectionIds = new Set(
             pageSections
@@ -374,7 +337,7 @@ export default function Profile() {
                 }
 
                 if (section.id === "profileFinancialQuestionnaireSelf") {
-                  if (!selfHasDIOver2000) return null;
+                  if (!financialQuestionnaireRequired) return null;
                   return (
                     <div key={section.id}>
                       <ApplicantSectionDivider
@@ -753,6 +716,7 @@ function renderFinancialFields(
   hasDisability: boolean,
 ) {
   const isSelf = applicant === "self";
+  const collection = getPrototypeLibrary()?.fieldCollections[`${applicant}DisabilityCompanies`];
 
   const hasOtherLifeId = isSelf
     ? "has-other-life-insurance"
@@ -838,9 +802,10 @@ function renderFinancialFields(
               <Box sx={{ mt: 1, mb: 2 }}>
                 <DynamicList
                   control={control as never}
-                  name={disabilityListName}
-                  label="Company"
-                  mapping={disabilityCompanyMapping}
+                  name={collection?.name ?? disabilityListName}
+                  label={collection?.label ?? "Company"}
+                  maxItems={collection?.maxItems ?? 10}
+                  mapping={collection?.mapping ?? disabilityCompanyMapping}
                   renderItem={renderDisabilityCompanySummary}
                 />
               </Box>

@@ -1,25 +1,28 @@
+import { useCanEdit } from '../../admin/AccountContext';
+import { foundationRepositories } from "../../repositories/foundations";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { Alert, Button, Paper, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import { applicationRecords } from "../../admin/domain";
-import { getClient, getSite } from "../../data";
-import { StatusChip, Workspace, WorkspaceHeader } from "../../components/admin/AdminPrimitives";
+import { applicationService } from "../../services/applicationService";
+import { persistence } from "../../persistence/client";
+import { useServiceData } from "../../hooks/useServiceData";
+import { Section, StatusChip, Workspace, WorkspaceHeader } from "../../components/admin/AdminPrimitives";
 import ResponsiveTableContainer from "../../components/docs/ResponsiveTableContainer";
 
+const load = async () => ({ applications: await applicationService.getApplications(), sites: await foundationRepositories.sites.list(), clients: await foundationRepositories.clients.list(), events: await persistence.list("applicationEvents") });
 export default function ApplicationsWorkspace() {
-  const { applicationId } = useParams();
-  const application = applicationRecords.find((entry) => entry.id === applicationId);
-  if (application) {
-    const site = getSite(application.siteId)!;
-    return <Workspace><WorkspaceHeader title={application.id} description="Internal support and status investigation view." actions={<Button component={RouterLink} to="/admin-center/applications" startIcon={<ArrowBackRoundedIcon />}>Applications</Button>} />
-      <Alert severity="info">Application status and current action owner are modeled separately so TPA and Advisor experiences can answer who acts next without overloading status.</Alert>
-      <Paper variant="outlined" sx={{ p: 2 }}><Stack sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", lg: "repeat(4, 1fr)" }, gap: 2 }}><Meta label="Application status"><StatusChip label={application.status} /></Meta><Meta label="Current action owner"><StatusChip label={application.actionOwner} /></Meta><Meta label="Site">{site.name} ({site.id})</Meta><Meta label="Client">{getClient(application.clientId)?.name}</Meta><Meta label="Product">{application.product}</Meta><Meta label="Submitted">{application.submitted}</Meta><Meta label="Last updated">{application.updated}</Meta></Stack></Paper>
+  const canEdit = useCanEdit();
+  const { applicationId } = useParams(); const { data, error, loading, refresh } = useServiceData(load);
+  if (loading) return <Workspace><Typography>Loading applications…</Typography></Workspace>; if (error) return <Workspace><Alert severity="error">{error.message}</Alert></Workspace>;
+  const application = data?.applications.find((entry) => entry.id === applicationId || entry.applicationNumber === applicationId);
+  if (application) { const site = data?.sites.find((item) => item.id === application.siteId); const client = data?.clients.find((item) => item.id === site?.clientId); const events = data?.events.filter((event) => event.applicationId === application.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt)) ?? [];
+    return <Workspace><WorkspaceHeader title={application.applicationNumber} description="Shared application workflow record." />
+      <Alert severity="info">Status and current action owner are independent. Every transition writes application and audit history.</Alert>
+      <Paper variant="outlined" sx={{ p: 2 }}><Stack sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", lg: "repeat(4, 1fr)" }, gap: 2 }}><Meta label="Application status"><StatusChip label={application.status} /></Meta><Meta label="Current action owner"><StatusChip label={application.currentActionOwnerType} /></Meta><Meta label="Site">{site?.displayName} ({site?.key})</Meta><Meta label="Client">{client?.name}</Meta><Meta label="Product">{application.productKey}</Meta><Meta label="Submitted">{application.submittedAt?.slice(0, 10) ?? "—"}</Meta></Stack><Stack direction="row" gap={1} sx={{ mt: 2 }}><Button variant="contained" disabled={!canEdit || application.status !== "Pending TPA Review"} onClick={() => void applicationService.approveApplication(application.id).then(refresh)}>TPA approve</Button><Button color="error" variant="outlined" disabled={!canEdit || application.status !== "Pending TPA Review"} onClick={() => void applicationService.rejectApplication(application.id).then(refresh)}>TPA reject</Button><Button variant="outlined" disabled={!canEdit} onClick={() => void applicationService.transitionApplication(application.id, "Waiting for Advisor", "Advisor", { notes: "Advisor follow-up requested" }).then(refresh)}>Send to advisor</Button></Stack></Paper>
+      <Section title="Application event history"><ResponsiveTableContainer><Table size="small"><TableHead><TableRow><TableCell>When</TableCell><TableCell>Event</TableCell><TableCell>Status</TableCell><TableCell>Owner</TableCell><TableCell>Notes</TableCell></TableRow></TableHead><TableBody>{events.map((event) => <TableRow key={event.id}><TableCell>{event.createdAt.slice(0, 19).replace("T", " ")}</TableCell><TableCell>{event.eventType}</TableCell><TableCell>{event.fromStatus} → {event.toStatus}</TableCell><TableCell>{event.fromOwnerType} → {event.toOwnerType}</TableCell><TableCell>{event.notes}</TableCell></TableRow>)}</TableBody></Table></ResponsiveTableContainer>{events.length === 0 && <Alert severity="info">No transitions recorded yet.</Alert>}</Section>
     </Workspace>;
   }
-  return <Workspace><WorkspaceHeader title="Applications" description="Cross-client internal support lookup—not the primary TPA or advisor workflow." />
-    <Alert severity="info">TPA Admin and Advisor remain separate experiences. This workspace exposes only an internal operational summary.</Alert>
-    <ResponsiveTableContainer><Table size="small"><TableHead><TableRow><TableCell>Application ID</TableCell><TableCell>Site</TableCell><TableCell>Client</TableCell><TableCell>Product</TableCell><TableCell>Submitted</TableCell><TableCell>Current status</TableCell><TableCell>Current action owner</TableCell><TableCell>Last updated</TableCell></TableRow></TableHead><TableBody>{applicationRecords.map((entry) => <TableRow key={entry.id} hover><TableCell><Button component={RouterLink} to={`/admin-center/applications/${entry.id}`} size="small">{entry.id}</Button></TableCell><TableCell>{entry.siteId}</TableCell><TableCell>{getClient(entry.clientId)?.acronym}</TableCell><TableCell>{entry.product}</TableCell><TableCell>{entry.submitted}</TableCell><TableCell><StatusChip label={entry.status} /></TableCell><TableCell><StatusChip label={entry.actionOwner} /></TableCell><TableCell>{entry.updated}</TableCell></TableRow>)}</TableBody></Table></ResponsiveTableContainer>
+  return <Workspace><WorkspaceHeader title="Applications" description="Cross-client shared operational application records." /><Alert severity="info">TPA Admin and Advisor remain separate experiences; scoped service queries are available for both.</Alert>
+    {(data?.applications.length ?? 0) === 0 ? <Alert severity="info">No applications.</Alert> : <ResponsiveTableContainer><Table size="small"><TableHead><TableRow><TableCell>Application</TableCell><TableCell>Site</TableCell><TableCell>Product</TableCell><TableCell>Status</TableCell><TableCell>Action owner</TableCell><TableCell>Updated</TableCell></TableRow></TableHead><TableBody>{data?.applications.map((entry) => <TableRow key={entry.id}><TableCell><Button component={RouterLink} to={`/admin-center/applications/${entry.applicationNumber}`} size="small">{entry.applicationNumber}</Button></TableCell><TableCell>{data.sites.find((site) => site.id === entry.siteId)?.key}</TableCell><TableCell>{entry.productKey}</TableCell><TableCell><StatusChip label={entry.status} /></TableCell><TableCell><StatusChip label={entry.currentActionOwnerType} /></TableCell><TableCell>{entry.updatedAt.slice(0, 10)}</TableCell></TableRow>)}</TableBody></Table></ResponsiveTableContainer>}
   </Workspace>;
 }
-
 function Meta({ label, children }: { label: string; children: React.ReactNode }) { return <Stack gap={0.25}><Typography variant="caption" color="text.secondary">{label}</Typography><Typography component="div" variant="body2" sx={{ fontWeight: 700 }}>{children}</Typography></Stack>; }

@@ -1,93 +1,23 @@
 import { getContent, resolveTemplate } from "../content";
 
-export const pages = [
-  { id: "home", path: "/", type: "home" },
-  {
-    id: "membership",
-    path: "/membership",
-    type: "form",
-    groupId: "get-started",
-  },
-  {
-    id: "eligibility",
-    path: "/eligibility",
-    type: "form",
-    groupId: "get-started",
-  },
-  { id: "coverage", path: "/coverage", type: "form", groupId: "coverage" },
-  {
-    id: "beneficiary",
-    path: "/beneficiary",
-    type: "form",
-    groupId: "coverage",
-  },
-  { id: "contact", path: "/contact", type: "form", groupId: "profile" },
-  { id: "review", path: "/review", type: "form", groupId: "review" },
-  { id: "docusign", path: "/docusign", type: "form", groupId: "review" },
-  { id: "health-si", path: "/health-si", type: "form", groupId: "health" },
-  { id: "health-li", path: "/health-li", type: "form", groupId: "health" },
-  { id: "health-qd", path: "/health-qd", type: "form", groupId: "health" },
-  { id: "health-di", path: "/health-di", type: "form", groupId: "health" },
-  { id: "health-cir", path: "/health-cir", type: "form", groupId: "health" },
-  { id: "payment", path: "/payment", type: "form", groupId: "payment" },
-  { id: "receipt", path: "/receipt", type: "receipt" },
-  { id: "resume", path: "/resume", type: "resume" },
-  { id: "resume-method", path: "/resume-method", type: "resume" },
-  { id: "resume-code", path: "/resume-code", type: "resume" },
-  { id: "advisor-login", path: "/advisor-login", type: "form" },
-  {
-    id: "advisor-send-confirmation",
-    path: "/advisor-send-confirmation",
-    type: "form",
-  },
-  {
-    id: "application-edit-confirmation",
-    path: "/application-edit-confirmation",
-    type: "form",
-  },
-  { id: "mock-email-preview", path: "/mock-email-preview", type: "internal" },
-  {
-    id: "site-features",
-    path: "/portal-admin/site-features",
-    type: "internal",
-  },
-  {
-    id: "site-details",
-    path: "/site-details",
-    type: "internal",
-  },
-  {
-    id: "design-system",
-    path: "/design-system",
-    type: "internal",
-  },
-  {
-    id: "portal-admin",
-    path: "/portal-admin",
-    type: "internal",
-  },
-  {
-    id: "cms",
-    path: "/portal-admin/cms",
-    type: "internal",
-  },
-  {
-    id: "portal-template-project",
-    path: "/portal-template-project",
-    type: "internal",
-  },
-  {
-    id: "portal-requirements-project",
-    path: "/portal-requirements-project",
-    type: "internal",
-  },
-  { id: "profile", path: "/profile", type: "form", groupId: "profile" },
-] as const;
+export { defaultPages as pages } from "./pageCatalog";
+import { defaultPages } from "./pageCatalog";
+import { getPrototypeLibrary } from "../domain/prototypeLibrary";
+import type { Page } from "../domain/pages";
+
+/** Saved applicant routes; internal authoring tools retain their registered routes. */
+export function getConfiguredPages(): Page[] {
+  const library = getPrototypeLibrary();
+  return library ? [
+    ...library.pages.filter(page => page.assigned && page.definition.flow !== "internal").map(page => page.definition),
+    ...defaultPages.filter(page => page.flow === "internal"),
+  ] : defaultPages;
+}
 
 export type PageType = "home" | "form" | "receipt" | "resume" | "internal";
 
-export function getPagePath(id: (typeof pages)[number]["id"]) {
-  const page = pages.find((page) => page.id === id);
+export function getPagePath(id: Page["id"]) {
+  const page = getConfiguredPages().find((page) => page.id === id);
 
   if (!page) {
     throw new Error(`Missing page path for page id: ${id}`);
@@ -96,21 +26,21 @@ export function getPagePath(id: (typeof pages)[number]["id"]) {
   return page.path;
 }
 
-export function getPageTitle(id: (typeof pages)[number]["id"]) {
+export function getPageTitle(id: Page["id"]) {
   const contentPage = getContent().pages[id];
   if (contentPage?.title) return resolveTemplate(contentPage.title);
 
   return id;
 }
 
-export function getPageSubhead(id: (typeof pages)[number]["id"]) {
+export function getPageSubhead(id: Page["id"]) {
   const contentPage = getContent().pages[id];
   if (contentPage?.subhead) return resolveTemplate(contentPage.subhead);
 
   return undefined;
 }
 
-export function getPageInfoNote(id: (typeof pages)[number]["id"]) {
+export function getPageInfoNote(id: Page["id"]) {
   const contentPage = getContent().pages[id];
   if (contentPage?.infoNote) return resolveTemplate(contentPage.infoNote);
 
@@ -118,7 +48,7 @@ export function getPageInfoNote(id: (typeof pages)[number]["id"]) {
 }
 
 export function getPageSectionNote(
-  pageId: (typeof pages)[number]["id"],
+  pageId: Page["id"],
   sectionId: string,
 ) {
   const contentPage = getContent().pages[pageId];
@@ -128,7 +58,7 @@ export function getPageSectionNote(
   return undefined;
 }
 
-export function getPageNavTitle(id: (typeof pages)[number]["id"]) {
+export function getPageNavTitle(id: Page["id"]) {
   const contentPage = getContent().pages[id];
   if (contentPage?.navTitle) return resolveTemplate(contentPage.navTitle);
 

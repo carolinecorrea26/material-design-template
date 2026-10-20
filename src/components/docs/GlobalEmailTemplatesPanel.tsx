@@ -5,12 +5,12 @@ import { GlobalEmailConfigurationTable } from "./EmailConfigurationTable";
 import SectionTabs from "./SectionTabs";
 
 /** Generic placeholder client used to render Global tab previews, so they're not tied to any real client's branding/support info. */
-const GLOBAL_EMAIL_SITE_ID: SiteId = "demo-default";
+const GLOBAL_EMAIL_SITE_ID: SiteId = "demo";
 
-export default function GlobalEmailTemplatesPanel() {
+export default function GlobalEmailTemplatesPanel({ hideHeading = false }: { hideHeading?: boolean } = {}) {
   return (
     <Stack spacing={3}>
-      <Box>
+      {!hideHeading && <Box>
         <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>
           Global Email Templates
         </Typography>
@@ -19,7 +19,7 @@ export default function GlobalEmailTemplatesPanel() {
           flows, previewed with generic placeholder branding. For a given client's resolved
           emails, see the <strong>Client Email Templates</strong> tab.
         </Typography>
-      </Box>
+      </Box>}
 
       <SectionTabs
         tabs={[

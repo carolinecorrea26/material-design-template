@@ -1,3 +1,4 @@
+import { orderCoveragePresentation } from "../../domain/coveragePresentation";
 import { useEffect, useMemo, useState } from "react";
 import {
   Alert,
@@ -69,20 +70,15 @@ export default function CoverageOptionsPanel({
 
   const coverageGroups = useMemo(
     () =>
-      coverageCategories
+      orderCoveragePresentation(coverages, client.coverages, new URLSearchParams(window.location.search).get("featured_prod")).categories
+        .map(id => coverageCategories.find(category => category.id === id)!)
         .map((category) => ({
           category,
           products: coverages
-            .filter((coverage) => coverage.categoryId === category.id)
-            .slice()
-            .sort((a, b) => {
-              if (a.featured && !b.featured) return -1;
-              if (!a.featured && b.featured) return 1;
-              return a.name.localeCompare(b.name);
-            }),
+            .filter((coverage) => coverage.categoryId === category.id),
         }))
         .filter((group) => group.products.length > 0),
-    [coverages],
+    [coverages, client.coverages],
   );
 
   const [activeCategory, setActiveCategory] = useState<CoverageCategoryId>(
@@ -103,11 +99,7 @@ export default function CoverageOptionsPanel({
     );
     if (hasActive) return;
 
-    const fallback = coverageGroups.some(
-      (group) => group.category.id === "LI",
-    )
-      ? "LI"
-      : coverageGroups[0].category.id;
+    const fallback = coverageGroups[0].category.id;
     setActiveCategory(fallback);
   }, [activeCategory, coverageGroups]);
 

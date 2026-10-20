@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { ReactFlow, Background, MarkerType, type Edge } from "@xyflow/react";
+import { ReactFlow, Background, MarkerType, BaseEdge, EdgeLabelRenderer, Controls, type Edge, type EdgeProps } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { Box, Typography } from "@mui/material";
 import type { FlowDefinition } from "../../../content/docs/flows/types";
@@ -7,11 +7,24 @@ import { computeFlowLayout, FLOW_NODE_WIDTH } from "./layout";
 import { flowNodeTypes } from "./nodes";
 import type { FlowRFNode } from "./nodes/types";
 
+/** Use the obstacle-aware path computed alongside the node positions. */
+function RoutedFlowEdge({ data, label, markerEnd, style }: EdgeProps) {
+  const points = data?.points as { x: number; y: number }[] | undefined;
+  if (!points?.length) return null;
+  const path = points.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x},${point.y}`).join(" ");
+  const midpoint = points[Math.floor(points.length / 2)];
+  return <>
+    <BaseEdge path={path} markerEnd={markerEnd} style={style} />
+    {label && <EdgeLabelRenderer><div style={{ position: "absolute", transform: `translate(-50%, -50%) translate(${midpoint.x}px,${midpoint.y}px)`, fontSize: 11, fontWeight: 600, padding: "2px 4px", background: "white", borderRadius: 3 }}>{label}</div></EdgeLabelRenderer>}
+  </>;
+}
+const edgeTypes = { routed: RoutedFlowEdge };
+
 const MIN_DIAGRAM_HEIGHT = 340;
 const MAX_DIAGRAM_HEIGHT = 900;
 
 export default function FlowDiagram({ definition }: { definition: FlowDefinition }) {
-  const { nodes, edges } = useMemo(() => computeFlowLayout(definition), [definition]);
+  const { nodes, edges, edgeRoutes } = useMemo(() => computeFlowLayout(definition), [definition]);
 
   // Size the box to the graph instead of a fixed height: a fixed height
   // forces very tall, mostly-linear flows (e.g. advisor's 18 nodes) down to
@@ -55,14 +68,15 @@ export default function FlowDiagram({ definition }: { definition: FlowDefinition
         source: edge.source,
         target: edge.target,
         label: edge.condition,
-        type: "smoothstep",
+        type: "routed",
+        data: { points: edgeRoutes[edge.id] },
         animated: edge.styleHint === "loop-back",
         style: edge.styleHint === "loop-back" ? { strokeDasharray: "4 4" } : undefined,
         markerEnd: { type: MarkerType.ArrowClosed },
         labelBgPadding: [4, 2] as [number, number],
         labelStyle: { fontSize: 11, fontWeight: 600 },
       })),
-    [edges],
+    [edges, edgeRoutes],
   );
 
   return (
@@ -80,9 +94,11 @@ export default function FlowDiagram({ definition }: { definition: FlowDefinition
         }}
       >
         <ReactFlow
+          key={definition.id}
           nodes={rfNodes}
           edges={rfEdges}
           nodeTypes={flowNodeTypes}
+          edgeTypes={edgeTypes}
           fitView
           fitViewOptions={{ padding: 0.15 }}
           // React Flow's default minZoom (0.5) floors how far fitView can
@@ -100,6 +116,7 @@ export default function FlowDiagram({ definition }: { definition: FlowDefinition
           zoomOnPinch
         >
           <Background />
+          <Controls showInteractive={false} />
         </ReactFlow>
       </Box>
     </Box>

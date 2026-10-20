@@ -1,6 +1,6 @@
-import { Box, Divider, Stack, Typography } from "@mui/material";
+import { Box, Divider, Link, Stack, Typography } from "@mui/material";
 import type { EstimatedRateFrequency } from "../../config/clients/types";
-import { formatUSD } from "../../utils/formatUSD";
+import EstimatedRate from "./EstimatedRate";
 import { getDisplayedPremium } from "../../app/useCoverageState";
 
 export type ProductCostBreakdownItem = {
@@ -13,6 +13,7 @@ type ProductEstimatedCostBreakdownProps = {
   riderItems: ProductCostBreakdownItem[];
   policyFee?: ProductCostBreakdownItem;
   rateFrequency: EstimatedRateFrequency;
+  helpPhone?: { phone: string; phoneDisplay: string };
 };
 
 function BreakdownRow({
@@ -27,9 +28,7 @@ function BreakdownRow({
       <Typography variant="body2" color="text.secondary">
         {label}
       </Typography>
-      <Typography variant="body2" sx={{ fontWeight: 600 }}>
-        {formatUSD(getDisplayedPremium(amount, rateFrequency))}
-      </Typography>
+      <EstimatedRate amount={getDisplayedPremium(amount, rateFrequency)} variant="body2" fontWeight={600} />
     </Stack>
   );
 }
@@ -39,6 +38,7 @@ export default function ProductCostBreakdown({
   riderItems,
   policyFee,
   rateFrequency,
+  helpPhone,
 }: ProductEstimatedCostBreakdownProps) {
   const total =
     premiumCost +
@@ -88,20 +88,9 @@ export default function ProductCostBreakdown({
         <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
           Total<sup>1</sup>
         </Typography>
-        <Typography
-          variant="subtitle2"
-          sx={{ fontWeight: 700, color: "primary.main" }}
-        >
-          {formatUSD(getDisplayedPremium(total, rateFrequency))}
-          <Typography
-            component="span"
-            variant="body2"
-            sx={{ ml: 0.4, color: "text.secondary" }}
-          >
-            {rateSuffix}
-          </Typography>
-        </Typography>
+        <EstimatedRate amount={getDisplayedPremium(total, rateFrequency)} suffix={rateSuffix} variant="subtitle2" sx={{ fontWeight: 700, color: "primary.main" }} />
       </Stack>
+      {helpPhone && <Typography variant="body2" sx={{ mt: 1 }}>Questions? Call <Link href={`tel:${helpPhone.phone}`}>{helpPhone.phoneDisplay}</Link></Typography>}
     </Box>
   );
 }

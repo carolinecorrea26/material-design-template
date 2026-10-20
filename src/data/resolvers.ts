@@ -1,4 +1,4 @@
-import type { ClientBranding, ClientConfig } from "../config/clients/types";
+import type { ClientBranding, ClientConfig, ClientSupport } from "../config/clients/types";
 import {
   resolveClientConfigurations,
   resolveClientCoverage,
@@ -16,12 +16,11 @@ export {
   type AssociationSelectionContext,
 } from "./associationSelection";
 import {
-  getAssociation,
   getAssociationsForSite,
   getClientForSite,
-  getLegacyClientConfigForSite,
+  getEffectiveSiteConfig,
   getSite,
-} from "./registry";
+} from "../repositories/sites";
 
 export function resolveEffectiveBranding({
   siteId,
@@ -34,15 +33,11 @@ export function resolveEffectiveBranding({
   const client = getClientForSite(siteId);
   if (!site || !client) throw new Error(`Unknown site id: ${siteId}`);
 
-  const association = associationId ? getAssociation(associationId) : undefined;
-  const associationIsEnabled = Boolean(
-    associationId &&
-      getAssociationsForSite(siteId).some((entry) => entry.id === associationId),
-  );
+  const association = getAssociationsForSite(siteId).find(entry => entry.id === associationId);
   return resolveBranding(
     client.branding,
     site,
-    association && associationIsEnabled ? association : undefined,
+    association,
   );
 }
 
@@ -81,7 +76,7 @@ export function resolveSite(siteId: SiteId): ResolvedSite {
     client,
     clientDefaults: client.configurationDefaults,
     siteOverrides: site.configurationOverrides,
-    effective: getLegacyClientConfigForSite(siteId),
+    effective: getEffectiveSiteConfig(siteId),
     status:
       site.configurationOverrides || site.brandingOverride || site.supportOverride
         ? "overridden"
@@ -107,4 +102,36 @@ export function resolveSiteFlows(siteId: SiteId) {
 
 export function resolveSitePages(siteId: SiteId) {
   return resolveClientPages(resolveSite(siteId).effective);
+}
+
+export function resolveSiteSupport(siteId: SiteId): ClientSupport {
+  return resolveSite(siteId).effective.support;
+}
+
+export function resolveSiteFeatures(siteId: SiteId) {
+  return resolveSite(siteId).effective.features;
+}
+
+export function resolveSitePageSettings(siteId: SiteId) {
+  return resolveSite(siteId).effective.pages;
+}
+
+export function resolveSiteCoverageSettings(siteId: SiteId) {
+  return resolveSite(siteId).effective.coverages;
+}
+
+export function resolveSiteFieldSettings(siteId: SiteId) {
+  return resolveSite(siteId).effective.fields;
+}
+
+export function resolveSiteEmailConfiguration(siteId: SiteId) {
+  return resolveSite(siteId).effective.emailSupport;
+}
+
+export function resolveSiteApplicantLabels(siteId: SiteId) {
+  return resolveSite(siteId).effective.applicantLabels;
+}
+
+export function resolveSiteLicenseInfo(siteId: SiteId) {
+  return resolveSite(siteId).effective.licenseInfo;
 }

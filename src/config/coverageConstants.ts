@@ -54,7 +54,7 @@ export const categoryMaxAggregateNotes: Partial<
 export const siteMaxAggregateNoteOverrides: Partial<
   Record<SiteId, Partial<Record<CoverageCategoryId, MaxAggregateNote | null>>>
 > = {
-  "avma-default": {
+  "avma": {
     LI: {
       member:
         "The maximum Life Insurance amount available for a member through this Insurance Program underwritten by New York Life is $2,000,000 whether coverage is in one or divided among several group policies. The Basic Protection Package is not included in this aggregate maximum.",
@@ -64,7 +64,7 @@ export const siteMaxAggregateNoteOverrides: Partial<
         "Child(ren) can only be covered by one parent and under one group policy.",
     },
   },
-  "waepa-standard": {
+  "waepa": {
     LI: {
       member: "The maximum available for a member is $2,000,000.",
       spouse: "The maximum available for a spouse is $2,000,000.",

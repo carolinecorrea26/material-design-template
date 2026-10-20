@@ -1,10 +1,35 @@
-import type { ClientConfig } from "./types";
+import type { ClientConfig, ClientRiderConfig } from "./types";
 import { rangeAssignments } from "../coverages/amounts";
+
+const amaDisabilityRiders: ClientRiderConfig[] = [
+  {
+    id: "true-own-specialty",
+    name: "True Own-Specialty Disability Definition Rider",
+    description:
+      "Coverage with a true own-specialty definition of disability pays full benefits if you cannot perform the work of your medical specialty even if you are gainfully employed in another occupation.",
+    premiumFactor: 0.05,
+  },
+  {
+    id: "cola",
+    name: "Cost of Living Adjustment (COLA)",
+    description:
+      "Provides that on the anniversary of a continuing disability, the monthly benefit for the next 12 months is increased to reflect changes in the CPI-U for the previous 12 months, subject to a maximum increase for a single disability.",
+    premiumFactor: 0.05,
+  },
+  {
+    id: "catastrophic",
+    name: "Catastrophic Disability Benefit",
+    description:
+      "Provides additional monthly benefits for certain conditions that require extra care.",
+    premiumFactor: 0.05,
+  },
+];
 
 export const amaClient: ClientConfig = {
   id: "ama",
   // theme: { type: "preset", preset: "dark-blue" },
   theme: { type: "preset", preset: "default" },
+  tpaIntegration: { mode: "coverage-verification", lookupFields: ["first-name", "last-name", "birth-date"], prototypeRecords: [{ facts: { "first-name": "Taylor", "last-name": "Morgan", "birth-date": "1990-08-26" }, activeCoverage: true }] },
   branding: {
     name: "American Medical Association",
     acronym: "AMA",
@@ -42,6 +67,7 @@ export const amaClient: ClientConfig = {
       "li-term",
       "li-preferred",
       "li-premier-accident",
+      "di-step-rated",
       "di-level-rated",
       "oo-office-overhead",
       "sh-hospital-income",
@@ -56,6 +82,7 @@ export const amaClient: ClientConfig = {
         member: [500000, 1000000, 250000],
         spouse: [200000, 500000, 25000],
       }),
+      "di-step-rated": rangeAssignments({ member: [100, 15000, 100] }),
       "di-level-rated": rangeAssignments({ member: [100, 15000, 100] }),
       "oo-office-overhead": rangeAssignments({ member: [1000, 20000, 1000] }),
       "sh-hospital-income": rangeAssignments({
@@ -76,6 +103,8 @@ export const amaClient: ClientConfig = {
         "Preferred term life insurance for qualifying applicants.",
       "li-premier-accident":
         "Accident insurance with separate self and spouse benefit options.",
+      "di-step-rated":
+        "Disability income protection with step-rated premiums.",
       "di-level-rated":
         "Disability income protection with level-rated premiums.",
       "oo-office-overhead":
@@ -183,6 +212,18 @@ export const amaClient: ClientConfig = {
         name: "Premier Accident Insurance",
         applicants: ["member", "spouse"],
       },
+      "di-step-rated": {
+        name: "Disability Insurance with Step Rated Premiums",
+        requirements: { eligibility: [{ applicantType: "member", minimumAgeYears: 17, maximumAgeYears: 59 }] },
+        applicants: ["member"],
+        waitingPeriodOptions: [
+          { label: "60 days", value: "60", days: 60 },
+          { label: "90 days", value: "90", days: 90 },
+          { label: "180 days", value: "180", days: 180 },
+          { label: "365 days", value: "365", days: 365 },
+        ],
+        riders: amaDisabilityRiders,
+      },
       "di-level-rated": {
         name: "Disability Insurance with Level Rated Premiums",
         applicants: ["member"],
@@ -192,29 +233,7 @@ export const amaClient: ClientConfig = {
           { label: "180 days", value: "180", days: 180 },
           { label: "365 days", value: "365", days: 365 },
         ],
-        riders: [
-          {
-            id: "true-own-specialty",
-            name: "True Own-Specialty Disability Definition Rider",
-            description:
-              "Coverage with a true own-specialty definition of disability pays full benefits if you cannot perform the work of your medical specialty even if you are gainfully employed in another occupation.",
-            premiumFactor: 0.05,
-          },
-          {
-            id: "cola",
-            name: "Cost of Living Adjustment (COLA)",
-            description:
-              "Provides that on the anniversary of a continuing disability, the monthly benefit for the next 12 months is increased to reflect changes in the CPI-U for the previous 12 months, subject to a maximum increase for a single disability.",
-            premiumFactor: 0.05,
-          },
-          {
-            id: "catastrophic",
-            name: "Catastrophic Disability Benefit",
-            description:
-              "Provides additional monthly benefits for certain conditions that require extra care.",
-            premiumFactor: 0.05,
-          },
-        ],
+        riders: amaDisabilityRiders,
       },
       "oo-office-overhead": {
         name: "Office Overhead Expense Insurance",
@@ -254,6 +273,7 @@ export const amaClient: ClientConfig = {
     },
   },
   fields: {
+    eligibility: { overrides: { dependents: { optionExclusions: [{ conditionId: "condition-membership-ama-spouse", values: ["spouse"] }] } } },
     coverage: {
       hidden: ["average-employees-6-months"],
     },

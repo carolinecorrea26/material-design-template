@@ -11,7 +11,7 @@ import {
 // Extracted from src/pages/InformationArchitecture.tsx (Site Rules section).
 // ---------------------------------------------------------------------------
 
-const siteRuleInventory: Omit<RuleDefinition, "id">[] = [
+const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id"] })[] = [
   {
     area: "Application flow",
     rule: "Resolved next/back navigation",
@@ -125,10 +125,11 @@ const siteRuleInventory: Omit<RuleDefinition, "id">[] = [
   },
   {
     area: "Form Template",
-    rule: "Single template forces the narrow-screen layout, not a separate one-page form",
+    id: "rule-form-template-single-template-forces-the-narrow-screen-layout-not-a-separate-one-page-form",
+    rule: "Single template embeds the application in landing-page sections",
     behavior:
-      "template=single does not change routing, FormRoutePage, or ProgressStep — the flow, pages, and Back/Next navigation are identical to template=multi. The only difference is createAppTheme is created with forceMobileLayout: true, which pins the md/lg/xl breakpoints to an unreachable width. Every useMediaQuery(breakpoints.up(\"md\")) desktop/mobile check (ProgressStep, AppDrawer, AppModal, HelpChips, MemberVerification) and every md/lg/xl-keyed responsive style therefore renders its narrow-screen variant regardless of actual browser width.",
-    ref: "src/config/template/resolveTemplate.ts; src/app/theme.ts; src/app/App.tsx",
+      "template=single embeds SinglePageApplication below the landing content. SinglePageSections renders the active applicant page within a vertical progress layout; completing a page advances to the next applicable section, and permitted edits reopen earlier sections. Shared page participation, validation and routing rules still apply. The theme also forces narrow-screen layout for md/lg/xl responsive styles.",
+    ref: "src/app/SinglePageApplication.tsx; src/components/layout/SinglePageSections.tsx; src/app/RoutePage.tsx; src/app/theme.ts",
   },
   {
     area: "Form Template",
@@ -139,10 +140,11 @@ const siteRuleInventory: Omit<RuleDefinition, "id">[] = [
   },
   {
     area: "Form Template",
-    rule: "Home hero + Membership share one column, at different max widths",
+    id: "rule-form-template-home-hero-membership-share-one-column-at-different-max-widths",
+    rule: "Single template places the application below the landing content",
     behavior:
-      "In single template, Home renders the hero (tagline, title, description — no hero image) directly followed by the real Membership page component. The hero is capped at 700px and centered; the surrounding column (which the Membership form fills) is capped at 800px — the hero is deliberately narrower than the form beneath it.",
-    ref: "src/pages/Home.tsx",
+      "In single template, Home renders the configured landing content followed by SinglePageApplication. The application reuses the existing applicant page components within one vertical section layout. Artwork follows the configured single-page artwork setting; a fixed hero/form width is not an independent business rule.",
+    ref: "src/pages/Home.tsx; src/app/SinglePageApplication.tsx; src/components/layout/SinglePageSections.tsx; src/config/homepagePresentation.ts",
   },
   {
     area: "Validation",
@@ -204,7 +206,7 @@ const siteRuleInventory: Omit<RuleDefinition, "id">[] = [
     area: "Eligibility",
     rule: "Child records via DynamicList",
     behavior:
-      "When Child is selected as a dependent, children are added through the DynamicList pattern: existing records show as bordered cards with Edit and Remove buttons; Add Child opens an AppModal with fields for first name, last name, date of birth, and gender; Remove prompts a confirmation modal. At least one child record must exist before the user can continue.",
+      "When Child is selected and applicantExperience.childEligibility.mode is details (the default), DynamicList collects children[].firstName, lastName, birthDate and gender using the effective field definitions. Unmarried and full-time-student questions are added when applicable product eligibility rules require them. Records support Add, Edit and Remove; at least one child is required to continue. Client or Site configuration can choose notice-only instead, showing the configured note without collecting or requiring records. CSEA uses notice-only.",
     ref: "src/pages/Eligibility.tsx; src/components/forms/DynamicList.tsx",
   },
   {
@@ -456,7 +458,7 @@ const siteRuleInventory: Omit<RuleDefinition, "id">[] = [
     area: "Profile",
     rule: "Financial questionnaire visibility",
     behavior:
-      "The Financial questionnaire section (total net worth, unearned income, self-employment details) is shown only when the member has a DI coverage amount greater than $2,000. The self-employment detail fields are revealed only when is-self-employed = Yes.",
+      "Financial questionnaire visibility follows the active site’s MCR product-question-set assignments (Main column Y), for a selected member product with a positive amount. Sites without an assigned financial questionnaire omit this section. The former DI amount greater than $2,000 trigger was prototype demo behavior, not a general rule. Self-employment details appear when is-self-employed = Yes.",
     ref: "src/pages/Profile.tsx; src/config/pageSections/pageSections.ts",
   },
   {
@@ -635,7 +637,7 @@ const siteRuleInventory: Omit<RuleDefinition, "id">[] = [
     area: "Coverage",
     rule: "Coverage Options featured-first sort and category fallback",
     behavior:
-      "Within each category tab, CoverageOptionsPanel sorts products featured-first, then alphabetically by name. If the active category has no products for the current client (e.g. after a client config change), the panel falls back to the 'LI' category if present, otherwise the first available category.",
+      "Default category order is LI, AD, DI, OO, SH. A client coverages.categoryOrder (or categories array) configuration overrides it; URL parameter featured_prod moves the identified product’s category first and that product first within it. Default products are Term Life, ascending level-term durations; Long-Term, Long-Term Plus, Mid-Term, Short-Term Disability; Critical Illness, Hospital Indemnity. Remaining products retain catalog order. An unavailable active category falls back to the first available category in the resolved order.",
     ref: "src/components/ui/CoverageOptionsPanel.tsx",
   },
   {
@@ -660,10 +662,10 @@ const siteRuleInventory: Omit<RuleDefinition, "id">[] = [
     rule: "AMA spouse displays physician information",
     behavior:
       "When AMA membership is Spouse of Physician, display the physician information section.",
-    ref: "src/config/conditions/conditions.ts; src/config/clientFields/membership.ts",
+    ref: "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts",
     type: "conditional",
     scope: "site",
-    siteIds: ["ama-default"],
+    siteIds: ["ama"],
     conditionIds: ["condition-membership-ama-spouse"],
   },
   {
@@ -671,21 +673,32 @@ const siteRuleInventory: Omit<RuleDefinition, "id">[] = [
     rule: "WAEPA new member displays member information",
     behavior:
       "When WAEPA membership is New Member, display the declaration and member qualification information.",
-    ref: "src/config/conditions/conditions.ts; src/config/clientFields/membership.ts",
+    ref: "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts",
     type: "conditional",
     scope: "site",
-    siteIds: ["waepa-standard"],
+    siteIds: ["waepa"],
     conditionIds: ["condition-membership-waepa-new"],
+  },
+  {
+    area: "Membership",
+    rule: "WAEPA active duty prevents application",
+    behavior:
+      "New and current WAEPA members answer the global Armed Forces active-duty question in Additional Membership Information. Yes displays a page error and blocks continuation for every product; No clears this restriction. The installed Site membership disqualification configuration owns the blocking value and message.",
+    ref: "src/domain/applicantExperience.ts; src/pages/Membership.tsx; src/data/waepa.ts",
+    type: "conditional",
+    scope: "site",
+    siteIds: ["waepa", "waepa-gi"],
+    conditionIds: ["condition-active-military"],
   },
   {
     area: "Membership",
     rule: "WAEPA active federal employee fields",
     behavior:
       "When the WAEPA qualification is active federal employee, display employer and start-date fields.",
-    ref: "src/config/conditions/conditions.ts; src/config/clientFields/membership.ts",
+    ref: "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts",
     type: "conditional",
     scope: "site",
-    siteIds: ["waepa-standard"],
+    siteIds: ["waepa"],
     conditionIds: ["condition-waepa-federal-active"],
   },
   {
@@ -693,10 +706,10 @@ const siteRuleInventory: Omit<RuleDefinition, "id">[] = [
     rule: "WAEPA federal annuitant fields",
     behavior:
       "When the WAEPA qualification is federal annuitant, display retired-employer and retirement-date fields.",
-    ref: "src/config/conditions/conditions.ts; src/config/clientFields/membership.ts",
+    ref: "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts",
     type: "conditional",
     scope: "site",
-    siteIds: ["waepa-standard"],
+    siteIds: ["waepa"],
     conditionIds: ["condition-waepa-federal-annuitant"],
   },
   {
@@ -704,10 +717,10 @@ const siteRuleInventory: Omit<RuleDefinition, "id">[] = [
     rule: "WAEPA associate member information",
     behavior:
       "When the WAEPA qualification is spouse-associate or child-associate, display associated-member information.",
-    ref: "src/config/conditions/conditions.ts; src/config/clientFields/membership.ts",
+    ref: "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts",
     type: "conditional",
     scope: "site",
-    siteIds: ["waepa-standard"],
+    siteIds: ["waepa"],
     conditionIds: ["condition-waepa-associated-member"],
   },
 ];
@@ -721,7 +734,7 @@ function ruleId(area: string, rule: string): RuleDefinition["id"] {
 
 export const siteRules: RuleDefinition[] = siteRuleInventory.map((entry) => ({
   ...entry,
-  id: ruleId(entry.area, entry.rule),
+  id: entry.id ?? ruleId(entry.area, entry.rule),
   type: entry.type ?? "behavioral",
   scope: entry.scope ?? "global",
 }));

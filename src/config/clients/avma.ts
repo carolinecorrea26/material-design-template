@@ -5,7 +5,7 @@ export const avmaClient: ClientConfig = {
   id: "avma",
   theme: { type: "preset", preset: "dark-blue" },
   branding: {
-    name: "American Veterinary Medical Association",
+    name: "AVMA LIFE Trust",
     acronym: "AVMA",
     logo: "/client/avma/logo.png",
     logoAlt: "AVMA Logo",

@@ -1,3 +1,4 @@
+import { applicationUnderwriting, type UnderwritingOutcome } from "../domain/coverageRuntime";
 import { coverageCategories } from "../config/coverageCategories";
 import { getContent } from "../content";
 import type {
@@ -19,6 +20,7 @@ export type SelectedCoverageEntry = {
   coverageId: string;
   applicant: CoverageApplicantId;
   coverage: CoverageDefinition;
+  underwriting: UnderwritingOutcome;
 };
 
 export type DecisionStatus = {
@@ -143,6 +145,7 @@ export function getDecisionStatus(opts: {
 }): DecisionStatus {
   const { underwritingType, decisionResult } = opts;
   const type = underwritingType.toUpperCase();
+  if (type === "UNRESOLVED") return { label: "Requirements unresolved", color: "warning.main", description: "Contact support to resolve underwriting requirements.", activeStep: 1 };
 
   if (!QUICK_DECISION_UNDERWRITING_TYPES.has(type)) {
     return {
@@ -281,7 +284,8 @@ export function buildSelectedCoverageEntries(
         ({
           coverageId,
           applicant,
-          coverage,
+          coverage: { ...coverage, underwritingType: applicationUnderwriting(coverage, applicant, values).underwritingType ?? "UNRESOLVED" },
+          underwriting: applicationUnderwriting(coverage, applicant, values),
         }) satisfies SelectedCoverageEntry,
     );
   });

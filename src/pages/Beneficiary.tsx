@@ -1,3 +1,6 @@
+import { validateBeneficiaryRecords } from '../domain/beneficiaryValidation';
+import { getFieldSurface, getSurfaceFields, getSurfaceField, surfaceSemanticValues, beneficiarySemanticValues } from '../config/fields/storedSurfaces';
+import { BENEFICIARY_INFO_OPT_IN_FIELD_ID } from "../config/fields/beneficiaryFields";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ProductCard from "../components/layout/ProductCard";
 import {
@@ -30,7 +33,6 @@ import {
 } from "../config/coverageCategories";
 import { getActiveClient } from "../config/client/getActiveClient";
 import type { CoverageApplicantId } from "../config/coverages/types";
-import type { FieldDefinition } from "../config/fields/types";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { beneficiaryHelpItems } from "../content/helpContent";
 import FormHelpChips from "../components/content/HelpChips";
@@ -61,74 +63,7 @@ type ProductContext = {
   applicantId: CoverageApplicantId;
 };
 
-const RELATIONSHIP_OPTIONS = [
-  "Spouse",
-  "Child",
-  "Parent",
-  "Sibling",
-  "Other Relative",
-  "Other",
-];
-
-const BENEFICIARY_INDIVIDUAL_FIELDS: FieldDefinition[] = [
-  {
-    id: "firstName",
-    label: "First Name",
-    inputType: "text",
-    required: true,
-  },
-  {
-    id: "lastName",
-    label: "Last Name",
-    inputType: "text",
-    required: true,
-  },
-  {
-    id: "relationship",
-    label: "Relationship",
-    inputType: "dropdown",
-    required: true,
-    options: RELATIONSHIP_OPTIONS.map((r) => ({ value: r, label: r })),
-  },
-  {
-    id: "share",
-    label: "% Share",
-    inputType: "text",
-    inputMode: "numeric",
-    required: true,
-    format: "percent",
-  },
-];
-
-const BENEFICIARY_TRUST_FIELDS: FieldDefinition[] = [
-  {
-    id: "trustName",
-    label: "Name of Trust",
-    inputType: "text",
-    required: true,
-  },
-  {
-    id: "trustDate",
-    label: "Date of Trust",
-    inputType: "date",
-    required: true,
-  },
-];
-
 const ELIGIBLE_CATEGORY_IDS = new Set(["LI", "AD"]);
-
-const BENEFICIARY_INFO_OPT_IN_FIELD_ID = "beneficiary-information-opt-in";
-
-const beneficiaryInfoOptInField: FieldDefinition = {
-  id: BENEFICIARY_INFO_OPT_IN_FIELD_ID,
-  label: "Do you want to add beneficiary information?",
-  inputType: "radio",
-  required: true,
-  options: [
-    { value: "yes", label: "Yes" },
-    { value: "no", label: "No" },
-  ],
-};
 
 function shouldShowBeneficiaryQuestions(
   pageRequirement: "required" | "optional" | "none",
@@ -177,6 +112,10 @@ function getBeneficiaryPageError(
     return content.beneficiary.missingBeneficiaryError;
   }
 
+  for (const productKey of applicableProductKeys) {
+    const invalid = validateBeneficiaryRecords(beneficiaries[productKey] as unknown[], getFieldSurface('beneficiaryIndividual'), getFieldSurface('beneficiaryTrust'));
+    if (invalid) return invalid;
+  }
   return undefined;
 }
 
@@ -202,10 +141,11 @@ function getRelationshipLabel(item: BeneficiaryItem) {
   return item.relationship || "Relationship not provided";
 }
 
-
-
 export default function Beneficiary() {
   const { values, setPageValues } = useApplicationForm();
+  const individualFields = getSurfaceFields("beneficiaryIndividual");
+  const trustFields = getSurfaceFields("beneficiaryTrust");
+  const maxBeneficiaries = getFieldSurface("beneficiaryIndividual").maxItems!;
   const pageRequirement = getClientPageRequirement("beneficiary");
   const coverages = useMemo(() => getActiveClientCoverages(), []);
 
@@ -343,14 +283,7 @@ export default function Beneficiary() {
     watch: watchModal,
     formState: { errors: modalErrors },
   } = useForm<Record<string, string>>({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      relationship: "",
-      share: "",
-      trustName: "",
-      trustDate: "",
-    },
+    defaultValues: Object.fromEntries([...individualFields, ...trustFields].map(field => [field.id, ""])),
   });
 
   // Track designation and beneficiaryType outside useForm since they're structural selectors, not text fields
@@ -359,7 +292,8 @@ export default function Beneficiary() {
   const [modalBeneficiaryType, setModalBeneficiaryType] =
     useState<BeneficiaryType>("individual");
 
-  const modalShare = watchModal("share");
+  const shareKey = getFieldSurface("beneficiaryIndividual").mapping.fieldToKey["beneficiary-share"];
+  const modalShare = watchModal(shareKey);
 
   // "Apply to other coverages" dialog state
   const [applyToOthersOpen, setApplyToOthersOpen] = useState(false);
@@ -379,7 +313,7 @@ export default function Beneficiary() {
 
   function getProductBeneficiaries(productKey: string): BeneficiaryItem[] {
     const items = beneficiariesByProduct[productKey];
-    return Array.isArray(items) ? items : [];
+    return Array.isArray(items) ? items.map(item => beneficiarySemanticValues(item as unknown as Record<string, unknown>) as unknown as BeneficiaryItem) : [];
   }
 
   function upsertProductBeneficiaries(
@@ -397,14 +331,7 @@ export default function Beneficiary() {
   function openAddModal(product: ProductContext) {
     setActiveProduct(product);
     setEditingId(null);
-    resetModalForm({
-      firstName: "",
-      lastName: "",
-      relationship: "",
-      share: "",
-      trustName: "",
-      trustDate: "",
-    });
+    resetModalForm(Object.fromEntries([...individualFields, ...trustFields].map(field => [field.id, ""])));
     setModalDesignation("primary");
     setModalBeneficiaryType("individual");
     setModalError(null);
@@ -413,14 +340,13 @@ export default function Beneficiary() {
   function openEditModal(product: ProductContext, item: BeneficiaryItem) {
     setActiveProduct(product);
     setEditingId(item.id);
-    resetModalForm({
-      firstName: item.firstName,
-      lastName: item.lastName,
-      relationship: item.relationship,
-      share: item.share > 0 ? String(item.share) : "",
-      trustName: item.trustName,
-      trustDate: item.trustDate,
-    });
+    const surface = getFieldSurface(item.beneficiaryType === "trust" ? "beneficiaryTrust" : "beneficiaryIndividual");
+    const stored = item as unknown as Record<string, unknown>;
+    resetModalForm(Object.fromEntries(surface.mapping.fields.map(field => {
+      const key = surface.mapping.fieldToKey[field.id];
+      const role = field.id.replace('beneficiary-', '');
+      return [key, String(stored[key] ?? stored[role] ?? '')];
+    })));
     setModalDesignation(item.designation);
     setModalBeneficiaryType(item.beneficiaryType);
     setModalError(null);
@@ -429,14 +355,7 @@ export default function Beneficiary() {
   function closeModal() {
     setActiveProduct(null);
     setEditingId(null);
-    resetModalForm({
-      firstName: "",
-      lastName: "",
-      relationship: "",
-      share: "",
-      trustName: "",
-      trustDate: "",
-    });
+    resetModalForm(Object.fromEntries([...individualFields, ...trustFields].map(field => [field.id, ""])));
     setModalDesignation("primary");
     setModalBeneficiaryType("individual");
     setModalError(null);
@@ -469,7 +388,7 @@ export default function Beneficiary() {
     designation: BeneficiaryDesignation,
   ) {
     const used = getFilteredListForDesignation(list, designation).length;
-    return Math.max(0, 10 - used);
+    return Math.max(0, maxBeneficiaries - used);
   }
 
   function getShareRemaining(
@@ -499,7 +418,7 @@ export default function Beneficiary() {
   ) {
     const items = list.filter((item) => item.designation === designation);
     if (items.length === 0) return false;
-    if (items.length >= 10) return true;
+    if (items.length >= maxBeneficiaries) return true;
     if (items.some((item) => item.beneficiaryType === "trust")) return true;
     const totalShare = items.reduce((sum, item) => sum + item.share, 0);
     return totalShare >= 100;
@@ -513,7 +432,8 @@ export default function Beneficiary() {
     );
   }
 
-  function saveBeneficiary(formData: Record<string, string>) {
+  function saveBeneficiary(boundData: Record<string, string>) {
+    const formData = surfaceSemanticValues(modalBeneficiaryType === "individual" ? "beneficiaryIndividual" : "beneficiaryTrust", boundData) as Record<string, string>;
     if (!activeProduct) return;
 
     const currentList = getProductBeneficiaries(activeProduct.productKey);
@@ -524,7 +444,7 @@ export default function Beneficiary() {
 
     if (remainingSlots <= 0) {
       setModalError(
-        `You have reached the maximum of 10 ${modalDesignation} beneficiaries for this product.`,
+        `You have reached the maximum of ${maxBeneficiaries} ${modalDesignation} beneficiaries for this product.`,
       );
       return;
     }
@@ -536,7 +456,7 @@ export default function Beneficiary() {
       if (!Number.isFinite(parsedShare) || parsedShare <= 0) {
         const message = "Enter a valid share percentage greater than 0.";
         setModalError(message);
-        setModalFieldError("share", { type: "manual", message });
+        setModalFieldError(shareKey, { type: "manual", message });
         return;
       }
 
@@ -544,20 +464,23 @@ export default function Beneficiary() {
       if (parsedShare > unassignedShare) {
         const message = `Share exceeds available unassigned percentage (${unassignedShare}%).`;
         setModalError(message);
-        setModalFieldError("share", { type: "manual", message });
+        setModalFieldError(shareKey, { type: "manual", message });
         return;
       }
     }
 
+    const previousItem = currentList.find(item => item.id === editingId);
     const nextItem: BeneficiaryItem = {
+      ...(previousItem ?? {}),
+      ...Object.fromEntries((modalBeneficiaryType === "individual" ? individualFields : trustFields).map(field => [field.id, boundData[field.id] ?? ""])),
       id: editingId ?? crypto.randomUUID(),
       designation: modalDesignation,
       beneficiaryType: modalBeneficiaryType,
-      firstName: (formData.firstName ?? "").trim(),
-      lastName: (formData.lastName ?? "").trim(),
-      relationship: formData.relationship ?? "",
-      trustName: (formData.trustName ?? "").trim(),
-      trustDate: formData.trustDate ?? "",
+      firstName: (formData.firstName ?? previousItem?.firstName ?? "").trim(),
+      lastName: (formData.lastName ?? previousItem?.lastName ?? "").trim(),
+      relationship: formData.relationship ?? previousItem?.relationship ?? "",
+      trustName: (formData.trustName ?? previousItem?.trustName ?? "").trim(),
+      trustDate: formData.trustDate ?? previousItem?.trustDate ?? "",
       share: parsedShare,
     };
 
@@ -828,7 +751,7 @@ export default function Beneficiary() {
     <FormRoutePage
       pageId="beneficiary"
       devFillFields={() =>
-        pageRequirement === "optional" ? [beneficiaryInfoOptInField] : []
+        pageRequirement === "optional" ? getSurfaceFields("beneficiaryControls").filter(field => field.id === BENEFICIARY_INFO_OPT_IN_FIELD_ID) : []
       }
       validate={(nextValues) =>
         getBeneficiaryPageError(
@@ -858,9 +781,9 @@ export default function Beneficiary() {
 
         return (
           <>
-            {pageRequirement === "optional" && (
+            {pageRequirement === "optional" && getSurfaceField("beneficiaryControls", BENEFICIARY_INFO_OPT_IN_FIELD_ID) && (
               <FieldRenderer
-                field={beneficiaryInfoOptInField}
+                field={getSurfaceField("beneficiaryControls", BENEFICIARY_INFO_OPT_IN_FIELD_ID)!}
                 control={control}
                 errors={errors}
               />
@@ -962,11 +885,8 @@ export default function Beneficiary() {
 
                   <RadioSelectionGroup
                     name="beneficiary-type"
-                    label="Beneficiary Type"
-                    options={[
-                      { value: "individual", label: "Individual" },
-                      { value: "trust", label: "Trust" },
-                    ]}
+                    label={getSurfaceField("beneficiaryControls", "beneficiaryType")!.label}
+                    options={getSurfaceField("beneficiaryControls", "beneficiaryType")!.options ?? []}
                     value={modalBeneficiaryType}
                     onChange={(value) =>
                       setModalBeneficiaryType(value as BeneficiaryType)
@@ -993,82 +913,18 @@ export default function Beneficiary() {
 
                   {modalBeneficiaryType === "individual" ? (
                     <>
-                      <FieldGrid>
-                        {BENEFICIARY_INDIVIDUAL_FIELDS.filter(
-                          (f) => f.id === "firstName" || f.id === "lastName",
-                        ).map((f) => (
-                          <FieldRenderer
-                            key={f.id}
-                            field={{
-                              ...f,
-                              disabled:
-                                (remainingDesignationSlots === 0 ||
-                                  individualBlocked) &&
-                                !editingId,
-                            }}
-                            control={
-                              modalControl as unknown as Control<
-                                Record<string, string | boolean | string[]>
-                              >
-                            }
-                            errors={
-                              modalErrors as FieldErrors<
-                                Record<string, string | boolean | string[]>
-                              >
-                            }
-                          />
-                        ))}
-                      </FieldGrid>
-
-                      {BENEFICIARY_INDIVIDUAL_FIELDS.filter(
-                        (f) => f.id === "relationship",
-                      ).map((f) => (
-                        <FieldRenderer
-                          key={f.id}
-                          field={{
-                            ...f,
-                            disabled:
-                              (remainingDesignationSlots === 0 ||
-                                individualBlocked) &&
-                              !editingId,
-                          }}
-                          control={
-                            modalControl as unknown as Control<
-                              Record<string, string | boolean | string[]>
-                            >
-                          }
-                          errors={
-                            modalErrors as FieldErrors<
-                              Record<string, string | boolean | string[]>
-                            >
-                          }
-                        />
-                      ))}
-
-                      {BENEFICIARY_INDIVIDUAL_FIELDS.filter(
-                        (f) => f.id === "share",
-                      ).map((f) => (
-                        <FieldRenderer
-                          key={f.id}
-                          field={{
-                            ...f,
-                            disabled:
-                              (remainingDesignationSlots === 0 ||
-                                individualBlocked) &&
-                              !editingId,
-                          }}
-                          control={
-                            modalControl as unknown as Control<
-                              Record<string, string | boolean | string[]>
-                            >
-                          }
-                          errors={
-                            modalErrors as FieldErrors<
-                              Record<string, string | boolean | string[]>
-                            >
-                          }
-                        />
-                      ))}
+                      {individualFields.map((field, index) => {
+                        const render = (f: typeof field) => <FieldRenderer key={f.id} field={{ ...f, disabled: (remainingDesignationSlots === 0 || individualBlocked) && !editingId }} control={modalControl as unknown as Control<Record<string, string | boolean | string[]>>} errors={modalErrors as FieldErrors<Record<string, string | boolean | string[]>>} />;
+                        const gridIds = getFieldSurface("beneficiaryIndividual").mapping.gridFields;
+                        const storedId = getFieldSurface("beneficiaryIndividual").mapping.fields[index].id;
+                        const inGrid = gridIds.includes(storedId);
+                        const previous = getFieldSurface("beneficiaryIndividual").mapping.fields[index - 1];
+                        let consecutive = 0;
+                        for (let cursor = index - 1; cursor >= 0 && gridIds.includes(getFieldSurface("beneficiaryIndividual").mapping.fields[cursor].id); cursor--) consecutive++;
+                        if (inGrid && previous && gridIds.includes(previous.id) && consecutive % 2 === 1) return null;
+                        const next = getFieldSurface("beneficiaryIndividual").mapping.fields[index + 1];
+                        return inGrid ? <FieldGrid key={field.id}>{render(field)}{next && gridIds.includes(next.id) && render(individualFields[index + 1])}</FieldGrid> : render(field);
+                      })}
 
                       <Stack direction="row" spacing={1}>
                         {[25, 50, 75, 100].map((percent) => (
@@ -1082,7 +938,7 @@ export default function Beneficiary() {
                               !editingId
                             }
                             onClick={() => {
-                              setModalValue("share", String(percent));
+                              setModalValue(shareKey, String(percent));
                             }}
                           >
                             {percent}%
@@ -1112,7 +968,7 @@ export default function Beneficiary() {
                     </>
                   ) : (
                     <>
-                      {BENEFICIARY_TRUST_FIELDS.map((f) => (
+                      {trustFields.map((f) => (
                         <FieldRenderer
                           key={f.id}
                           field={{

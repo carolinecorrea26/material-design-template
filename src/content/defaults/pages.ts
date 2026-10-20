@@ -9,7 +9,7 @@ export const pagesDefaults: Partial<PagesContent> = {
   membership: {
     title: "Your application for {{clientAcronym}}-sponsored insurance",
     subhead:
-      "Apply for {{clientAcronym}}-sponsored insurance underwritten by New York Life Insurance Company. It only takes a minute to get started, and we'll guide you through each step.",
+      "Progress saves as you go, so you can stop anytime and finish later.",
     navTitle: "Membership",
   },
   eligibility: {

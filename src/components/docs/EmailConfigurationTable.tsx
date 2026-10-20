@@ -1,5 +1,6 @@
+import Chip from "./LibraryTag";
 import {
-  Chip,
+
   Table,
   TableBody,
   TableCell,
@@ -7,7 +8,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { getLegacyClientConfigForSite, type SiteId } from "../../data";
+import { resolveEffectiveBranding, resolveSiteEmailConfiguration, resolveSiteSupport, type SiteId } from "../../data";
 import { CLIENT_HIGHLIGHT_BG, CLIENT_HIGHLIGHT_BORDER } from "./ClientNote";
 import ResponsiveTableContainer from "./ResponsiveTableContainer";
 
@@ -44,7 +45,7 @@ function formatObject(value: Record<string, string | undefined> | undefined): st
 
 export function GlobalEmailConfigurationTable() {
   return (
-    <ResponsiveTableContainer>
+    <ResponsiveTableContainer libraryTable="configurationDefinitions">
       <Table size="small" aria-label="Global email configuration options">
         <TableHead>
           <TableRow>
@@ -72,10 +73,12 @@ export function GlobalEmailConfigurationTable() {
 }
 
 export function ClientEmailConfigurationTable({ siteId }: { siteId: SiteId }) {
-  const client = getLegacyClientConfigForSite(siteId);
-  const hideContactBox = Boolean(client.emailSupport?.hideContactBox);
-  const supportOverride = client.emailSupport?.supportOverride;
-  const contactOverride = client.emailSupport?.contactOverride;
+  const emailSupport = resolveSiteEmailConfiguration(siteId);
+  const support = resolveSiteSupport(siteId);
+  const branding = resolveEffectiveBranding({ siteId });
+  const hideContactBox = Boolean(emailSupport?.hideContactBox);
+  const supportOverride = emailSupport?.supportOverride;
+  const contactOverride = emailSupport?.contactOverride;
 
   const rows = [
     {
@@ -93,14 +96,14 @@ export function ClientEmailConfigurationTable({ siteId }: { siteId: SiteId }) {
       overrideValue: formatObject(supportOverride),
       effectiveValue: supportOverride
         ? formatObject({
-            phone: supportOverride.phone ?? client.support.phoneDisplay ?? client.support.phone,
-            email: supportOverride.email ?? client.support.email,
-            website: supportOverride.website ?? client.support.website,
+            phone: supportOverride.phone ?? support.phoneDisplay ?? support.phone,
+            email: supportOverride.email ?? support.email,
+            website: supportOverride.website ?? support.website,
           })
         : formatObject({
-            phone: client.support.phoneDisplay ?? client.support.phone,
-            email: client.support.email,
-            website: client.support.website,
+            phone: support.phoneDisplay ?? support.phone,
+            email: support.email,
+            website: support.website,
           }),
       overridden: Boolean(supportOverride),
     },
@@ -110,16 +113,16 @@ export function ClientEmailConfigurationTable({ siteId }: { siteId: SiteId }) {
       globalValue: "Use client name / acronym",
       overrideValue: formatObject(contactOverride),
       effectiveValue: formatObject({
-        name: contactOverride?.name ?? client.branding.name,
-        acronym: contactOverride?.acronym ?? client.branding.acronym,
+        name: contactOverride?.name ?? branding.name,
+        acronym: contactOverride?.acronym ?? branding.acronym,
       }),
       overridden: Boolean(contactOverride),
     },
   ];
 
   return (
-    <ResponsiveTableContainer>
-      <Table size="small" aria-label={`Email configuration for ${client.branding.name}`}>
+    <ResponsiveTableContainer libraryTable="configurationDefinitions">
+      <Table size="small" aria-label={`Email configuration for ${branding.name}`}>
         <TableHead>
           <TableRow>
             <TableCell>Configuration</TableCell>

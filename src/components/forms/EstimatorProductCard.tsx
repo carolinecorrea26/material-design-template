@@ -1,4 +1,8 @@
+import { getSurfaceField } from "../../config/fields/storedSurfaces";
+import { residencyExclusionDiagnostic } from "../../domain/residencyPolicy";
+import EstimatedRate from "../ui/EstimatedRate";
 import {
+  Alert,
   Box,
   Checkbox,
   Chip,
@@ -14,11 +18,11 @@ import ProductCardSurface from "../layout/ProductCard";
 import FeaturedBadge from "../ui/FeaturedBadge";
 import QuickDecisionIndicator from "../ui/QuickDecisionIndicator";
 import SelectionGroup from "./SelectionGroup";
-import { getBenefitAmountLabel } from "../../config/coverageConstants";
 import type { CoverageCategoryId } from "../../config/coverages/types";
 import { formatUSD } from "../../utils/formatUSD";
 
 type EstimatorProductCardProps = {
+  unavailableReason?: string;
   product: {
     id: string;
     name: string;
@@ -50,6 +54,7 @@ type EstimatorProductCardProps = {
  * no riders, no waiting periods.
  */
 export default function EstimatorProductCard({
+  unavailableReason,
   product,
   currentAmount,
   amountChoices,
@@ -61,7 +66,9 @@ export default function EstimatorProductCard({
   onAmountChange,
 }: EstimatorProductCardProps) {
   const amountLabelId = `${product.id}-member-amount-label`;
-  const amountLabel = getBenefitAmountLabel(product.categoryId);
+  const amountField = getSurfaceField('quoteInputs', product.categoryId === 'DI' || product.categoryId === 'OO' ? 'quote-monthly-amount' : 'quote-amount');
+  const selectionField = getSurfaceField('quoteInputs', 'quote-selection');
+  const amountLabel = amountField?.label;
 
   return (
     <ProductCardSurface
@@ -88,8 +95,11 @@ export default function EstimatorProductCard({
       </Stack>
 
       {/* Select for myself row */}
-      <SelectionGroup>
+      {unavailableReason && unavailableReason !== residencyExclusionDiagnostic && <Alert severity="warning">{unavailableReason}</Alert>}
+      {selectionField && <SelectionGroup disabled={selectionField.disabled || !selected && !!unavailableReason}>
         <Checkbox
+          disabled={selectionField.disabled || !selected && !!unavailableReason}
+          slotProps={{ input: { "aria-label": selectionField.label } }}
           checked={selected}
           onChange={onToggleSelected}
           size="small"
@@ -100,7 +110,7 @@ export default function EstimatorProductCard({
           }}
         />
         <Typography variant="subtitle2" sx={{ flex: 1 }}>
-          Select for myself
+          {selectionField.label}
         </Typography>
         {selected ? (
           <Chip
@@ -125,16 +135,16 @@ export default function EstimatorProductCard({
             }}
           />
         )}
-      </SelectionGroup>
+      </SelectionGroup>}
 
       {/* Benefit amount + estimated cost */}
-      <Box>
-        <FormControl fullWidth>
+      {amountField && <Box>
+        <FormControl fullWidth required={amountField.required} disabled={amountField.disabled}>
           <InputLabel id={amountLabelId}>{amountLabel}</InputLabel>
           <Select
             labelId={amountLabelId}
             label={amountLabel}
-            value={currentAmount}
+            value={amountChoices.includes(currentAmount) ? currentAmount : ""}
             onChange={(event) => onAmountChange(Number(event.target.value))}
           >
             {amountChoices.map((amount) => (
@@ -161,20 +171,12 @@ export default function EstimatorProductCard({
             ) : (
               <Typography variant="caption" color="text.secondary">
                 Est. cost:{" "}
-                <Typography
-                  component="span"
-                  variant="caption"
-                  fontWeight="bold"
-                  sx={{ color: "primary.main", fontSize: "1.25rem" }}
-                >
-                  {formatUSD(displayedPremium)}
-                  {rateSuffix}
-                </Typography>
+                <EstimatedRate amount={displayedPremium} suffix={rateSuffix} variant="body2" sx={{ color: "primary.main", fontWeight: 700, fontSize: "1.25rem" }} />
               </Typography>
             )}
           </Stack>
         )}
-      </Box>
+      </Box>}
     </ProductCardSurface>
   );
 }

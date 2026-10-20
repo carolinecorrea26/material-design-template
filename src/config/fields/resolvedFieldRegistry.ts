@@ -1,6 +1,10 @@
+import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
+import { coverageFactFieldIds, eligibilityFactFieldIds } from "./coverageFactFields";
+import { getClientCoverages } from "../client/getActiveClientCoverages";
+import { homeQuotePlacements } from "./homeQuoteFields";
 import type { ClientConfig } from "../clients/types";
 import {
-  getLegacyClientConfigForSite,
+  getEffectiveSiteConfig,
   siteEntities,
 } from "../../data/registry";
 import type { Site, SiteId } from "../../data/model";
@@ -36,7 +40,7 @@ export type FieldRegistrySources = {
 
 const defaultSources: FieldRegistrySources = {
   sites: siteEntities,
-  clientForSite: (site) => getLegacyClientConfigForSite(site.id),
+  clientForSite: (site) => getEffectiveSiteConfig(site.id),
   fieldOverrides: siteFieldOverrides,
 };
 
@@ -114,6 +118,8 @@ export function getResolvedFieldResolutionsForSite(
   siteId: SiteId,
   sources: FieldRegistrySources = defaultSources,
 ): ResolvedFieldResolution[] {
+  const library = sources === defaultSources ? getPrototypeLibrary(siteId) : null;
+  if (library) return (library.site.configuration.pages.find(p => p.key === pageId)?.fields ?? []).map(f => ({ siteId, pageId, fieldId: f.key as FieldId, field: f.definition, included: f.included, status: f.included ? "overridden" : "disabled", notes: [library.revision] }));
   const site = sources.sites.find((candidate) => candidate.id === siteId);
   if (!site) return [];
   const client = sources.clientForSite(site);
@@ -124,9 +130,13 @@ export function getResolvedFieldResolutionsForSite(
     ],
     { clientId: site.clientId, siteId: site.id, pageId },
   );
+  if (pageId === "coverage" || pageId === "eligibility") {
+    const factIds = pageId === "coverage" ? coverageFactFieldIds(getClientCoverages(client)) : eligibilityFactFieldIds(getClientCoverages(client));
+    overrides.push(...factIds.map(fieldId => ({ fieldId, pageId, scope: "global" as const, include: true })));
+  }
   return resolvePageFieldEntries(
     pageId,
-    overrides,
+    pageId === "home" ? [...homeQuotePlacements(client), ...overrides] : overrides,
   ).map((entry) => ({
     ...entry,
     siteId: site.id,

@@ -1,3 +1,4 @@
+import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
 import type { PageId } from "../../types";
 import type { ClientConfig, ClientPageRequirement } from "../clients/types";
 import { getActiveClient } from "./getActiveClient";
@@ -15,7 +16,10 @@ export function getClientPageRequirement(
   pageId: PageId,
   client: ClientConfig = getActiveClient(),
 ): ClientPageRequirement {
+  const library = getPrototypeLibrary();
+  if (library?.client === client) return library.site.configuration.pages.find(p => p.key === pageId)?.requirement ?? "none";
   const { pages } = client;
+  if (pages.participationSource === "sitePages") return pages.requirements?.[pageId] ?? "none";
 
   if (isConfigurablePageId(pageId)) {
     const configuredRequirement = pages.requirements?.[pageId];

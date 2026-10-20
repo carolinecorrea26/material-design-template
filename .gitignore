@@ -28,3 +28,8 @@ storybook-static
 
 src.zip
 src *.zip
+# Regenerable Phase 1–4 migration review exports
+migration-artifacts/
+
+# Server-only local mock credentials, TOTP secrets and recovery hashes
+.mock-platform/

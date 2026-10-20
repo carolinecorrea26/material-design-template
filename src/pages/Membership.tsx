@@ -1,3 +1,4 @@
+import { pageHelpChips } from "../content/interactionLabels";
 import { useState } from "react";
 import { Alert, Box, Stack, Typography } from "@mui/material";
 import FormHelpChips from "../components/content/HelpChips";
@@ -12,6 +13,7 @@ import {
 } from "../app/ApplicationFormContext";
 import FieldRenderer from "../components/forms/FieldRenderer";
 import FormRoutePage from "../app/RoutePage";
+import { membershipIneligibilityMessage } from "../domain/applicantExperience";
 import SectionDivider from "../components/layout/SectionDivider";
 
 import QuoteCalculator from "../components/forms/QuoteCalculator";
@@ -167,6 +169,7 @@ function WAEPAAdditionalFields({
           {renderField(memberIdField, control, errors)}
         </>
       )}
+      {renderField(fieldById(fields, "active-military"), control, errors)}
     </Stack>
   );
 }
@@ -182,11 +185,7 @@ export default function Membership() {
     coverageOptionsAvailableHelpItem,
     howApplyingWorksHelpItem,
   ];
-  const chipItems = [
-    ...drawerHelpItems,
-    { id: "estimate-cost", label: "How much does it cost?" },
-    // groupInsuranceHelpItem(client.branding.name),
-  ];
+  const chipItems = [...pageHelpChips.membership];
   const [activeHelpId, setActiveHelpId] = useState<string | null>(null);
   const activeHelpItem =
     drawerHelpItems.find((item) => item.id === activeHelpId) ?? null;
@@ -232,11 +231,13 @@ export default function Membership() {
           return true;
         }
         return (
-          client.id !== "ama" &&
+          Boolean(membershipIneligibilityMessage(client.applicantExperience, values)) ||
+          (client.id !== "ama" &&
           client.id !== "waepa" &&
-          values.membership === "no"
+          values.membership === "no")
         );
       }}
+      validate={(values) => membershipIneligibilityMessage(client.applicantExperience, values)}
     >
       {({ control, errors, watchedValues, allFields, setValue }) => {
         const membershipField = allFields.find(
@@ -247,6 +248,7 @@ export default function Membership() {
         );
 
         const membershipValue = watchedValues.membership;
+        const membershipIneligibility = membershipIneligibilityMessage(client.applicantExperience, watchedValues);
         const associationResolution = resolveActiveAssociationFromApplication(
           site.id,
           watchedValues,
@@ -295,6 +297,11 @@ export default function Membership() {
             {associationLinkError && (
               <Alert severity="error" sx={{ mb: 2 }}>
                 {associationLinkError} Please request a valid application link.
+              </Alert>
+            )}
+            {membershipIneligibility && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {membershipIneligibility}
               </Alert>
             )}
             {membershipField && (
@@ -410,7 +417,7 @@ export default function Membership() {
                       label={
                         hasAmaPhysicianFields
                           ? "Physician Information"
-                          : client.id === "asce"
+                          : client.id === "asce" || client.id === "waepa"
                             ? "Additional Membership Information"
                           : "Membership Information"
                       }

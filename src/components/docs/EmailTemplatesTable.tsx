@@ -1,7 +1,8 @@
+import Chip from "./LibraryTag";
 import { useEffect, useMemo, useState } from "react";
 import {
   Box,
-  Chip,
+
   FormControl,
   InputLabel,
   Link,
@@ -131,7 +132,7 @@ export default function EmailTemplatesTable({
           </FormControl>
         </Stack>
 
-        <ResponsiveTableContainer>
+        <ResponsiveTableContainer libraryTable="emailTemplates">
           <Table
             size="small"
             aria-label="Email templates"
@@ -272,20 +273,30 @@ export default function EmailTemplatesTable({
             </Tabs>
 
             {modalView === "mockup" ? (
-              <Box
-                component="iframe"
-                title={`${openPreview.subject} email preview`}
-                srcDoc={openPreview.html}
-                sx={{
-                  display: "block",
-                  width: "100%",
-                  minHeight: { xs: 640, md: 760 },
-                  border: "1px solid",
-                  borderColor: "divider",
-                  borderRadius: 1,
-                  bgcolor: "white",
-                }}
-              />
+              <Box sx={{ border: "1px solid", borderColor: "divider", borderRadius: 1, overflow: "hidden" }}>
+                <Box sx={{ px: 2, py: 1.5, bgcolor: "background.paper", borderBottom: "1px solid", borderColor: "divider", overflowWrap: "anywhere" }}>
+                  <Typography variant="body2" sx={{ mb: 0.75 }}>
+                    <Box component="span" sx={{ fontWeight: 700 }}>From: </Box>
+                    {openPreview.fromName} &lt;{openPreview.fromEmail}&gt;
+                  </Typography>
+                  <Typography variant="body2">
+                    <Box component="span" sx={{ fontWeight: 700 }}>Subject: </Box>
+                    {openPreview.subject}
+                  </Typography>
+                </Box>
+                <Box
+                  component="iframe"
+                  title={`${openPreview.subject} email preview`}
+                  srcDoc={openPreview.html}
+                  sx={{
+                    display: "block",
+                    width: "100%",
+                    minHeight: { xs: 640, md: 760 },
+                    border: 0,
+                    bgcolor: "white",
+                  }}
+                />
+              </Box>
             ) : (
               <Box
                 component="pre"

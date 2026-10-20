@@ -1,3 +1,8 @@
+import { getPrototypeLibrary } from "../domain/prototypeLibrary";
+import { attachPageAnalytics, emitPageAnalytics } from "../analytics/runtime";
+import { getAnalyticsInventory } from "../analytics/inventory";
+import { resolveSiteId } from "../data/activeSite";
+import { getFormTemplate } from "../config/template/resolveTemplate";
 import {
   useCallback,
   useEffect,
@@ -15,7 +20,7 @@ import {
   getNextFormPageId,
   getPreviousFormPageId,
 } from "../config/formFlow";
-import { getPageInfoNote, getPageSubhead, getPageTitle } from "../config/pages";
+import { getPagePath, getPageInfoNote, getPageSubhead, getPageTitle } from "../config/pages";
 import { getPageSections } from "../config/pageSections";
 import type { PageSectionConfig } from "../config/pageSections/types";
 import { resolveVisibilityCondition } from "../config/conditions";
@@ -41,6 +46,7 @@ import {
 } from "../config/transitionMessages";
 import { sendAutosaveMockEmail } from "../utils/mockEmail";
 import { useApplicationSession } from "./ApplicationSessionContext";
+import { useSinglePageFlow } from "./SinglePageFlowContext";
 
 import PageTransitionSkeleton from "../components/feedback/PageTransitionSkeleton";
 import ProgressSavedSnackbar from "../components/feedback/ProgressSavedSnackbar";
@@ -95,6 +101,15 @@ type FormRoutePageProps = {
   initialTransitionMessage?: string;
 };
 
+/** Restore configured repeatable records alongside scalar field defaults. */
+export function getPageCollectionDefaults(pageId: PageId, values: Record<string, unknown>): FormRoutePageFormValues {
+  return Object.fromEntries(getPageSections(pageId).flatMap(section =>
+    section.collectionName && Array.isArray(values[section.collectionName])
+      ? [[section.collectionName, values[section.collectionName]]]
+      : [],
+  )) as FormRoutePageFormValues;
+}
+
 function getDefaultValueForField(field: FieldDefinition): FormRouteFieldValue {
   if (field.inputType === "checkbox") {
     return false;
@@ -131,7 +146,7 @@ function getMergedPageFields(
 ) {
   return [
     ...getClientPageFields(pageId, values),
-    ...(devFillFields?.(values) ?? []),
+    ...(devFillFields?.(values) ?? []).filter(f => { const library = getPrototypeLibrary(); if (!library) return true; const captured = library.site.configuration.pages.find(p => p.key === pageId)?.fields.find(field => field.key === f.id); return captured ? captured.included : f.id.startsWith("payment-method:") || f.id.startsWith("payment-frequency:"); }),
   ].filter(
     (field, index, fields) =>
       fields.findIndex((entry) => entry.id === field.id) === index,
@@ -236,10 +251,18 @@ export default function FormRoutePage({
   resolveNextPageId,
   initialTransitionMessage,
 }: FormRoutePageProps) {
+  const analyticsRoot = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!analyticsRoot.current) return;
+    const siteKey = resolveSiteId();
+    return attachPageAnalytics(analyticsRoot.current, pageId, { siteKey, template: getFormTemplate(), revision: getPrototypeLibrary(siteKey)?.revision ?? "prototype" }, getAnalyticsInventory(siteKey));
+  }, [pageId]);
   const navigate = useNavigate();
   const location = useLocation();
-  const { values, setPageValues } = useApplicationForm();
+  const { values, setPageValues, saveApplication } = useApplicationForm();
   const { reviewSubmitted, markReviewSubmitted } = useApplicationSession();
+  const singlePageFlow = useSinglePageFlow();
+  const isSinglePage = Boolean(singlePageFlow);
 
   const [showProgressSaved, setShowProgressSaved] = useState(false);
 
@@ -262,7 +285,7 @@ export default function FormRoutePage({
         getDefaultValueForField(field);
       return acc;
     },
-    {},
+    getPageCollectionDefaults(pageId, values),
   );
 
   const {
@@ -273,7 +296,7 @@ export default function FormRoutePage({
     setValue,
     trigger,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormRoutePageFormValues>({
     defaultValues,
   });
@@ -295,10 +318,12 @@ export default function FormRoutePage({
   }, []);
 
   const allFields = getMergedPageFields(pageId, watchedValues, devFillFields);
+  const devFillFieldsRef = useRef(devFillFields);
+  devFillFieldsRef.current = devFillFields;
   const pageSections = getPageSections(pageId);
 
   useEffect(() => {
-    const fields = getMergedPageFields(pageId, values, devFillFields);
+    const fields = getMergedPageFields(pageId, values, devFillFieldsRef.current);
 
     const restoredValues = fields.reduce<FormRoutePageFormValues>(
       (acc, field) => {
@@ -308,11 +333,11 @@ export default function FormRoutePage({
           getDefaultValueForField(field);
         return acc;
       },
-      {},
+      getPageCollectionDefaults(pageId, values),
     );
 
     reset(restoredValues);
-  }, [devFillFields, pageId, reset, values]);
+  }, [pageId, reset, values]);
 
   useEffect(() => {
     function handleDevFillForm() {
@@ -369,7 +394,7 @@ export default function FormRoutePage({
 
   const [pageError, setPageError] = useState<string | undefined>();
   const [isTransitioning, setIsTransitioning] = useState(
-    Boolean(initialTransitionMessage),
+    !isSinglePage && Boolean(initialTransitionMessage),
   );
   const [transitionMessage, setTransitionMessage] = useState(
     initialTransitionMessage ?? "",
@@ -377,13 +402,13 @@ export default function FormRoutePage({
   const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (initialTransitionMessage) {
+    if (initialTransitionMessage && !isSinglePage) {
       transitionTimerRef.current = setTimeout(() => {
         setIsTransitioning(false);
         setTransitionMessage("");
       }, MESSAGE_DURATION);
     }
-  }, [initialTransitionMessage]);
+  }, [initialTransitionMessage, isSinglePage]);
 
   useEffect(() => {
     return () => {
@@ -417,26 +442,35 @@ export default function FormRoutePage({
         nextPageId ?? (pageId === "payment" ? "receipt" : null);
       if (!destination) return;
 
+
       const [msg1, msg2] = getForwardMessages(pageId);
 
       emitPendingBreadcrumbCompletion(pageId);
       setTransitionMessage(msg1);
       setIsTransitioning(true);
-      window.scrollTo({ top: 0 });
+      if (singlePageFlow) {
+        singlePageFlow.setNavigationPending(true);
+        document.getElementById(`${pageId}-form`)?.closest('[data-single-page-step]')?.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else window.scrollTo({ top: 0 });
 
       transitionTimerRef.current = setTimeout(() => {
         setTransitionMessage(msg2);
 
         transitionTimerRef.current = setTimeout(() => {
           emitProgressSnapshot(nextNavigationValues);
-          navigate(`/${destination}`, { state: { showProgressSaved: true } });
+          if (singlePageFlow) singlePageFlow.completeSection(pageId, destination);
+          else navigate(getPagePath(destination), { state: { showProgressSaved: true } });
         }, MESSAGE_DURATION);
       }, MESSAGE_DURATION);
     },
-    [navigate, pageId, resolveNextPageId],
+    [navigate, pageId, resolveNextPageId, singlePageFlow],
   );
 
-  function onSubmit(formValues: FormRoutePageValues) {
+  function analyticsEvent(event: "submit" | "validation-failed") {
+    const siteKey = resolveSiteId();
+    emitPageAnalytics(pageId, event, { siteKey, template: getFormTemplate(), revision: getPrototypeLibrary(siteKey)?.revision ?? "prototype" }, getAnalyticsInventory(siteKey));
+  }
+  async function onSubmit(formValues: FormRoutePageValues) {
     const nextNavigationValues = {
       ...values,
       ...formValues,
@@ -445,12 +479,20 @@ export default function FormRoutePage({
     const validationError = validate?.(nextNavigationValues);
 
     if (validationError) {
+      analyticsEvent("validation-failed");
       setPageError(validationError);
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
+    analyticsEvent("submit");
     setPageError(undefined);
+    try {
+      await saveApplication?.(nextNavigationValues, pageId === 'coverage' || pageId === 'review' ? pageId : undefined);
+    } catch (error) {
+      setPageError(error instanceof Error ? error.message : 'Progress could not be saved. Retry before continuing.');
+      return;
+    }
     setPageValues(formValues);
     hasExplicitlySavedRef.current = true;
 
@@ -477,6 +519,7 @@ export default function FormRoutePage({
   }
 
   function onFormError(fieldErrors: FieldErrors<FormRoutePageValues>) {
+    analyticsEvent("validation-failed");
     setPageError("Please correct the errors below before continuing.");
 
     if (Object.keys(fieldErrors).length > 0) {
@@ -498,14 +541,19 @@ export default function FormRoutePage({
       setPageValues(previousNavigationValues);
       hasExplicitlySavedRef.current = true;
 
+
       emitPendingBreadcrumbCompletion(null);
       setTransitionMessage(BACK_MESSAGE);
       setIsTransitioning(true);
-      window.scrollTo({ top: 0 });
+      if (singlePageFlow) singlePageFlow.setNavigationPending(true);
+      else window.scrollTo({ top: 0 });
 
       transitionTimerRef.current = setTimeout(() => {
         emitProgressSnapshot(previousNavigationValues);
-        navigate(`/${previousPageId}`);
+        if (singlePageFlow) {
+          singlePageFlow.setNavigationPending(false);
+          singlePageFlow.goToSection(previousPageId);
+        } else navigate(getPagePath(previousPageId));
       }, MESSAGE_DURATION);
     }
   }
@@ -523,7 +571,7 @@ export default function FormRoutePage({
   const renderedHelp = typeof help === "function" ? help(renderProps) : help;
 
   const activeProgressStepIndex = getActiveProgressStepIndex(pageId, values);
-  const hasVerticalStepper = activeProgressStepIndex >= 0;
+  const hasVerticalStepper = !isSinglePage && activeProgressStepIndex >= 0;
 
   const resolvedTitle = title ?? getPageTitle(pageId);
   const resolvedSubhead = subhead ?? getPageSubhead(pageId);
@@ -539,11 +587,11 @@ export default function FormRoutePage({
   const formPageElement = (
     <PageShell
       title={resolvedTitle}
-      maxWidth={hasVerticalStepper ? "100%" : formMaxWidth}
+      maxWidth={hasVerticalStepper || isSinglePage ? "100%" : formMaxWidth}
       noTitle
       actions={undefined}
     >
-      <Box>
+      <Box ref={analyticsRoot} data-analytics-page={pageId}>
         <FormShell
           sx={{
             px: { xs: 2, sm: "48px" },
@@ -551,7 +599,7 @@ export default function FormRoutePage({
             mb: hasVerticalStepper ? 1 : 0,
           }}
         >
-          {hasVerticalStepper && (
+          {(hasVerticalStepper || isSinglePage) && (
             <Box sx={{ mb: 1.5 }}>
               <VerticalStepperBreadcrumbs pageId={pageId} />
             </Box>
@@ -575,7 +623,7 @@ export default function FormRoutePage({
               )}
               {resolvedInfoNote && (
                 <Box sx={{ mb: 2 }}>
-                  <Alert severity="info" sx={{ width: "100%" }}>
+                  <Alert severity="info" sx={{ width: "100%", whiteSpace: "pre-line" }}>
                     {resolvedInfoNote}
                   </Alert>
                 </Box>
@@ -600,9 +648,9 @@ export default function FormRoutePage({
                 formId={`${pageId}-form`}
                 isTransitioning={isTransitioning}
                 disabled={
-                  typeof disableNextButton === "function"
+                  isSubmitting || (typeof disableNextButton === "function"
                     ? disableNextButton(watchedValues)
-                    : Boolean(disableNextButton)
+                    : Boolean(disableNextButton))
                 }
               />
             )}

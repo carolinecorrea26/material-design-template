@@ -2,6 +2,11 @@ import type { ConditionDefinition } from "./types";
 
 export const conditionDefinitions: ConditionDefinition[] = [
   {
+    id: "condition-active-military",
+    conditions: [{ fieldId: "active-military", operator: "equals", value: "yes" }],
+    match: "all",
+  },
+  {
     id: "condition-spouse-selected",
     conditions: [{ fieldId: "dependents", operator: "includes", value: "spouse" }],
     match: "all",

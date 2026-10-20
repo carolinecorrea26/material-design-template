@@ -1,0 +1,4654 @@
+{
+  "title": "Admin Center Portal Library \u2014 Canonical Data & Migration Reference",
+  "version": "2026-09-28-draft-1",
+  "purpose": "Canonical reference for finishing the prototype migration without losing Portal Admin/MCR requirements and for guiding Admin Center Portal Library information architecture.",
+  "authoritativeSources": [
+    {
+      "name": "Current prototype source",
+      "file": "src(20260928-145744).zip",
+      "role": "Current implementation/schema/migration state"
+    },
+    {
+      "name": "Full MCR",
+      "file": "MCR-new version full.xlsx",
+      "role": "Authoritative requirements source across 23 sheets"
+    },
+    {
+      "name": "Requirements checklist",
+      "file": "Requirements to fill out checklist.xlsx",
+      "role": "45,292 populated-cell review index; contains 19 unresolved follow-up cells and 1 TBD cell, plus whitespace/layout review noise"
+    }
+  ],
+  "controlledVocabularies": {
+    "providedBy": [
+      "Client/AM",
+      "Dev/QA",
+      "PRASE",
+      "UW",
+      "Contracts",
+      "Compliance",
+      "Portal",
+      "TPA",
+      "Legal"
+    ]
+  },
+  "portalLibraryIA": [
+    {
+      "tab": "Pages",
+      "tables": [
+        "pages",
+        "page_sections"
+      ]
+    },
+    {
+      "tab": "Fields",
+      "tables": [
+        "fields",
+        "page_fields",
+        "validation_rules",
+        "question_sets",
+        "question_set_fields"
+      ]
+    },
+    {
+      "tab": "Coverage",
+      "tables": [
+        "coverage_categories",
+        "products",
+        "product_identifiers",
+        "coverage_amount_patterns",
+        "product_amount_rules",
+        "aggregate_limits",
+        "applicant_types",
+        "product_applicant_eligibility",
+        "underwriting_bands",
+        "residency_rules",
+        "riders",
+        "product_riders",
+        "rider_amount_rules",
+        "rate_tables",
+        "product_rate_tables"
+      ]
+    },
+    {
+      "tab": "Patterns",
+      "tables": [
+        "patterns",
+        "pattern_relations",
+        "pattern_assignments"
+      ]
+    },
+    {
+      "tab": "Rules",
+      "tables": [
+        "rules",
+        "conditions",
+        "rule_conditions",
+        "rule_actions",
+        "rule_assignments"
+      ]
+    },
+    {
+      "tab": "Flags",
+      "tables": [
+        "flag_definitions",
+        "flag_rules",
+        "flag_assignments"
+      ]
+    },
+    {
+      "tab": "Flows",
+      "tables": [
+        "flows",
+        "flow_steps",
+        "flow_transitions"
+      ]
+    },
+    {
+      "tab": "Features",
+      "tables": [
+        "features",
+        "site_features"
+      ]
+    },
+    {
+      "tab": "Configurations",
+      "tables": [
+        "configuration_definitions",
+        "configuration_values"
+      ]
+    },
+    {
+      "tab": "URL Parameters",
+      "tables": [
+        "url_parameters",
+        "site_url_parameters",
+        "site_environment_links"
+      ]
+    },
+    {
+      "tab": "Content",
+      "tables": [
+        "content_entries",
+        "content_values",
+        "document_definitions"
+      ]
+    },
+    {
+      "tab": "Communications",
+      "tables": [
+        "email_templates",
+        "site_email_templates"
+      ]
+    },
+    {
+      "tab": "Branding & Design",
+      "tables": [
+        "branding_profiles",
+        "support_profiles"
+      ]
+    }
+  ],
+  "schemaAudit": {
+    "strengths": [
+      "Existing model already separates global definitions from scoped site/client assignment tables.",
+      "Stable semantic keys and additive migration fixtures/equivalence tests are a strong migration foundation.",
+      "Many-to-many relationships already exist for page-fields, product-riders, rules-conditions and flow transitions."
+    ],
+    "changesBeforeRuntimeSwitch": [
+      "Normalize Coverage so amount rules, underwriting bands, applicant eligibility, residency, aggregate limits and rider amount/dependency logic are queryable relations instead of fields embedded in product JSON.",
+      "Add Patterns and Flags as first-class entities with assignment/relation tables.",
+      "Add rate_tables/product_rate_tables and the rate-table display configurations.",
+      "Add question_sets/question_set_fields for the MCR's reusable health/financial/smoker/CIR/SUP-DI question families.",
+      "Add ID # and Provided by/sourceReference metadata consistently to Portal Library tables.",
+      "Persist URL parameter definitions/usage rather than keeping them only in static docs/config.",
+      "Keep JSON for payloads that are genuinely polymorphic, but do not hide columns that must be filtered, joined or audited inside definition JSON."
+    ],
+    "idStrategy": "Retain internal primary key + stable semantic key. Add a separate persistent numeric displayId shown as 'ID #'. Do not use table row order as ID and do not replace semantic keys with display IDs.",
+    "relationshipUx": "Every foreign-key/relationship value should render as a link to the related Portal Library table/record, preserving Global/Effective Site scope and selected site. Patterns includes a computed 'Related tables' link column.",
+    "exports": "Implement one shared table-export service/component after repository-backed tables are live. Every Portal Library table gets CSV (flat row export), XML (structured relation-aware export), and PDF (human-readable current-view export)."
+  },
+  "tables": [
+    {
+      "name": "pages",
+      "portalLibraryTab": "Pages",
+      "purpose": "Canonical application page definitions",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Page",
+          "type": "string"
+        },
+        {
+          "name": "route",
+          "label": "Route",
+          "type": "string"
+        },
+        {
+          "name": "applicationOrder",
+          "label": "Order",
+          "type": "integer"
+        },
+        {
+          "name": "healthGate",
+          "label": "Health gate",
+          "type": "boolean"
+        },
+        {
+          "name": "status",
+          "label": "Status",
+          "type": "enum"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists; definition is partly JSON-based.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "page_sections",
+      "portalLibraryTab": "Pages",
+      "purpose": "Reusable sections within pages",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "pageKey",
+          "label": "Page",
+          "type": "fk:pages"
+        },
+        {
+          "name": "name",
+          "label": "Section",
+          "type": "string"
+        },
+        {
+          "name": "position",
+          "label": "Order",
+          "type": "integer"
+        }
+      ],
+      "relationships": [
+        "page_sections.pageKey -> pages.key"
+      ],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "fields",
+      "portalLibraryTab": "Fields",
+      "purpose": "Canonical input/display field definitions",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Field",
+          "type": "string"
+        },
+        {
+          "name": "inputType",
+          "label": "Input type",
+          "type": "string"
+        },
+        {
+          "name": "dataType",
+          "label": "Data type",
+          "type": "string"
+        },
+        {
+          "name": "defaultValue",
+          "label": "Default",
+          "type": "json|null"
+        },
+        {
+          "name": "status",
+          "label": "Status",
+          "type": "enum"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists; much of definition is JSON.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "page_fields",
+      "portalLibraryTab": "Fields",
+      "purpose": "Many-to-many placement of fields on pages",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "pageKey",
+          "label": "Page",
+          "type": "fk:pages"
+        },
+        {
+          "name": "fieldKey",
+          "label": "Field",
+          "type": "fk:fields"
+        },
+        {
+          "name": "sectionKey",
+          "label": "Section",
+          "type": "fk:page_sections|null"
+        },
+        {
+          "name": "position",
+          "label": "Order",
+          "type": "integer"
+        }
+      ],
+      "relationships": [
+        "page_fields.pageKey -> pages.key",
+        "page_fields.fieldKey -> fields.key",
+        "page_fields.sectionKey -> page_sections.key"
+      ],
+      "currentState": "Exists but section relation should be explicit.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "validation_rules",
+      "portalLibraryTab": "Fields",
+      "purpose": "Reusable validation rules for fields",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "fieldKey",
+          "label": "Field",
+          "type": "fk:fields"
+        },
+        {
+          "name": "ruleType",
+          "label": "Type",
+          "type": "string"
+        },
+        {
+          "name": "parameters",
+          "label": "Parameters",
+          "type": "json"
+        },
+        {
+          "name": "message",
+          "label": "Message",
+          "type": "string|null"
+        }
+      ],
+      "relationships": [
+        "validation_rules.fieldKey -> fields.key"
+      ],
+      "currentState": "Exists; currently definition JSON.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "question_sets",
+      "portalLibraryTab": "Fields",
+      "purpose": "Reusable named question groups such as health, financial, smoker, CIR, supplemental DI",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Question set",
+          "type": "string"
+        },
+        {
+          "name": "questionType",
+          "label": "Type",
+          "type": "enum"
+        },
+        {
+          "name": "version",
+          "label": "Version",
+          "type": "string|null"
+        },
+        {
+          "name": "description",
+          "label": "Description",
+          "type": "string|null"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Missing as explicit entity; MCR question tabs are currently scattered across content/config/rules.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "question_set_fields",
+      "portalLibraryTab": "Fields",
+      "purpose": "Ordered fields/questions belonging to a question set",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "questionSetKey",
+          "label": "Question set",
+          "type": "fk:question_sets"
+        },
+        {
+          "name": "fieldKey",
+          "label": "Field",
+          "type": "fk:fields"
+        },
+        {
+          "name": "position",
+          "label": "Order",
+          "type": "integer"
+        },
+        {
+          "name": "conditionKey",
+          "label": "Condition",
+          "type": "fk:conditions|null"
+        }
+      ],
+      "relationships": [
+        "question_set_fields.questionSetKey -> question_sets.key",
+        "question_set_fields.fieldKey -> fields.key",
+        "question_set_fields.conditionKey -> conditions.key"
+      ],
+      "currentState": "Missing.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "coverage_categories",
+      "portalLibraryTab": "Coverage",
+      "purpose": "Coverage category taxonomy",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Category",
+          "type": "string"
+        },
+        {
+          "name": "shortLabel",
+          "label": "Short label",
+          "type": "string|null"
+        },
+        {
+          "name": "iconKey",
+          "label": "Icon",
+          "type": "string|null"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "products",
+      "portalLibraryTab": "Coverage",
+      "purpose": "Canonical insurance product definitions",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "categoryKey",
+          "label": "Category",
+          "type": "fk:coverage_categories"
+        },
+        {
+          "name": "name",
+          "label": "Product",
+          "type": "string"
+        },
+        {
+          "name": "code",
+          "label": "Code",
+          "type": "string|null"
+        },
+        {
+          "name": "groupPolicySitus",
+          "label": "Policy situs",
+          "type": "string|null"
+        },
+        {
+          "name": "underwritingType",
+          "label": "UW type",
+          "type": "string|null"
+        },
+        {
+          "name": "brochureUrl",
+          "label": "Brochure",
+          "type": "string|null"
+        }
+      ],
+      "relationships": [
+        "products.categoryKey -> coverage_categories.key"
+      ],
+      "currentState": "Exists but amounts, underwriting bands, requirements, applicants and related data are embedded in product definition JSON; normalize before runtime switch.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "product_identifiers",
+      "portalLibraryTab": "Coverage",
+      "purpose": "Product identifiers such as G-number and plan code",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "productKey",
+          "label": "Product",
+          "type": "fk:products"
+        },
+        {
+          "name": "kind",
+          "label": "Identifier type",
+          "type": "enum:gNumber|planCode"
+        },
+        {
+          "name": "value",
+          "label": "Value",
+          "type": "string"
+        },
+        {
+          "name": "scope",
+          "label": "Scope",
+          "type": "enum:global|client|site"
+        },
+        {
+          "name": "clientKey",
+          "label": "Client",
+          "type": "fk:clients|null"
+        },
+        {
+          "name": "siteKey",
+          "label": "Site",
+          "type": "fk:sites|null"
+        }
+      ],
+      "relationships": [
+        "product_identifiers.productKey -> products.key"
+      ],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "coverage_amount_patterns",
+      "portalLibraryTab": "Coverage",
+      "purpose": "Reusable amount-selection/derivation pattern definitions",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "patternKey",
+          "label": "Pattern",
+          "type": "fk:patterns"
+        },
+        {
+          "name": "amountType",
+          "label": "Amount type",
+          "type": "enum:fixed|set|range|tiered-range|range-plus-fixed|conditional|calculated|named-option|none|attribute-mapped|formula-capped|base-reference|multiplier|election-only|unspecified-increment"
+        },
+        {
+          "name": "minimum",
+          "label": "Min",
+          "type": "number|null"
+        },
+        {
+          "name": "maximum",
+          "label": "Max",
+          "type": "number|null"
+        },
+        {
+          "name": "increment",
+          "label": "Increment",
+          "type": "number|null"
+        },
+        {
+          "name": "formula",
+          "label": "Formula",
+          "type": "string|null"
+        },
+        {
+          "name": "parameters",
+          "label": "Parameters",
+          "type": "json"
+        }
+      ],
+      "relationships": [
+        "coverage_amount_patterns.patternKey -> patterns.key"
+      ],
+      "currentState": "Missing; current product amounts are embedded in CoverageDefinition.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "product_amount_rules",
+      "portalLibraryTab": "Coverage",
+      "purpose": "Assign amount pattern/values to product + applicant + optional condition",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "productKey",
+          "label": "Product",
+          "type": "fk:products"
+        },
+        {
+          "name": "applicantTypeKey",
+          "label": "Applicant",
+          "type": "fk:applicant_types"
+        },
+        {
+          "name": "amountPatternKey",
+          "label": "Amount pattern",
+          "type": "fk:coverage_amount_patterns"
+        },
+        {
+          "name": "conditionKey",
+          "label": "Condition",
+          "type": "fk:conditions|null"
+        },
+        {
+          "name": "scope",
+          "label": "Scope",
+          "type": "enum:global|client|site"
+        },
+        {
+          "name": "clientKey",
+          "label": "Client",
+          "type": "fk:clients|null"
+        },
+        {
+          "name": "siteKey",
+          "label": "Site",
+          "type": "fk:sites|null"
+        }
+      ],
+      "relationships": [
+        "product_amount_rules.productKey -> products.key",
+        "product_amount_rules.applicantTypeKey -> applicant_types.key",
+        "product_amount_rules.amountPatternKey -> coverage_amount_patterns.key",
+        "product_amount_rules.conditionKey -> conditions.key"
+      ],
+      "currentState": "Missing as relational table.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "aggregate_limits",
+      "portalLibraryTab": "Coverage",
+      "purpose": "Coverage/category aggregate limit definitions",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "categoryKey",
+          "label": "Category",
+          "type": "fk:coverage_categories|null"
+        },
+        {
+          "name": "productKey",
+          "label": "Product",
+          "type": "fk:products|null"
+        },
+        {
+          "name": "applicantTypeKey",
+          "label": "Applicant",
+          "type": "fk:applicant_types|null"
+        },
+        {
+          "name": "maximum",
+          "label": "Maximum",
+          "type": "number|null"
+        },
+        {
+          "name": "formula",
+          "label": "Formula",
+          "type": "string|null"
+        },
+        {
+          "name": "conditionKey",
+          "label": "Condition",
+          "type": "fk:conditions|null"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Currently represented partly in config constants and free-text amount notes.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "applicant_types",
+      "portalLibraryTab": "Coverage",
+      "purpose": "Applicant roles/classifications",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Applicant type",
+          "type": "string"
+        },
+        {
+          "name": "applicantType",
+          "label": "Runtime applicant type",
+          "type": "string"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "product_applicant_eligibility",
+      "portalLibraryTab": "Coverage",
+      "purpose": "Eligibility of applicant types for products",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "productKey",
+          "label": "Product",
+          "type": "fk:products"
+        },
+        {
+          "name": "applicantTypeKey",
+          "label": "Applicant",
+          "type": "fk:applicant_types"
+        },
+        {
+          "name": "siteKey",
+          "label": "Site",
+          "type": "fk:sites|null"
+        },
+        {
+          "name": "eligible",
+          "label": "Eligible",
+          "type": "boolean"
+        },
+        {
+          "name": "conditionKey",
+          "label": "Condition",
+          "type": "fk:conditions|null"
+        }
+      ],
+      "relationships": [
+        "product_applicant_eligibility.productKey -> products.key",
+        "product_applicant_eligibility.applicantTypeKey -> applicant_types.key"
+      ],
+      "currentState": "Current site_product_applicants only represents positive assignment; add condition/eligibility semantics.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "underwriting_bands",
+      "portalLibraryTab": "Coverage",
+      "purpose": "Product underwriting pathways and age/amount bands",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "productKey",
+          "label": "Product",
+          "type": "fk:products"
+        },
+        {
+          "name": "applicantTypeKey",
+          "label": "Applicant",
+          "type": "fk:applicant_types"
+        },
+        {
+          "name": "pathway",
+          "label": "Pathway",
+          "type": "string"
+        },
+        {
+          "name": "minimumAge",
+          "label": "Min age",
+          "type": "number|null"
+        },
+        {
+          "name": "maximumAge",
+          "label": "Max age",
+          "type": "number|null"
+        },
+        {
+          "name": "minimumAmount",
+          "label": "Min amount",
+          "type": "number|null"
+        },
+        {
+          "name": "maximumAmount",
+          "label": "Max amount",
+          "type": "number|null"
+        },
+        {
+          "name": "mortalityMorbidity",
+          "label": "Mortality/Morbidity",
+          "type": "string|null"
+        },
+        {
+          "name": "conditionKey",
+          "label": "Condition",
+          "type": "fk:conditions|null"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Currently embedded in product definition JSON.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "residency_rules",
+      "portalLibraryTab": "Coverage",
+      "purpose": "Site/product/rider residency eligibility or exclusions",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "targetType",
+          "label": "Target type",
+          "type": "enum:site|product|rider"
+        },
+        {
+          "name": "targetKey",
+          "label": "Target",
+          "type": "polymorphic fk"
+        },
+        {
+          "name": "mode",
+          "label": "Mode",
+          "type": "enum:include|exclude"
+        },
+        {
+          "name": "jurisdictions",
+          "label": "Jurisdictions",
+          "type": "json-array"
+        },
+        {
+          "name": "conditionKey",
+          "label": "Condition",
+          "type": "fk:conditions|null"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Currently spread across coverage definitions and MCR free text.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "riders",
+      "portalLibraryTab": "Coverage",
+      "purpose": "Canonical rider definitions",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Rider",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "label": "Description",
+          "type": "string|null"
+        },
+        {
+          "name": "underwritingType",
+          "label": "UW type",
+          "type": "string|null"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists but rider amount/eligibility rules remain embedded in definition.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "product_riders",
+      "portalLibraryTab": "Coverage",
+      "purpose": "Product-to-rider relationships",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "productKey",
+          "label": "Product",
+          "type": "fk:products"
+        },
+        {
+          "name": "riderKey",
+          "label": "Rider",
+          "type": "fk:riders"
+        },
+        {
+          "name": "scope",
+          "label": "Scope",
+          "type": "enum:global|client|site"
+        },
+        {
+          "name": "clientKey",
+          "label": "Client",
+          "type": "fk:clients|null"
+        },
+        {
+          "name": "siteKey",
+          "label": "Site",
+          "type": "fk:sites|null"
+        }
+      ],
+      "relationships": [
+        "product_riders.productKey -> products.key",
+        "product_riders.riderKey -> riders.key"
+      ],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "rider_amount_rules",
+      "portalLibraryTab": "Coverage",
+      "purpose": "Rider amount/election/dependency rules",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "riderKey",
+          "label": "Rider",
+          "type": "fk:riders"
+        },
+        {
+          "name": "applicantTypeKey",
+          "label": "Applicant",
+          "type": "fk:applicant_types|null"
+        },
+        {
+          "name": "amountPatternKey",
+          "label": "Amount pattern",
+          "type": "fk:coverage_amount_patterns"
+        },
+        {
+          "name": "baseProductKey",
+          "label": "Base product",
+          "type": "fk:products|null"
+        },
+        {
+          "name": "conditionKey",
+          "label": "Condition",
+          "type": "fk:conditions|null"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Missing; required for MCR Riders patterns.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "rate_tables",
+      "portalLibraryTab": "Coverage",
+      "purpose": "Reusable product rate tables or externally hosted rate references",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Rate table",
+          "type": "string"
+        },
+        {
+          "name": "format",
+          "label": "Format",
+          "type": "enum:html|url|image"
+        },
+        {
+          "name": "content",
+          "label": "HTML/content",
+          "type": "string|null"
+        },
+        {
+          "name": "url",
+          "label": "Link",
+          "type": "string|null"
+        },
+        {
+          "name": "imageRef",
+          "label": "Image",
+          "type": "string|null"
+        },
+        {
+          "name": "sourceSystem",
+          "label": "Source system",
+          "type": "string|null"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Missing explicit entity.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "product_rate_tables",
+      "portalLibraryTab": "Coverage",
+      "purpose": "Links products/sites to rate tables",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "productKey",
+          "label": "Product",
+          "type": "fk:products"
+        },
+        {
+          "name": "rateTableKey",
+          "label": "Rate table",
+          "type": "fk:rate_tables"
+        },
+        {
+          "name": "siteKey",
+          "label": "Site",
+          "type": "fk:sites|null"
+        },
+        {
+          "name": "conditionKey",
+          "label": "Condition",
+          "type": "fk:conditions|null"
+        }
+      ],
+      "relationships": [
+        "product_rate_tables.productKey -> products.key",
+        "product_rate_tables.rateTableKey -> rate_tables.key"
+      ],
+      "currentState": "Missing.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "patterns",
+      "portalLibraryTab": "Patterns",
+      "purpose": "Reusable cross-site business/UX/integration abstractions",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Pattern",
+          "type": "string"
+        },
+        {
+          "name": "category",
+          "label": "Category",
+          "type": "enum:integration|coverage-amount|underwriting|workflow|content|ui|dependency|calculation"
+        },
+        {
+          "name": "description",
+          "label": "Description",
+          "type": "string"
+        },
+        {
+          "name": "version",
+          "label": "Version",
+          "type": "string|null"
+        },
+        {
+          "name": "status",
+          "label": "Status",
+          "type": "enum:draft|active|deprecated"
+        },
+        {
+          "name": "relatedTables",
+          "label": "Related tables",
+          "type": "computed links"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Missing. Add new Portal Library tab.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "pattern_relations",
+      "portalLibraryTab": "Patterns",
+      "purpose": "Explicit relationship between a pattern and the entities it governs",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "patternKey",
+          "label": "Pattern",
+          "type": "fk:patterns"
+        },
+        {
+          "name": "relatedTable",
+          "label": "Related table",
+          "type": "string"
+        },
+        {
+          "name": "relatedKey",
+          "label": "Related record",
+          "type": "string"
+        },
+        {
+          "name": "relationshipType",
+          "label": "Relationship",
+          "type": "enum:implements|uses|constrains|triggers|documents"
+        }
+      ],
+      "relationships": [
+        "pattern_relations.patternKey -> patterns.key"
+      ],
+      "currentState": "Missing.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "pattern_assignments",
+      "portalLibraryTab": "Patterns",
+      "purpose": "Apply a reusable pattern to a client/site/product/etc.",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "patternKey",
+          "label": "Pattern",
+          "type": "fk:patterns"
+        },
+        {
+          "name": "scopeType",
+          "label": "Applies to",
+          "type": "enum:global|client|site|product|rider|applicant"
+        },
+        {
+          "name": "scopeKey",
+          "label": "Scope record",
+          "type": "string|null"
+        },
+        {
+          "name": "configuration",
+          "label": "Parameters",
+          "type": "json"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Missing.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "conditions",
+      "portalLibraryTab": "Rules",
+      "purpose": "Reusable WHEN expressions",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Condition",
+          "type": "string"
+        },
+        {
+          "name": "expressionType",
+          "label": "Type",
+          "type": "string"
+        },
+        {
+          "name": "expression",
+          "label": "Expression",
+          "type": "json"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "rules",
+      "portalLibraryTab": "Rules",
+      "purpose": "Reusable business rules",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Rule",
+          "type": "string"
+        },
+        {
+          "name": "area",
+          "label": "Area",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "label": "Description",
+          "type": "string"
+        },
+        {
+          "name": "status",
+          "label": "Status",
+          "type": "string"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "rule_conditions",
+      "portalLibraryTab": "Rules",
+      "purpose": "Many-to-many rule conditions",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "ruleKey",
+          "label": "Rule",
+          "type": "fk:rules"
+        },
+        {
+          "name": "conditionKey",
+          "label": "Condition",
+          "type": "fk:conditions"
+        },
+        {
+          "name": "position",
+          "label": "Order",
+          "type": "integer"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "rule_actions",
+      "portalLibraryTab": "Rules",
+      "purpose": "Rule effects/actions",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "ruleKey",
+          "label": "Rule",
+          "type": "fk:rules"
+        },
+        {
+          "name": "actionType",
+          "label": "Action",
+          "type": "string"
+        },
+        {
+          "name": "targetTable",
+          "label": "Target table",
+          "type": "string|null"
+        },
+        {
+          "name": "targetKey",
+          "label": "Target record",
+          "type": "string|null"
+        },
+        {
+          "name": "parameters",
+          "label": "Parameters",
+          "type": "json"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists only as documented-behavior description; expand to executable/targetable actions where appropriate.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "rule_assignments",
+      "portalLibraryTab": "Rules",
+      "purpose": "Scoped assignment of rules",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "ruleKey",
+          "label": "Rule",
+          "type": "fk:rules"
+        },
+        {
+          "name": "scope",
+          "label": "Scope",
+          "type": "enum:global|client|site"
+        },
+        {
+          "name": "clientKey",
+          "label": "Client",
+          "type": "fk:clients|null"
+        },
+        {
+          "name": "siteKey",
+          "label": "Site",
+          "type": "fk:sites|null"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "flag_definitions",
+      "portalLibraryTab": "Flags",
+      "purpose": "Named flags/state signals used by rules, flows and UI",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Flag",
+          "type": "string"
+        },
+        {
+          "name": "level",
+          "label": "Level",
+          "type": "enum:application|site|coverage|product|rider|applicant"
+        },
+        {
+          "name": "valueType",
+          "label": "Value type",
+          "type": "enum:boolean|enum|string|number"
+        },
+        {
+          "name": "allowedValues",
+          "label": "Allowed values",
+          "type": "json-array|null"
+        },
+        {
+          "name": "description",
+          "label": "Description",
+          "type": "string"
+        },
+        {
+          "name": "persistence",
+          "label": "Persistence",
+          "type": "enum:configuration|derived-runtime|session|application-record"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Missing. Add new Portal Library tab.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "flag_rules",
+      "portalLibraryTab": "Flags",
+      "purpose": "How derived/dynamic flags are calculated",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "flagKey",
+          "label": "Flag",
+          "type": "fk:flag_definitions"
+        },
+        {
+          "name": "conditionKey",
+          "label": "Condition",
+          "type": "fk:conditions"
+        },
+        {
+          "name": "value",
+          "label": "Set value",
+          "type": "json"
+        },
+        {
+          "name": "priority",
+          "label": "Priority",
+          "type": "integer"
+        }
+      ],
+      "relationships": [
+        "flag_rules.flagKey -> flag_definitions.key",
+        "flag_rules.conditionKey -> conditions.key"
+      ],
+      "currentState": "Missing.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "flag_assignments",
+      "portalLibraryTab": "Flags",
+      "purpose": "Static scoped flag values when the flag is configuration-driven",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "flagKey",
+          "label": "Flag",
+          "type": "fk:flag_definitions"
+        },
+        {
+          "name": "scopeType",
+          "label": "Scope",
+          "type": "enum:global|client|site|product|coverage|applicant"
+        },
+        {
+          "name": "scopeKey",
+          "label": "Scope record",
+          "type": "string|null"
+        },
+        {
+          "name": "value",
+          "label": "Value",
+          "type": "json"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Missing.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "flows",
+      "portalLibraryTab": "Flows",
+      "purpose": "Application/workflow definitions",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Flow",
+          "type": "string"
+        },
+        {
+          "name": "intro",
+          "label": "Intro",
+          "type": "string|null"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "flow_steps",
+      "portalLibraryTab": "Flows",
+      "purpose": "Flow nodes",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "flowKey",
+          "label": "Flow",
+          "type": "fk:flows"
+        },
+        {
+          "name": "name",
+          "label": "Step",
+          "type": "string"
+        },
+        {
+          "name": "stepType",
+          "label": "Type",
+          "type": "string"
+        },
+        {
+          "name": "position",
+          "label": "Order",
+          "type": "integer"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "flow_transitions",
+      "portalLibraryTab": "Flows",
+      "purpose": "Transitions between flow steps",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "flowKey",
+          "label": "Flow",
+          "type": "fk:flows"
+        },
+        {
+          "name": "sourceStepKey",
+          "label": "From",
+          "type": "fk:flow_steps"
+        },
+        {
+          "name": "targetStepKey",
+          "label": "To",
+          "type": "fk:flow_steps"
+        },
+        {
+          "name": "conditionKey",
+          "label": "Condition",
+          "type": "fk:conditions|null"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists; condition should be explicit if presently embedded.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "features",
+      "portalLibraryTab": "Features",
+      "purpose": "Documented/reusable portal capabilities",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Feature",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "label": "Description",
+          "type": "string"
+        },
+        {
+          "name": "area",
+          "label": "Area",
+          "type": "string"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "site_features",
+      "portalLibraryTab": "Features",
+      "purpose": "Feature enablement by site",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "siteKey",
+          "label": "Site",
+          "type": "fk:sites"
+        },
+        {
+          "name": "featureKey",
+          "label": "Feature",
+          "type": "fk:features"
+        },
+        {
+          "name": "enabled",
+          "label": "Enabled",
+          "type": "boolean"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "configuration_definitions",
+      "portalLibraryTab": "Configurations",
+      "purpose": "Typed configuration setting catalog",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Configuration",
+          "type": "string"
+        },
+        {
+          "name": "path",
+          "label": "Path",
+          "type": "string"
+        },
+        {
+          "name": "valueType",
+          "label": "Value type",
+          "type": "string"
+        },
+        {
+          "name": "defaultValue",
+          "label": "Default",
+          "type": "json|null"
+        },
+        {
+          "name": "description",
+          "label": "Description",
+          "type": "string"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists but metadata mostly JSON.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "configuration_values",
+      "portalLibraryTab": "Configurations",
+      "purpose": "Scoped values for configuration definitions",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "configurationKey",
+          "label": "Configuration",
+          "type": "fk:configuration_definitions"
+        },
+        {
+          "name": "scope",
+          "label": "Scope",
+          "type": "enum:global|client|site"
+        },
+        {
+          "name": "clientKey",
+          "label": "Client",
+          "type": "fk:clients|null"
+        },
+        {
+          "name": "siteKey",
+          "label": "Site",
+          "type": "fk:sites|null"
+        },
+        {
+          "name": "value",
+          "label": "Value",
+          "type": "json"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "url_parameters",
+      "portalLibraryTab": "URL Parameters",
+      "purpose": "Supported URL parameter definitions",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "parameter",
+          "label": "Parameter",
+          "type": "string"
+        },
+        {
+          "name": "values",
+          "label": "Values",
+          "type": "json-array"
+        },
+        {
+          "name": "behavior",
+          "label": "Behavior",
+          "type": "string"
+        },
+        {
+          "name": "status",
+          "label": "Status",
+          "type": "string"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Currently source config/docs only; not yet a first-class persistence table.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "site_url_parameters",
+      "portalLibraryTab": "URL Parameters",
+      "purpose": "Recorded parameter use/configuration by site",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "siteKey",
+          "label": "Site",
+          "type": "fk:sites"
+        },
+        {
+          "name": "urlParameterKey",
+          "label": "Parameter",
+          "type": "fk:url_parameters"
+        },
+        {
+          "name": "enabled",
+          "label": "Enabled",
+          "type": "boolean"
+        },
+        {
+          "name": "defaultValue",
+          "label": "Default",
+          "type": "string|null"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Missing explicit persistence table.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "site_environment_links",
+      "portalLibraryTab": "URL Parameters",
+      "purpose": "Site launch/test/pre-production/automation/campaign links",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "siteKey",
+          "label": "Site",
+          "type": "fk:sites"
+        },
+        {
+          "name": "environment",
+          "label": "Environment",
+          "type": "enum"
+        },
+        {
+          "name": "linkType",
+          "label": "Link type",
+          "type": "enum"
+        },
+        {
+          "name": "label",
+          "label": "Label",
+          "type": "string"
+        },
+        {
+          "name": "url",
+          "label": "URL",
+          "type": "string"
+        },
+        {
+          "name": "active",
+          "label": "Active",
+          "type": "boolean"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists in migration schema.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "content_entries",
+      "portalLibraryTab": "Content",
+      "purpose": "Canonical managed content keys",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Content",
+          "type": "string"
+        },
+        {
+          "name": "contentType",
+          "label": "Type",
+          "type": "string"
+        },
+        {
+          "name": "path",
+          "label": "Path",
+          "type": "string"
+        },
+        {
+          "name": "defaultValue",
+          "label": "Default value",
+          "type": "json|null"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists; content type/default should be explicit.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "content_values",
+      "portalLibraryTab": "Content",
+      "purpose": "Scoped content overrides",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "contentKey",
+          "label": "Content",
+          "type": "fk:content_entries"
+        },
+        {
+          "name": "scope",
+          "label": "Scope",
+          "type": "enum:global|client|site"
+        },
+        {
+          "name": "clientKey",
+          "label": "Client",
+          "type": "fk:clients|null"
+        },
+        {
+          "name": "siteKey",
+          "label": "Site",
+          "type": "fk:sites|null"
+        },
+        {
+          "name": "value",
+          "label": "Value",
+          "type": "json"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "document_definitions",
+      "portalLibraryTab": "Content",
+      "purpose": "Documents/brochures/forms/notices referenced by portal",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Document",
+          "type": "string"
+        },
+        {
+          "name": "contentKey",
+          "label": "Content",
+          "type": "fk:content_entries|null"
+        },
+        {
+          "name": "productKey",
+          "label": "Product",
+          "type": "fk:products|null"
+        },
+        {
+          "name": "source",
+          "label": "Source",
+          "type": "string"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "email_templates",
+      "portalLibraryTab": "Communications",
+      "purpose": "Transactional email templates",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "name",
+          "label": "Template",
+          "type": "string"
+        },
+        {
+          "name": "rendererKey",
+          "label": "Renderer",
+          "type": "string"
+        },
+        {
+          "name": "subject",
+          "label": "Subject",
+          "type": "string|null"
+        },
+        {
+          "name": "source",
+          "label": "Source",
+          "type": "string"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "site_email_templates",
+      "portalLibraryTab": "Communications",
+      "purpose": "Site enablement/assignment of email templates",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "siteKey",
+          "label": "Site",
+          "type": "fk:sites"
+        },
+        {
+          "name": "emailTemplateKey",
+          "label": "Template",
+          "type": "fk:email_templates"
+        },
+        {
+          "name": "enabled",
+          "label": "Enabled",
+          "type": "boolean"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "branding_profiles",
+      "portalLibraryTab": "Branding & Design",
+      "purpose": "Scoped branding/theme values",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "scope",
+          "label": "Scope",
+          "type": "enum:global|client|site"
+        },
+        {
+          "name": "clientKey",
+          "label": "Client",
+          "type": "fk:clients|null"
+        },
+        {
+          "name": "siteKey",
+          "label": "Site",
+          "type": "fk:sites|null"
+        },
+        {
+          "name": "values",
+          "label": "Branding",
+          "type": "json"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    },
+    {
+      "name": "support_profiles",
+      "portalLibraryTab": "Branding & Design",
+      "purpose": "Scoped contact/support/admin display data",
+      "columns": [
+        {
+          "name": "id",
+          "label": "Internal ID",
+          "type": "string/uuid",
+          "display": false,
+          "notes": "Internal primary key; not the human-facing ID #."
+        },
+        {
+          "name": "displayId",
+          "label": "ID #",
+          "type": "integer",
+          "display": true,
+          "notes": "Persistent human-facing numeric identifier. Must never be recomputed from row order."
+        },
+        {
+          "name": "key",
+          "label": "Key",
+          "type": "string",
+          "display": true,
+          "notes": "Stable semantic key used in code, migrations, exports, and debugging."
+        },
+        {
+          "name": "providedBy",
+          "label": "Provided by",
+          "type": "enum|null",
+          "display": true,
+          "allowedValues": [
+            "Client/AM",
+            "Dev/QA",
+            "PRASE",
+            "UW",
+            "Contracts",
+            "Compliance",
+            "Portal",
+            "TPA",
+            "Legal"
+          ],
+          "notes": "Single controlled tag; blank allowed until ownership/source is confirmed."
+        },
+        {
+          "name": "sourceReference",
+          "label": "Source reference",
+          "type": "string|null",
+          "display": true,
+          "notes": "Traceability reference such as Main!H22, QD LI!J3, or source code path."
+        },
+        {
+          "name": "scope",
+          "label": "Scope",
+          "type": "enum:global|client|site"
+        },
+        {
+          "name": "clientKey",
+          "label": "Client",
+          "type": "fk:clients|null"
+        },
+        {
+          "name": "siteKey",
+          "label": "Site",
+          "type": "fk:sites|null"
+        },
+        {
+          "name": "values",
+          "label": "Support",
+          "type": "json"
+        }
+      ],
+      "relationships": [],
+      "currentState": "Exists.",
+      "proposed": true,
+      "source": null
+    }
+  ],
+  "seedPatterns": [
+    {
+      "key": "tpa-integration",
+      "name": "Global TPA Integration Framework",
+      "category": "integration",
+      "summary": "Lookup after initial application page; resolve membership/coverage status; execute client-configured decision path.",
+      "variations": [
+        "coverage-based-verification",
+        "membership-based-auto-approval"
+      ],
+      "relatedTables": [
+        "patterns",
+        "pattern_assignments",
+        "rules",
+        "conditions",
+        "flags",
+        "flows",
+        "configuration_definitions"
+      ]
+    },
+    {
+      "key": "tpa-coverage-based-verification",
+      "name": "TPA Coverage-Based Verification",
+      "category": "integration",
+      "summary": "Used by AMA and, based on current understanding, ASCE: membership + existing coverage can trigger LexisNexis, coverage portfolio display and auto-approval; fallback to manual review.",
+      "relatedTables": [
+        "patterns",
+        "rules",
+        "conditions",
+        "flags",
+        "flows"
+      ]
+    },
+    {
+      "key": "tpa-membership-based-auto-approval",
+      "name": "TPA Membership-Based Auto Approval",
+      "category": "integration",
+      "summary": "WAEPA variation: new member can auto-approve without LexisNexis/portfolio; existing member follows manual review/pending path.",
+      "relatedTables": [
+        "patterns",
+        "rules",
+        "conditions",
+        "flags",
+        "flows"
+      ]
+    },
+    {
+      "key": "di-income-replacement",
+      "name": "Disability Income Replacement Formula",
+      "category": "calculation",
+      "summary": "Maximum Benefit = MIN(Monthly Income \u00d7 Replacement %, Policy Cap), with age/plan/class exceptions, tiered percentages, fixed increments, existing-coverage offsets, and fixed/age-based exceptions.",
+      "relatedTables": [
+        "patterns",
+        "coverage_amount_patterns",
+        "product_amount_rules",
+        "conditions",
+        "rules"
+      ]
+    },
+    {
+      "key": "coverage-amount-options",
+      "name": "Coverage Amount Option Families",
+      "category": "coverage-amount",
+      "summary": "Covers fixed, set/list, range+increment, tiered ranges, range+fixed, conditional, calculated, named/code, N/A, attribute-mapped, formula-capped, base-reference, multiplier, election-only and unspecified-increment patterns.",
+      "relatedTables": [
+        "patterns",
+        "coverage_amount_patterns",
+        "product_amount_rules",
+        "rider_amount_rules",
+        "conditions"
+      ]
+    }
+  ],
+  "seedFlags": [
+    {
+      "key": "site.has-product-rates",
+      "name": "Site has product rates",
+      "level": "site",
+      "valueType": "boolean",
+      "persistence": "configuration",
+      "behavior": "When false, all rate displays must be hidden; enforced by rule."
+    },
+    {
+      "key": "site.product-rates-in-prase",
+      "name": "Site product rates are in PRASE",
+      "level": "site",
+      "valueType": "boolean",
+      "persistence": "configuration"
+    },
+    {
+      "key": "site.offers-qd",
+      "name": "Site offers QD",
+      "level": "site",
+      "valueType": "boolean",
+      "persistence": "derived-runtime",
+      "derivation": "True when at least one enabled product supports QD."
+    },
+    {
+      "key": "applicant.applying-for-qd",
+      "name": "Applicant applying for QD",
+      "level": "applicant",
+      "valueType": "boolean",
+      "persistence": "derived-runtime",
+      "derivation": "True when selected product/path is QD for applicant."
+    },
+    {
+      "key": "product.has-qd",
+      "name": "Product has QD",
+      "level": "product",
+      "valueType": "boolean",
+      "persistence": "derived-runtime",
+      "derivation": "Depends on configured QD pathway and current applicant selections/amount bands."
+    },
+    {
+      "key": "qd.decision",
+      "name": "QD decision",
+      "level": "application",
+      "valueType": "enum",
+      "allowedValues": [
+        "approve",
+        "reject",
+        "refer",
+        "error"
+      ],
+      "persistence": "application-record"
+    }
+  ],
+  "configurationAdditions": [
+    {
+      "key": "coverage.estimatedCost.showRateTable",
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the estimated cost total box exposes a rate-table link/action."
+    },
+    {
+      "key": "coverage.productCard.linkRateTable",
+      "type": "boolean",
+      "default": false,
+      "description": "Whether product cards link to their related rate table."
+    },
+    {
+      "key": "coverage.rateTable.presentation",
+      "type": "enum",
+      "values": [
+        "html",
+        "url",
+        "image"
+      ],
+      "description": "Presentation type for the linked rate table; product/site relationship resolves actual asset."
+    }
+  ],
+  "mcrSheetMapping": [
+    {
+      "sheet": "Main",
+      "targetAreas": [
+        "Coverage",
+        "Rules",
+        "Configurations",
+        "Flags",
+        "Content",
+        "Fields"
+      ],
+      "mapping": "Primary product/site requirements: identifiers, amounts, riders, residency, age/restrictions, UW, questions, QD, payment, rates, underwriting entity."
+    },
+    {
+      "sheet": "QD LI",
+      "targetAreas": [
+        "Coverage",
+        "Rules",
+        "Flags",
+        "Patterns"
+      ],
+      "mapping": "QD Life underwriting overlays by age/amount/pathway; treat as underwriting overlay, not duplicate products."
+    },
+    {
+      "sheet": "QD DI",
+      "targetAreas": [
+        "Coverage",
+        "Rules",
+        "Flags",
+        "Patterns"
+      ],
+      "mapping": "QD Disability overlays including waiting/benefit period, morbidity and rate load."
+    },
+    {
+      "sheet": "Disability",
+      "targetAreas": [
+        "Coverage",
+        "Patterns",
+        "Rules"
+      ],
+      "mapping": "DI amount formulas, classes, waiting periods, benefit periods and riders."
+    },
+    {
+      "sheet": "Overhead Expense",
+      "targetAreas": [
+        "Coverage",
+        "Patterns",
+        "Rules"
+      ],
+      "mapping": "OE amount schedules/formulas, waiting/benefit periods and riders."
+    },
+    {
+      "sheet": "Riders",
+      "targetAreas": [
+        "Coverage",
+        "Patterns",
+        "Rules"
+      ],
+      "mapping": "Rider definitions, amount inheritance/election/percent/multiplier patterns, eligibility and UW."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "targetAreas": [
+        "Pages",
+        "Fields",
+        "Content",
+        "Configurations",
+        "Features",
+        "Rules"
+      ],
+      "mapping": "Multi-page page/section content and optionality/quote/coverage UX requirements."
+    },
+    {
+      "sheet": "New UX Single-Page Requirements",
+      "targetAreas": [
+        "Pages",
+        "Fields",
+        "Content",
+        "Configurations",
+        "Features",
+        "Rules"
+      ],
+      "mapping": "Single-page variant requirements."
+    },
+    {
+      "sheet": "Attestation Online and PDF",
+      "targetAreas": [
+        "Fields",
+        "Content",
+        "Rules",
+        "Documents"
+      ],
+      "mapping": "Attestation questions and online/PDF differences."
+    },
+    {
+      "sheet": "SUP DI Health questions",
+      "targetAreas": [
+        "Fields",
+        "Rules",
+        "Question Sets",
+        "Flags"
+      ],
+      "mapping": "Supplemental DI question set and conditions."
+    },
+    {
+      "sheet": "Financial questions",
+      "targetAreas": [
+        "Fields",
+        "Rules",
+        "Question Sets"
+      ],
+      "mapping": "Financial question set and calculations."
+    },
+    {
+      "sheet": "Health Questions",
+      "targetAreas": [
+        "Fields",
+        "Rules",
+        "Question Sets"
+      ],
+      "mapping": "Health question library and conditional logic."
+    },
+    {
+      "sheet": "WAEPA CIR questions",
+      "targetAreas": [
+        "Fields",
+        "Rules",
+        "Question Sets",
+        "Content"
+      ],
+      "mapping": "WAEPA CIR questions, explanation requirements and comments."
+    },
+    {
+      "sheet": "Read & Sign",
+      "targetAreas": [
+        "Content",
+        "Rules",
+        "Flags",
+        "Pages"
+      ],
+      "mapping": "Read/sign content and underwriting-driven visibility; explicitly identifies underwriting flag behavior."
+    },
+    {
+      "sheet": "Smoker Question",
+      "targetAreas": [
+        "Fields",
+        "Rules",
+        "Question Sets",
+        "Configurations"
+      ],
+      "mapping": "Smoker wording, follow-up behavior and non-smoker rate criteria."
+    },
+    {
+      "sheet": "Associations",
+      "targetAreas": [
+        "Organizations",
+        "Content",
+        "Branding & Design"
+      ],
+      "mapping": "TPA/association identity, contact, logos and dropdown behavior."
+    },
+    {
+      "sheet": "Beneficiary Note",
+      "targetAreas": [
+        "Content",
+        "Rules",
+        "Coverage"
+      ],
+      "mapping": "Coverage-specific online/PDF beneficiary copy."
+    },
+    {
+      "sheet": "URLs",
+      "targetAreas": [
+        "URL Parameters",
+        "Sites",
+        "Configurations"
+      ],
+      "mapping": "Environment links, campaign/apply/nsc parameters and verification URLs."
+    },
+    {
+      "sheet": "Order of Products Across Site",
+      "targetAreas": [
+        "Coverage",
+        "Configurations"
+      ],
+      "mapping": "Product display ordering."
+    },
+    {
+      "sheet": "Standard Decision Wording ",
+      "targetAreas": [
+        "Content",
+        "Rules",
+        "Flags"
+      ],
+      "mapping": "Decision outcome copy linked to underwriting/QD status."
+    },
+    {
+      "sheet": "Underwriting",
+      "targetAreas": [
+        "Fields",
+        "Question Sets",
+        "Coverage"
+      ],
+      "mapping": "Standard underwriting questions and applicant targets."
+    },
+    {
+      "sheet": "ElectrConsent",
+      "targetAreas": [
+        "Content",
+        "Rules",
+        "Pages"
+      ],
+      "mapping": "Electronic consent content and conditions."
+    },
+    {
+      "sheet": "Legal Disclosures",
+      "targetAreas": [
+        "Content",
+        "Rules",
+        "Documents"
+      ],
+      "mapping": "Disclosure text, rules and placement."
+    }
+  ],
+  "mcrOpenItems": [
+    {
+      "sheet": "Main",
+      "cell": "AC10",
+      "issue": "Tobacco requirement says AM to confirm with TPA."
+    },
+    {
+      "sheet": "Main",
+      "cell": "U27/U28",
+      "issue": "SI/GI underwriting and TPA approval behavior contains unresolved analysis/confirmation language."
+    },
+    {
+      "sheet": "Main",
+      "cell": "AJ74/AJ76/AJ78/AJ80",
+      "issue": "Canadian sales tax information needed."
+    },
+    {
+      "sheet": "Main",
+      "cell": "AH318/AI318",
+      "issue": "Billing fee details require confirmation."
+    },
+    {
+      "sheet": "Main",
+      "cell": "AQ356",
+      "issue": "Face band structure needs confirmation from rate charts/brochure."
+    },
+    {
+      "sheet": "QD LI",
+      "cell": "I99",
+      "issue": "Value is TBD."
+    },
+    {
+      "sheet": "QD LI/QD DI",
+      "cell": "G1/N1",
+      "issue": "Headers explicitly call for UW/contracts confirmation; provenance should be captured via Provided by."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "cell": "AN27",
+      "issue": "Supplemental health notice says confirmation needed."
+    },
+    {
+      "sheet": "SUP DI Health questions",
+      "cell": "G46",
+      "issue": "Mobility item says check with UW."
+    },
+    {
+      "sheet": "Standard Decision Wording ",
+      "cell": "B2/B7/B13",
+      "issue": "Checklist flags unresolved follow-up language; retain as source content but mark verification status until confirmed."
+    }
+  ],
+  "implementationSequence": [
+    {
+      "order": 1,
+      "name": "Freeze canonical reference",
+      "when": "now",
+      "details": "Use this specification + full MCR workbook as the source-of-truth for schema/data coverage. Do not switch runtime yet."
+    },
+    {
+      "order": 2,
+      "name": "Schema correction/additions",
+      "when": "before Phase 5",
+      "details": "Add normalized coverage relations, Patterns, Flags, rate tables, question sets, ID #, Provided by and MCR source traceability."
+    },
+    {
+      "order": 3,
+      "name": "MCR ingestion/accounting",
+      "when": "before Phase 5",
+      "details": "Map all 23 MCR sheets into canonical tables. Seed prototype clients fully. For non-prototype clients, preserve normalized catalog/rule/pattern data without requiring a runnable Site yet."
+    },
+    {
+      "order": 4,
+      "name": "Equivalence + completeness gates",
+      "when": "before Phase 5",
+      "details": "Extend equivalence tests and add MCR traceability/completeness tests. Every authoritative MCR item is mapped, intentionally excluded, or marked unresolved with source reference."
+    },
+    {
+      "order": 5,
+      "name": "Finish migration Phases 5-7",
+      "when": "after gates pass",
+      "details": "Introduce repositories, EffectiveSite model, and switch Admin Center/application consumers to same database-backed source."
+    },
+    {
+      "order": 6,
+      "name": "Portal Library UX enhancements",
+      "when": "during/after Phase 7",
+      "details": "Add ID # columns, relation links, explicit Coverage subtables, Patterns/Flags tabs, common filters and exports against repository data."
+    },
+    {
+      "order": 7,
+      "name": "Portal Admin parity/retirement",
+      "when": "last",
+      "details": "Verify every legacy datum is represented and editable/readable in Admin Center before deleting legacy pages."
+    }
+  ],
+  "acceptancePrinciples": [
+    "No client-specific hard-coded branches; create/extend normalized abstractions instead.",
+    "Prototype clients must resolve to behavior equivalent to the known-good current source plus confirmed MCR additions.",
+    "Non-prototype MCR clients must be representable in the catalog without requiring a runnable prototype Site.",
+    "Every Portal Library row has ID #, semantic key, Provided by, and source reference metadata where applicable.",
+    "All relationships are explicit enough to query, export, link and audit.",
+    "Unresolved MCR items stay unresolved and traceable; do not invent answers."
+  ]
+}

@@ -1,3 +1,4 @@
+import { libraryRepository } from "../../repositories/libraryRepository";
 import { useMemo, useState } from "react";
 import {
   Box,
@@ -27,10 +28,10 @@ import {
   isClientSpecificField,
   pagesWithNoFields,
 } from "../../content/docs/fieldRows";
-import { coverages } from "../../config/coverages";
+
 import { formatCoverageAmounts } from "../../utils/coverageAmounts";
 import { formatProductIdentifiers } from "../../utils/coverageIdentifiers";
-import { coverageCategories, getCoverageCategorySectionLabel } from "../../config/coverageCategories";
+import { getCoverageCategorySectionLabel } from "../../config/coverageCategories";
 import SectionTabs from "./SectionTabs";
 import TruncatedString from "./TruncatedString";
 import SubsectionHeader from "./SubsectionHeader";
@@ -52,7 +53,7 @@ import {
   tpaVerificationFlow,
   healthRoutingRows,
 } from "../../content/docs/flows";
-import { siteRules } from "../../content/docs/siteRules";
+
 import {
   configurationsData,
 } from "../../content/docs/configurations";
@@ -375,7 +376,7 @@ export default function GlobalSiteDetailsPanel({
                                 }}
                               >
                                 <Link
-                                  href={`${page.path}?site=demo-default${formFlow.includes(page.id) ? `&autofill=${page.id}` : ""}`}
+                                  href={`${page.path}?site=demo${formFlow.includes(page.id) ? `&autofill=${page.id}` : ""}`}
                                   sx={{ fontWeight: 700 }}
                                 >
                                   {page.id}
@@ -1045,3 +1046,7 @@ export default function GlobalSiteDetailsPanel({
     </Stack>
   );
 }
+
+const coverages = libraryRepository.read("coverages");
+const siteRules = libraryRepository.read("siteRules");
+const coverageCategories = libraryRepository.read("coverageCategories");

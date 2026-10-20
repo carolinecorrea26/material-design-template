@@ -1,0 +1,19 @@
+{
+  "scope": "Step 1 repository audit only; no live database validation",
+  "sqlMigrations": 15,
+  "tablesCovered": 135,
+  "adapterContractsCovered": 129,
+  "columnsDocumented": 1235,
+  "foreignKeysCovered": 342,
+  "jsonColumnsCovered": 57,
+  "jsonCandidatePaths": 312,
+  "scalarCandidates": 286,
+  "fieldNameAndScalarNullabilityDifferences": [],
+  "manifestTextDifferences": 44,
+  "sourceHashesVerified": 55,
+  "latestSnapshotAllowlistMatches": 96,
+  "reviewedSeedExportTest": "passed, 1 test",
+  "databaseConnected": false,
+  "migrationsApplied": false,
+  "schemaCompletionGate": "not passed"
+}

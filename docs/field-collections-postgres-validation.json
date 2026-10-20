@@ -1,0 +1,27 @@
+{
+  "candidate": "reviewed-step3",
+  "postgres": "17.11 (Debian 17.11-1.pgdg13+2)",
+  "migrations": 12,
+  "pageCatalogUpgrade": {
+    "legacyOrder": true,
+    "customRoutes": true,
+    "customOrder": true,
+    "availability": true,
+    "flowLabels": true,
+    "authoredMetadata": true
+  },
+  "fieldCollectionUpgrade": {
+    "legacyUpgrade": true,
+    "savedDefinitions": true,
+    "bindings": true,
+    "preservesAuthoredValues": true
+  },
+  "seedApplications": 2,
+  "idempotent": true,
+  "readbackEquivalence": true,
+  "rejectedInvalidWrites": 24,
+  "rejectedSnapshotRequests": 5,
+  "snapshotRls": true,
+  "concurrentSnapshot": true,
+  "rlsTables": 103
+}

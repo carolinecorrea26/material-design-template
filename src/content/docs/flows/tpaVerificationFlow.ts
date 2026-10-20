@@ -3,27 +3,27 @@ import type { FlowDefinition } from "./types";
 export const tpaVerificationFlow: FlowDefinition = {
   id: "tpaVerification",
   title: "TPA Member Verification Flow",
-  intro:
-    "Base TPA integration behavior. A matching current member may attempt identity verification, but the application continues through the regular consumer flow whether verification succeeds, fails, or is skipped. Successful verification sets tpa-verified=true, enables the existing Coverage Portfolio on Coverage, and marks the submitted application for auto-approval in the TPA Admin Portal. Client overrides may change how tpa-verified is established or how downstream portfolio and approval behavior resolves.",
+  intro: "After membership attestation, look up First Name, Last Name and DOB (plus configured client fields). Existing members with active coverage proceed to LexisNexis identity verification. A pass enables the coverage portfolio and TPA auto-approval at submission; failure or skipping sends the application to the TPA admin for manual review without a portfolio. AMA uses this standard flow. ASCE also requires Membership ID.",
   nodes: [
+    { id: "tpa-membership", kind: "page", pageId: "membership", label: "Membership attestation", description: "Applicant claims membership eligibility before the TPA lookup." },
     {
       id: "tpa-eligibility-lookup",
       kind: "external",
       label: "TPA Eligibility Lookup",
-      description: "The system checks submitted applicant data for a matching TPA member record.",
+      description: "Look up First Name, Last Name and DOB, plus any configured additional fields. Return existing-member and active-coverage status.",
     },
     {
       id: "tpa-match-decision",
       kind: "decision",
-      label: "Current member match found?",
-      description: "Determines whether member identity verification is offered.",
+      label: "Existing member + active coverage?",
+      description: "Both conditions must be true to offer LexisNexis identity verification.",
     },
     {
       id: "tpa-no-match",
       kind: "end",
       label: "Regular Application — No Portfolio",
       description:
-        "No matching member record. Continue the regular consumer application flow without a Coverage Portfolio and without TPA verification-based auto-approval.",
+        "No existing member or no active coverage. Continue without a coverage portfolio; submission goes to the TPA admin for manual review.",
     },
     {
       id: "tpa-method-decision",
@@ -57,10 +57,11 @@ export const tpaVerificationFlow: FlowDefinition = {
       kind: "end",
       label: "Regular Application — No Portfolio",
       description:
-        "Verification failed or was not completed. Continue the regular consumer application flow without the Coverage Portfolio and without TPA verification-based auto-approval.",
+        "LexisNexis failed or was skipped. Continue without a coverage portfolio; submission goes to the TPA admin for manual review.",
     },
   ],
   edges: [
+    { id: "tpa-attestation-lookup", source: "tpa-membership", target: "tpa-eligibility-lookup" },
     { id: "tpa-e1", source: "tpa-eligibility-lookup", target: "tpa-match-decision" },
     { id: "tpa-e2", source: "tpa-match-decision", target: "tpa-no-match", condition: "No" },
     { id: "tpa-e3", source: "tpa-match-decision", target: "tpa-method-decision", condition: "Yes" },

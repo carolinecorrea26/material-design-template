@@ -56,6 +56,7 @@ export const cseaClient: ClientConfig = {
     },
   },
   features: {
+    defaultTemplate: "single",
     homePageVariant: "hero-image",
   },
   coverageQuestions: {

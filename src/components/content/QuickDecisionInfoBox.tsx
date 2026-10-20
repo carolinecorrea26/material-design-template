@@ -1,6 +1,6 @@
 import { useId, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
+import QuickDecisionIcon from "../ui/QuickDecisionIcon";
 import QuickDecisionDrawerContent, {
   QuickDecisionMark,
 } from "./QuickDecisionExplainer";
@@ -28,7 +28,7 @@ export default function QuickDecisionInfoBox() {
         bgcolor: (t) => `${t.palette.success.main}14`,
       }}
     >
-      <OfflineBoltIcon color="success" sx={{ mt: 0.25, flexShrink: 0 }} />
+      <QuickDecisionIcon color="success" sx={{ mt: 0.25, flexShrink: 0 }} />
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Typography variant="body2" color="text.secondary">
           <Typography

@@ -1,0 +1,980 @@
+{
+  "purpose": "Source verification and user clarification before Step 3; no executable policy changes.",
+  "waepaGiHandler": {
+    "source": "siteconfig-customization-reference.html",
+    "reportedFile": "template_2.0/waepagi/js/siteconfig/siteconfig.js",
+    "locator": "data.sites[id=waepagi].events[name=coverageSelectionViewRender]",
+    "code": "function (params) {\r\n            $('#covgLIFiveYrSelf_selBenefitAmt')[0].selectize.disable();\r\n            $('.spouse-applying-life').hide();\r\n            if ($('#covgLIFiveYrSelf').length !== 0 && $('#covgLIFiveYrSps').length !== 0) {\r\n                 if (app.model.data.EligibilityScreen.rdEligIsFullTimeWorkerRequired && app.model.data.EligibilityScreen.rdEligIsFullTimeWorkerRequired == 'Yes') {\r\n                     if (parseInt(params.view.fields.covgLIFiveYrSelf.editor.nestedForm.fields.selBenefitAmt.editor.getValue()) == 100000) {\r\n                         $('.spouse-applying-life').hide();\r\n                         $('#covgLIFiveYrSps_chkAddInsuranceCov').prop('checked', false);\r\n                     } else if ($(\"#covgLIFiveYrSelf_chkAddInsuranceCov\").is(\":checked\") && parseInt(params.view.fields.covgLIFiveYrSelf.editor.nestedForm.fields.selBenefitAmt.editor.getValue()) == 250000) {\r\n                         if($(\"#covgLIFiveYrSps_chkAddInsuranceCov\").is(\":checked\")){\r\n                             $('#covgLIFiveYrSps_chkAddInsuranceCov').prop('checked', true);\r\n                         } else {\r\n                             $('#covgLIFiveYrSps_chkAddInsuranceCov').prop('checked', false);\r\n                         }\r\n                         $('.spouse-applying-life').show();\r\n                     }\r\n                 }\r\n                \r\n                this.listenTo(params.view.fields.covgLIFiveYrSelf.editor.nestedForm.fields.selBenefitAmt.editor, 'change', function (event) {\r\n                    if (app.model.data.EligibilityScreen.rdEligIsFullTimeWorkerRequired && app.model.data.EligibilityScreen.rdEligIsFullTimeWorkerRequired == 'Yes') {\r\n                        if (parseInt(event.getValue()) == 100000) {\r\n                            $('.spouse-applying-life').hide();\r\n                            $('#covgLIFiveYrSps_chkAddInsuranceCov').prop('checked', false);\r\n                        } else if ($(\"#covgLIFiveYrSelf_chkAddInsuranceCov\").is(\":checked\") && parseInt(event.getValue()) == 250000) {\r\n                            $('.spouse-applying-life').show();\r\n                        }\r\n                    }\r\n                });\r\n                this.listenTo(params.view.fields.covgLIFiveYrSelf.editor.nestedForm.fields.chkAddInsuranceCov.editor, 'change', function (event) {\r\n                    if (app.model.data.EligibilityScreen.rdEligIsFullTimeWorkerRequired && app.model.data.EligibilityScreen.rdEligIsFullTimeWorkerRequired == 'Yes') {\r\n                        if (event.getValue() == true && parseInt($(\"#covgLIFiveYrSelf_selBenefitAmt\").val()) == 250000) {\r\n                            $('.spouse-applying-life').show();\r\n                        } else if (event.getValue() == false) {\r\n                            $('.spouse-applying-life').hide();\r\n                            $('#covgLIFiveYrSps_chkAddInsuranceCov').prop('checked', false)\r\n                        }\r\n                    }\r\n                });\r\n            }\r\n        }",
+    "interpretation": "The old function checks 100000 and 250000. Reachability and current policy applicability are not established."
+  },
+  "legacyRateCalculations": [
+    {
+      "legacySite": "waepagi",
+      "locator": "rateConfig[2].title",
+      "encodedValue": "ƒ (3 lines)",
+      "code": "function (field, rates) {\r\n                return (rates.member && rates.member !== null) ? 'AMA Member Premium Credit:' : 'Physician Premium Credit:'\r\n            }"
+    },
+    {
+      "legacySite": "waepagi",
+      "locator": "rateConfig[2].value",
+      "encodedValue": "ƒ (11 lines)",
+      "code": "function (field, rates) {\r\n                if (_.isEmpty(rates)) {\r\n                    return '';\r\n                }\r\n                var value = (rates.member && rates.member !== null) ? _.get(rates, 'empStdDiscountAmt', '') : _.get(rates, 'empAddDiscountAmt', '');\r\n                if (_.get(rates, 'productCode') === '999' || _.get(rates, 'productCode') === '303') {\r\n                    value = (rates.member && rates.member !== null) ? _.get(rates, 'coverageSelf.empStdDiscountAmt', '') : _.get(rates, 'coverageSelf.empAddDiscountAmt', '');\r\n                }\r\n                //member gets standard discount, non-member gets additional discount.\r\n                return value;\r\n            }"
+    },
+    {
+      "legacySite": "waepagi",
+      "locator": "rateConfig[3].value",
+      "encodedValue": "ƒ (3 lines)",
+      "code": "function (field, rates) {\r\n                return _.get(rates, 'coverageSelf.policyFee', '');\r\n            }"
+    },
+    {
+      "legacySite": "waepagi",
+      "locator": "rateConfig[4].value",
+      "encodedValue": "ƒ (9 lines)",
+      "code": "function (field, rates, ratesFormatted) {\r\n                if (_.isEmpty(rates)) {\r\n                    return '';\r\n                }\r\n                var premiumCredit = (rates.member && rates.member !== null) ? _.get(rates, 'empStdDiscountAmt', 0) : _.get(rates, 'empAddDiscountAmt', 0);\r\n                var policyFee = _.get(rates, 'coverageSelf.policyFee', 0);\r\n                var totalNetAmount = _.get(rates, 'totalNetAmt', 0);\r\n                return (totalNetAmount + policyFee) - (premiumCredit)\r\n            }"
+    },
+    {
+      "legacySite": "isitrust",
+      "locator": "rateConfig[8].title",
+      "encodedValue": "ƒ (3 lines)",
+      "code": "function (field, rates) {\r\n                return (rates.member && rates.member !== null) ? 'AMA Member Premium Credit:' : 'Physician Premium Credit:'\r\n            }"
+    },
+    {
+      "legacySite": "isitrust",
+      "locator": "rateConfig[8].value",
+      "encodedValue": "ƒ (11 lines)",
+      "code": "function (field, rates) {\r\n                if (_.isEmpty(rates)) {\r\n                    return '';\r\n                }\r\n                var value = (rates.member && rates.member !== null) ? _.get(rates, 'empStdDiscountAmt', '') : _.get(rates, 'empAddDiscountAmt', '');\r\n                if (_.get(rates, 'productCode') === '999') {\r\n                    value = (rates.member && rates.member !== null) ? _.get(rates, 'coverageSelf.empStdDiscountAmt', '') : _.get(rates, 'coverageSelf.empAddDiscountAmt', '');\r\n                }\r\n                //member gets standard discount, non-member gets additional discount.\r\n                return value;\r\n            }"
+    },
+    {
+      "legacySite": "isitrust",
+      "locator": "rateConfig[9].value",
+      "encodedValue": "ƒ (3 lines)",
+      "code": "function (field, rates) {\r\n                return _.get(rates, 'coverageSelf.policyFee', '');\r\n            }"
+    },
+    {
+      "legacySite": "isitrust",
+      "locator": "rateConfig[11].value",
+      "encodedValue": "ƒ (23 lines)",
+      "code": "function (field, rates, ratesFormatted) {\r\n                if (_.isEmpty(rates)) {\r\n                    return '';\r\n                }\r\n                var premiumCredit = (rates.member && rates.member !== null) ? _.get(rates, 'empStdDiscountAmt', 0) : _.get(rates, 'empAddDiscountAmt', 0);\r\n                var policyFee = _.get(rates, 'coverageSelf.policyFee', 0);\r\n                var canadianTax = _.get(rates, 'provincialTaxAmt', 0);\r\n                var totalNetAmount = _.get(rates, 'totalNetAmt', 0);\r\n                //if famliy plan\r\n                if (rates.productCode === '999') {\r\n                    totalNetAmount = _.get(rates, 'coverageSelf.premiumAmount');\r\n                    premiumCredit = rates.member !== null ? _.get(rates.coverageSelf, 'empStdDiscountAmt', 0) : _.get(rates.coverageSelf, 'empAddDiscountAmt', 0);\r\n                }\r\n                else if (rates.productCode === '201') {\r\n                    if (rates.premiumAmountSpouse && rates.premiumAmountChild) {\r\n                        totalNetAmount = totalNetAmount - rates.premiumAmountChild;\r\n                    }\r\n                    if (rates.coverageSpouse && rates.coverageSpouse.provincialTaxAmt && rates.coverageChild && rates.coverageChild.provincialTaxAmt) {\r\n                        totalNetAmount = totalNetAmount - rates.coverageChild.provincialTaxAmt;\r\n                    }\r\n                }\r\n                return (totalNetAmount + canadianTax + policyFee) - (premiumCredit)\r\n            }"
+    }
+  ],
+  "amaMcrEvidence": [
+    {
+      "sheet": "Main",
+      "cell": "B117",
+      "value": "AMA",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "D117",
+      "value": "Hospital Indemnity Insurance\nHospital Income Insurance (change requested for the release 6, oct 26)",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "E117",
+      "value": "G-29346-1",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "G117",
+      "value": 303,
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AI117",
+      "value": "Mode Factors : Annual = 1.00 Semi-Annual =.52 Quarterly = .265 Monthly = .083",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AN117",
+      "value": "Per $100 Daily Benefit",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AO117",
+      "value": "n/a",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AP117",
+      "value": "n/a",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AQ117",
+      "value": "Standard 5 year age bands",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AR117",
+      "value": "3 plan types: Insured Only, Insured Plus One, Insured Plus Family. Non-AMA Members are also allowed to apply without being members, but are charged an annual $45 non-member \"policy fee\" that is subject to modal factors indicated in Column AH of this document.",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "B118",
+      "value": "AMA",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "D118",
+      "value": "D36 on DI Tab - Disability Income Insurance (Referred to as \"Disability Pro\" in marketing)\n03/19/2018 - change request for the name - DisabilityPro Own-Specialty Disability Insurance®\n05/16/2022 requested name change to Disability Pro\n07/15/2022 - requested name change to \" Disability Insurance with Step Rated Premiums\"",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "E118",
+      "value": "G-30639-0",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "G118",
+      "value": 601,
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AI118",
+      "value": "Mode Factors : Annual = 1.00 Semi-Annual =.52 Quarterly = .265 Monthly = .083",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AN118",
+      "value": "Monthly per $1000 of coverage",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AO118",
+      "value": "n/a",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AP118",
+      "value": "n/a",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AQ118",
+      "value": "n/a",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AR118",
+      "value": "1. State surcharges: CA & FL = 40%. States with 20 % Surcharges = AK, AL, AZ, GA, HI, LA, MS, NM, OR, SC, TX, WA 2. Non-AMA Members are also allowed to apply without being members, but are charged an annual $55 non-member \"policy fee\" that is subject to modal factors indicated in Column AH of this document. Members are granted an 35% Premium Rate Credit (not applicable to non-members).",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "B119",
+      "value": "AMA",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "D119",
+      "value": "Disability Prime\n07/15/2022 - requested name change to \"Disability Insurance with Level Rated Premiums\"",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "E119",
+      "value": "G-30641-0",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "G119",
+      "value": 601,
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AI119",
+      "value": "Mode Factors : Annual = 1.00 Semi-Annual =.52 Quarterly = .265 Monthly = .083",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AN119",
+      "value": "Monthly per $1000 of coverage",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AO119",
+      "value": "n/a",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AP119",
+      "value": "n/a",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AQ119",
+      "value": "n/a",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AR119",
+      "value": "1. State surcharges: CA & FL = 40%. States with 20 % Surcharges = AK, AL, AZ, GA, HI, LA, MS, NM, OR, SC, TX, WA 2. Non-AMA Members are also allowed to apply without being members, but are charged an annual $55 non-member \"policy fee\" that is subject to modal factors indicated in Column AH of this document. Members are granted an 35% Premium Rate Credit (not applicable to non-members).",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "B120",
+      "value": "AMA",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "D120",
+      "value": "10-Year Level Term Life Insurance",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "E120",
+      "value": "G-30612-0",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "G120",
+      "value": 102,
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AI120",
+      "value": "Mode Factors : Annual = 1.00 Semi-Annual =.52 Quarterly = .265 Monthly = .083",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AN120",
+      "value": "$1,000 increment for both physician / spouse",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AO120",
+      "value": "4 Gender Based Risk Classes:\n- 1. Tobacco\n- 2. Standard - 3. Preferred - 4. Preferred Plus\nAge=attained age on the first day of any insurance period",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AP120",
+      "value": "Preferred Plus",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AQ120",
+      "value": "n/a",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AR120",
+      "value": "1. Volume Discounts @250k, $500k, $1 Million, and $4 Million 2. Non-AMA Members are also allowed to apply without being members, but are charged an annual $50 non-member \"policy fee\" that is subject to modal factors indicated in Column AH of this document. 3. Members are granted an 8% Premium Rate Credit (not applicable to non-members). 4. Gender also applies. FOR SPOUSES: 1) If Spouse is married to a \"Member\" physician - spouse gets member premium credit and gets \"membership\" treatment (does NOT pay non-member fee) Child coverage is a flat fee of $60 annually for all eligible children.",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "B121",
+      "value": "AMA",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "D121",
+      "value": "15-Year Level Term Life Insurance",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "E121",
+      "value": "G-30614-0",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "G121",
+      "value": 103,
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AI121",
+      "value": "Mode Factors : Annual = 1.00 Semi-Annual =.52 Quarterly = .265 Monthly = .083",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AN121",
+      "value": "$1,000 increment for both physician / spouse",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AO121",
+      "value": "4 Gender Based Risk Classes:\n- 1. Tobacco\n- 2. Standard - 3. Preferred - 4. Preferred Plus\nAge=attained age on the first day of any insurance period",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AP121",
+      "value": "Preferred Plus",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AQ121",
+      "value": "n/a",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AR121",
+      "value": "1. Volume Discounts @250k, $500k, $1 Million, and $4 Million 2. Non-AMA Members are also allowed to apply without being members, but are charged an annual $50 non-member \"policy fee\" that is subject to modal factors indicated in Column AH of this document. 3. Members are granted an 8% Premium Rate Credit (not applicable to non-members). 4. Gender also applies. FOR SPOUSES: 1) If Spouse is married to a \"Member\" physician - spouse gets member premium credit and gets \"membership\" treatment (does NOT pay non-member fee) Child coverage is a flat fee of $60 annually for all eligible children.",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "B122",
+      "value": "AMA",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "D122",
+      "value": "20-Year Level Term Life Insurance",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "E122",
+      "value": "G-30615-0",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "G122",
+      "value": 121,
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AI122",
+      "value": "Mode Factors : Annual = 1.00 Semi-Annual =.52 Quarterly = .265 Monthly = .083",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AN122",
+      "value": "$1,000 increment",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AO122",
+      "value": "4 Gender Based Risk Classes:\n- 1. Tobacco\n- 2. Standard - 3. Preferred - 4. Preferred Plus\nAge=attained age on the first day of any insurance period",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AP122",
+      "value": "Preferred Plus",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AQ122",
+      "value": "n/a",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AR122",
+      "value": "1. Volume Discounts @250k, $500k, $1 Million, and $4 Million 2. Non-AMA Members are also allowed to apply without being members, but are charged an annual $50 non-member \"policy fee\" that is subject to modal factors indicated in Column AH of this document. 3. Members are granted an 8% Premium Rate Credit (not applicable to non-members). 4. Gender also applies. FOR SPOUSES: 1) If Spouse is married to a \"Member\" physician - spouse gets member premium credit and gets \"membership\" treatment (does NOT pay non-member fee) Child coverage is a flat fee of $60 annually for all eligible children.",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "B123",
+      "value": "AMA",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "D123",
+      "value": "Term Life Insurance (NYL-14743)",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "E123",
+      "value": "G-30616-0",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "G123",
+      "value": "101-a",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AI123",
+      "value": "Mode Factors : Annual = 1.00 Semi-Annual =.52 Quarterly = .265 Monthly = .083",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AN123",
+      "value": "$1,000 increment for both physician / spouse",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AO123",
+      "value": "3 Risk Classes: 1. Preferred 2. Standard 3. Standard Smoker",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AP123",
+      "value": "QD",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AQ123",
+      "value": "Face Bands: Male & Female: 1. 0 -$249,999 / 2. 250,000 - 499,999 / 3. 500,000 - 999,999 / 4. $1,000,000 + (NOTE: Waiver of Premium has its own set of rates that are separate from base rates)",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AR123",
+      "value": "1. Volume Discounts @250k, $500k, $1 Million 2. Non-AMA Members are also allowed to apply without being members, but are charged an annual $50 non-member \"policy fee\" that is subject to modal factors indicated in Column AH of this document. 3. NOTE: PREMIUM CREDITS DO NOT APPLY TO THIS PLAN. 4. Gender also applies. FOR SPOUSES: 1) If Spouse is married to a \"Member\" physician - spouse gets member premium credit and gets \"membership\" treatment (does NOT pay non-member fee)",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "B124",
+      "value": "AMA",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "D124",
+      "value": "Group Term Life Insurance (Referred to as \"Preferred Term\" in Marketing)\n3/19/2018 change request for the name - Preferred Term Life Insurance",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "E124",
+      "value": "G-30610-0",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "G124",
+      "value": "101-b",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AI124",
+      "value": "Mode Factors : Annual = 1.00 Semi-Annual =.52 Quarterly = .265 Monthly = .083",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AN124",
+      "value": "Monthly per $1,000 increment for both physician / spouse",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AO124",
+      "value": "4 Gender Based Risk Classes:\n- 1. Tobacco\n- 2. Standard - 3. Preferred - 4. Preferred Plus\nAge=attained age on the first day of any insurance period (NOTE - WILL CHANGE to 3 teirs WHEN QUICK DECISION IS IMPLEMENTED - Preferred Plus will no longer be offered)",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AP124",
+      "value": "Preferred Plus",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AQ124",
+      "value": "1. Rates are based on attained age and change every 5 years. (Would function similar to a Level Term Life product and is not based on specified 5 year age bands.) 2. Male / Female rates apply for each of the 4 teirs noted in column AQ",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AR124",
+      "value": "1. Volume Discounts @250k, $500k, $1 Million 2. Non-AMA Members are also allowed to apply without being members, but are charged an annual $50 non-member \"policy fee\" that is subject to modal factors indicated in Column AH of this document. 3. Members are granted an 8% Premium Rate Credit (not applicable to non-members). 4. Gender also applies. FOR SPOUSES: 1) If Spouse is married to a \"Member\" physician - spouse gets member premium credit and gets \"membership\" treatment (does NOT pay non-member fee) Child coverage is a flat fee of $30 annually for all eligible children.",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "B125",
+      "value": "AMA",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "D125",
+      "value": "Office Overhead Expense Insurance",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "E125",
+      "value": "G-30682-0",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "G125",
+      "value": 603,
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AI125",
+      "value": "Mode Factors : Annual = 1.00 Semi-Annual =.52 Quarterly = .265 Monthly = .083",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AN125",
+      "value": "Monthly per $1k of coverage",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AO125",
+      "value": "Age=attained age on the first day of any insurance period",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AP125",
+      "value": "n/a",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AQ125",
+      "value": "Standard 5 year age bands",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AR125",
+      "value": "Non-AMA Members are also allowed to apply without being members, but are charged an annual $45 non-member \"policy fee\" that is subject to modal factors indicated in Column AH of this document. Members are granted an 35% Premium Rate Credit (not applicable to non-members).",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "B126",
+      "value": "AMA",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "D126",
+      "value": "Accidental Death and Dismemberment Insurance (Referred to as \"Premier Accident Insurance\" in marketing)",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "E126",
+      "value": "G-30691-0",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "G126",
+      "value": 999,
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AI126",
+      "value": "Mode Factors : Annual = 1.00 Semi-Annual =.52 Quarterly = .265 Monthly = .083",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AN126",
+      "value": "Annual Rate by plan type selection, Plan A, B, or C",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AO126",
+      "value": "n/a",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AP126",
+      "value": "n/a",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AQ126",
+      "value": "n/a",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "Main",
+      "cell": "AR126",
+      "value": "Non-AMA Members are also allowed to apply without being members, but are charged an annual $45 non-member \"policy fee\" that is subject to modal factors indicated in Column AH of this document. NOTE: Individuals who elect monthly EFT payment method receive an additional 5% discount on rates. Members are granted a 20% Premium Rate Credit (not applicable to non-members).",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "cell": "AV43",
+      "value": "Landing page - Other (expand cell to see entire info)\nRules:\n\n1. All coverage brochure links open in new window (same size as new windows that open in current UX)\n\n2. Landing page will include “About AMA” section above “About NYL” section:\n\n{AMA logo - provided in ticket 10105: ama-logo-landing.png}\nAMA Insurance: helping physicians protect what matters most\nFor more than 50 years AMA-sponsored insurance has been protecting physicians and their families. As a subsidiary of the American Medical Association, AMA Insurance taps into the group buying power of over one million physicians to offer specially negotiated rates and tailored benefits from top insurance companies.\n\n3. Landing page will include ”Disclosure” section above footer; “click here” links to www.amainsure.com in new tab; disclosure text:\n\nRates current as of 2022.\n\nClick here for more information on this coverage—features, costs, eligibility, renewability, limitations, and exclusions.\n\nAMA-sponsored insurance described on this page are underwritten by New York Life Insurance Company, 51 Madison Ave., New York, NY 10010 on Policy Form GMR. Coverage may not be available in all states and product features may vary by state.\n\nQuotes are for illustrative purposes only.\n\nAMA incurs administrative expenses in connection with this program. To maintain these valuable benefits it is reimbursed for such expense.\nDisability Insurance with Step Rated Premiums and Disability Insurance with Level Rated Premiums: Rates and premium credits are reviewed and may change annually. The premium credit is guaranteed for at least the first year of coverage. Premium credits are not available for the Disability Insurance with Level Rated Premiums.\n\nRates are based on your age on the effective date of coverage. Rates for the Disability Insurance with Step Rated Premiums are based on attained age on each renewal date. Disability Insurance with Level Rated Premiums will not increase due to age. Depending on program experience, premiums may change on the policy anniversary date (July 1) or your annual renewal date (whichever is later).\n\nDisability Insurance with Step Rated Premiums: Attention Residents of AK, AL, AZ, CA, FL, GA, HI, LA, MS, NM, OR, SC, TX and WA: Due to higher than national average claims experience in these states, rates are 40% higher in California and Florida, and 20% higher in Alaska, Alabama, Arizona, Georgia, Hawaii, Louisiana, Mississippi, New Mexico, Oregon, South Carolina, Texas and Washington. If you live in one of these states, the rates shown already reflect this premium adjustment.\n\nDisability Insurance with Level Rated Premiums: Attention Residents of FL and CA: Due to higher than national average claims experience in these states, rates are 40% higher in California and 20% higher in Florida. If you live in one of these states, the rates shown already reflect this premium adjustment.\n\nLevel Term Life Insurance: The rate shown is the Preferred Plus Risk Class rate for qualified non-tobacco users in good health and who meet additional underwriting guidelines. If you are an AMA member, the rate shown includes a premium credit. Premium credits are reviewed and may change annually. The premium credit is guaranteed for at lease the first year of coverage.\n\n4. “How process works” section has updated QD footnote:\n*Eligibility can depend on several factors, including state of residence and existing coverage disclosures.\n",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "cell": "AX43",
+      "value": "COverage page Other (expand cell to see entire info)\nRules:\n\n1. Each product will display estimated cost in annual frequency (abbreviated  “yr.”)\n\n2. Each product will only display estimated cost in member box; this will be the total of all product selections (e.g. dependents, riders, etc); estimated cost section in dependent boxes is hidden\n\n3. Estimated cost in member box will include text below: Based on current membership status\n\n4. Each product will include estimated cost breakdown section at the bottom of product section\n\n   A. Section hidden until product has been selected; updates as user makes selections\n\n   B. Section will display both member credit vs. non-member fee\n\n   C. Member credit label will be updated depending on membership status:\n   - Members label: AMA Member Premium Credit\n   - Non-members label: Physician Premium Credit\n\n   D.Child coverage label: Child Rider\n\n   E. Premiere Accident Insurance premium cost label will be updated depending on applicants selected:\n   - Member only label: Premium Cost (Physician Only)\n   - Member + dependent label: Premium Cost (Physician + Family)\n\n   F. Hospital Income Insurance premium cost label will be updated depending on applicants selected:\n   - Member only label: Premium Cost (Physician Only)\n   - Member + 1 dependent label: Premium Cost (Physician + One Dependent)\n   - Member + 2 dependents label: Premium Cost (Physician + Family)\n   \n   G. True Own-Specialty Definition Disability Rider label:\n   - If only rider, label: True Own Rider\n   - If applied with other riders, label: True Own + CAT + COLA Rider\n\n   H. Section header label: Estimated Cost Breakdown\n\n   I. Under total, display: Questions? Call 888-627-5902\n   - Phone number should be link\n\n5. Display optional riders section on page load (instead of after user selects product)\n\n6. For Premiere Accident Insurance, if applying for spouse + child, if “Coverage for spouse” is checked, “Coverage for child” must also get checked (and vice versa)\n\n7. Page header has updated sub-copy text:\nSelect the coverage you want below. If you already own insurance through any coverage, select the additional amount needed._x000B_",
+      "formula": null,
+      "cachedValue": null,
+      "comment": null,
+      "hyperlink": null
+    }
+  ]
+}

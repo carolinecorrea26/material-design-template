@@ -1,0 +1,23 @@
+
+> template-material-prototype@0.0.0 build
+> tsc -b && vite build
+
+vite v8.0.8 building client environment for production...
+[2Ktransforming...✓ 12372 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                        0.48 kB │ gzip:     0.30 kB
+dist/assets/App-DLioOiRN.css                          15.41 kB │ gzip:     2.56 kB
+dist/assets/client-34H6ibm1.js                         0.34 kB │ gzip:     0.28 kB
+dist/assets/preload-helper-COXl8biX.js               129.73 kB │ gzip:    36.62 kB
+dist/assets/index-BruuflSF.js                        179.66 kB │ gzip:    56.96 kB
+dist/assets/ReferenceRateTableLink-BOVf3hpE.js       634.63 kB │ gzip:   186.20 kB
+dist/assets/App-yIwHHFEW.js                        1,557.11 kB │ gzip:   439.85 kB
+dist/assets/CoverageAggregateLibrary-DqtQPNMj.js  16,355.33 kB │ gzip: 1,086.53 kB
+
+✓ built in 2.94s
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

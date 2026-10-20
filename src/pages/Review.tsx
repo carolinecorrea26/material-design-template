@@ -1,10 +1,19 @@
+import { getPrototypeLibrary } from "../domain/prototypeLibrary";
+import { validateNormalizedLifeAggregate } from "../domain/normalizedCoverageAmounts";
+import { numericFact } from "../utils/applicantFacts";
+import { getActiveClient } from "../config/client/getActiveClient";
+import { resolveSiteId } from "../data/activeSite";
+import { composeReadAndSign, resolveReviewExperience } from "../config/reviewExperience";
+import { validateApplicationCoverages } from "../domain/coverageRuntime";
+import { buildSelectedCoverageEntries } from "../utils/coverageDecisions";
 import { useEffect, useState } from "react";
 import ReportRoundedIcon from "@mui/icons-material/ReportRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import PrintOutlinedIcon from "@mui/icons-material/PrintOutlined";
-import { Alert, Box, Button, Stack, Typography } from "@mui/material";
+import { Alert, Box, Button, List, ListItem, Stack, Typography } from "@mui/material";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import FormRoutePage from "../app/RoutePage";
+import { useSinglePageFlow } from "../app/SinglePageFlowContext";
 import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
 import {
   isApplicantApplying,
@@ -15,6 +24,7 @@ import FieldRenderer from "../components/forms/FieldRenderer";
 import type { PageId } from "../types";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { fieldCatalog } from "../config/fields";
+import { downloadApplicationPdf } from '../utils/applicationPdf';
 import ApplicationDocumentPreview from "../components/content/ApplicationDocumentPreview";
 import { getContent } from "../content";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
@@ -29,7 +39,10 @@ const requestEditDialogContent =
   getContent().dialogs.sendApplication.requestEditToApplication;
 
 export default function Review() {
+  const client = getActiveClient();
+  const reviewExperience = (values: Record<string, unknown>) => resolveReviewExperience(client, resolveSiteId(), getActiveClientCoverages(), values);
   const navigate = useNavigate();
+  const singlePageFlow = useSinglePageFlow();
   const [searchParams] = useSearchParams();
   const {
     reviewSubmitted: isReviewSubmitted,
@@ -56,7 +69,8 @@ export default function Review() {
 
   function handleEditConfirm() {
     if (editTargetPageId) {
-      navigate(`/${editTargetPageId}`);
+      if (singlePageFlow) singlePageFlow.goToSection(editTargetPageId);
+      else navigate(getPagePath(editTargetPageId));
     }
     setEditTargetPageId(null);
   }
@@ -64,28 +78,44 @@ export default function Review() {
   return (
     <FormRoutePage
       pageId="review"
+      validate={values => {
+        const coverageError = validateApplicationCoverages(getActiveClientCoverages(), values);
+        if (coverageError) return coverageError;
+        const library = getPrototypeLibrary();
+        if (library) {
+          const entries = buildSelectedCoverageEntries(values, getActiveClientCoverages());
+          const participation = library.site.configuration.lifeAggregateParticipation[0]?.value as { mode?: string } | undefined;
+          if (participation?.mode !== 'individual-only') for (const applicant of ['member', 'spouse'] as const) {
+            const life = entries.filter(e => e.applicant === applicant && e.coverage.categoryId === 'LI');
+            if (!life.length) continue;
+            const hasOther = values[applicant === 'member' ? 'has-other-life-insurance' : `${applicant}-has-other-life-insurance`];
+            const existing = hasOther === 'no' ? 0 : numericFact(values[applicant === 'member' ? 'existing-life-insurance-amount' : `${applicant}-existing-life-insurance-amount`]);
+            const amounts = values.coverageAmounts as Record<string, number> ?? {};
+            const aggregate = validateNormalizedLifeAggregate(library.site, applicant, life.map(e => ({ productKey: e.coverageId, amount: amounts[`${e.coverageId}:${applicant}`] ?? 0 })), existing);
+            if (!aggregate.allowed) return aggregate.reason;
+          }
+        }
+        const experience = reviewExperience(values);
+        if (experience.missingResidency) return "Member residence is required to select the applicable fraud notice.";
+        for (const field of experience.blocks.flatMap(block => block.fields)) {
+          if (field.required && (field.inputType === "checkbox" ? values[field.id] !== true : !String(values[field.id] ?? "").trim())) return `${field.label} is required.`;
+        }
+      }}
       devFillFields={(currentValues) => [
+        ...reviewExperience(currentValues).blocks.flatMap(block => block.fields),
         fieldCatalog["review-self-consent"],
         ...(isApplicantApplying("spouse", currentValues)
           ? [fieldCatalog["review-spouse-consent"]]
           : []),
       ]}
     >
-      {({ control, errors, watchedValues }) => {
+      {({ control, errors, watchedValues, allFields }) => {
         const values = watchedValues as ApplicationFormValues;
+        const experience = reviewExperience(values);
         const hasSpouse = isApplicantApplying("spouse", values);
 
-        const selectedCoverageIds = Array.isArray(values.coverageSelections)
-          ? values.coverageSelections
-          : [];
-        const selectedCoverageIdSet = new Set(
-          selectedCoverageIds.map((id) => String(id)),
-        );
-        const selectedCoverages = getActiveClientCoverages().filter(
-          (coverage) => selectedCoverageIdSet.has(coverage.id),
-        );
-        const showHealthQuestionsNote = selectedCoverages.some(
-          (coverage) => coverage.underwritingType === "FUW",
+        const showHealthQuestionsNote = buildSelectedCoverageEntries(values, getActiveClientCoverages()).some(
+          ({ coverage }) => coverage.underwritingType === "FUW",
         );
 
         function openEdit(pageId: PageId) {
@@ -174,6 +204,8 @@ export default function Review() {
               </Alert>
             )}
 
+            <Button variant="outlined" onClick={() => downloadApplicationPdf(values)}>Download application PDF</Button>
+
             <ApplicationDocumentPreview
               values={values}
               signatureName=""
@@ -233,7 +265,7 @@ export default function Review() {
                   variant="caption"
                   sx={{ whiteSpace: "pre-wrap", lineHeight: 1.5 }}
                 >
-                  {reviewContent.readAndSignContent}
+                  {composeReadAndSign(reviewContent.readAndSignContent, experience.fraudNotice)}
                 </Typography>
               </Box>
               <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
@@ -304,6 +336,18 @@ export default function Review() {
                 </ApplicantSectionDivider>
               ) : null}
             </Stack>
+            {allFields.filter(field => !["review-self-consent", "review-spouse-consent", ...experience.blocks.flatMap(block => block.fields.map(field => field.id))].includes(field.id)).map(field => <FieldRenderer key={field.id} field={field} control={control} errors={errors} />)}
+            {experience.blocks.map(block => (
+              <Box key={block.key} sx={{ p: 2, backgroundColor: SECTION_SURFACE_BG, border: "1px solid", borderColor: "divider", borderRadius: 1 }}>
+                <Stack spacing={2}>
+                  <Typography variant="subtitle1" fontWeight={700}>{block.title}</Typography>
+                  {block.paragraphs.map((paragraph, index) => <Typography key={index} variant="body2" sx={{ whiteSpace: "pre-wrap" }}>{paragraph}</Typography>)}
+                  {block.listItems && <List component="ul" sx={{ listStyleType: "disc", pl: 3, py: 0 }}>{block.listItems.map((item, index) => <ListItem key={index} component="li" sx={{ display: "list-item", p: 0, mb: 1 }}><Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>{item}</Typography></ListItem>)}</List>}
+                  {block.afterList?.map((paragraph, index) => <Typography key={index} variant="body2">{paragraph}</Typography>)}
+                  {block.fields.map(field => <FieldRenderer key={field.id} field={field} control={control} errors={errors} />)}
+                </Stack>
+              </Box>
+            ))}
           </Stack>
         );
       }}

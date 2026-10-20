@@ -1,12 +1,12 @@
 import type { ReactNode } from "react";
-import type { SvgIconComponent } from "@mui/icons-material";
+import type { ElementType } from "react";
 import { Box, Stack } from "@mui/material";
 import CategoryHeader from "./CategoryHeader";
 import { CATEGORY_SECTION_SX } from "../../config/constants";
 
 type CategoryCardProps = {
   label: string;
-  icon?: SvgIconComponent;
+  icon?: ElementType;
   children: ReactNode;
 };
 

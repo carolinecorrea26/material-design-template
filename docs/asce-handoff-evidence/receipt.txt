@@ -1,0 +1,119 @@
+- alert:
+  - generic: Library prototype · synthetic mock rates and services. Not an insurance quote. Reload after saving Library edits.
+- link "Skip to main content":
+  - /url: "#main-content"
+- link "Call for help 888.554.7255":
+  - /url: tel:8885547255
+  - text: Call for help 888.554.7255
+- generic: M-F 8:00am-5:00pm CST
+- separator
+- button "Chat now":
+  - text: Chat now
+- banner:
+  - img "American Society of Civil Engineers logo"
+  - button "Open application navigation menu":
+- main:
+  - heading "Your application has been submitted!" [level=1]
+  - paragraph:
+    - text: "Confirmation number:"
+    - strong: MOCK-f08bc3f5-5410-4ecc-b14e-236aa4db8159
+  - paragraph: Mock submission recorded. No insurer submission or funds moved. PDF downloads and real signatures remain incomplete.
+  - button "Application PDF" [disabled]:
+    - text: Application PDF
+  - button "Payment PDF" [disabled]:
+    - text: Payment PDF
+  - button "QuickDecision PDF" [disabled]:
+    - text: QuickDecision PDF
+  - text: Status
+  - paragraph: Submitted
+  - text: Applying
+  - paragraph: You, Your Spouse, Your Child(ren)
+  - text: Requested
+  - paragraph: 5 elections
+  - heading "Simulated coverage decisions" [level=2]
+  - paragraph: Review the current status for each coverage you applied for.
+  - heading "Group Term Life Insurance" [level=6]
+  - generic: Conditionally approved
+  - paragraph: "You coverage · Requested: $10,000"
+  - generic: Submitted
+  - generic: Reviewed
+  - generic: Decision
+  - paragraph: Congratulations! Your application has been conditionally approved. Once your group plan administrator confirms your eligibility, you'll receive details about your new coverage.
+  - heading "Group Term Life Insurance" [level=6]
+  - generic: Sent for review
+  - paragraph: "Your Spouse coverage · Requested: $10,000"
+  - generic: Submitted
+  - generic: Reviewed
+  - generic: Decision
+  - paragraph: We need a bit more information before we can make a decision. Your application will continue through the standard review process, and you'll be contacted if additional information is needed or when a decision is available.
+  - heading "Group Term Life Insurance" [level=6]
+  - generic: Unable to offer
+  - paragraph: "Your Child(ren) coverage · Requested: $10,000"
+  - generic: Submitted
+  - generic: Reviewed
+  - generic: Decision
+  - paragraph: Based on the information provided and the data securely reviewed, we're unable to offer this coverage through QuickDecision at this time. Your application will still be reviewed by the plan administrator and carrier, and you'll be contacted if additional information is needed.
+  - heading "Group Disability Income Insurance" [level=6]
+  - generic: Sent for review
+  - paragraph: "You coverage · Requested: $150"
+  - generic: Submitted
+  - generic: Reviewed
+  - generic: Decision
+  - paragraph: QuickDecision is not currently available for this product. Your application will continue through the standard review process, and you'll be contacted if additional information is needed or when a decision is available.
+  - heading "Group Disability Income Insurance" [level=6]
+  - generic: Sent for review
+  - paragraph: "Your Spouse coverage · Requested: $500"
+  - generic: Submitted
+  - generic: Reviewed
+  - generic: Decision
+  - paragraph: QuickDecision is not currently available for this product. Your application will continue through the standard review process, and you'll be contacted if additional information is needed or when a decision is available.
+  - heading "What happens next?" [level=6]
+  - paragraph: Mock record saved
+  - text: Your mock confirmation remains in this browser session. Document generation is pending.
+  - paragraph: You'll be contacted if needed
+  - text: Additional information may be requested for coverage sent for review.
+  - heading "Questions? We're here to help." [level=6]
+  - paragraph: American Society of Civil Engineers Insurance Administrator
+  - paragraph:
+    - text: "Call:"
+    - link "888.554.7255":
+      - /url: tel:8885547255
+  - paragraph:
+    - text: "Email:"
+    - link "customerservice@asceinsurance.com":
+      - /url: mailto:customerservice@asceinsurance.com
+- contentinfo:
+  - heading "Administered By:" [level=6]
+  - text: American Society of Civil Engineers
+  - text: Pearl Insurance
+  - text: 1200 E. Glen Avenue
+  - text: Peoria Heights, Illinois 61616
+  - link "asceinsurance.com":
+    - /url: https://asceinsurance.com
+  - link "customerservice@asceinsurance.com":
+    - /url: mailto:customerservice@asceinsurance.com
+  - link "888.554.7255":
+    - /url: tel:8885547255
+  - generic: M-F 8:00am-5:00pm CST
+  - paragraph:
+    - generic: "CA Agency License # 0F76076"
+    - text: "AR Agency License # 100106280"
+  - heading "Underwritten By:" [level=6]
+  - text: New York Life Insurance Company
+  - text: on Policy Form GMR
+  - generic: 51 Madison Avenue
+  - text: New York, New York 10010
+  - link "NYL Terms of Use":
+    - /url: "#"
+  - text: ·
+  - link "NYL Privacy Notice":
+    - /url: "#"
+  - img "New York Life Logo"
+  - generic: A++ A.M. Best
+  - generic: AAA Fitch Ratings
+  - generic: Aa1 Moody's Investors Service
+  - generic: AA+ Standard & Poor's
+  - superscript: "1"
+  - text: Third Party Rating Reports as of 09/30/2025.
+  - generic: "New York Life Insurance Company is licensed/authorized to transact business in all of the 50 United States, the District of Columbia, Puerto Rico and Canada. However, not all group policies it underwrites are available in all jurisdictions. Please check the Coverage detail sections for current availability. New York Life Insurance Company's state of domicile is New York, and NAIC ID is #66915."
+  - generic: NEW YORK LIFE and the NEW YORK LIFE Box Logo are trademarks of New York Life Insurance Company.

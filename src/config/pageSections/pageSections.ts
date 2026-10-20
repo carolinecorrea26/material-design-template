@@ -121,6 +121,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
     },
     {
       id: "childSection",
+      collectionName: "children",
       pageId: "eligibility",
       title: applicantSectionTitles.child,
       applicant: "child",

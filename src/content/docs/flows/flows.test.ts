@@ -109,10 +109,23 @@ describe("documented branches are preserved", () => {
     expect(outcomeEdge?.target).toBe("waepa-new-member-outcome");
   });
 
-  it("WAEPA override: verified current members get portfolio-enabled outcome", () => {
+  it("WAEPA override: existing members go directly to manual review", () => {
     const edge = resolveClientFlows(clients.waepa).find((f) => f.id === "tpaVerification")!.effective.edges.find(
-      (e) => e.source === "waepa-verification-decision" && e.condition === "Yes",
+      (e) => e.source === "waepa-membership-decision" && e.condition === "Existing member",
     );
-    expect(edge?.target).toBe("waepa-current-success");
+    expect(edge?.target).toBe("waepa-current-member");
+    const flow = resolveClientFlows(clients.waepa).find(f => f.id === "tpaVerification")!.effective;
+    expect(flow.nodes.some(node => node.label.includes("LexisNexis"))).toBe(false);
   });
+});
+
+
+it("ASCE documents Membership ID; AMA inherits standard lookup", () => {
+  const asce = resolveClientFlows(clients.asce).find(f => f.id === "tpaVerification")!;
+  expect(asce.effective.nodes.find(n => n.id === "tpa-eligibility-lookup")?.description).toContain("Membership ID");
+  expect(resolveClientFlows(clients.ama).find(f => f.id === "tpaVerification")?.status).toBe("inherited");
+});
+it("advisor saved applications resume to Eligibility", () => {
+  expect(advisorFlow.edges.find(e => e.source === "advisor-login" && e.condition === "Continue")?.target).toBe("advisor-saved-resume");
+  expect(advisorFlow.edges.find(e => e.source === "advisor-saved-code")?.target).toBe("advisor-eligibility");
 });

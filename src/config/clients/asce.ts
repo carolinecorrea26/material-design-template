@@ -1,5 +1,12 @@
+import { tpaVerificationFlow } from "../../content/docs/flows/tpaVerificationFlow";
 import type { ClientConfig } from "./types";
 import { rangeAssignments } from "../coverages/amounts";
+
+const lifeRequirements: import("../../domain/coverage").CoverageRequirements = {
+  eligibility: [{ applicantType: "child", unmarried: true, minimumAgeDays: 14, maximumAgeYears: 22, fullTimeStudentMaximumAgeYears: 24 }],
+  dependencies: [{ applicantType: "child", requiresApplicant: "member", categoryId: "LI", sameProduct: false }],
+  maximumPlans: [{ applicantType: "child", categoryId: "LI", count: 1 }],
+};
 
 const chatUrl =
   "https://app.five9.com/clients/consoles/ChatConsole/index.html?title=Chat&tenant=Pearl%20Insurance&profiles=ASCE%20-%20Current%2CASCE%20-%20New%20or%20Additional&showProfiles=true&autostart=true&profileLabel=Are%20you%20looking%20for%20help%20with%20Current%20or%20New%2FAdditional%20coverage%3F&theme=default-theme.css&surveyOptions=%7B%22showComment%22%3Afalse%2C%22requireComment%22%3Afalse%7D&fields=%7B%22name%22%3A%7B%22value%22%3A%22Chat%20User%22%2C%22show%22%3Afalse%2C%22label%22%3A%22Name%22%7D%2C%22email%22%3A%7B%22value%22%3A%22%22%2C%22show%22%3Atrue%2C%22label%22%3A%22Email%22%7D%2C%22Chat.First_Name%22%3A%7B%22value%22%3A%22%22%2C%22show%22%3Atrue%2C%22label%22%3A%22First%20Name%22%2C%22required%22%3Atrue%7D%2C%22Chat.Last_Name%22%3A%7B%22value%22%3A%22%22%2C%22show%22%3Atrue%2C%22label%22%3A%22Last%20Name%22%2C%22required%22%3Atrue%7D%2C%22UserLocale%22%3A%7B%22value%22%3A%22en%22%2C%22show%22%3Afalse%7D%7D&playSoundOnMessage=true&allowCustomerToControlSoundPlay=false&showEmailButton=false&hideDuringAfterHours=true&useBusinessHours=false&showPrintButton=true&allowUsabilityMenu=false&enableCallback=false&allowRequestLiveAgent=false&namespace=asceinsurance.com&ga=G-XYD9Q953HL";
@@ -7,6 +14,12 @@ const chatUrl =
 export const asceClient: ClientConfig = {
   id: "asce",
   theme: { type: "preset", preset: "default" },
+  flows: { overrides: { tpaVerification: {
+    ...tpaVerificationFlow,
+    intro: "ASCE follows the standard coverage-verification policy, with Membership ID required in addition to First Name, Last Name and DOB. Existing member + active coverage proceeds to LexisNexis; pass enables portfolio and TPA auto-approval, fail/skipped goes to TPA admin manual review without a portfolio.",
+    nodes: tpaVerificationFlow.nodes.map(node => node.id === "tpa-eligibility-lookup" ? { ...node, description: "Look up First Name, Last Name, DOB and Membership ID. Return existing-member and active-coverage status." } : node),
+  } } },
+  tpaIntegration: { mode: "coverage-verification", lookupFields: ["first-name", "last-name", "birth-date", "asce-member-id"], prototypeRecords: [{ facts: { "first-name": "Taylor", "last-name": "Morgan", "birth-date": "1990-08-26", "asce-member-id": "ASCE12345" }, activeCoverage: true }] },
   branding: {
     name: "American Society of Civil Engineers",
     acronym: "ASCE",
@@ -57,17 +70,18 @@ export const asceClient: ClientConfig = {
         child: [10000, 10000, 1],
       }),
       "li-add": rangeAssignments({
-        member: [50000, 500000, 10000],
-        spouse: [50000, 250000, 10000],
+        member: [50000, 500000, 50000],
+        spouse: [50000, 250000, 50000],
         child: [10000, 10000, 1],
       }),
       "di-ltd": rangeAssignments({
-        member: [150, 8550, 50],
+        member: [150, 8550, 150],
         spouse: [500, 500, 1],
       }),
     },
     overrides: {
       "li-term": {
+        requirements: lifeRequirements,
         name: "Group Term Life Insurance",
         gNumber: { primary: "G-10500-1" },
         planCode: { primary: "101" },
@@ -83,8 +97,8 @@ export const asceClient: ClientConfig = {
               "Chronic illness coverage from $50,000 to $1,000,000 for members and $25,000 to $1,000,000 for spouses.",
             hasAmount: true,
             coverageAmounts: rangeAssignments({
-              member: [50000, 1000000, 10000],
-              spouse: [25000, 1000000, 10000],
+              member: [50000, 1000000, 50000],
+              spouse: [25000, 1000000, 25000],
             }),
             applicants: ["member", "spouse"],
             premiumFactor: 0.05,
@@ -92,6 +106,16 @@ export const asceClient: ClientConfig = {
         ],
       },
       "li-10yr": {
+        requirements: { ...lifeRequirements, unresolved: [{ id: "base-eligibility-ages", description: "Summary eligibility ages 17–64 conflict with detailed underwriting bands beginning at 18 and including older ages. Base eligibility requires confirmation; bands do not establish eligibility.", source: "ASCE_Portal_Site_Rules.xlsx, Open Issues!C3; Life Products!E2" }] },
+        underwritingBandsStatus: "requires-age-reconciliation",
+        underwritingBands: [
+          ...(["member", "spouse"] as const).flatMap((applicantType) => [
+            { scope: { applicantType }, minimumAgeYears: 18, maximumAgeYears: 64, minimumAmount: 100000, maximumAmount: 500000, underwritingType: "QD" as const, label: "Core QD", status: "documented" as const },
+            { scope: { applicantType }, minimumAgeYears: 18, maximumAgeYears: 60, minimumAmount: 500000, minimumAmountExclusive: true, maximumAmount: 2000000, underwritingType: "QD" as const, label: "Expanded QD Fluidless", status: "documented" as const },
+            { scope: { applicantType }, minimumAgeYears: 61, maximumAgeYears: 64, minimumAmount: 500000, minimumAmountExclusive: true, maximumAmount: 2000000, underwritingType: "FUW" as const, label: "Expanded QD FUW", status: "documented" as const },
+            { scope: { applicantType }, minimumAgeYears: 65, maximumAgeYears: 69, minimumAmount: 100000, maximumAmount: 2000000, label: "Older-age treatment: underwriting not specified", status: "underwriting-unspecified" as const },
+          ]),
+        ],
         name: "Group 10-Year Level Term Life Insurance",
         gNumber: { primary: "G-29137-0" },
         planCode: { primary: "102" },
@@ -101,6 +125,15 @@ export const asceClient: ClientConfig = {
         applicants: ["member", "spouse", "child"],
       },
       "li-20yr": {
+        requirements: { ...lifeRequirements, unresolved: [{ id: "base-eligibility-ages", description: "Summary eligibility ages 17–54 conflict with detailed underwriting bands beginning at 18 and including older ages. Base eligibility requires confirmation; bands do not establish eligibility.", source: "ASCE_Portal_Site_Rules.xlsx, Open Issues!C3; Life Products!E3" }] },
+        underwritingBandsStatus: "requires-age-reconciliation",
+        underwritingBands: [
+          ...(["member", "spouse"] as const).flatMap((applicantType) => [
+            { scope: { applicantType }, minimumAgeYears: 18, maximumAgeYears: 54, minimumAmount: 100000, maximumAmount: 500000, underwritingType: "QD" as const, label: "Core QD", status: "documented" as const },
+            { scope: { applicantType }, minimumAgeYears: 18, maximumAgeYears: 54, minimumAmount: 500000, minimumAmountExclusive: true, maximumAmount: 2000000, underwritingType: "QD" as const, label: "Expanded QD Fluidless", status: "documented" as const },
+            { scope: { applicantType }, minimumAgeYears: 55, maximumAgeYears: 59, minimumAmount: 100000, maximumAmount: 2000000, label: "Older-age treatment: underwriting not specified; Expanded QD FUW N/A", status: "underwriting-unspecified" as const },
+          ]),
+        ],
         name: "Group 20-Year Level Term Life Insurance",
         gNumber: { primary: "G-29253-0" },
         planCode: { primary: "121" },
@@ -117,6 +150,19 @@ export const asceClient: ClientConfig = {
         applicants: ["member", "spouse", "child"],
       },
       "di-ltd": {
+        requirements: {
+          eligibility: [
+            { applicantType: "member", minimumAgeYears: 17, maximumAgeYears: 69, minimumWorkHoursPerWeek: 30 },
+            { applicantType: "spouse", minimumAgeYears: 17, maximumAgeYears: 59 },
+          ],
+          benefitLimit: {
+            applicantType: "member", incomeFraction: 0.6, defaultMaximum: 8550,
+            caps: [
+              { when: { selfEmployedLessThanYears: 1 }, maximum: 1050, requiredWaitingPeriod: "90", requiredBenefitPeriod: "five-year" },
+              { when: { minimumAgeYears: 65, maximumAgeYears: 69 }, maximum: 4200 },
+            ],
+          },
+        },
         name: "Group Disability Income Insurance",
         brochureUrl:
           "https://asceinsurance.com/Downloads/ASCE/brochures/ASCE-DI-Brochure.pdf",

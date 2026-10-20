@@ -14,6 +14,11 @@ export type ChangeLogEntry = {
  */
 export const changeLog: ChangeLogEntry[] = [
   {
+    id: "CL-TPA-20260930", date: "2026-09-30", area: "TPA / Flows / Branding / Content",
+    summary: "Reconciled client TPA policies, advisor routing, theme preview and shared membership subtitle",
+    details: "Standard and AMA require an existing member with active coverage before LexisNexis. Passing enables portfolio and TPA auto-approval; failed/skipped verification goes to manual review. ASCE adds Membership ID. WAEPA and WAEPAGI never run LexisNexis or show a portfolio: new members auto-approve and existing members go to manual review. Approval, verification and portfolio outcomes are separate prototype values. Updated migration rules and documented assignments without activating normalized runtime. Advisor saved-entry routing and health order now match the prototype; diagrams retain Dagre edge routes around cards. Branding & Design has the theme picker in both scopes. WAEPA/WAEPAGI primary is #001F5F. Every client receives the requested 30-minute membership subtitle.",
+  },
+  {
     id: "CL-029",
     date: "2026-09-21",
     area: "Theme / Storybook / Documentation",

@@ -1,6 +1,7 @@
+import Chip from "./LibraryTag";
 import { useMemo, useState } from "react";
 import {
-  Chip,
+
   FormControl,
   InputLabel,
   Link,
@@ -146,7 +147,7 @@ export default function CmsContentTable({ rows }: { rows: CmsTableRow[] }) {
         </FormControl>
       </Stack>
 
-      <ResponsiveTableContainer>
+      <ResponsiveTableContainer libraryTable="contentEntries">
         <Table size="small">
           <TableHead>
             <TableRow>
@@ -163,7 +164,9 @@ export default function CmsContentTable({ rows }: { rows: CmsTableRow[] }) {
             {filteredRows.map(({ entry, value, overridden }) => (
               <TableRow key={entry.id} sx={overridden ? { bgcolor: CLIENT_HIGHLIGHT_BG } : undefined}>
                 <TableCell sx={{ verticalAlign: "top", whiteSpace: "normal !important" }}>
-                  <TruncatedString value={value} />
+                  {(entry.type === "Link" || entry.type === "Document") && /^(https?:\/\/|\/(?!\/))\S+$/.test(value)
+                    ? <><Link href={value} target="_blank" rel="noopener noreferrer" sx={{ overflowWrap: "anywhere" }}>{value}</Link>{value.startsWith("https://example.com/brochures/") && <Chip size="small" label="Placeholder" sx={{ ml: 1 }} />}</>
+                    : <TruncatedString value={value} />}
                 </TableCell>
                 <TableCell sx={{ verticalAlign: "top" }}>
                   <Chip label={entry.type} size="small" />
@@ -177,25 +180,10 @@ export default function CmsContentTable({ rows }: { rows: CmsTableRow[] }) {
                     href={getStorybookStoryUrl(entry.storybookId)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    underline="none"
+                    underline="hover"
                     aria-label={`${entry.component} — open Storybook documentation`}
                   >
-                  <Chip
-                    label={entry.component}
-                    size="small"
-                    variant="outlined"
-                    color="primary"
-                    clickable
-                    sx={{
-                      height: "auto",
-                      maxWidth: 320,
-                      "& .MuiChip-label": {
-                        display: "block",
-                        py: 0.4,
-                        whiteSpace: "normal",
-                      },
-                    }}
-                  />
+                  {entry.component}
                   </Link>
                 </TableCell>
                 <TableCell sx={{ verticalAlign: "top" }}>

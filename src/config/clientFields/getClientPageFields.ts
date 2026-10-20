@@ -1,3 +1,5 @@
+import { isContactFieldAvailable } from "../../domain/applicantExperience";
+import { getActiveClient } from "../client/getActiveClient";
 import type { PageId } from "../../types";
 import type { ApplicationFormValues } from "../../app/ApplicationFormContext";
 import type { FieldDefinition } from "../fields/types";
@@ -54,16 +56,18 @@ export function getClientPageFields(
   values?: ApplicationFormValues,
 ) {
   const site = getActiveSite();
+  const experience = getActiveClient().applicantExperience;
   const visibleFields = resolveVisibleFields(
-    getResolvedFieldsForSite(pageId, site.id),
+    getResolvedFieldsForSite(pageId, site.id).filter(field => pageId !== "contact" || isContactFieldAvailable(experience, field.id)),
     values ?? {},
   );
 
-  if (pageId !== "membership") return visibleFields;
+  const fields = visibleFields.map(field => experience?.eligibleStatesOnly && ["state-province", "state", "business-state", "mailing-state"].includes(field.id) && field.options ? { ...field, options: field.options.filter(o => experience.eligibleStates?.includes(o.value.replace(/^US-/, ""))) } : field);
+  if (pageId !== "membership") return fields;
 
   const siteAssociations = getAssociationsForSite(site.id);
   const associationResolution = resolveActiveAssociationFromApplication(site.id, values);
-  const associationMembershipFields = visibleFields.map((field) =>
+  const associationMembershipFields = fields.map((field) =>
     resolveAssociationMembershipField(
       field,
       site,

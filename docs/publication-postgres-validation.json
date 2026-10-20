@@ -1,0 +1,18 @@
+{
+  "validatedAt": "2026-10-02T20:28:11.583Z",
+  "scope": "disposable PostgreSQL with stubbed auth claims; not hosted Supabase auth",
+  "passed": true,
+  "checks": [
+    "AAL1 rejected",
+    "unverified publication rejected",
+    "browser readiness forgery rejected",
+    "immutable versioned release",
+    "atomic head and audit",
+    "stale publish rejected",
+    "stale rollback rejected",
+    "exact rollback",
+    "expired evidence rejected",
+    "direct release mutation rejected"
+  ],
+  "productionDeployment": false
+}

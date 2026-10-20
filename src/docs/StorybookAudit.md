@@ -1,3 +1,5 @@
+> Current ownership: Storybook contains component examples only. Design foundations, implementation guidance and requirements belong to Portal Library. See [Portal Library ownership and schema review](../../docs/portal-library-model-review.md) and the generated schema inventory. The migration narrative below is historical where it differs from that model.
+
 # Storybook Audit & Implementation Plan
 
 > Historical migration record. Storybook is now the visual source of truth,

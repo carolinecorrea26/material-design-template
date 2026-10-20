@@ -1,3 +1,6 @@
+import { resolveApplicationCoverage } from "../domain/coverageRuntime";
+import FieldRenderer from "../components/forms/FieldRenderer";
+import { coverageFactFieldIds } from "../config/fields/coverageFactFields";
 import { useRef, useState } from "react";
 import { Box, Button, Divider, Stack } from "@mui/material";
 import PageAlert from "../components/feedback/PageAlert";
@@ -26,7 +29,7 @@ export default function Coverage() {
   const state = useCoverageState();
   const { values } = useApplicationForm();
 
-  const isTpaVerified = values["tpa-verified"] === true;
+  const isTpaVerified = values["tpa-portfolio-enabled"] === true && values["tpa-verified"] === true;
   const hasSpouse =
     Array.isArray(values.dependents) &&
     (values.dependents as string[]).includes("spouse");
@@ -243,13 +246,13 @@ function CoveragePageContent({
       <PageAlert severity="error" message={pageError ?? undefined} />
       <Stack spacing={3}>
         {/* Category selection (multi-select) */}
-        <CoverageCategorySelector
+        {state.availableCategories.length > 1 && <CoverageCategorySelector
           categories={state.availableCategories}
           selectedIds={state.selectedCategories}
           onToggle={state.handleCategoryToggle}
           error={state.selectedCategories.length === 0 && !!pageError}
           errorMessage={content.coverage.selectAtLeastOneCategoryError}
-        />
+        />}
 
         {/* Category-level question fields */}
         <CoverageQuestions
@@ -263,6 +266,10 @@ function CoveragePageContent({
           onFieldChange={handleCoverageQuestionChange}
           coverageQuestions={state.clientCoverageQuestions}
         />
+        {coverageFactFieldIds(state.categoryProducts, watchedValues).map(id => {
+          const field = allFields.find(field => field.id === id);
+          return field ? <FieldRenderer key={id} field={field} control={control} errors={errors} onValueChange={handleCoverageQuestionChange} /> : null;
+        })}
       </Stack>
 
       {/* Divider between coverage questions and products */}
@@ -274,6 +281,7 @@ function CoveragePageContent({
       {state.selectedCategories.length > 0 && state.showProducts && (
         <Box>
           <ProductCatalog
+          getCoverageBehavior={(product, applicant) => resolveApplicationCoverage(product, applicant, watchedValues, state.coverages)}
             availableCategories={state.availableCategories}
             selectedCategories={state.selectedCategories}
             categoryProducts={state.categoryProducts}

@@ -1,3 +1,4 @@
+import { homeQuoteFieldIds } from "./homeQuoteFields";
 import type { PageId } from "../../types";
 import type { FieldId } from "./types";
 
@@ -7,6 +8,7 @@ import type { FieldId } from "./types";
  * through resolvedFieldRegistry.
  */
 export const pageFieldOrder: Partial<Record<PageId, FieldId[]>> = {
+  home: homeQuoteFieldIds,
   membership: [
     "membership",
     "title",

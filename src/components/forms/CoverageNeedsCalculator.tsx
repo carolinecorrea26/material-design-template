@@ -1,13 +1,20 @@
-import { useState } from "react";
-import { Box, Stack, TextField, Typography } from "@mui/material";
+import { fieldValidationChecks } from "../../utils/fieldValidation";
+import { getSurfaceFields, getFieldSurface } from "../../config/fields/storedSurfaces";
+import { useForm, useWatch } from "react-hook-form";
+import FieldRenderer from "./FieldRenderer";
+import { Box, Stack, Typography } from "@mui/material";
 
 import { formatUSD } from "../../utils/formatUSD";
 
 export default function CoverageNeedsCalculator() {
-  const [annualIncome, setAnnualIncome] = useState("");
-  const [yearsToReplace, setYearsToReplace] = useState("");
-  const [outstandingDebts, setOutstandingDebts] = useState("");
-  const [existingCoverage, setExistingCoverage] = useState("");
+  const fields = getSurfaceFields("needsCalculator");
+  const binding = (id: string) => getFieldSurface("needsCalculator").mapping.fieldToKey[id];
+  const form = useForm<Record<string, string | boolean | string[]>>({ defaultValues: {} });
+  const inputs = useWatch({ control: form.control });
+  const annualIncome = String(inputs[binding("needs-annual-income")] ?? "");
+  const yearsToReplace = String(inputs[binding("needs-years-to-replace")] ?? "");
+  const outstandingDebts = String(inputs[binding("needs-outstanding-debts")] ?? "");
+  const existingCoverage = String(inputs[binding("needs-existing-coverage")] ?? "");
 
   const parseAmount = (val: string) => {
     const num = Number(val.replace(/[^0-9]/g, ""));
@@ -24,6 +31,10 @@ export default function CoverageNeedsCalculator() {
   const recommendedCoverage = Math.max(0, totalNeed - existing);
 
   const hasInput = income > 0 || debts > 0;
+  const validationErrors = Object.fromEntries(fields.flatMap(field => {
+    const invalid = fieldValidationChecks(field).find(check => !check.validate(inputs[field.id]));
+    return invalid ? [[field.id, invalid.message]] : [];
+  }));
 
   return (
     <Stack spacing={2.5}>
@@ -32,64 +43,9 @@ export default function CoverageNeedsCalculator() {
         insurance coverage may be appropriate for your situation.
       </Typography>
 
-      <TextField
-        label="Annual household income"
-        fullWidth
-        value={annualIncome}
-        onChange={(e) => {
-          const digits = e.target.value.replace(/[^0-9]/g, "").slice(0, 10);
-          if (!digits) {
-            setAnnualIncome("");
-            return;
-          }
-          setAnnualIncome(`$${Number(digits).toLocaleString("en-US")}`);
-        }}
-        inputProps={{ inputMode: "numeric" }}
-      />
+      {fields.map(field => <FieldRenderer key={field.id} field={field} control={form.control} margin="none" errors={hasInput ? Object.fromEntries(Object.entries(validationErrors).map(([id, message]) => [id, { type: 'validate', message }])) : {}} />)}
 
-      <TextField
-        label="Years of income to replace"
-        fullWidth
-        value={yearsToReplace}
-        onChange={(e) => {
-          const digits = e.target.value.replace(/[^0-9]/g, "").slice(0, 2);
-          setYearsToReplace(digits);
-        }}
-        helperText="A common recommendation is 10–12 years"
-        inputProps={{ inputMode: "numeric" }}
-      />
-
-      <TextField
-        label="Outstanding debts (mortgage, loans, etc.)"
-        fullWidth
-        value={outstandingDebts}
-        onChange={(e) => {
-          const digits = e.target.value.replace(/[^0-9]/g, "").slice(0, 10);
-          if (!digits) {
-            setOutstandingDebts("");
-            return;
-          }
-          setOutstandingDebts(`$${Number(digits).toLocaleString("en-US")}`);
-        }}
-        inputProps={{ inputMode: "numeric" }}
-      />
-
-      <TextField
-        label="Existing life insurance coverage"
-        fullWidth
-        value={existingCoverage}
-        onChange={(e) => {
-          const digits = e.target.value.replace(/[^0-9]/g, "").slice(0, 10);
-          if (!digits) {
-            setExistingCoverage("");
-            return;
-          }
-          setExistingCoverage(`$${Number(digits).toLocaleString("en-US")}`);
-        }}
-        inputProps={{ inputMode: "numeric" }}
-      />
-
-      {hasInput && (
+      {hasInput && !Object.keys(validationErrors).length && (
         <Box
           role="status"
           aria-live="polite"

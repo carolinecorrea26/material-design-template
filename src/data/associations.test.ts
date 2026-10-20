@@ -35,7 +35,6 @@ const urlSite: Site = {
   name: "URL Association proof",
   templateType: "multi",
   status: "active",
-  legacyClientId: "asce",
   associationSelection: { mode: "url-parameter", urlParameter: "association" },
   associationBranding: { useAssociationLogo: true },
 };
@@ -55,24 +54,24 @@ describe("canonical Association model", () => {
   });
 
   it("represents one Client → one Site → one fixed Association", () => {
-    expect(getAssociationsForSite("asce-default").map((entry) => entry.id)).toEqual([
+    expect(getAssociationsForSite("asce").map((entry) => entry.id)).toEqual([
       "american-society-of-civil-engineers",
     ]);
-    expect(resolveActiveAssociation("asce-default").association?.name).toBe(
+    expect(resolveActiveAssociation("asce").association?.name).toBe(
       "American Society of Civil Engineers",
     );
   });
 
   it("represents one Client → multiple Sites → the same Association", () => {
     expect(getSitesForAssociation("waepa").map((site) => site.id)).toEqual([
-      "waepa-standard",
+      "waepa",
       "waepa-gi",
     ]);
     expect(getAssociationsForClient("waepa")).toHaveLength(1);
   });
 
   it("represents one Client → one Site → many Associations", () => {
-    expect(getAssociationsForSite("isitrust-default")).toHaveLength(
+    expect(getAssociationsForSite("isitrust")).toHaveLength(
       isitrustAssociationCount,
     );
     expect(isitrustAssociationCount).toBe(25);
@@ -109,7 +108,7 @@ describe("canonical Association model", () => {
   });
 
   it("resolves fixed Associations deterministically", () => {
-    expect(resolveActiveAssociation("waepa-standard")).toMatchObject({
+    expect(resolveActiveAssociation("waepa")).toMatchObject({
       status: "resolved",
       association: { id: "waepa" },
     });
@@ -171,7 +170,7 @@ describe("canonical Association model", () => {
   });
 
   it("generates select-mode options from canonical Site Associations", () => {
-    const site = getSite("isitrust-default")!;
+    const site = getSite("isitrust")!;
     const associations = getAssociationsForSite(site.id);
     const resolved = resolveAssociationMembershipField(
       membershipField,
@@ -188,7 +187,7 @@ describe("canonical Association model", () => {
   });
 
   it("retains every ISITRUST Association choice after migration", () => {
-    window.history.replaceState(null, "", "/?site=isitrust-default");
+    window.history.replaceState(null, "", "/?site=isitrust");
     const membership = getClientPageFields("membership").find(
       (field) => field.id === "membership",
     );
@@ -208,7 +207,7 @@ describe("canonical Association model", () => {
   });
 
   it("keeps WAEPA's special membership behavior intact", () => {
-    window.history.replaceState(null, "", "/?site=waepa-standard");
+    window.history.replaceState(null, "", "/?site=waepa");
     const membership = getClientPageFields("membership").find(
       (field) => field.id === "membership",
     );
@@ -216,20 +215,20 @@ describe("canonical Association model", () => {
       label: "Are you a current WAEPA member, or are you becoming a new member?",
       inputType: "radio",
       options: [
-        { label: "Current Member", value: "current" },
         { label: "New Member", value: "new" },
+        { label: "Current Member", value: "current" },
       ],
     });
   });
 
   it("keeps existing fixed single-Association client fields behaviorally intact", () => {
-    window.history.replaceState(null, "", "/?site=avma-default");
+    window.history.replaceState(null, "", "/?site=avma");
     const membership = getClientPageFields("membership").find(
       (field) => field.id === "membership",
     );
     expect(membership?.label).toBe(
       "Are you a member of the American Veterinary Medical Association?",
     );
-    expect(getSiteAssociations("avma-default")).toHaveLength(1);
+    expect(getSiteAssociations("avma")).toHaveLength(1);
   });
 });

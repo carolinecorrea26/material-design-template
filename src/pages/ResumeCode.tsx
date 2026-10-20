@@ -1,258 +1,78 @@
-import { useEffect, useState, type FormEvent } from "react";
-import {
-  Box,
-  Button,
-  TextField,
-} from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { getPagePath, getPageTitle } from "../config/pages";
-import { getClientPageFields } from "../config/clientFields/getClientPageFields";
-import {
-  useApplicationForm,
-  type ApplicationFormValues,
-} from "../app/ApplicationFormContext";
-import {
-  getActiveSite,
-  getAssociationsForSite,
-  getLegacyClientIdForSite,
-  getSite,
-  type SiteId,
-} from "../data";
-import PageHeader from "../components/layout/PageHeader";
-import PageShell from "../components/layout/PageShell";
-import FormShell from "../components/layout/FormShell";
-import useCountdown from "../hooks/useCountdown";
-import ExpiringCodeAlert from "../components/feedback/ExpiringCodeAlert";
-import ResendCountdownRow from "../components/feedback/ResendCountdownRow";
-import { useApplicationSession } from "../app/ApplicationSessionContext";
-
-const MOCK_SAVED_APPLICATIONS: Record<string, ApplicationFormValues> = {
-  "returning.user@example.com": {
-    membership: "yes",
-    "first-name": "Taylor",
-    "last-name": "Morgan",
-    "email-address": "returning.user@example.com",
-    "phone-number": "(555) 555-0133",
-  },
-};
-
-function getMembershipPrefill(siteId: SiteId): string {
-  const legacyClientId = getLegacyClientIdForSite(siteId);
-  if (legacyClientId === "ama") return "physician";
-  if (legacyClientId === "waepa") return "current";
-  if (getSite(siteId)?.associationSelection?.mode === "select") {
-    return getAssociationsForSite(siteId)[0]?.id ?? "";
-  }
-  return "yes";
-}
-
-function getSavedApplicationForEmail(
-  emailAddress: string,
-  siteId: SiteId,
-): ApplicationFormValues {
-  const normalizedEmail = emailAddress.trim().toLowerCase();
-
-  const savedValues = MOCK_SAVED_APPLICATIONS[normalizedEmail] ?? {
-    "first-name": "Taylor",
-    "last-name": "Morgan",
-    "email-address": normalizedEmail,
-    "phone-number": "(555) 555-0133",
-  };
-
-  return {
-    ...savedValues,
-    membership: getMembershipPrefill(siteId),
-  };
-}
+import { useEffect, useState, type FormEvent } from 'react';
+import { Alert, Box, Button, CircularProgress, Stack, TextField } from '@mui/material';
+import CheckIcon from '@mui/icons-material/Check';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import PageHeader from '../components/layout/PageHeader';
+import PageShell from '../components/layout/PageShell';
+import FormShell from '../components/layout/FormShell';
+import { getPagePath, getPageTitle } from '../config/pages';
+import { resolveSiteId } from '../data/activeSite';
+import { applicantRecovery, recoveryFromSearch } from '../services/applicantSaveService';
+import { useApplicationForm } from '../app/ApplicationFormContext';
+import { useApplicationSession } from '../app/ApplicationSessionContext';
+import ApplicantMockOutbox from '../components/ui/ApplicantMockOutbox';
+import useCountdown from '../hooks/useCountdown';
+import ExpiringCodeAlert from '../components/feedback/ExpiringCodeAlert';
+import ResendCountdownRow from '../components/feedback/ResendCountdownRow';
 
 export default function ResumeCode() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const isAdvisorFlow = searchParams.get("flow") === "advisor";
-  const site = getActiveSite();
-  const { setPageValues } = useApplicationForm();
-  const { setAdvisorApplicantFlow } = useApplicationSession();
-
-  const fields = getClientPageFields("resume-code");
-  const codeField = fields.find((field) => field.id === "resume-security-code");
-
-  const [phoneCode, setPhoneCode] = useState("");
-  const [phoneCodeError, setPhoneCodeError] = useState<string | null>(null);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [verifySuccess, setVerifySuccess] = useState(false);
-  const { secondsLeft, start: startCountdown, restart } = useCountdown(300);
-  const [resendConfirmationVisible, setResendConfirmationVisible] =
-    useState(false);
-
+  const [search] = useSearchParams();
+  const siteKey = resolveSiteId();
+  const details = recoveryFromSearch(search, siteKey);
+  const { restoreApplication } = useApplicationForm();
+  const { resetApplicationSession } = useApplicationSession();
+  const [code, setCode] = useState('');
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [resent, setResent] = useState(false);
+  const expiresAt = Number(search.get('codeExpiresAt'));
+  const duration = expiresAt > 0 ? Math.max(0, Math.min(300, Math.ceil((expiresAt - Date.now()) / 1000))) : 300;
+  const { secondsLeft, start, restart } = useCountdown(duration);
+  useEffect(() => { start(); }, [start]);
   useEffect(() => {
-    startCountdown();
-  }, [startCountdown]);
-
-  function handleResendCode() {
-    restart();
-    setPhoneCodeError(null);
-    setResendConfirmationVisible(true);
+    if (!success) return;
+    const timer = window.setTimeout(() => navigate(`${getPagePath('eligibility')}?site=${encodeURIComponent(siteKey)}`, { replace: true, state: { resumeLoaded: true } }), 1200);
+    return () => window.clearTimeout(timer);
+  }, [success, navigate, siteKey]);
+  async function resend() {
+    if (!details || busy || success || !import.meta.env.VITE_MOCK_PLATFORM_ENABLED) return;
+    setBusy(true); setError('');
+    try {
+      const challenge = await applicantRecovery.challenge(details, search.get('method') ?? 'email');
+      restart(Math.max(0, Math.ceil((challenge.expiresAt - Date.now()) / 1000)));
+      setCode(''); setResent(true);
+    } catch (reason) { setError(reason instanceof Error ? reason.message : 'Resend failed'); }
+    finally { setBusy(false); }
   }
-
-  function handleVerifySubmit(event: FormEvent<HTMLFormElement>) {
+  async function verify(event: FormEvent) {
     event.preventDefault();
-
-    if (!phoneCode.trim()) {
-      setPhoneCodeError("Enter your verification code.");
-      return;
-    }
-
-    setPhoneCodeError(null);
-    setIsVerifying(true);
-
-    window.setTimeout(() => {
-      setIsVerifying(false);
-      setVerifySuccess(true);
-
-      window.setTimeout(() => {
-        const savedApplication = getSavedApplicationForEmail(
-          "returning.user@example.com",
-          site.id,
-        );
-
-        setPageValues(savedApplication);
-
-        if (isAdvisorFlow) {
-          setAdvisorApplicantFlow(true);
-          navigate(getPagePath("review"), {
-            state: { resumeLoaded: true },
-          });
-        } else {
-          navigate(getPagePath("eligibility"), {
-            state: { resumeLoaded: true },
-          });
-        }
-      }, 2000);
-    }, 700);
+    if (!details || !restoreApplication || busy || success || secondsLeft === 0 || !import.meta.env.VITE_MOCK_PLATFORM_ENABLED) return;
+    if (!/^\d{6}$/.test(code.trim())) { setError('Enter your six-digit verification code.'); return; }
+    setBusy(true); setError('');
+    try {
+      const application = await applicantRecovery.verify(details, code.trim());
+      restoreApplication(application); resetApplicationSession(); setSuccess(true);
+    } catch (reason) { setError(reason instanceof Error ? reason.message : 'Recovery failed'); }
+    finally { setBusy(false); }
   }
-
-  return (
-    <Box sx={{ flex: 1, px: { xs: 2, sm: 3 }, py: { xs: 4, sm: 6 } }}>
-      <PageShell title={getPageTitle("resume-code")} maxWidth={600} noTitle>
-        <FormShell
-          sx={{
-            px: { xs: 2, sm: 4 },
-            py: 6,
-          }}
-        >
-          <PageHeader
-              title={getPageTitle("resume-code")}
-              subhead={
-                <>
-                  Please enter the verification code sent to the phone number{" "}
-                  <Box
-                    component="span"
-                    sx={{
-                      fontWeight: 700,
-                      letterSpacing: "0.08em",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    (•••)•••1111
-                  </Box>
-                  .
-                </>
-              }
-              onBack={() => navigate(getPagePath("resume-method"))}
-          />
-
-          <Box
-            component="form"
-            onSubmit={handleVerifySubmit}
-            noValidate
-            sx={{ py: 1 }}
-          >
-            <Box sx={{ mb: secondsLeft === 0 || resendConfirmationVisible ? 2 : 0 }}>
-              <ExpiringCodeAlert
-                secondsLeft={secondsLeft}
-                kind="code"
-                onResend={handleResendCode}
-                showConfirmation={resendConfirmationVisible}
-                confirmationMessage="A new verification code has been sent."
-              />
-            </Box>
-
-            <TextField
-              fullWidth
-              type="text"
-              required={codeField?.required}
-              value={phoneCode}
-              disabled={secondsLeft === 0}
-              label={codeField?.label ?? "Verification Code"}
-              onChange={(event) => {
-                setPhoneCode(event.target.value);
-
-                if (phoneCodeError) {
-                  setPhoneCodeError(null);
-                }
-
-                if (resendConfirmationVisible) {
-                  setResendConfirmationVisible(false);
-                }
-              }}
-              inputProps={{
-                inputMode: "numeric",
-                pattern: "[0-9]*",
-              }}
-              error={Boolean(phoneCodeError)}
-              helperText={phoneCodeError ?? undefined}
-            />
-
-            <Box sx={{ mt: 1, mb: 3 }}>
-              <ResendCountdownRow
-                secondsLeft={secondsLeft}
-                kind="code"
-                onResend={handleResendCode}
-              />
-            </Box>
-
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Button
-                type="submit"
-                variant="contained"
-                size="large"
-                fullWidth
-                disabled={isVerifying || verifySuccess || secondsLeft === 0}
-                sx={(theme) => ({
-                  ...(verifySuccess && {
-                    backgroundColor: theme.palette.success.main,
-
-                    "&:hover": {
-                      backgroundColor: theme.palette.success.main,
-                    },
-
-                    "&.Mui-disabled": {
-                      color: theme.palette.success.contrastText,
-                      backgroundColor: theme.palette.success.main,
-                      boxShadow: "none",
-                      opacity: 1,
-                    },
-                  }),
-                })}
-              >
-                {verifySuccess ? (
-                  <CheckIcon />
-                ) : isVerifying ? (
-                  "Verifying..."
-                ) : (
-                  "Next"
-                )}
-              </Button>
-            </Box>
-          </Box>
-        </FormShell>
-      </PageShell>
-    </Box>
-  );
+  const unavailable = !details || !import.meta.env.VITE_MOCK_PLATFORM_ENABLED;
+  const method = search.get('method') ?? 'email';
+  const subhead = method === 'email' ? <>Please enter the verification code sent to <strong>{details?.recipient ?? 'your email address'}</strong>.</> : search.get('deliveryTarget') ? <>Please enter the verification code sent to the phone number <strong>{search.get('deliveryTarget')}</strong>.</> : 'Please enter the verification code sent to your saved phone number.';
+  return <Box sx={{ flex: 1, px: { xs: 2, sm: 3 }, py: { xs: 4, sm: 6 } }}>
+    <PageShell title={getPageTitle('resume-code')} maxWidth={600} noTitle><FormShell sx={{ px: { xs: 2, sm: 4 }, py: 6 }}>
+      <PageHeader title={getPageTitle('resume-code')} subhead={subhead} onBack={() => navigate(`${getPagePath('resume-method')}?${search}`)} />
+      <Stack component="form" spacing={2} onSubmit={event => void verify(event)} noValidate sx={{ py: 1 }}>
+        {!details && <Alert severity="error">Open a valid resume link to continue.</Alert>}
+        <ExpiringCodeAlert secondsLeft={secondsLeft} kind="code" onResend={() => void resend()} showConfirmation={resent} confirmationMessage="A new verification code has been sent." />
+        <TextField fullWidth required label="Verification Code" value={code} disabled={busy || success || secondsLeft === 0} onChange={event => { setCode(event.target.value); setError(''); setResent(false); }} inputProps={{ inputMode: 'numeric', maxLength: 6 }} error={!!error} helperText={error || undefined} />
+        <ResendCountdownRow secondsLeft={secondsLeft} kind="code" disabled={busy || success || unavailable} onResend={() => void resend()} />
+        <Button type="submit" fullWidth size="large" variant="contained" disabled={busy || success || unavailable || secondsLeft === 0} sx={{ mt: '24px !important', ...(success ? { '&.Mui-disabled': { bgcolor: 'success.main', color: 'common.white' } } : {}) }}>
+          {success ? <CheckIcon aria-label="Verified successfully" /> : busy ? <CircularProgress size={24} color="inherit" aria-label="Verifying code" /> : 'Next'}
+        </Button>
+        {details && <ApplicantMockOutbox applicationId={details.applicationId} siteKey={siteKey} recipient={details.recipient} />}
+      </Stack>
+    </FormShell></PageShell>
+  </Box>;
 }

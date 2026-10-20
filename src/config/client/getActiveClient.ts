@@ -1,5 +1,5 @@
-import { getActiveSiteClientConfig } from "../../data/activeSite";
+import { getActiveSiteConfiguration } from "../../data/activeSite";
 
 export function getActiveClient() {
-  return getActiveSiteClientConfig();
+  return getActiveSiteConfiguration();
 }

@@ -1,5 +1,5 @@
 import type { Association, Site, SiteId } from "./model";
-import { getAssociationsForSite, getSite } from "./registry";
+import { getAssociationsForSite, getSite } from "../repositories/sites";
 
 export type AssociationSelectionContext = {
   urlAssociationId?: string | null;

@@ -1,0 +1,309 @@
+
+> template-material-prototype@0.0.0 test
+> vitest run --maxWorkers=1
+
+
+ RUN  v3.2.7 /Users/t98j0kt/Desktop/nyl/portal/templates/template-material/template-material-prototype
+
+ ❯ src/pages/admin/libraryNavigation.test.ts (52 tests | 2 failed) 25598ms
+   ✓ Portal Library scope and navigation > starts at All with the complete page catalog and switches to only effective pages  749ms
+   ✓ Portal Library scope and navigation > shows visual template cards globally and only the configured template for a Site 68ms
+   ✓ Portal Library scope and navigation > omits disabled products and unrelated categories for a selected Site 216ms
+   ✓ Portal Library scope and navigation > orders configuration columns once, links canonical pages and resolves Membership additions 243ms
+   ✓ Portal Library scope and navigation > restores the full Global inventory when leaving a filtered Effective Site 251ms
+   ✓ Portal Library scope and navigation > keeps linked tools optional and preserves the selected page when enabled  380ms
+   ✓ Portal Library scope and navigation > browses shared tools without a synthetic Global page  387ms
+   ✓ Portal Library scope and navigation > shows repeated children in the Eligibility field table 122ms
+   ✓ Portal Library scope and navigation > has fifteen persistent domains, no Site Details destination, and no Global Site selector 160ms
+   ✓ Portal Library scope and navigation > uses canonical applicant order and navigates page fields with Site context 209ms
+   ✓ Portal Library scope and navigation > round trips Page → Fields → Page without empty linked tables in global 228ms
+   ✓ Portal Library scope and navigation > round trips Page → Fields → Page without empty linked tables in effective  303ms
+   ✓ Portal Library scope and navigation > only links page rules that exist in the selected scope 249ms
+   ✓ Portal Library scope and navigation > field rule links use the same Site applicability as the destination 160ms
+   ✓ Portal Library scope and navigation > does not apply the Library scope query to the Flags row scope filter 43ms
+   ✓ Portal Library scope and navigation > replaces table filters on same-domain navigation without filtering sibling tables 46ms
+   ✓ Portal Library scope and navigation > shows Page resolution only from the resolver and keeps Global independent 183ms
+   ✓ Portal Library scope and navigation > links Global pages to Demo and Effective pages to the selected Site with autofill 233ms
+   ✓ Portal Library scope and navigation > preserves field placement and category/product source order  4717ms
+   ✓ Portal Library scope and navigation > renders fixed Template Standards in either scope 202ms
+   ✓ Portal Library scope and navigation > filters the single Rules table by display type 57ms
+   ✓ Portal Library scope and navigation > orders domains and keeps Clear filters at the end of the filter row 101ms
+   ✓ Portal Library scope and navigation > only shows Site inspection columns in Effective pages 180ms
+   ✓ Portal Library scope and navigation > only shows Site inspection columns in Effective fields 239ms
+   × Portal Library scope and navigation > only shows Site inspection columns in Effective coverage 5534ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ Portal Library scope and navigation > only shows Site inspection columns in Effective rules 224ms
+   ✓ Portal Library scope and navigation > shows the theme color picker in both scopes with the selected Site defaults  705ms
+   ✓ Portal Library scope and navigation > renders standards prose plainly and categorical classifications as tags 61ms
+   ✓ Portal Library scope and navigation > marks documented evidence gaps without replacing their explanations 64ms
+   ✓ Portal Library scope and navigation > selects flow views through tabs and preserves Site context 173ms
+   ✓ Portal Library scope and navigation > exposes canonical Patterns and Flags metadata without activating site configuration 102ms
+   × Portal Library scope and navigation > shares exactly one dependent scope selector and retains the canonical Site across tabs 5138ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ Portal Library scope and navigation > shows Site Preview last only in Effective Site and resizes the actual iframe 213ms
+   ✓ Portal Library scope and navigation > separates Pages and Fields, with the matching validation and Storybook links  567ms
+   ✓ Portal Library scope and navigation > searches all fields and preserves shared placements without a required page selection 237ms
+   ✓ Portal Library scope and navigation > keeps effective Field numeric IDs tied to canonical keys 190ms
+   ✓ Portal Library scope and navigation > filters validation by page without needing a search term 183ms
+   ✓ Portal Library scope and navigation > renders the desktop NYL logo and direct Storybook item 39ms
+   ✓ Portal Library scope and navigation > separates page flow rules from flow diagrams and preserves Site context 97ms
+   ✓ Portal Library scope and navigation > separates Features, Configurations and URL Parameters with consistent headings 290ms
+   ✓ Portal Library scope and navigation > uses focused domains for legacy Site Details library routes 118ms
+   ✓ Portal Library scope and navigation > omits breadcrumbs and back navigation for changes 8ms
+   ✓ Portal Library scope and navigation > omits breadcrumbs and back navigation for releases 7ms
+   ✓ Portal Library scope and navigation > omits breadcrumbs and back navigation for applications 7ms
+   ✓ Portal Library scope and navigation > omits breadcrumbs and back navigation for site-builder 7ms
+   ✓ Sites workspace > orders filters and limits dependent Client and Site choices 282ms
+   ✓ Sites workspace > lists actual Storybook components with related fields and one final ID 242ms
+   ✓ Sites workspace > places shared branding guidelines and editable icon previews in Branding & Design  525ms
+   ✓ Sites workspace > exposes custom palette colors above the preview without sample alerts  486ms
+   ✓ Analytics tracking inventory > shows fields by default 180ms
+   ✓ Analytics tracking inventory > makes rate toggles searchable as controls 93ms
+   ✓ groups repeated coverage controls and retains their individual tag IDs 97ms
+ ❯ src/migration/activeSiteAdoption.test.ts (9 tests | 1 failed) 8070ms
+   ✓ Step 3 explicit identity and initial adoption > accounts for all enabled assignments and separates blocked and synthetic identities 5ms
+   ✓ Step 3 explicit identity and initial adoption > finds standard CSEA evidence without adopting the ambiguous Main label or another variant 4ms
+   ✓ Step 3 explicit identity and initial adoption > permits approved CC and bank payments only with locked Monthly billing 0ms
+   ✓ Step 3 explicit identity and initial adoption > rejects unreviewed products, wrong source variants and crosswalk drift 157ms
+   ✓ Step 3 explicit identity and initial adoption > does not mutate the identity inputs or adopt policies from linked rows 200ms
+   ✓ Step 3 explicit identity and initial adoption > resolves the GI member offer from persisted normalized rows while preserving standard WAEPA 274ms
+   × Step 3 explicit identity and initial adoption > records scoped provenance, exports through the existing schema and is idempotent 6226ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ Step 3 explicit identity and initial adoption > shares the adopted rows through a persisted revision without mixing fresh reads  868ms
+   ✓ Step 3 explicit identity and initial adoption > fails before adoption if source values change or come from another campaign  335ms
+ ✓ src/migration/coverageJourneyExceptionMatrix.test.ts (1 test) 42525ms
+   ✓ executes every persisted applicant/class/association/period/mode mapping  42525ms
+ ✓ src/migration/equivalence.test.ts (145 tests) 13629ms
+   ✓ phase 1–4 migration gate — independently resolved database behavior > covers the exact ten sites, with deterministic JSON-safe seeds  1804ms
+   ✓ phase 1–4 migration gate — independently resolved database behavior > demo-default > routing: category, underwriting and rider gates  1071ms
+   ✓ phase 1–4 migration gate — independently resolved database behavior > abe-default > routing: category, underwriting and rider gates  1032ms
+   ✓ phase 1–4 migration gate — independently resolved database behavior > ama-default > routing: category, underwriting and rider gates  1063ms
+   ✓ phase 1–4 migration gate — independently resolved database behavior > asce-default > routing: category, underwriting and rider gates  1019ms
+   ✓ phase 1–4 migration gate — independently resolved database behavior > avma-default > routing: category, underwriting and rider gates  1026ms
+   ✓ phase 1–4 migration gate — independently resolved database behavior > csea-default > routing: category, underwriting and rider gates  987ms
+   ✓ phase 1–4 migration gate — independently resolved database behavior > nso-default > routing: category, underwriting and rider gates  970ms
+   ✓ phase 1–4 migration gate — independently resolved database behavior > isitrust-default > routing: category, underwriting and rider gates  1001ms
+   ✓ phase 1–4 migration gate — independently resolved database behavior > waepa-standard > routing: category, underwriting and rider gates  1018ms
+   ✓ phase 1–4 migration gate — independently resolved database behavior > waepa-gi > routing: category, underwriting and rider gates  966ms
+   ✓ phase 1–4 migration gate — independently resolved database behavior > resolves serialized rows read back through the existing local adapter  661ms
+ ✓ src/migration/coverageJourneyAcceptance.test.ts (17 tests) 13198ms
+   ✓ Step 3 candidate acceptance after persistence > captures all enabled products/applicants/modes across ten Sites with provenance and complete mock submission roles  3825ms
+   ✓ Step 3 candidate acceptance after persistence > requires an enabled ISI association and maps every retained association explicitly  705ms
+   ✓ Step 3 candidate acceptance after persistence > reapplies journey adoption without duplicate riders, shifted mappings or changed records  3492ms
+   ✓ Step 3 candidate acceptance after persistence > fails closed on invalid persisted versions and retains compatibility/live fixture boundaries  2227ms
+ ✓ src/domain/libraryDraft.test.ts (3 tests) 16776ms
+   ✓ isolates edits and preserves all rows of captured tables beyond 1000 records  5343ms
+   ✓ uses Site precedence for draft PRASE controls and displays only configured references  5283ms
+   ✓ edits ASCE synthetic billing without changing other products or catalog data  6149ms
+ ✓ src/migration/asceBusinessDecisions.test.ts (11 tests) 11521ms
+   ✓ approved ASCE business decisions (inspection only) > reopens asce-default.li-10yr.base-eligibility-ages when approval evidence or canonical data is lost or changed  1574ms
+   ✓ approved ASCE business decisions (inspection only) > reopens asce-default.li-20yr.base-eligibility-ages when approval evidence or canonical data is lost or changed  1701ms
+   ✓ approved ASCE business decisions (inspection only) > reopens asce-default.li-10yr.underwriting.3 when approval evidence or canonical data is lost or changed  1828ms
+   ✓ approved ASCE business decisions (inspection only) > reopens asce-default.li-10yr.underwriting.7 when approval evidence or canonical data is lost or changed  1485ms
+   ✓ approved ASCE business decisions (inspection only) > reopens asce-default.li-20yr.underwriting.2 when approval evidence or canonical data is lost or changed  1471ms
+   ✓ approved ASCE business decisions (inspection only) > reopens asce-default.li-20yr.underwriting.5 when approval evidence or canonical data is lost or changed  1421ms
+   ✓ approved ASCE business decisions (inspection only) > fails both readiness gates for a regressed approval even if compatibility unknowns are removed  1208ms
+   ✓ approved ASCE business decisions (inspection only) > keeps decisions deterministic and idempotent without rewriting extracted evidence  630ms
+ ✓ src/domain/effectiveConfiguration.test.ts (21 tests) 3357ms
+   ✓ Phase 6B normalized domain configuration > withdraws capabilities for missing, conditional, duplicate applicant assignments and invalid plan limits  625ms
+   ✓ Phase 6B normalized domain configuration > resolves semantic targets independently of legacy paths and definition keys  353ms
+ ✓ src/migration/canonical.test.ts (12 tests) 6297ms
+   ✓ canonical corrective Phase 4 gates > accounts for every workbook and checklist cell, with explicit reasons and valid destinations  1568ms
+   ✓ canonical corrective Phase 4 gates > keeps known TBDs and image-only requirements unresolved; does not assert MCR parity  1989ms
+   ✓ canonical corrective Phase 4 gates > rejects orphan patterns, amounts, underwriting, flags and invalid provenance  785ms
+   ✓ canonical corrective Phase 4 gates > requires unique numeric display IDs and semantic keys independent of row order  1924ms
+ ✓ src/migration/reviewedExport.test.ts (1 test) 7941ms
+   ✓ exports the actual reviewed candidate separately from the compatibility fixture  7941ms
+ ✓ src/migration/coverageJourneyMatrix.test.ts (1 test) 6932ms
+   ✓ runs complete member candidate journeys for every enabled product across the ten persisted Sites  6931ms
+ ✓ src/migration/promotion.test.ts (7 tests) 5861ms
+   ✓ Phase 4C curated migration boundary > resolves the six approved decisions without treating historical source unknowns as runtime blockers  948ms
+   ✓ Phase 4C curated migration boundary > allows source-only parser/identity gaps after active requirements are actually resolved  2700ms
+   ✓ Phase 4C curated migration boundary > fails readiness for missing Site data, orphan relationships or invalid promotions  1417ms
+   ✓ Phase 4C curated migration boundary > keeps reference UX edits out of every implemented Site resolution  401ms
+ ✓ src/migration/semanticExtraction.test.ts (29 tests) 5464ms
+   ✓ Phase 4B semantic extraction and truthful readiness > retains extraction categories independently of promotion readiness  873ms
+   ✓ Phase 4B semantic extraction and truthful readiness > normalizes formatting without fuzzy identity selection  775ms
+   ✓ Phase 4B semantic extraction and truthful readiness > navigates all junction foreign keys to existing canonical records  3215ms
+   ✓ Phase 4B semantic extraction and truthful readiness > shares semantic facts across evidence and links underwriting-driven disclosures  595ms
+ ✓ src/migration/export.test.ts (4 tests) 6155ms
+   ✓ migration schema and deterministic export > validates every row, scope, foreign key, graph endpoint and serialized column  727ms
+   ✓ migration schema and deterministic export > rejects orphaned and cross-client relationships  1606ms
+   ✓ migration schema and deterministic export > exports repeatable SQL with natural-key foreign keys and no operational rewrites  3819ms
+ ✓ src/migration/dependentCoverageAdoption.test.ts (17 tests) 4845ms
+   ✓ dependent and explicit aggregate migration > retains source targets and repeats without changing any approved ASCE targets  2396ms
+   ✓ dependent and explicit aggregate migration > rejects bad policy revisions, invalid primary facts and source drift before mutation  843ms
+   ✓ dependent and explicit aggregate migration > persists dependent recalculation and aggregate behavior in one revision  772ms
+ ✓ src/migration/disabilityBenefitAdoption.test.ts (21 tests) 4966ms
+   ✓ persisted disability and overhead benefit dimensions > has valid policies, canonical relationships, source targets and deterministic compilation  1499ms
+   ✓ persisted disability and overhead benefit dimensions > fails closed on missing/duplicate/malformed stored policies and source drift  2646ms
+   ✓ persisted disability and overhead benefit dimensions > reads policies and elections from one captured persisted revision  816ms
+ ✓ src/migration/provisionalSourceDecisions.test.ts (5 tests) 4053ms
+   ✓ user-authorized provisional source choices > retains disputed evidence and distinguishes provisional CSEA from the baseline  1578ms
+   ✓ user-authorized provisional source choices > persists explicit unavailable rates and revisit records after serialization  1108ms
+   ✓ user-authorized provisional source choices > rejects changed evidence before mutation and repeats deterministically  1069ms
+ ✓ src/migration/ratePresentationAdoption.test.ts (5 tests) 3436ms
+   ✓ defaults PRASE to No and forces CSEA hero presentation without changing the baseline  977ms
+   ✓ stores client settings deterministically and resolves a client table through one captured revision  2407ms
+ ✓ src/migration/residencyAdoption.test.ts (6 tests) 3199ms
+   ✓ checks persisted contracts and source evidence and remains idempotent  2436ms
+   ✓ resolves residency through one captured persisted Library revision  440ms
+ ✓ src/persistence/snapshot.test.ts (9 tests) 3742ms
+   ✓ normalized revision boundary > captures storage once before awaiting hashing and detaches rows  532ms
+   ✓ normalized revision boundary > keeps old handles immutable while a fresh revision sees persisted edits  1612ms
+   ✓ normalized revision boundary > rejects unsupported, missing, duplicate and corrupt data without list fallback  626ms
+ ✓ src/migration/repositories.test.ts (16 tests) 3660ms
+   ✓ Phase 5 persisted compatibility transport > carries approved canonical metadata without activating normalized changes  340ms
+   ✓ Phase 5 persisted compatibility transport > cannot activate normalized eligibility changes for any prototype Site  394ms
+   ✓ Phase 5 persisted compatibility transport > is ready for Phase 6 after approved canonical decisions without runtime activation  949ms
+   ✓ Phase 5 persisted compatibility transport > does not defer new unknowns or incomplete Site data  1595ms
+ ✓ src/migration/activeSiteNumericAdoption.test.ts (12 tests) 3799ms
+   ✓ active Site source-backed numeric dimensions > validates every canonical relationship and rejects changed evidence before mutation  2019ms
+   ✓ active Site source-backed numeric dimensions > reads the adopted amounts and military guard from the same stored revision  1006ms
+ ✓ src/migration/nsoAdoption.test.ts (11 tests) 2849ms
+   ✓ NSO reviewed life amounts and payment > retains source targets, passes integrity, and repeats deterministically  1327ms
+   ✓ NSO reviewed life amounts and payment > rejects changed fixed amounts before writing and reads adopted rows from one persisted revision  1018ms
+ ✓ src/app/PortalDataProvider.test.tsx (2 tests) 1400ms
+ ✓ src/pages/admin/library/CoverageAggregateLibrary.test.tsx (3 tests) 2909ms
+   ✓ changes client limits with the selected Site and compares all Sites without a universal default  2021ms
+   ✓ reads changed persisted policies and makes missing or invalid migration data explicit  875ms
+ ✓ src/domain/effectiveSite.test.ts (15 tests) 2688ms
+   ✓ Phase 6A candidate resolution > reads only persisted normalized inputs, refreshes reads, propagates failures  1370ms
+ ✓ src/migration/asceRequirements.test.ts (75 tests) 2498ms
+   ✓ Site environment persistence > has stable ownership and exact inventory URLs without invented Sites  598ms
+   ✓ Site environment persistence > persists link edits across adapter reloads and upgrades old storage without overwriting operational data  1094ms
+   ✓ Site environment persistence > rejects orphaned ownership  798ms
+ ✓ src/migration/mutations.test.ts (15 tests) 2106ms
+ ✓ src/migration/selectionPolicyAdoption.test.ts (8 tests) 2220ms
+   ✓ captures executable selection contracts across all ten active Sites after JSON persistence  1309ms
+   ✓ rejects mutated persisted selection versions  884ms
+ ✓ src/migration/reviewAndRateAcceptance.test.ts (9 tests) 1196ms
+   ✓ captured review and rate participation acceptance > persists valid policies across all enabled products and sites  417ms
+   ✓ captured review and rate participation acceptance > executes the mock pricing contract for every enabled product, with CSEA suppressed  367ms
+ ✓ src/domain/prototypeLibrary.test.ts (13 tests) 1465ms
+   ✓ persisted Library prototype cutover > Library field and rate edits change the actual applicant resolvers with no catalog mutation  825ms
+ ✓ src/config/fields/homeQuoteFields.test.ts (6 tests) 980ms
+   ✓ Home quote placements > reuses canonical Eligibility/Coverage fields and migrates their Home relationships  978ms
+ ✓ src/migration/coveragePortfolioAcceptance.test.ts (5 tests) 659ms
+ ✓ src/migration/riderExceptionAcceptance.test.ts (1 test) 451ms
+   ✓ retained rider exception contracts after persistence > accepts each applicable retained rider, cleans stale choices, and emits captured codes  450ms
+ ✓ src/migration/activeSiteAudit.test.ts (6 tests) 377ms
+   ✓ active Site migration contract > does not mutate compiler inputs or activate candidate configuration  357ms
+ ✓ src/app/singlePageFlow.test.tsx (1 test) 353ms
+   ✓ single-page transitions and breadcrumb navigation > keeps loading Next/Back, one card per main step, and checks for completed breadcrumbs  352ms
+ ✓ src/migration/coverageHouseholdAcceptance.test.ts (4 tests) 148ms
+ ✓ src/components/ui/HowApplyingWorksPanel.test.tsx (6 tests) 172ms
+ ✓ src/components/ui/ReferenceRateTableLink.test.tsx (1 test) 132ms
+ ✓ src/config/fields/inspectionInventory.test.ts (36 tests) 151ms
+ ✓ src/components/docs/libraryMetadata.test.tsx (5 tests) 79ms
+ ✓ src/components/docs/flows/layout.test.ts (25 tests) 77ms
+ ✓ src/repositories/repositories.test.ts (15 tests) 51ms
+ ✓ src/analytics/trackingRows.test.ts (4 tests) 54ms
+ ✓ src/analytics/analytics.test.ts (5 tests) 50ms
+ ✓ src/content/docs/cmsEntries.test.ts (8 tests) 40ms
+ ✓ src/services/services.test.ts (7 tests) 30ms
+ ✓ src/app/coverageRuntime.integration.test.ts (31 tests) 22ms
+ ✓ src/utils/mockEmail.test.ts (3 tests) 15ms
+ ✓ src/data/model.test.ts (11 tests) 11ms
+ ✓ src/content/docs/fieldRows.test.ts (7 tests) 18ms
+ ✓ src/config/fields/resolvedFieldRegistry.test.ts (12 tests) 10ms
+ ✓ src/components/ui/clientIcons.test.tsx (3 tests) 13ms
+ ✓ src/config/conditions/conditions.test.ts (14 tests) 18ms
+ ✓ src/components/docs/LibraryTag.test.tsx (3 tests) 11ms
+ ✓ src/data/associations.test.ts (14 tests) 12ms
+ ✓ src/config/client/coverageCategoryScope.test.ts (3 tests) 11ms
+ ✓ src/config/resolvers/resolveClientCoverage.test.ts (6 tests) 7ms
+ ✓ src/config/flowGates.test.ts (9 tests) 6ms
+ ✓ src/config/resolvers/resolveClientConfigurations.test.ts (7 tests) 4ms
+ ✓ src/domain/tpaIntegration.test.ts (6 tests) 3ms
+ ✓ src/config/resolvers/resolveClientFields.test.ts (8 tests) 6ms
+ ✓ src/config/resolvers/resolveClientPages.test.ts (7 tests) 5ms
+ ✓ src/content/docs/flows/flows.test.ts (36 tests) 4ms
+ ✓ src/app/theme.test.ts (7 tests) 7ms
+ ✓ src/config/storybook.test.ts (2 tests) 3ms
+ ✓ src/config/applicationTransitions/applicationTransitions.test.ts (6 tests) 4ms
+ ✓ src/content/siteContent.test.ts (2 tests) 4ms
+ ✓ src/pages/admin/library/libraryInspection.test.ts (4 tests) 3ms
+ ✓ src/utils/coverageAmounts.test.ts (3 tests) 2ms
+ ✓ src/config/coverageConstants.test.ts (1 test) 2ms
+ ✓ src/admin/access.test.ts (3 tests) 2ms
+ ✓ src/config/resolvers/resolveCoverageQuestionSections.test.ts (3 tests) 2ms
+ ✓ src/config/coverageQuestionRequirements.test.ts (6 tests) 2ms
+ ✓ src/content/docs/configurations.test.ts (2 tests) 2ms
+ ✓ src/app/applicationSessionStorage.test.ts (1 test) 2ms
+ ✓ src/config/pageSections/pageSections.consistency.test.ts (6 tests) 2ms
+ ✓ src/content/docs/entityIds.test.ts (3 tests) 2ms
+ ✓ src/utils/coverageIdentifiers.test.ts (2 tests) 2ms
+ ✓ src/config/clientFields/membershipFollowUpVisibility.test.ts (3 tests) 1ms
+ ✓ src/content/docs/fieldStorybook.test.ts (3 tests) 2ms
+ ↓ src/migration/postgres.test.ts (4 tests | 4 skipped)
+ ❯ scripts/prototype-cutover.test.mjs (2 tests | 1 failed) 6252ms
+   × abe-default persists Library field, pricing and billing edits through save/reload/restart without catalog edits 3077ms
+     → expected null to be 4.5 // Object.is equality
+   ✓ asce-default persists Library field, pricing and billing edits through save/reload/restart without catalog edits  3174ms
+ ✓ scripts/mock-platform.test.mjs (7 tests) 178ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  scripts/prototype-cutover.test.mjs > abe-default persists Library field, pricing and billing edits through save/reload/restart without catalog edits
+AssertionError: expected null to be 4.5 // Object.is equality
+
+- Expected: 
+4.5
+
++ Received: 
+null
+
+ ❯ scripts/prototype-cutover.test.mjs:41:151
+     39|     const edited = await request('/prototype/library', { siteKey });
+     40|     expect(resolveRatePresentation(validatePrototypeEnvelope(edited, s…
+     41|     expect(resolveBilling(resolveCoverageJourneyPolicy(validatePrototy…
+       |                                                                                                                                                       ^
+     42|     expect(validatePrototypeEnvelope(edited, siteKey).client.fields.el…
+     43|     expect((await request('/rates/quote', { siteKey, productKey: 'li-t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/migration/activeSiteAdoption.test.ts > Step 3 explicit identity and initial adoption > records scoped provenance, exports through the existing schema and is idempotent
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/migration/activeSiteAdoption.test.ts:77:3
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/pages/admin/libraryNavigation.test.ts > Portal Library scope and navigation > only shows Site inspection columns in Effective coverage
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/pages/admin/libraryNavigation.test.ts:314:13
+    312|     ["coverage", "Coverage products", ["Resolution", "Differences"]],
+    313|     ["rules", "Rules", ["Scope", "Site applicability"]],
+    314|   ] as const)("only shows Site inspection columns in Effective %s", as…
+       |             ^
+    315|     await render(`/admin-center/library/${domain}?scope=global&site=as…
+    316|     const headings = () => [...container.querySelectorAll(`table[aria-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/pages/admin/libraryNavigation.test.ts > Portal Library scope and navigation > shares exactly one dependent scope selector and retains the canonical Site across tabs
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/pages/admin/libraryNavigation.test.ts:366:3
+    364|     expect(container.textContent).toContain("Export XML");
+    365|   });
+    366|   it("shares exactly one dependent scope selector and retains the cano…
+       |   ^
+    367|     await render("/admin-center/library/coverage?site=asce-default");
+    368|     expect(container.querySelectorAll('[aria-label="Site scope selecto…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  3 failed | 80 passed | 1 skipped (84)
+      Tests  4 failed | 932 passed | 4 skipped (940)
+   Start at  15:19:49
+   Duration  633.00s (transform 3.14s, setup 0ms, collect 307.12s, tests 234.80s, environment 42.67s, prepare 4.18s)
+

@@ -16,7 +16,7 @@ export const waepaContentOverrides: DeepPartial<SiteContent> = {
   pages: {
     membership: {
       infoNote:
-        "Applying for coverage will make you a new member if you are not currently a WAEPA member.",
+        "NOTICE: Receipt of Accelerated Death Benefits may affect eligibility for Public Assistance Programs and may be taxable.\nNOTICE FOR NEW YORK RESIDENTS, THE POLICY CONTAINS A WAR RESTRICTION",
       //   sectionNotes: {
       //     membershipInformation:
       //       "Please provide the following information to complete your membership.",

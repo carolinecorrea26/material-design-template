@@ -1,3 +1,7 @@
+import { getHealthDetailSurface, getHealthDetailSurfaceName, surfaceSemanticValues } from '../config/fields/storedSurfaces';
+import { helpChipDefinitions } from "../content/interactionLabels";
+import { createAnswerFields } from "../config/fields/healthSiFields";
+import { validateHealthPage } from '../config/healthFollowUps';
 import { useState } from "react";
 import { Stack, Typography } from "@mui/material";
 import FormRoutePage, { type FormRouteRenderProps } from "../app/RoutePage";
@@ -12,14 +16,12 @@ import YesNoDetailList, {
 import AppDrawer from "../components/layout/AppDrawer";
 import FormHelpChips from "../components/content/HelpChips";
 import type { FieldDefinition } from "../config/fields/types";
-import { YES_NO_OPTIONS } from "../config/constants";
 
 // ─── Help content ─────────────────────────────────────────────────────────────
 
 const HELP_ITEMS = [
   {
-    id: "health-info-use",
-    label: "How is my health information used?",
+    ...helpChipDefinitions.health,
     title: "How is my health information used?",
     content: (
       <Typography
@@ -39,46 +41,6 @@ const HELP_ITEMS = [
 
 // ─── DynamicList: health-details-specific ────────────────────────────────────
 
-const detailsFields: FieldDefinition[] = [
-  {
-    id: "onset",
-    label: "Month/Year of Onset",
-    inputType: "text",
-    format: "month-year",
-    required: true,
-    helperText: "mm/yyyy",
-    labelVariant: "standard",
-  },
-  {
-    id: "conditionsDetails",
-    label:
-      "Condition/Medication & Details (e.g. Medical Advice Given, Treatment, Results, Date Recovered)",
-    inputType: "text",
-    required: true,
-    multiline: true,
-    minRows: 3,
-    labelVariant: "standard",
-  },
-  {
-    id: "physicianAddress",
-    label: "Name and Address of Each Physician, Practitioner, and Hospital",
-    inputType: "text",
-    required: true,
-    multiline: true,
-    minRows: 3,
-    labelVariant: "standard",
-  },
-];
-
-const detailsMapping = {
-  fields: detailsFields,
-  fieldToKey: {
-    onset: "onset",
-    conditionsDetails: "conditionsDetails",
-    physicianAddress: "physicianAddress",
-  } as const,
-};
-
 function renderDetailsItem(item: Record<string, string>) {
   return (
     <Stack spacing={0.25}>
@@ -96,46 +58,7 @@ function renderDetailsItem(item: Record<string, string>) {
 
 // ─── Questions ────────────────────────────────────────────────────────────────
 
-const QUESTIONS = [
-  {
-    key: "q1",
-    label:
-      "Are you now taking any prescribed medication or receiving or contemplating any medical attention or surgical treatment?",
-  },
-  {
-    key: "q2",
-    label:
-      "During the past five years, have you ever been medically diagnosed by a physician as having or been treated for: heart or circulatory trouble, elevated blood pressure, chest pain or pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, including hepatitis, enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, allergies, blood, pus or sugar in urine, back trouble/disorder, bone or joint disorder, arthritis, varicose veins, or unexplained weight loss?",
-  },
-  {
-    key: "q3",
-    label:
-      "During the past five years have you ever been counseled, treated or hospitalized for the use of alcohol or drugs?",
-  },
-  {
-    key: "q4",
-    label: "Are you now pregnant?",
-  },
-  {
-    key: "q5",
-    label:
-      "Are you now disabled, or applied or applying for, or receiving any disability or Workers\u2019 Compensation benefits or a waiver of premium for life or health insurance?",
-  },
-];
-
 // ─── Field builders ───────────────────────────────────────────────────────────
-
-function createAnswerFields(applicant: "self" | "spouse"): FieldDefinition[] {
-  const suffix = applicant === "spouse" ? "-spouse" : "";
-  return QUESTIONS.map((q) => ({
-    id: `health-si-${q.key}${suffix}`,
-    label: q.label,
-    inputType: "radio" as const,
-    required: true,
-    options: YES_NO_OPTIONS,
-    labelVariant: "standard" as const,
-  }));
-}
 
 // ─── Per-applicant question set ───────────────────────────────────────────────
 
@@ -154,18 +77,11 @@ function QuestionSet({
   watchedValues,
   allFields,
 }: QuestionSetProps) {
-  const suffix = applicant === "spouse" ? "-spouse" : "";
-  const questions: YesNoDetailQuestion[] = QUESTIONS.flatMap((question) => {
-    const answerId = `health-si-${question.key}${suffix}`;
-    const field = allFields.find((entry) => entry.id === answerId);
-    return field
-      ? [{
-          field,
-          listName: `${answerId}-details`,
-          mapping: detailsMapping,
-          renderItem: renderDetailsItem,
-        }]
-      : [];
+  const questions: YesNoDetailQuestion[] = allFields.filter(field => field.id.startsWith("health-si-q") && field.id.endsWith("-spouse") === (applicant === "spouse")).map(field => {
+    const answerId = field.id;
+    const surface = getHealthDetailSurface("health-si", answerId);
+    return { field, listName: `${answerId}-details`, mapping: surface.mapping, maxItems: surface.maxItems, label: surface.label,
+      renderItem: item => renderDetailsItem(surfaceSemanticValues(getHealthDetailSurfaceName("health-si", answerId), item) as Record<string, string>) };
   });
 
   return (
@@ -187,6 +103,7 @@ export default function HealthSi() {
   return (
     <FormRoutePage
       pageId="health-si"
+      validate={values => validateHealthPage('health-si', values)}
       help={
         <>
           <FormHelpChips items={HELP_ITEMS} onSelect={setActiveHelpId} />

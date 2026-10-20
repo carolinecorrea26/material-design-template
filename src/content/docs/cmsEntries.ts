@@ -1,6 +1,11 @@
+import { coverages } from "../../config/coverages";
+import { resolveSiteCoverage } from "../../data";
 import {
-  getLegacyClientConfigForSite,
-  getLegacyClientIdForSite,
+  getClientAliasForSite,
+  getClientForSite,
+  resolveEffectiveBranding,
+  resolveSiteFeatures,
+  resolveSiteLicenseInfo,
   siteEntities,
   type SiteId,
 } from "../../data";
@@ -115,7 +120,7 @@ function externalEntry(
   componentType: CmsComponentType,
   globalValue: string,
   effectiveValue: (siteId: SiteId) => string,
-  storybookId = "application-patterns-page-coverage-audit--all-routes",
+  storybookId = "application-patterns-application-page-template--standard-form-page",
   sourceOrder = Number.MAX_SAFE_INTEGER,
 ): CmsEntry {
   const { page, component } = splitLocation(location);
@@ -520,10 +525,10 @@ function storybookIdForPath(path: string): string {
     if (section === "nylCredentials" || section === "clientSection") {
       return "layout-appbody--default";
     }
-    return "application-patterns-page-coverage-audit--all-routes";
+    return "application-patterns-application-page-template--standard-form-page";
   }
   if (root === "receipt") {
-    return "application-patterns-page-coverage-audit--all-routes";
+    return "application-patterns-application-page-template--standard-form-page";
   }
   if (root === "review") {
     if (section === "alertTitle" || section === "alertItems" || section === "healthQuestionsNote") {
@@ -580,7 +585,7 @@ function storybookIdForPath(path: string): string {
   if (root === "statusMessages") {
     return "feedback-processingstatuspage--external-service";
   }
-  return "application-patterns-page-coverage-audit--all-routes";
+  return "application-patterns-application-page-template--standard-form-page";
 }
 
 function managedEntry(path: string, sourceOrder: number): CmsEntry {
@@ -600,7 +605,7 @@ function managedEntry(path: string, sourceOrder: number): CmsEntry {
       const value = valueAtPath(contentFor(siteId), path);
       return value === undefined
         ? "—"
-        : resolveForDisplay(value, getLegacyClientConfigForSite(siteId).branding);
+        : resolveForDisplay(value, resolveEffectiveBranding({ siteId }));
     },
     overridden: (siteId) => valueAtPath(contentFor(siteId), path) !== rawGlobal,
     sourceOrder,
@@ -638,6 +643,20 @@ const legalDocumentEntries: CmsEntry[] = [
   ),
 ];
 
+const brochurePlaceholder = (productId: string) => `https://example.com/brochures/${productId}.pdf`;
+const productBrochureEntries: CmsEntry[] = coverages.map((product) => externalEntry(
+  `coverage-product-brochure-${product.id}`,
+  product.brochureUrl && !/\.pdf(?:[?#]|$)/i.test(product.brochureUrl) ? "Link" : "Document",
+  `Coverage - ${product.name} brochure`,
+  "Document",
+  product.brochureUrl || brochurePlaceholder(product.id),
+  (siteId) => {
+    const resolved = resolveSiteCoverage(siteId).find((entry) => entry.id === product.id);
+    return !resolved || resolved.status === "disabled" ? "—" : resolved.effective.brochureUrl || brochurePlaceholder(product.id);
+  },
+  "coverage-commerce-coverageoptionspanel--page-variant",
+));
+
 const externalEntries: CmsEntry[] = [
   externalEntry(
     "home-hero-image",
@@ -646,13 +665,13 @@ const externalEntries: CmsEntry[] = [
     "Default homepage variant",
     "—",
     (siteId) => {
-      const legacyClientId = getLegacyClientIdForSite(siteId);
-      const variant = getLegacyClientConfigForSite(siteId).features?.homePageVariant ?? "default";
+      const clientAlias = getClientAliasForSite(siteId);
+      const variant = resolveSiteFeatures(siteId)?.homePageVariant ?? "default";
       return variant === "hero-image" || variant === "welcome-back"
-        ? `/client/${legacyClientId}/hero.png`
+        ? `/client/${clientAlias}/hero.png`
         : "—";
     },
-    "application-patterns-page-coverage-audit--all-routes",
+    "application-patterns-application-page-template--standard-form-page",
   ),
   externalEntry(
     "global-client-logo",
@@ -661,10 +680,10 @@ const externalEntries: CmsEntry[] = [
     "Branding",
     "—",
     (siteId) => {
-      const { logo, logoAlt } = getLegacyClientConfigForSite(siteId).branding;
+      const { logo, logoAlt } = resolveEffectiveBranding({ siteId });
       return `${logo} (alt: "${logoAlt}")`;
     },
-    "foundations-branding--branding",
+    "layout-appheader--homepage-variant",
   ),
   externalEntry(
     "footer-license-info",
@@ -673,7 +692,7 @@ const externalEntries: CmsEntry[] = [
     "Footer content",
     "—",
     (siteId) => {
-      const info = getLegacyClientConfigForSite(siteId).licenseInfo;
+      const info = resolveSiteLicenseInfo(siteId);
       return info && info.length > 0 ? info.join(" / ") : "—";
     },
     "layout-appfooter--default",
@@ -685,7 +704,7 @@ const externalEntries: CmsEntry[] = [
     "Section content",
     "—",
     (siteId) =>
-      getLegacyClientIdForSite(siteId) === "avma"
+      getClientForSite(siteId)?.id === "avma"
         ? flattenProductContent(avmaClient.coverages.overrides?.["sh-hospital-income"]?.productContent)
         : "—",
     "coverage-commerce-productcatalog--interactive",
@@ -697,12 +716,12 @@ const externalEntries: CmsEntry[] = [
     "Document",
     "—",
     (siteId) => {
-      const legacyClientId = getLegacyClientIdForSite(siteId);
-      if (legacyClientId === "avma") {
+      const clientAlias = getClientAliasForSite(siteId);
+      if (clientAlias === "avma") {
         return "https://avmainsuranceservices.com/Downloads/AVMA/Applications/AVMA-SC-APP-LOAN-FORM.pdf";
       }
-      if (legacyClientId === "csea") return "/client/csea/li-clerical.pdf";
-      return `/client/${legacyClientId}/brochure.pdf`;
+      if (clientAlias === "csea") return "/client/csea/li-clerical.pdf";
+      return "—";
     },
     "coverage-commerce-coverageoptionspanel--page-variant",
   ),
@@ -713,7 +732,7 @@ const externalEntries: CmsEntry[] = [
     "Document",
     "—",
     (siteId) =>
-      getLegacyClientIdForSite(siteId) === "csea"
+      getClientAliasForSite(siteId) === "csea"
         ? "/client/csea/di-clerical.pdf"
         : "—",
     "coverage-commerce-coverageoptionspanel--page-variant",
@@ -829,6 +848,7 @@ export const cmsEntries: CmsEntry[] = consolidateCmsEntries([
   ...managedEntries,
   ...legalDocumentEntries,
   ...externalEntries,
+  ...productBrochureEntries,
 ]).sort(
   (a, b) =>
     cmsPageRank(a.page) - cmsPageRank(b.page) ||

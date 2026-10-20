@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { cmsEntries } from "./cmsEntries";
+import { siteEntities } from "../../data";
 
 describe("cmsEntries", () => {
   it("represents each legal document as a single CMS item", () => {
@@ -97,8 +98,25 @@ describe("cmsEntries", () => {
     const heroImage = cmsEntries.find((entry) => entry.id === "home-hero-image");
 
     expect(heroImage?.globalValue).toBe("—");
-    expect(heroImage?.effectiveValue("demo-default")).toBe("/client/demo/hero.png");
-    expect(heroImage?.effectiveValue("isitrust-default")).toBe("—");
+    expect(heroImage?.effectiveValue("demo")).toBe("/client/demo/hero.png");
+    expect(heroImage?.effectiveValue("isitrust")).toBe("—");
     expect(cmsEntries.some((entry) => entry.globalValue.includes("enabled per client"))).toBe(false);
+  });
+
+  it("includes product brochures, preserves supplied URLs and labels missing URLs with placeholders", () => {
+    const brochure = cmsEntries.find((entry) => entry.id === "coverage-product-brochure-li-term")!;
+    expect(brochure.globalValue).toBe("https://example.com/brochures/li-term.pdf");
+    expect(brochure.effectiveValue("asce")).toBe("https://asceinsurance.com/Downloads/ASCE/brochures/ASCE-Term-Life-Brochure.pdf");
+    expect(cmsEntries.some((entry) => entry.effectiveValue("csea").includes("/client/csea/li-clerical.pdf"))).toBe(true);
+    expect(cmsEntries.find((entry) => entry.id === "coverage-brochure")?.effectiveValue("demo")).not.toContain("/client/demo/brochure.pdf");
+  });
+
+  it("resolves every CMS entry for every canonical Site", () => {
+    for (const site of siteEntities) {
+      for (const entry of cmsEntries) {
+        expect(typeof entry.effectiveValue(site.id)).toBe("string");
+        expect(typeof entry.overridden(site.id)).toBe("boolean");
+      }
+    }
   });
 });

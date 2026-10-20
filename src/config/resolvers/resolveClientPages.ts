@@ -147,7 +147,7 @@ export function resolvePageVisibility(
   pageId: PageId,
   client: ClientConfig,
 ): Pick<ResolvedPage, "override" | "effective" | "status"> {
-  if (HEALTH_PAGE_IDS.includes(pageId)) {
+  if (HEALTH_PAGE_IDS.includes(pageId) && client.pages.participationSource !== "sitePages") {
     return {
       effective: {
         included: true,
@@ -160,6 +160,15 @@ export function resolvePageVisibility(
   }
 
   const requirement = getClientPageRequirement(pageId, client);
+  if (client.pages.participationSource === "sitePages") return {
+    effective: { included: requirement !== "none", requirement,
+      visibleWhen: requirement === "none" ? "Disabled by the Site page assignment"
+        : requirement === "optional" ? "Optional on this Site"
+        : HEALTH_PAGE_IDS.includes(pageId) ? "Shown when selected coverage routing unlocks this health page"
+        : pageId === "beneficiary" ? "Shown when selected coverage requires beneficiary designation" : "Always shown" },
+    ...(requirement === "optional" ? { override: { requirement } } : {}),
+    status: requirement === "none" ? "disabled" : requirement === "optional" ? "overridden" : "inherited",
+  };
 
   if (pageId === "beneficiary" || pageId === "payment") {
     const configuredRequirement = client.pages.requirements?.[pageId];

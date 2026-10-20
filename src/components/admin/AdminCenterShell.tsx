@@ -1,19 +1,19 @@
-import { useMemo, useState } from "react";
+import { useAccount } from '../../admin/AccountContext';
+import MockAdminGate from "./MockAdminGate";
+import { useMemo, useRef, useState } from "react";
 import { Link as RouterLink, Outlet, useLocation } from "react-router-dom";
 import {
   AppBar,
   Box,
   Divider,
-  FormControl,
   IconButton,
   InputAdornment,
-  InputLabel,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Menu,
   MenuItem,
-  Select,
   Stack,
   TextField,
   Toolbar,
@@ -23,29 +23,39 @@ import {
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import { adminNavigation } from "../../admin/navigation";
+import { visibleAdminNavigation } from "../../admin/navigation";
 import { internalPersonas, type Persona } from "../../admin/access";
+import { ThemeProvider } from "@mui/material/styles";
+import { createAppTheme } from "../../app/theme";
+import { getActiveClient } from "../../config/client/getActiveClient";
 
 export type AdminCenterContext = { persona: Persona };
-const railWidth = 228;
+const expandedRailWidth = 228;
 
-export default function AdminCenterShell() {
+function AdminCenterContent() {
   const location = useLocation();
-  const [personaId, setPersonaId] = useState("portal-admin");
-  const persona = useMemo(
-    () => internalPersonas.find((entry) => entry.id === personaId) ?? internalPersonas[0],
-    [personaId],
-  );
+  const account = useAccount();
+  const [collapsed, setCollapsed] = useState(() => localStorage.getItem('adminRailCollapsed') === 'true');
+  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
+  const dragStart = useRef<number | null>(null);
+  const railWidth = collapsed ? 64 : expandedRailWidth;
+  const adminNavigation = visibleAdminNavigation(account?.status.canManageAccounts === true);
+  const setRailCollapsed = (value: boolean) => { setCollapsed(value); localStorage.setItem('adminRailCollapsed', String(value)); };
+  const persona = { ...internalPersonas[0], permissions: account?.status.canEdit === false ? internalPersonas[0].permissions.filter(permission => permission.endsWith('.read')) : internalPersonas[0].permissions };
+
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#f5f7fa" }}>
       <AppBar position="sticky" color="inherit" elevation={0} sx={{ borderBottom: "1px solid", borderColor: "divider" }}>
-        <Toolbar sx={{ minHeight: { xs: 64, md: 68 }, gap: 2 }}>
-          <Box sx={{ width: { md: railWidth - 24 }, flexShrink: 0 }}>
+        <Toolbar sx={{ minHeight: { xs: 64, md: 68 }, gap: { xs: 1, sm: 2 } }}>
+          <Box sx={{ width: { md: expandedRailWidth - 24 }, flexShrink: 0, display: "flex", alignItems: "center", gap: 1.25 }}>
+            <Box component="img" src="/logo.svg" alt="New York Life" sx={{ width: 40, height: 40, flexShrink: 0 }} />
+            <Box>
             <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "primary.main", lineHeight: 1.2 }}>
-              Admin Center
+              GMAD Portal
             </Typography>
-            <Typography variant="caption" color="text.secondary">Internal operations</Typography>
+            <Typography variant="caption" color="text.secondary">Administration Center</Typography>
+            </Box>
           </Box>
           <TextField
             size="small"
@@ -54,22 +64,19 @@ export default function AdminCenterShell() {
             slotProps={{ input: { startAdornment: <InputAdornment position="start"><SearchRoundedIcon fontSize="small" /></InputAdornment> } }}
             sx={{ display: { xs: "none", md: "block" }, width: "min(440px, 35vw)" }}
           />
-          <Box sx={{ flex: 1 }} />
-          <Stack direction="row" spacing={1.5} alignItems="center">
-            <Typography variant="caption" color="text.secondary" sx={{ display: { xs: "none", lg: "block" } }}>View as</Typography>
-            <FormControl size="small" sx={{ minWidth: { xs: 150, sm: 190 } }}>
-              <InputLabel id="internal-persona-label">Internal persona</InputLabel>
-              <Select
-                labelId="internal-persona-label"
-                value={personaId}
-                label="Internal persona"
-                onChange={(event) => setPersonaId(event.target.value)}
-              >
-                {internalPersonas.map((entry) => <MenuItem key={entry.id} value={entry.id}>{entry.label}</MenuItem>)}
-              </Select>
-            </FormControl>
-            <Tooltip title="Notifications (future)"><span><IconButton disabled aria-label="Notifications"><NotificationsNoneRoundedIcon /></IconButton></span></Tooltip>
-            <Tooltip title={persona.label}><IconButton aria-label={`Current persona: ${persona.label}`}><AccountCircleOutlinedIcon /></IconButton></Tooltip>
+          <Box sx={{ flex: 1, display: { xs: "none", sm: "block" } }} />
+          <Stack direction="row" spacing={1.5} alignItems="center" sx={{ ml: "auto" }}>
+            <Tooltip title="Notifications (future)"><Box component="span" sx={{ display: { xs: "none", sm: "inline-flex" } }}><IconButton disabled aria-label="Notifications"><NotificationsNoneRoundedIcon /></IconButton></Box></Tooltip>
+            <Tooltip title="Account"><IconButton onClick={event => setMenuAnchor(event.currentTarget)} aria-label="Account menu" aria-controls={menuAnchor ? 'account-menu' : undefined} aria-haspopup="true" aria-expanded={!!menuAnchor}><AccountCircleOutlinedIcon /></IconButton></Tooltip>
+            <Menu id="account-menu" anchorEl={menuAnchor} open={!!menuAnchor} onClose={() => setMenuAnchor(null)}>
+              <Box sx={{ px: 2, py: 1 }}><Typography fontWeight={700}>{account?.status.displayName ?? 'Your account'}</Typography><Typography variant="caption" color="text.secondary">{account?.status.email}</Typography></Box>
+              <Divider />
+              <MenuItem component={RouterLink} to="/admin-center/account/profile" onClick={() => setMenuAnchor(null)}>Profile</MenuItem>
+              <MenuItem component={RouterLink} to="/admin-center/account/settings" onClick={() => setMenuAnchor(null)}>Settings</MenuItem>
+              {account?.status.canManageAccounts && <MenuItem component={RouterLink} to="/admin-center/administration" onClick={() => setMenuAnchor(null)}>Account Management</MenuItem>}
+              <Divider />
+              <MenuItem disabled={!account || account.status.signInDisabled} onClick={() => { setMenuAnchor(null); account?.signOut(); }}>Sign out</MenuItem>
+            </Menu>
           </Stack>
         </Toolbar>
       </AppBar>
@@ -81,7 +88,9 @@ export default function AdminCenterShell() {
           sx={{
             width: railWidth,
             flexShrink: 0,
-            display: { xs: "none", md: "block" },
+            display: { xs: "none", md: "flex" },
+            flexDirection: "column",
+            position: "sticky", top: 68, height: "calc(100vh - 68px)", overflow: "hidden", transition: "width 160ms ease",
             bgcolor: "background.paper",
             borderRight: "1px solid",
             borderColor: "divider",
@@ -89,10 +98,14 @@ export default function AdminCenterShell() {
             py: 1.5,
           }}
         >
+          <Box sx={{ display: 'flex', justifyContent: collapsed ? 'center' : 'flex-end', px: 1 }}>
+            <IconButton size="small" aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} onClick={() => setRailCollapsed(!collapsed)}><Typography aria-hidden="true">{collapsed ? '›' : '‹'}</Typography></IconButton>
+          </Box>
+          <Box sx={{ overflowY: 'auto', flex: 1 }}>
           {adminNavigation.map((group, groupIndex) => (
             <Box key={group.label}>
               {groupIndex > 0 && <Divider sx={{ my: 1 }} />}
-              <Typography variant="overline" color="text.secondary" sx={{ px: 2.25, fontSize: "0.65rem", fontWeight: 800 }}>
+              <Typography variant="overline" color="text.secondary" sx={{ display: collapsed ? "none" : "block", px: 2.25, fontSize: "0.65rem", fontWeight: 800 }}>
                 {group.label}
               </Typography>
               <List dense disablePadding>
@@ -101,21 +114,28 @@ export default function AdminCenterShell() {
                     ? location.pathname === item.path
                     : location.pathname.startsWith(item.path);
                   return (
-                    <ListItemButton key={item.path} component={RouterLink} to={item.path} selected={selected} sx={{ mx: 1, borderRadius: 1.5 }}>
-                      <ListItemIcon sx={{ minWidth: 34 }}><item.icon fontSize="small" /></ListItemIcon>
-                      <ListItemText primary={item.label} slotProps={{ primary: { variant: "body2", fontWeight: selected ? 700 : 500 } }} />
-                    </ListItemButton>
+                    <Tooltip key={item.path} title={collapsed ? item.label : ""} placement="right"><ListItemButton aria-label={item.label} component={item.external ? "a" : RouterLink} {...(item.external ? { href: item.path, target: "_blank", rel: "noopener noreferrer" } : { to: item.path })} selected={selected} sx={{ mx: 1, borderRadius: 1.5, px: collapsed ? 1.5 : 2 }}>
+                      <ListItemIcon sx={{ minWidth: collapsed ? 0 : 34 }}><item.icon fontSize="small" /></ListItemIcon>
+                      {!collapsed && <ListItemText primary={item.label} slotProps={{ primary: { variant: "body2", fontWeight: selected ? 700 : 500 } }} />}
+                    </ListItemButton></Tooltip>
                   );
                 })}
               </List>
             </Box>
           ))}
+          </Box>
+          <Box role="separator" aria-label="Resize sidebar" aria-orientation="vertical" aria-valuemin={64} aria-valuemax={228} aria-valuenow={railWidth} tabIndex={0}
+            onKeyDown={event => { if (event.key === 'ArrowLeft') setRailCollapsed(true); if (event.key === 'ArrowRight') setRailCollapsed(false); }}
+            onPointerDown={event => { dragStart.current = event.clientX; event.currentTarget.setPointerCapture(event.pointerId); }}
+            onPointerMove={event => { if (dragStart.current !== null) { const delta = event.clientX - dragStart.current; if (Math.abs(delta) > 36) { setRailCollapsed(delta < 0); dragStart.current = event.clientX; } } }}
+            onPointerUp={() => { dragStart.current = null; }} onPointerCancel={() => { dragStart.current = null; }}
+            sx={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 7, cursor: 'ew-resize', touchAction: 'none', '&:hover, &:focus-visible': { bgcolor: 'primary.light' } }} />
         </Box>
 
         <Box component="main" sx={{ minWidth: 0, flex: 1 }}>
           <Box sx={{ display: { xs: "flex", md: "none" }, overflowX: "auto", bgcolor: "background.paper", borderBottom: "1px solid", borderColor: "divider", px: 1 }}>
             {adminNavigation.flatMap((group) => group.items).map((item) => (
-              <ListItemButton key={item.path} component={RouterLink} to={item.path} selected={location.pathname === item.path} sx={{ minWidth: "max-content" }}>
+              <ListItemButton key={item.path} component={item.external ? "a" : RouterLink} {...(item.external ? { href: item.path, target: "_blank", rel: "noopener noreferrer" } : { to: item.path })} selected={location.pathname === item.path} sx={{ minWidth: "max-content" }}>
                 <ListItemText primary={item.label} slotProps={{ primary: { variant: "caption", fontWeight: 700 } }} />
               </ListItemButton>
             ))}
@@ -125,4 +145,12 @@ export default function AdminCenterShell() {
       </Box>
     </Box>
   );
+}
+
+export default function AdminCenterShell() {
+  // Applicant single-page breakpoints must not change the administration layout.
+  const adminTheme = useMemo(() => createAppTheme(getActiveClient().theme), []);
+  return <ThemeProvider theme={adminTheme}>
+    {import.meta.env.VITE_MOCK_PLATFORM_ENABLED ? <MockAdminGate><AdminCenterContent /></MockAdminGate> : <AdminCenterContent />}
+  </ThemeProvider>;
 }

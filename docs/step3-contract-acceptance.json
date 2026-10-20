@@ -1,0 +1,1115 @@
+{
+  "scope": "persisted contracts and conditional mappings; scenario tests are separate",
+  "products": [
+    {
+      "siteKey": "demo-default",
+      "productKey": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 2,
+      "executableContract": "passed",
+      "sourceApproval": "synthetic",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "demo-default",
+      "productKey": "di-ltd-plus",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 2,
+      "executableContract": "passed",
+      "sourceApproval": "synthetic",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "demo-default",
+      "productKey": "di-mtd",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 2,
+      "executableContract": "passed",
+      "sourceApproval": "synthetic",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "demo-default",
+      "productKey": "li-10yr",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "synthetic",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "demo-default",
+      "productKey": "li-20yr",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "synthetic",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "demo-default",
+      "productKey": "li-50plus",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 4,
+      "executableContract": "passed",
+      "sourceApproval": "synthetic",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "demo-default",
+      "productKey": "li-add",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "synthetic",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "demo-default",
+      "productKey": "li-term",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "synthetic",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "demo-default",
+      "productKey": "oo-professional",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 2,
+      "executableContract": "passed",
+      "sourceApproval": "synthetic",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "demo-default",
+      "productKey": "sh-critical-illness",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "synthetic",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "demo-default",
+      "productKey": "sh-hospital-money",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "synthetic",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "abe-default",
+      "productKey": "di-ltd",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 4,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "abe-default",
+      "productKey": "di-ltd-plus",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 4,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "abe-default",
+      "productKey": "di-mtd",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 4,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "abe-default",
+      "productKey": "li-10yr",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "abe-default",
+      "productKey": "li-20yr",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "abe-default",
+      "productKey": "li-50plus",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 4,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "abe-default",
+      "productKey": "li-add",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "abe-default",
+      "productKey": "li-term",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "abe-default",
+      "productKey": "oo-professional",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 2,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "abe-default",
+      "productKey": "sh-critical-illness",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 4,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "abe-default",
+      "productKey": "sh-hospital-money",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "ama-default",
+      "productKey": "di-level-rated",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 16,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "ama-default",
+      "productKey": "li-10yr",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "ama-default",
+      "productKey": "li-15yr",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "ama-default",
+      "productKey": "li-20yr",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "ama-default",
+      "productKey": "li-preferred",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "ama-default",
+      "productKey": "li-premier-accident",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "ama-default",
+      "productKey": "li-term",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 4,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "ama-default",
+      "productKey": "oo-office-overhead",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 24,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "ama-default",
+      "productKey": "sh-hospital-income",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "asce-default",
+      "productKey": "di-ltd",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 18,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "asce-default",
+      "productKey": "li-10yr",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "asce-default",
+      "productKey": "li-20yr",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "asce-default",
+      "productKey": "li-add",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "asce-default",
+      "productKey": "li-term",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase",
+        "rider-only"
+      ],
+      "mappings": 8,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "avma-default",
+      "productKey": "di-ltd",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 4,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "avma-default",
+      "productKey": "di-ltd-plus",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 4,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "avma-default",
+      "productKey": "di-short-term",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 4,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "avma-default",
+      "productKey": "li-10yr",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "avma-default",
+      "productKey": "li-20yr",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "avma-default",
+      "productKey": "li-50plus",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 4,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "avma-default",
+      "productKey": "li-add",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 4,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "avma-default",
+      "productKey": "li-group-term",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase",
+        "rider-only"
+      ],
+      "mappings": 8,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "avma-default",
+      "productKey": "li-term",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 2,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "avma-default",
+      "productKey": "oo-professional",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 4,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "avma-default",
+      "productKey": "sh-critical-illness",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 4,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "avma-default",
+      "productKey": "sh-hospital-income",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "csea-default",
+      "productKey": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 8,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "nso-default",
+      "productKey": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 12,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "nso-default",
+      "productKey": "li-10yr",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "nso-default",
+      "productKey": "li-20yr",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "nso-default",
+      "productKey": "li-50plus",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 4,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "nso-default",
+      "productKey": "li-add",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 6,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "nso-default",
+      "productKey": "li-term",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 4,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "isitrust-default",
+      "productKey": "di-ltd",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 450,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "isitrust-default",
+      "productKey": "di-short-term",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 50,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "isitrust-default",
+      "productKey": "li-10yr",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 150,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "isitrust-default",
+      "productKey": "li-20yr",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 150,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "isitrust-default",
+      "productKey": "li-50plus",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 100,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "isitrust-default",
+      "productKey": "li-add",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 150,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "isitrust-default",
+      "productKey": "li-group-term",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 150,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "isitrust-default",
+      "productKey": "oo-professional",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 50,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "isitrust-default",
+      "productKey": "sh-critical-illness",
+      "applicants": [
+        "member",
+        "spouse"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 100,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "isitrust-default",
+      "productKey": "sh-hospital-income",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 150,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "waepa-standard",
+      "productKey": "di-short-term",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 2,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "waepa-standard",
+      "productKey": "li-group-term",
+      "applicants": [
+        "member",
+        "spouse",
+        "child"
+      ],
+      "modes": [
+        "new",
+        "increase",
+        "rider-only"
+      ],
+      "mappings": 8,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    },
+    {
+      "siteKey": "waepa-gi",
+      "productKey": "li-group-term",
+      "applicants": [
+        "member"
+      ],
+      "modes": [
+        "new",
+        "increase"
+      ],
+      "mappings": 2,
+      "executableContract": "passed",
+      "sourceApproval": "provisional-revisit",
+      "publicationReady": false
+    }
+  ],
+  "sourceApproval": "deferred",
+  "fullProductAcceptance": "pending",
+  "runtimeActivation": "pending"
+}

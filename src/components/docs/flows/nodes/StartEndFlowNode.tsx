@@ -8,6 +8,7 @@ export default function StartEndFlowNode({ data }: FlowNodeComponentProps) {
 
   return (
     <FlowNodeShell
+      layoutHeight={data.layoutHeight as number | undefined}
       label={data.label}
       description={data.description}
       icon={

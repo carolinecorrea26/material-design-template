@@ -2,6 +2,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useCallback,
   useMemo,
   useState,
   type ReactNode,
@@ -12,6 +13,9 @@ import type { PageId } from "../types";
 import type { AssociationId } from "../data/model";
 import { resolveSiteId } from "../data/activeSite";
 import { resolveActiveAssociationFromApplication } from "../data/activeAssociation";
+import { createApplicantSaveClient, forgetSavedApplication, readSavedApplication, rememberSavedApplication, type RecoveredApplication, type SavedApplication } from '../services/applicantSaveService';
+import { Alert } from '@mui/material';
+import DemoApplicationActions from '../components/ui/DemoApplicationActions';
 
 const AUTOFILL_QUERY_PARAM = "autofill";
 
@@ -33,9 +37,13 @@ type ApplicationFormContextValue = {
   resetValues: () => void;
   activeAssociationId?: AssociationId | null;
   setActiveAssociationId?: (associationId: AssociationId | null) => void;
+  saveApplication?: (values: ApplicationFormValues, validatedPage?: 'coverage' | 'review') => Promise<SavedApplication | null>;
+  restoreApplication?: (application: RecoveredApplication) => void;
+  requiresRevalidation?: boolean;
 };
 
 export const STORAGE_KEY = "applicationFormValues";
+export const applicationStorageKey = (siteKey: string) => `${STORAGE_KEY}:${siteKey}`;
 
 // Exported (not just the hook) so Storybook stories for consumers like
 // ProgressStep can supply fixed demo values without going through the real
@@ -48,14 +56,16 @@ type ApplicationFormProviderProps = {
 };
 
 function loadStoredValues(): ApplicationFormValues {
-  const storedValues = window.sessionStorage.getItem(STORAGE_KEY);
+  const storageKey = applicationStorageKey(resolveSiteId());
+  // Historical unscoped values cannot safely be assigned to a household or Site.
+  const storedValues = window.sessionStorage.getItem(storageKey);
   let parsedValues: ApplicationFormValues = {};
 
   if (storedValues) {
     try {
       parsedValues = JSON.parse(storedValues) as ApplicationFormValues;
     } catch {
-      window.sessionStorage.removeItem(STORAGE_KEY);
+      window.sessionStorage.removeItem(storageKey);
       parsedValues = {};
     }
   }
@@ -74,7 +84,7 @@ function loadStoredValues(): ApplicationFormValues {
       ...parsedValues,
       ...generateFormDataUpToPage(autofillPageId),
     };
-    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(parsedValues));
+    window.sessionStorage.setItem(storageKey, JSON.stringify(parsedValues));
 
     const url = new URL(window.location.href);
     url.searchParams.delete(AUTOFILL_QUERY_PARAM);
@@ -89,6 +99,10 @@ function loadStoredValues(): ApplicationFormValues {
 export function ApplicationFormProvider({
   children,
 }: ApplicationFormProviderProps) {
+  const [siteKey] = useState(resolveSiteId);
+  const saveClient = useMemo(() => createApplicantSaveClient(siteKey), [siteKey]);
+  const [savedApplication, setSavedApplication] = useState(() => readSavedApplication(siteKey));
+  const [saveError, setSaveError] = useState('');
   const [initialValues] = useState<ApplicationFormValues>(loadStoredValues);
   const [values, setValues] = useState<ApplicationFormValues>(initialValues);
   const [activeAssociationId, setActiveAssociationId] = useState<AssociationId | null>(
@@ -98,8 +112,15 @@ export function ApplicationFormProvider({
   );
 
   useEffect(() => {
-    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(values));
-  }, [values]);
+    try { window.sessionStorage.setItem(applicationStorageKey(siteKey), JSON.stringify(values)); }
+    catch { setSaveError('Application changes could not be cached in this browser.'); }
+    if (!values.email) return;
+    let current = true;
+    void saveClient.save(values).then(application => {
+      if (current && application) { setSavedApplication(application); setSaveError(''); }
+    }).catch(error => { if (current) setSaveError(`Progress could not be saved: ${error.message}`); });
+    return () => { current = false; };
+  }, [values, siteKey, saveClient]);
 
   function setPageValues(pageValues: ApplicationFormValues) {
     if (Object.hasOwn(pageValues, "membership")) {
@@ -117,13 +138,17 @@ export function ApplicationFormProvider({
     );
   }
 
-  function resetValues() {
+  const resetValues = useCallback(() => {
+    saveClient.cancelPending();
     setValues({});
     setActiveAssociationId(
       resolveActiveAssociationFromApplication(resolveSiteId()).association?.id ?? null,
     );
-    window.sessionStorage.removeItem(STORAGE_KEY);
-  }
+    window.sessionStorage.removeItem(applicationStorageKey(siteKey));
+    forgetSavedApplication(siteKey);
+    setSavedApplication(null);
+    setSaveError('');
+  }, [siteKey, saveClient]);
 
   const contextValue = useMemo<ApplicationFormContextValue>(
     () => ({
@@ -132,12 +157,36 @@ export function ApplicationFormProvider({
       resetValues,
       activeAssociationId,
       setActiveAssociationId,
+      requiresRevalidation: savedApplication?.requiresRevalidation ?? false,
+      saveApplication: async (nextValues, validatedPage) => {
+        try {
+          const saved = await saveClient.save(nextValues, validatedPage);
+          if (saved) setSavedApplication(saved);
+          setSaveError('');
+          return saved;
+        } catch (error) {
+          setSaveError('Progress could not be saved. Retry before continuing.');
+          throw error;
+        }
+      },
+      restoreApplication: application => {
+        if (application.siteKey !== siteKey) throw new Error('Cannot restore an application from another Site');
+        saveClient.cancelPending();
+        rememberSavedApplication(application);
+        setSavedApplication(application);
+        const restored = withApplicantsApplying(application.values) as ApplicationFormValues;
+        setValues(restored);
+        setActiveAssociationId(resolveActiveAssociationFromApplication(siteKey, restored).association?.id ?? null);
+        setSaveError('');
+      },
     }),
-    [activeAssociationId, values],
+    [activeAssociationId, values, savedApplication, saveClient, siteKey, resetValues],
   );
 
   return (
     <ApplicationFormContext.Provider value={contextValue}>
+      {saveError && <Alert severity="error">{saveError}</Alert>}
+      {savedApplication && !saveError && <DemoApplicationActions application={savedApplication} siteKey={siteKey} />}
       {children}
     </ApplicationFormContext.Provider>
   );

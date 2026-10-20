@@ -34,14 +34,14 @@ describe("resolved field registry architecture", () => {
   });
 
   it("preserves canonical page field ordering", () => {
-    expect(getResolvedFieldsForSite("profile", "demo-default").map(({ id }) => id))
+    expect(getResolvedFieldsForSite("profile", "demo").map(({ id }) => id))
       .toEqual(pageFieldOrder.profile);
   });
 
   it("applies client field overrides through the registry selector", () => {
     const spouseMembership = getResolvedFieldsForSite(
       "eligibility",
-      "abe-default",
+      "abe",
     ).find(({ id }) => id === "spouse-membership");
 
     expect(spouseMembership?.label).toBe(
@@ -73,7 +73,7 @@ describe("resolved field registry architecture", () => {
   });
 
   it("applies global, Client, then Site precedence deterministically", () => {
-    const site = getSite("demo-default");
+    const site = getSite("demo");
     if (!site) throw new Error("Missing demo Site test fixture");
     const overrides: ScopedFieldOverride[] = [
       {
@@ -112,12 +112,12 @@ describe("resolved field registry architecture", () => {
 
   it("applies Site-specific Membership configuration without sibling leakage", () => {
     expect(
-      getResolvedFieldsForSite("membership", "ama-default")
+      getResolvedFieldsForSite("membership", "ama")
         .find(({ id }) => id === "membership"),
     ).toMatchObject({ label: "I am a (select one)", inputType: "dropdown" });
 
     expect(
-      getResolvedFieldsForSite("membership", "waepa-standard")
+      getResolvedFieldsForSite("membership", "waepa")
         .some(({ id }) => id === "waepa-declaration"),
     ).toBe(true);
     expect(
@@ -140,7 +140,7 @@ describe("resolved field registry architecture", () => {
   });
 
   it("keeps conditional fields on the canonical visibility path", () => {
-    const fields = getResolvedFieldsForSite("membership", "waepa-standard");
+    const fields = getResolvedFieldsForSite("membership", "waepa");
     const declaration = fields.find(({ id }) => id === "waepa-declaration");
     expect(declaration?.visibilityConditionId).toBe("condition-membership-waepa-new");
     expect(resolveVisibleFields(fields, { membership: "current" }))
@@ -152,12 +152,12 @@ describe("resolved field registry architecture", () => {
   it("resolves Membership and ordinary pages through the same public selector", () => {
     const registry = getResolvedFieldRegistry();
     for (const pageId of ["membership", "profile"] as const) {
-      expect(getResolvedFieldsForSite(pageId, "ama-default").map(({ id }) => id))
+      expect(getResolvedFieldsForSite(pageId, "ama").map(({ id }) => id))
         .toEqual(
           registry
             .filter(
               (registration) =>
-                registration.siteId === "ama-default" &&
+                registration.siteId === "ama" &&
                 registration.pageId === pageId,
             )
             .map(({ fieldId }) => fieldId),
@@ -166,7 +166,7 @@ describe("resolved field registry architecture", () => {
   });
 
   it("gives documentation the same effective values as runtime resolution", () => {
-    const runtimeField = getResolvedFieldsForSite("eligibility", "abe-default")
+    const runtimeField = getResolvedFieldsForSite("eligibility", "abe")
       .find(({ id }) => id === "spouse-membership");
     const documentedField = resolveClientFieldsForPage("eligibility", clients.abe)
       .find(({ fieldId }) => fieldId === "spouse-membership");
@@ -195,7 +195,7 @@ describe("resolved field registry architecture", () => {
     });
 
     const resolvedIds = new Set(
-      getResolvedFieldsForSite("profile", "demo-default").map(({ id }) => id),
+      getResolvedFieldsForSite("profile", "demo").map(({ id }) => id),
     );
     expect(memberSection?.fieldIds.every((fieldId) => resolvedIds.has(fieldId)))
       .toBe(true);

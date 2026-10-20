@@ -1,0 +1,14 @@
+
+> template-material-prototype@0.0.0 test
+> vitest run scripts/mock-platform.test.mjs --maxWorkers=1 --testTimeout=15000
+
+
+ RUN  v3.2.7 /Users/t98j0kt/Desktop/nyl/portal/templates/template-material/template-material-prototype
+
+ ✓ scripts/mock-platform.test.mjs (7 tests) 233ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  15:34:19
+   Duration  942ms (transform 29ms, setup 0ms, collect 34ms, tests 233ms, environment 0ms, prepare 60ms)
+

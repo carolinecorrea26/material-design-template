@@ -23,7 +23,7 @@ import {
   useApplicationForm,
   STORAGE_KEY,
 } from "../app/ApplicationFormContext";
-import { pages, getPagePath, getPageTitle } from "../config/pages";
+import { getConfiguredPages, getPagePath, getPageTitle } from "../config/pages";
 import type { PageId } from "../types";
 import { getClientPageFields } from "../config/clientFields/getClientPageFields";
 import { getResolvedFormFlow } from "../config/formFlow";
@@ -114,7 +114,7 @@ export default function DevTools() {
   };
 
   const handleResetPage = () => {
-    const currentPage = pages.find((p) => p.path === window.location.pathname);
+    const currentPage = getConfiguredPages().find((p) => p.path === window.location.pathname);
     if (!currentPage) return;
 
     const current = JSON.parse(
@@ -164,7 +164,7 @@ export default function DevTools() {
     void router.navigate(pagePath);
   };
 
-  if (!isDevMode) return null;
+  if (!isDevMode || currentSite.id !== "demo") return null;
 
   return (
     <>
@@ -329,7 +329,7 @@ export default function DevTools() {
                     </Typography>
                   </Box>
                   <Divider />
-                  {pages
+                  {getConfiguredPages()
                     .filter(
                       (page) =>
                         page.type === "form" &&

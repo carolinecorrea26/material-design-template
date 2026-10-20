@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Box, Stack, Typography } from "@mui/material";
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
+import QuickDecisionIcon from "../ui/QuickDecisionIcon";
 import { getContent } from "../../content";
 
 function InlineDrawerLink({
@@ -61,7 +61,7 @@ function QuickDecisionMarkStyled() {
         gap: 0.25,
       }}
     >
-      <OfflineBoltIcon
+      <QuickDecisionIcon
         color="success"
         sx={{ fontSize: "1em", alignSelf: "center" }}
       />

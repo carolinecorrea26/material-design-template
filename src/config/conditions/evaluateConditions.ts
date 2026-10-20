@@ -1,3 +1,5 @@
+import { isConditionDefinition } from "../../domain/conditionValidation";
+import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
 import type { ApplicationFormValues } from "../../app/ApplicationFormContext";
 import { conditionDefinitions } from "./conditions";
 import type { ConditionClause, ConditionDefinition, ConditionId } from "./types";
@@ -5,7 +7,8 @@ import type { ConditionClause, ConditionDefinition, ConditionId } from "./types"
 const conditionsById = new Map(conditionDefinitions.map((definition) => [definition.id, definition]));
 
 export function getConditionDefinition(conditionId: ConditionId) {
-  return conditionsById.get(conditionId);
+  const library = getPrototypeLibrary();
+  return library ? library.site.configuration.conditions.find(c => c.value.definition.id === conditionId)?.value.definition : conditionsById.get(conditionId);
 }
 
 function evaluateClause(clause: ConditionClause, values: ApplicationFormValues): boolean {
@@ -19,6 +22,7 @@ export function evaluateCondition(
   definition: ConditionDefinition,
   values: ApplicationFormValues,
 ): boolean {
+  if (!isConditionDefinition(definition)) return false;
   const matches = definition.conditions.map((clause) => evaluateClause(clause, values));
   return definition.match === "any" ? matches.some(Boolean) : matches.every(Boolean);
 }

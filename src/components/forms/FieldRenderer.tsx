@@ -1,3 +1,4 @@
+import { getFieldValidationRules } from "../../utils/fieldValidation";
 import {
   useRef,
   useState,
@@ -102,113 +103,6 @@ function getEffectiveInputType(field: FieldDefinition) {
 
 function isZipOrPostalField(field: FieldDefinition) {
   return field.autoComplete === "postal-code";
-}
-
-function getValidationRules(field: FieldDefinition) {
-  const rules: {
-    required?: string | { value: true; message: string };
-    validate?: (value: unknown) => true | string;
-  } = {};
-
-  if (field.inputType === "checkbox") {
-    if (field.required) {
-      rules.validate = (value) =>
-        value === true || `${field.label} is required.`;
-    }
-
-    return rules;
-  }
-
-  if (field.inputType === "checkbox-group") {
-    if (field.required) {
-      rules.validate = (value) =>
-        Array.isArray(value) && value.length > 0
-          ? true
-          : "Select at least one option.";
-    }
-
-    return rules;
-  }
-
-  if (field.inputType === "multi-select") {
-    if (field.required) {
-      rules.validate = (value) =>
-        Array.isArray(value) && value.length > 0
-          ? true
-          : "Select at least one option.";
-    }
-
-    return rules;
-  }
-
-  if (field.required) {
-    rules.required = `${field.label} is required.`;
-  }
-
-  if (isZipOrPostalField(field)) {
-    rules.validate = (value) => {
-      if (!value) return true;
-      return String(value).trim().length >= 5
-        ? true
-        : "Enter a valid ZIP / Postal Code.";
-    };
-  }
-
-  if (field.format === "email") {
-    rules.validate = (value) => {
-      if (!value) return true;
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value))
-        ? true
-        : "Enter a valid email address.";
-    };
-  }
-
-  if (field.format === "phone") {
-    rules.validate = (value) => {
-      if (!value) return true;
-      const digits = String(value).replace(/\D/g, "");
-      return digits.length === 10
-        ? true
-        : "Enter a valid 10-digit phone number.";
-    };
-  }
-
-  if (field.format === "ssn") {
-    rules.validate = (value) => {
-      if (!value) return true;
-      const digits = String(value).replace(/\D/g, "");
-      return digits.length === 9 ? true : "Enter a valid 9-digit SSN.";
-    };
-  }
-
-  if (field.format === "percent") {
-    rules.validate = (value) => {
-      if (!value) return true;
-      const digits = String(value).replace(/\D/g, "");
-      return digits.length <= 3
-        ? true
-        : "Enter a percent value with up to 3 digits.";
-    };
-  }
-
-  if (field.format === "month-year") {
-    rules.validate = (value) => {
-      if (!value) return true;
-      const digits = String(value).replace(/\D/g, "");
-      return digits.length === 6
-        ? true
-        : "Enter a valid month and year (MM/YYYY).";
-    };
-  }
-
-  if (field.inputType === "number") {
-    rules.validate = (value) => {
-      if (!value) return true;
-      return /^\d+$/.test(String(value)) ? true : "Enter numbers only.";
-    };
-  }
-
-  return rules;
 }
 
 function sanitizeDigits(value: string, maxDigits?: number) {
@@ -328,7 +222,7 @@ function hasCompletedValue(field: FieldDefinition, value: unknown) {
   }
 
   if (field.inputType === "number") {
-    return /^\d+$/.test(stringValue);
+    return (field.allowDecimal ? /^\d+(\.\d+)?$/ : /^\d+$/).test(stringValue);
   }
 
   if (field.inputType === "date") {
@@ -553,7 +447,7 @@ function SsnField({
   );
 }
 
-export default function FieldRenderer({
+function FieldRendererInput({
   field,
   control,
   errors,
@@ -561,7 +455,7 @@ export default function FieldRenderer({
   margin = "normal",
   onValueChange,
 }: FieldRendererProps) {
-  const validationRules = getValidationRules(field);
+  const validationRules = getFieldValidationRules(field);
   const effectiveInputType = getEffectiveInputType(field);
   const fieldError = errors[field.id]?.message as string | undefined;
   const resolvedHelperText =
@@ -626,7 +520,7 @@ export default function FieldRenderer({
         margin={labelVariant === "floating" ? "normal" : "none"}
         placeholder={options.placeholder ?? field.placeholder}
         autoComplete={field.autoComplete}
-        inputProps={{ inputMode: field.inputMode, ...options.inputProps }}
+        inputProps={{ inputMode: field.inputMode, maxLength: field.format === "currency" ? undefined : field.maxLength, ...options.inputProps }}
         value={value}
         onChange={handleChange}
         onBlur={controllerField.onBlur}
@@ -1391,6 +1285,7 @@ export default function FieldRenderer({
             },
             onChange: (event) => {
               controllerField.onChange(formatPercent(event.target.value));
+              onValueChange?.();
             },
           })
         }
@@ -1416,11 +1311,12 @@ export default function FieldRenderer({
           renderTextLikeField(controllerField, fieldState, {
             value: (controllerField.value as string) ?? "",
             inputProps: {
-              inputMode: field.inputMode ?? "numeric",
-              pattern: "[0-9]*",
+              "aria-label": field.label,
+              inputMode: field.allowDecimal ? "decimal" : field.inputMode ?? "numeric",
+              pattern: field.allowDecimal ? "[0-9]*[.]?[0-9]*" : "[0-9]*",
             },
             onChange: (event) => {
-              controllerField.onChange(sanitizeDigits(event.target.value));
+              controllerField.onChange(field.allowDecimal ? event.target.value.replace(/[^\d.]/g, "").replace(/(\..*)\./g, "$1") : sanitizeDigits(event.target.value));
               onValueChange?.();
             },
           })
@@ -1556,4 +1452,8 @@ export default function FieldRenderer({
       }
     />
   );
+}
+
+export default function FieldRenderer(props: FieldRendererProps) {
+  return <Box data-analytics-field={props.field.id} sx={{ display: "contents" }}><FieldRendererInput {...props} /></Box>;
 }

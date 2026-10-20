@@ -1,9 +1,9 @@
-import type { SvgIconComponent } from "@mui/icons-material";
+import type { ElementType } from "react";
 import { Stack, Typography } from "@mui/material";
 
 type CategoryHeaderProps = {
   label: string;
-  icon?: SvgIconComponent;
+  icon?: ElementType;
 };
 
 /**
@@ -21,7 +21,6 @@ export default function CategoryHeader({
         <Icon
           sx={{
             color: "primary.dark",
-            backgroundColor: "background.iconBadge",
             borderRadius: "9999px",
             padding: "2px",
             width: "2rem",

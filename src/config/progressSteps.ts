@@ -8,7 +8,7 @@ import {
 } from "@mui/icons-material";
 import type { SvgIconComponent } from "@mui/icons-material";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
-import { shouldSkipPage } from "./formFlow";
+import { getResolvedFormFlow, shouldSkipPage } from "./formFlow";
 import { getContent } from "../content";
 
 export type ProgressStep = {
@@ -81,13 +81,16 @@ export function getProgressStepIndex(pageId: PageId) {
  */
 export function getActiveProgressSteps(
   values: ApplicationFormValues,
+  currentPageId?: PageId,
 ): ProgressStep[] {
+  const journey = getResolvedFormFlow();
   return progressSteps
     .map((step) => ({
       ...step,
-      pageIds: step.pageIds.filter((id) => !shouldSkipPage(id, values)),
+      pageIds: step.pageIds.filter(id => journey.includes(id) && (id === currentPageId || !shouldSkipPage(id, values))).sort((a, b) => journey.indexOf(a) - journey.indexOf(b)),
     }))
-    .filter((step) => step.pageIds.length > 0);
+    .filter((step) => step.pageIds.length > 0)
+    .sort((a, b) => journey.indexOf(a.pageIds[0]) - journey.indexOf(b.pageIds[0]));
 }
 
 /**
@@ -97,6 +100,6 @@ export function getActiveProgressStepIndex(
   pageId: PageId,
   values: ApplicationFormValues,
 ): number {
-  const activeSteps = getActiveProgressSteps(values);
+  const activeSteps = getActiveProgressSteps(values, pageId);
   return activeSteps.findIndex((step) => step.pageIds.includes(pageId));
 }

@@ -1,3 +1,5 @@
+import { getPrototypeLibrary } from "../domain/prototypeLibrary";
+import { buildSelectedCoverageEntries } from "../utils/coverageDecisions";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import type { PageId } from "../types";
 import { getActiveClientCoverages } from "./client/getActiveClientCoverages";
@@ -6,33 +8,10 @@ import type { ClientPageRequirement } from "./clients/types";
 import type {
   CoverageCategoryId,
   CoverageDefinition,
-  CoverageUnderwritingType,
-  RiderDefinition,
 } from "./coverages/types";
 
-export type FlowGate =
-  | {
-      kind: "selected-category";
-      categoryIds: CoverageCategoryId[];
-    }
-  | {
-      kind: "selected-underwriting-type";
-      underwritingTypes: CoverageUnderwritingType[];
-    }
-  | {
-      kind: "selected-coverage";
-      categoryId: CoverageCategoryId;
-      underwritingType: CoverageUnderwritingType;
-    }
-  | {
-      kind: "selected-rider";
-      riderId: RiderDefinition["id"];
-    };
-
-export type FlowGateDefinition = {
-  pageId: PageId;
-  gate: FlowGate;
-};
+import type { FlowGate, FlowGateDefinition } from "../domain/routingRules";
+export type { FlowGate, FlowGateDefinition } from "../domain/routingRules";
 
 /** Canonical business requirements controlling page participation. */
 export const flowGateDefinitions: FlowGateDefinition[] = [
@@ -73,7 +52,9 @@ export const flowGateDefinitions: FlowGateDefinition[] = [
 export function getFlowGateDefinition(
   pageId: PageId,
 ): FlowGateDefinition | undefined {
-  return flowGateDefinitions.find((definition) => definition.pageId === pageId);
+  const library = getPrototypeLibrary();
+  const definitions = library ? library.site.configuration.routing?.definitions ?? [] : flowGateDefinitions;
+  return definitions.find((definition) => definition.pageId === pageId);
 }
 
 export function getSelectedCoverages(
@@ -146,7 +127,7 @@ export function resolveFlowGate(
   if (definition.gate.kind === "selected-rider") {
     return getSelectedRiderIds(values).has(definition.gate.riderId);
   }
-  return getSelectedCoverages(values, coverages).some((coverage) =>
+  return buildSelectedCoverageEntries(values, coverages).some(({ coverage }) =>
     coverageSatisfiesFlowGate(coverage, definition.gate),
   );
 }
@@ -175,4 +156,11 @@ export function resolvePageParticipation(
     pageRequirement !== "none" &&
     resolveFlowGate(pageId, values, options.coverages)
   );
+}
+
+/** Applicant participation uses the same resolved outcome as page participation. */
+export function applicantParticipatesInPage(pageId: PageId, applicant: "self" | "member" | "spouse" | "child", values: Record<string, unknown>, coverages = getActiveClientCoverages()): boolean {
+  const gate = getFlowGateDefinition(pageId)?.gate;
+  const type = applicant === "self" ? "member" : applicant;
+  return buildSelectedCoverageEntries(values as ApplicationFormValues, coverages).some(entry => entry.applicant === type && (!gate || coverageSatisfiesFlowGate(entry.coverage, gate)));
 }

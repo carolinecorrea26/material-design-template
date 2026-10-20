@@ -387,15 +387,15 @@ export const urlParametersAdditional: UrlParameterAdditionalEntry[] = [
     currentTemplate: "Not listed in current parameter inventory.",
     status: "New — Prototype/Configuration Utility",
     newValues: [
-      "demo-default",
-      "abe-default",
-      "ama-default",
-      "asce-default",
-      "avma-default",
-      "csea-default",
-      "isitrust-default",
-      "nso-default",
-      "waepa-standard",
+      "demo",
+      "abe",
+      "ama",
+      "asce",
+      "avma",
+      "csea",
+      "isitrust",
+      "nso",
+      "waepa",
       "waepa-gi",
     ],
     newBehavior: [
@@ -425,7 +425,7 @@ export const urlParametersAdditional: UrlParameterAdditionalEntry[] = [
       "Backward-compatible alias that maps a legacy client configuration ID to its Site ID. A valid value remains supported for existing prototype links.",
     ],
     notes:
-      "Deprecated as the primary identity in favor of site. The waepa value maps to waepa-standard and waepagi maps to waepa-gi. If neither site nor client is valid, the stored Site is used, then demo-default.",
+      "Deprecated as the primary identity in favor of site. The waepa value maps to waepa and waepagi maps to waepa-gi. If neither site nor client is valid, the stored Site is used, then demo.",
     sourceRefs: [
       "src/data/activeSite.ts",
       "src/data/registry.ts",

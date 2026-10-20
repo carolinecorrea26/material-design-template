@@ -6,7 +6,7 @@ import {
 
 describe("Site-keyed mock email previews", () => {
   beforeEach(() => {
-    window.history.replaceState(null, "", "/?site=isitrust-default");
+    window.history.replaceState(null, "", "/?site=isitrust");
     window.sessionStorage.clear();
     window.localStorage.clear();
   });
@@ -20,22 +20,22 @@ describe("Site-keyed mock email previews", () => {
       "CONF-TEST",
     );
 
-    const receipt = readMockEmailPreviews("isitrust-default").find(
+    const receipt = readMockEmailPreviews("isitrust").find(
       (preview) => preview.type === "receipt" && preview.id !== "sample-receipt",
     );
-    expect(receipt?.siteId).toBe("isitrust-default");
+    expect(receipt?.siteId).toBe("isitrust");
     expect(receipt?.clientId).toBe("isitrust");
     expect(receipt?.html).toContain("Akron Bar Association");
   });
 
   it("generates Site-based resume links for either WAEPA Site", () => {
-    const standard = readMockEmailPreviews("waepa-standard").find(
+    const standard = readMockEmailPreviews("waepa").find(
       (preview) => preview.type === "autosave",
     );
     const gi = readMockEmailPreviews("waepa-gi").find(
       (preview) => preview.type === "autosave",
     );
-    expect(standard?.html).toContain("/resume?site=waepa-standard");
+    expect(standard?.html).toContain("/resume?site=waepa");
     expect(gi?.html).toContain("/resume?site=waepa-gi");
   });
 

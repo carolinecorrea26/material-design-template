@@ -1,3 +1,4 @@
+import { getSiteAcronym } from "../../data/siteDisplay";
 import { useCallback, useMemo, useState } from "react";
 import {
   Autocomplete,
@@ -10,9 +11,10 @@ import {
 } from "@mui/material";
 import {
   clientEntities,
-  getLegacyClientConfigForSite,
-  getSiteIdForLegacyClient,
+  getSiteIdForClientAlias,
   getSitesForClient,
+  getClientForSite,
+  resolveSiteEmailConfiguration,
   type Client,
   type Site,
 } from "../../data";
@@ -22,11 +24,13 @@ import { emailTemplateRows } from "./emailTemplateRows";
 import { CLIENT_HIGHLIGHT_BG, CLIENT_HIGHLIGHT_BORDER } from "./ClientNote";
 import SectionTabs from "./SectionTabs";
 
-const DEFAULT_SITE_ID = getSiteIdForLegacyClient("demo");
+const DEFAULT_SITE_ID = getSiteIdForClientAlias("demo");
 
-export default function ClientEmailTemplatesPanel() {
+export default function ClientEmailTemplatesPanel({ siteId: controlledSiteId, hideSelector = false, hideHeading = false }: { siteId?: string; hideSelector?: boolean; hideHeading?: boolean } = {}) {
   const [selectedClient, setSelectedClient] = useState<Client>(() => clientEntities.find((client) => client.id === "demo")!);
   const [selectedSiteId, setSelectedSiteId] = useState(DEFAULT_SITE_ID);
+  const activeSiteId = controlledSiteId ?? selectedSiteId;
+  const activeClientEntity = controlledSiteId ? getClientForSite(controlledSiteId) ?? selectedClient : selectedClient;
 
   const handleClientChange = useCallback((nextClient: Client | null) => {
     if (!nextClient) return;
@@ -39,11 +43,11 @@ export default function ClientEmailTemplatesPanel() {
     setSelectedSiteId(nextSite.id);
   }, []);
 
-  const activeClient = getLegacyClientConfigForSite(selectedSiteId);
+  const emailSupport = resolveSiteEmailConfiguration(activeSiteId);
   const emailOverridden = Boolean(
-    activeClient.emailSupport?.hideContactBox ||
-      activeClient.emailSupport?.supportOverride ||
-      activeClient.emailSupport?.contactOverride,
+    emailSupport?.hideContactBox ||
+      emailSupport?.supportOverride ||
+      emailSupport?.contactOverride,
   );
 
   const highlightedIds = useMemo(
@@ -56,7 +60,7 @@ export default function ClientEmailTemplatesPanel() {
 
   return (
     <Stack spacing={3}>
-      <Box>
+      {!hideHeading && <Box>
         <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>
           Client Email Templates
         </Typography>
@@ -77,9 +81,9 @@ export default function ClientEmailTemplatesPanel() {
           </Box>
           .
         </Typography>
-      </Box>
+      </Box>}
 
-      <Card
+      {!hideSelector && <Card
         sx={{
           border: "1px solid",
           borderColor: "divider",
@@ -98,7 +102,7 @@ export default function ClientEmailTemplatesPanel() {
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mt: 2 }}>
             <Autocomplete
               options={clientEntities}
-              value={selectedClient}
+              value={activeClientEntity}
               onChange={(_, value) => handleClientChange(value)}
               disableClearable
               getOptionLabel={(option) => `${option.acronym} - ${option.name}`}
@@ -110,12 +114,12 @@ export default function ClientEmailTemplatesPanel() {
               )}
             />
             <Autocomplete
-              options={getSitesForClient(selectedClient.id)}
-              value={getSitesForClient(selectedClient.id).find((s) => s.id === selectedSiteId) ?? getSitesForClient(selectedClient.id)[0]}
+              options={getSitesForClient(activeClientEntity.id)}
+              value={getSitesForClient(activeClientEntity.id).find((s) => s.id === activeSiteId) ?? getSitesForClient(activeClientEntity.id)[0]}
               onChange={(_, value) => handleSiteChange(value)}
               disableClearable
-              disabled={getSitesForClient(selectedClient.id).length <= 1}
-              getOptionLabel={(option) => option.name}
+              disabled={getSitesForClient(activeClientEntity.id).length <= 1}
+              getOptionLabel={(option) => getSiteAcronym(option.id)}
               getOptionKey={(option) => option.id}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               sx={{ flex: 1, maxWidth: 320 }}
@@ -123,7 +127,7 @@ export default function ClientEmailTemplatesPanel() {
             />
           </Stack>
         </CardContent>
-      </Card>
+      </Card>}
 
       <SectionTabs
         tabs={[
@@ -134,7 +138,7 @@ export default function ClientEmailTemplatesPanel() {
       >
         <Box id="client-email-templates-subsection">
           <EmailTemplatesTable
-            siteId={selectedSiteId}
+            siteId={activeSiteId}
             highlightedIds={highlightedIds}
             overrideNote={emailOverridden ? "Email configuration overridden" : undefined}
           />
@@ -145,7 +149,7 @@ export default function ClientEmailTemplatesPanel() {
             This client's effective email configuration. Values that differ from the global default
             or use a client override are highlighted in yellow.
           </Typography>
-          <ClientEmailConfigurationTable siteId={selectedSiteId} />
+          <ClientEmailConfigurationTable siteId={activeSiteId} />
         </Box>
       </SectionTabs>
     </Stack>

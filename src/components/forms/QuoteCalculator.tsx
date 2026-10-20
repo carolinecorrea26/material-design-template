@@ -1,3 +1,13 @@
+import { fieldValidationChecks } from "../../utils/fieldValidation";
+import { getSurfaceFields, getSurfaceField } from "../../config/fields/storedSurfaces";
+import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
+import { usePrototypeRates } from "../../app/usePrototypeRates";
+import { getQuoteRequirements } from "../../config/fields/homeQuoteFields";
+import { useForm, useWatch } from "react-hook-form";
+import FieldRenderer from "./FieldRenderer";
+import { fieldCatalog } from "../../config/fields";
+import { coverageFactFieldIds } from "../../config/fields/coverageFactFields";
+import { resolveApplicationCoverage } from "../../domain/coverageRuntime";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import {
@@ -8,21 +18,15 @@ import {
   // Chip,
   CircularProgress,
   Divider,
-  FormControl,
-  FormHelperText,
-  FormLabel,
   // InputLabel,
   // MenuItem,
-  Radio,
   // Select,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AppDrawer from "../layout/AppDrawer";
 import CoverageCategorySelector from "./CoverageCategorySelector";
-import SelectionGroup from "./SelectionGroup";
 import SectionDivider from "../layout/SectionDivider";
 import CategoryHeader from "../layout/CategoryHeader";
 import PageHeader from "../layout/PageHeader";
@@ -46,7 +50,6 @@ import type {
   CoverageDefinition,
 } from "../../config/coverages/types";
 import {
-  getCategoryRequirements,
   // getBenefitAmountLabel,
 } from "../../config/coverageConstants";
 import { getActiveClient } from "../../config/client/getActiveClient";
@@ -56,13 +59,9 @@ import { getPagePath } from "../../config/pages";
 import { sectionLabels } from "../../config/pageSections";
 import { useApplicationForm } from "../../app/ApplicationFormContext";
 import {
-  executeApplicationTransition,
-  quoteApplyTransition,
+  executeQuoteApplyTransition,
 } from "../../config/applicationTransitions";
 import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
-import { getCoverageAmountRange } from "../../utils/coverageAmounts";
-import { generateAmountChoices } from "../../utils/generateAmountChoices";
-import { formatCurrencyInput } from "../../utils/formatting/currency";
 
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
@@ -143,9 +142,9 @@ export default function QuoteCalculator({
   // ── Eligibility fields (only shown when collectEligibility=true) ──────────
   const [eligibilityValues, setEligibilityValues] = useState<EligibilityValues>(
     {
-      birthday: initialEligibility?.birthday ?? "",
-      zipCode: initialEligibility?.zipCode ?? "",
-      state: initialEligibility?.state ?? "",
+      birthday: initialEligibility?.birthday ?? String(values["birth-date"] ?? ""),
+      zipCode: initialEligibility?.zipCode ?? String(values["zip-postal-code"] ?? ""),
+      state: initialEligibility?.state ?? String(values["state-province"] ?? ""),
     },
   );
   const [eligibilityAttempted, setEligibilityAttempted] = useState(false);
@@ -158,53 +157,35 @@ export default function QuoteCalculator({
     CoverageCategoryId[]
   >(() => (singleAvailableCategory ? [singleAvailableCategory.id] : []));
 
-  const {
-    needsGender: categoryNeedsGender,
-    needsSmoker: categoryNeedsSmoker,
-    needsDi: categoryNeedsDi,
-    needsOo: categoryNeedsOo,
-    needsHours: categoryNeedsHours,
-    needsAdditionalFields,
-  } = getCategoryRequirements(selectedCategories, {
-    hideSmokerQuestion: activeClient.coverages.hideSmokerQuestion,
-  });
-
-  // ── Category-level additional fields ─────────────────────────────────────
-  const [gender, setGender] = useState<EstimateGender>("");
-  const [smoker, setSmoker] = useState<EstimateYesNo>("");
-  const [avgIncome, setAvgIncome] = useState("");
-  const [hoursPerWeek, setHoursPerWeek] = useState("");
-  const [monthlyExpenses, setMonthlyExpenses] = useState("");
-  const [responsibilityPct, setResponsibilityPct] = useState("");
-  const [fieldsAttempted, setFieldsAttempted] = useState(false);
-
-  const fieldErrors = useMemo(() => {
-    const errors: Record<string, string> = {};
-    if (categoryNeedsGender && !gender) errors.gender = "Gender is required.";
-    if (categoryNeedsSmoker && !smoker)
-      errors.smoker = "Do you use nicotine products? is required.";
-    if (categoryNeedsDi && !avgIncome)
-      errors.avgIncome = "Average monthly income is required.";
-    if (categoryNeedsHours && !hoursPerWeek)
-      errors.hoursPerWeek = "Hours worked per week is required.";
-    if (categoryNeedsOo && !monthlyExpenses)
-      errors.monthlyExpenses = "Monthly business expenses is required.";
-    if (categoryNeedsOo && !responsibilityPct)
-      errors.responsibilityPct = "Responsibility percentage is required.";
-    return errors;
-  }, [
-    gender,
-    smoker,
-    avgIncome,
-    hoursPerWeek,
-    monthlyExpenses,
-    responsibilityPct,
-    categoryNeedsGender,
-    categoryNeedsSmoker,
-    categoryNeedsDi,
-    categoryNeedsHours,
-    categoryNeedsOo,
+  const requirements = getQuoteRequirements(activeClient, selectedCategories);
+  const neededRoles = new Set([
+    ...(requirements.needsGender ? ['gender'] : []), ...(requirements.needsSmoker ? ['smoker'] : []),
+    ...(requirements.needsDi ? ['average-monthly-income'] : []), ...(requirements.needsHours ? ['hours-worked-per-week'] : []),
+    ...(requirements.needsExpenses ? ['monthly-business-expenses'] : []), ...(requirements.needsResponsibility ? ['business-expense-responsibility'] : []),
   ]);
+  const quoteInputFields = getSurfaceFields('quoteInputs').filter(field => neededRoles.has(field.id));
+  const needsAdditionalFields = quoteInputFields.length > 0;
+  const quoteInputForm = useForm<Record<string, string | boolean | string[]>>({ defaultValues: Object.fromEntries(
+    getSurfaceFields('quoteInputs').map(field => {
+      const value = values[field.id];
+      return [field.id, typeof value === 'string' || typeof value === 'boolean' || Array.isArray(value) && value.every(item => typeof item === 'string') ? value : ''];
+    }),
+  ) });
+  const inputValues = useWatch({ control: quoteInputForm.control });
+  const gender = String(inputValues.gender ?? '') as EstimateGender;
+  const smoker = String(inputValues.smoker ?? '') as EstimateYesNo;
+  const avgIncome = String(inputValues['average-monthly-income'] ?? '').replace(/[^0-9]/g, '');
+  const hoursPerWeek = String(inputValues['hours-worked-per-week'] ?? '');
+  const monthlyExpenses = String(inputValues['monthly-business-expenses'] ?? '').replace(/[^0-9]/g, '');
+  const responsibilityPct = String(inputValues['business-expense-responsibility'] ?? '');
+  const [fieldsAttempted, setFieldsAttempted] = useState(false);
+  const fieldErrors: Record<string, string> = {};
+  for (const field of quoteInputFields) {
+    const value = inputValues[field.id];
+    const invalid = fieldValidationChecks(field).find(check => !check.validate(value));
+    if (invalid) fieldErrors[field.id] = invalid.message;
+    else if (value && field.options && !field.options.some(option => option.value === value)) fieldErrors[field.id] = `Choose an available ${field.label}.`;
+  }
   const isFieldsValid = Object.keys(fieldErrors).length === 0;
 
   // ── Products ──────────────────────────────────────────────────────────────
@@ -236,12 +217,19 @@ export default function QuoteCalculator({
     [coverages, selectedCategories],
   );
 
-  const isHoursIneligible =
-    categoryNeedsHours &&
-    (() => {
-      const hours = parseInt(hoursPerWeek, 10);
-      return !isNaN(hours) && hours < 40;
-    })();
+  const factForm = useForm<Record<string, string | boolean | string[]>>({ defaultValues: Object.fromEntries(coverageFactFieldIds(coverages).map(id => [id, String(values[id] ?? "")])) });
+  const contextualFacts = factForm.watch();
+  const quoteValues = { ...values, ...contextualFacts,
+    "birth-date": collectEligibility ? eligibilityValues.birthday : initialEligibility?.birthday ?? values["birth-date"],
+    "state-province": collectEligibility ? eligibilityValues.state : initialEligibility?.state ?? values["state-province"],
+    "hours-worked-per-week": hoursPerWeek, "average-monthly-income": avgIncome, "monthly-business-expenses": monthlyExpenses, "business-expense-responsibility": responsibilityPct,
+    productApplicants, coverageAmounts: amountsByKey, coverageSelections: categoryProducts.filter(product => (productApplicants[product.id] ?? []).length > 0).map(product => product.id) };
+  const quoteBehavior = (product: CoverageDefinition, applicant: CoverageApplicantId = "member") => resolveApplicationCoverage(product, applicant, quoteValues, coverages);
+
+  const minimumWorkHours = Math.max(0, ...categoryProducts
+    .filter((product) => product.categoryId === "DI" || product.categoryId === "OO")
+    .map((product) => product.requirements?.eligibility?.find((rule) => rule.applicantType === "member")?.minimumWorkHoursPerWeek ?? 40));
+  const isHoursIneligible = categoryProducts.length > 0 && categoryProducts.every(product => quoteBehavior(product).eligibility === "ineligible");
 
   const selectedProducts = useMemo(
     () =>
@@ -278,16 +266,7 @@ export default function QuoteCalculator({
     products.forEach((product) => {
       const key = `${product.id}:member`;
       if (newAmounts[key] == null) {
-        const { minAmount, maxAmount, step } = getCoverageAmountRange(
-          product,
-          "member",
-        );
-        const choices = generateAmountChoices(
-          product.categoryId,
-          minAmount,
-          maxAmount,
-          { step },
-        );
+        const choices = quoteBehavior(product).amounts;
         newAmounts[key] = choices[0] ?? 0;
       }
     });
@@ -392,33 +371,28 @@ export default function QuoteCalculator({
   ) {
     const current = productApplicants[product.id] ?? [];
     const isAdding = !current.includes(applicant);
+    if (isAdding && !quoteBehavior(product, applicant).selectable) return;
     const next = isAdding
       ? [...current, applicant]
       : current.filter((a) => a !== applicant);
     setProductApplicants((prev) => ({ ...prev, [product.id]: next }));
     if (isAdding) {
       const key = `${product.id}:${applicant}`;
-      if (amountsByKey[key] == null) {
-        const { minAmount, maxAmount, step } = getCoverageAmountRange(
-          product,
-          applicant,
-        );
-        const choices = generateAmountChoices(
-          product.categoryId,
-          minAmount,
-          maxAmount,
-          { step },
-        );
+      if (!quoteBehavior(product, applicant).amounts.includes(amountsByKey[key])) {
+        const choices = quoteBehavior(product, applicant).amounts;
         setAmountsByKey((prev) => ({ ...prev, [key]: choices[0] ?? 0 }));
       }
     }
   }
+
+  const prototypeRates = usePrototypeRates(selectedProducts.flatMap(p => (productApplicants[p.id] ?? []).map(applicant => ({ productKey: p.id, applicant, amount: amountsByKey[`${p.id}:${applicant}`] ?? 0 }))), { ...quoteValues, gender, smoker }, rateFrequency, 'quote-tool');
 
   function getApplicantPremium(
     product: CoverageDefinition,
     applicant: CoverageApplicantId,
   ): number {
     const key = `${product.id}:${applicant}`;
+    if (prototypeRates.enabled) { const price = prototypeRates.premium(key); return rateFrequency === "annual" ? price / 12 : price; }
     const amount = amountsByKey[key] ?? 0;
     return estimateMonthlyPremium(product.categoryId, amount);
   }
@@ -435,7 +409,7 @@ export default function QuoteCalculator({
       );
     }, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProducts, productApplicants, amountsByKey]);
+  }, [selectedProducts, productApplicants, amountsByKey, prototypeRates]);
 
   const costSummaryItems: TotalCostSummaryItem[] = useMemo(() => {
     const suffix = rateFrequency === "annual" ? "/yr" : "/mo";
@@ -461,7 +435,7 @@ export default function QuoteCalculator({
       };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProducts, productApplicants, amountsByKey, rateFrequency, calculatingRates]);
+  }, [selectedProducts, productApplicants, amountsByKey, rateFrequency, calculatingRates, prototypeRates]);
 
   function handleApply() {
     // Validate eligibility fields if collecting them here
@@ -475,26 +449,26 @@ export default function QuoteCalculator({
 
     const effectiveBirthday = collectEligibility
       ? eligibilityValues.birthday
-      : (initialEligibility?.birthday ?? "");
+      : (initialEligibility?.birthday ?? String(values["birth-date"] ?? ""));
     const effectiveZip = collectEligibility
       ? eligibilityValues.zipCode
-      : (initialEligibility?.zipCode ?? "");
+      : (initialEligibility?.zipCode ?? String(values["zip-postal-code"] ?? ""));
     const effectiveState = collectEligibility
       ? eligibilityValues.state
-      : (initialEligibility?.state ?? "");
+      : (initialEligibility?.state ?? String(values["state-province"] ?? ""));
 
-    const applicationValues = executeApplicationTransition(
-      quoteApplyTransition,
+    const applicationValues = executeQuoteApplyTransition(
       {
         birthday: effectiveBirthday,
         zipCode: effectiveZip,
         state: effectiveState,
-        gender,
-        smoker,
-        averageMonthlyIncome: avgIncome,
-        hoursWorkedPerWeek: hoursPerWeek,
-        monthlyBusinessExpenses: monthlyExpenses,
-        businessExpenseResponsibility: responsibilityPct,
+        gender: quoteInputFields.some(field => field.id === "gender") ? gender : "",
+        smoker: quoteInputFields.some(field => field.id === "smoker") ? smoker : "",
+        averageMonthlyIncome: quoteInputFields.some(field => field.id === "average-monthly-income") ? avgIncome : "",
+        hoursWorkedPerWeek: quoteInputFields.some(field => field.id === "hours-worked-per-week") ? hoursPerWeek : "",
+        monthlyBusinessExpenses: quoteInputFields.some(field => field.id === "monthly-business-expenses") ? monthlyExpenses : "",
+        businessExpenseResponsibility: quoteInputFields.some(field => field.id === "business-expense-responsibility") ? responsibilityPct : "",
+        collectedFieldIds: quoteInputFields.map(field => field.id),
         selectedCategories,
         selectedProductIds: selectedProducts.map((product) => product.id),
         productApplicants,
@@ -502,6 +476,10 @@ export default function QuoteCalculator({
         hideSmokerQuestion: activeClient.coverages.hideSmokerQuestion,
       },
       values,
+      coverageFactFieldIds(categoryProducts, quoteValues).flatMap(id => {
+        const value = contextualFacts[id];
+        return value === undefined ? [] : [{ fieldId: id, value }];
+      }),
     );
     setPageValues(applicationValues);
 
@@ -556,8 +534,9 @@ export default function QuoteCalculator({
         {/* ── Category selection ── */}
         {(displayMode === "drawer" || inlineStep === 1) && (
           <>
-            {!singleAvailableCategory && (
+            {!singleAvailableCategory && getSurfaceField("quoteInputs", "quote-categories") && (
               <CoverageCategorySelector
+                legend={getSurfaceField("quoteInputs", "quote-categories")!.label}
                 categories={availableCategories}
                 selectedIds={selectedCategories}
                 onToggle={handleCategoryToggle}
@@ -576,247 +555,13 @@ export default function QuoteCalculator({
           selectedCategories.length > 0 &&
           (displayMode === "drawer" || inlineStep === 1) && (
             <Stack spacing={2}>
-            {/* Personal details section */}
-            {(categoryNeedsGender || categoryNeedsSmoker) && (
-              <>
-                <SectionDivider
-                  label={sectionLabels.personalDetails}
-                  variant="subsection"
-                />
-                {categoryNeedsGender && (
-                  <FormControl
-                    fullWidth
-                    required
-                    error={fieldsAttempted && !!fieldErrors.gender}
-                  >
-                    <FormLabel required id="quote-gender-label" sx={{ mb: 1 }}>
-                      Gender
-                    </FormLabel>
-                    <Stack
-                      spacing={1.5}
-                      role="radiogroup"
-                      aria-labelledby="quote-gender-label"
-                      aria-describedby={
-                        fieldsAttempted && fieldErrors.gender
-                          ? "quote-gender-helper"
-                          : undefined
-                      }
-                    >
-                      {(["male", "female"] as const).map((val) => (
-                        <SelectionGroup
-                          key={val}
-                          role="radio"
-                          aria-checked={gender === val}
-                          tabIndex={gender === val ? 0 : -1}
-                          onClick={() => {
-                            setGender(val);
-                            handleQuoteFieldChange();
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === " " || e.key === "Enter") {
-                              e.preventDefault();
-                              setGender(val);
-                              handleQuoteFieldChange();
-                            }
-                          }}
-                        >
-                          <Radio
-                            checked={gender === val}
-                            size="small"
-                            tabIndex={-1}
-                            aria-hidden
-                            sx={{ p: 0, pointerEvents: "none" }}
-                          />
-                          <Box
-                            component="span"
-                            className="SelectionGroup-label"
-                            sx={{
-                              flex: 1,
-                              fontSize: "0.875rem",
-                              textTransform: "capitalize",
-                            }}
-                          >
-                            {val}
-                          </Box>
-                        </SelectionGroup>
-                      ))}
-                    </Stack>
-                    {fieldsAttempted && fieldErrors.gender && (
-                      <FormHelperText id="quote-gender-helper">
-                        {fieldErrors.gender}
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                )}
-                {categoryNeedsSmoker && (
-                  <FormControl
-                    fullWidth
-                    required
-                    error={fieldsAttempted && !!fieldErrors.smoker}
-                  >
-                    <FormLabel required id="quote-smoker-label" sx={{ mb: 1 }}>
-                      Do you use nicotine products?
-                    </FormLabel>
-                    <Stack
-                      spacing={1.5}
-                      role="radiogroup"
-                      aria-labelledby="quote-smoker-label"
-                      aria-describedby={
-                        fieldsAttempted && fieldErrors.smoker
-                          ? "quote-smoker-helper"
-                          : undefined
-                      }
-                    >
-                      {(["yes", "no"] as const).map((val) => (
-                        <SelectionGroup
-                          key={val}
-                          role="radio"
-                          aria-checked={smoker === val}
-                          tabIndex={smoker === val ? 0 : -1}
-                          onClick={() => {
-                            setSmoker(val);
-                            handleQuoteFieldChange();
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === " " || e.key === "Enter") {
-                              e.preventDefault();
-                              setSmoker(val);
-                              handleQuoteFieldChange();
-                            }
-                          }}
-                        >
-                          <Radio
-                            checked={smoker === val}
-                            size="small"
-                            tabIndex={-1}
-                            aria-hidden
-                            sx={{ p: 0, pointerEvents: "none" }}
-                          />
-                          <Box
-                            component="span"
-                            className="SelectionGroup-label"
-                            sx={{
-                              flex: 1,
-                              fontSize: "0.875rem",
-                              textTransform: "capitalize",
-                            }}
-                          >
-                            {val}
-                          </Box>
-                        </SelectionGroup>
-                      ))}
-                    </Stack>
-                    {fieldsAttempted && fieldErrors.smoker && (
-                      <FormHelperText id="quote-smoker-helper">
-                        {fieldErrors.smoker}
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                )}
-              </>
-            )}
-
-            {/* Work & income section */}
-            {(categoryNeedsDi || categoryNeedsHours) && (
-              <>
-                <SectionDivider
-                  label={sectionLabels.workAndIncome}
-                  variant="subsection"
-                />
-                {categoryNeedsDi && (
-                  <TextField
-                    label="Average monthly income"
-                    fullWidth
-                    required
-                    value={avgIncome ? formatCurrencyInput(avgIncome) : ""}
-                    onChange={(e) => {
-                      setAvgIncome(e.target.value.replace(/[^0-9]/g, ""));
-                      handleQuoteFieldChange();
-                    }}
-                    inputProps={{ inputMode: "numeric" }}
-                    InputLabelProps={{ shrink: true }}
-                    placeholder="$0"
-                    helperText={
-                      fieldsAttempted && fieldErrors.avgIncome
-                        ? fieldErrors.avgIncome
-                        : "Enter your average gross monthly income before taxes."
-                    }
-                    error={fieldsAttempted && !!fieldErrors.avgIncome}
-                  />
-                )}
-                {categoryNeedsHours && (
-                  <TextField
-                    label="# Hours You Work/Week"
-                    fullWidth
-                    required
-                    value={hoursPerWeek}
-                    onChange={(e) => {
-                      setHoursPerWeek(e.target.value.replace(/[^0-9]/g, ""));
-                      handleQuoteFieldChange();
-                    }}
-                    inputProps={{ inputMode: "numeric" }}
-                    helperText={
-                      fieldsAttempted && fieldErrors.hoursPerWeek
-                        ? fieldErrors.hoursPerWeek
-                        : undefined
-                    }
-                    error={fieldsAttempted && !!fieldErrors.hoursPerWeek}
-                  />
-                )}
-              </>
-            )}
-
-            {/* Business Details section */}
-            {categoryNeedsOo && (
-              <>
-                <SectionDivider
-                  label={sectionLabels.businessDetails}
-                  variant="subsection"
-                />
-                <TextField
-                  label="Average monthly business expenses"
-                  fullWidth
-                  required
-                  value={
-                    monthlyExpenses ? formatCurrencyInput(monthlyExpenses) : ""
-                  }
-                  onChange={(e) => {
-                    setMonthlyExpenses(e.target.value.replace(/[^0-9]/g, ""));
-                    handleQuoteFieldChange();
-                  }}
-                  inputProps={{ inputMode: "numeric" }}
-                  InputLabelProps={{ shrink: true }}
-                  placeholder="$0"
-                  helperText={
-                    fieldsAttempted && fieldErrors.monthlyExpenses
-                      ? fieldErrors.monthlyExpenses
-                      : undefined
-                  }
-                  error={fieldsAttempted && !!fieldErrors.monthlyExpenses}
-                />
-                <TextField
-                  label="% you are responsible for"
-                  fullWidth
-                  required
-                  value={responsibilityPct}
-                  onChange={(e) => {
-                    const digits = e.target.value.replace(/[^0-9]/g, "");
-                    setResponsibilityPct(
-                      digits
-                        ? Math.min(parseInt(digits, 10), 100).toString()
-                        : "",
-                    );
-                    handleQuoteFieldChange();
-                  }}
-                  helperText={
-                    fieldsAttempted && fieldErrors.responsibilityPct
-                      ? fieldErrors.responsibilityPct
-                      : undefined
-                  }
-                  error={fieldsAttempted && !!fieldErrors.responsibilityPct}
-                />
-              </>
-            )}
+              {quoteInputFields.map((field, index) => {
+                const section = (id: string) => ['gender', 'smoker'].includes(id) ? sectionLabels.personalDetails : ['average-monthly-income', 'hours-worked-per-week'].includes(id) ? sectionLabels.workAndIncome : sectionLabels.businessDetails;
+                return <Stack key={field.id} spacing={2}>
+                  {(index === 0 || section(quoteInputFields[index - 1].id) !== section(field.id)) && <SectionDivider label={section(field.id)} variant="subsection" />}
+                  <FieldRenderer field={field} onValueChange={handleQuoteFieldChange} control={quoteInputForm.control} errors={fieldsAttempted ? Object.fromEntries(Object.entries(fieldErrors).map(([id, message]) => [id, { type: 'validate', message }])) : {}} />
+                </Stack>;
+              })}
 
             {!showProducts && displayMode === "drawer" && (
               <Button
@@ -860,10 +605,11 @@ export default function QuoteCalculator({
             ) : isHoursIneligible ? (
               <Alert severity="error">
                 We're sorry, but products in this category require working at
-                least 40 hours per week.
+                least {minimumWorkHours} hours per week.
               </Alert>
             ) : (
               <>
+                {coverageFactFieldIds(categoryProducts, quoteValues).map(id => <FieldRenderer key={id} field={getPrototypeLibrary()?.site.configuration.pages.find(p => p.key === "coverage")?.fields.find(f => f.key === id)?.definition ?? fieldCatalog[id]} control={factForm.control} errors={factForm.formState.errors} />)}
                 {/* Group products by category */}
                 {coverageCategories
                   .filter((cat) => selectedCategories.includes(cat.id))
@@ -883,21 +629,15 @@ export default function QuoteCalculator({
                           icon={CatIcon}
                         />
                         {products.map((product) => {
-                          const choices = generateAmountChoices(
-                            product.categoryId,
-                            ...(() => {
-                              const { minAmount, maxAmount, step } =
-                                getCoverageAmountRange(product, "member");
-                              return [minAmount, maxAmount, { step }] as const;
-                            })(),
-                          );
+                          const behavior = quoteBehavior(product);
+                          const choices = behavior.amounts;
                           const currentApplicants =
                             productApplicants[product.id] ?? [];
                           const hasAnyApplicantSelected =
                             currentApplicants.length > 0;
                           const key = `${product.id}:member`;
                           const currentAmount =
-                            amountsByKey[key] ?? choices[0] ?? 0;
+                            choices.includes(amountsByKey[key]) ? amountsByKey[key] : choices[0] ?? 0;
                           const isCalculating = calculatingRates.has(key);
                           const premium = getApplicantPremium(
                             product,
@@ -911,7 +651,8 @@ export default function QuoteCalculator({
                           return (
                             <EstimatorProductCard
                               key={product.id}
-                              product={product}
+                              product={{ ...product, underwritingType: behavior.underwriting.underwritingType }}
+                              unavailableReason={behavior.messages[0]}
                               currentAmount={currentAmount}
                               amountChoices={choices}
                               selected={hasAnyApplicantSelected}
@@ -968,8 +709,9 @@ export default function QuoteCalculator({
                 />
               )}
 
-              {showRateFrequencyToggle && (
+              {showRateFrequencyToggle && getSurfaceField("quoteInputs", "quote-rate-frequency") && (
                 <RateFrequencyControl
+                  field={getSurfaceField("quoteInputs", "quote-rate-frequency")}
                   value={rateFrequency}
                   onChange={setRateFrequency}
                   ariaLabel="Toggle between monthly and annual"

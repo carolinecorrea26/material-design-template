@@ -1,0 +1,1867 @@
+[
+  {
+    "id": "mcr.identity.qd-li.2",
+    "key": "mcr.identity.qd-li.2",
+    "displayId": 127307329015983,
+    "providedBy": null,
+    "sourceReference": "QD LI!C2:F2",
+    "sheetKey": "qd-li",
+    "sourceRow": 2,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aana.traditional-term-life-insurance.13"
+    ],
+    "productKey": "mcr.aana.traditional-term-life-insurance.13",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.3",
+    "key": "mcr.identity.qd-li.3",
+    "displayId": 126207817387772,
+    "providedBy": null,
+    "sourceReference": "QD LI!C3:F3",
+    "sheetKey": "qd-li",
+    "sourceRow": 3,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aana.10-year-level-term-life-insurance.12"
+    ],
+    "productKey": "mcr.aana.10-year-level-term-life-insurance.12",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.4",
+    "key": "mcr.identity.qd-li.4",
+    "displayId": 125108305759561,
+    "providedBy": null,
+    "sourceReference": "QD LI!C4:F4",
+    "sheetKey": "qd-li",
+    "sourceRow": 4,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aana.20-year-level-term-life-insurance.15"
+    ],
+    "productKey": "mcr.aana.20-year-level-term-life-insurance.15",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.5",
+    "key": "mcr.identity.qd-li.5",
+    "displayId": 124008794131350,
+    "providedBy": null,
+    "sourceReference": "QD LI!C5:F5",
+    "sheetKey": "qd-li",
+    "sourceRow": 5,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.aaop.group-10-year-level-term-life-insurance.26"
+    ],
+    "productKey": "mcr.aaop.group-10-year-level-term-life-insurance.26",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.6",
+    "key": "mcr.identity.qd-li.6",
+    "displayId": 122909282503139,
+    "providedBy": null,
+    "sourceReference": "QD LI!C6:F6",
+    "sheetKey": "qd-li",
+    "sourceRow": 6,
+    "strategy": "multi-match",
+    "candidateKeys": [
+      "mcr.abe.term-life-insurance-name-changed-for-the-release-1-2019-nyl-4345.39",
+      "mcr.abegi.group-term-life-insurance.50"
+    ],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.7",
+    "key": "mcr.identity.qd-li.7",
+    "displayId": 121809770874928,
+    "providedBy": null,
+    "sourceReference": "QD LI!C7:F7",
+    "sheetKey": "qd-li",
+    "sourceRow": 7,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.abe.10-year-level-term-life-insurance.40"
+    ],
+    "productKey": "mcr.abe.10-year-level-term-life-insurance.40",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.8",
+    "key": "mcr.identity.qd-li.8",
+    "displayId": 138302445298093,
+    "providedBy": null,
+    "sourceReference": "QD LI!C8:F8",
+    "sheetKey": "qd-li",
+    "sourceRow": 8,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.9",
+    "key": "mcr.identity.qd-li.9",
+    "displayId": 137202933669882,
+    "providedBy": null,
+    "sourceReference": "QD LI!C9:F9",
+    "sheetKey": "qd-li",
+    "sourceRow": 9,
+    "strategy": "semantic-key",
+    "candidateKeys": [
+      "mcr.aao.group-traditional-term-life-insurance.19"
+    ],
+    "productKey": "mcr.aao.group-traditional-term-life-insurance.19",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.10",
+    "key": "mcr.identity.qd-li.10",
+    "displayId": 215090244985174,
+    "providedBy": null,
+    "sourceReference": "QD LI!C10:F10",
+    "sheetKey": "qd-li",
+    "sourceRow": 10,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aao.group-10-year-level-term-life-insurance.17"
+    ],
+    "productKey": "mcr.aao.group-10-year-level-term-life-insurance.17",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.11",
+    "key": "mcr.identity.qd-li.11",
+    "displayId": 216189756613385,
+    "providedBy": null,
+    "sourceReference": "QD LI!C11:F11",
+    "sheetKey": "qd-li",
+    "sourceRow": 11,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aao.group-20-year-level-term-life-insurance.18"
+    ],
+    "productKey": "mcr.aao.group-20-year-level-term-life-insurance.18",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.12",
+    "key": "mcr.identity.qd-li.12",
+    "displayId": 212891221728752,
+    "providedBy": null,
+    "sourceReference": "QD LI!C12:F12",
+    "sheetKey": "qd-li",
+    "sourceRow": 12,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aafp.traditional-term-life-insurance.9"
+    ],
+    "productKey": "mcr.aafp.traditional-term-life-insurance.9",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.13",
+    "key": "mcr.identity.qd-li.13",
+    "displayId": 213990733356963,
+    "providedBy": null,
+    "sourceReference": "QD LI!C13:F13",
+    "sheetKey": "qd-li",
+    "sourceRow": 13,
+    "strategy": "exact",
+    "candidateKeys": [
+      "mcr.aap.group-traditional-term-life-insurance-aap-member.32"
+    ],
+    "productKey": "mcr.aap.group-traditional-term-life-insurance-aap-member.32",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.14",
+    "key": "mcr.identity.qd-li.14",
+    "displayId": 219488291498018,
+    "providedBy": null,
+    "sourceReference": "QD LI!C14:F14",
+    "sheetKey": "qd-li",
+    "sourceRow": 14,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.15",
+    "key": "mcr.identity.qd-li.15",
+    "displayId": 220587803126229,
+    "providedBy": null,
+    "sourceReference": "QD LI!C15:F15",
+    "sheetKey": "qd-li",
+    "sourceRow": 15,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.16",
+    "key": "mcr.identity.qd-li.16",
+    "displayId": 217289268241596,
+    "providedBy": null,
+    "sourceReference": "QD LI!C16:F16",
+    "sheetKey": "qd-li",
+    "sourceRow": 16,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.17",
+    "key": "mcr.identity.qd-li.17",
+    "displayId": 218388779869807,
+    "providedBy": null,
+    "sourceReference": "QD LI!C17:F17",
+    "sheetKey": "qd-li",
+    "sourceRow": 17,
+    "strategy": "exact",
+    "candidateKeys": [
+      "mcr.achsncgi-https-chemistsncgi-nylinsure-com.traditional-term-life-insurance.62"
+    ],
+    "productKey": "mcr.achsncgi-https-chemistsncgi-nylinsure-com.traditional-term-life-insurance.62",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.18",
+    "key": "mcr.identity.qd-li.18",
+    "displayId": 223886338010862,
+    "providedBy": null,
+    "sourceReference": "QD LI!C18:F18",
+    "sheetKey": "qd-li",
+    "sourceRow": 18,
+    "strategy": "exact",
+    "candidateKeys": [
+      "mcr.acp.group-term-life-and-ad-d-insurance.68"
+    ],
+    "productKey": "mcr.acp.group-term-life-and-ad-d-insurance.68",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.19",
+    "key": "mcr.identity.qd-li.19",
+    "displayId": 224985849639073,
+    "providedBy": null,
+    "sourceReference": "QD LI!C19:F19",
+    "sheetKey": "qd-li",
+    "sourceRow": 19,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.acp.group-10-year-level-term-life-insurance.69"
+    ],
+    "productKey": "mcr.acp.group-10-year-level-term-life-insurance.69",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.20",
+    "key": "mcr.identity.qd-li.20",
+    "displayId": 102940058762797,
+    "providedBy": null,
+    "sourceReference": "QD LI!C20:F20",
+    "sheetKey": "qd-li",
+    "sourceRow": 20,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.acp.group-20-year-level-term-life-insurance.70"
+    ],
+    "productKey": "mcr.acp.group-20-year-level-term-life-insurance.70",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.21",
+    "key": "mcr.identity.qd-li.21",
+    "displayId": 101840547134586,
+    "providedBy": null,
+    "sourceReference": "QD LI!C21:F21",
+    "sheetKey": "qd-li",
+    "sourceRow": 21,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.acog.group-10-year-level-term-life-insurance.64"
+    ],
+    "productKey": "mcr.acog.group-10-year-level-term-life-insurance.64",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.22",
+    "key": "mcr.identity.qd-li.22",
+    "displayId": 100741035506375,
+    "providedBy": null,
+    "sourceReference": "QD LI!C22:F22",
+    "sheetKey": "qd-li",
+    "sourceRow": 22,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.acog.group-20-year-level-term-life-insurance.65"
+    ],
+    "productKey": "mcr.acog.group-20-year-level-term-life-insurance.65",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.23",
+    "key": "mcr.identity.qd-li.23",
+    "displayId": 99641523878164,
+    "providedBy": null,
+    "sourceReference": "QD LI!C23:F23",
+    "sheetKey": "qd-li",
+    "sourceRow": 23,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aia-trust.10-year-level-term-life-insurance.89"
+    ],
+    "productKey": "mcr.aia-trust.10-year-level-term-life-insurance.89",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.24",
+    "key": "mcr.identity.qd-li.24",
+    "displayId": 98542012249953,
+    "providedBy": null,
+    "sourceReference": "QD LI!C24:F24",
+    "sheetKey": "qd-li",
+    "sourceRow": 24,
+    "strategy": "multi-match",
+    "candidateKeys": [
+      "mcr.aia-trust.traditional-term-life-insurance.90",
+      "mcr.aia-trust.traditional-term-life-insurance.94"
+    ],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.25",
+    "key": "mcr.identity.qd-li.25",
+    "displayId": 97442500621742,
+    "providedBy": null,
+    "sourceReference": "QD LI!C25:F25",
+    "sheetKey": "qd-li",
+    "sourceRow": 25,
+    "strategy": "multi-match",
+    "candidateKeys": [
+      "mcr.aiche.traditional-term-life-insurance.97",
+      "mcr.aiche.traditional-term-life-insurance.98"
+    ],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.26",
+    "key": "mcr.identity.qd-li.26",
+    "displayId": 96342988993531,
+    "providedBy": null,
+    "sourceReference": "QD LI!C26:F26",
+    "sheetKey": "qd-li",
+    "sourceRow": 26,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aiche.10-year-level-term-life-insurance.95"
+    ],
+    "productKey": "mcr.aiche.10-year-level-term-life-insurance.95",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.27",
+    "key": "mcr.identity.qd-li.27",
+    "displayId": 95243477365320,
+    "providedBy": null,
+    "sourceReference": "QD LI!C27:F27",
+    "sheetKey": "qd-li",
+    "sourceRow": 27,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aiche.20-year-level-term-life-insurance.96"
+    ],
+    "productKey": "mcr.aiche.20-year-level-term-life-insurance.96",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.28",
+    "key": "mcr.identity.qd-li.28",
+    "displayId": 94143965737109,
+    "providedBy": null,
+    "sourceReference": "QD LI!C28:F28",
+    "sheetKey": "qd-li",
+    "sourceRow": 28,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.acs-surgeons.traditional-term-life-insurance.84"
+    ],
+    "productKey": "mcr.acs-surgeons.traditional-term-life-insurance.84",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.29",
+    "key": "mcr.identity.qd-li.29",
+    "displayId": 93044454108898,
+    "providedBy": null,
+    "sourceReference": "QD LI!C29:F29",
+    "sheetKey": "qd-li",
+    "sourceRow": 29,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.acs-surgeons.10-year-level-term-life-insurance.74"
+    ],
+    "productKey": "mcr.acs-surgeons.10-year-level-term-life-insurance.74",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.30",
+    "key": "mcr.identity.qd-li.30",
+    "displayId": 237080477148324,
+    "providedBy": null,
+    "sourceReference": "QD LI!C30:F30",
+    "sheetKey": "qd-li",
+    "sourceRow": 30,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.acs-surgeons.15-year-level-term-life-insurance.75"
+    ],
+    "productKey": "mcr.acs-surgeons.15-year-level-term-life-insurance.75",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.31",
+    "key": "mcr.identity.qd-li.31",
+    "displayId": 238179988776535,
+    "providedBy": null,
+    "sourceReference": "QD LI!C31:F31",
+    "sheetKey": "qd-li",
+    "sourceRow": 31,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.acs-surgeons.20-year-level-term-life-insurance.76"
+    ],
+    "productKey": "mcr.acs-surgeons.20-year-level-term-life-insurance.76",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.32",
+    "key": "mcr.identity.qd-li.32",
+    "displayId": 239279500404746,
+    "providedBy": null,
+    "sourceReference": "QD LI!C32:F32",
+    "sheetKey": "qd-li",
+    "sourceRow": 32,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.acs-surgeons.traditional-term-life-insurance.84"
+    ],
+    "productKey": "mcr.acs-surgeons.traditional-term-life-insurance.84",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.33",
+    "key": "mcr.identity.qd-li.33",
+    "displayId": 240379012032957,
+    "providedBy": null,
+    "sourceReference": "QD LI!C33:F33",
+    "sheetKey": "qd-li",
+    "sourceRow": 33,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aiit.term-life-insurance.105"
+    ],
+    "productKey": "mcr.aiit.term-life-insurance.105",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.34",
+    "key": "mcr.identity.qd-li.34",
+    "displayId": 232682430635480,
+    "providedBy": null,
+    "sourceReference": "QD LI!C34:F34",
+    "sheetKey": "qd-li",
+    "sourceRow": 34,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.35",
+    "key": "mcr.identity.qd-li.35",
+    "displayId": 233781942263691,
+    "providedBy": null,
+    "sourceReference": "QD LI!C35:F35",
+    "sheetKey": "qd-li",
+    "sourceRow": 35,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.36",
+    "key": "mcr.identity.qd-li.36",
+    "displayId": 234881453891902,
+    "providedBy": null,
+    "sourceReference": "QD LI!C36:F36",
+    "sheetKey": "qd-li",
+    "sourceRow": 36,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.37",
+    "key": "mcr.identity.qd-li.37",
+    "displayId": 235980965520113,
+    "providedBy": null,
+    "sourceReference": "QD LI!C37:F37",
+    "sheetKey": "qd-li",
+    "sourceRow": 37,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aoa.group-term-life-insurance-plan-includes-ad-d-include-ny-fraud.132"
+    ],
+    "productKey": "mcr.aoa.group-term-life-insurance-plan-includes-ad-d-include-ny-fraud.132",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.38",
+    "key": "mcr.identity.qd-li.38",
+    "displayId": 228284384122636,
+    "providedBy": null,
+    "sourceReference": "QD LI!C38:F38",
+    "sheetKey": "qd-li",
+    "sourceRow": 38,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aoa.group-10-year-level-term-life-insurance.133"
+    ],
+    "productKey": "mcr.aoa.group-10-year-level-term-life-insurance.133",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.39",
+    "key": "mcr.identity.qd-li.39",
+    "displayId": 229383895750847,
+    "providedBy": null,
+    "sourceReference": "QD LI!C39:F39",
+    "sheetKey": "qd-li",
+    "sourceRow": 39,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aoa.group-20-year-level-term-life-insurance.134"
+    ],
+    "productKey": "mcr.aoa.group-20-year-level-term-life-insurance.134",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.40",
+    "key": "mcr.identity.qd-li.40",
+    "displayId": 230483407234203,
+    "providedBy": null,
+    "sourceReference": "QD LI!C40:F40",
+    "sheetKey": "qd-li",
+    "sourceRow": 40,
+    "strategy": "semantic-key",
+    "candidateKeys": [
+      "mcr.apta.traditional-term-life-insurance.150"
+    ],
+    "productKey": "mcr.apta.traditional-term-life-insurance.150",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.41",
+    "key": "mcr.identity.qd-li.41",
+    "displayId": 229383895605992,
+    "providedBy": null,
+    "sourceReference": "QD LI!C41:F41",
+    "sheetKey": "qd-li",
+    "sourceRow": 41,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.apta.10-year-level-term-life-insurance.148"
+    ],
+    "productKey": "mcr.apta.10-year-level-term-life-insurance.148",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.42",
+    "key": "mcr.identity.qd-li.42",
+    "displayId": 232682430490625,
+    "providedBy": null,
+    "sourceReference": "QD LI!C42:F42",
+    "sheetKey": "qd-li",
+    "sourceRow": 42,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.apta.20-year-level-term-life-insurance.149"
+    ],
+    "productKey": "mcr.apta.20-year-level-term-life-insurance.149",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.43",
+    "key": "mcr.identity.qd-li.43",
+    "displayId": 231582918862414,
+    "providedBy": null,
+    "sourceReference": "QD LI!C43:F43",
+    "sheetKey": "qd-li",
+    "sourceRow": 43,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.apsit.group-term-life-insurance.145"
+    ],
+    "productKey": "mcr.apsit.group-term-life-insurance.145",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.44",
+    "key": "mcr.identity.qd-li.44",
+    "displayId": 234881453747047,
+    "providedBy": null,
+    "sourceReference": "QD LI!C44:F44",
+    "sheetKey": "qd-li",
+    "sourceRow": 44,
+    "strategy": "exact",
+    "candidateKeys": [
+      "mcr.asce.term-life-insurance.167"
+    ],
+    "productKey": "mcr.asce.term-life-insurance.167",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.45",
+    "key": "mcr.identity.qd-li.45",
+    "displayId": 233781942118836,
+    "providedBy": null,
+    "sourceReference": "QD LI!C45:F45",
+    "sheetKey": "qd-li",
+    "sourceRow": 45,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.asce.10-year-level-term-life-insurance.165"
+    ],
+    "productKey": "mcr.asce.10-year-level-term-life-insurance.165",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.46",
+    "key": "mcr.identity.qd-li.46",
+    "displayId": 237080477003469,
+    "providedBy": null,
+    "sourceReference": "QD LI!C46:F46",
+    "sheetKey": "qd-li",
+    "sourceRow": 46,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.47",
+    "key": "mcr.identity.qd-li.47",
+    "displayId": 235980965375258,
+    "providedBy": null,
+    "sourceReference": "QD LI!C47:F47",
+    "sheetKey": "qd-li",
+    "sourceRow": 47,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.ama.term-life-insurance-nyl-14743.123"
+    ],
+    "productKey": "mcr.ama.term-life-insurance-nyl-14743.123",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.48",
+    "key": "mcr.identity.qd-li.48",
+    "displayId": 221687314208515,
+    "providedBy": null,
+    "sourceReference": "QD LI!C48:F48",
+    "sheetKey": "qd-li",
+    "sourceRow": 48,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.ama.10-year-level-term-life-insurance.120"
+    ],
+    "productKey": "mcr.ama.10-year-level-term-life-insurance.120",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.49",
+    "key": "mcr.identity.qd-li.49",
+    "displayId": 220587802580304,
+    "providedBy": null,
+    "sourceReference": "QD LI!C49:F49",
+    "sheetKey": "qd-li",
+    "sourceRow": 49,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.ama.15-year-level-term-life-insurance.121"
+    ],
+    "productKey": "mcr.ama.15-year-level-term-life-insurance.121",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.50",
+    "key": "mcr.identity.qd-li.50",
+    "displayId": 83148848909074,
+    "providedBy": null,
+    "sourceReference": "QD LI!C50:F50",
+    "sheetKey": "qd-li",
+    "sourceRow": 50,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.ama.20-year-level-term-life-insurance.122"
+    ],
+    "productKey": "mcr.ama.20-year-level-term-life-insurance.122",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.51",
+    "key": "mcr.identity.qd-li.51",
+    "displayId": 84248360537285,
+    "providedBy": null,
+    "sourceReference": "QD LI!C51:F51",
+    "sheetKey": "qd-li",
+    "sourceRow": 51,
+    "strategy": "exact",
+    "candidateKeys": [
+      "mcr.asme.group-term-life-insurance-plan.173"
+    ],
+    "productKey": "mcr.asme.group-term-life-insurance-plan.173",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.52",
+    "key": "mcr.identity.qd-li.52",
+    "displayId": 80949825652652,
+    "providedBy": null,
+    "sourceReference": "QD LI!C52:F52",
+    "sheetKey": "qd-li",
+    "sourceRow": 52,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.asme.group-10-year-level-term-life-insurance.174"
+    ],
+    "productKey": "mcr.asme.group-10-year-level-term-life-insurance.174",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.53",
+    "key": "mcr.identity.qd-li.53",
+    "displayId": 82049337280863,
+    "providedBy": null,
+    "sourceReference": "QD LI!C53:F53",
+    "sheetKey": "qd-li",
+    "sourceRow": 53,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.asme.group-20-year-level-term-life-insurance.175"
+    ],
+    "productKey": "mcr.asme.group-20-year-level-term-life-insurance.175",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.54",
+    "key": "mcr.identity.qd-li.54",
+    "displayId": 78750802396230,
+    "providedBy": null,
+    "sourceReference": "QD LI!C54:F54",
+    "sheetKey": "qd-li",
+    "sourceRow": 54,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.avma-life.family-group-life-insurance.187"
+    ],
+    "productKey": "mcr.avma-life.family-group-life-insurance.187",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.55",
+    "key": "mcr.identity.qd-li.55",
+    "displayId": 79850314024441,
+    "providedBy": null,
+    "sourceReference": "QD LI!C55:F55",
+    "sheetKey": "qd-li",
+    "sourceRow": 55,
+    "strategy": "multi-match",
+    "candidateKeys": [
+      "mcr.avma-life.10-year-level-term-life-insurance.188",
+      "mcr.avmalifetrustgrad.10-year-level-term-life-insurance.206"
+    ],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.56",
+    "key": "mcr.identity.qd-li.56",
+    "displayId": 76551779139808,
+    "providedBy": null,
+    "sourceReference": "QD LI!C56:F56",
+    "sheetKey": "qd-li",
+    "sourceRow": 56,
+    "strategy": "multi-match",
+    "candidateKeys": [
+      "mcr.avma-life.20-year-level-term-life-insurance.189",
+      "mcr.avmalifetrustgrad.20-year-level-term-life-insurance.207"
+    ],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.57",
+    "key": "mcr.identity.qd-li.57",
+    "displayId": 77651290768019,
+    "providedBy": null,
+    "sourceReference": "QD LI!C57:F57",
+    "sheetKey": "qd-li",
+    "sourceRow": 57,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.avma-life.family-group-life-insurance.187"
+    ],
+    "productKey": "mcr.avma-life.family-group-life-insurance.187",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.58",
+    "key": "mcr.identity.qd-li.58",
+    "displayId": 91944941934762,
+    "providedBy": null,
+    "sourceReference": "QD LI!C58:F58",
+    "sheetKey": "qd-li",
+    "sourceRow": 58,
+    "strategy": "multi-match",
+    "candidateKeys": [
+      "mcr.avma-life.10-year-level-term-life-insurance.188",
+      "mcr.avmalifetrustgrad.10-year-level-term-life-insurance.206"
+    ],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.59",
+    "key": "mcr.identity.qd-li.59",
+    "displayId": 93044453562973,
+    "providedBy": null,
+    "sourceReference": "QD LI!C59:F59",
+    "sheetKey": "qd-li",
+    "sourceRow": 59,
+    "strategy": "multi-match",
+    "candidateKeys": [
+      "mcr.avma-life.20-year-level-term-life-insurance.189",
+      "mcr.avmalifetrustgrad.20-year-level-term-life-insurance.207"
+    ],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.60",
+    "key": "mcr.identity.qd-li.60",
+    "displayId": 217289267294601,
+    "providedBy": null,
+    "sourceReference": "QD LI!C60:F60",
+    "sheetKey": "qd-li",
+    "sourceRow": 60,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.calsea.group-traditional-termplus-life-insurance.224"
+    ],
+    "productKey": "mcr.calsea.group-traditional-termplus-life-insurance.224",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.61",
+    "key": "mcr.identity.qd-li.61",
+    "displayId": 216189755666390,
+    "providedBy": null,
+    "sourceReference": "QD LI!C61:F61",
+    "sheetKey": "qd-li",
+    "sourceRow": 61,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.62",
+    "key": "mcr.identity.qd-li.62",
+    "displayId": 215090244038179,
+    "providedBy": null,
+    "sourceReference": "QD LI!C62:F62",
+    "sheetKey": "qd-li",
+    "sourceRow": 62,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.calsea.group-10-year-level-term-life-insurance.222"
+    ],
+    "productKey": "mcr.calsea.group-10-year-level-term-life-insurance.222",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.63",
+    "key": "mcr.identity.qd-li.63",
+    "displayId": 213990732409968,
+    "providedBy": null,
+    "sourceReference": "QD LI!C63:F63",
+    "sheetKey": "qd-li",
+    "sourceRow": 63,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.calsea.group-20-year-level-term-life-insurance.223"
+    ],
+    "productKey": "mcr.calsea.group-20-year-level-term-life-insurance.223",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.64",
+    "key": "mcr.identity.qd-li.64",
+    "displayId": 221687313807445,
+    "providedBy": null,
+    "sourceReference": "QD LI!C64:F64",
+    "sheetKey": "qd-li",
+    "sourceRow": 64,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.calbar.group-term-life-insurance.219"
+    ],
+    "productKey": "mcr.calbar.group-term-life-insurance.219",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.65",
+    "key": "mcr.identity.qd-li.65",
+    "displayId": 220587802179234,
+    "providedBy": null,
+    "sourceReference": "QD LI!C65:F65",
+    "sheetKey": "qd-li",
+    "sourceRow": 65,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.calbar.group-10-year-level-term-life-insurance.220"
+    ],
+    "productKey": "mcr.calbar.group-10-year-level-term-life-insurance.220",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.66",
+    "key": "mcr.identity.qd-li.66",
+    "displayId": 219488290551023,
+    "providedBy": null,
+    "sourceReference": "QD LI!C66:F66",
+    "sheetKey": "qd-li",
+    "sourceRow": 66,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.calbar.group-20-year-level-term-life-insurance.221"
+    ],
+    "productKey": "mcr.calbar.group-20-year-level-term-life-insurance.221",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.67",
+    "key": "mcr.identity.qd-li.67",
+    "displayId": 218388778922812,
+    "providedBy": null,
+    "sourceReference": "QD LI!C67:F67",
+    "sheetKey": "qd-li",
+    "sourceRow": 67,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.calsea.group-traditional-termplus-life-insurance.224"
+    ],
+    "productKey": "mcr.calsea.group-traditional-termplus-life-insurance.224",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.68",
+    "key": "mcr.identity.qd-li.68",
+    "displayId": 226085360320289,
+    "providedBy": null,
+    "sourceReference": "QD LI!C68:F68",
+    "sheetKey": "qd-li",
+    "sourceRow": 68,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.cat-collegiate-alumni-trust.core-life.234"
+    ],
+    "productKey": "mcr.cat-collegiate-alumni-trust.core-life.234",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.69",
+    "key": "mcr.identity.qd-li.69",
+    "displayId": 224985848692078,
+    "providedBy": null,
+    "sourceReference": "QD LI!C69:F69",
+    "sheetKey": "qd-li",
+    "sourceRow": 69,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.70",
+    "key": "mcr.identity.qd-li.70",
+    "displayId": 69954708969472,
+    "providedBy": null,
+    "sourceReference": "QD LI!C70:F70",
+    "sheetKey": "qd-li",
+    "sourceRow": 70,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.71",
+    "key": "mcr.identity.qd-li.71",
+    "displayId": 71054220597683,
+    "providedBy": null,
+    "sourceReference": "QD LI!C71:F71",
+    "sheetKey": "qd-li",
+    "sourceRow": 71,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.ieee.group-term-life-insurance-plan.271"
+    ],
+    "productKey": "mcr.ieee.group-term-life-insurance-plan.271",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.72",
+    "key": "mcr.identity.qd-li.72",
+    "displayId": 72153732225894,
+    "providedBy": null,
+    "sourceReference": "QD LI!C72:F72",
+    "sheetKey": "qd-li",
+    "sourceRow": 72,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.ieee.group-10-year-level-term-life-insurance.272"
+    ],
+    "productKey": "mcr.ieee.group-10-year-level-term-life-insurance.272",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.73",
+    "key": "mcr.identity.qd-li.73",
+    "displayId": 73253243854105,
+    "providedBy": null,
+    "sourceReference": "QD LI!C73:F73",
+    "sheetKey": "qd-li",
+    "sourceRow": 73,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.ieee.group-20-year-level-term-life-insurance.273"
+    ],
+    "productKey": "mcr.ieee.group-20-year-level-term-life-insurance.273",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.74",
+    "key": "mcr.identity.qd-li.74",
+    "displayId": 74352755482316,
+    "providedBy": null,
+    "sourceReference": "QD LI!C74:F74",
+    "sheetKey": "qd-li",
+    "sourceRow": 74,
+    "strategy": "multi-match",
+    "candidateKeys": [
+      "mcr.isi.group-term-life-insurance.278",
+      "mcr.isi-simplified-issue-offer-site.group-term-life-insurance.288"
+    ],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.75",
+    "key": "mcr.identity.qd-li.75",
+    "displayId": 75452267110527,
+    "providedBy": null,
+    "sourceReference": "QD LI!C75:F75",
+    "sheetKey": "qd-li",
+    "sourceRow": 75,
+    "strategy": "multi-match",
+    "candidateKeys": [
+      "mcr.atpe.group-10-year-level-term-life-insurance.180",
+      "mcr.isi.group-10-year-level-term-life-insurance.283"
+    ],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.76",
+    "key": "mcr.identity.qd-li.76",
+    "displayId": 76551778738738,
+    "providedBy": null,
+    "sourceReference": "QD LI!C76:F76",
+    "sheetKey": "qd-li",
+    "sourceRow": 76,
+    "strategy": "multi-match",
+    "candidateKeys": [
+      "mcr.atpe.group-20-year-level-term-life-insurance.181",
+      "mcr.isi.group-20-year-level-term-life-insurance.284"
+    ],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.77",
+    "key": "mcr.identity.qd-li.77",
+    "displayId": 77651290366949,
+    "providedBy": null,
+    "sourceReference": "QD LI!C77:F77",
+    "sheetKey": "qd-li",
+    "sourceRow": 77,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.atpe.group-term-life-insurance.179"
+    ],
+    "productKey": "mcr.atpe.group-term-life-insurance.179",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.78",
+    "key": "mcr.identity.qd-li.78",
+    "displayId": 78750801995160,
+    "providedBy": null,
+    "sourceReference": "QD LI!C78:F78",
+    "sheetKey": "qd-li",
+    "sourceRow": 78,
+    "strategy": "semantic-key",
+    "candidateKeys": [
+      "mcr.atpe.group-10-year-level-term-life-insurance.180"
+    ],
+    "productKey": "mcr.atpe.group-10-year-level-term-life-insurance.180",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.79",
+    "key": "mcr.identity.qd-li.79",
+    "displayId": 79850313623371,
+    "providedBy": null,
+    "sourceReference": "QD LI!C79:F79",
+    "sheetKey": "qd-li",
+    "sourceRow": 79,
+    "strategy": "semantic-key",
+    "candidateKeys": [
+      "mcr.atpe.group-20-year-level-term-life-insurance.181"
+    ],
+    "productKey": "mcr.atpe.group-20-year-level-term-life-insurance.181",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.80",
+    "key": "mcr.identity.qd-li.80",
+    "displayId": 98542014143943,
+    "providedBy": null,
+    "sourceReference": "QD LI!C80:F80",
+    "sheetKey": "qd-li",
+    "sourceRow": 80,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.ncsfa.group-term-life-insurance.313"
+    ],
+    "productKey": "mcr.ncsfa.group-term-life-insurance.313",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.81",
+    "key": "mcr.identity.qd-li.81",
+    "displayId": 97442502515732,
+    "providedBy": null,
+    "sourceReference": "QD LI!C81:F81",
+    "sheetKey": "qd-li",
+    "sourceRow": 81,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.lifehelp.young-family-term-life-insurance.290"
+    ],
+    "productKey": "mcr.lifehelp.young-family-term-life-insurance.290",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.82",
+    "key": "mcr.identity.qd-li.82",
+    "displayId": 100741037400365,
+    "providedBy": null,
+    "sourceReference": "QD LI!C82:F82",
+    "sheetKey": "qd-li",
+    "sourceRow": 82,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.nar.realtors-group-term-life-insurance.308"
+    ],
+    "productKey": "mcr.nar.realtors-group-term-life-insurance.308",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.83",
+    "key": "mcr.identity.qd-li.83",
+    "displayId": 99641525772154,
+    "providedBy": null,
+    "sourceReference": "QD LI!C83:F83",
+    "sheetKey": "qd-li",
+    "sourceRow": 83,
+    "strategy": "multi-match",
+    "candidateKeys": [
+      "mcr.nysba.group-term-life-insurance.334",
+      "mcr.nysbagi.group-term-life-insurance.337"
+    ],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.84",
+    "key": "mcr.identity.qd-li.84",
+    "displayId": 94143967631099,
+    "providedBy": null,
+    "sourceReference": "QD LI!C84:F84",
+    "sheetKey": "qd-li",
+    "sourceRow": 84,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.85",
+    "key": "mcr.identity.qd-li.85",
+    "displayId": 93044456002888,
+    "providedBy": null,
+    "sourceReference": "QD LI!C85:F85",
+    "sheetKey": "qd-li",
+    "sourceRow": 85,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.86",
+    "key": "mcr.identity.qd-li.86",
+    "displayId": 96342990887521,
+    "providedBy": null,
+    "sourceReference": "QD LI!C86:F86",
+    "sheetKey": "qd-li",
+    "sourceRow": 86,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.nysscpa.group-term-life-insurance-plan.339"
+    ],
+    "productKey": "mcr.nysscpa.group-term-life-insurance-plan.339",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.87",
+    "key": "mcr.identity.qd-li.87",
+    "displayId": 95243479259310,
+    "providedBy": null,
+    "sourceReference": "QD LI!C87:F87",
+    "sheetKey": "qd-li",
+    "sourceRow": 87,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.88",
+    "key": "mcr.identity.qd-li.88",
+    "displayId": 89745921118255,
+    "providedBy": null,
+    "sourceReference": "QD LI!C88:F88",
+    "sheetKey": "qd-li",
+    "sourceRow": 88,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.tie.10-year-level-term-insurance.366"
+    ],
+    "productKey": "mcr.tie.10-year-level-term-insurance.366",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.89",
+    "key": "mcr.identity.qd-li.89",
+    "displayId": 88646409490044,
+    "providedBy": null,
+    "sourceReference": "QD LI!C89:F89",
+    "sheetKey": "qd-li",
+    "sourceRow": 89,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.tie.20-year-level-term-insurance.370"
+    ],
+    "productKey": "mcr.tie.20-year-level-term-insurance.370",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.90",
+    "key": "mcr.identity.qd-li.90",
+    "displayId": 232682432529470,
+    "providedBy": null,
+    "sourceReference": "QD LI!C90:F90",
+    "sheetKey": "qd-li",
+    "sourceRow": 90,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.txcpa.group-term-life-insurance.372"
+    ],
+    "productKey": "mcr.txcpa.group-term-life-insurance.372",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.91",
+    "key": "mcr.identity.qd-li.91",
+    "displayId": 233781944157681,
+    "providedBy": null,
+    "sourceReference": "QD LI!C91:F91",
+    "sheetKey": "qd-li",
+    "sourceRow": 91,
+    "strategy": "multi-match",
+    "candidateKeys": [
+      "mcr.ruaa.group-term-life-insurance.358",
+      "mcr.ruaagi.group-term-life-insurance.360"
+    ],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.92",
+    "key": "mcr.identity.qd-li.92",
+    "displayId": 230483409273048,
+    "providedBy": null,
+    "sourceReference": "QD LI!C92:F92",
+    "sheetKey": "qd-li",
+    "sourceRow": 92,
+    "strategy": "semantic-key",
+    "candidateKeys": [
+      "mcr.waepa.group-term-life-insurance-add-included-so-ny-fraud-should-be-shown.379"
+    ],
+    "productKey": "mcr.waepa.group-term-life-insurance-add-included-so-ny-fraud-should-be-shown.379",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.93",
+    "key": "mcr.identity.qd-li.93",
+    "displayId": 231582920901259,
+    "providedBy": null,
+    "sourceReference": "QD LI!C93:F93",
+    "sheetKey": "qd-li",
+    "sourceRow": 93,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.94",
+    "key": "mcr.identity.qd-li.94",
+    "displayId": 237080479042314,
+    "providedBy": null,
+    "sourceReference": "QD LI!C94:F94",
+    "sheetKey": "qd-li",
+    "sourceRow": 94,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.95",
+    "key": "mcr.identity.qd-li.95",
+    "displayId": 238179990670525,
+    "providedBy": null,
+    "sourceReference": "QD LI!C95:F95",
+    "sheetKey": "qd-li",
+    "sourceRow": 95,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.96",
+    "key": "mcr.identity.qd-li.96",
+    "displayId": 234881455785892,
+    "providedBy": null,
+    "sourceReference": "QD LI!C96:F96",
+    "sheetKey": "qd-li",
+    "sourceRow": 96,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.nso.traditional-term-life-insurance.318"
+    ],
+    "productKey": "mcr.nso.traditional-term-life-insurance.318",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.97",
+    "key": "mcr.identity.qd-li.97",
+    "displayId": 235980967414103,
+    "providedBy": null,
+    "sourceReference": "QD LI!C97:F97",
+    "sheetKey": "qd-li",
+    "sourceRow": 97,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.nso.10-year-level-term-life-insurance.322"
+    ],
+    "productKey": "mcr.nso.10-year-level-term-life-insurance.322",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.98",
+    "key": "mcr.identity.qd-li.98",
+    "displayId": 223886339503782,
+    "providedBy": null,
+    "sourceReference": "QD LI!C98:F98",
+    "sheetKey": "qd-li",
+    "sourceRow": 98,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.nso.20-year-level-term-life-insurance.323"
+    ],
+    "productKey": "mcr.nso.20-year-level-term-life-insurance.323",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.99",
+    "key": "mcr.identity.qd-li.99",
+    "displayId": 224985851131993,
+    "providedBy": null,
+    "sourceReference": "QD LI!C99:F99",
+    "sheetKey": "qd-li",
+    "sourceRow": 99,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.roa.group-term-life-insurance-plan.355"
+    ],
+    "productKey": "mcr.roa.group-term-life-insurance-plan.355",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.100",
+    "key": "mcr.identity.qd-li.100",
+    "displayId": 226714486653010,
+    "providedBy": null,
+    "sourceReference": "QD LI!C100:F100",
+    "sheetKey": "qd-li",
+    "sourceRow": 100,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.101",
+    "key": "mcr.identity.qd-li.101",
+    "displayId": 227813998281221,
+    "providedBy": null,
+    "sourceReference": "QD LI!C101:F101",
+    "sheetKey": "qd-li",
+    "sourceRow": 101,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.102",
+    "key": "mcr.identity.qd-li.102",
+    "displayId": 224515463396588,
+    "providedBy": null,
+    "sourceReference": "QD LI!C102:F102",
+    "sheetKey": "qd-li",
+    "sourceRow": 102,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.103",
+    "key": "mcr.identity.qd-li.103",
+    "displayId": 225614975024799,
+    "providedBy": null,
+    "sourceReference": "QD LI!C103:F103",
+    "sheetKey": "qd-li",
+    "sourceRow": 103,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-li.104",
+    "key": "mcr.identity.qd-li.104",
+    "displayId": 222316440140166,
+    "providedBy": null,
+    "sourceReference": "QD LI!C104:F104",
+    "sheetKey": "qd-li",
+    "sourceRow": 104,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.apha-apharm.group-term-life-insurance.141"
+    ],
+    "productKey": "mcr.apha-apharm.group-term-life-insurance.141",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.105",
+    "key": "mcr.identity.qd-li.105",
+    "displayId": 223415951768377,
+    "providedBy": null,
+    "sourceReference": "QD LI!C105:F105",
+    "sheetKey": "qd-li",
+    "sourceRow": 105,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.mercer-alumni.alumni-sponsored-10-year-level-term-life-insurance.292"
+    ],
+    "productKey": "mcr.mercer-alumni.alumni-sponsored-10-year-level-term-life-insurance.292",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.106",
+    "key": "mcr.identity.qd-li.106",
+    "displayId": 220117416883744,
+    "providedBy": null,
+    "sourceReference": "QD LI!C106:F106",
+    "sheetKey": "qd-li",
+    "sourceRow": 106,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.mercer-alumni.alumni-sponsored-10-year-level-term-life-insurance-only-for-uiaa-association-10ytl.293"
+    ],
+    "productKey": "mcr.mercer-alumni.alumni-sponsored-10-year-level-term-life-insurance-only-for-uiaa-association-10ytl.293",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.107",
+    "key": "mcr.identity.qd-li.107",
+    "displayId": 221216928511955,
+    "providedBy": null,
+    "sourceReference": "QD LI!C107:F107",
+    "sheetKey": "qd-li",
+    "sourceRow": 107,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.usba.5-year-group-level-term-life-insurance.374"
+    ],
+    "productKey": "mcr.usba.5-year-group-level-term-life-insurance.374",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.108",
+    "key": "mcr.identity.qd-li.108",
+    "displayId": 235510579678698,
+    "providedBy": null,
+    "sourceReference": "QD LI!C108:F108",
+    "sheetKey": "qd-li",
+    "sourceRow": 108,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.usba.10-year-group-level-term-life-insurance.375"
+    ],
+    "productKey": "mcr.usba.10-year-group-level-term-life-insurance.375",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.109",
+    "key": "mcr.identity.qd-li.109",
+    "displayId": 236610091306909,
+    "providedBy": null,
+    "sourceReference": "QD LI!C109:F109",
+    "sheetKey": "qd-li",
+    "sourceRow": 109,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.usba.15-year-group-level-term-life-insurance.376"
+    ],
+    "productKey": "mcr.usba.15-year-group-level-term-life-insurance.376",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-li.110",
+    "key": "mcr.identity.qd-li.110",
+    "displayId": 92574068267483,
+    "providedBy": null,
+    "sourceReference": "QD LI!C110:F110",
+    "sheetKey": "qd-li",
+    "sourceRow": 110,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.usba.20-year-group-level-term-life-insurance.377"
+    ],
+    "productKey": "mcr.usba.20-year-group-level-term-life-insurance.377",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-di.2",
+    "key": "mcr.identity.qd-di.2",
+    "displayId": 179804008236231,
+    "providedBy": null,
+    "sourceReference": "QD DI!C2:F2",
+    "sheetKey": "qd-di",
+    "sourceRow": 2,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-di.3",
+    "key": "mcr.identity.qd-di.3",
+    "displayId": 178704496608020,
+    "providedBy": null,
+    "sourceReference": "QD DI!C3:F3",
+    "sheetKey": "qd-di",
+    "sourceRow": 3,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-di.4",
+    "key": "mcr.identity.qd-di.4",
+    "displayId": 177604984979809,
+    "providedBy": null,
+    "sourceReference": "QD DI!C4:F4",
+    "sheetKey": "qd-di",
+    "sourceRow": 4,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.abegi.group-mid-term-disability-income-insurance.51"
+    ],
+    "productKey": "mcr.abegi.group-mid-term-disability-income-insurance.51",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-di.5",
+    "key": "mcr.identity.qd-di.5",
+    "displayId": 176505473351598,
+    "providedBy": null,
+    "sourceReference": "QD DI!C5:F5",
+    "sheetKey": "qd-di",
+    "sourceRow": 5,
+    "strategy": "semantic-key",
+    "candidateKeys": [
+      "mcr.aap.group-accident-illness-disability-income-insurance.35"
+    ],
+    "productKey": "mcr.aap.group-accident-illness-disability-income-insurance.35",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-di.6",
+    "key": "mcr.identity.qd-di.6",
+    "displayId": 175405961723387,
+    "providedBy": null,
+    "sourceReference": "QD DI!C6:F6",
+    "sheetKey": "qd-di",
+    "sourceRow": 6,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aaop.group-disability-income-insurance-plan.25"
+    ],
+    "productKey": "mcr.aaop.group-disability-income-insurance-plan.25",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-di.7",
+    "key": "mcr.identity.qd-di.7",
+    "displayId": 174306450095176,
+    "providedBy": null,
+    "sourceReference": "QD DI!C7:F7",
+    "sheetKey": "qd-di",
+    "sourceRow": 7,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aafp.disability-income-insurance.10"
+    ],
+    "productKey": "mcr.aafp.disability-income-insurance.10",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-di.8",
+    "key": "mcr.identity.qd-di.8",
+    "displayId": 173206938466965,
+    "providedBy": null,
+    "sourceReference": "QD DI!C8:F8",
+    "sheetKey": "qd-di",
+    "sourceRow": 8,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aoa.group-long-term-disability-income-insurance.135"
+    ],
+    "productKey": "mcr.aoa.group-long-term-disability-income-insurance.135",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-di.9",
+    "key": "mcr.identity.qd-di.9",
+    "displayId": 172107426838754,
+    "providedBy": null,
+    "sourceReference": "QD DI!C9:F9",
+    "sheetKey": "qd-di",
+    "sourceRow": 9,
+    "strategy": "semantic-key",
+    "candidateKeys": [
+      "mcr.acp.group-disability-income-insurance.71"
+    ],
+    "productKey": "mcr.acp.group-disability-income-insurance.71",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-di.10",
+    "key": "mcr.identity.qd-di.10",
+    "displayId": 242876499193790,
+    "providedBy": null,
+    "sourceReference": "QD DI!C10:F10",
+    "sheetKey": "qd-di",
+    "sourceRow": 10,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.acsposttraininggi.long-term-disability-insurance.86"
+    ],
+    "productKey": "mcr.acsposttraininggi.long-term-disability-insurance.86",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-di.11",
+    "key": "mcr.identity.qd-di.11",
+    "displayId": 243976010822001,
+    "providedBy": null,
+    "sourceReference": "QD DI!C11:F11",
+    "sheetKey": "qd-di",
+    "sourceRow": 11,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-di.12",
+    "key": "mcr.identity.qd-di.12",
+    "displayId": 240677475937368,
+    "providedBy": null,
+    "sourceReference": "QD DI!C12:F12",
+    "sheetKey": "qd-di",
+    "sourceRow": 12,
+    "strategy": "g-number",
+    "candidateKeys": [
+      "mcr.amta.disability-income-insurance.131"
+    ],
+    "productKey": "mcr.amta.disability-income-insurance.131",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-di.13",
+    "key": "mcr.identity.qd-di.13",
+    "displayId": 241776987565579,
+    "providedBy": null,
+    "sourceReference": "QD DI!C13:F13",
+    "sheetKey": "qd-di",
+    "sourceRow": 13,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  },
+  {
+    "id": "mcr.identity.qd-di.14",
+    "key": "mcr.identity.qd-di.14",
+    "displayId": 247274545706634,
+    "providedBy": null,
+    "sourceReference": "QD DI!C14:F14",
+    "sheetKey": "qd-di",
+    "sourceRow": 14,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.aao.group-disability-income-insurance-long-term.21"
+    ],
+    "productKey": "mcr.aao.group-disability-income-insurance-long-term.21",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-di.15",
+    "key": "mcr.identity.qd-di.15",
+    "displayId": 248374057334845,
+    "providedBy": null,
+    "sourceReference": "QD DI!C15:F15",
+    "sheetKey": "qd-di",
+    "sourceRow": 15,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.waepa.group-short-term-disability-income-insurance-plan.380"
+    ],
+    "productKey": "mcr.waepa.group-short-term-disability-income-insurance-plan.380",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-di.16",
+    "key": "mcr.identity.qd-di.16",
+    "displayId": 245075522450212,
+    "providedBy": null,
+    "sourceReference": "QD DI!C16:F16",
+    "sheetKey": "qd-di",
+    "sourceRow": 16,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.acog.group-disability-income-insurance-plan.66"
+    ],
+    "productKey": "mcr.acog.group-disability-income-insurance-plan.66",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-di.17",
+    "key": "mcr.identity.qd-di.17",
+    "displayId": 246175034078423,
+    "providedBy": null,
+    "sourceReference": "QD DI!C17:F17",
+    "sheetKey": "qd-di",
+    "sourceRow": 17,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.nso.long-term-disability.321"
+    ],
+    "productKey": "mcr.nso.long-term-disability.321",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-di.18",
+    "key": "mcr.identity.qd-di.18",
+    "displayId": 234080406168102,
+    "providedBy": null,
+    "sourceReference": "QD DI!C18:F18",
+    "sheetKey": "qd-di",
+    "sourceRow": 18,
+    "strategy": "g-number+plan-code",
+    "candidateKeys": [
+      "mcr.nso.long-term-disability.321"
+    ],
+    "productKey": "mcr.nso.long-term-disability.321",
+    "explanation": "Unique normalized identifier match; no fuzzy name or client inference."
+  },
+  {
+    "id": "mcr.identity.qd-di.19",
+    "key": "mcr.identity.qd-di.19",
+    "displayId": 235179917796313,
+    "providedBy": null,
+    "sourceReference": "QD DI!C19:F19",
+    "sheetKey": "qd-di",
+    "sourceRow": 19,
+    "strategy": "no-match",
+    "candidateKeys": [],
+    "productKey": null,
+    "explanation": "Cannot safely identify a unique catalog product from the supplied identifiers."
+  }
+]

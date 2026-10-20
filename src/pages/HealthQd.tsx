@@ -1,4 +1,4 @@
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
+import QuickDecisionIcon from "../components/ui/QuickDecisionIcon";
 import FormRoutePage from "../app/RoutePage";
 import ProcessingStatusPage from "../components/feedback/ProcessingStatusPage";
 import { getContent } from "../content";
@@ -22,7 +22,7 @@ export default function HealthQd() {
               {content.bodyAfterMark}
             </>
           }
-          mark={<OfflineBoltIcon color="success" sx={{ fontSize: "1.4rem" }} />}
+          mark={<QuickDecisionIcon color="success" sx={{ fontSize: "1.4rem" }} />}
         />
       )}
     </FormRoutePage>

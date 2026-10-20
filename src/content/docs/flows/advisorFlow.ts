@@ -6,12 +6,15 @@ export const advisorFlow: FlowDefinition = {
   intro:
     "The advisor completes the application through Profile and transfers it to the applicant for review and final completion. Only one actor may access the application at a time.",
   nodes: [
+    { id: "advisor-saved-resume", kind: "page", pageId: "resume", label: "Resume saved application (Advisor)", description: "Enter applicant email, open the secure link and complete resume verification." },
+    { id: "advisor-saved-method", kind: "page", pageId: "resume-method", label: "Resume delivery method (Advisor)", description: "After opening the secure email link, choose Text or Call for the verification code." },
+    { id: "advisor-saved-code", kind: "page", pageId: "resume-code", label: "Resume Code (Advisor)", description: "Load the saved application and return to Eligibility." },
     {
       id: "advisor-login",
       kind: "page",
       pageId: "advisor-login",
       label: "Advisor Login",
-      description: "Advisor starts a new application or resumes a saved application.",
+      description: "Start opens Membership. Continue opens Resume for a saved application.",
     },
     {
       id: "advisor-membership",
@@ -76,7 +79,7 @@ export const advisorFlow: FlowDefinition = {
       pageId: "resume",
       label: "Resume & Verification (Applicant)",
       description:
-        "Applicant enters via resume?flow=advisor. Verification step may be skipped in the advisor flow.",
+        "Applicant enters via resume?flow=advisor, submits email and proceeds to Review without the verification-code step in the current prototype.",
     },
     {
       id: "advisor-review",
@@ -110,7 +113,7 @@ export const advisorFlow: FlowDefinition = {
     {
       id: "advisor-health-summary",
       kind: "summary",
-      label: "Health (SI → LI → QD → CIR → DI)",
+      label: "Health (SI → LI → QD → DI → CIR)",
       description:
         "Applicable health forms as separate routes grouped under one Health progress stage — see Health Routing below for per-condition detail.",
     },
@@ -137,7 +140,11 @@ export const advisorFlow: FlowDefinition = {
     },
   ],
   edges: [
-    { id: "advisor-e1", source: "advisor-login", target: "advisor-membership" },
+    { id: "advisor-e1", source: "advisor-login", target: "advisor-membership", condition: "Start" },
+    { id: "advisor-saved-entry", source: "advisor-login", target: "advisor-saved-resume", condition: "Continue" },
+    { id: "advisor-saved-verification", source: "advisor-saved-resume", target: "advisor-saved-method" },
+    { id: "advisor-saved-delivery", source: "advisor-saved-method", target: "advisor-saved-code", condition: "Text / Call" },
+    { id: "advisor-saved-loaded", source: "advisor-saved-code", target: "advisor-eligibility" },
     { id: "advisor-e2", source: "advisor-membership", target: "advisor-eligibility" },
     { id: "advisor-e3", source: "advisor-eligibility", target: "advisor-coverage" },
     { id: "advisor-e4", source: "advisor-coverage", target: "advisor-beneficiary" },

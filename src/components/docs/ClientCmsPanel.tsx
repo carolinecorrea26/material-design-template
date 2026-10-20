@@ -1,3 +1,4 @@
+import { getSiteAcronym } from "../../data/siteDisplay";
 import { useCallback, useMemo, useState } from "react";
 import {
   Autocomplete,
@@ -11,8 +12,9 @@ import {
 } from "@mui/material";
 import {
   clientEntities,
-  getSiteIdForLegacyClient,
+  getSiteIdForClientAlias,
   getSitesForClient,
+  getClientForSite,
   type Client,
   type Site,
 } from "../../data";
@@ -20,11 +22,13 @@ import { cmsEntries } from "../../content/docs/cmsEntries";
 import CmsContentTable from "./CmsContentTable";
 import { CLIENT_HIGHLIGHT_BG, CLIENT_HIGHLIGHT_BORDER } from "./ClientNote";
 
-const DEFAULT_SITE_ID = getSiteIdForLegacyClient("demo");
+const DEFAULT_SITE_ID = getSiteIdForClientAlias("demo");
 
-export default function ClientCmsPanel() {
+export default function ClientCmsPanel({ siteId: controlledSiteId, hideSelector = false, hideHeading = false }: { siteId?: string; hideSelector?: boolean; hideHeading?: boolean } = {}) {
   const [selectedClient, setSelectedClient] = useState<Client>(() => clientEntities.find((client) => client.id === "demo")!);
   const [selectedSiteId, setSelectedSiteId] = useState(DEFAULT_SITE_ID);
+  const activeSiteId = controlledSiteId ?? selectedSiteId;
+  const activeClientEntity = controlledSiteId ? getClientForSite(controlledSiteId) ?? selectedClient : selectedClient;
 
   const handleClientChange = useCallback((nextClient: Client | null) => {
     if (!nextClient) return;
@@ -40,19 +44,19 @@ export default function ClientCmsPanel() {
   const rows = useMemo(
     () =>
       cmsEntries.flatMap((entry) => {
-        const value = entry.effectiveValue(selectedSiteId);
+        const value = entry.effectiveValue(activeSiteId);
         return value === "—"
           ? []
-          : [{ entry, value, overridden: entry.overridden(selectedSiteId) }];
+          : [{ entry: entry.id.startsWith("coverage-product-brochure-") ? { ...entry, type: /\.pdf(?:[?#]|$)/i.test(value) ? "Document" as const : "Link" as const } : entry, value, overridden: entry.overridden(activeSiteId) }];
       }),
-    [selectedSiteId],
+    [activeSiteId],
   );
 
   const overrideCount = rows.filter((r) => r.overridden).length;
 
   return (
     <Stack spacing={3}>
-      <Box>
+      {!hideHeading && <Box>
         <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>
           Client Content
         </Typography>
@@ -73,9 +77,9 @@ export default function ClientCmsPanel() {
           </Box>
           .
         </Typography>
-      </Box>
+      </Box>}
 
-      <Card
+      {!hideSelector && <Card
         sx={{
           border: "1px solid",
           borderColor: "divider",
@@ -94,7 +98,7 @@ export default function ClientCmsPanel() {
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mt: 2 }}>
             <Autocomplete
               options={clientEntities}
-              value={selectedClient}
+              value={activeClientEntity}
               onChange={(_, value) => handleClientChange(value)}
               disableClearable
               getOptionLabel={(option) => `${option.acronym} - ${option.name}`}
@@ -106,12 +110,12 @@ export default function ClientCmsPanel() {
               )}
             />
             <Autocomplete
-              options={getSitesForClient(selectedClient.id)}
-              value={getSitesForClient(selectedClient.id).find((s) => s.id === selectedSiteId) ?? getSitesForClient(selectedClient.id)[0]}
+              options={getSitesForClient(activeClientEntity.id)}
+              value={getSitesForClient(activeClientEntity.id).find((s) => s.id === activeSiteId) ?? getSitesForClient(activeClientEntity.id)[0]}
               onChange={(_, value) => handleSiteChange(value)}
               disableClearable
-              disabled={getSitesForClient(selectedClient.id).length <= 1}
-              getOptionLabel={(option) => option.name}
+              disabled={getSitesForClient(activeClientEntity.id).length <= 1}
+              getOptionLabel={(option) => getSiteAcronym(option.id)}
               getOptionKey={(option) => option.id}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               sx={{ flex: 1, maxWidth: 320 }}
@@ -119,7 +123,7 @@ export default function ClientCmsPanel() {
             />
           </Stack>
         </CardContent>
-      </Card>
+      </Card>}
 
       <Box
         sx={{
@@ -141,7 +145,7 @@ export default function ClientCmsPanel() {
         >
           <Stack direction="row" spacing={1} alignItems="center">
             <Typography variant="h6" component="h2" sx={{ fontWeight: 800 }}>
-              Content
+              {hideHeading ? "Content items" : "Content"}
             </Typography>
             <Chip label={rows.length} size="small" />
             {overrideCount > 0 && (

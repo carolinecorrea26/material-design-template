@@ -93,20 +93,20 @@ const includeMembershipField = (
 
 /** Site-authored overrides formerly held by the Membership-only adapter. */
 export const siteFieldOverrides: ScopedFieldOverride[] = [
-  hideMembershipTitle("demo-default"),
-  membershipOverride("demo-default", "membership", {
+  hideMembershipTitle("demo"),
+  membershipOverride("demo", "membership", {
     values: { label: "Are you an active member of Demo Insurance?" },
   }),
 
-  hideMembershipTitle("abe-default"),
-  membershipOverride("abe-default", "membership", {
+  hideMembershipTitle("abe"),
+  membershipOverride("abe", "membership", {
     values: {
       label:
         "Are you an active member of a State, Local, or Specialty Bar Association?",
     },
   }),
 
-  membershipOverride("ama-default", "membership", {
+  membershipOverride("ama", "membership", {
     values: {
       label: "I am a (select one)",
       inputType: "dropdown",
@@ -130,22 +130,22 @@ export const siteFieldOverrides: ScopedFieldOverride[] = [
     "ama-physician-email",
   ] as FieldId[]).map((fieldId) =>
     includeMembershipField(
-      "ama-default",
+      "ama",
       fieldId,
       "condition-membership-ama-spouse",
     ),
   ),
 
-  hideMembershipTitle("asce-default"),
-  membershipOverride("asce-default", "membership", {
+  hideMembershipTitle("asce"),
+  membershipOverride("asce", "membership", {
     values: {
       label: "Are you a member of the American Society of Civil Engineers?",
     },
   }),
-  includeMembershipField("asce-default", "asce-member-id"),
+  includeMembershipField("asce", "asce-member-id"),
 
-  hideMembershipTitle("avma-default"),
-  membershipOverride("avma-default", "membership", {
+  hideMembershipTitle("avma"),
+  membershipOverride("avma", "membership", {
     values: {
       label: "Are you a member of the American Veterinary Medical Association?",
     },
@@ -155,18 +155,18 @@ export const siteFieldOverrides: ScopedFieldOverride[] = [
     "avma-graduation-year",
     "avma-occupation",
   ] as FieldId[]).map((fieldId) =>
-    includeMembershipField("avma-default", fieldId),
+    includeMembershipField("avma", fieldId),
   ),
 
-  hideMembershipTitle("csea-default"),
-  membershipOverride("csea-default", "membership", {
-    values: { label: "Are you a member of the CSEA?" },
+  hideMembershipTitle("csea"),
+  membershipOverride("csea", "membership", {
+    values: { label: "Are you a member of the CSEA and presently performing all the duties of your occupation according to your regular schedule?" },
   }),
-  includeMembershipField("csea-default", "csea-performing-duties"),
-  includeMembershipField("csea-default", "csea-occupation-group"),
+  membershipOverride("csea", "csea-performing-duties", { hidden: true }),
+  includeMembershipField("csea", "csea-occupation-group"),
 
-  hideMembershipTitle("isitrust-default"),
-  membershipOverride("isitrust-default", "membership", {
+  hideMembershipTitle("isitrust"),
+  membershipOverride("isitrust", "membership", {
     values: {
       label: "I am a member of:",
       inputType: "searchable-select",
@@ -175,50 +175,50 @@ export const siteFieldOverrides: ScopedFieldOverride[] = [
     },
   }),
 
-  hideMembershipTitle("nso-default"),
-  membershipOverride("nso-default", "membership", {
+  hideMembershipTitle("nso"),
+  membershipOverride("nso", "membership", {
     values: { label: "Are you a nurse?" },
   }),
 
-  hideMembershipTitle("waepa-standard"),
-  membershipOverride("waepa-standard", "membership", {
+  hideMembershipTitle("waepa"),
+  membershipOverride("waepa", "membership", {
     values: {
       label:
         "Are you a current WAEPA member, or are you becoming a new member?",
       inputType: "radio",
       options: [
-        { label: "Current Member", value: "current" },
         { label: "New Member", value: "new" },
+        { label: "Current Member", value: "current" },
       ],
     },
   }),
   includeMembershipField(
-    "waepa-standard",
+    "waepa",
     "waepa-declaration",
     "condition-membership-waepa-new",
   ),
   includeMembershipField(
-    "waepa-standard",
+    "waepa",
     "waepa-attestation",
     "condition-membership-waepa-new",
   ),
   includeMembershipField(
-    "waepa-standard",
+    "waepa",
     "waepa-employer",
     "condition-waepa-federal-active",
   ),
   includeMembershipField(
-    "waepa-standard",
+    "waepa",
     "waepa-start-date",
     "condition-waepa-federal-active",
   ),
   includeMembershipField(
-    "waepa-standard",
+    "waepa",
     "waepa-retired-employer",
     "condition-waepa-federal-annuitant",
   ),
   includeMembershipField(
-    "waepa-standard",
+    "waepa",
     "waepa-retirement-date",
     "condition-waepa-federal-annuitant",
   ),
@@ -228,11 +228,13 @@ export const siteFieldOverrides: ScopedFieldOverride[] = [
     "waepa-member-id",
   ] as FieldId[]).map((fieldId) =>
     includeMembershipField(
-      "waepa-standard",
+      "waepa",
       fieldId,
       "condition-waepa-associated-member",
     ),
   ),
+
+  includeMembershipField("waepa", "active-military"),
 
   hideMembershipTitle("waepa-gi"),
 ];

@@ -1,0 +1,478 @@
+erDiagram
+  public_aggregate_limits
+  public_amount_bands
+  public_amount_options
+  public_analytics_measurements
+  public_analytics_metrics
+  public_analytics_tags
+  public_applicant_types
+  public_applicants
+  public_application_applicants
+  public_application_associations
+  public_application_events
+  public_application_participants
+  public_applications
+  public_associations
+  public_audit_events
+  public_benefit_caps
+  public_benefit_period_options
+  public_branding_profiles
+  public_change_items
+  public_change_requests
+  public_client_environment_links
+  public_clients
+  public_components
+  public_conditions
+  public_configuration_definitions
+  public_configuration_values
+  public_content_entries
+  public_content_values
+  public_coverage_amount_patterns
+  public_coverage_categories
+  public_coverage_dependencies
+  public_coverage_plan_definitions
+  public_coverage_plan_variants
+  public_document_definitions
+  public_eligibility_constraints
+  public_email_templates
+  public_features
+  public_fields
+  public_flag_assignments
+  public_flag_definitions
+  public_flag_rules
+  public_flag_values
+  public_flow_steps
+  public_flow_transitions
+  public_flows
+  public_identity_resolutions
+  public_maximum_plan_rules
+  public_migration_schedules
+  public_organization_profiles
+  public_organizations
+  public_page_fields
+  public_page_section_fields
+  public_page_sections
+  public_pages
+  public_pattern_assignments
+  public_pattern_conditions
+  public_pattern_configuration_definitions
+  public_pattern_coverage_categories
+  public_pattern_flag_definitions
+  public_pattern_flows
+  public_pattern_products
+  public_pattern_question_sets
+  public_pattern_rules
+  public_patterns
+  public_plan_amount_rules
+  public_plan_benefit_periods
+  public_portal_admin_accounts
+  public_portal_library_drafts
+  public_portal_library_heads
+  public_portal_library_publication_audit
+  public_portal_library_readiness
+  public_portal_library_releases
+  public_product_amount_rules
+  public_product_applicant_eligibility
+  public_product_clients
+  public_product_configuration_values
+  public_product_coverage_plans
+  public_product_identifiers
+  public_product_question_sets
+  public_product_rate_tables
+  public_product_riders
+  public_products
+  public_provenance_tags
+  public_question_definitions
+  public_question_set_fields
+  public_question_set_questions
+  public_question_sets
+  public_rate_table_presentations
+  public_rate_tables
+  public_release_changes
+  public_releases
+  public_requirement_targets
+  public_residency_jurisdictions
+  public_residency_rules
+  public_rider_amount_rules
+  public_riders
+  public_roles
+  public_rule_actions
+  public_rule_assignments
+  public_rule_conditions
+  public_rule_flags
+  public_rule_predicates
+  public_rules
+  public_semantic_requirements
+  public_site_associations
+  public_site_builder_drafts
+  public_site_configurations
+  public_site_coverages
+  public_site_documents
+  public_site_email_templates
+  public_site_environment_links
+  public_site_features
+  public_site_field_configurations
+  public_site_flows
+  public_site_pages
+  public_site_policies
+  public_site_product_applicants
+  public_site_products
+  public_site_riders
+  public_site_url_parameters
+  public_sites
+  public_source_requirements
+  public_source_sheets
+  public_source_workbooks
+  public_structured_rule_actions
+  public_support_profiles
+  public_underwriting_bands
+  public_url_definitions
+  public_url_parameter_values
+  public_url_parameters
+  public_url_usages
+  public_user_roles
+  public_user_scopes
+  public_users
+  public_validation_rules
+  public_provenance_tags |o--o{ public_organizations : "provided_by to key"
+  public_organizations ||--o{ public_clients : "organization_id to id"
+  public_provenance_tags |o--o{ public_clients : "provided_by to key"
+  public_clients ||--o{ public_sites : "client_id to id"
+  public_provenance_tags |o--o{ public_sites : "provided_by to key"
+  public_sites ||--o{ public_site_coverages : "site_id to id"
+  public_provenance_tags |o--o{ public_site_coverages : "provided_by to key"
+  public_sites ||--o{ public_site_products : "site_id to id"
+  public_provenance_tags |o--o{ public_site_products : "provided_by to key"
+  public_sites ||--o{ public_site_riders : "site_id to id"
+  public_provenance_tags |o--o{ public_site_riders : "provided_by to key"
+  public_sites ||--o{ public_site_configurations : "site_id to id"
+  public_sites ||--o{ public_applications : "site_id to id"
+  public_applications ||--o{ public_application_participants : "application_id to id"
+  public_users |o--o{ public_application_participants : "user_id to id"
+  public_applications ||--o{ public_application_events : "application_id to id"
+  public_releases |o--o{ public_change_requests : "target_release_id to id"
+  public_change_requests ||--o{ public_change_items : "change_request_id to id"
+  public_sites |o--o{ public_change_items : "site_id to id"
+  public_releases ||--o{ public_release_changes : "release_id to id"
+  public_change_requests ||--o{ public_release_changes : "change_request_id to id"
+  public_clients |o--o{ public_site_builder_drafts : "client_id to id"
+  public_users ||--o{ public_user_roles : "user_id to id"
+  public_roles ||--o{ public_user_roles : "role_id to id"
+  public_users ||--o{ public_user_scopes : "user_id to id"
+  public_change_requests |o--o{ public_audit_events : "change_request_id to id"
+  public_analytics_metrics ||--o{ public_analytics_measurements : "metric_key to metric_key"
+  public_sites |o--o{ public_analytics_measurements : "site_id to id"
+  public_clients |o--o{ public_analytics_measurements : "client_id to id"
+  public_organizations ||--o| public_organization_profiles : "organization_key to key"
+  public_provenance_tags |o--o{ public_organization_profiles : "provided_by to key"
+  public_clients ||--o{ public_associations : "client_key to key"
+  public_provenance_tags |o--o{ public_associations : "provided_by to key"
+  public_provenance_tags |o--o{ public_pages : "provided_by to key"
+  public_pages ||--o{ public_page_sections : "page_key to key"
+  public_provenance_tags |o--o{ public_page_sections : "provided_by to key"
+  public_provenance_tags |o--o{ public_fields : "provided_by to key"
+  public_pages ||--o{ public_page_fields : "page_key to key"
+  public_fields ||--o{ public_page_fields : "field_key to key"
+  public_provenance_tags |o--o{ public_page_fields : "provided_by to key"
+  public_provenance_tags |o--o{ public_coverage_categories : "provided_by to key"
+  public_coverage_categories ||--o{ public_products : "category_key to key"
+  public_provenance_tags |o--o{ public_products : "provided_by to key"
+  public_provenance_tags |o--o{ public_riders : "provided_by to key"
+  public_products ||--o{ public_product_riders : "product_key to key"
+  public_riders ||--o{ public_product_riders : "rider_key to key"
+  public_clients |o--o{ public_product_riders : "client_key to key"
+  public_sites |o--o{ public_product_riders : "site_key to key"
+  public_provenance_tags |o--o{ public_product_riders : "provided_by to key"
+  public_products ||--o{ public_product_identifiers : "product_key to key"
+  public_clients |o--o{ public_product_identifiers : "client_key to key"
+  public_sites |o--o{ public_product_identifiers : "site_key to key"
+  public_provenance_tags |o--o{ public_product_identifiers : "provided_by to key"
+  public_provenance_tags |o--o{ public_applicant_types : "provided_by to key"
+  public_provenance_tags |o--o{ public_conditions : "provided_by to key"
+  public_provenance_tags |o--o{ public_rules : "provided_by to key"
+  public_rules ||--o{ public_rule_conditions : "rule_key to key"
+  public_conditions ||--o{ public_rule_conditions : "condition_key to key"
+  public_provenance_tags |o--o{ public_rule_conditions : "provided_by to key"
+  public_rules ||--o{ public_rule_actions : "rule_key to key"
+  public_provenance_tags |o--o{ public_rule_actions : "provided_by to key"
+  public_provenance_tags |o--o{ public_flows : "provided_by to key"
+  public_flows ||--o{ public_flow_steps : "flow_key to key"
+  public_provenance_tags |o--o{ public_flow_steps : "provided_by to key"
+  public_flows ||--o{ public_flow_transitions : "flow_key to key"
+  public_flow_steps ||--o{ public_flow_transitions : "source_step_key to key"
+  public_flow_steps ||--o{ public_flow_transitions : "target_step_key to key"
+  public_provenance_tags |o--o{ public_flow_transitions : "provided_by to key"
+  public_flow_steps ||--o{ public_flow_transitions : "flow_key+source_step_key to flow_key+key"
+  public_flow_steps ||--o{ public_flow_transitions : "flow_key+target_step_key to flow_key+key"
+  public_provenance_tags |o--o{ public_features : "provided_by to key"
+  public_provenance_tags |o--o{ public_configuration_definitions : "provided_by to key"
+  public_provenance_tags |o--o{ public_content_entries : "provided_by to key"
+  public_provenance_tags |o--o{ public_email_templates : "provided_by to key"
+  public_provenance_tags |o--o{ public_document_definitions : "provided_by to key"
+  public_fields ||--o{ public_validation_rules : "field_key to key"
+  public_provenance_tags |o--o{ public_validation_rules : "provided_by to key"
+  public_sites ||--o{ public_site_associations : "site_key to key"
+  public_associations ||--o{ public_site_associations : "association_key to key"
+  public_provenance_tags |o--o{ public_site_associations : "provided_by to key"
+  public_sites ||--o{ public_site_pages : "site_key to key"
+  public_pages ||--o{ public_site_pages : "page_key to key"
+  public_provenance_tags |o--o{ public_site_pages : "provided_by to key"
+  public_pages ||--o{ public_site_field_configurations : "page_key to key"
+  public_fields ||--o{ public_site_field_configurations : "field_key to key"
+  public_clients |o--o{ public_site_field_configurations : "client_key to key"
+  public_sites |o--o{ public_site_field_configurations : "site_key to key"
+  public_provenance_tags |o--o{ public_site_field_configurations : "provided_by to key"
+  public_sites ||--o{ public_site_product_applicants : "site_key to key"
+  public_products ||--o{ public_site_product_applicants : "product_key to key"
+  public_applicant_types ||--o{ public_site_product_applicants : "applicant_key to key"
+  public_provenance_tags |o--o{ public_site_product_applicants : "provided_by to key"
+  public_sites ||--o{ public_site_features : "site_key to key"
+  public_features ||--o{ public_site_features : "feature_key to key"
+  public_provenance_tags |o--o{ public_site_features : "provided_by to key"
+  public_flows ||--o{ public_site_flows : "flow_key to key"
+  public_clients |o--o{ public_site_flows : "client_key to key"
+  public_sites |o--o{ public_site_flows : "site_key to key"
+  public_provenance_tags |o--o{ public_site_flows : "provided_by to key"
+  public_rules ||--o{ public_rule_assignments : "rule_key to key"
+  public_clients |o--o{ public_rule_assignments : "client_key to key"
+  public_sites |o--o{ public_rule_assignments : "site_key to key"
+  public_provenance_tags |o--o{ public_rule_assignments : "provided_by to key"
+  public_configuration_definitions ||--o{ public_configuration_values : "configuration_key to key"
+  public_clients |o--o{ public_configuration_values : "client_key to key"
+  public_sites |o--o{ public_configuration_values : "site_key to key"
+  public_provenance_tags |o--o{ public_configuration_values : "provided_by to key"
+  public_content_entries ||--o{ public_content_values : "content_key to key"
+  public_clients |o--o{ public_content_values : "client_key to key"
+  public_sites |o--o{ public_content_values : "site_key to key"
+  public_provenance_tags |o--o{ public_content_values : "provided_by to key"
+  public_clients |o--o{ public_branding_profiles : "client_key to key"
+  public_sites |o--o{ public_branding_profiles : "site_key to key"
+  public_provenance_tags |o--o{ public_branding_profiles : "provided_by to key"
+  public_clients |o--o{ public_support_profiles : "client_key to key"
+  public_sites |o--o{ public_support_profiles : "site_key to key"
+  public_provenance_tags |o--o{ public_support_profiles : "provided_by to key"
+  public_sites ||--o{ public_site_email_templates : "site_key to key"
+  public_email_templates ||--o{ public_site_email_templates : "email_template_key to key"
+  public_provenance_tags |o--o{ public_site_email_templates : "provided_by to key"
+  public_sites ||--o{ public_site_documents : "site_key to key"
+  public_document_definitions ||--o{ public_site_documents : "document_key to key"
+  public_provenance_tags |o--o{ public_site_documents : "provided_by to key"
+  public_sites ||--o| public_site_policies : "site_key to key"
+  public_provenance_tags |o--o{ public_site_policies : "provided_by to key"
+  public_sites ||--o{ public_site_environment_links : "site_key to key"
+  public_provenance_tags |o--o{ public_site_environment_links : "provided_by to key"
+  public_provenance_tags |o--o{ public_provenance_tags : "provided_by to key"
+  public_provenance_tags |o--o{ public_source_workbooks : "provided_by to key"
+  public_source_workbooks ||--o{ public_source_sheets : "workbook_key to key"
+  public_provenance_tags |o--o{ public_source_sheets : "provided_by to key"
+  public_source_sheets ||--o{ public_source_requirements : "sheet_key to key"
+  public_provenance_tags |o--o{ public_source_requirements : "provided_by to key"
+  public_provenance_tags |o--o{ public_patterns : "provided_by to key"
+  public_provenance_tags |o--o{ public_flag_definitions : "provided_by to key"
+  public_flag_definitions ||--o{ public_flag_values : "flag_key to key"
+  public_provenance_tags |o--o{ public_flag_values : "provided_by to key"
+  public_flag_definitions ||--o{ public_flag_assignments : "flag_key to key"
+  public_clients |o--o{ public_flag_assignments : "client_key to key"
+  public_sites |o--o{ public_flag_assignments : "site_key to key"
+  public_products |o--o{ public_flag_assignments : "product_key to key"
+  public_coverage_categories |o--o{ public_flag_assignments : "coverage_key to key"
+  public_riders |o--o{ public_flag_assignments : "rider_key to key"
+  public_applicant_types |o--o{ public_flag_assignments : "applicant_key to key"
+  public_applications |o--o{ public_flag_assignments : "application_id to id"
+  public_provenance_tags |o--o{ public_flag_assignments : "provided_by to key"
+  public_flag_definitions ||--o{ public_flag_rules : "flag_key to key"
+  public_conditions ||--o{ public_flag_rules : "condition_key to key"
+  public_provenance_tags |o--o{ public_flag_rules : "provided_by to key"
+  public_rules ||--o{ public_rule_flags : "rule_key to key"
+  public_flag_definitions ||--o{ public_rule_flags : "flag_key to key"
+  public_provenance_tags |o--o{ public_rule_flags : "provided_by to key"
+  public_rules ||--o{ public_rule_predicates : "rule_key to key"
+  public_provenance_tags |o--o{ public_rule_predicates : "provided_by to key"
+  public_rules ||--o{ public_structured_rule_actions : "rule_key to key"
+  public_provenance_tags |o--o{ public_structured_rule_actions : "provided_by to key"
+  public_products ||--o{ public_product_configuration_values : "product_key to key"
+  public_configuration_definitions ||--o{ public_product_configuration_values : "configuration_key to key"
+  public_provenance_tags |o--o{ public_product_configuration_values : "provided_by to key"
+  public_products ||--o{ public_product_clients : "product_key to key"
+  public_clients ||--o{ public_product_clients : "client_key to key"
+  public_provenance_tags |o--o{ public_product_clients : "provided_by to key"
+  public_provenance_tags |o--o{ public_coverage_plan_definitions : "provided_by to key"
+  public_coverage_plan_definitions ||--o{ public_coverage_plan_variants : "plan_key to key"
+  public_applicant_types |o--o{ public_coverage_plan_variants : "applicant_type_key to key"
+  public_provenance_tags |o--o{ public_coverage_plan_variants : "provided_by to key"
+  public_products ||--o{ public_product_coverage_plans : "product_key to key"
+  public_coverage_plan_definitions ||--o{ public_product_coverage_plans : "plan_key to key"
+  public_applicant_types ||--o{ public_product_coverage_plans : "applicant_type_key to key"
+  public_provenance_tags |o--o{ public_product_coverage_plans : "provided_by to key"
+  public_coverage_plan_variants ||--o{ public_plan_benefit_periods : "variant_key to key"
+  public_provenance_tags |o--o{ public_plan_benefit_periods : "provided_by to key"
+  public_patterns ||--o{ public_pattern_assignments : "pattern_key to key"
+  public_clients |o--o{ public_pattern_assignments : "client_key to key"
+  public_sites |o--o{ public_pattern_assignments : "site_key to key"
+  public_products |o--o{ public_pattern_assignments : "product_key to key"
+  public_applicant_types |o--o{ public_pattern_assignments : "applicant_key to key"
+  public_provenance_tags |o--o{ public_pattern_assignments : "provided_by to key"
+  public_patterns ||--o{ public_pattern_rules : "pattern_key to key"
+  public_rules ||--o{ public_pattern_rules : "related_key to key"
+  public_provenance_tags |o--o{ public_pattern_rules : "provided_by to key"
+  public_patterns ||--o{ public_pattern_conditions : "pattern_key to key"
+  public_conditions ||--o{ public_pattern_conditions : "related_key to key"
+  public_provenance_tags |o--o{ public_pattern_conditions : "provided_by to key"
+  public_patterns ||--o{ public_pattern_flag_definitions : "pattern_key to key"
+  public_flag_definitions ||--o{ public_pattern_flag_definitions : "related_key to key"
+  public_provenance_tags |o--o{ public_pattern_flag_definitions : "provided_by to key"
+  public_patterns ||--o{ public_pattern_flows : "pattern_key to key"
+  public_flows ||--o{ public_pattern_flows : "related_key to key"
+  public_provenance_tags |o--o{ public_pattern_flows : "provided_by to key"
+  public_patterns ||--o{ public_pattern_products : "pattern_key to key"
+  public_products ||--o{ public_pattern_products : "related_key to key"
+  public_provenance_tags |o--o{ public_pattern_products : "provided_by to key"
+  public_patterns ||--o{ public_pattern_coverage_categories : "pattern_key to key"
+  public_coverage_categories ||--o{ public_pattern_coverage_categories : "related_key to key"
+  public_provenance_tags |o--o{ public_pattern_coverage_categories : "provided_by to key"
+  public_patterns ||--o{ public_pattern_configuration_definitions : "pattern_key to key"
+  public_configuration_definitions ||--o{ public_pattern_configuration_definitions : "related_key to key"
+  public_provenance_tags |o--o{ public_pattern_configuration_definitions : "provided_by to key"
+  public_patterns ||--o{ public_coverage_amount_patterns : "pattern_key to key"
+  public_products |o--o{ public_coverage_amount_patterns : "base_product_key to key"
+  public_applicant_types |o--o{ public_coverage_amount_patterns : "base_applicant_key to key"
+  public_provenance_tags |o--o{ public_coverage_amount_patterns : "provided_by to key"
+  public_coverage_amount_patterns ||--o{ public_amount_options : "amount_pattern_key to key"
+  public_provenance_tags |o--o{ public_amount_options : "provided_by to key"
+  public_coverage_amount_patterns ||--o{ public_amount_bands : "amount_pattern_key to key"
+  public_conditions |o--o{ public_amount_bands : "condition_key to key"
+  public_provenance_tags |o--o{ public_amount_bands : "provided_by to key"
+  public_products ||--o{ public_product_amount_rules : "product_key to key"
+  public_applicant_types |o--o{ public_product_amount_rules : "applicant_type_key to key"
+  public_coverage_amount_patterns ||--o{ public_product_amount_rules : "amount_pattern_key to key"
+  public_conditions |o--o{ public_product_amount_rules : "condition_key to key"
+  public_clients |o--o{ public_product_amount_rules : "client_key to key"
+  public_sites |o--o{ public_product_amount_rules : "site_key to key"
+  public_provenance_tags |o--o{ public_product_amount_rules : "provided_by to key"
+  public_products ||--o{ public_product_applicant_eligibility : "product_key to key"
+  public_applicant_types ||--o{ public_product_applicant_eligibility : "applicant_type_key to key"
+  public_sites |o--o{ public_product_applicant_eligibility : "site_key to key"
+  public_conditions |o--o{ public_product_applicant_eligibility : "condition_key to key"
+  public_provenance_tags |o--o{ public_product_applicant_eligibility : "provided_by to key"
+  public_riders ||--o{ public_rider_amount_rules : "rider_key to key"
+  public_applicant_types |o--o{ public_rider_amount_rules : "applicant_type_key to key"
+  public_coverage_amount_patterns ||--o{ public_rider_amount_rules : "amount_pattern_key to key"
+  public_products |o--o{ public_rider_amount_rules : "base_product_key to key"
+  public_conditions |o--o{ public_rider_amount_rules : "condition_key to key"
+  public_provenance_tags |o--o{ public_rider_amount_rules : "provided_by to key"
+  public_coverage_categories |o--o{ public_aggregate_limits : "category_key to key"
+  public_products |o--o{ public_aggregate_limits : "product_key to key"
+  public_applicant_types |o--o{ public_aggregate_limits : "applicant_type_key to key"
+  public_conditions |o--o{ public_aggregate_limits : "condition_key to key"
+  public_sites |o--o{ public_aggregate_limits : "site_key to key"
+  public_provenance_tags |o--o{ public_aggregate_limits : "provided_by to key"
+  public_products ||--o{ public_underwriting_bands : "product_key to key"
+  public_applicant_types |o--o{ public_underwriting_bands : "applicant_type_key to key"
+  public_sites |o--o{ public_underwriting_bands : "site_key to key"
+  public_conditions |o--o{ public_underwriting_bands : "condition_key to key"
+  public_provenance_tags |o--o{ public_underwriting_bands : "provided_by to key"
+  public_sites |o--o{ public_residency_rules : "site_key to key"
+  public_products |o--o{ public_residency_rules : "product_key to key"
+  public_riders |o--o{ public_residency_rules : "rider_key to key"
+  public_conditions |o--o{ public_residency_rules : "condition_key to key"
+  public_provenance_tags |o--o{ public_residency_rules : "provided_by to key"
+  public_residency_rules ||--o{ public_residency_jurisdictions : "residency_rule_key to key"
+  public_provenance_tags |o--o{ public_residency_jurisdictions : "provided_by to key"
+  public_products ||--o{ public_benefit_period_options : "product_key to key"
+  public_sites |o--o{ public_benefit_period_options : "site_key to key"
+  public_applicant_types |o--o{ public_benefit_period_options : "applicant_type_key to key"
+  public_provenance_tags |o--o{ public_benefit_period_options : "provided_by to key"
+  public_products ||--o{ public_eligibility_constraints : "product_key to key"
+  public_sites |o--o{ public_eligibility_constraints : "site_key to key"
+  public_applicant_types ||--o{ public_eligibility_constraints : "applicant_type_key to key"
+  public_provenance_tags |o--o{ public_eligibility_constraints : "provided_by to key"
+  public_products ||--o{ public_coverage_dependencies : "product_key to key"
+  public_sites |o--o{ public_coverage_dependencies : "site_key to key"
+  public_applicant_types ||--o{ public_coverage_dependencies : "applicant_type_key to key"
+  public_applicant_types ||--o{ public_coverage_dependencies : "requires_applicant_key to key"
+  public_coverage_categories ||--o{ public_coverage_dependencies : "category_key to key"
+  public_provenance_tags |o--o{ public_coverage_dependencies : "provided_by to key"
+  public_products ||--o{ public_maximum_plan_rules : "product_key to key"
+  public_sites |o--o{ public_maximum_plan_rules : "site_key to key"
+  public_applicant_types ||--o{ public_maximum_plan_rules : "applicant_type_key to key"
+  public_coverage_categories ||--o{ public_maximum_plan_rules : "category_key to key"
+  public_provenance_tags |o--o{ public_maximum_plan_rules : "provided_by to key"
+  public_aggregate_limits ||--o{ public_benefit_caps : "aggregate_limit_key to key"
+  public_provenance_tags |o--o{ public_benefit_caps : "provided_by to key"
+  public_provenance_tags |o--o{ public_question_sets : "provided_by to key"
+  public_provenance_tags |o--o{ public_question_definitions : "provided_by to key"
+  public_question_sets ||--o{ public_question_set_questions : "question_set_key to key"
+  public_question_definitions ||--o{ public_question_set_questions : "question_key to key"
+  public_conditions |o--o{ public_question_set_questions : "condition_key to key"
+  public_provenance_tags |o--o{ public_question_set_questions : "provided_by to key"
+  public_question_sets ||--o{ public_question_set_fields : "question_set_key to key"
+  public_fields ||--o{ public_question_set_fields : "field_key to key"
+  public_conditions |o--o{ public_question_set_fields : "condition_key to key"
+  public_provenance_tags |o--o{ public_question_set_fields : "provided_by to key"
+  public_provenance_tags |o--o{ public_rate_tables : "provided_by to key"
+  public_products ||--o{ public_product_rate_tables : "product_key to key"
+  public_rate_tables ||--o{ public_product_rate_tables : "rate_table_key to key"
+  public_sites |o--o{ public_product_rate_tables : "site_key to key"
+  public_conditions |o--o{ public_product_rate_tables : "condition_key to key"
+  public_provenance_tags |o--o{ public_product_rate_tables : "provided_by to key"
+  public_rate_tables ||--o{ public_rate_table_presentations : "rate_table_key to key"
+  public_sites |o--o{ public_rate_table_presentations : "site_key to key"
+  public_products |o--o{ public_rate_table_presentations : "product_key to key"
+  public_flag_definitions |o--o{ public_rate_table_presentations : "flag_key to key"
+  public_provenance_tags |o--o{ public_rate_table_presentations : "provided_by to key"
+  public_provenance_tags |o--o{ public_url_parameters : "provided_by to key"
+  public_sites ||--o{ public_site_url_parameters : "site_key to key"
+  public_url_parameters ||--o{ public_site_url_parameters : "url_parameter_key to key"
+  public_provenance_tags |o--o{ public_site_url_parameters : "provided_by to key"
+  public_clients ||--o{ public_client_environment_links : "client_key to key"
+  public_provenance_tags |o--o{ public_client_environment_links : "provided_by to key"
+  public_url_parameters ||--o{ public_url_parameter_values : "url_parameter_key to key"
+  public_provenance_tags |o--o{ public_url_parameter_values : "provided_by to key"
+  public_page_sections ||--o{ public_page_section_fields : "section_key to key"
+  public_fields ||--o{ public_page_section_fields : "field_key to key"
+  public_provenance_tags |o--o{ public_page_section_fields : "provided_by to key"
+  public_source_requirements ||--o{ public_requirement_targets : "requirement_key to key"
+  public_provenance_tags |o--o{ public_requirement_targets : "provided_by to key"
+  public_provenance_tags |o--o{ public_semantic_requirements : "provided_by to key"
+  public_source_sheets ||--o{ public_identity_resolutions : "sheet_key to key"
+  public_products |o--o{ public_identity_resolutions : "product_key to key"
+  public_provenance_tags |o--o{ public_identity_resolutions : "provided_by to key"
+  public_provenance_tags |o--o{ public_url_definitions : "provided_by to key"
+  public_url_definitions ||--o{ public_url_usages : "url_key to key"
+  public_clients |o--o{ public_url_usages : "client_key to key"
+  public_provenance_tags |o--o{ public_url_usages : "provided_by to key"
+  public_products ||--o{ public_product_question_sets : "product_key to key"
+  public_question_sets ||--o{ public_product_question_sets : "question_set_key to key"
+  public_applicant_types |o--o{ public_product_question_sets : "applicant_type_key to key"
+  public_provenance_tags |o--o{ public_product_question_sets : "provided_by to key"
+  public_coverage_plan_variants ||--o{ public_plan_amount_rules : "variant_key to key"
+  public_coverage_amount_patterns ||--o{ public_plan_amount_rules : "amount_pattern_key to key"
+  public_conditions |o--o{ public_plan_amount_rules : "condition_key to key"
+  public_provenance_tags |o--o{ public_plan_amount_rules : "provided_by to key"
+  public_patterns ||--o{ public_pattern_question_sets : "pattern_key to key"
+  public_question_sets ||--o{ public_pattern_question_sets : "related_key to key"
+  public_provenance_tags |o--o{ public_pattern_question_sets : "provided_by to key"
+  auth_users ||--o| public_portal_admin_accounts : "user_id to id"
+  public_sites ||--o{ public_portal_library_drafts : "site_key to key"
+  auth_users ||--o{ public_portal_library_drafts : "owner_id to id"
+  public_portal_library_releases |o--o{ public_portal_library_drafts : "base_release_id to id"
+  public_sites ||--o{ public_portal_library_releases : "site_key to key"
+  public_portal_library_drafts ||--o{ public_portal_library_releases : "draft_id to id"
+  auth_users ||--o{ public_portal_library_releases : "published_by to id"
+  public_sites ||--o| public_portal_library_heads : "site_key to key"
+  public_portal_library_releases |o--o{ public_portal_library_heads : "release_id to id"
+  public_sites ||--o{ public_portal_library_readiness : "site_key to key"
+  public_sites ||--o{ public_portal_library_publication_audit : "site_key to key"
+  auth_users ||--o{ public_portal_library_publication_audit : "actor_id to id"
+  public_portal_library_drafts |o--o{ public_portal_library_publication_audit : "draft_id to id"
+  public_portal_library_releases |o--o{ public_portal_library_publication_audit : "previous_release_id to id"
+  public_portal_library_releases |o--o{ public_portal_library_publication_audit : "release_id to id"
+  public_provenance_tags |o--o{ public_components : "provided_by to key"
+  public_clients ||--o{ public_applicants : "client_id to id"
+  public_applicant_types ||--o{ public_application_applicants : "applicant_type_key to key"
+  public_applications ||--o{ public_application_applicants : "application_id+site_id to id+site_id"
+  public_sites ||--o{ public_application_applicants : "site_id+client_id to id+client_id"
+  public_applicants ||--o{ public_application_applicants : "applicant_id+client_id to id+client_id"
+  public_applications ||--o| public_application_associations : "application_id+site_id to id+site_id"
+  public_sites ||--o{ public_application_associations : "site_id+site_key to id+key"
+  public_site_associations ||--o{ public_application_associations : "site_key+association_key to site_key+association_key"

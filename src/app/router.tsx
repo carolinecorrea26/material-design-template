@@ -1,10 +1,14 @@
+import ErrorPage from "../pages/ErrorPage";
+import IssueLogWorkspace from "../pages/admin/IssueLogWorkspace";
+import AdminPlaceholder from "../pages/admin/AdminPlaceholder";
+import AccountSettings from "../pages/admin/AccountSettings";
 // src/app/router.tsx
 
 import type { ComponentType } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import AppShell, { type AppShellVariant } from "../components/layout/AppShell";
 import InternalPageShell from "../components/layout/InternalPageShell";
-import { getPagePath, pages } from "../config/pages";
+import { getPagePath, getConfiguredPages } from "../config/pages";
 import type { PageId } from "../types";
 import Home from "../pages/Home";
 import Membership from "../pages/Membership";
@@ -38,6 +42,7 @@ import PortalRequirementsProject from "../pages/PortalRequirementsProject";
 import Cms from "../pages/Cms";
 import AdminCenterShell from "../components/admin/AdminCenterShell";
 import AdminHome from "../pages/admin/AdminHome";
+import MigrationScheduleWorkspace from "../pages/admin/MigrationScheduleWorkspace";
 import SitesWorkspace from "../pages/admin/SitesWorkspace";
 import PortalLibrary from "../pages/admin/PortalLibrary";
 import ChangesWorkspace from "../pages/admin/ChangesWorkspace";
@@ -45,6 +50,9 @@ import ReleasesWorkspace from "../pages/admin/ReleasesWorkspace";
 import SiteBuilderWorkspace from "../pages/admin/SiteBuilderWorkspace";
 import ApplicationsWorkspace from "../pages/admin/ApplicationsWorkspace";
 import AnalyticsWorkspace from "../pages/admin/AnalyticsWorkspace";
+import AccessibilityWorkspace from "../pages/admin/AccessibilityWorkspace";
+import { getFormTemplate } from "../config/template/resolveTemplate";
+import { getResolvedFormFlow } from "../config/formFlow";
 import AdministrationWorkspace from "../pages/admin/AdministrationWorkspace";
 
 /**
@@ -84,41 +92,8 @@ const pageComponents: Record<PageId, ComponentType> = {
   cms: Cms,
 };
 
-/** Pages that get their own route. */
-const routedPageIds: PageId[] = [
-  "home",
-  "membership",
-  "eligibility",
-  "coverage",
-  "beneficiary",
-  "contact",
-  "profile",
-  "review",
-  "docusign",
-  "health-si",
-  "health-li",
-  "health-qd",
-  "health-di",
-  "health-cir",
-  "payment",
-  "receipt",
-  "resume",
-  "resume-method",
-  "resume-code",
-  "advisor-login",
-  "advisor-send-confirmation",
-  "application-edit-confirmation",
-  "mock-email-preview",
-  "site-features",
-  "site-details",
-  "design-system",
-  "portal-admin",
-  "portal-template-project",
-  "portal-requirements-project",
-  "cms",
-];
-
-const pageTypeById = new Map(pages.map((page) => [page.id, page.type]));
+const configuredPages = getConfiguredPages();
+const pageTypeById = new Map(configuredPages.map(page => [page.id, page.type]));
 
 const pageVariants: Partial<Record<PageId, AppShellVariant>> = {
   home: "homepage",
@@ -132,20 +107,26 @@ const pageVariants: Partial<Record<PageId, AppShellVariant>> = {
 
 export const router = createBrowserRouter(
   [
-    ...routedPageIds.map((pageId) => {
+    { path: "/404", element: <AppShell variant="resumeEmailCode"><ErrorPage status={404} /></AppShell> },
+    { path: "/500", element: <AppShell variant="resumeEmailCode"><ErrorPage status={500} /></AppShell> },
+    { path: "*", element: <AppShell variant="resumeEmailCode"><ErrorPage status={404} /></AppShell> },
+    ...configuredPages.map(({ id: pageId }) => {
     const PageComponent = pageComponents[pageId];
+    if (!PageComponent) throw new Error(`No renderer registered for stored page: ${pageId}`);
     const variant = pageVariants[pageId] ?? "applicationForm";
+    const isSingleApplication = getFormTemplate() === "single" && getResolvedFormFlow().includes(pageId);
 
     return {
       path: getPagePath(pageId),
+      errorElement: <AppShell variant="resumeEmailCode"><ErrorPage status={500} /></AppShell>,
       element:
         pageTypeById.get(pageId) === "internal" ? (
           <InternalPageShell pageId={pageId}>
             <PageComponent />
           </InternalPageShell>
         ) : (
-          <AppShell variant={variant}>
-            <PageComponent />
+          <AppShell variant={isSingleApplication ? "homepage" : variant}>
+            {isSingleApplication ? <Home initialFormPageId={pageId} /> : <PageComponent />}
           </AppShell>
         ),
     };
@@ -155,6 +136,11 @@ export const router = createBrowserRouter(
       element: <AdminCenterShell />,
       children: [
         { index: true, element: <AdminHome /> },
+        { path: "account", element: <AccountSettings /> },
+        { path: "account/profile", element: <AccountSettings /> },
+        { path: "account/settings", element: <AccountSettings /> },
+        ...['TPA Admin', 'Customer Admin', 'Advisor Admin', 'Adobe Analytics', 'Contentsquare'].map(title => ({ path: title.toLowerCase().replaceAll(' ', '-'), element: <AdminPlaceholder title={title} /> })),
+        { path: "migration-schedule", element: <MigrationScheduleWorkspace /> },
         { path: "sites", element: <SitesWorkspace /> },
         { path: "library", element: <PortalLibrary /> },
         { path: "library/:domainId", element: <PortalLibrary /> },
@@ -166,6 +152,8 @@ export const router = createBrowserRouter(
         { path: "applications", element: <ApplicationsWorkspace /> },
         { path: "applications/:applicationId", element: <ApplicationsWorkspace /> },
         { path: "analytics", element: <AnalyticsWorkspace /> },
+        { path: "issue-log", element: <IssueLogWorkspace /> },
+        { path: "accessibility", element: <AccessibilityWorkspace /> },
         { path: "administration", element: <AdministrationWorkspace /> },
       ],
     },

@@ -1,12 +1,15 @@
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
+import { applicantRecovery, readSavedApplication } from '../services/applicantSaveService';
 import theme from "../app/theme";
 import {
   getActiveSite,
   getClientForSite,
-  getLegacyClientConfigForSite,
-  getSiteIdForLegacyClient,
+  getTpaForClient,
+  getSiteIdForClientAlias,
   resolveActiveAssociationFromApplication,
   resolveEffectiveBranding,
+  resolveSiteEmailConfiguration,
+  resolveSiteSupport,
   resolveSiteCoverage,
   type SiteId,
 } from "../data";
@@ -111,7 +114,9 @@ function getNormalizedWebsiteUrl(website?: string) {
 }
 
 function getResumeUrl(siteId: SiteId) {
-  return new URL(`/resume?site=${siteId}`, window.location.origin).toString();
+  const saved = import.meta.env.VITE_MOCK_PLATFORM_ENABLED ? readSavedApplication(siteId) : null;
+  const query = new URLSearchParams({ site: siteId, ...(saved ? { applicationId: saved.applicationId } : {}) });
+  return new URL(`/resume?${query}`, window.location.origin).toString();
 }
 
 function getResumeDisplayUrl(clientAcronym: string) {
@@ -122,7 +127,6 @@ function getClientEmailPayload(
   siteId: SiteId = getActiveSite().id,
   values: ApplicationFormValues = {},
 ) {
-  const legacyConfig = getLegacyClientConfigForSite(siteId);
   const client = getClientForSite(siteId)!;
   const association = resolveActiveAssociationFromApplication(
     siteId,
@@ -132,8 +136,9 @@ function getClientEmailPayload(
     siteId,
     associationId: association?.id,
   });
-  const startUrl = getNormalizedWebsiteUrl(legacyConfig.support.website);
-  const emailSupport = legacyConfig.emailSupport;
+  const support = resolveSiteSupport(siteId);
+  const startUrl = getNormalizedWebsiteUrl(support.website);
+  const emailSupport = resolveSiteEmailConfiguration(siteId);
 
   return {
     clientId: client.id,
@@ -141,22 +146,23 @@ function getClientEmailPayload(
     associationId: association?.id,
     associationName: association?.name ?? client.name,
     clientAcronym: client.acronym,
-    tpaName: emailSupport?.contactOverride?.name || client.name,
-    tpaAcronym: emailSupport?.contactOverride?.acronym || client.acronym,
+    tpaName: emailSupport?.contactOverride?.name || getTpaForClient(client.id)?.name || client.name,
+    tpaAcronym: emailSupport?.contactOverride?.acronym || getTpaForClient(client.id)?.acronym || client.acronym,
     tpaPhone:
       emailSupport?.supportOverride?.phone ||
-      legacyConfig.support.phoneDisplay ||
-      legacyConfig.support.phone ||
+      support.phoneDisplay ||
+      support.phone ||
       "",
-    tpaEmail: emailSupport?.supportOverride?.email || legacyConfig.support.email || "",
-    tpaWebsite: emailSupport?.supportOverride?.website || legacyConfig.support.website || "",
+    tpaEmail: emailSupport?.supportOverride?.email || support.email || "",
+    tpaWebsite: emailSupport?.supportOverride?.website || support.website || "",
     hideSupportContact: Boolean(emailSupport?.hideContactBox),
     clientLogo: branding.logo,
     clientLogoAlt: branding.logoAlt,
     startUrl,
     resumeUrl: getResumeUrl(siteId),
     resumeDisplayUrl: getResumeDisplayUrl(client.acronym),
-    resumeMagicLinkUrl: `${startUrl}/resume-method`,
+    // Static examples are request links, never executable unauthenticated recovery.
+    resumeMagicLinkUrl: getResumeUrl(siteId),
   };
 }
 
@@ -204,7 +210,7 @@ function getStoredMockEmails(): MockEmailPreview[] {
       return [
         {
           ...preview,
-          siteId: getSiteIdForLegacyClient(preview.clientId as ClientId),
+          siteId: getSiteIdForClientAlias(preview.clientId as ClientId),
         } as MockEmailPreview,
       ];
     });
@@ -1092,6 +1098,12 @@ export async function sendResumeMagicLinkMockEmail(emailAddress: string) {
   if (!trimmedEmailAddress) return;
 
   const payload = getClientEmailPayload();
+  if (import.meta.env.VITE_MOCK_PLATFORM_ENABLED) {
+    const application = readSavedApplication(payload.siteId);
+    if (!application) throw new Error('Select a saved application reference before requesting recovery.');
+    await applicantRecovery.request(application.applicationId, payload.siteId, trimmedEmailAddress);
+    return;
+  }
 
   saveMockEmailPreview({
     id: getGeneratedMockEmailId("resume-magic-link"),

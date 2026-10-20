@@ -76,11 +76,11 @@ describe("canonical executable conditions", () => {
   });
 
   it("resolves migrated runtime fields from the canonical conditions", () => {
-    window.history.replaceState(null, "", "/?site=ama-default");
+    window.history.replaceState(null, "", "/?site=ama");
     expect(getClientPageFields("membership", { membership: "spouse" }).some((field) => field.id === "ama-physician-first-name")).toBe(true);
     expect(getClientPageFields("membership", { membership: "physician" }).some((field) => field.id === "ama-physician-first-name")).toBe(false);
 
-    window.history.replaceState(null, "", "/?site=waepa-standard");
+    window.history.replaceState(null, "", "/?site=waepa");
     const activeFields = getClientPageFields("membership", {
       membership: "new",
       "waepa-attestation": "federal-active",
@@ -185,9 +185,9 @@ describe("canonical executable conditions", () => {
       ]),
     );
     expect(formatConditionVisibilityTargets("condition-membership-ama-spouse"))
-      .toContain("show-fields ama-default");
+      .toContain("show-fields ama");
     expect(formatConditionVisibilityTargets("condition-membership-waepa-new"))
-      .toContain("show-fields waepa-standard");
+      .toContain("show-fields waepa");
     expect(formatConditionVisibilityTargets("condition-membership-waepa-new"))
       .not.toContain("waepa-gi");
   });
@@ -200,7 +200,7 @@ describe("canonical executable conditions", () => {
 
     const futureProfileCondition = "condition-test-profile" as const;
     expect(getConditionVisibilityTargets(futureProfileCondition, [{
-      siteId: "demo-default",
+      siteId: "demo",
       pageId: "profile",
       fieldId: "marital-status",
       field: {
@@ -209,14 +209,14 @@ describe("canonical executable conditions", () => {
       },
     }])).toEqual([{
       type: "show-fields",
-      siteId: "demo-default",
+      siteId: "demo",
       pageId: "profile",
       fieldIds: ["marital-status"],
     }]);
   });
 
-  it("keeps all 94 rules, links every condition, and separates spouse validation from visibility", () => {
-    expect(siteRules.length).toBe(94);
+  it("keeps all 95 rules, links every condition, and separates spouse validation from visibility", () => {
+    expect(siteRules.length).toBe(95);
     expect(siteRules.slice(-6).every((rule) => rule.type === "conditional")).toBe(true);
     expect(siteRules.every((rule) => rule.type === "behavioral" || rule.conditionIds?.length)).toBe(true);
     const referencedConditionIds = new Set(siteRules.flatMap((rule) => rule.conditionIds ?? []));
@@ -233,8 +233,8 @@ describe("canonical executable conditions", () => {
   });
 
   it("derives applicable Site rules without treating overrides as rules", () => {
-    const amaRules = getApplicableSiteRules({ clientId: "ama", siteId: "ama-default" });
-    const waepaRules = getApplicableSiteRules({ clientId: "waepa", siteId: "waepa-standard" });
+    const amaRules = getApplicableSiteRules({ clientId: "ama", siteId: "ama" });
+    const waepaRules = getApplicableSiteRules({ clientId: "waepa", siteId: "waepa" });
     const waepaGiRules = getApplicableSiteRules({ clientId: "waepa", siteId: "waepa-gi" });
     const waepaConditionIds = [
       "condition-membership-waepa-new",

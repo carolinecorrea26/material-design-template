@@ -1,0 +1,8 @@
+{
+  "scope": "All persisted applicant/class/association/period/mode mappings with synthetic facts and incomplete-input rejection",
+  "tested": 1838,
+  "failures": [],
+  "sourceApproval": "provisional-revisit",
+  "runtimeActivation": "pending",
+  "publicationReady": false
+}

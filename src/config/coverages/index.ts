@@ -173,6 +173,7 @@ export const coverages: CoverageDefinition[] = [
     id: "di-ltd-plus",
     code: "LTDI+",
     categoryId: "DI",
+    requirements: { eligibility: [{ applicantType: "member", minimumWorkHoursPerWeek: 40 }] },
     name: "Long-Term Disability Plus",
     planCode: { primary: "602" }, // prototype
     definition: "Provides long-term disability income protection.",
@@ -188,6 +189,7 @@ export const coverages: CoverageDefinition[] = [
     id: "di-ltd",
     code: "LTDI",
     categoryId: "DI",
+    requirements: { eligibility: [{ applicantType: "member", minimumWorkHoursPerWeek: 40 }] },
     name: "Long-Term Disability",
     planCode: { primary: "601" },
     definition: "Provides long-term disability income protection.",
@@ -205,6 +207,7 @@ export const coverages: CoverageDefinition[] = [
     id: "di-mtd",
     code: "MTD",
     categoryId: "DI",
+    requirements: { eligibility: [{ applicantType: "member", minimumWorkHoursPerWeek: 40 }] },
     name: "Mid-Term Disability",
     planCode: { primary: "604" }, // prototype
     definition:
@@ -221,6 +224,7 @@ export const coverages: CoverageDefinition[] = [
     id: "di-step-rated",
     code: "STDI",
     categoryId: "DI",
+    requirements: { eligibility: [{ applicantType: "member", minimumWorkHoursPerWeek: 40 }] },
     name: "Step-Rated Disability",
     planCode: { primary: "606" }, // prototype
     definition:
@@ -237,6 +241,7 @@ export const coverages: CoverageDefinition[] = [
     id: "di-level-rated",
     code: "LTDI",
     categoryId: "DI",
+    requirements: { eligibility: [{ applicantType: "member", minimumWorkHoursPerWeek: 40 }] },
     name: "Level-Rated Disability",
     planCode: { primary: "607" }, // prototype
     definition:
@@ -253,6 +258,7 @@ export const coverages: CoverageDefinition[] = [
     id: "di-short-term",
     code: "STDI",
     categoryId: "DI",
+    requirements: { eligibility: [{ applicantType: "member", minimumWorkHoursPerWeek: 40 }] },
     name: "Short-Term Disability",
     planCode: { primary: "605" }, // prototype
     definition: "Provides short-term disability income protection.",
@@ -268,6 +274,7 @@ export const coverages: CoverageDefinition[] = [
     id: "oo-professional",
     code: "OO",
     categoryId: "OO",
+    requirements: { eligibility: [{ applicantType: "member", minimumWorkHoursPerWeek: 40 }] },
     name: "Office Overhead",
     planCode: { primary: "603" },
     definition:
@@ -284,6 +291,7 @@ export const coverages: CoverageDefinition[] = [
     id: "oo-office-overhead",
     code: "OO",
     categoryId: "OO",
+    requirements: { eligibility: [{ applicantType: "member", minimumWorkHoursPerWeek: 40 }] },
     name: "Office Overhead",
     planCode: { primary: "603" },
     definition:

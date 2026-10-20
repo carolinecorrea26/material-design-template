@@ -20,10 +20,9 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import ChatIcon from "@mui/icons-material/Chat";
 import AppMenu from "./AppMenu";
 import AppDrawer from "../layout/AppDrawer";
-import { pages } from "../../config/pages";
+import { getConfiguredPages, getPagePath } from "../../config/pages";
 import type { CoverageDefinition } from "../../config/coverages/types";
 import { getFormProgressPercent, isFormPage } from "../../config/formFlow";
 import type { ClientConfig } from "../../config/clients/types";
@@ -157,7 +156,7 @@ export default function AppHeader({
       ? pathname.slice(0, -1)
       : pathname;
 
-  const currentPage = pages.find((page) => page.path === normalizedPath);
+  const currentPage = getConfiguredPages().find((page) => page.path === normalizedPath);
   const currentPageId = currentPage?.id as PageId | undefined;
 
   // Progress bar only on applicationForm variant, not homepage
@@ -221,7 +220,7 @@ export default function AppHeader({
                     variant="h6"
                     noWrap
                     sx={{ cursor: "pointer" }}
-                    onClick={() => void router.navigate("/")}
+                    onClick={() => void router.navigate(getPagePath("home"))}
                   >
                     {effectiveBranding.name}
                   </Typography>
@@ -231,7 +230,7 @@ export default function AppHeader({
                     src={effectiveBranding.logo}
                     alt={effectiveBranding.logoAlt}
                     onError={() => setImageError(true)}
-                    onClick={() => void router.navigate("/")}
+                    onClick={() => void router.navigate(getPagePath("home"))}
                     sx={{
                       height: "auto",
                       width: "auto",
@@ -246,26 +245,6 @@ export default function AppHeader({
 
               <Box sx={{ ml: "auto", minWidth: 0, textAlign: "right" }}>
                 <Stack direction="row" spacing={0.75} alignItems="center">
-                  {showMenu && client.features?.chat && showSummaryIcon && (
-                    <IconButton
-                      aria-label="Open chat"
-                      size="small"
-                      sx={{ borderRadius: 1, gap: 0.5 }}
-                    >
-                      <ChatIcon sx={{ color: "primary.main" }} />
-                      <Typography
-                        variant="caption"
-                        fontWeight="bold"
-                        sx={{
-                          color: "primary.main",
-                          display: { xs: "none", sm: "block" },
-                        }}
-                      >
-                        Chat
-                      </Typography>
-                    </IconButton>
-                  )}
-
                   {showSummaryIcon && (
                     <IconButton
                       aria-label={

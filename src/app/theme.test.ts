@@ -13,6 +13,16 @@ const presetPrimaryColors: Record<
 };
 
 describe("createAppTheme", () => {
+  it("applies a custom full palette and inherits omitted colors", () => {
+    const theme = createAppTheme({type:"custom",primary:"#001F5F",palette:{background:{default:"#ffffff",paper:"#fafafa"},success:{main:"#228822"},error:{main:"#bb2222"},text:{primary:"#111111"},support:{main:"#eeeeff",border:"#aaaaee"}}});
+    expect(theme.palette.background.default).toBe("#ffffff");
+    expect(theme.palette.success.main).toBe("#228822");
+    expect(theme.palette.error.main).toBe("#bb2222");
+    expect(theme.palette.text.primary).toBe("#111111");
+    expect(theme.typography.body1.color).toBe("#111111");
+    expect(theme.palette.background.surface).toBeTruthy();
+    expect(theme.palette.support.main).toBe("#eeeeff");
+  });
   it.each(Object.entries(presetPrimaryColors))(
     "preserves the %s preset palette",
     (preset, expected) => {

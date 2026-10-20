@@ -1,3 +1,5 @@
+import { getPagePath } from "../../config/pages";
+import { menuTools } from "../../content/interactionLabels";
 import {
   Box,
   Button,
@@ -11,7 +13,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import ListAltRoundedIcon from "@mui/icons-material/ListAltRounded";
 import CalculateRoundedIcon from "@mui/icons-material/CalculateRounded";
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
+import QuickDecisionIcon from "../ui/QuickDecisionIcon";
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
@@ -98,7 +100,7 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
               variant="contained"
               size="large"
               fullWidth
-              onClick={() => handleNavigate("/resume")}
+              onClick={() => handleNavigate(getPagePath("resume"))}
               sx={{ margin: "1.25rem 0" }}
             >
               Continue Application
@@ -131,7 +133,7 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
                 >
                   <ListAltRoundedIcon />
                   <Typography variant="body2" fontWeight={600}>
-                    How Applying Works
+                    {menuTools["how-applying-works"].label}
                   </Typography>
                 </Button>
 
@@ -154,7 +156,7 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
                 >
                   <PrivacyTipIcon />
                   <Typography variant="body2" fontWeight={600}>
-                    About Coverage
+                    {menuTools["about-coverage"].label}
                   </Typography>
                 </Button>
 
@@ -175,7 +177,7 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
                     justifyContent: "flex-start",
                   }}
                 >
-                  <OfflineBoltIcon color="success" />
+                  <QuickDecisionIcon color="success" />
                   <Typography variant="body2" fontWeight={600}>
                     About <QuickDecisionMark />
                   </Typography>
@@ -200,7 +202,7 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
                 >
                   <CalculateRoundedIcon />
                   <Typography variant="body2" fontWeight={600}>
-                    Needs Calculator
+                    {menuTools["coverage-needs"].label}
                   </Typography>
                 </Button>
               </Stack>
@@ -279,7 +281,7 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
 
       <AppDrawer
         open={isHowApplyingWorksOpen}
-        title="How does applying work?"
+        title={menuTools["how-applying-works"].title}
         onClose={() => setIsHowApplyingWorksOpen(false)}
       >
         <HowApplyingWorksPanel variant="drawer" />
@@ -287,7 +289,7 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
 
       <AppDrawer
         open={isCoverageDrawerOpen}
-        title="What are my coverage options?"
+        title={menuTools["about-coverage"].title}
         onClose={() => setIsCoverageDrawerOpen(false)}
       >
         <CoverageOptionsPanel variant="drawer" />
@@ -295,7 +297,7 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
 
       <AppDrawer
         open={isNeedsCalcOpen}
-        title="How much coverage do I need?"
+        title={menuTools["coverage-needs"].title}
         onClose={() => setIsNeedsCalcOpen(false)}
       >
         <CoverageNeedsCalculator />

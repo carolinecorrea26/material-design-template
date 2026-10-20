@@ -1,3 +1,4 @@
+import { getSurfaceField, getSurfaceFields } from "../../config/fields/storedSurfaces";
 import { useState } from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
@@ -25,45 +26,7 @@ import {
 // Dummy LexisNexis-style security questions
 // ---------------------------------------------------------------------------
 
-const SECURITY_QUESTIONS: {
-  id: string;
-  question: string;
-  options: string[];
-}[] = [
-  {
-    id: "sq-1",
-    question: "In what city were you living in 2005?",
-    options: [
-      "Albany",
-      "Rochester",
-      "Syracuse",
-      "Buffalo",
-      "None of the answers apply to me",
-    ],
-  },
-  {
-    id: "sq-2",
-    question: "What kind of car did you own in 2007?",
-    options: [
-      "Honda Civic",
-      "Toyota Camry",
-      "Ford Focus",
-      "Chevrolet Malibu",
-      "None of the answers apply to me",
-    ],
-  },
-  {
-    id: "sq-3",
-    question: "Which of the following have you been associated with?",
-    options: [
-      "Oak Street",
-      "Maple Avenue",
-      "Cedar Lane",
-      "Elm Drive",
-      "None of the answers apply to me",
-    ],
-  },
-];
+
 
 const NONE_ANSWER = "None of the answers apply to me";
 
@@ -78,6 +41,7 @@ function MethodStep({
 }: {
   onNext: (method: VerificationMethod) => void;
 }) {
+  const field = getSurfaceField("verificationControls", "verification-method")!;
   const [method, setMethod] = useState<VerificationMethod | "">("");
 
   return (
@@ -92,62 +56,14 @@ function MethodStep({
           id="verification-method-label"
           sx={{ mb: 1, fontWeight: 600 }}
         >
-          Choose how to provide verification
+          {field.label}
         </Typography>
         <RadioGroup
           aria-labelledby="verification-method-label"
           value={method}
           onChange={(e) => setMethod(e.target.value as VerificationMethod)}
         >
-          <FormControlLabel
-            value="text"
-            control={<Radio />}
-            label={
-              <Box>
-                <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                  Send text code
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  to ••••••1111
-                </Typography>
-              </Box>
-            }
-            sx={{ mb: 1 }}
-          />
-          <FormControlLabel
-            value="voice"
-            control={<Radio />}
-            label={
-              <Box>
-                <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                  Send voice code
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  to ••••••1111
-                </Typography>
-              </Box>
-            }
-            sx={{ mb: 1 }}
-          />
-          <FormControlLabel
-            value="security-questions"
-            control={<Radio />}
-            label={
-              <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                Answer security questions
-              </Typography>
-            }
-            sx={{ mb: 1 }}
-          />
-          <FormControlLabel
-            value="skip"
-            control={<Radio />}
-            label={
-              <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                Proceed without member verification
-              </Typography>
-            }
-          />
+          {(field.options ?? []).map(option => <FormControlLabel key={option.value} value={option.value} control={<Radio />} label={<Box><Typography variant="body2" sx={{ fontWeight: 500 }}>{option.label}</Typography>{["text", "voice"].includes(option.value) && <Typography variant="caption" color="text.secondary">to ••••••1111</Typography>}</Box>} sx={{ mb: 1 }} />)}
         </RadioGroup>
       </FormControl>
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -172,12 +88,13 @@ function SecurityQuestionsStep({
 }: {
   onNext: (passed: boolean) => void;
 }) {
+  const questions = getSurfaceFields("verificationQuestions");
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
-  const allAnswered = SECURITY_QUESTIONS.every((q) => answers[q.id]);
+  const allAnswered = questions.every((q) => !q.required || q.options?.some(option => option.value === answers[q.id]));
 
   function handleNext() {
-    const failed = SECURITY_QUESTIONS.some(
+    const failed = questions.some(
       (q) => answers[q.id] === NONE_ANSWER,
     );
     onNext(!failed);
@@ -188,14 +105,14 @@ function SecurityQuestionsStep({
       <Typography variant="body1">
         Please answer the following questions to verify your identity.
       </Typography>
-      {SECURITY_QUESTIONS.map((q) => (
+      {questions.map((q) => (
         <Box key={q.id}>
           <Typography
             variant="subtitle2"
             id={`security-question-${q.id}-label`}
             sx={{ fontWeight: 600, mb: 1 }}
           >
-            {q.question}
+            {q.label}
           </Typography>
           <FormControl fullWidth>
             <RadioGroup
@@ -205,17 +122,17 @@ function SecurityQuestionsStep({
                 setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))
               }
             >
-              {q.options.map((opt) => (
+              {(q.options ?? []).map((opt) => (
                 <FormControlLabel
-                  key={opt}
-                  value={opt}
+                  key={opt.value}
+                  value={opt.value}
                   control={<Radio size="small" />}
                   label={
                     <Typography
                       variant="body2"
-                      color={opt === NONE_ANSWER ? "text.secondary" : undefined}
+                      color={opt.value === NONE_ANSWER ? "text.secondary" : undefined}
                     >
-                      {opt}
+                      {opt.label}
                     </Typography>
                   }
                 />
@@ -359,7 +276,7 @@ export default function MemberVerification({
           pb: 1,
         }}
       >
-        <Typography variant="h5">Member verification</Typography>
+        <Typography component="span" variant="h5">Member verification</Typography>
         <IconButton onClick={handleClose} aria-label="Close" size="small">
           <CloseRoundedIcon />
         </IconButton>
@@ -402,31 +319,13 @@ export default function MemberVerification({
 // TPA trigger detection
 // ---------------------------------------------------------------------------
 
-/**
- * Returns true when the submitted eligibility values match the dummy TPA
- * member record (ABE client, Caroline Correa, DOB 08/26/1990, state NY).
- */
+/** Match the configured prototype verification facts without Site identity. */
 export function isTpaMemberMatch(
-  clientId: string,
+  expectedFacts: Record<string, string> | undefined,
   values: Record<string, unknown>,
 ): boolean {
-  if (clientId !== "abe") return false;
-
-  const firstName = String(values["first-name"] ?? "")
-    .trim()
-    .toLowerCase();
-  const lastName = String(values["last-name"] ?? "")
-    .trim()
-    .toLowerCase();
-  const dob = String(values["birth-date"] ?? "").trim();
-  const state = String(values["state-province"] ?? "")
-    .trim()
-    .toUpperCase();
-
-  return (
-    firstName === "caroline" &&
-    lastName === "correa" &&
-    dob === "1990-08-26" &&
-    state === "NY"
+  return !!expectedFacts && Object.keys(expectedFacts).length > 0 && Object.entries(expectedFacts).every(
+    ([field, expected]) => String(values[field] ?? "").trim().toLowerCase() === expected.trim().toLowerCase(),
   );
+
 }

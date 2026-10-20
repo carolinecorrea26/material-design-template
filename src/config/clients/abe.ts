@@ -1,8 +1,10 @@
 import type { ClientConfig } from "./types";
+import { abeReviewPolicy } from "../../content/reviewPolicies";
 import { rangeAssignments } from "../coverages/amounts";
 
 export const abeClient: ClientConfig = {
   id: "abe",
+  reviewPolicy: abeReviewPolicy,
   theme: { type: "preset", preset: "default" },
   branding: {
     name: "American Bar Endowment",
@@ -83,6 +85,7 @@ export const abeClient: ClientConfig = {
         underwritingType: "TELE",
       },
       "di-ltd-plus": {
+        requirements: { exclusiveProducts: ["di-ltd"] },
         applicants: ["member", "spouse"],
         waitingPeriodOptions: [
           { label: "90 days", value: "90", days: 90 },
@@ -90,6 +93,7 @@ export const abeClient: ClientConfig = {
         ],
       },
       "di-ltd": {
+        requirements: { exclusiveProducts: ["di-ltd-plus"] },
         underwritingType: "SI",
         applicants: ["member", "spouse"],
         waitingPeriodOptions: [
@@ -127,5 +131,6 @@ export const abeClient: ClientConfig = {
       },
     },
   },
+  features: { memberVerificationMatchFacts: { "first-name": "Caroline", "last-name": "Correa", "birth-date": "1990-08-26", "state-province": "NY" } },
   licenseInfo: [],
 };

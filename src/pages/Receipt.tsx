@@ -1,3 +1,5 @@
+import { groupReceiptDecisions } from "../domain/receiptGroups";
+import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
 import { useEffect, useMemo, useState } from "react";
 import ProductCard from "../components/layout/ProductCard";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
@@ -38,6 +40,8 @@ import {
 } from "../utils/coverageDecisions";
 import { getContent, resolveTemplate } from "../content";
 
+import { downloadApplicationPdf } from '../utils/applicationPdf';
+
 const receiptContent = getContent().receipt;
 const RECEIPT_CONFIRMATION_KEY = "receiptConfirmationNumber";
 
@@ -53,6 +57,7 @@ function hashStringToDigits(input: string): string {
 }
 
 function getOrCreateConfirmationNumber(values: ApplicationFormValues): string {
+  if (typeof values["mock-submission-id"] === "string") return values["mock-submission-id"];
   const stored = window.sessionStorage.getItem(RECEIPT_CONFIRMATION_KEY);
   if (stored) return stored;
 
@@ -98,6 +103,7 @@ export default function Receipt() {
     [values, coverages],
   );
 
+  const decisionGroups = groupReceiptDecisions(orderedDecisionEntries, values);
   const hasApplicantSelections = orderedDecisionEntries.length > 0;
 
   const shouldShowQuickDecisionDownload = orderedDecisionEntries.some((entry) =>
@@ -110,11 +116,11 @@ export default function Receipt() {
   const hasSupportInfo = Boolean(supportPhone || supportEmail || supportHours);
 
   const uniqueApplicants = useMemo(() => {
-    const applicants = new Set(orderedDecisionEntries.map((e) => e.applicant));
+    const applicants = new Set([...orderedDecisionEntries.map((e) => e.applicant), ...groupReceiptDecisions(orderedDecisionEntries, values).flatMap(g => g.attachedBenefits.map(b => b.applicant))]);
     return Array.from(applicants)
       .map((a) => APPLICANT_LABELS[a])
       .join(", ");
-  }, [orderedDecisionEntries]);
+  }, [orderedDecisionEntries, values]);
 
   const cardSx = {
     backgroundColor: "background.paper",
@@ -180,7 +186,7 @@ export default function Receipt() {
             </Typography>
 
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              {receiptContent.documentsNote}
+              {import.meta.env.VITE_MOCK_PLATFORM_ENABLED ? "Your application has been saved. Download a copy of your application data below." : receiptContent.documentsNote}
             </Typography>
 
             <Stack
@@ -193,6 +199,7 @@ export default function Receipt() {
                 variant="contained"
                 startIcon={<FileDownloadRoundedIcon />}
                 disableElevation
+                onClick={() => downloadApplicationPdf(values)}
               >
                 {receiptContent.documentDownloadLabels.application}
               </Button>
@@ -200,6 +207,7 @@ export default function Receipt() {
               <Button
                 variant="outlined"
                 startIcon={<FileDownloadRoundedIcon />}
+                onClick={() => downloadApplicationPdf(values, true)}
               >
                 {receiptContent.documentDownloadLabels.payment}
               </Button>
@@ -208,6 +216,7 @@ export default function Receipt() {
                 <Button
                   variant="outlined"
                   startIcon={<FileDownloadRoundedIcon />}
+                  disabled
                 >
                   {receiptContent.documentDownloadLabels.quickDecision}
                 </Button>
@@ -274,7 +283,7 @@ export default function Receipt() {
               noWrap
             >
               {orderedDecisionEntries.length}
-              {orderedDecisionEntries.length === 1
+              {import.meta.env.VITE_MOCK_PLATFORM_ENABLED ? (orderedDecisionEntries.length === 1 ? " election" : " elections") : orderedDecisionEntries.length === 1
                 ? ` ${receiptContent.summaryLabels.productSingular}`
                 : ` ${receiptContent.summaryLabels.productPlural}`}
             </Typography>
@@ -290,7 +299,7 @@ export default function Receipt() {
           {/* Main column - Coverage decisions */}
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography variant="h5" component="h2" sx={{ mb: 0.5 }}>
-              {receiptContent.coverageDecisions.title}
+              {import.meta.env.VITE_MOCK_PLATFORM_ENABLED ? "Simulated coverage decisions" : receiptContent.coverageDecisions.title}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>
               {receiptContent.coverageDecisions.description}
@@ -298,7 +307,11 @@ export default function Receipt() {
 
             {hasApplicantSelections ? (
               <Stack spacing={2}>
-                {orderedDecisionEntries.map((entry, index) => {
+                {decisionGroups.map(group => <ProductCard key={group.coverage.id} sx={{ p: 3 }}>
+                  <Typography variant="h6" sx={{ mb: 2 }}>{group.coverage.name}</Typography>
+                  <Stack spacing={3}>
+                  {group.entries.map((entry) => {
+                  const index = orderedDecisionEntries.indexOf(entry);
                   const decisionResult = getQdDecisionResult(
                     values,
                     entry.coverageId,
@@ -323,10 +336,8 @@ export default function Receipt() {
                   const isSentForReview = status.label === "Sent for review";
 
                   return (
-                    <ProductCard
-                      key={`${entry.coverageId}-${entry.applicant}`}
-                      sx={{ p: 3 }}
-                    >
+                    <ApplicantSectionDivider key={`${entry.coverageId}-${entry.applicant}`} applicant={entry.applicant === "member" ? "self" : entry.applicant} showLabel={group.entries.length > 1 || group.attachedBenefits.some(b => b.applicant !== "member")}>
+                    <Box>
                       {/* Header row: name + badge */}
                       <Stack
                         direction="row"
@@ -334,9 +345,7 @@ export default function Receipt() {
                         alignItems="flex-start"
                         sx={{ mb: 0.5 }}
                       >
-                        <Typography variant="h6">
-                          {entry.coverage.name}
-                        </Typography>
+
                         <Box
                           sx={{
                             display: "inline-flex",
@@ -477,9 +486,18 @@ export default function Receipt() {
                       >
                         {status.description}
                       </Typography>
-                    </ProductCard>
+                    </Box>
+                    </ApplicantSectionDivider>
                   );
                 })}
+                {group.attachedBenefits.map(benefit => <ApplicantSectionDivider key={`${benefit.rider.id}-${benefit.owner}`} applicant={benefit.applicant === "member" ? "self" : benefit.applicant} showLabel={benefit.applicant !== "member"}>
+                  <Typography variant="subtitle1">{benefit.rider.name}</Typography>
+                  {benefit.amount !== undefined && <Typography variant="body2">Requested: {formatCurrencyAmount(benefit.amount)}</Typography>}
+                  <Typography variant="body2" color="text.secondary">{benefit.rider.description}</Typography>
+                  <Typography variant="body2" sx={{ mt: 1 }}>Included in {benefit.owner === "member" ? "member" : benefit.owner} coverage; shares its application decision.</Typography>
+                </ApplicantSectionDivider>)}
+                </Stack>
+                </ProductCard>)}
               </Stack>
             ) : (
               <ProductCard sx={{ p: 3 }}>
@@ -516,7 +534,7 @@ export default function Receipt() {
                       HeadsetMicIcon;
                     return (
                       <Stack
-                        key={item.title}
+                        key={import.meta.env.VITE_MOCK_PLATFORM_ENABLED && index === 0 ? "Application saved" : item.title}
                         direction="row"
                         spacing={1.5}
                         alignItems="flex-start"
@@ -529,10 +547,10 @@ export default function Receipt() {
                             variant="body2"
                             sx={{ fontWeight: 600, lineHeight: 1.4 }}
                           >
-                            {item.title}
+                            {import.meta.env.VITE_MOCK_PLATFORM_ENABLED && index === 0 ? "Application saved" : item.title}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
-                            {item.description}
+                            {import.meta.env.VITE_MOCK_PLATFORM_ENABLED && index === 0 ? "Your confirmation is saved in this browser session. Your documents are being prepared." : item.description}
                           </Typography>
                         </Box>
                       </Stack>

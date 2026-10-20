@@ -1,4 +1,6 @@
-import { getActiveClient } from "../client/getActiveClient";
+import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
+import { resolveSiteFeatures } from "../../data/resolvers";
+import { resolveSiteId } from "../../data/activeSite";
 
 export type FormTemplate = "single" | "multi";
 
@@ -19,7 +21,7 @@ export function resolveFormTemplate(): FormTemplate {
   }
   const stored = window.sessionStorage.getItem(TEMPLATE_STORAGE_KEY);
   if (isTemplate(stored)) return stored;
-  const clientDefault = getActiveClient().features?.defaultTemplate;
+  const clientDefault = getPrototypeLibrary()?.client.features?.defaultTemplate ?? resolveSiteFeatures(resolveSiteId())?.defaultTemplate;
   if (clientDefault) return clientDefault;
   return DEFAULT_TEMPLATE;
 }

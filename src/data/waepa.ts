@@ -3,8 +3,9 @@ import { rangeAssignments } from "../config/coverages/amounts";
 import { waepaTpaVerificationFlow } from "../config/clients/waepaFlowOverrides";
 import type { Client, Site } from "./model";
 import { compatibilityTpaId } from "./tpas";
+import type { CoverageApplicantId, RiderDefinition } from "../domain/coverage";
 
-const sharedRiders = [
+const sharedRiders: RiderDefinition[] = [
   {
     id: "cir",
     name: "Chronic Illness Rider (CIR)",
@@ -31,6 +32,7 @@ export const waepaClientEntity: Client = {
     acronym: "WAEPA",
     logo: "/client/waepa/logo.png",
     logoAlt: "WAEPA Logo",
+    icons: { quickDecision: "/client/waepa/icons/quick-decision.svg", categories: { LI: "/client/waepa/icons/life.svg", DI: "/client/waepa/icons/disability.svg" } },
   },
   support: {
     phone: "8003683484",
@@ -46,7 +48,13 @@ export const waepaClientEntity: Client = {
     },
   },
   configurationDefaults: {
-    theme: { type: "preset", preset: "dark-blue" },
+    theme: { type: "custom", primary: "#001F5F" },
+    tpaIntegration: {
+      mode: "membership-auto-approval",
+      lookupFields: ["first-name", "last-name", "birth-date"],
+      prototypeRecords: [{ facts: { "first-name": "Taylor", "last-name": "Morgan", "birth-date": "1990-08-26" }, activeCoverage: true }],
+    },
+    flows: { overrides: { tpaVerification: waepaTpaVerificationFlow } },
     pages: { requirements: { beneficiary: "required", payment: "required" } },
     coverages: {
       categories: ["LI", "DI"],
@@ -82,22 +90,34 @@ export const waepaClientEntity: Client = {
 
 export const waepaSites: Site[] = [
   {
-    id: "waepa-standard",
+    id: "waepa",
     clientId: waepaClientEntity.id,
     name: "Standard Application",
     templateType: "multi",
     status: "active",
-    legacyClientId: "waepa",
     associationSelection: { mode: "fixed", fixedAssociationId: "waepa" },
     configurationOverrides: {
+      applicantExperience: {
+        contact: { hideBusinessAddress: true, hideCorrespondence: true },
+        factMappings: { activeMilitary: { field: "active-military", values: { yes: "yes", no: "no" } } },
+        membershipDisqualifications: [{
+          fieldId: "active-military",
+          value: "yes",
+          message: "You are not eligible to apply for WAEPA coverage while on active duty in the Armed Forces.",
+        }],
+      },
       coverages: {
         hideSmokerQuestion: true,
         overrides: {
-          "li-group-term": { name: "Group Term Life Insurance" },
+          "li-group-term": {
+            name: "Group Term Life Insurance",
+            riders: sharedRiders.map(rider => rider.id === "cir"
+              ? { ...rider, riderOnlyApplicants: ["member", "spouse"] satisfies CoverageApplicantId[] }
+              : rider),
+          },
           "di-short-term": { name: "Group Short-Term Disability Income Insurance" },
         },
       },
-      flows: { overrides: { tpaVerification: waepaTpaVerificationFlow } },
     },
   },
   {
@@ -106,10 +126,10 @@ export const waepaSites: Site[] = [
     name: "Guaranteed Issue Application",
     templateType: "single",
     status: "active",
-    legacyClientId: "waepagi",
     associationSelection: { mode: "fixed", fixedAssociationId: "waepa" },
     brandingOverride: { logo: "/client/waepagi/logo.png" },
     configurationOverrides: {
+      applicantExperience: { contact: { hideBusinessAddress: true, hideCorrespondence: true } },
       features: { defaultTemplate: "single", homePageVariant: "hero-image" },
     },
   },
@@ -132,14 +152,14 @@ function merge<T>(base: T, override: Partial<T> | undefined): T {
   return result as T;
 }
 
-export function buildWaepaLegacyConfig(siteId: "waepa-standard" | "waepa-gi"): ClientConfig {
+export function buildWaepaLegacyConfig(siteId: "waepa" | "waepa-gi"): ClientConfig {
   const site = waepaSites.find((entry) => entry.id === siteId)!;
   const configuration = merge(
     waepaClientEntity.configurationDefaults,
     site.configurationOverrides,
   );
   return {
-    id: site.legacyClientId,
+    id: siteId === "waepa-gi" ? "waepagi" : "waepa",
     branding: merge(waepaClientEntity.branding, site.brandingOverride),
     support: merge(waepaClientEntity.support, site.supportOverride),
     ...configuration,

@@ -23,7 +23,7 @@ Rendering helpers live in `src/components/docs/`: `ConfigReferenceList.tsx`, `Ru
 Runtime config/resolution sources (the actual global template + override data, also consumed by the live application, not just the docs):
 
 - `src/config/clients/*.ts` — one `ClientConfig` object per client (branding, support, pages, coverages, fields, features, etc.), typed by `src/config/clients/types.ts`.
-- `src/config/client/*.ts` — `getActiveClient`, `resolveClientId`, `getClientPageRequirement`, `getActiveClientCoverages`/`getClientCoverages`, `findClientIdUnlockingPage`.
+- `src/config/client/*.ts` — `getActiveClient`, the former client-ID resolver, `getClientPageRequirement`, `getActiveClientCoverages`/`getClientCoverages`, `findClientIdUnlockingPage`.
 - `src/config/fields/` — `fieldCatalog` (global field definitions), `pageFields.ts` (flat page→fieldId[] registry used by the **runtime** form flow via `getClientPageFields`), `getPageFields.ts`.
 - `src/config/clientFields/` — `getClientPageFields.ts` (merges `pageFields` + `ClientConfig.fields[pageId]` at runtime), `membership.ts` (a **second, parallel** per-client field-override mechanism, keyed directly by `ClientId`, independent of `ClientConfig.fields`).
 - `src/config/pageSections/pageSections.ts` — a **second** page→field registry, section-grouped with `visibleWhen` rules and applicant scoping. Used by the real page components (`Coverage.tsx`, `Eligibility.tsx`, `Profile.tsx`, `Contact.tsx`, `AdvisorLogin.tsx`, `CoverageQuestions.tsx`) *and* by the docs' `fieldRows.ts`.
@@ -352,7 +352,7 @@ Each `FlowDefinition` is a `{ id, title, intro, nodes: FlowNodeDef[], edges: Flo
 | Resume | Delivery-method choice (Text/Call, both converge); verification result (Successful → end, Unsuccessful → loops back to Resume Code) | `resume-method` and `resume-code` are real `PageId`s, modeled as `page` nodes even though they also branch |
 | Autosave | Save-outcome decision fanning out to a single `summary` node listing all 10 documented recovery scenarios | Not modeled as 10 separate decision leaves — the source gives no distinct destination per scenario |
 | Quote | None | Product selection is a validation gate, not a routing branch — stays a linear `start → action → action → action → end` chain |
-| TPA Verification | Match-found decision; 4-way verification-method decision; explicit verified vs unverified downstream outcomes | Failed/skipped verification returns to the regular application without portfolio; successful verification continues with portfolio enabled and TPA auto-approval. Client-specific behavior is not rendered on the global page. |
+| TPA Verification | Attestation; member + active-coverage decision; 4-way verification-method decision; explicit portfolio/auto-approval vs manual-review outcomes | Failed/skipped verification continues without portfolio and sends submission to TPA admin manual review; identity pass with matched member and active coverage enables portfolio and TPA auto-approval. ASCE adds Membership ID. WAEPA client override skips LexisNexis for both branches: new members auto-approve without portfolio, existing members go to manual review without portfolio. |
 
 ### 11.2 Decision log
 
@@ -382,7 +382,7 @@ None introduced. `content/docs/flows/index.ts`'s barrel (`allFlows`) is the one 
 
 ## Summary
 
-**Files reviewed:** `SiteDetails.tsx`, `ClientSiteDetails.tsx`, `content/docs/{configurations.ts, features.tsx, flows.ts, siteRules.ts, fieldRows.ts, urlParameters.ts, errorMessages.ts}`, `config/clients/types.ts`, `config/clients/waepa.ts`, `config/client/{getActiveClient,getClientPageRequirement,getActiveClientCoverages,findClientForPage,resolveClientId}.ts`, `config/coverages/{index.ts,types.ts}`, `config/coverageConstants.ts`, `config/pageSections/getPageSections.ts`, `config/clientFields/{membership.ts,getClientPageFields.ts}`, `config/fields/{getPageFields.ts,pageFields.ts}`.
+**Files reviewed:** `SiteDetails.tsx`, `ClientSiteDetails.tsx`, `content/docs/{configurations.ts, features.tsx, flows.ts, siteRules.ts, fieldRows.ts, urlParameters.ts, errorMessages.ts}`, `config/clients/types.ts`, `config/clients/waepa.ts`, the client configuration helpers, `config/coverages/{index.ts,types.ts}`, `config/coverageConstants.ts`, `config/pageSections/getPageSections.ts`, `config/clientFields/{membership.ts,getClientPageFields.ts}`, `config/fields/{getPageFields.ts,pageFields.ts}`.
 
 **Duplicate/parallel sources found:** two page→field registries (`pageFields.ts` vs `pageSections.ts`); two client field-override mechanisms (`ClientConfig.fields` vs `membershipClientFields`); configuration prose (`configurations.ts`) that can silently drift from live `ClientConfig` values; three-way split of coverage business rules (`ClientConfig.coverages`, `coverageConstants.ts`, prose); several static page-metadata maps in `ClientSiteDetails.tsx` that duplicate `progressSteps.ts`/`pageGroups.ts`/`formFlow.ts`; a duplicated `ThemeColorId` label map.
 

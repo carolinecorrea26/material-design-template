@@ -1,0 +1,4306 @@
+{
+  "scope": "Rules only; field/rider decisions stay settled. Pages/flows and presentation ownership are deferred from this pass.",
+  "boundary": "Complete catalog classification with implementation references and bounded corrections; not a claim that all described behavior is executed by a generic rule engine or has received exhaustive semantic review.",
+  "counts": {
+    "documented-behavior": 86,
+    "routing": 5,
+    "planned": 4,
+    "source-reference": 3,
+    "source-pattern": 9
+  },
+  "conditionDefinitions": [
+    {
+      "key": "condition-active-military",
+      "definition": {
+        "id": "condition-active-military",
+        "conditions": [
+          {
+            "fieldId": "active-military",
+            "operator": "equals",
+            "value": "yes"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-membership-waepa-active-duty-prevents-application"
+      ],
+      "sectionKeys": [],
+      "fieldKeys": [],
+      "scopedFieldKeys": []
+    },
+    {
+      "key": "condition-spouse-selected",
+      "definition": {
+        "id": "condition-spouse-selected",
+        "conditions": [
+          {
+            "fieldId": "dependents",
+            "operator": "includes",
+            "value": "spouse"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-eligibility-spouse-selection-displays-spouse-information"
+      ],
+      "sectionKeys": [
+        "coverage.spouseCoverageQuestions",
+        "coverage.spouseCoverageWorkIncome",
+        "eligibility.spouseSection",
+        "contact.contactSpouse",
+        "profile.profilePersonalSpouse",
+        "profile.profilePersonalSpousePhysician",
+        "profile.profileFinancialSpouse"
+      ],
+      "fieldKeys": [],
+      "scopedFieldKeys": []
+    },
+    {
+      "key": "condition-child-selected",
+      "definition": {
+        "id": "condition-child-selected",
+        "conditions": [
+          {
+            "fieldId": "dependents",
+            "operator": "includes",
+            "value": "child"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-eligibility-child-section-displays-unmarried-children-notice"
+      ],
+      "sectionKeys": [
+        "eligibility.childSection"
+      ],
+      "fieldKeys": [],
+      "scopedFieldKeys": []
+    },
+    {
+      "key": "condition-member-smoker",
+      "definition": {
+        "id": "condition-member-smoker",
+        "conditions": [
+          {
+            "fieldId": "smoker",
+            "operator": "equals",
+            "value": "yes"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-coverage-category-selection-and-two-step-product-reveal"
+      ],
+      "sectionKeys": [
+        "coverage.selfCoverageTobacco"
+      ],
+      "fieldKeys": [],
+      "scopedFieldKeys": []
+    },
+    {
+      "key": "condition-spouse-smoker",
+      "definition": {
+        "id": "condition-spouse-smoker",
+        "conditions": [
+          {
+            "fieldId": "dependents",
+            "operator": "includes",
+            "value": "spouse"
+          },
+          {
+            "fieldId": "spouse-smoker",
+            "operator": "equals",
+            "value": "yes"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-coverage-category-selection-and-two-step-product-reveal"
+      ],
+      "sectionKeys": [
+        "coverage.spouseCoverageTobacco"
+      ],
+      "fieldKeys": [],
+      "scopedFieldKeys": []
+    },
+    {
+      "key": "condition-member-has-drivers-license",
+      "definition": {
+        "id": "condition-member-has-drivers-license",
+        "conditions": [
+          {
+            "fieldId": "has-drivers-license",
+            "operator": "equals",
+            "value": "yes"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-profile-conditional-follow-up-fields"
+      ],
+      "sectionKeys": [
+        "profile.profilePersonalSelfDriversLicense"
+      ],
+      "fieldKeys": [],
+      "scopedFieldKeys": []
+    },
+    {
+      "key": "condition-member-lives-outside-us",
+      "definition": {
+        "id": "condition-member-lives-outside-us",
+        "conditions": [
+          {
+            "fieldId": "intend-live-outside-us",
+            "operator": "equals",
+            "value": "yes"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-profile-outside-u-s-follow-up"
+      ],
+      "sectionKeys": [
+        "profile.profilePersonalSelfOutsideUs"
+      ],
+      "fieldKeys": [],
+      "scopedFieldKeys": []
+    },
+    {
+      "key": "condition-member-travels-outside-us",
+      "definition": {
+        "id": "condition-member-travels-outside-us",
+        "conditions": [
+          {
+            "fieldId": "travel-outside-us-six-months",
+            "operator": "equals",
+            "value": "yes"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-profile-outside-u-s-follow-up"
+      ],
+      "sectionKeys": [
+        "profile.profilePersonalSelfTravelOutsideUs"
+      ],
+      "fieldKeys": [],
+      "scopedFieldKeys": []
+    },
+    {
+      "key": "condition-spouse-has-drivers-license",
+      "definition": {
+        "id": "condition-spouse-has-drivers-license",
+        "conditions": [
+          {
+            "fieldId": "dependents",
+            "operator": "includes",
+            "value": "spouse"
+          },
+          {
+            "fieldId": "spouse-has-drivers-license",
+            "operator": "equals",
+            "value": "yes"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-profile-conditional-follow-up-fields"
+      ],
+      "sectionKeys": [
+        "profile.profilePersonalSpouseDriversLicense"
+      ],
+      "fieldKeys": [],
+      "scopedFieldKeys": []
+    },
+    {
+      "key": "condition-spouse-lives-outside-us",
+      "definition": {
+        "id": "condition-spouse-lives-outside-us",
+        "conditions": [
+          {
+            "fieldId": "dependents",
+            "operator": "includes",
+            "value": "spouse"
+          },
+          {
+            "fieldId": "spouse-intend-live-outside-us",
+            "operator": "equals",
+            "value": "yes"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-profile-outside-u-s-follow-up"
+      ],
+      "sectionKeys": [
+        "profile.profilePersonalSpouseOutsideUs"
+      ],
+      "fieldKeys": [],
+      "scopedFieldKeys": []
+    },
+    {
+      "key": "condition-spouse-travels-outside-us",
+      "definition": {
+        "id": "condition-spouse-travels-outside-us",
+        "conditions": [
+          {
+            "fieldId": "dependents",
+            "operator": "includes",
+            "value": "spouse"
+          },
+          {
+            "fieldId": "spouse-travel-outside-us-six-months",
+            "operator": "equals",
+            "value": "yes"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-profile-outside-u-s-follow-up"
+      ],
+      "sectionKeys": [
+        "profile.profilePersonalSpouseTravelOutsideUs"
+      ],
+      "fieldKeys": [],
+      "scopedFieldKeys": []
+    },
+    {
+      "key": "condition-advisor-new-application",
+      "definition": {
+        "id": "condition-advisor-new-application",
+        "conditions": [
+          {
+            "fieldId": "advisor-flow-type",
+            "operator": "equals",
+            "value": "new"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-advisor-flow-send-to-applicant-dialog"
+      ],
+      "sectionKeys": [
+        "advisor-login.advisorLoginNew"
+      ],
+      "fieldKeys": [],
+      "scopedFieldKeys": []
+    },
+    {
+      "key": "condition-advisor-saved-application",
+      "definition": {
+        "id": "condition-advisor-saved-application",
+        "conditions": [
+          {
+            "fieldId": "advisor-flow-type",
+            "operator": "equals",
+            "value": "saved"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-advisor-flow-advisor-mode-review-edit-dialog"
+      ],
+      "sectionKeys": [
+        "advisor-login.advisorLoginSaved"
+      ],
+      "fieldKeys": [],
+      "scopedFieldKeys": []
+    },
+    {
+      "key": "condition-membership-ama-spouse",
+      "definition": {
+        "id": "condition-membership-ama-spouse",
+        "conditions": [
+          {
+            "fieldId": "membership",
+            "operator": "equals",
+            "value": "spouse"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-membership-ama-spouse-displays-physician-information"
+      ],
+      "sectionKeys": [],
+      "fieldKeys": [],
+      "scopedFieldKeys": [
+        "site:ama.membership.ama-physician-type.override",
+        "site:ama.membership.ama-physician-title.override",
+        "site:ama.membership.ama-physician-first-name.override",
+        "site:ama.membership.ama-physician-last-name.override",
+        "site:ama.membership.ama-physician-birth-date.override",
+        "site:ama.membership.ama-physician-email.override",
+        "ama.eligibility.dependents.authored.override"
+      ]
+    },
+    {
+      "key": "condition-membership-waepa-new",
+      "definition": {
+        "id": "condition-membership-waepa-new",
+        "conditions": [
+          {
+            "fieldId": "membership",
+            "operator": "equals",
+            "value": "new"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-membership-waepa-new-member-displays-member-information"
+      ],
+      "sectionKeys": [],
+      "fieldKeys": [],
+      "scopedFieldKeys": [
+        "site:waepa.membership.waepa-declaration.override",
+        "site:waepa.membership.waepa-attestation.override"
+      ]
+    },
+    {
+      "key": "condition-waepa-federal-active",
+      "definition": {
+        "id": "condition-waepa-federal-active",
+        "conditions": [
+          {
+            "fieldId": "membership",
+            "operator": "equals",
+            "value": "new"
+          },
+          {
+            "fieldId": "waepa-attestation",
+            "operator": "equals",
+            "value": "federal-active"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-membership-waepa-active-federal-employee-fields"
+      ],
+      "sectionKeys": [],
+      "fieldKeys": [],
+      "scopedFieldKeys": [
+        "site:waepa.membership.waepa-employer.override",
+        "site:waepa.membership.waepa-start-date.override"
+      ]
+    },
+    {
+      "key": "condition-waepa-federal-annuitant",
+      "definition": {
+        "id": "condition-waepa-federal-annuitant",
+        "conditions": [
+          {
+            "fieldId": "membership",
+            "operator": "equals",
+            "value": "new"
+          },
+          {
+            "fieldId": "waepa-attestation",
+            "operator": "equals",
+            "value": "federal-annuitant"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [
+        "rule-membership-waepa-federal-annuitant-fields"
+      ],
+      "sectionKeys": [],
+      "fieldKeys": [],
+      "scopedFieldKeys": [
+        "site:waepa.membership.waepa-retired-employer.override",
+        "site:waepa.membership.waepa-retirement-date.override"
+      ]
+    },
+    {
+      "key": "condition-waepa-associated-member",
+      "definition": {
+        "id": "condition-waepa-associated-member",
+        "conditions": [
+          {
+            "fieldId": "waepa-attestation",
+            "operator": "equals",
+            "value": "spouse-associate"
+          },
+          {
+            "fieldId": "waepa-attestation",
+            "operator": "equals",
+            "value": "child-associate"
+          }
+        ],
+        "match": "any"
+      },
+      "ruleKeys": [
+        "rule-membership-waepa-associate-member-information"
+      ],
+      "sectionKeys": [],
+      "fieldKeys": [],
+      "scopedFieldKeys": [
+        "site:waepa.membership.waepa-member-first-name.override",
+        "site:waepa.membership.waepa-member-last-name.override",
+        "site:waepa.membership.waepa-member-id.override"
+      ]
+    }
+  ],
+  "remainingSemanticReview": "Review the documented behavior groups against current implementation and accepted business policies. Catalog classification and working references do not certify every described behavior.",
+  "rows": [
+    {
+      "key": "rule-application-flow-resolved-next-back-navigation",
+      "name": "Resolved next/back navigation",
+      "area": "Application flow",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/config/formFlow.ts; src/app/RoutePage.tsx"
+      },
+      "behavior": "Next and Back use the form-flow resolver and skip pages whose display conditions evaluate to false.",
+      "implementationReferences": [
+        {
+          "path": "src/config/formFlow.ts",
+          "exists": true
+        },
+        {
+          "path": "src/app/RoutePage.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-application-flow-resolved-next-back-navigation.global:*",
+          "key": "rule-application-flow-resolved-next-back-navigation.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-application-flow-resolved-next-back-navigation",
+          "position": 0,
+          "displayId": 120709517969256,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-application-flow-resolved-next-back-navigation.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-application-flow-intermediate-step-next-interception",
+      "name": "Intermediate-step Next interception",
+      "area": "Application flow",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/app/RoutePage.tsx; src/pages/Profile.tsx; src/pages/Coverage.tsx"
+      },
+      "behavior": "Pages can register an onBeforeNext hook that pauses forward navigation, shows an intermediate step (e.g. a confirmation dialog or send dialog), and resumes navigation only when the page calls the provided continueNavigation callback. Used by Coverage (dependent-only confirmation) and Profile (advisor send dialog).",
+      "implementationReferences": [
+        {
+          "path": "src/app/RoutePage.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/pages/Profile.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/pages/Coverage.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-application-flow-intermediate-step-next-interception.global:*",
+          "key": "rule-application-flow-intermediate-step-next-interception.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-application-flow-intermediate-step-next-interception",
+          "position": 1,
+          "displayId": 50888439456292,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-application-flow-intermediate-step-next-interception.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-application-flow-client-page-mode-none",
+      "name": "Client page mode = none",
+      "area": "Application flow",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/config/flowGates.ts; src/config/client/getClientPageRequirement.ts"
+      },
+      "behavior": "If Beneficiary or Payment is configured as none, the page is skipped from the active form flow.",
+      "implementationReferences": [
+        {
+          "path": "src/config/flowGates.ts",
+          "exists": true
+        },
+        {
+          "path": "src/config/client/getClientPageRequirement.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-application-flow-client-page-mode-none.global:*",
+          "key": "rule-application-flow-client-page-mode-none.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-application-flow-client-page-mode-none",
+          "position": 2,
+          "displayId": 141764024754065,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-application-flow-client-page-mode-none.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-application-flow-beneficiary-routing",
+      "name": "Beneficiary routing",
+      "area": "Application flow",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "routing",
+        "label": "Executable routing definition; assignment required",
+        "owner": "rules/rule-application-flow-beneficiary-routing"
+      },
+      "behavior": "Beneficiary is shown only when selected coverage includes Life (LI) or Accidental Death (AD), unless the page is configured as none.",
+      "implementationReferences": [
+        {
+          "path": "src/config/flowGates.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-application-flow-beneficiary-routing.global:*",
+          "key": "rule-application-flow-beneficiary-routing.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-application-flow-beneficiary-routing",
+          "position": 3,
+          "displayId": 215485797171351,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-application-flow-beneficiary-routing.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-application-flow-health-si-routing",
+      "name": "Health SI routing",
+      "area": "Application flow",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "routing",
+        "label": "Executable routing definition; assignment required",
+        "owner": "rules/rule-application-flow-health-si-routing"
+      },
+      "behavior": "Shown when a selected coverage has SI underwriting.",
+      "implementationReferences": [
+        {
+          "path": "src/config/flowGates.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-application-flow-health-si-routing.global:*",
+          "key": "rule-application-flow-health-si-routing.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-application-flow-health-si-routing",
+          "position": 4,
+          "displayId": 128987289596979,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-application-flow-health-si-routing.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-application-flow-health-waepawl-routing",
+      "name": "Health WAEPAWL routing",
+      "area": "Application flow",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "planned",
+        "label": "Planned; not executable",
+        "owner": "src/config/formFlow.ts"
+      },
+      "behavior": "Shown when a Whole Life product with SI and UW flow is selected. (Page not yet implemented in prototype.)",
+      "implementationReferences": [
+        {
+          "path": "src/config/formFlow.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-application-flow-health-waepawl-routing.global:*",
+          "key": "rule-application-flow-health-waepawl-routing.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-application-flow-health-waepawl-routing",
+          "position": 5,
+          "displayId": 186997976367940,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-application-flow-health-waepawl-routing.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-application-flow-health-tele-supp-routing",
+      "name": "Health TELE SUPP routing",
+      "area": "Application flow",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "routing",
+        "label": "Executable routing definition; assignment required",
+        "owner": "rules/rule-application-flow-health-tele-supp-routing"
+      },
+      "behavior": "health-li is shown for selected LI + TELE coverage; health-di is shown for selected DI + TELE coverage.",
+      "implementationReferences": [
+        {
+          "path": "src/config/flowGates.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-application-flow-health-tele-supp-routing.global:*",
+          "key": "rule-application-flow-health-tele-supp-routing.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-application-flow-health-tele-supp-routing",
+          "position": 6,
+          "displayId": 144337943760104,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-application-flow-health-tele-supp-routing.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-application-flow-health-ci-routing",
+      "name": "Health CI routing",
+      "area": "Application flow",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "planned",
+        "label": "Planned; not executable",
+        "owner": "src/content/docs/siteRules.ts (documented future rule; page not implemented)"
+      },
+      "behavior": "Shown when a Critical Illness product is selected. (Page not yet implemented in prototype.)",
+      "implementationReferences": [
+        {
+          "path": "src/content/docs/siteRules.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-application-flow-health-ci-routing.global:*",
+          "key": "rule-application-flow-health-ci-routing.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-application-flow-health-ci-routing",
+          "position": 7,
+          "displayId": 195380868936291,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-application-flow-health-ci-routing.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-application-flow-health-uw-cir-routing",
+      "name": "Health UW CIR routing",
+      "area": "Application flow",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "routing",
+        "label": "Executable routing definition; assignment required",
+        "owner": "rules/rule-application-flow-health-uw-cir-routing"
+      },
+      "behavior": "Shown when a CIR rider is selected.",
+      "implementationReferences": [
+        {
+          "path": "src/config/flowGates.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-application-flow-health-uw-cir-routing.global:*",
+          "key": "rule-application-flow-health-uw-cir-routing.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-application-flow-health-uw-cir-routing",
+          "position": 8,
+          "displayId": 53738966404214,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-application-flow-health-uw-cir-routing.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-application-flow-health-qd-routing",
+      "name": "Health QD routing",
+      "area": "Application flow",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "routing",
+        "label": "Executable routing definition; assignment required",
+        "owner": "rules/rule-application-flow-health-qd-routing"
+      },
+      "behavior": "Shown when a selected coverage has QD underwriting. Renders as QD LI, QD DI, or a combined QD LI+DI page depending on which products are selected.",
+      "implementationReferences": [
+        {
+          "path": "src/config/flowGates.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-application-flow-health-qd-routing.global:*",
+          "key": "rule-application-flow-health-qd-routing.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-application-flow-health-qd-routing",
+          "position": 9,
+          "displayId": 184280210988124,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-application-flow-health-qd-routing.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-application-flow-health-qd-cir-routing",
+      "name": "Health QD CIR routing",
+      "area": "Application flow",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "planned",
+        "label": "Planned; not executable",
+        "owner": "src/config/formFlow.ts"
+      },
+      "behavior": "Shown when LI (QD) is selected with a CIR rider. (Page not yet implemented in prototype.)",
+      "implementationReferences": [
+        {
+          "path": "src/config/formFlow.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-application-flow-health-qd-cir-routing.global:*",
+          "key": "rule-application-flow-health-qd-cir-routing.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-application-flow-health-qd-cir-routing",
+          "position": 10,
+          "displayId": 68763304168189,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-application-flow-health-qd-cir-routing.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-application-flow-health-di-supp-routing",
+      "name": "Health DI SUPP routing",
+      "area": "Application flow",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "planned",
+        "label": "Planned; not executable",
+        "owner": "src/config/formFlow.ts"
+      },
+      "behavior": "Shown when LI (QD) and DI (UW) are both selected. (Page not yet implemented in prototype.)",
+      "implementationReferences": [
+        {
+          "path": "src/config/formFlow.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-application-flow-health-di-supp-routing.global:*",
+          "key": "rule-application-flow-health-di-supp-routing.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-application-flow-health-di-supp-routing",
+          "position": 11,
+          "displayId": 52710770425355,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-application-flow-health-di-supp-routing.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-progress-navigation-health-grouped-in-progress",
+      "name": "Health grouped in progress",
+      "area": "Progress/navigation",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/config/progressSteps.ts"
+      },
+      "behavior": "Multiple routed health pages are presented within the consolidated application-review/progress experience rather than as separate major progress stages.",
+      "implementationReferences": [
+        {
+          "path": "src/config/progressSteps.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-progress-navigation-health-grouped-in-progress.global:*",
+          "key": "rule-progress-navigation-health-grouped-in-progress.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-progress-navigation-health-grouped-in-progress",
+          "position": 12,
+          "displayId": 172511410060983,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-progress-navigation-health-grouped-in-progress.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-progress-navigation-skipped-stages-removed",
+      "name": "Skipped stages removed",
+      "area": "Progress/navigation",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/config/progressSteps.ts"
+      },
+      "behavior": "If every page in a progress stage is skipped, the stage is removed from the active progress steps.",
+      "implementationReferences": [
+        {
+          "path": "src/config/progressSteps.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-progress-navigation-skipped-stages-removed.global:*",
+          "key": "rule-progress-navigation-skipped-stages-removed.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-progress-navigation-skipped-stages-removed",
+          "position": 13,
+          "displayId": 41122655546155,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-progress-navigation-skipped-stages-removed.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-progress-navigation-post-review-back-disabled",
+      "name": "Post-review Back disabled",
+      "area": "Progress/navigation",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/app/RoutePage.tsx"
+      },
+      "behavior": "After Review is submitted, Back navigation is disabled on pages after Review.",
+      "implementationReferences": [
+        {
+          "path": "src/app/RoutePage.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-progress-navigation-post-review-back-disabled.global:*",
+          "key": "rule-progress-navigation-post-review-back-disabled.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-progress-navigation-post-review-back-disabled",
+          "position": 14,
+          "displayId": 63495008572572,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-progress-navigation-post-review-back-disabled.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-progress-navigation-back-button-hidden-with-no-previous-page",
+      "name": "Back button hidden with no previous page",
+      "area": "Progress/navigation",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/app/RoutePage.tsx; src/components/layout/PageHeader.tsx; src/components/layout/PageTitle.tsx"
+      },
+      "behavior": "The PageHeader/PageTitle back arrow is rendered only when getPreviousFormPageId resolves a previous page for the current values and the page is not after a submitted review; otherwise no back control is shown at all (distinct from it being disabled post-review).",
+      "implementationReferences": [
+        {
+          "path": "src/app/RoutePage.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/layout/PageHeader.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/layout/PageTitle.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-progress-navigation-back-button-hidden-with-no-previous-page.global:*",
+          "key": "rule-progress-navigation-back-button-hidden-with-no-previous-page.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-progress-navigation-back-button-hidden-with-no-previous-page",
+          "position": 15,
+          "displayId": 147588535676586,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-progress-navigation-back-button-hidden-with-no-previous-page.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-form-template-single-template-forces-the-narrow-screen-layout-not-a-separate-one-page-form",
+      "name": "Single template embeds the application in landing-page sections",
+      "area": "Form Template",
+      "documentedIn": "configurations",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/app/SinglePageApplication.tsx; src/components/layout/SinglePageSections.tsx; src/app/RoutePage.tsx; src/app/theme.ts"
+      },
+      "behavior": "template=single embeds SinglePageApplication below the landing content. SinglePageSections renders the active applicant page within a vertical progress layout; completing a page advances to the next applicable section, and permitted edits reopen earlier sections. Shared page participation, validation and routing rules still apply. The theme also forces narrow-screen layout for md/lg/xl responsive styles.",
+      "implementationReferences": [
+        {
+          "path": "src/app/SinglePageApplication.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/layout/SinglePageSections.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/app/RoutePage.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/app/theme.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-form-template-single-template-forces-the-narrow-screen-layout-not-a-separate-one-page-form.global:*",
+          "key": "rule-form-template-single-template-forces-the-narrow-screen-layout-not-a-separate-one-page-form.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-form-template-single-template-forces-the-narrow-screen-layout-not-a-separate-one-page-form",
+          "position": 16,
+          "displayId": 177050565983897,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-form-template-single-template-forces-the-narrow-screen-layout-not-a-separate-one-page-form.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-form-template-sm-breakpoint-stays-real-so-sm-level-padding-isn-t-lost",
+      "name": "sm breakpoint stays real so sm-level padding isn't lost",
+      "area": "Form Template",
+      "documentedIn": "configurations",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/app/theme.ts"
+      },
+      "behavior": "forceMobileLayout only overrides md/lg/xl — sm (600px) is left at its default. Components that only bump padding/spacing at sm (e.g. FormRoutePage's FormShell, which uses px: { xs: 2, sm: \"48px\" }) still receive that breathing room once the real browser viewport is 600px or wider, instead of staying pinned to their tightest xs padding on an actual desktop screen.",
+      "implementationReferences": [
+        {
+          "path": "src/app/theme.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-form-template-sm-breakpoint-stays-real-so-sm-level-padding-isn-t-lost.global:*",
+          "key": "rule-form-template-sm-breakpoint-stays-real-so-sm-level-padding-isn-t-lost.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-form-template-sm-breakpoint-stays-real-so-sm-level-padding-isn-t-lost",
+          "position": 17,
+          "displayId": 225530316599271,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-form-template-sm-breakpoint-stays-real-so-sm-level-padding-isn-t-lost.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-form-template-home-hero-membership-share-one-column-at-different-max-widths",
+      "name": "Single template places the application below the landing content",
+      "area": "Form Template",
+      "documentedIn": "configurations",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Home.tsx; src/app/SinglePageApplication.tsx; src/components/layout/SinglePageSections.tsx; src/config/homepagePresentation.ts"
+      },
+      "behavior": "In single template, Home renders the configured landing content followed by SinglePageApplication. The application reuses the existing applicant page components within one vertical section layout. Artwork follows the configured single-page artwork setting; a fixed hero/form width is not an independent business rule.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Home.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/app/SinglePageApplication.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/layout/SinglePageSections.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/config/homepagePresentation.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-form-template-home-hero-membership-share-one-column-at-different-max-widths.global:*",
+          "key": "rule-form-template-home-hero-membership-share-one-column-at-different-max-widths.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-form-template-home-hero-membership-share-one-column-at-different-max-widths",
+          "position": 18,
+          "displayId": 3363960134905,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-form-template-home-hero-membership-share-one-column-at-different-max-widths.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-validation-page-advance",
+      "name": "Page advance",
+      "area": "Validation",
+      "documentedIn": "validation",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/app/RoutePage.tsx"
+      },
+      "behavior": "The user cannot advance when field validation or page-level validation fails; the page shows an error and moves focus/scroll toward the first error.",
+      "implementationReferences": [
+        {
+          "path": "src/app/RoutePage.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-validation-page-advance.global:*",
+          "key": "rule-validation-page-advance.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-validation-page-advance",
+          "position": 19,
+          "displayId": 91338032421959,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-validation-page-advance.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-persistence-values-preserved-during-navigation",
+      "name": "Values preserved during navigation",
+      "area": "Persistence",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/app/RoutePage.tsx; ApplicationFormContext.tsx"
+      },
+      "behavior": "Current page values are written to shared application state on submit, Back, and unmount when the page was not explicitly saved.",
+      "implementationReferences": [
+        {
+          "path": "src/app/RoutePage.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-persistence-values-preserved-during-navigation.global:*",
+          "key": "rule-persistence-values-preserved-during-navigation.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-persistence-values-preserved-during-navigation",
+          "position": 20,
+          "displayId": 174750993505287,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-persistence-values-preserved-during-navigation.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-persistence-progress-saved-feedback",
+      "name": "Progress-saved feedback",
+      "area": "Persistence",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/app/RoutePage.tsx; src/components/feedback/AppSnackbar.tsx"
+      },
+      "behavior": "After forward navigation, the destination page displays a Progress Saved snackbar (AppSnackbar, severity=success). The snackbar appears at top-center on large screens and bottom-center on small screens.",
+      "implementationReferences": [
+        {
+          "path": "src/app/RoutePage.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/feedback/AppSnackbar.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-persistence-progress-saved-feedback.global:*",
+          "key": "rule-persistence-progress-saved-feedback.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-persistence-progress-saved-feedback",
+          "position": 21,
+          "displayId": 7778299969598,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-persistence-progress-saved-feedback.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-persistence-membership-starts-autosave-mock-communication",
+      "name": "Membership starts autosave mock communication",
+      "area": "Persistence",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/app/RoutePage.tsx"
+      },
+      "behavior": "Submitting Membership triggers the current prototype autosave mock-email behavior.",
+      "implementationReferences": [
+        {
+          "path": "src/app/RoutePage.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-persistence-membership-starts-autosave-mock-communication.global:*",
+          "key": "rule-persistence-membership-starts-autosave-mock-communication.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-persistence-membership-starts-autosave-mock-communication",
+          "position": 22,
+          "displayId": 137949562865812,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-persistence-membership-starts-autosave-mock-communication.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-applicant-display-member-section-title-hidden-for-member-only-flow",
+      "name": "Member section title hidden for member-only flow",
+      "area": "Applicant display",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/utils/applicantVisibility.ts"
+      },
+      "behavior": "The Member/Self applicant section label is hidden when no spouse/child is actually selected for any product. It is shown when another applicant is applying.",
+      "implementationReferences": [
+        {
+          "path": "src/utils/applicantVisibility.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-applicant-display-member-section-title-hidden-for-member-only-flow.global:*",
+          "key": "rule-applicant-display-member-section-title-hidden-for-member-only-flow.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-applicant-display-member-section-title-hidden-for-member-only-flow",
+          "position": 23,
+          "displayId": 150425329154106,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-applicant-display-member-section-title-hidden-for-member-only-flow.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-applicant-display-dependent-section-shown-only-when-applying",
+      "name": "Dependent section shown only when applying",
+      "area": "Applicant display",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/utils/applicantVisibility.ts; src/app/RoutePage.tsx"
+      },
+      "behavior": "Spouse/child applicant labels and post-Coverage applicant sections are shown only when that applicant is actually selected for an applicable product.",
+      "implementationReferences": [
+        {
+          "path": "src/utils/applicantVisibility.ts",
+          "exists": true
+        },
+        {
+          "path": "src/app/RoutePage.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-applicant-display-dependent-section-shown-only-when-applying.global:*",
+          "key": "rule-applicant-display-dependent-section-shown-only-when-applying.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-applicant-display-dependent-section-shown-only-when-applying",
+          "position": 24,
+          "displayId": 168347773587705,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-applicant-display-dependent-section-shown-only-when-applying.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-applicant-display-eligibility-selection-alone-is-not-enough-after-coverage",
+      "name": "Eligibility selection alone is not enough after Coverage",
+      "area": "Applicant display",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/utils/applicantVisibility.ts"
+      },
+      "behavior": "A spouse/child selected on Eligibility does not count as applying if that dependent is not selected for any product on Coverage.",
+      "implementationReferences": [
+        {
+          "path": "src/utils/applicantVisibility.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-applicant-display-eligibility-selection-alone-is-not-enough-after-coverage.global:*",
+          "key": "rule-applicant-display-eligibility-selection-alone-is-not-enough-after-coverage.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-applicant-display-eligibility-selection-alone-is-not-enough-after-coverage",
+          "position": 25,
+          "displayId": 113099166331563,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-applicant-display-eligibility-selection-alone-is-not-enough-after-coverage.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-applicant-display-member-only-fallback",
+      "name": "Member-only fallback",
+      "area": "Applicant display",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/utils/applicantsApplying.ts"
+      },
+      "behavior": "When no dependents are selected, the member is treated as the applicant by default.",
+      "implementationReferences": [
+        {
+          "path": "src/utils/applicantsApplying.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-applicant-display-member-only-fallback.global:*",
+          "key": "rule-applicant-display-member-only-fallback.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-applicant-display-member-only-fallback",
+          "position": 26,
+          "displayId": 67613697297837,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-applicant-display-member-only-fallback.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-eligibility-child-records-via-dynamiclist",
+      "name": "Child records via DynamicList",
+      "area": "Eligibility",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Eligibility.tsx; src/components/forms/DynamicList.tsx"
+      },
+      "behavior": "When Child is selected and applicantExperience.childEligibility.mode is details (the default), DynamicList collects children[].firstName, lastName, birthDate and gender using the effective field definitions. Unmarried and full-time-student questions are added when applicable product eligibility rules require them. Records support Add, Edit and Remove; at least one child is required to continue. Client or Site configuration can choose notice-only instead, showing the configured note without collecting or requiring records. CSEA uses notice-only.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Eligibility.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/forms/DynamicList.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-eligibility-child-records-via-dynamiclist.global:*",
+          "key": "rule-eligibility-child-records-via-dynamiclist.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-eligibility-child-records-via-dynamiclist",
+          "position": 27,
+          "displayId": 254988311538297,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-eligibility-child-records-via-dynamiclist.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-eligibility-spouse-dependent-requires-spouse-details",
+      "name": "Spouse dependent requires spouse details",
+      "area": "Eligibility",
+      "documentedIn": "validation",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Eligibility.tsx"
+      },
+      "behavior": "If Spouse is selected, spouse name details must be provided before continuing.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Eligibility.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-eligibility-spouse-dependent-requires-spouse-details.global:*",
+          "key": "rule-eligibility-spouse-dependent-requires-spouse-details.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-eligibility-spouse-dependent-requires-spouse-details",
+          "position": 28,
+          "displayId": 21786297483476,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-eligibility-spouse-dependent-requires-spouse-details.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-eligibility-child-section-displays-unmarried-children-notice",
+      "name": "Child section displays unmarried-children notice",
+      "area": "Eligibility",
+      "documentedIn": "configurations",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Eligibility.tsx"
+      },
+      "behavior": "When the Child dependent section is visible, an info alert under the section header states that only unmarried children are eligible for coverage.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Eligibility.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-eligibility-child-section-displays-unmarried-children-notice.global:*",
+          "key": "rule-eligibility-child-section-displays-unmarried-children-notice.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-eligibility-child-section-displays-unmarried-children-notice",
+          "position": 29,
+          "displayId": 34236075031856,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-eligibility-child-section-displays-unmarried-children-notice.global:*"
+        }
+      ],
+      "conditionKeys": [
+        "condition-child-selected"
+      ],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-eligibility-zip-can-derive-state-province",
+      "name": "ZIP can derive state/province",
+      "area": "Eligibility",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/forms/EligibilityFields.tsx; src/utils/zipToStateProvince.ts"
+      },
+      "behavior": "When a recognizable ZIP/postal code is entered, the state/province field is automatically derived when a matching configured option exists. The user may manually override the derived state at any time; a subsequent ZIP change will re-derive state from the new ZIP.",
+      "implementationReferences": [
+        {
+          "path": "src/components/forms/EligibilityFields.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/utils/zipToStateProvince.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-eligibility-zip-can-derive-state-province.global:*",
+          "key": "rule-eligibility-zip-can-derive-state-province.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-eligibility-zip-can-derive-state-province",
+          "position": 30,
+          "displayId": 129934047579944,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-eligibility-zip-can-derive-state-province.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-eligibility-membership-conditional-dependent-options",
+      "name": "Membership-conditional dependent options",
+      "area": "Eligibility",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Eligibility.tsx"
+      },
+      "behavior": "Dependent options on Eligibility can be suppressed based on membership attestation. When a membership type implies a specific relationship (e.g. the member is a spouse/dependent of the primary member), the corresponding dependent option is removed to prevent duplicate applicant entry. Section visibility, labels, and suppression rules are client-configurable.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Eligibility.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-eligibility-membership-conditional-dependent-options.global:*",
+          "key": "rule-eligibility-membership-conditional-dependent-options.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-eligibility-membership-conditional-dependent-options",
+          "position": 31,
+          "displayId": 13020803893629,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-eligibility-membership-conditional-dependent-options.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-coverage-category-selection-and-two-step-product-reveal",
+      "name": "Category selection and two-step product reveal",
+      "area": "Coverage",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Coverage.tsx; src/app/useCoverageState.ts; src/components/forms/CoverageCategorySelector.tsx"
+      },
+      "behavior": "The user first selects one or more coverage categories via a multi-select chip list. Selecting a category may surface additional required questions (tobacco use, income, hours). When all required questions are answered, a 'See my coverage options' button appears. Clicking it validates the form and, if valid, reveals the product catalog. Changing a category selection or question answer after products are shown collapses the catalog and requires another click.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Coverage.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/app/useCoverageState.ts",
+          "exists": true
+        },
+        {
+          "path": "src/components/forms/CoverageCategorySelector.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-coverage-category-selection-and-two-step-product-reveal.global:*",
+          "key": "rule-coverage-category-selection-and-two-step-product-reveal.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-coverage-category-selection-and-two-step-product-reveal",
+          "position": 32,
+          "displayId": 17900467466655,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-coverage-category-selection-and-two-step-product-reveal.global:*"
+        }
+      ],
+      "conditionKeys": [
+        "condition-member-smoker",
+        "condition-spouse-smoker"
+      ],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-coverage-per-applicant-product-selection",
+      "name": "Per-applicant product selection",
+      "area": "Coverage",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/forms/ProductCatalog.tsx; src/app/useCoverageState.ts"
+      },
+      "behavior": "Each product card lists eligible applicants (member, spouse, child) as checkboxes. Checking an applicant reveals a benefit amount dropdown. DI/OO products also show waiting period and max benefit period dropdowns. Optional riders appear as checkboxes; selecting a rider with an amount range reveals a rider amount dropdown. Coverage selections and amounts are stored per product/applicant key.",
+      "implementationReferences": [
+        {
+          "path": "src/components/forms/ProductCatalog.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/app/useCoverageState.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-coverage-per-applicant-product-selection.global:*",
+          "key": "rule-coverage-per-applicant-product-selection.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-coverage-per-applicant-product-selection",
+          "position": 33,
+          "displayId": 176855730569027,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-coverage-per-applicant-product-selection.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-coverage-dependent-only-selection-confirmation",
+      "name": "Dependent-only selection confirmation",
+      "area": "Coverage",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Coverage.tsx; src/components/layout/ConfirmationDialog.tsx"
+      },
+      "behavior": "If only spouse and/or child are selected for all chosen products (no member selection), clicking Next triggers the onBeforeNext hook and opens a ConfirmationDialog. The user must click Continue to proceed or Cancel to stay on Coverage.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Coverage.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/layout/ConfirmationDialog.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-coverage-dependent-only-selection-confirmation.global:*",
+          "key": "rule-coverage-dependent-only-selection-confirmation.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-coverage-dependent-only-selection-confirmation",
+          "position": 34,
+          "displayId": 147195165377521,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-coverage-dependent-only-selection-confirmation.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-coverage-coverage-amount-note",
+      "name": "Coverage amount note",
+      "area": "Coverage",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/forms/ProductCatalog.tsx"
+      },
+      "behavior": "The site can present either 'additional coverage' or 'total coverage' guidance based on the active client configuration.",
+      "implementationReferences": [
+        {
+          "path": "src/components/forms/ProductCatalog.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-coverage-coverage-amount-note.global:*",
+          "key": "rule-coverage-coverage-amount-note.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-coverage-coverage-amount-note",
+          "position": 35,
+          "displayId": 191689820420714,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-coverage-coverage-amount-note.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-coverage-category-initial-expansion",
+      "name": "Category initial expansion",
+      "area": "Coverage",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/config/clients/types.ts; client configs"
+      },
+      "behavior": "Coverage categories may start expanded for clients configured with allCategoriesExpanded.",
+      "implementationReferences": [
+        {
+          "path": "src/config/clients/types.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-coverage-category-initial-expansion.global:*",
+          "key": "rule-coverage-category-initial-expansion.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-coverage-category-initial-expansion",
+          "position": 36,
+          "displayId": 235262375911069,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-coverage-category-initial-expansion.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-coverage-cart-first-add-drawer-vs-subsequent-add-snackbar",
+      "name": "First-add drawer vs. subsequent-add snackbar",
+      "area": "Coverage cart",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/app/useCoverageState.ts; src/pages/Coverage.tsx; src/components/feedback/AppSnackbar.tsx"
+      },
+      "behavior": "When the user selects their very first product from a state of no selections, the Coverage added AppDrawer opens to show the full cart. For all subsequent product or applicant additions, a compact 'Added' success AppSnackbar appears instead of re-opening the drawer.",
+      "implementationReferences": [
+        {
+          "path": "src/app/useCoverageState.ts",
+          "exists": true
+        },
+        {
+          "path": "src/pages/Coverage.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/feedback/AppSnackbar.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-coverage-cart-first-add-drawer-vs-subsequent-add-snackbar.global:*",
+          "key": "rule-coverage-cart-first-add-drawer-vs-subsequent-add-snackbar.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-coverage-cart-first-add-drawer-vs-subsequent-add-snackbar",
+          "position": 37,
+          "displayId": 276210468392873,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-coverage-cart-first-add-drawer-vs-subsequent-add-snackbar.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-coverage-cart-cart-availability",
+      "name": "Cart availability",
+      "area": "Coverage cart",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/layout/AppHeader.tsx"
+      },
+      "behavior": "The application header shows the coverage cart on application pages except Home and Receipt, and hides it after Review has been submitted.",
+      "implementationReferences": [
+        {
+          "path": "src/components/layout/AppHeader.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-coverage-cart-cart-availability.global:*",
+          "key": "rule-coverage-cart-cart-availability.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-coverage-cart-cart-availability",
+          "position": 38,
+          "displayId": 47381210976337,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-coverage-cart-cart-availability.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-coverage-cart-cart-badge",
+      "name": "Cart badge",
+      "area": "Coverage cart",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/layout/AppHeader.tsx; CoverageCart.tsx"
+      },
+      "behavior": "The cart icon displays a badge count derived from current coverage selections.",
+      "implementationReferences": [
+        {
+          "path": "src/components/layout/AppHeader.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-coverage-cart-cart-badge.global:*",
+          "key": "rule-coverage-cart-cart-badge.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-coverage-cart-cart-badge",
+          "position": 39,
+          "displayId": 81990542900755,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-coverage-cart-cart-badge.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-coverage-cart-inline-cart-hidden-until-a-product-is-selected",
+      "name": "Inline cart hidden until a product is selected",
+      "area": "Coverage cart",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/ui/CoverageCart.tsx (CoverageCartInline)"
+      },
+      "behavior": "The 'Your requested coverage' inline panel below the Coverage page product catalog shows nothing at all — no section title and no empty-state placeholder — until at least one applicant has an amount selected for a product (grandTotal > 0). The full-drawer cart variant (opened from the header cart icon or the Coverage page's own summary drawer) is unaffected and still shows its 'No coverage selected yet.' empty state.",
+      "implementationReferences": [
+        {
+          "path": "src/components/ui/CoverageCart.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-coverage-cart-inline-cart-hidden-until-a-product-is-selected.global:*",
+          "key": "rule-coverage-cart-inline-cart-hidden-until-a-product-is-selected.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-coverage-cart-inline-cart-hidden-until-a-product-is-selected",
+          "position": 40,
+          "displayId": 273460667219150,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-coverage-cart-inline-cart-hidden-until-a-product-is-selected.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-home-quote-tool-quote-reveal-mirrors-coverage-page-s-category-reveal",
+      "name": "Quote reveal mirrors Coverage page's category reveal",
+      "area": "Home / Quote tool",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/forms/QuoteCalculator.tsx (handleGetEstimates, handleQuoteFieldChange, handleCategoryToggle)"
+      },
+      "behavior": "Clicking 'See my quote' validates the category-level fields, reveals the matching product cards, and scrolls the drawer so the revealed products land at the top. The 'See my quote' button then hides and reappears only if the user edits a coverage question (gender, tobacco use, income, hours, business expenses/responsibility) or toggles a coverage category selection — the same show/hide contract as the Coverage page's 'See my coverage options' button.",
+      "implementationReferences": [
+        {
+          "path": "src/components/forms/QuoteCalculator.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-home-quote-tool-quote-reveal-mirrors-coverage-page-s-category-reveal.global:*",
+          "key": "rule-home-quote-tool-quote-reveal-mirrors-coverage-page-s-category-reveal.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-home-quote-tool-quote-reveal-mirrors-coverage-page-s-category-reveal",
+          "position": 41,
+          "displayId": 65021812066774,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-home-quote-tool-quote-reveal-mirrors-coverage-page-s-category-reveal.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-home-quote-tool-estimated-cost-panel-uses-the-shared-totalcostsummary-component",
+      "name": "Estimated cost panel uses the shared TotalCostSummary component",
+      "area": "Home / Quote tool",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/forms/QuoteCalculator.tsx; src/components/ui/TotalCostSummary.tsx"
+      },
+      "behavior": "The quote drawer's estimated cost panel now renders via the same TotalCostSummary component used on the Coverage page and in the coverage cart drawer, instead of a bespoke box. Like the Coverage page's inline cart, the panel is hidden entirely until at least one product/applicant has been added (no 'Added coverage will appear here' placeholder); the rate-frequency toggle and Apply button remain visible whenever products are shown.",
+      "implementationReferences": [
+        {
+          "path": "src/components/forms/QuoteCalculator.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/ui/TotalCostSummary.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-home-quote-tool-estimated-cost-panel-uses-the-shared-totalcostsummary-component.global:*",
+          "key": "rule-home-quote-tool-estimated-cost-panel-uses-the-shared-totalcostsummary-component.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-home-quote-tool-estimated-cost-panel-uses-the-shared-totalcostsummary-component",
+          "position": 42,
+          "displayId": 111984929240577,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-home-quote-tool-estimated-cost-panel-uses-the-shared-totalcostsummary-component.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-home-quote-tool-apply-initializes-the-application",
+      "name": "Apply initializes the application",
+      "area": "Home / Quote tool",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/config/applicationTransitions/applicationTransitions.ts (quoteApplyTransition)"
+      },
+      "behavior": "When a user applies from a quote, collected quote information and selected coverage initialize the application through the canonical quote.apply transition. Targets: birth-date, zip-postal-code, state-province, gender, smoker, average-monthly-income, hours-worked-per-week, monthly-business-expenses, business-expense-responsibility, coverageSelections, selectedCategoryChips, productApplicants, coverageAmounts.",
+      "implementationReferences": [
+        {
+          "path": "src/config/applicationTransitions/applicationTransitions.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-home-quote-tool-apply-initializes-the-application.global:*",
+          "key": "rule-home-quote-tool-apply-initializes-the-application.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-home-quote-tool-apply-initializes-the-application",
+          "position": 43,
+          "displayId": 268206217925690,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-home-quote-tool-apply-initializes-the-application.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-contact-eligibility-address-carry-forward",
+      "name": "Eligibility address carry-forward",
+      "area": "Contact",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/config/applicationTransitions/applicationTransitions.ts (contactCarryForwardTransition)"
+      },
+      "behavior": "When Contact is entered, existing Eligibility location values preset empty Contact location fields without overwriting user-entered Contact values. Targets: state, zip-code.",
+      "implementationReferences": [
+        {
+          "path": "src/config/applicationTransitions/applicationTransitions.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-contact-eligibility-address-carry-forward.global:*",
+          "key": "rule-contact-eligibility-address-carry-forward.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-contact-eligibility-address-carry-forward",
+          "position": 44,
+          "displayId": 103351825621080,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-contact-eligibility-address-carry-forward.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-feedback-snackbar-positioning",
+      "name": "Snackbar positioning",
+      "area": "Feedback",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/feedback/AppSnackbar.tsx"
+      },
+      "behavior": "AppSnackbar appears at top-center on large screens and bottom-center on small screens. Used for Progress Saved and Coverage Added feedback.",
+      "implementationReferences": [
+        {
+          "path": "src/components/feedback/AppSnackbar.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-feedback-snackbar-positioning.global:*",
+          "key": "rule-feedback-snackbar-positioning.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-feedback-snackbar-positioning",
+          "position": 45,
+          "displayId": 248241117829034,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-feedback-snackbar-positioning.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-beneficiary-applicable-applicants-products",
+      "name": "Applicable applicants/products",
+      "area": "Beneficiary",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Beneficiary.tsx"
+      },
+      "behavior": "Beneficiary records are created only for selected member/spouse LI/AD products with a positive coverage amount and selected applicant.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Beneficiary.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-beneficiary-applicable-applicants-products.global:*",
+          "key": "rule-beneficiary-applicable-applicants-products.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-beneficiary-applicable-applicants-products",
+          "position": 46,
+          "displayId": 112334537216383,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-beneficiary-applicable-applicants-products.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-beneficiary-optional-page-opt-in",
+      "name": "Optional page opt-in",
+      "area": "Beneficiary",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Beneficiary.tsx"
+      },
+      "behavior": "When Beneficiary mode is optional, the page first asks whether the user wants to add beneficiary information. No skips the beneficiary questions and permits continuation.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Beneficiary.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-beneficiary-optional-page-opt-in.global:*",
+          "key": "rule-beneficiary-optional-page-opt-in.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-beneficiary-optional-page-opt-in",
+          "position": 47,
+          "displayId": 128858688576081,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-beneficiary-optional-page-opt-in.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-beneficiary-required-beneficiary-per-applicable-product",
+      "name": "Required beneficiary per applicable product",
+      "area": "Beneficiary",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Beneficiary.tsx"
+      },
+      "behavior": "When beneficiary questions are active, each applicable product must have at least one beneficiary before continuing.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Beneficiary.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-beneficiary-required-beneficiary-per-applicable-product.global:*",
+          "key": "rule-beneficiary-required-beneficiary-per-applicable-product.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-beneficiary-required-beneficiary-per-applicable-product",
+          "position": 48,
+          "displayId": 133041938928414,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-beneficiary-required-beneficiary-per-applicable-product.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-beneficiary-add-edit-remove-modal",
+      "name": "Add/edit/remove modal",
+      "area": "Beneficiary",
+      "documentedIn": "components",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Beneficiary.tsx; src/components/layout/AppModal.tsx"
+      },
+      "behavior": "Clicking 'Add Beneficiary' on a product card opens an AppModal. The modal shows: designation tabs (Primary / Contingent) with a remaining-slot counter; beneficiary type selector (Individual or Trust); and type-specific fields. Individual fields: First Name, Last Name, Relationship, % Share with 25/50/75/100% quick-fill buttons and a live 'X% unassigned remaining' display. Trust fields: Name of Trust and Date of Trust. Clicking Edit pre-populates the modal with the existing record. The 'Add Beneficiary' button is replaced by an info alert when both designations are fully maxed.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Beneficiary.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/layout/AppModal.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-beneficiary-add-edit-remove-modal.global:*",
+          "key": "rule-beneficiary-add-edit-remove-modal.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-beneficiary-add-edit-remove-modal",
+          "position": 49,
+          "displayId": 263296336239154,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-beneficiary-add-edit-remove-modal.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-beneficiary-primary-contingent-designation",
+      "name": "Primary/contingent designation",
+      "area": "Beneficiary",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Beneficiary.tsx"
+      },
+      "behavior": "Each beneficiary is designated as Primary or Contingent, selected via tabs in the add/edit modal.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Beneficiary.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-beneficiary-primary-contingent-designation.global:*",
+          "key": "rule-beneficiary-primary-contingent-designation.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-beneficiary-primary-contingent-designation",
+          "position": 50,
+          "displayId": 193837964310975,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-beneficiary-primary-contingent-designation.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-beneficiary-individual-vs-trust",
+      "name": "Individual vs. trust",
+      "area": "Beneficiary",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Beneficiary.tsx"
+      },
+      "behavior": "A beneficiary can be an Individual or Trust. Within the same Primary/Contingent designation, trust and individual beneficiary types cannot be mixed.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Beneficiary.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-beneficiary-individual-vs-trust.global:*",
+          "key": "rule-beneficiary-individual-vs-trust.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-beneficiary-individual-vs-trust",
+          "position": 51,
+          "displayId": 67683710362655,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-beneficiary-individual-vs-trust.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-beneficiary-maximum-beneficiaries",
+      "name": "Maximum beneficiaries",
+      "area": "Beneficiary",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Beneficiary.tsx"
+      },
+      "behavior": "Up to 10 Primary and 10 Contingent beneficiaries may be added per product; reaching 10 prevents additional entries for that designation.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Beneficiary.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-beneficiary-maximum-beneficiaries.global:*",
+          "key": "rule-beneficiary-maximum-beneficiaries.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-beneficiary-maximum-beneficiaries",
+          "position": 52,
+          "displayId": 206881243287431,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-beneficiary-maximum-beneficiaries.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-beneficiary-individual-allocation",
+      "name": "Individual allocation",
+      "area": "Beneficiary",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Beneficiary.tsx"
+      },
+      "behavior": "Individual beneficiary share must be greater than 0 and cannot exceed the unassigned percentage remaining for that designation.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Beneficiary.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-beneficiary-individual-allocation.global:*",
+          "key": "rule-beneficiary-individual-allocation.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-beneficiary-individual-allocation",
+          "position": 53,
+          "displayId": 176366636895041,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-beneficiary-individual-allocation.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-beneficiary-allocation-reaches-100",
+      "name": "Allocation reaches 100%",
+      "area": "Beneficiary",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Beneficiary.tsx"
+      },
+      "behavior": "Once the assigned individual share reaches 100% for a designation, no more individual beneficiaries can be added for that designation.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Beneficiary.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-beneficiary-allocation-reaches-100.global:*",
+          "key": "rule-beneficiary-allocation-reaches-100.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-beneficiary-allocation-reaches-100",
+          "position": 54,
+          "displayId": 11809910456423,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-beneficiary-allocation-reaches-100.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-beneficiary-trust-exclusivity",
+      "name": "Trust exclusivity",
+      "area": "Beneficiary",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Beneficiary.tsx"
+      },
+      "behavior": "Only one Trust may be added per Primary/Contingent designation; if a Trust exists, additional individuals or trusts are blocked for that designation.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Beneficiary.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-beneficiary-trust-exclusivity.global:*",
+          "key": "rule-beneficiary-trust-exclusivity.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-beneficiary-trust-exclusivity",
+          "position": 55,
+          "displayId": 123969244790737,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-beneficiary-trust-exclusivity.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-beneficiary-apply-to-other-coverages",
+      "name": "Apply to other coverages",
+      "area": "Beneficiary",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Beneficiary.tsx"
+      },
+      "behavior": "After saving a new (not edited) beneficiary, if the same applicant has other eligible products, a second AppModal opens listing those products as checkboxes. The user can select one or more and click 'Apply to Selected', or click Skip. When applied, each target product receives a separate beneficiary record with a new unique ID — not a shared reference.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Beneficiary.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-beneficiary-apply-to-other-coverages.global:*",
+          "key": "rule-beneficiary-apply-to-other-coverages.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-beneficiary-apply-to-other-coverages",
+          "position": 56,
+          "displayId": 206096183255032,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-beneficiary-apply-to-other-coverages.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-contact-business-address-same-as-home",
+      "name": "Business address same as home",
+      "area": "Contact",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Contact.tsx"
+      },
+      "behavior": "The Contact page conditionally hides/reuses business-address inputs when the business address is marked the same as the home address; DI/OO-related contact fields drive additional display rules.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Contact.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-contact-business-address-same-as-home.global:*",
+          "key": "rule-contact-business-address-same-as-home.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-contact-business-address-same-as-home",
+          "position": 57,
+          "displayId": 254007523485477,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-contact-business-address-same-as-home.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-profile-conditional-follow-up-fields",
+      "name": "Conditional follow-up fields",
+      "area": "Profile",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Profile.tsx; src/components/forms/ConditionalGroup.tsx"
+      },
+      "behavior": "Answers to controlling fields reveal follow-up fields inline within a left-bordered ConditionalGroup container. Changing the controlling answer back collapses the group. Examples: driver license Yes reveals license number/state; is-self-employed Yes reveals self-employment sub-questions; existing life insurance Yes reveals amount and replacement fields. Some follow-ups are themselves controls for deeper nested groups.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Profile.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/forms/ConditionalGroup.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-profile-conditional-follow-up-fields.global:*",
+          "key": "rule-profile-conditional-follow-up-fields.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-profile-conditional-follow-up-fields",
+          "position": 58,
+          "displayId": 266504662017791,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-profile-conditional-follow-up-fields.global:*"
+        }
+      ],
+      "conditionKeys": [
+        "condition-member-has-drivers-license",
+        "condition-spouse-has-drivers-license"
+      ],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-profile-repeatable-insurance-company-records",
+      "name": "Repeatable insurance company records",
+      "area": "Profile",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Profile.tsx; src/components/forms/DynamicList.tsx"
+      },
+      "behavior": "When the user indicates existing disability coverage, insurance company records are added through the DynamicList pattern: existing records show as bordered cards; Add opens an AppModal with company name, monthly benefit amount, benefit period, and waiting period fields; Edit pre-populates the modal; Remove requires a confirmation modal.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Profile.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/forms/DynamicList.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-profile-repeatable-insurance-company-records.global:*",
+          "key": "rule-profile-repeatable-insurance-company-records.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-profile-repeatable-insurance-company-records",
+          "position": 59,
+          "displayId": 147896525004156,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-profile-repeatable-insurance-company-records.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-profile-outside-u-s-follow-up",
+      "name": "Outside-U.S. follow-up",
+      "area": "Profile",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Profile.tsx"
+      },
+      "behavior": "Member and spouse outside-U.S. residence/travel questions reveal country/month follow-ups only for affirmative responses.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Profile.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-profile-outside-u-s-follow-up.global:*",
+          "key": "rule-profile-outside-u-s-follow-up.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-profile-outside-u-s-follow-up",
+          "position": 60,
+          "displayId": 52733965728126,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-profile-outside-u-s-follow-up.global:*"
+        }
+      ],
+      "conditionKeys": [
+        "condition-member-lives-outside-us",
+        "condition-member-travels-outside-us",
+        "condition-spouse-lives-outside-us",
+        "condition-spouse-travels-outside-us"
+      ],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-profile-financial-questionnaire-visibility",
+      "name": "Financial questionnaire visibility",
+      "area": "Profile",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Profile.tsx; src/config/pageSections/pageSections.ts"
+      },
+      "behavior": "Financial questionnaire visibility follows the active site’s MCR product-question-set assignments (Main column Y), for a selected member product with a positive amount. Sites without an assigned financial questionnaire omit this section. The former DI amount greater than $2,000 trigger was prototype demo behavior, not a general rule. Self-employment details appear when is-self-employed = Yes.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Profile.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/config/pageSections/pageSections.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-profile-financial-questionnaire-visibility.global:*",
+          "key": "rule-profile-financial-questionnaire-visibility.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-profile-financial-questionnaire-visibility",
+          "position": 61,
+          "displayId": 47549303356003,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-profile-financial-questionnaire-visibility.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-health-applicant-health-sections",
+      "name": "Applicant health sections",
+      "area": "Health",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Health*.tsx; src/utils/applicantVisibility.ts"
+      },
+      "behavior": "Member/spouse health sections follow applicant-applying visibility; the member section label is hidden for member-only flow.",
+      "implementationReferences": [
+        {
+          "path": "src/utils/applicantVisibility.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-health-applicant-health-sections.global:*",
+          "key": "rule-health-applicant-health-sections.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-health-applicant-health-sections",
+          "position": 62,
+          "displayId": 129695309909410,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-health-applicant-health-sections.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-health-yes-no-with-inline-dynamiclist",
+      "name": "Yes/No with inline DynamicList",
+      "area": "Health",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/HealthLi.tsx; src/pages/HealthDi.tsx; src/pages/HealthSi.tsx; src/components/forms/DynamicList.tsx"
+      },
+      "behavior": "Each health question is a required Yes/No radio. Selecting Yes reveals a DynamicList inline below that question where the user can add one or more detail records (onset date, condition/medication details, physician/hospital address) via the standard Add/Edit/Remove modal pattern. Selecting No collapses and clears the list for that question.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/HealthLi.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/pages/HealthDi.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/pages/HealthSi.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/forms/DynamicList.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-health-yes-no-with-inline-dynamiclist.global:*",
+          "key": "rule-health-yes-no-with-inline-dynamiclist.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-health-yes-no-with-inline-dynamiclist",
+          "position": 63,
+          "displayId": 191203991801628,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-health-yes-no-with-inline-dynamiclist.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-payment-optional-payment-opt-in",
+      "name": "Optional payment opt-in",
+      "area": "Payment",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Payment.tsx"
+      },
+      "behavior": "When Payment mode is optional, the page first asks whether the user wants to add payment information; No permits continuation without payment questions.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Payment.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-payment-optional-payment-opt-in.global:*",
+          "key": "rule-payment-optional-payment-opt-in.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-payment-optional-payment-opt-in",
+          "position": 64,
+          "displayId": 225545176311203,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-payment-optional-payment-opt-in.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-payment-payment-per-applicable-product",
+      "name": "Payment per applicable product",
+      "area": "Payment",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Payment.tsx"
+      },
+      "behavior": "When payment questions are active, each applicable product requires a payment method and payment frequency before continuing.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Payment.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-payment-payment-per-applicable-product.global:*",
+          "key": "rule-payment-payment-per-applicable-product.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-payment-payment-per-applicable-product",
+          "position": 65,
+          "displayId": 252479478905226,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-payment-payment-per-applicable-product.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-payment-bank-account-detail-display",
+      "name": "Bank account detail display",
+      "area": "Payment",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Payment.tsx"
+      },
+      "behavior": "Bank-account details (name on account, institution, routing number, account number, authorization checkbox) are displayed when Bank account is selected as the payment method for any product.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Payment.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-payment-bank-account-detail-display.global:*",
+          "key": "rule-payment-bank-account-detail-display.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-payment-bank-account-detail-display",
+          "position": 66,
+          "displayId": 28107155591547,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-payment-bank-account-detail-display.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-review-edit-confirmation-consumer-flow",
+      "name": "Edit confirmation (consumer flow)",
+      "area": "Review",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Review.tsx; src/components/layout/ConfirmationDialog.tsx; src/components/layout/SendApplicationDialog.tsx"
+      },
+      "behavior": "Clicking an edit icon opens a ConfirmationDialog. Confirming navigates back to the page that owns that information. In advisor-applicant flow the same action instead opens a SendApplicationDialog ('Request edit to application') showing the advisor email; sending navigates to Application Edit Confirmation.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Review.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/layout/ConfirmationDialog.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/layout/SendApplicationDialog.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-review-edit-confirmation-consumer-flow.global:*",
+          "key": "rule-review-edit-confirmation-consumer-flow.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-review-edit-confirmation-consumer-flow",
+          "position": 67,
+          "displayId": 227077151477194,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-review-edit-confirmation-consumer-flow.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-drawers-help-and-reference-drawers",
+      "name": "Help and reference drawers",
+      "area": "Drawers",
+      "documentedIn": "components",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/layout/AppDrawer.tsx; src/components/ui/CoveragePortfolioDrawer.tsx; src/components/layout/AppMenu.tsx"
+      },
+      "behavior": "AppDrawer slides in from the right on desktop (420–480px wide) or up from the bottom on mobile (75vh). Used for contextual help topics (HelpChips → AppDrawer), the QuickDecision℠ explainer, the Coverage Portfolio (TPA-verified users on Coverage), and the application menu sub-drawers (coverage options, needs calculator, QD explainer). Drawers are read-only and do not block page submission.",
+      "implementationReferences": [
+        {
+          "path": "src/components/layout/AppDrawer.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/ui/CoveragePortfolioDrawer.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/layout/AppMenu.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-drawers-help-and-reference-drawers.global:*",
+          "key": "rule-drawers-help-and-reference-drawers.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-drawers-help-and-reference-drawers",
+          "position": 68,
+          "displayId": 130660873514942,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-drawers-help-and-reference-drawers.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-drawers-swipeable-drawer-variant",
+      "name": "Swipeable drawer variant",
+      "area": "Drawers",
+      "documentedIn": "components",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/layout/AppDrawer.tsx"
+      },
+      "behavior": "The swipeable prop enables SwipeableDrawer on mobile for user-initiated drawers (e.g. the Coverage cart drawer). Non-swipeable drawers use a standard Drawer.",
+      "implementationReferences": [
+        {
+          "path": "src/components/layout/AppDrawer.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-drawers-swipeable-drawer-variant.global:*",
+          "key": "rule-drawers-swipeable-drawer-variant.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-drawers-swipeable-drawer-variant",
+          "position": 69,
+          "displayId": 132200272537278,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-drawers-swipeable-drawer-variant.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-dynamiclist-add-edit-remove-modal-pattern",
+      "name": "Add/Edit/Remove modal pattern",
+      "area": "DynamicList",
+      "documentedIn": "components",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/forms/DynamicList.tsx; src/components/forms/DynamicListItem.tsx"
+      },
+      "behavior": "DynamicList is the shared component for any repeatable record set (children, insurance companies, health detail records). Existing records render as bordered DynamicListItem cards with Edit and Remove buttons. Add opens an AppModal titled 'Add [Label]' with a blank form. Edit opens the same modal pre-filled with the selected record. Save appends or updates the record. Remove shows a confirmation AppModal ('Remove [Label]?') and deletes on confirm. Fields inside the modal are defined per record type via a mapping prop and rendered by FieldRenderer. The Add button is hidden once maxItems is reached (default 10).",
+      "implementationReferences": [
+        {
+          "path": "src/components/forms/DynamicList.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/forms/DynamicListItem.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-dynamiclist-add-edit-remove-modal-pattern.global:*",
+          "key": "rule-dynamiclist-add-edit-remove-modal-pattern.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-dynamiclist-add-edit-remove-modal-pattern",
+          "position": 70,
+          "displayId": 94186596954635,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-dynamiclist-add-edit-remove-modal-pattern.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-advisor-flow-send-to-applicant-dialog",
+      "name": "Send-to-applicant dialog",
+      "area": "Advisor flow",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/AdvisorLogin.tsx; src/pages/Profile.tsx; src/components/layout/SendApplicationDialog.tsx"
+      },
+      "behavior": "New Application mode displays advisor credential fields on Advisor Login. When the advisor later clicks Next on Profile, the onBeforeNext hook opens a SendApplicationDialog titled 'Send to applicant for review' showing the applicant name and email. Clicking Send navigates to Advisor Send Confirmation; Cancel stays on Profile.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/AdvisorLogin.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/pages/Profile.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/layout/SendApplicationDialog.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-advisor-flow-send-to-applicant-dialog.global:*",
+          "key": "rule-advisor-flow-send-to-applicant-dialog.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-advisor-flow-send-to-applicant-dialog",
+          "position": 71,
+          "displayId": 128450219767705,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-advisor-flow-send-to-applicant-dialog.global:*"
+        }
+      ],
+      "conditionKeys": [
+        "condition-advisor-new-application"
+      ],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-advisor-flow-advisor-mode-review-edit-dialog",
+      "name": "Advisor-mode Review edit dialog",
+      "area": "Advisor flow",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/AdvisorLogin.tsx; src/pages/Review.tsx; src/components/layout/SendApplicationDialog.tsx"
+      },
+      "behavior": "Saved Application mode displays applicant email on Advisor Login. In advisor-applicant flow, clicking an edit icon on Review opens a SendApplicationDialog titled 'Request edit to application' showing the advisor email only. Clicking Send navigates to Application Edit Confirmation; Cancel stays on Review.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/AdvisorLogin.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/pages/Review.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/layout/SendApplicationDialog.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-advisor-flow-advisor-mode-review-edit-dialog.global:*",
+          "key": "rule-advisor-flow-advisor-mode-review-edit-dialog.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-advisor-flow-advisor-mode-review-edit-dialog",
+          "position": 72,
+          "displayId": 237954651565508,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-advisor-flow-advisor-mode-review-edit-dialog.global:*"
+        }
+      ],
+      "conditionKeys": [
+        "condition-advisor-saved-application"
+      ],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-landing-page-variant-behavior",
+      "name": "Variant behavior",
+      "area": "Landing Page",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Home.tsx"
+      },
+      "behavior": "default = inline Quote Tool and no hero image; hero-image = hero image, no inline Quote Tool; welcome-back = hero image, Continue/New Application actions, and hides How Applying Works and Coverage Options.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Home.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-landing-page-variant-behavior.global:*",
+          "key": "rule-landing-page-variant-behavior.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-landing-page-variant-behavior",
+          "position": 73,
+          "displayId": 98686970668291,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-landing-page-variant-behavior.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-landing-page-resume-link",
+      "name": "Resume link",
+      "area": "Landing Page",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/pages/Home.tsx"
+      },
+      "behavior": "Default and hero-image variants display the saved-application resume prompt/link; welcome-back uses Continue Application as the primary action instead.",
+      "implementationReferences": [
+        {
+          "path": "src/pages/Home.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-landing-page-resume-link.global:*",
+          "key": "rule-landing-page-resume-link.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-landing-page-resume-link",
+          "position": 74,
+          "displayId": 196498037696999,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-landing-page-resume-link.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-header-hide-on-scroll",
+      "name": "Hide-on-scroll",
+      "area": "Header",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/layout/AppHeader.tsx"
+      },
+      "behavior": "The app header hides when the user scrolls down (threshold: 8px) and reappears immediately on any upward scroll. Implemented via MUI useScrollTrigger + Slide direction='down'. The header uses position='sticky' so it participates in document layout rather than overlapping content.",
+      "implementationReferences": [
+        {
+          "path": "src/components/layout/AppHeader.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-header-hide-on-scroll.global:*",
+          "key": "rule-header-hide-on-scroll.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-header-hide-on-scroll",
+          "position": 75,
+          "displayId": 88678174089057,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-header-hide-on-scroll.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-header-header-actions",
+      "name": "Header actions",
+      "area": "Header",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/layout/AppHeader.tsx"
+      },
+      "behavior": "Application header supports Chat (when enabled and eligible), Coverage Cart and Menu. It does not contain a Quote action in the latest source.",
+      "implementationReferences": [
+        {
+          "path": "src/components/layout/AppHeader.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-header-header-actions.global:*",
+          "key": "rule-header-header-actions.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-header-header-actions",
+          "position": 76,
+          "displayId": 195013160434160,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-header-header-actions.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-header-chat-cart-suppression-after-review-submitted",
+      "name": "Chat/cart suppression after review submitted",
+      "area": "Header",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/layout/AppHeader.tsx"
+      },
+      "behavior": "The Chat and Coverage Cart header actions are hidden once ApplicationSessionContext reports that review was submitted, in addition to being hidden on the Home and Receipt pages.",
+      "implementationReferences": [
+        {
+          "path": "src/components/layout/AppHeader.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-header-chat-cart-suppression-after-review-submitted.global:*",
+          "key": "rule-header-chat-cart-suppression-after-review-submitted.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-header-chat-cart-suppression-after-review-submitted",
+          "position": 77,
+          "displayId": 44512422612666,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-header-chat-cart-suppression-after-review-submitted.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-header-cookie-consent-banner",
+      "name": "Cookie consent banner",
+      "area": "Header",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/layout/AppShell.tsx; src/components/layout/CookieDialog.tsx"
+      },
+      "behavior": "CookieDialog is shown as a fixed bottom banner on first visit. AppShell checks localStorage.cookieConsent !== 'accepted' to decide whether to render it; dismissing sets localStorage.cookieConsent = 'accepted' so it never reappears.",
+      "implementationReferences": [
+        {
+          "path": "src/components/layout/AppShell.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/layout/CookieDialog.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-header-cookie-consent-banner.global:*",
+          "key": "rule-header-cookie-consent-banner.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-header-cookie-consent-banner",
+          "position": 78,
+          "displayId": 164121173281187,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-header-cookie-consent-banner.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-application-flow-scroll-reset-on-route-change",
+      "name": "Scroll reset on route change",
+      "area": "Application flow",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/layout/AppBody.tsx"
+      },
+      "behavior": "AppBody patches window.history.pushState/replaceState and listens for popstate to track the current pathname, then scrolls the window to top on every route change.",
+      "implementationReferences": [
+        {
+          "path": "src/components/layout/AppBody.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-application-flow-scroll-reset-on-route-change.global:*",
+          "key": "rule-application-flow-scroll-reset-on-route-change.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-application-flow-scroll-reset-on-route-change",
+          "position": 79,
+          "displayId": 265333029549939,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-application-flow-scroll-reset-on-route-change.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-progress-navigation-advisor-applicant-steps-locked",
+      "name": "Advisor-applicant steps locked",
+      "area": "Progress/navigation",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/navigation/ProgressStep.tsx"
+      },
+      "behavior": "When ApplicationSessionContext is in advisor-applicant mode (the applicant entered via resume?flow=advisor), the stepper/breadcrumb progress UI locks navigation to all steps except application-review and esign-submit, regardless of completed state.",
+      "implementationReferences": [
+        {
+          "path": "src/components/navigation/ProgressStep.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-progress-navigation-advisor-applicant-steps-locked.global:*",
+          "key": "rule-progress-navigation-advisor-applicant-steps-locked.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-progress-navigation-advisor-applicant-steps-locked",
+          "position": 80,
+          "displayId": 69053861874102,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-progress-navigation-advisor-applicant-steps-locked.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-fields-format-driven-auto-formatting",
+      "name": "Format-driven auto-formatting",
+      "area": "Fields",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/forms/FieldRenderer.tsx"
+      },
+      "behavior": "FieldRenderer live-formats input as the user types based on field.format: currency ('$1,234'), percent, phone (parenthesized area code), ssn (dashes, with all but the most-recently-typed digit masked for ~800ms), and month-year. The date input type is also formatted inline.",
+      "implementationReferences": [
+        {
+          "path": "src/components/forms/FieldRenderer.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-fields-format-driven-auto-formatting.global:*",
+          "key": "rule-fields-format-driven-auto-formatting.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-fields-format-driven-auto-formatting",
+          "position": 81,
+          "displayId": 36805695055485,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-fields-format-driven-auto-formatting.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-fields-auto-label-variant-for-long-labels",
+      "name": "Auto label variant for long labels",
+      "area": "Fields",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/forms/FieldRenderer.tsx"
+      },
+      "behavior": "FieldRenderer auto-selects a 'standard' (external) label instead of the default 'floating' label when field.label is 40+ characters, to avoid clipping, unless field.labelVariant is explicitly set.",
+      "implementationReferences": [
+        {
+          "path": "src/components/forms/FieldRenderer.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-fields-auto-label-variant-for-long-labels.global:*",
+          "key": "rule-fields-auto-label-variant-for-long-labels.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-fields-auto-label-variant-for-long-labels",
+          "position": 82,
+          "displayId": 67058406890438,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-fields-auto-label-variant-for-long-labels.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-fields-phone-type-selector",
+      "name": "Phone type selector",
+      "area": "Fields",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/forms/FieldRenderer.tsx"
+      },
+      "behavior": "Phone-format fields render an inline Mobile/Home/Business type selector tied to a sibling field (field.phoneTypeFieldId, default '<field.id>-type'), unless field.showPhoneTypeSelector is false.",
+      "implementationReferences": [
+        {
+          "path": "src/components/forms/FieldRenderer.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-fields-phone-type-selector.global:*",
+          "key": "rule-fields-phone-type-selector.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-fields-phone-type-selector",
+          "position": 83,
+          "displayId": 49401120469884,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-fields-phone-type-selector.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-fields-auto-search-select-for-long-option-lists",
+      "name": "Auto search-select for long option lists",
+      "area": "Fields",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/forms/FieldRenderer.tsx"
+      },
+      "behavior": "FieldRenderer renders a field configured as inputType: 'dropdown' using the searchable-select (MUI Autocomplete) component instead of a plain Select once field.options has 10 or more entries, so long lists (e.g. US states) are searchable rather than requiring a long scroll. Fields already explicitly set to 'searchable-select' are unaffected.",
+      "implementationReferences": [
+        {
+          "path": "src/components/forms/FieldRenderer.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-fields-auto-search-select-for-long-option-lists.global:*",
+          "key": "rule-fields-auto-search-select-for-long-option-lists.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-fields-auto-search-select-for-long-option-lists",
+          "position": 84,
+          "displayId": 196623209362187,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-fields-auto-search-select-for-long-option-lists.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-drawers-panel-page-drawer-variant-with-nested-sub-drawers",
+      "name": "Panel page/drawer variant with nested sub-drawers",
+      "area": "Drawers",
+      "documentedIn": "components",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/ui/HowApplyingWorksPanel.tsx; src/components/ui/CoverageOptionsPanel.tsx"
+      },
+      "behavior": "HowApplyingWorksPanel and CoverageOptionsPanel accept a variant: 'page' | 'drawer' prop rendering the same content as a full page section or a compact drawer layout. In 'drawer' variant, HowApplyingWorksPanel manages its own nested sub-drawer state (Application Review / QuickDecision℠) stacked above the parent drawer; in 'page' variant those links call parent-supplied handlers instead.",
+      "implementationReferences": [
+        {
+          "path": "src/components/ui/HowApplyingWorksPanel.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/ui/CoverageOptionsPanel.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-drawers-panel-page-drawer-variant-with-nested-sub-drawers.global:*",
+          "key": "rule-drawers-panel-page-drawer-variant-with-nested-sub-drawers.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-drawers-panel-page-drawer-variant-with-nested-sub-drawers",
+          "position": 85,
+          "displayId": 91115924749287,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-drawers-panel-page-drawer-variant-with-nested-sub-drawers.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-coverage-coverage-options-featured-first-sort-and-category-fallback",
+      "name": "Coverage Options featured-first sort and category fallback",
+      "area": "Coverage",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/ui/CoverageOptionsPanel.tsx"
+      },
+      "behavior": "Default category order is LI, AD, DI, OO, SH. A client coverages.categoryOrder (or categories array) configuration overrides it; URL parameter featured_prod moves the identified product’s category first and that product first within it. Default products are Term Life, ascending level-term durations; Long-Term, Long-Term Plus, Mid-Term, Short-Term Disability; Critical Illness, Hospital Indemnity. Remaining products retain catalog order. An unavailable active category falls back to the first available category in the resolved order.",
+      "implementationReferences": [
+        {
+          "path": "src/components/ui/CoverageOptionsPanel.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-coverage-coverage-options-featured-first-sort-and-category-fallback.global:*",
+          "key": "rule-coverage-coverage-options-featured-first-sort-and-category-fallback.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-coverage-coverage-options-featured-first-sort-and-category-fallback",
+          "position": 86,
+          "displayId": 43391460899094,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-coverage-coverage-options-featured-first-sort-and-category-fallback.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-application-menu-menu-tools",
+      "name": "Menu tools",
+      "area": "Application menu",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/components/layout/AppMenu.tsx; src/components/ui/HowApplyingWorksPanel.tsx; src/components/ui/CoverageOptionsPanel.tsx"
+      },
+      "behavior": "Menu provides Continue Saved Application, How Applying Works, About Coverage, Needs Calculator, About QuickDecision and client Contact information. Each tool closes the main menu drawer and opens a standalone AppDrawer (How Applying Works and About Coverage render HowApplyingWorksPanel / CoverageOptionsPanel in 'drawer' variant).",
+      "implementationReferences": [
+        {
+          "path": "src/components/layout/AppMenu.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/ui/HowApplyingWorksPanel.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/ui/CoverageOptionsPanel.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-application-menu-menu-tools.global:*",
+          "key": "rule-application-menu-menu-tools.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-application-menu-menu-tools",
+          "position": 87,
+          "displayId": 28375179232589,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-application-menu-menu-tools.global:*"
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-eligibility-spouse-selection-displays-spouse-information",
+      "name": "Spouse selection displays spouse information",
+      "area": "Eligibility",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/config/pageSections/pageSections.ts; src/config/conditions/conditions.ts"
+      },
+      "behavior": "When Spouse is selected as a dependent, display the applicant-specific spouse sections and fields; post-Coverage applicant selection gates still apply separately.",
+      "implementationReferences": [
+        {
+          "path": "src/config/pageSections/pageSections.ts",
+          "exists": true
+        },
+        {
+          "path": "src/config/conditions/conditions.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-eligibility-spouse-selection-displays-spouse-information.global:*",
+          "key": "rule-eligibility-spouse-selection-displays-spouse-information.global:*",
+          "scope": "global",
+          "clientKey": null,
+          "siteKey": null,
+          "ruleKey": "rule-eligibility-spouse-selection-displays-spouse-information",
+          "position": 88,
+          "displayId": 121138456326944,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-eligibility-spouse-selection-displays-spouse-information.global:*"
+        }
+      ],
+      "conditionKeys": [
+        "condition-spouse-selected"
+      ],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-membership-ama-spouse-displays-physician-information",
+      "name": "AMA spouse displays physician information",
+      "area": "Membership",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts"
+      },
+      "behavior": "When AMA membership is Spouse of Physician, display the physician information section.",
+      "implementationReferences": [
+        {
+          "path": "src/config/conditions/conditions.ts",
+          "exists": true
+        },
+        {
+          "path": "src/config/fields/fieldOverrides.ts",
+          "exists": true
+        },
+        {
+          "path": "src/config/pageSections/pageSections.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-membership-ama-spouse-displays-physician-information.site:ama",
+          "key": "rule-membership-ama-spouse-displays-physician-information.site:ama",
+          "scope": "site",
+          "clientKey": null,
+          "siteKey": "ama",
+          "ruleKey": "rule-membership-ama-spouse-displays-physician-information",
+          "position": 89,
+          "displayId": 247049058742648,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-membership-ama-spouse-displays-physician-information.site:ama"
+        }
+      ],
+      "conditionKeys": [
+        "condition-membership-ama-spouse"
+      ],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-membership-waepa-new-member-displays-member-information",
+      "name": "WAEPA new member displays member information",
+      "area": "Membership",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts"
+      },
+      "behavior": "When WAEPA membership is New Member, display the declaration and member qualification information.",
+      "implementationReferences": [
+        {
+          "path": "src/config/conditions/conditions.ts",
+          "exists": true
+        },
+        {
+          "path": "src/config/fields/fieldOverrides.ts",
+          "exists": true
+        },
+        {
+          "path": "src/config/pageSections/pageSections.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-membership-waepa-new-member-displays-member-information.site:waepa",
+          "key": "rule-membership-waepa-new-member-displays-member-information.site:waepa",
+          "scope": "site",
+          "clientKey": null,
+          "siteKey": "waepa",
+          "ruleKey": "rule-membership-waepa-new-member-displays-member-information",
+          "position": 90,
+          "displayId": 109899418994728,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-membership-waepa-new-member-displays-member-information.site:waepa"
+        }
+      ],
+      "conditionKeys": [
+        "condition-membership-waepa-new"
+      ],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-membership-waepa-active-duty-prevents-application",
+      "name": "WAEPA active duty prevents application",
+      "area": "Membership",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/domain/applicantExperience.ts; src/pages/Membership.tsx; src/data/waepa.ts"
+      },
+      "behavior": "New and current WAEPA members answer the global Armed Forces active-duty question in Additional Membership Information. Yes displays a page error and blocks continuation for every product; No clears this restriction. The installed Site membership disqualification configuration owns the blocking value and message.",
+      "implementationReferences": [
+        {
+          "path": "src/domain/applicantExperience.ts",
+          "exists": true
+        },
+        {
+          "path": "src/pages/Membership.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/data/waepa.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-membership-waepa-active-duty-prevents-application.site:waepa",
+          "key": "rule-membership-waepa-active-duty-prevents-application.site:waepa",
+          "scope": "site",
+          "clientKey": null,
+          "siteKey": "waepa",
+          "ruleKey": "rule-membership-waepa-active-duty-prevents-application",
+          "position": 91,
+          "displayId": 144226152784747,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-membership-waepa-active-duty-prevents-application.site:waepa"
+        },
+        {
+          "id": "rule-membership-waepa-active-duty-prevents-application.site:waepa-gi",
+          "key": "rule-membership-waepa-active-duty-prevents-application.site:waepa-gi",
+          "scope": "site",
+          "clientKey": null,
+          "siteKey": "waepa-gi",
+          "ruleKey": "rule-membership-waepa-active-duty-prevents-application",
+          "position": 91,
+          "displayId": 149231531205874,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-membership-waepa-active-duty-prevents-application.site:waepa-gi"
+        }
+      ],
+      "conditionKeys": [
+        "condition-active-military"
+      ],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-membership-waepa-active-federal-employee-fields",
+      "name": "WAEPA active federal employee fields",
+      "area": "Membership",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts"
+      },
+      "behavior": "When the WAEPA qualification is active federal employee, display employer and start-date fields.",
+      "implementationReferences": [
+        {
+          "path": "src/config/conditions/conditions.ts",
+          "exists": true
+        },
+        {
+          "path": "src/config/fields/fieldOverrides.ts",
+          "exists": true
+        },
+        {
+          "path": "src/config/pageSections/pageSections.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-membership-waepa-active-federal-employee-fields.site:waepa",
+          "key": "rule-membership-waepa-active-federal-employee-fields.site:waepa",
+          "scope": "site",
+          "clientKey": null,
+          "siteKey": "waepa",
+          "ruleKey": "rule-membership-waepa-active-federal-employee-fields",
+          "position": 92,
+          "displayId": 11908028092748,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-membership-waepa-active-federal-employee-fields.site:waepa"
+        }
+      ],
+      "conditionKeys": [
+        "condition-waepa-federal-active"
+      ],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-membership-waepa-federal-annuitant-fields",
+      "name": "WAEPA federal annuitant fields",
+      "area": "Membership",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts"
+      },
+      "behavior": "When the WAEPA qualification is federal annuitant, display retired-employer and retirement-date fields.",
+      "implementationReferences": [
+        {
+          "path": "src/config/conditions/conditions.ts",
+          "exists": true
+        },
+        {
+          "path": "src/config/fields/fieldOverrides.ts",
+          "exists": true
+        },
+        {
+          "path": "src/config/pageSections/pageSections.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-membership-waepa-federal-annuitant-fields.site:waepa",
+          "key": "rule-membership-waepa-federal-annuitant-fields.site:waepa",
+          "scope": "site",
+          "clientKey": null,
+          "siteKey": "waepa",
+          "ruleKey": "rule-membership-waepa-federal-annuitant-fields",
+          "position": 93,
+          "displayId": 113459513090009,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-membership-waepa-federal-annuitant-fields.site:waepa"
+        }
+      ],
+      "conditionKeys": [
+        "condition-waepa-federal-annuitant"
+      ],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-membership-waepa-associate-member-information",
+      "name": "WAEPA associate member information",
+      "area": "Membership",
+      "documentedIn": "fields",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts"
+      },
+      "behavior": "When the WAEPA qualification is spouse-associate or child-associate, display associated-member information.",
+      "implementationReferences": [
+        {
+          "path": "src/config/conditions/conditions.ts",
+          "exists": true
+        },
+        {
+          "path": "src/config/fields/fieldOverrides.ts",
+          "exists": true
+        },
+        {
+          "path": "src/config/pageSections/pageSections.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-membership-waepa-associate-member-information.site:waepa",
+          "key": "rule-membership-waepa-associate-member-information.site:waepa",
+          "scope": "site",
+          "clientKey": null,
+          "siteKey": "waepa",
+          "ruleKey": "rule-membership-waepa-associate-member-information",
+          "position": 94,
+          "displayId": 103128415671115,
+          "providedBy": null,
+          "sourceReference": "prototype:ruleAssignments/rule-membership-waepa-associate-member-information.site:waepa"
+        }
+      ],
+      "conditionKeys": [
+        "condition-waepa-associated-member"
+      ],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-hide-unavailable-rates",
+      "name": "Suppress all rate displays when rates are unavailable",
+      "area": "Rates",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "source-reference",
+        "label": "Source model; execution owned elsewhere",
+        "owner": "canonical:seedFlags/site.has-product-rates"
+      },
+      "behavior": "Hide rate displays when site.has-product-rates is false",
+      "implementationReferences": [],
+      "assignments": [],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": [
+        "rule-hide-unavailable-rates.all-rates"
+      ]
+    },
+    {
+      "key": "rule-tpa-integration-lookup",
+      "name": "lookup",
+      "area": "Patterns",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "source-pattern",
+        "label": "Source pattern; reference only",
+        "owner": "canonical:seedPatterns/tpa-integration"
+      },
+      "behavior": "tpa-integration",
+      "implementationReferences": [],
+      "assignments": [],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [
+        "rule-tpa-integration-lookup"
+      ],
+      "sourceActionKeys": [
+        "rule-tpa-integration-lookup.0",
+        "rule-tpa-integration-lookup.1"
+      ]
+    },
+    {
+      "key": "rule-tpa-coverage-based-verification-verify",
+      "name": "verify",
+      "area": "Patterns",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "source-pattern",
+        "label": "Source pattern; reference only",
+        "owner": "canonical:seedPatterns/tpa-coverage-based-verification"
+      },
+      "behavior": "tpa-coverage-based-verification",
+      "implementationReferences": [],
+      "assignments": [],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [
+        "rule-tpa-coverage-based-verification-verify",
+        "rule-tpa-coverage-based-verification-verify.existing-member"
+      ],
+      "sourceActionKeys": [
+        "rule-tpa-coverage-based-verification-verify.0"
+      ]
+    },
+    {
+      "key": "rule-tpa-coverage-based-verification-identity-pass",
+      "name": "identity-pass",
+      "area": "Patterns",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "source-pattern",
+        "label": "Source pattern; reference only",
+        "owner": "canonical:seedPatterns/tpa-coverage-based-verification"
+      },
+      "behavior": "tpa-coverage-based-verification",
+      "implementationReferences": [],
+      "assignments": [],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [
+        "rule-tpa-coverage-based-verification-identity-pass",
+        "rule-tpa-coverage-based-verification-identity-pass.existing-member",
+        "rule-tpa-coverage-based-verification-identity-pass.active-coverage"
+      ],
+      "sourceActionKeys": [
+        "rule-tpa-coverage-based-verification-identity-pass.0",
+        "rule-tpa-coverage-based-verification-identity-pass.1"
+      ]
+    },
+    {
+      "key": "rule-tpa-coverage-based-verification-identity-fail-or-skipped",
+      "name": "identity-fail-or-skipped",
+      "area": "Patterns",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "source-pattern",
+        "label": "Source pattern; reference only",
+        "owner": "canonical:seedPatterns/tpa-coverage-based-verification"
+      },
+      "behavior": "tpa-coverage-based-verification",
+      "implementationReferences": [],
+      "assignments": [],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [
+        "rule-tpa-coverage-based-verification-identity-fail-or-skipped"
+      ],
+      "sourceActionKeys": [
+        "rule-tpa-coverage-based-verification-identity-fail-or-skipped.0",
+        "rule-tpa-coverage-based-verification-identity-fail-or-skipped.1"
+      ]
+    },
+    {
+      "key": "rule-tpa-coverage-based-verification-no-active-coverage",
+      "name": "no-active-coverage",
+      "area": "Patterns",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "source-pattern",
+        "label": "Source pattern; reference only",
+        "owner": "canonical:seedPatterns/tpa-coverage-based-verification"
+      },
+      "behavior": "tpa-coverage-based-verification",
+      "implementationReferences": [],
+      "assignments": [],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [
+        "rule-tpa-coverage-based-verification-no-active-coverage"
+      ],
+      "sourceActionKeys": [
+        "rule-tpa-coverage-based-verification-no-active-coverage.0",
+        "rule-tpa-coverage-based-verification-no-active-coverage.1"
+      ]
+    },
+    {
+      "key": "rule-tpa-coverage-based-verification-no-member",
+      "name": "no-member",
+      "area": "Patterns",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "source-pattern",
+        "label": "Source pattern; reference only",
+        "owner": "canonical:seedPatterns/tpa-coverage-based-verification"
+      },
+      "behavior": "tpa-coverage-based-verification",
+      "implementationReferences": [],
+      "assignments": [],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [
+        "rule-tpa-coverage-based-verification-no-member"
+      ],
+      "sourceActionKeys": [
+        "rule-tpa-coverage-based-verification-no-member.0",
+        "rule-tpa-coverage-based-verification-no-member.1"
+      ]
+    },
+    {
+      "key": "rule-tpa-membership-based-auto-approval-new-member",
+      "name": "new-member",
+      "area": "Patterns",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "source-pattern",
+        "label": "Source pattern; reference only",
+        "owner": "canonical:seedPatterns/tpa-membership-based-auto-approval"
+      },
+      "behavior": "tpa-membership-based-auto-approval",
+      "implementationReferences": [],
+      "assignments": [],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [
+        "rule-tpa-membership-based-auto-approval-new-member"
+      ],
+      "sourceActionKeys": [
+        "rule-tpa-membership-based-auto-approval-new-member.0",
+        "rule-tpa-membership-based-auto-approval-new-member.1"
+      ]
+    },
+    {
+      "key": "rule-tpa-membership-based-auto-approval-existing-member",
+      "name": "existing-member",
+      "area": "Patterns",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "source-pattern",
+        "label": "Source pattern; reference only",
+        "owner": "canonical:seedPatterns/tpa-membership-based-auto-approval"
+      },
+      "behavior": "tpa-membership-based-auto-approval",
+      "implementationReferences": [],
+      "assignments": [],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [
+        "rule-tpa-membership-based-auto-approval-existing-member"
+      ],
+      "sourceActionKeys": [
+        "rule-tpa-membership-based-auto-approval-existing-member.0",
+        "rule-tpa-membership-based-auto-approval-existing-member.1"
+      ]
+    },
+    {
+      "key": "rule-di-income-replacement-maximum",
+      "name": "maximum",
+      "area": "Patterns",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "source-pattern",
+        "label": "Source pattern; reference only",
+        "owner": "canonical:seedPatterns/di-income-replacement"
+      },
+      "behavior": "di-income-replacement",
+      "implementationReferences": [],
+      "assignments": [],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [
+        "rule-di-income-replacement-maximum"
+      ],
+      "sourceActionKeys": [
+        "rule-di-income-replacement-maximum.0"
+      ]
+    },
+    {
+      "key": "rule-mcr.legal-disclosures.A3.visibility",
+      "name": "Conditional disclosure visibility",
+      "area": "Read & Sign",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "source-reference",
+        "label": "Source model; execution owned elsewhere",
+        "owner": "Legal Disclosures!B3"
+      },
+      "behavior": "Underwriting = true",
+      "implementationReferences": [],
+      "assignments": [],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-mcr.legal-disclosures.A5.visibility",
+      "name": "Conditional disclosure visibility",
+      "area": "Read & Sign",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "source-reference",
+        "label": "Source model; execution owned elsewhere",
+        "owner": "Legal Disclosures!B5"
+      },
+      "behavior": "Underwriting = False",
+      "implementationReferences": [],
+      "assignments": [],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    }
+  ]
+}

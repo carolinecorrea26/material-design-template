@@ -1,3 +1,5 @@
+import { getSiteAcronym } from "../../data/siteDisplay";
+import { libraryRepository } from "../../repositories/libraryRepository";
 import { type MouseEvent as ReactMouseEvent, useState, useMemo, useCallback } from "react";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import {
@@ -27,7 +29,7 @@ import {
   getAssociation,
   getClientForSite,
   getSiteAssociations,
-  getSiteIdForLegacyClient,
+  getSiteIdForClientAlias,
   getSitesForClient,
   getTpaForClient,
   tpaEntities,
@@ -58,7 +60,7 @@ import {
   type ResolvedCoverage,
 } from "../../config/resolvers";
 import { getStorybookStoryUrl } from "../../config/storybook";
-import { urlParameters } from "../../content/docs/urlParameters";
+
 import { CLIENT_HIGHLIGHT_BG, CLIENT_HIGHLIGHT_BORDER } from "./ClientNote";
 import SearchField from "./SearchField";
 import PageFilterSelect, { ALL_PAGES } from "./PageFilterSelect";
@@ -147,8 +149,8 @@ function formatCoverageRow(
     (activeClient.applicantClassifications ?? []).map(({ id, label }) => [id, label]),
   );
   return {
-    siteCoverageId: `${getSiteIdForLegacyClient(activeClient.id)}--${resolved.id}`,
-    siteId: getSiteIdForLegacyClient(activeClient.id),
+    siteCoverageId: `${getSiteIdForClientAlias(activeClient.id)}--${resolved.id}`,
+    siteId: getSiteIdForClientAlias(activeClient.id),
     id: resolved.id,
     code: effective.code,
     name: effective.name,
@@ -223,7 +225,7 @@ const overridesSummary = summarizeClientOverrides(activeClient);
 // Site information
 // ---------------------------------------------------------------------------
 
-const activeSiteId = getSiteIdForLegacyClient(activeClient.id);
+const activeSiteId = getSiteIdForClientAlias(activeClient.id);
 const activeSite = getSitesForClient(getClientForSite(activeSiteId)!.id).find(
   (site) => site.id === activeSiteId,
 )!;
@@ -598,7 +600,7 @@ export default function ClientSiteDetailsPanel({
               onChange={(_, value) => handleSiteChange(value)}
               disableClearable
               disabled={getSitesForClient(selectedClient.id).length <= 1}
-              getOptionLabel={(option) => option.name}
+              getOptionLabel={(option) => getSiteAcronym(option.id)}
               getOptionKey={(option) => option.id}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               sx={{ flex: 1, maxWidth: 320 }}
@@ -1741,3 +1743,5 @@ export default function ClientSiteDetailsPanel({
     </Stack>
   );
 }
+
+const urlParameters = libraryRepository.read("urlParameters");

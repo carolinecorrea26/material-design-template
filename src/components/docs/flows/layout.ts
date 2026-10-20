@@ -3,10 +3,10 @@ import type { FlowDefinition, FlowEdgeDef, FlowNodeDef } from "../../../content/
 
 export const FLOW_NODE_WIDTH = 240;
 export const FLOW_NODE_MIN_HEIGHT = 88;
-const APPROX_DESCRIPTION_CHARS_PER_LINE = 30;
-const APPROX_LABEL_CHARS_PER_LINE = 24;
+const APPROX_DESCRIPTION_CHARS_PER_LINE = 24;
+const APPROX_LABEL_CHARS_PER_LINE = 20;
 const LABEL_LINE_HEIGHT = 18;
-const DESCRIPTION_LINE_HEIGHT = 16;
+const DESCRIPTION_LINE_HEIGHT = 20;
 const VERTICAL_PADDING = 24;
 
 /**
@@ -30,7 +30,7 @@ export type LaidOutNode = FlowNodeDef & {
   position: { x: number; y: number };
   layoutHeight: number;
 };
-export type LaidOutFlow = { nodes: LaidOutNode[]; edges: FlowEdgeDef[] };
+export type LaidOutFlow = { nodes: LaidOutNode[]; edges: FlowEdgeDef[]; edgeRoutes: Record<string, { x: number; y: number }[]> };
 
 /**
  * Deterministic layered layout for a flow's node/edge graph. Pure function:
@@ -74,5 +74,8 @@ export function computeFlowLayout(definition: FlowDefinition): LaidOutFlow {
     };
   });
 
-  return { nodes, edges: definition.edges };
+  const edgeRoutes = Object.fromEntries(definition.edges.map(edge => [edge.id,
+    g.edge({ v: edge.source, w: edge.target, name: edge.id }).points as { x: number; y: number }[],
+  ]));
+  return { nodes, edges: definition.edges, edgeRoutes };
 }

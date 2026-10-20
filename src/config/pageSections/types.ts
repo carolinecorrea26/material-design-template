@@ -42,6 +42,8 @@ export type PageSectionConfig = {
   description?: string;
   applicant?: ApplicantSectionId;
   fieldIds: FieldId[];
+  /** Persisted repeatable form collection restored with this section. */
+  collectionName?: string;
   /** Canonical executable WHEN; the section itself is the WHAT target. */
   visibilityConditionId?: ConditionId;
   /** Rendering treatment owned by the section, independent of its condition ID. */

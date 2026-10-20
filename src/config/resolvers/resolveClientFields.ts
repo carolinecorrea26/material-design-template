@@ -9,7 +9,7 @@ import {
   type FieldRow,
 } from "../../content/docs/fieldRows";
 import { getResolvedFieldResolutionsForSite } from "../fields/resolvedFieldRegistry";
-import { getSiteIdForLegacyClient } from "../../data";
+import { getSiteIdForClientAlias } from "../../data";
 import { getPageTitle } from "../pages";
 import type { ResolutionStatus } from "./types";
 import { getSiteDetailsPageOrder } from "./resolveClientPages";
@@ -42,7 +42,7 @@ export function resolveClientFieldsForPage(
   );
   const resolutions = getResolvedFieldResolutionsForSite(
     pageId,
-    getSiteIdForLegacyClient(client.id),
+    getSiteIdForClientAlias(client.id),
   );
 
   if (resolutions.length === 0) {

@@ -1,3 +1,5 @@
+import { getSurfaceField, getSurfaceFields } from "../../config/fields/storedSurfaces";
+import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
@@ -9,7 +11,6 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { fieldCatalog } from "../../config/fields";
 import {
   deriveStateProvinceFromZipOrPostalCode,
   formatZipOrPostalCode,
@@ -39,7 +40,7 @@ type EligibilityFieldsProps = {
 };
 
 function getStateOptions() {
-  return fieldCatalog["state-province"].options ?? [];
+  return getSurfaceField("quoteInputs", "state-province")?.options ?? [];
 }
 
 /**
@@ -59,6 +60,8 @@ export default function EligibilityFields({
   ageError,
   idPrefix = "elig",
 }: EligibilityFieldsProps) {
+  const fields = getSurfaceFields("quoteInputs").filter(field => ["birth-date", "zip-postal-code", "state-province"].includes(field.id));
+  const definition = (id: string) => fields.find(field => field.id === id);
   const stateOptions = useMemo(() => getStateOptions(), []);
   const [dobFocused, setDobFocused] = useState(false);
 
@@ -82,13 +85,13 @@ export default function EligibilityFields({
 
   const errors = useMemo(() => {
     const e: Record<string, string> = {};
-    if (!values.birthday) {
+    if (!values.birthday && getSurfaceField("quoteInputs", "birth-date")?.required) {
       e.birthday = "Date of birth is required.";
-    } else if (!/^\d{4}-\d{2}-\d{2}$/.test(values.birthday)) {
+    } else if (values.birthday && !/^\d{4}-\d{2}-\d{2}$/.test(values.birthday)) {
       e.birthday = "Enter a complete date (MM/DD/YYYY).";
     }
-    if (!values.zipCode) e.zipCode = "ZIP / postal code is required.";
-    if (!values.state) e.state = "State is required.";
+    if (!values.zipCode && getSurfaceField("quoteInputs", "zip-postal-code")?.required) e.zipCode = "ZIP / postal code is required.";
+    if (!values.state && getSurfaceField("quoteInputs", "state-province")?.required) e.state = "State is required.";
     return e;
   }, [values.birthday, values.zipCode, values.state]);
 
@@ -113,13 +116,13 @@ export default function EligibilityFields({
     onChange({ state: newState });
   }
 
-  return (
-    <Stack spacing={2}>
-      <TextField
-        label="Date of Birth"
+  const controls = {
+    'birth-date': (<TextField
+        label={definition("birth-date")?.label}
         fullWidth
-        required
-        placeholder="MM/DD/YYYY"
+        required={definition("birth-date")?.required}
+        disabled={definition("birth-date")?.disabled}
+        placeholder={definition("birth-date")?.placeholder ?? "MM/DD/YYYY"}
         value={parseStoredDate(values.birthday)}
         onChange={(event) => {
           const formatted = formatDateDisplay(event.target.value);
@@ -138,24 +141,23 @@ export default function EligibilityFields({
         helperText={
           attempted && errors.birthday ? errors.birthday : undefined
         }
-      />
-
-      <TextField
-        label="ZIP / Postal Code"
+      />),
+    'zip-postal-code': (<TextField
+        label={definition("zip-postal-code")?.label}
         fullWidth
-        required
+        required={definition("zip-postal-code")?.required}
+        disabled={definition("zip-postal-code")?.disabled}
         value={values.zipCode}
         onChange={(event) => handleZipChange(event.target.value)}
-        inputProps={{ inputMode: "text", maxLength: 7 }}
+        inputProps={{ inputMode: definition("zip-postal-code")?.inputMode ?? "text", maxLength: definition("zip-postal-code")?.maxLength ?? 7 }}
         error={attempted && !!errors.zipCode}
         helperText={attempted ? errors.zipCode || undefined : undefined}
-      />
-
-      <FormControl fullWidth required error={attempted && !!errors.state}>
-        <InputLabel id={stateLabelId}>State</InputLabel>
+      />),
+    'state-province': (<FormControl fullWidth required={definition("state-province")?.required} disabled={definition("state-province")?.disabled} error={attempted && !!errors.state}>
+        <InputLabel id={stateLabelId}>{definition("state-province")?.label}</InputLabel>
         <Select
           labelId={stateLabelId}
-          label="State"
+          label={definition("state-province")?.label}
           value={values.state}
           onChange={(event) => handleStateChange(event.target.value)}
         >
@@ -168,7 +170,11 @@ export default function EligibilityFields({
         {attempted && errors.state && (
           <FormHelperText>{errors.state}</FormHelperText>
         )}
-      </FormControl>
+      </FormControl>)
+  };
+  return (
+    <Stack spacing={2}>
+      {fields.map(field => <Stack key={field.id}>{controls[field.id as keyof typeof controls]}</Stack>)}
 
       {ageError && <Alert severity="error">{ageError}</Alert>}
     </Stack>
@@ -185,18 +191,18 @@ export function validateEligibility(values: EligibilityValues): {
   isValid: boolean;
 } {
   const errors: Record<string, string> = {};
-  if (!values.birthday) {
+  if (!values.birthday && getSurfaceField("quoteInputs", "birth-date")?.required) {
     errors.birthday = "Date of birth is required.";
-  } else if (!/^\d{4}-\d{2}-\d{2}$/.test(values.birthday)) {
+  } else if (values.birthday && !/^\d{4}-\d{2}-\d{2}$/.test(values.birthday)) {
     errors.birthday = "Enter a complete date (MM/DD/YYYY).";
   }
-  if (!values.zipCode) errors.zipCode = "ZIP / postal code is required.";
-  if (!values.state) errors.state = "State is required.";
+  if (!values.zipCode && getSurfaceField("quoteInputs", "zip-postal-code")?.required) errors.zipCode = "ZIP / postal code is required.";
+  if (!values.state && getSurfaceField("quoteInputs", "state-province")?.required) errors.state = "State is required.";
 
   let ageError = "";
   if (Object.keys(errors).length === 0) {
     const age = calculateAge(values.birthday);
-    if (age !== null && age >= 80) {
+    if (!getPrototypeLibrary() && age !== null && age >= 80) {
       ageError =
         "We're sorry, but coverage is not available for applicants age 80 or older.";
     }

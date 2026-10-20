@@ -1,8 +1,9 @@
+import { getPrototypeLibrary } from "../domain/prototypeLibrary";
 import { getActiveSite } from "../data/activeSite";
 import {
   getAssociationsForSite,
   getClientForSite,
-  getSiteIdForLegacyClient,
+  getSiteIdForClientAlias,
 } from "../data/registry";
 import type { AssociationId, SiteId } from "../data/model";
 import type { SiteContent } from "./types";
@@ -64,6 +65,8 @@ function deepMerge<T extends Record<string, unknown>>(
 }
 
 export function buildContent(siteId: SiteId): SiteContent {
+  const library = getPrototypeLibrary(siteId);
+  if (library) return library.content;
   const overrides = siteContentOverrides[siteId];
 
   return {
@@ -119,18 +122,23 @@ export function buildContent(siteId: SiteId): SiteContent {
 }
 
 let cachedContent: SiteContent | null = null;
+let cachedSiteId: SiteId | null = null;
 
 /**
  * Returns the fully resolved content for the active Site.
  * Merges default content with Site-specific overrides.
  *
- * Content is cached after the first call since the active client
- * does not change during a session.
+ * Installed database content owns the active revision. Cache only catalog
+ * content, by Site, so an earlier read cannot shadow a saved revision.
  */
 export function getContent(): SiteContent {
-  if (cachedContent) return cachedContent;
+  const siteId = getActiveSite().id;
+  const library = getPrototypeLibrary(siteId);
+  if (library) return library.content;
+  if (cachedContent && cachedSiteId === siteId) return cachedContent;
 
-  cachedContent = buildContent(getActiveSite().id);
+  cachedContent = buildContent(siteId);
+  cachedSiteId = siteId;
   return cachedContent;
 }
 
@@ -159,8 +167,8 @@ export function resolveTemplate(
 }
 
 /** Temporary adapter for Storybook/design previews that still supply a legacy config ID. */
-export function buildContentForLegacyClient(legacyClientId: Parameters<typeof getSiteIdForLegacyClient>[0]) {
-  return buildContent(getSiteIdForLegacyClient(legacyClientId));
+export function buildContentForClientAlias(clientAlias: Parameters<typeof getSiteIdForClientAlias>[0]) {
+  return buildContent(getSiteIdForClientAlias(clientAlias));
 }
 
 export type { SiteContent } from "./types";

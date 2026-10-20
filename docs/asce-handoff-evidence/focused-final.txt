@@ -1,0 +1,37 @@
+
+> template-material-prototype@0.0.0 test
+> vitest run scripts/mock-platform.test.mjs scripts/prototype-cutover.test.mjs src/domain/prototypeLibrary.test.ts src/domain/libraryDraft.test.ts src/pages/admin/libraryNavigation.test.ts src/migration/activeSiteAdoption.test.ts --maxWorkers=1 --testTimeout=15000
+
+
+ RUN  v3.2.7 /Users/t98j0kt/Desktop/nyl/portal/templates/template-material/template-material-prototype
+
+ ✓ src/pages/admin/libraryNavigation.test.ts (52 tests) 30408ms
+   ✓ Portal Library scope and navigation > starts at All with the complete page catalog and switches to only effective pages  579ms
+   ✓ Portal Library scope and navigation > keeps linked tools optional and preserves the selected page when enabled  371ms
+   ✓ Portal Library scope and navigation > preserves field placement and category/product source order  4566ms
+   ✓ Portal Library scope and navigation > only shows Site inspection columns in Effective coverage  5857ms
+   ✓ Portal Library scope and navigation > shows the theme color picker in both scopes with the selected Site defaults  685ms
+   ✓ Portal Library scope and navigation > shares exactly one dependent scope selector and retains the canonical Site across tabs  10394ms
+   ✓ Portal Library scope and navigation > separates Pages and Fields, with the matching validation and Storybook links  565ms
+   ✓ Sites workspace > places shared branding guidelines and editable icon previews in Branding & Design  517ms
+   ✓ Sites workspace > exposes custom palette colors above the preview without sample alerts  479ms
+ ✓ src/domain/libraryDraft.test.ts (3 tests) 14410ms
+   ✓ isolates edits and preserves all rows of captured tables beyond 1000 records  5383ms
+   ✓ uses Site precedence for draft PRASE controls and displays only configured references  4530ms
+   ✓ edits ASCE synthetic billing without changing other products or catalog data  4495ms
+ ✓ src/migration/activeSiteAdoption.test.ts (9 tests) 7797ms
+   ✓ Step 3 explicit identity and initial adoption > records scoped provenance, exports through the existing schema and is idempotent  5999ms
+   ✓ Step 3 explicit identity and initial adoption > shares the adopted rows through a persisted revision without mixing fresh reads  876ms
+   ✓ Step 3 explicit identity and initial adoption > fails before adoption if source values change or come from another campaign  328ms
+ ✓ src/domain/prototypeLibrary.test.ts (13 tests) 1430ms
+   ✓ persisted Library prototype cutover > Library field and rate edits change the actual applicant resolvers with no catalog mutation  811ms
+ ✓ scripts/prototype-cutover.test.mjs (2 tests) 6652ms
+   ✓ abe-default persists Library field, pricing and billing edits through save/reload/restart without catalog edits  3681ms
+   ✓ asce-default persists Library field, pricing and billing edits through save/reload/restart without catalog edits  2970ms
+ ✓ scripts/mock-platform.test.mjs (7 tests) 178ms
+
+ Test Files  6 passed (6)
+      Tests  86 passed (86)
+   Start at  15:35:52
+   Duration  92.02s (transform 1.72s, setup 0ms, collect 26.07s, tests 60.87s, environment 2.05s, prepare 258ms)
+

@@ -1,3 +1,4 @@
+import { clientCategoryIcon } from "../components/ui/ClientCategoryIcon";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 // import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined";
 import AccessibleOutlinedIcon from "@mui/icons-material/AccessibleOutlined";
@@ -8,25 +9,25 @@ import Diversity1RoundedIcon from "@mui/icons-material/Diversity1Rounded";
 // import EmergencyOutlinedIcon from "@mui/icons-material/EmergencyOutlined";
 
 export const coverageCategories = [
-  { id: "LI", label: "Life", icon: Diversity1RoundedIcon },
+  { id: "LI", label: "Life", icon: clientCategoryIcon("LI", Diversity1RoundedIcon) },
   {
     id: "AD",
     label: "Accidental Death and Dismemberment",
     shortLabel: "AD&D",
-    icon: PersonalInjuryOutlinedIcon,
+    icon: clientCategoryIcon("AD", PersonalInjuryOutlinedIcon),
   },
-  { id: "DI", label: "Disability", icon: AccessibleOutlinedIcon },
+  { id: "DI", label: "Disability", icon: clientCategoryIcon("DI", AccessibleOutlinedIcon) },
   {
     id: "OO",
     label: "Office Overhead",
     shortLabel: "Office",
-    icon: BusinessOutlinedIcon,
+    icon: clientCategoryIcon("OO", BusinessOutlinedIcon),
   },
   {
     id: "SH",
     label: "Supplemental Health",
     shortLabel: "Supp. Health",
-    icon: LocalHospitalOutlinedIcon,
+    icon: clientCategoryIcon("SH", LocalHospitalOutlinedIcon),
   },
 ] as const;
 

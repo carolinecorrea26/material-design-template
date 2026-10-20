@@ -22,7 +22,8 @@ type ClientHelpBannerProps = {
 export default function ClientHelpBanner({ client }: ClientHelpBannerProps) {
   const [scheduleOpen, setScheduleOpen] = useState(false);
 
-  const { phone, phoneDisplay, phoneHours } = client.support;
+  const { phoneHours } = client.support;
+  const { phone, phoneDisplay } = client.support.helpPhone ?? client.support;
   const { chat, chatUrl, scheduleUrl, linkUrl, linkLabel } =
     client.features ?? {};
 

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import ConfigurationPageLinks from "./ConfigurationPageLinks";
 import { Box, Chip, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import ResponsiveTableContainer from "./ResponsiveTableContainer";
 import ResizableHeaderCell from "./ResizableHeaderCell";
@@ -103,13 +104,11 @@ export default function ConfigReferenceList({
         <SearchField value={filter} onChange={setFilter} placeholder="Search configuration…" />
         <PageFilterSelect value={pageFilter} onChange={setPageFilter} options={pageOptions} />
       </Stack>
-      <ResponsiveTableContainer>
+      <ResponsiveTableContainer libraryTable="configurationDefinitions">
         <Table size="small" sx={{ tableLayout: "fixed", width: "max-content" }}>
           <colgroup>
-            <col style={{ width: widths.configurationId }} />
             <col style={{ width: widths.page }} />
             <col style={{ width: widths.configuration }} />
-            <col style={{ width: widths.description }} />
             {showAvailableOptions && <col style={{ width: widths.availableOptions }} />}
             {showDefaults && <col style={{ width: widths.defaultValue }} />}
             {showDefaults && <col style={{ width: widths.requirement }} />}
@@ -123,12 +122,6 @@ export default function ConfigReferenceList({
           </colgroup>
           <TableHead>
             <TableRow>
-              <ResizableHeaderCell
-                width={widths.configurationId}
-                onResize={(w) => resize("configurationId", w)}
-              >
-                Configuration ID
-              </ResizableHeaderCell>
               <ResizableHeaderCell width={widths.page} onResize={(w) => resize("page", w)}>
                 Page
               </ResizableHeaderCell>
@@ -136,13 +129,7 @@ export default function ConfigReferenceList({
                 width={widths.configuration}
                 onResize={(w) => resize("configuration", w)}
               >
-                Configuration
-              </ResizableHeaderCell>
-              <ResizableHeaderCell
-                width={widths.description}
-                onResize={(w) => resize("description", w)}
-              >
-                Description
+                Setting
               </ResizableHeaderCell>
               {showAvailableOptions && (
                 <ResizableHeaderCell
@@ -192,9 +179,6 @@ export default function ConfigReferenceList({
                 <TableRow
                   key={config.id}
                 >
-                  <TableCell sx={{ verticalAlign: "top", fontFamily: "monospace", fontSize: "0.75rem" }}>
-                    {config.id}
-                  </TableCell>
                   <TableCell
                     sx={{
                       verticalAlign: "top",
@@ -202,7 +186,7 @@ export default function ConfigReferenceList({
                       whiteSpace: "normal !important",
                     }}
                   >
-                    {getConfigurationPage(config).label}
+                    <ConfigurationPageLinks page={getConfigurationPage(config)} />
                   </TableCell>
                   <TableCell
                     sx={{
@@ -218,29 +202,7 @@ export default function ConfigReferenceList({
                         <Chip label="Planned" size="small" variant="outlined" />
                       )}
                     </Stack>
-                    {!compact && (
-                      <Typography
-                        variant="caption"
-                        color="text.disabled"
-                        sx={{
-                          fontFamily: "monospace",
-                          display: "block",
-                          mt: 0.25,
-                          lineHeight: 1.4,
-                          whiteSpace: "normal",
-                        }}
-                      >
-                        {config.name}
-                      </Typography>
-                    )}
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      whiteSpace: "normal !important",
-                      verticalAlign: "top",
-                    }}
-                  >
-                    <TruncatedString value={config.description} threshold={160} />
+                    <Typography component="div" variant="body2" color="text.secondary" sx={{ mt: 0.5 }}><TruncatedString value={config.description} threshold={220} /></Typography>
                   </TableCell>
                   {showAvailableOptions && (
                     <TableCell

@@ -1,0 +1,144 @@
+- alert:
+  - generic: Library prototype · synthetic mock rates and services. Not an insurance quote. Reload after saving Library edits.
+- link "Skip to main content":
+  - /url: "#main-content"
+- link "Call for help 888.554.7255":
+  - /url: tel:8885547255
+  - text: Call for help 888.554.7255
+- generic: M-F 8:00am-5:00pm CST
+- separator
+- button "Chat now":
+  - text: Chat now
+- banner:
+  - img "American Society of Civil Engineers logo"
+  - button "Open coverage summary, 1 item":
+    - generic: "1"
+  - button "Open application navigation menu":
+  - progressbar "Overall application progress"
+- main:
+  - generic: Getting started
+  - generic: Choose your coverage
+  - generic: Your application details
+  - generic: Review your application
+  - generic: E-sign and submit
+  - button "Go back":
+  - heading "Your coverage options" [level=2]
+  - paragraph: Explore and customize your coverage options. Please note that available options are based on eligibility information.
+  - separator:
+    - generic: Personal Details
+  - generic: Gender
+  - generic: "*"
+  - radiogroup "Gender":
+    - radio "Male" [checked]:
+      - radio [checked]
+      - generic: Male
+    - radio "Female":
+      - radio
+      - generic: Female
+  - paragraph
+  - separator:
+    - generic: Work & Income
+  - generic: "# Hours You Work/Week"
+  - generic: "*"
+  - textbox "# Hours You Work/Week": "30"
+  - generic: "# Hours You Work/Week"
+  - text: "*"
+  - generic: Average Monthly Income
+  - generic: "*"
+  - textbox "Average Monthly Income": $5,000
+  - generic: Average Monthly Income
+  - text: "*"
+  - generic: Are you self-employed?
+  - generic: "*"
+  - radiogroup "Are you self-employed?":
+    - radio "Yes" [checked]:
+      - radio [checked]
+      - generic: "Yes"
+    - radio "No":
+      - radio
+      - generic: "No"
+  - paragraph
+  - generic: Years self-employed
+  - generic: "*"
+  - textbox "Years self-employed": "0.5"
+  - paragraph: You may enter a fraction of a year, for example 0.5 for six months.
+  - separator
+  - heading "Your eligible coverage options:" [level=5]
+  - alert:
+    - generic: If you already have coverage and want to increase it, apply for only the additional coverage amount you want.
+  - heading "Group Disability" [level=3]
+  - link "Group Disability Income Insurance":
+    - /url: https://asceinsurance.com/Downloads/ASCE/brochures/ASCE-DI-Brochure.pdf
+  - paragraph: Protection for your income if you are disabled from a covered accident or illness.
+  - paragraph: "Underwriting: FUW"
+  - generic: Monthly Benefit Amount
+  - combobox "Monthly Benefit Amount": $1,050
+  - textbox: "1050"
+  - generic: Monthly Benefit Amount
+  - checkbox "Add coverage Added" [checked]
+  - heading "Add coverage" [level=6]
+  - generic: Added
+  - generic: Waiting Period
+  - combobox "Waiting Period" [disabled]: 90-days
+  - textbox [disabled]: 90-days
+  - generic: Waiting Period
+  - paragraph: The number of consecutive days you must be totally disabled by a covered illness or injury and not gainfully employed in any occupation before benefits commence. Coverage with a longer waiting period is less expensive.
+  - generic: Benefit Option
+  - combobox "Benefit Option" [disabled]: 5-years
+  - textbox [disabled]: 5-years
+  - generic: Benefit Option
+  - paragraph:
+    - text: Est. cost
+    - superscript: "1"
+    - text: ":"
+    - generic: $1.00/mo
+  - heading "Your requested coverage" [level=6]
+  - status:
+    - heading "Total mock estimate1" [level=6]:
+      - text: Total mock estimate
+      - superscript: "1"
+    - paragraph: Group Disability Income Insurance
+    - paragraph: $1.00/mo
+    - separator
+    - heading "Total1" [level=6]:
+      - text: Total
+      - superscript: "1"
+    - heading "$1.00/mo" [level=6]
+    - generic: Synthetic test rates; not an insurance quote. Required pricing inputs and a valid mock response are needed to display an estimate.
+  - button "Next":
+    - text: Next
+- contentinfo:
+  - heading "Administered By:" [level=6]
+  - text: American Society of Civil Engineers
+  - text: Pearl Insurance
+  - text: 1200 E. Glen Avenue
+  - text: Peoria Heights, Illinois 61616
+  - link "asceinsurance.com":
+    - /url: https://asceinsurance.com
+  - link "customerservice@asceinsurance.com":
+    - /url: mailto:customerservice@asceinsurance.com
+  - link "888.554.7255":
+    - /url: tel:8885547255
+  - generic: M-F 8:00am-5:00pm CST
+  - paragraph:
+    - generic: "CA Agency License # 0F76076"
+    - text: "AR Agency License # 100106280"
+  - heading "Underwritten By:" [level=6]
+  - text: New York Life Insurance Company
+  - text: on Policy Form GMR
+  - generic: 51 Madison Avenue
+  - text: New York, New York 10010
+  - link "NYL Terms of Use":
+    - /url: "#"
+  - text: ·
+  - link "NYL Privacy Notice":
+    - /url: "#"
+  - img "New York Life Logo"
+  - generic: A++ A.M. Best
+  - generic: AAA Fitch Ratings
+  - generic: Aa1 Moody's Investors Service
+  - generic: AA+ Standard & Poor's
+  - superscript: "1"
+  - text: Third Party Rating Reports as of 09/30/2025.
+  - generic: "New York Life Insurance Company is licensed/authorized to transact business in all of the 50 United States, the District of Columbia, Puerto Rico and Canada. However, not all group policies it underwrites are available in all jurisdictions. Please check the Coverage detail sections for current availability. New York Life Insurance Company's state of domicile is New York, and NAIC ID is #66915."
+  - generic: NEW YORK LIFE and the NEW YORK LIFE Box Logo are trademarks of New York Life Insurance Company.

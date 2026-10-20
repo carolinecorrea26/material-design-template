@@ -267,7 +267,7 @@ export const errorMessages: ErrorMessageEntry[] = [
     page: "eligibility",
     level: "Page",
     trigger:
-      "Submitted eligibility values match a configured TPA member record and identity verification has not yet completed. No visible message is shown — navigation is silently blocked (a zero-width space is returned as the validation error) while the MemberVerification modal opens; submission auto-resumes when the modal closes.",
+      "Submitted eligibility values match a configured TPA member record with active coverage under the standard policy and identity verification has not yet completed. WAEPA bypasses this modal for both new and existing members. No visible message is shown — navigation is silently blocked (a zero-width space is returned as the validation error) while the MemberVerification modal opens; submission auto-resumes when the modal closes.",
     message: "​ (invisible — blocks navigation without displaying text)",
   },
   {

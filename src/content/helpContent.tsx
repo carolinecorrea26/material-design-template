@@ -1,3 +1,4 @@
+import { helpChipDefinitions } from "./interactionLabels";
 import { Box, Stack, Link, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
@@ -170,15 +171,13 @@ export function groupInsuranceHelpItem(
 }
 
 export const howApplyingWorksHelpItem: FormPageHelpItem = {
-  id: "application-process",
-  label: "How does applying work?",
+  ...helpChipDefinitions.applying,
   title: "How does applying work?",
   content: <HowApplyingWorksPanel variant="drawer" />,
 };
 
 export const coverageOptionsAvailableHelpItem: FormPageHelpItem = {
-  id: "coverage-options-available",
-  label: "What are my coverage options?",
+  ...helpChipDefinitions.coverageOptions,
   title: "What are my coverage options?",
   content: <CoverageOptionsDrawerContent />,
 };
@@ -194,9 +193,8 @@ export const beneficiaryHelpItems: FormPageHelpItem[] = (() => {
   const { whatIs, percentageShare } = getContent().help.beneficiary;
   return [
     {
-      id: "beneficiary-basics",
-      label: "What is a beneficiary?",
-      title: "What is a beneficiary?",
+      ...helpChipDefinitions.beneficiaryBasics,
+        title: "What is a beneficiary?",
       content: (
         <Stack spacing={2}>
           {whatIs.paragraphs.map((p, i) => (
@@ -208,9 +206,8 @@ export const beneficiaryHelpItems: FormPageHelpItem[] = (() => {
       ),
     },
     {
-      id: "beneficiary-share",
-      label: "What is the % share?",
-      title: "What is the % share?",
+      ...helpChipDefinitions.beneficiaryShare,
+        title: "What is the % share?",
       content: (
         <Stack spacing={2}>
           {percentageShare.paragraphs.map((p, i) => (
@@ -276,8 +273,7 @@ export const paymentHandlingHelpItem: FormPageHelpItem = (() => {
     DeleteOutlineRoundedIcon,
   ];
   return {
-    id: "payment-handling",
-    label: "How is my payment information handled?",
+    ...helpChipDefinitions.payment,
     title: "How is my payment information handled?",
     content: (
       <Stack spacing={3}>

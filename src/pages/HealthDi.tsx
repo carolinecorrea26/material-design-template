@@ -1,9 +1,13 @@
+import { getHealthDetailSurface, getHealthDetailSurfaceName, surfaceSemanticValues } from '../config/fields/storedSurfaces';
+import { helpChipDefinitions } from "../content/interactionLabels";
+import { QUESTIONS as questionDefinitions, createAnswerFields } from "../config/fields/healthDiFields";
+import { validateHealthPage } from '../config/healthFollowUps';
+import { applicantParticipatesInPage } from "../config/flowGates";
 import { useState } from "react";
 import { Stack, Typography } from "@mui/material";
 import FormRoutePage, { type FormRouteRenderProps } from "../app/RoutePage";
 import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
 import {
-  isApplicantApplying,
   shouldShowApplicantLabel,
 } from "../utils/applicantVisibility";
 import YesNoDetailList, {
@@ -12,13 +16,12 @@ import YesNoDetailList, {
 import AppDrawer from "../components/layout/AppDrawer";
 import FormHelpChips from "../components/content/HelpChips";
 import type { FieldDefinition } from "../config/fields/types";
-import { YES_NO_OPTIONS } from "../config/constants";
+
 // ─── Help content ─────────────────────────────────────────────────────────────
 
 const HELP_ITEMS = [
   {
-    id: "health-info-use",
-    label: "How is my health information used?",
+    ...helpChipDefinitions.health,
     title: "How is my health information used?",
     content: (
       <Typography
@@ -38,169 +41,7 @@ const HELP_ITEMS = [
 
 // ─── DynamicList field definitions ───────────────────────────────────────────
 
-const generalFields: FieldDefinition[] = [
-  {
-    id: "details",
-    label: "Details",
-    inputType: "text",
-    required: true,
-    multiline: true,
-    minRows: 3,
-    labelVariant: "standard",
-  },
-];
-
-const specificFields: FieldDefinition[] = [
-  {
-    id: "onset",
-    label: "Month/Year of Onset",
-    inputType: "text",
-    format: "month-year",
-    required: true,
-    helperText: "mm/yyyy",
-    labelVariant: "standard",
-  },
-  {
-    id: "conditionsDetails",
-    label: "Conditions & Details",
-    inputType: "text",
-    required: true,
-    multiline: true,
-    minRows: 3,
-    labelVariant: "standard",
-  },
-  {
-    id: "physicianAddress",
-    label: "Name and address of each physician, practitioner, and hospital",
-    inputType: "text",
-    required: false,
-    multiline: true,
-    minRows: 3,
-    labelVariant: "standard",
-  },
-];
-
-const assistanceFields: FieldDefinition[] = [
-  {
-    id: "assistanceType",
-    label: "Assistance Type",
-    inputType: "dropdown",
-    required: true,
-    placeholder: "Select",
-    options: [
-      { value: "bathing", label: "Bathing" },
-      { value: "dressing", label: "Dressing" },
-      { value: "eating", label: "Eating" },
-      { value: "walking", label: "Walking" },
-      {
-        value: "moving",
-        label: "Moving in/out of a bed or chair or wheel chair",
-      },
-      { value: "toileting", label: "Toileting" },
-      { value: "bowel-bladder", label: "Bowel or bladder control" },
-    ],
-  },
-  {
-    id: "onset",
-    label: "Month/Year of Onset",
-    inputType: "text",
-    format: "month-year",
-    required: true,
-    helperText: "mm/yyyy",
-    labelVariant: "standard",
-  },
-  {
-    id: "conditionsDetails",
-    label: "Conditions & Details",
-    inputType: "text",
-    required: true,
-    multiline: true,
-    minRows: 3,
-    labelVariant: "standard",
-  },
-  {
-    id: "physicianAddress",
-    label: "Name and address of each physician, practitioner, and hospital",
-    inputType: "text",
-    required: false,
-    multiline: true,
-    minRows: 3,
-    labelVariant: "standard",
-  },
-];
-
-const fallDiagnosisFields: FieldDefinition[] = [
-  {
-    id: "fallType",
-    label: "Fall Type/Diagnosis",
-    inputType: "text",
-    required: true,
-    labelVariant: "standard",
-  },
-  {
-    id: "onset",
-    label: "Month/Year of Onset",
-    inputType: "text",
-    format: "month-year",
-    required: true,
-    helperText: "mm/yyyy",
-    labelVariant: "standard",
-  },
-  {
-    id: "conditionsDetails",
-    label: "Conditions & Details",
-    inputType: "text",
-    required: true,
-    multiline: true,
-    minRows: 3,
-    labelVariant: "standard",
-  },
-  {
-    id: "physicianAddress",
-    label: "Name and address of each physician, practitioner, and hospital",
-    inputType: "text",
-    required: false,
-    multiline: true,
-    minRows: 3,
-    labelVariant: "standard",
-  },
-];
-
 // ─── Mappings ─────────────────────────────────────────────────────────────────
-
-const generalMapping = {
-  fields: generalFields,
-  fieldToKey: { details: "details" } as const,
-};
-
-const specificMapping = {
-  fields: specificFields,
-  fieldToKey: {
-    onset: "onset",
-    conditionsDetails: "conditionsDetails",
-    physicianAddress: "physicianAddress",
-  } as const,
-};
-
-const assistanceMapping = {
-  fields: assistanceFields,
-  fieldToKey: {
-    assistanceType: "assistanceType",
-    onset: "onset",
-    conditionsDetails: "conditionsDetails",
-    physicianAddress: "physicianAddress",
-  } as const,
-};
-
-const fallDiagnosisMapping = {
-  fields: fallDiagnosisFields,
-  fieldToKey: {
-    fallType: "fallType",
-    onset: "onset",
-    conditionsDetails: "conditionsDetails",
-    physicianAddress: "physicianAddress",
-  } as const,
-};
 
 // ─── Item renderers ───────────────────────────────────────────────────────────
 
@@ -269,84 +110,10 @@ function renderFallItem(item: Record<string, string>) {
 
 // ─── Question definitions ─────────────────────────────────────────────────────
 
-type MappingType =
-  | typeof generalMapping
-  | typeof specificMapping
-  | typeof assistanceMapping
-  | typeof fallDiagnosisMapping;
-
-type QuestionDef = {
-  key: string;
-  label: string;
-  mapping: MappingType;
-  renderItem: (item: Record<string, string>) => React.ReactNode;
-};
-
-const QUESTIONS: QuestionDef[] = [
-  {
-    key: "q1",
-    label:
-      "Do you currently need or in the past 5 years have you needed human assistance or supervision to perform any of the following activities? Bathing, dressing, eating, walking, moving in/out of a bed or chair or wheel chair, toileting, bowel or bladder control. If \u201cYes,\u201d please check all that apply.",
-    mapping: assistanceMapping,
-    renderItem: renderAssistanceItem,
-  },
-  {
-    key: "q2",
-    label:
-      "Within the past 5 years, have you had a fall or been diagnosed or treated by a member of the medical profession for a fracture, paralysis, numbness, balance problems or skin ulcers?",
-    mapping: fallDiagnosisMapping,
-    renderItem: renderFallItem,
-  },
-  {
-    key: "q3",
-    label:
-      "Do you currently or in the past 5 years, have you been wheelchair-dependent or required supportive equipment such as braces, crutches, walker, cane, back support, or splint?",
-    mapping: specificMapping,
-    renderItem: renderSpecificItem,
-  },
-  {
-    key: "q4",
-    label:
-      "Within the past 6 months, have you had or been recommended by a member of the medical profession to have physical therapy?",
-    mapping: specificMapping,
-    renderItem: renderSpecificItem,
-  },
-  {
-    key: "q5",
-    label:
-      "Within the past 5 years, have you been evaluated, counseled, treated by a member of the medical profession or hospitalized for any problems with memory or ability to think or reason?",
-    mapping: specificMapping,
-    renderItem: renderSpecificItem,
-  },
-  {
-    key: "q6",
-    label:
-      "Within the past 5 years, have you been confined or had confinement been recommended by a member of the medical profession to a hospital, nursing home, rehabilitation facility, assisted living unit or extended care facility?",
-    mapping: specificMapping,
-    renderItem: renderSpecificItem,
-  },
-  {
-    key: "q7",
-    label:
-      "Within the past 5 years, have you been declined for issue, reinstatement or renewal of any type of long-term care insurance?",
-    mapping: generalMapping,
-    renderItem: renderGeneralItem,
-  },
-];
+const renderers = { renderGeneralItem, renderSpecificItem, renderAssistanceItem, renderFallItem };
+const QUESTIONS = questionDefinitions.map(question => ({ ...question, renderItem: renderers[question.renderKind] }));
 
 // ─── Field builders ───────────────────────────────────────────────────────────
-
-function createAnswerFields(applicant: "self" | "spouse"): FieldDefinition[] {
-  const suffix = applicant === "spouse" ? "-spouse" : "";
-  return QUESTIONS.map((q) => ({
-    id: `health-di-${q.key}${suffix}`,
-    label: q.label,
-    inputType: "radio" as const,
-    required: true,
-    options: YES_NO_OPTIONS,
-    labelVariant: "standard" as const,
-  }));
-}
 
 // ─── Per-applicant question set ───────────────────────────────────────────────
 
@@ -366,17 +133,13 @@ function QuestionSet({
   allFields,
 }: QuestionSetProps) {
   const suffix = applicant === "spouse" ? "-spouse" : "";
-  const questions: YesNoDetailQuestion[] = QUESTIONS.flatMap((question) => {
-    const answerId = `health-di-${question.key}${suffix}`;
-    const field = allFields.find((entry) => entry.id === answerId);
-    return field
-      ? [{
-          field,
-          listName: `${answerId}-details`,
-          mapping: question.mapping as YesNoDetailQuestion["mapping"],
-          renderItem: question.renderItem,
-        }]
-      : [];
+  const questions: YesNoDetailQuestion[] = allFields.filter(field => field.id.startsWith("health-di-q") && field.id.endsWith("-spouse") === (applicant === "spouse")).map(field => {
+    const answerId = field.id;
+    const question = QUESTIONS.find(question => `health-di-${question.key}${suffix}` === answerId);
+    if (!question) throw new Error(`Missing health summary renderer: ${answerId}`);
+    const surface = getHealthDetailSurface("health-di", answerId);
+    return { field, listName: `${answerId}-details`, mapping: surface.mapping, maxItems: surface.maxItems, label: surface.label,
+      renderItem: item => question.renderItem(surfaceSemanticValues(getHealthDetailSurfaceName("health-di", answerId), item) as Record<string, string>) };
   });
 
   return (
@@ -398,6 +161,7 @@ export default function HealthDi() {
   return (
     <FormRoutePage
       pageId="health-di"
+      validate={values => validateHealthPage('health-di', values)}
       help={
         <>
           <FormHelpChips items={HELP_ITEMS} onSelect={setActiveHelpId} />
@@ -411,17 +175,17 @@ export default function HealthDi() {
         </>
       }
       devFillFields={(currentValues) => [
-        ...(isApplicantApplying("self", currentValues)
+        ...(applicantParticipatesInPage("health-di", "self", currentValues)
           ? createAnswerFields("self")
           : []),
-        ...(isApplicantApplying("spouse", currentValues)
+        ...(applicantParticipatesInPage("health-di", "spouse", currentValues)
           ? createAnswerFields("spouse")
           : []),
       ]}
     >
       {({ control, errors, watchedValues, allFields }) => {
-        const hasSelf = isApplicantApplying("self", watchedValues);
-        const hasSpouse = isApplicantApplying("spouse", watchedValues);
+        const hasSelf = applicantParticipatesInPage("health-di", "self", watchedValues);
+        const hasSpouse = applicantParticipatesInPage("health-di", "spouse", watchedValues);
 
         return (
           <Stack spacing={3}>

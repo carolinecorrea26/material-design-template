@@ -1,4 +1,5 @@
 import type React from "react";
+import { deepmerge } from "@mui/utils";
 import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 import type {
   ClientThemeConfig,
@@ -78,11 +79,8 @@ export const CARD_RADIUS = "16px";
 /** Single source-of-truth body/header/input text color. */
 export const TEXT_PRIMARY = "#353b48";
 
-const TEXT_SECONDARY = "#49596f";
 const WHITE = "#ffffff";
-const SUBTLE_BACKGROUND = "#f5f8fd";
 const SURFACE_BACKGROUND = "#eef1f4";
-const FORM_SECTION_LABEL_COLOR = "#00388c";
 const STEP_CONNECTOR_COLOR = "#d7dee8";
 
 /** Single source-of-truth border color for all field inputs. */
@@ -171,6 +169,15 @@ export function createAppTheme(
   { forceMobileLayout = false }: CreateAppThemeOptions = {},
 ) {
   const primaryPalette = resolvePrimaryPalette(themeConfig);
+  const overrides = typeof themeConfig !== "string" && themeConfig.type === "custom" ? themeConfig.palette : undefined;
+  const TEXT_PRIMARY = overrides?.text?.primary ?? "#353b48";
+  const TEXT_SECONDARY = overrides?.text?.secondary ?? "#49596f";
+  const LABEL_COLOR = overrides?.text?.primary ?? "rgb(52, 59, 72)";
+  const SUBTLE_BACKGROUND = overrides?.background?.subtle ?? "#f5f8fd";
+  const SURFACE_BACKGROUND = overrides?.background?.surface ?? "#eef1f4";
+  const FORM_SECTION_LABEL_COLOR = overrides?.text?.primary ?? "#00388c";
+  const FIELD_BORDER_COLOR = overrides?.divider ?? "rgba(52, 59, 72, 0.23)";
+
 
   const theme = createTheme({
     spacing: 8,
@@ -182,7 +189,7 @@ export function createAppTheme(
       },
     }),
 
-    palette: {
+    palette: deepmerge({
       primary: primaryPalette,
       success: {
         main: "#009465",
@@ -209,7 +216,7 @@ export function createAppTheme(
       panel: { main: SUBTLE_BACKGROUND, border: "rgba(0, 22, 57, 0.08)" },
       notice: { main: "#fffcf0", border: "#e9e3cb" },
       support: { main: "#ecf3ff", border: "#c8d5ea" },
-    },
+    }, typeof themeConfig !== "string" && themeConfig.type === "custom" ? themeConfig.palette ?? {} : {}),
 
     typography: {
       fontFamily:
@@ -642,6 +649,12 @@ export function createAppTheme(
     },
   });
 
+  const customPalette = typeof themeConfig !== "string" && themeConfig.type === "custom" ? themeConfig.palette : undefined;
+  if (customPalette?.text) {
+    for (const style of Object.values(theme.typography)) {
+      if (typeof style === "object" && style && "color" in style) style.color = theme.palette.text.primary;
+    }
+  }
   return responsiveFontSizes(theme);
 }
 

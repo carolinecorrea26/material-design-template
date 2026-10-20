@@ -45,11 +45,6 @@ const preview: Preview = {
     options: {
       storySort: {
         order: [
-          "Overview",
-          "Foundations",
-          ["Overview", "Colors", "Typography", "Spacing", "Shape", "Elevation", "Breakpoints & Responsive Design", "MUI Theme Overrides", "Branding", "Icons"],
-          "Guidelines",
-          ["Accessibility", "Form Validation & Errors", "Responsive UI", "Dynamic Feedback & Status"],
           "Forms",
           "Layout",
           "Navigation",
@@ -58,8 +53,9 @@ const preview: Preview = {
           "Overlays",
           "Coverage & Commerce",
           "Application Patterns",
-          ["Application Page Template", "Page Coverage Audit", "DetailsTable", "YesNoDetailList"],
-          "Project",
+          ["Application Page Template", "DetailsTable", "YesNoDetailList"],
+          "Home",
+          "Components",
         ],
       },
     },

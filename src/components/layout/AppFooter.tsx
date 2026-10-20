@@ -8,6 +8,7 @@ import type { ClientConfig } from "../../config/clients/types";
 import { getContent } from "../../content";
 import AppModal from "../layout/AppModal";
 import LegalDocList from "../content/LegalDocList";
+import { getFormTemplate } from "../../config/template/resolveTemplate";
 
 type AppFooterProps = {
   client: ClientConfig;
@@ -43,7 +44,8 @@ export default function AppFooter({ client }: AppFooterProps) {
       <Box
         sx={{
           width: "100%",
-          maxWidth: 1200,
+          maxWidth: getFormTemplate() === "single" ? 800 : 1200,
+          px: getFormTemplate() === "single" ? { xs: 2, sm: 3, md: 4 } : 0,
           marginLeft: "auto",
           marginRight: "auto",
           display: "grid",
@@ -95,7 +97,7 @@ export default function AppFooter({ client }: AppFooterProps) {
                     sx={{ fontSize: 16, color: "text.secondary" }}
                   />
                   <Link
-                    href={`https://${client.support.website}`}
+                    href={/^https?:\/\//i.test(client.support.website) ? client.support.website : `https://${client.support.website}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     underline="hover"

@@ -94,6 +94,8 @@ const paymentFrequencyOptions = [
 ];
 
 export const fieldCatalog: Record<FieldId, FieldDefinition> = {
+  "child-unmarried": { id: "child-unmarried", label: "Is the child unmarried?", inputType: "radio", options: yesNoOptions, required: true },
+  "child-full-time-student": { id: "child-full-time-student", label: "Is the child a full-time student?", inputType: "radio", options: yesNoOptions, required: true },
   membership: {
     id: "membership",
     label: "Are you currently a member?",
@@ -154,6 +156,17 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     format: "phone",
     autoComplete: "tel",
     inputMode: "tel",
+  },
+
+  "active-military": {
+    id: "active-military",
+    label: "Are you in active duty in the Armed Forces?",
+    inputType: "radio",
+    required: true,
+    options: [
+      { label: "Yes", value: "yes" },
+      { label: "No", value: "no" },
+    ],
   },
 
   "waepa-declaration": {
@@ -1387,6 +1400,8 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
   "years-self-employed": {
     id: "years-self-employed",
     label: "Years self-employed",
+    allowDecimal: true,
+    helperText: "You may enter a fraction of a year, for example 0.5 for six months.",
     inputType: "number",
     inputMode: "numeric",
     labelVariant: "standard",
@@ -1582,6 +1597,10 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     required: true,
   },
 
+  "dividend-acknowledgement": { id: "dividend-acknowledgement", label: "I attest to having read the above information", inputType: "checkbox", required: true },
+  "dividend-first-name": { id: "dividend-first-name", label: "First Name", inputType: "text" },
+  "dividend-last-name": { id: "dividend-last-name", label: "Last Name", inputType: "text" },
+  "dividend-birth-date": { id: "dividend-birth-date", label: "Date of Birth", inputType: "date" },
   "review-self-consent": {
     id: "review-self-consent",
     label:

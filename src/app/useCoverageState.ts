@@ -1,3 +1,11 @@
+import { orderCoveragePresentation } from "../domain/coveragePresentation";
+import { reconcileApplicationRiders } from "../domain/applicationRiders";
+import { changeCoverageAmount, selectedRiderOnly } from "../domain/coverageRiderOnly";
+import { usePrototypeRates } from "./usePrototypeRates";
+import { initialCoverageCategories } from "../config/client/coverageCategoryScope";
+import { resolveApplicationCoverage, validateApplicationCoverages } from "../domain/coverageRuntime";
+import type { CoverageDefinition } from "../domain/coverage";
+import { coverageRelationshipErrors } from "../domain/coverageRequirements";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
@@ -8,18 +16,7 @@ import type { CoverageApplicantId } from "../config/coverages/types";
 import type { EstimatedRateFrequency } from "../config/clients/types";
 import { useApplicationForm } from "./ApplicationFormContext";
 import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
-import { getCoverageAmountChoices } from "../utils/coverageAmounts";
 import { RATE_CALCULATION_DELAY_MS } from "../config/coverageConstants";
-
-function generateAmountChoices(
-  coverage: {
-    categoryId: CoverageCategoryId;
-    coverageAmounts?: import("../config/coverages/types").CoverageAmountAssignment[];
-  },
-  applicantId: CoverageApplicantId = "member",
-): number[] {
-  return [0, ...getCoverageAmountChoices(coverage, applicantId)];
-}
 
 export function getDisplayedPremium(
   monthlyPremium: number,
@@ -41,6 +38,10 @@ export function useCoverageState() {
   const activeClient = useMemo(() => getActiveClient(), []);
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const { values, setPageValues } = useApplicationForm();
+
+  function generateAmountChoices(coverage: CoverageDefinition, applicantId: CoverageApplicantId = "member"): number[] {
+    return [0, ...resolveApplicationCoverage(coverage, applicantId, values, coverages).amounts];
+  }
 
   // ── Rate calculation state ──────────────────────────────────────────────
   const [calculatingRateKeys, setCalculatingRateKeys] = useState<Set<string>>(
@@ -82,7 +83,7 @@ export function useCoverageState() {
   const selectionTimerRef = useRef<number | null>(null);
 
   // ── Category selection ──────────────────────────────────────────────────
-  const availableCategories = coverageCategories.filter((category) =>
+  const availableCategories = orderCoveragePresentation(coverages, activeClient.coverages, new URLSearchParams(window.location.search).get("featured_prod")).categories.map(id => coverageCategories.find(category => category.id === id)!).filter((category) =>
     coverages.some((coverage) => coverage.categoryId === category.id),
   );
 
@@ -92,21 +93,14 @@ export function useCoverageState() {
     const storedChips = Array.isArray(values.selectedCategoryChips)
       ? (values.selectedCategoryChips as CoverageCategoryId[])
       : [];
-    if (storedChips.length > 0) return storedChips;
-
-    const existingSelections = Array.isArray(values.coverageSelections)
-      ? values.coverageSelections
-      : [];
-    if (existingSelections.length > 0) {
-      const cats = new Set<CoverageCategoryId>();
-      for (const covId of existingSelections) {
-        const cov = coverages.find((c) => c.id === covId);
-        if (cov) cats.add(cov.categoryId);
-      }
-      return [...cats];
-    }
-    return [];
+    const existingSelections = Array.isArray(values.coverageSelections) ? values.coverageSelections : [];
+    return initialCoverageCategories(availableCategories.map(category => category.id), storedChips, coverages.filter(coverage => existingSelections.includes(coverage.id)).map(coverage => coverage.categoryId));
   });
+
+  useEffect(() => {
+    const stored = Array.isArray(values.selectedCategoryChips) ? values.selectedCategoryChips : [];
+    if (stored.join(",") !== selectedCategories.join(",")) setPageValues({ selectedCategoryChips: selectedCategories });
+  }, [selectedCategories, values.selectedCategoryChips, setPageValues]);
 
   // ── Category needs ─────────────────────────────────────────────────────
   const {
@@ -133,7 +127,7 @@ export function useCoverageState() {
     () => (Array.isArray(values.dependents) ? values.dependents : []),
     [values.dependents],
   );
-  const hasSpouse = selectedDependents.includes("spouse");
+  const hasSpouse = selectedDependents.includes("spouse") && coverages.some(product => selectedCategories.includes(product.categoryId) && product.applicants.includes("spouse"));
 
   // ── Product applicants ─────────────────────────────────────────────────
   const productApplicants = useMemo<
@@ -176,6 +170,12 @@ export function useCoverageState() {
       ? (values.coverageRiderAmounts as Record<string, number>)
       : {};
 
+  const reconciledRiders = JSON.stringify(reconcileApplicationRiders(coverages, values));
+  useEffect(() => {
+    const next = JSON.parse(reconciledRiders);
+    if (JSON.stringify(values.coverageRiders ?? {}) !== JSON.stringify(next.coverageRiders) || JSON.stringify(values.coverageRiderAmounts ?? {}) !== JSON.stringify(next.coverageRiderAmounts)) setPageValues(next);
+  }, [reconciledRiders, values.coverageRiders, values.coverageRiderAmounts, setPageValues]);
+
   // ── Waiting / max benefit periods ──────────────────────────────────────
   const storedWaitingPeriods = useMemo<Record<string, string>>(() => {
     if (
@@ -203,32 +203,19 @@ export function useCoverageState() {
   const categoryProducts = useMemo(
     () =>
       coverages
-        .filter((c) => selectedCategories.includes(c.categoryId))
-        .sort((a, b) => {
-          if (a.featured && !b.featured) return -1;
-          if (!a.featured && b.featured) return 1;
-          return a.name.localeCompare(b.name);
-        }),
+        .filter((c) => selectedCategories.includes(c.categoryId)),
     [coverages, selectedCategories],
   );
 
   const categoryEligibility = useMemo(() => {
     const result: Partial<Record<CoverageCategoryId, boolean>> = {};
-    const hoursPerWeek = (values["hours-worked-per-week"] as string) || "";
     for (const catId of selectedCategories) {
-      if (catId === "DI" || catId === "OO") {
-        const hours = parseInt(hoursPerWeek, 10);
-        if (!isNaN(hours) && hours > 0 && hours < 40) {
-          result[catId] = false;
-        } else {
-          result[catId] = true;
-        }
-      } else {
-        result[catId] = true;
-      }
+      result[catId] = coverages.filter(p => p.categoryId === catId).some(product =>
+        product.applicants.some(applicant => (applicant === "member" || selectedDependents.includes(applicant)) &&
+          resolveApplicationCoverage(product, applicant, values, coverages).eligibility !== "ineligible"));
     }
     return result;
-  }, [selectedCategories, values]);
+  }, [selectedCategories, values, coverages, selectedDependents]);
 
   const allCategoriesIneligible = useMemo(
     () =>
@@ -358,6 +345,28 @@ export function useCoverageState() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showProducts, categoryProducts]);
 
+  useEffect(() => {
+    const amounts = { ...storedAmounts };
+    const waiting = { ...storedWaitingPeriods };
+    const benefits = { ...storedMaxBenefitPeriods };
+    let changed = false;
+    for (const product of coverages) for (const applicant of productApplicants[product.id] ?? []) {
+      const result = resolveApplicationCoverage(product, applicant, values, coverages);
+      const key = `${product.id}:${applicant}`;
+      if (amounts[key] !== 0 && !result.amounts.includes(amounts[key])) {
+        const next = result.amounts[0] ?? 0;
+        if (amounts[key] !== next) { amounts[key] = next; changed = true; }
+      }
+      for (const [target, constraint] of [[waiting, result.waitingPeriod], [benefits, result.benefitPeriod]] as const) {
+        const current = target[key] ?? target[product.id];
+        const required = constraint.requiredValue ?? (current && constraint.options?.length && !constraint.options.some(o => o.value === current) ? constraint.options[0].value : undefined);
+        const next = required ?? target[key] ?? target[product.id] ?? constraint.options?.[0]?.value;
+        if (next !== undefined && target[key] !== next) { target[key] = next; changed = true; }
+      }
+    }
+    if (changed) setPageValues({ coverageAmounts: amounts, coverageWaitingPeriods: waiting, coverageMaxBenefitPeriods: benefits });
+  }, [values, coverages, productApplicants, storedAmounts, storedWaitingPeriods, storedMaxBenefitPeriods, setPageValues]);
+
   // ── Handlers ───────────────────────────────────────────────────────────
 
   function handleCategoryToggle(categoryId: CoverageCategoryId) {
@@ -423,6 +432,8 @@ export function useCoverageState() {
   ) {
     const currentApplicants = productApplicants[coverageId] ?? [];
     const isAdding = !currentApplicants.includes(applicant);
+    const product = coverages.find(product => product.id === coverageId);
+    if (!product || !product.applicants.includes(applicant)) return;
     const nextApplicants = isAdding
       ? [...currentApplicants, applicant]
       : currentApplicants.filter((a) => a !== applicant);
@@ -442,7 +453,7 @@ export function useCoverageState() {
       const coverage = categoryProducts.find((c) => c.id === coverageId);
       if (coverage) {
         const key = `${coverageId}:${applicant}`;
-        if (nextAmounts[key] == null || nextAmounts[key] === 0) {
+        if (nextAmounts[key] == null || nextAmounts[key] === 0 && !selectedRiderOnly(coverage, applicant, values)) {
           const choices = generateAmountChoices(coverage, applicant);
           const firstNonZero = choices.find((amt) => amt > 0);
           if (firstNonZero != null) {
@@ -483,11 +494,12 @@ export function useCoverageState() {
     }
   }
 
-  function handleAmountChange(key: string, amount: number) {
+  function handleAmountChange(key: string, amount: number, riderOnlyId?: string) {
+    const [productId, applicant] = key.split(":");
+    const product = coverages.find(product => product.id === productId);
+    if (!product || !generateAmountChoices(product, applicant as CoverageApplicantId).includes(amount)) return;
     beginRateCalculation(key);
-    setPageValues({
-      coverageAmounts: { ...storedAmounts, [key]: amount },
-    });
+    setPageValues(changeCoverageAmount(product, applicant as CoverageApplicantId, values, amount, riderOnlyId));
   }
 
   function handleFrequencyToggle(newFrequency: EstimatedRateFrequency) {
@@ -507,6 +519,8 @@ export function useCoverageState() {
     riderId: string,
     applicantId: CoverageApplicantId,
   ) {
+    const product = coverages.find(product => product.id === coverageId);
+    if (product && selectedRiderOnly(product, applicantId, values)) return;
     const key = `${coverageId}:${riderId}:${applicantId}`;
     const rateKey = `${coverageId}:${applicantId}`;
     beginRateCalculation(rateKey);
@@ -521,6 +535,9 @@ export function useCoverageState() {
     applicantId: CoverageApplicantId,
     amount: number,
   ) {
+    const product = coverages.find(product => product.id === coverageId);
+    const standalone = product && selectedRiderOnly(product, applicantId, values);
+    if (standalone && standalone.id !== riderId) return;
     const key = `${coverageId}:${riderId}:${applicantId}`;
     const rateKey = `${coverageId}:${applicantId}`;
     beginRateCalculation(rateKey);
@@ -573,6 +590,8 @@ export function useCoverageState() {
     });
   }
 
+  const prototypeRates = usePrototypeRates(categoryProducts.flatMap(p => (productApplicants[p.id] ?? []).map(applicant => ({ productKey: p.id, applicant, amount: storedAmounts[`${p.id}:${applicant}`] ?? 0 }))), values, rateFrequency, 'coverage');
+
   // ── Premium calculation ────────────────────────────────────────────────
 
   function calcApplicantPremium(
@@ -580,6 +599,9 @@ export function useCoverageState() {
     applicantId: CoverageApplicantId,
   ): number {
     const key = `${coverage.id}:${applicantId}`;
+    // Zero new base coverage is not a quoted zero premium for the rider.
+    if (selectedRiderOnly(coverage, applicantId, values)) return NaN;
+    if (prototypeRates.enabled) { const price = prototypeRates.premium(key); return rateFrequency === "annual" ? price / 12 : price; }
     const amount = storedAmounts[key] ?? 0;
     let premium = estimateMonthlyPremium(coverage.categoryId, amount);
 
@@ -615,7 +637,7 @@ export function useCoverageState() {
         );
       }, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categoryProducts, selectedCoverageIds, productApplicants, storedAmounts]);
+  }, [categoryProducts, selectedCoverageIds, productApplicants, storedAmounts, prototypeRates]);
 
   // ── Validation ─────────────────────────────────────────────────────────
 
@@ -652,12 +674,15 @@ export function useCoverageState() {
         ? (nextValues.coverageAmounts as Record<string, number>)
         : {};
 
-    const hasAmount = Object.values(nextAmounts).some((v) => v > 0);
+    const hasAmount = Object.values(nextAmounts).some((v) => v > 0) || coverages.some(product =>
+      nextSelectedCoverageIds.includes(product.id) && (nextProductApplicants[product.id] ?? []).some(applicant => selectedRiderOnly(product, applicant, nextValues)),
+    );
     if (!hasAmount) {
       return "Select at least one benefit amount before continuing.";
     }
 
-    return undefined;
+    const activeSelections = Object.fromEntries(Object.entries(nextProductApplicants).filter(([id]) => nextSelectedCoverageIds.includes(id)));
+    return validateApplicationCoverages(coverages, nextValues) ?? coverageRelationshipErrors(coverages, activeSelections)[0];
   }
 
   return {

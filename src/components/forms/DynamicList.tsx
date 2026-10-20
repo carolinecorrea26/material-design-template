@@ -3,6 +3,7 @@ import { Box, Button, DialogContentText } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import {
   useFieldArray,
+  useWatch,
   useForm,
   type Control,
   type FieldErrors,
@@ -49,6 +50,8 @@ export default function DynamicList<T extends Record<string, string>>({
     name,
   });
 
+  const savedRows = useWatch({ control, name }) as Record<string, string>[] | undefined;
+
   const [showForm, setShowForm] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [removeIndex, setRemoveIndex] = useState<number | null>(null);
@@ -89,7 +92,7 @@ export default function DynamicList<T extends Record<string, string>>({
       item[key] = data[fieldId] ?? "";
     }
     if (editingIndex !== null) {
-      update(editingIndex, item);
+      update(editingIndex, { ...savedRows?.[editingIndex], ...item });
       setStatusMessage(`${label} updated.`);
     } else {
       append(item);

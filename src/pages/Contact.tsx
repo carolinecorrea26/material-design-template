@@ -14,6 +14,9 @@ import {
   executeApplicationTransition,
 } from "../config/applicationTransitions";
 
+import { getActiveClient } from "../config/client/getActiveClient";
+import { showContactBusinessSection } from "../domain/applicantExperience";
+
 const streetRow = new Set(["street-address", "apt-suite"]);
 const cityStateZipRow = new Set(["city", "state", "zip-code"]);
 
@@ -57,7 +60,7 @@ export default function Contact() {
       }) => {
         const correspondenceTo = watchedValues["correspondence-to"];
         const showBusinessSection =
-          correspondenceTo === "business" || hasDiOrOo;
+          showContactBusinessSection(getActiveClient().applicantExperience, hasDiOrOo, correspondenceTo);
         const sameAsHome = Boolean(
           watchedValues["business-address-same-as-home"],
         );
@@ -115,7 +118,7 @@ function ContactFields({
 
   // Copy home address to business address when checkbox is checked
   useEffect(() => {
-    if (!sameAsHome) {
+    if (!showBusinessSection || !sameAsHome) {
       return;
     }
 
@@ -160,6 +163,7 @@ function ContactFields({
     businessCity,
     businessState,
     businessZipCode,
+    showBusinessSection,
     setValue,
   ]);
 

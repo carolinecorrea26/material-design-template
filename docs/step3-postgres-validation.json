@@ -1,0 +1,13 @@
+{
+  "candidate": "reviewed-step3",
+  "postgres": "17.11 (Debian 17.11-1.pgdg13+2)",
+  "migrations": 7,
+  "seedApplications": 2,
+  "idempotent": true,
+  "readbackEquivalence": true,
+  "rejectedInvalidWrites": 12,
+  "rejectedSnapshotRequests": 5,
+  "snapshotRls": true,
+  "concurrentSnapshot": true,
+  "rlsTables": 101
+}

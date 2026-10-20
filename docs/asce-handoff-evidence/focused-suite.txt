@@ -1,0 +1,65 @@
+
+> template-material-prototype@0.0.0 test
+> vitest run scripts/mock-platform.test.mjs scripts/prototype-cutover.test.mjs src/domain/prototypeLibrary.test.ts src/domain/libraryDraft.test.ts src/pages/admin/libraryNavigation.test.ts src/migration/activeSiteAdoption.test.ts --maxWorkers=1 --testTimeout=15000
+
+
+ RUN  v3.2.7 /Users/t98j0kt/Desktop/nyl/portal/templates/template-material/template-material-prototype
+
+ ✓ src/pages/admin/libraryNavigation.test.ts (52 tests) 37835ms
+   ✓ Portal Library scope and navigation > starts at All with the complete page catalog and switches to only effective pages  785ms
+   ✓ Portal Library scope and navigation > keeps linked tools optional and preserves the selected page when enabled  491ms
+   ✓ Portal Library scope and navigation > browses shared tools without a synthetic Global page  527ms
+   ✓ Portal Library scope and navigation > round trips Page → Fields → Page without empty linked tables in global  371ms
+   ✓ Portal Library scope and navigation > only links page rules that exist in the selected scope  318ms
+   ✓ Portal Library scope and navigation > field rule links use the same Site applicability as the destination  385ms
+   ✓ Portal Library scope and navigation > preserves field placement and category/product source order  8906ms
+   ✓ Portal Library scope and navigation > renders fixed Template Standards in either scope  360ms
+   ✓ Portal Library scope and navigation > only shows Site inspection columns in Effective coverage  6425ms
+   ✓ Portal Library scope and navigation > shows the theme color picker in both scopes with the selected Site defaults  693ms
+   ✓ Portal Library scope and navigation > shares exactly one dependent scope selector and retains the canonical Site across tabs  10956ms
+   ✓ Portal Library scope and navigation > separates Pages and Fields, with the matching validation and Storybook links  565ms
+   ✓ Sites workspace > places shared branding guidelines and editable icon previews in Branding & Design  493ms
+   ✓ Sites workspace > exposes custom palette colors above the preview without sample alerts  502ms
+ ✓ src/migration/activeSiteAdoption.test.ts (9 tests) 8328ms
+   ✓ Step 3 explicit identity and initial adoption > records scoped provenance, exports through the existing schema and is idempotent  6197ms
+   ✓ Step 3 explicit identity and initial adoption > shares the adopted rows through a persisted revision without mixing fresh reads  1120ms
+   ✓ Step 3 explicit identity and initial adoption > fails before adoption if source values change or come from another campaign  400ms
+ ✓ src/domain/libraryDraft.test.ts (3 tests) 14674ms
+   ✓ isolates edits and preserves all rows of captured tables beyond 1000 records  5542ms
+   ✓ uses Site precedence for draft PRASE controls and displays only configured references  4576ms
+   ✓ edits ASCE synthetic billing without changing other products or catalog data  4556ms
+ ✓ src/domain/prototypeLibrary.test.ts (13 tests) 1439ms
+   ✓ persisted Library prototype cutover > Library field and rate edits change the actual applicant resolvers with no catalog mutation  810ms
+ ❯ scripts/prototype-cutover.test.mjs (2 tests | 1 failed) 5517ms
+   × abe-default persists Library field, pricing and billing edits through save/reload/restart without catalog edits 2558ms
+     → expected null to be 4.5 // Object.is equality
+   ✓ asce-default persists Library field, pricing and billing edits through save/reload/restart without catalog edits  2958ms
+ ✓ scripts/mock-platform.test.mjs (7 tests) 173ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  scripts/prototype-cutover.test.mjs > abe-default persists Library field, pricing and billing edits through save/reload/restart without catalog edits
+AssertionError: expected null to be 4.5 // Object.is equality
+
+- Expected: 
+4.5
+
++ Received: 
+null
+
+ ❯ scripts/prototype-cutover.test.mjs:41:151
+     39|     const edited = await request('/prototype/library', { siteKey });
+     40|     expect(resolveRatePresentation(validatePrototypeEnvelope(edited, s…
+     41|     expect(resolveBilling(resolveCoverageJourneyPolicy(validatePrototy…
+       |                                                                                                                                                       ^
+     42|     expect(validatePrototypeEnvelope(edited, siteKey).client.fields.el…
+     43|     expect((await request('/rates/quote', { siteKey, productKey: 'li-t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 5 passed (6)
+      Tests  1 failed | 85 passed (86)
+   Start at  15:29:06
+   Duration  103.67s (transform 2.55s, setup 0ms, collect 30.22s, tests 67.97s, environment 2.27s, prepare 272ms)
+

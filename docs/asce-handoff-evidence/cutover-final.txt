@@ -1,0 +1,16 @@
+
+> template-material-prototype@0.0.0 test
+> vitest run scripts/prototype-cutover.test.mjs src/components/forms/FieldRenderer.test.tsx --maxWorkers=1 --testTimeout=15000
+
+
+ RUN  v3.2.7 /Users/t98j0kt/Desktop/nyl/portal/templates/template-material/template-material-prototype
+
+ ✓ scripts/prototype-cutover.test.mjs (2 tests) 6586ms
+   ✓ abe-default persists Library field, pricing and billing edits through save/reload/restart without catalog edits  3614ms
+   ✓ asce-default persists Library field, pricing and billing edits through save/reload/restart without catalog edits  2971ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  15:32:44
+   Duration  7.19s (transform 83ms, setup 0ms, collect 110ms, tests 6.59s, environment 0ms, prepare 50ms)
+

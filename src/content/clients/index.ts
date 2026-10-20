@@ -13,14 +13,14 @@ import { waepaContentOverrides } from "./waepa";
 import { waepagiContentOverrides } from "./waepagi";
 
 export const siteContentOverrides: Record<SiteId, DeepPartial<SiteContent>> = {
-  "abe-default": abeContentOverrides,
-  "ama-default": amaContentOverrides,
-  "asce-default": asceContentOverrides,
-  "avma-default": avmaContentOverrides,
-  "csea-default": cseaContentOverrides,
-  "demo-default": demoContentOverrides,
-  "isitrust-default": isitrustContentOverrides,
-  "nso-default": nsoContentOverrides,
-  "waepa-standard": waepaContentOverrides,
+  "abe": abeContentOverrides,
+  "ama": amaContentOverrides,
+  "asce": asceContentOverrides,
+  "avma": avmaContentOverrides,
+  "csea": cseaContentOverrides,
+  "demo": demoContentOverrides,
+  "isitrust": isitrustContentOverrides,
+  "nso": nsoContentOverrides,
+  "waepa": waepaContentOverrides,
   "waepa-gi": waepagiContentOverrides,
 };

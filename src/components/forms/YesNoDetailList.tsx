@@ -9,6 +9,8 @@ import FieldRenderer from "./FieldRenderer";
 export type YesNoDetailQuestion = {
   field: FieldDefinition;
   listName: string;
+  maxItems?: number;
+  label?: string;
   mapping: DynamicListFieldMapping<Record<string, string>>;
   renderItem: (item: Record<string, string>) => ReactNode;
 };
@@ -48,11 +50,12 @@ export default function YesNoDetailList({
                 margin="none"
               />
             </Box>
-            {watchedValues[question.field.id] === "yes" && (
+            {watchedValues[question.field.id] === "yes" && question.mapping.fields.length > 0 && (
               <DynamicList
                 control={control}
                 name={question.listName}
-                label="details"
+                label={question.label ?? "details"}
+                maxItems={question.maxItems}
                 mapping={question.mapping}
                 renderItem={question.renderItem}
               />

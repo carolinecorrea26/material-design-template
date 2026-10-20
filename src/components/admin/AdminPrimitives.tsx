@@ -6,15 +6,10 @@ export function Workspace({ children }: { children: ReactNode }) {
 }
 
 export function WorkspaceHeader({ title, description, actions }: { title: string; description: string; actions?: ReactNode }) {
-  return (
-    <Stack direction={{ xs: "column", sm: "row" }} gap={2} justifyContent="space-between" alignItems={{ sm: "flex-start" }}>
-      <Box>
-        <Typography component="h1" variant="h5" sx={{ fontWeight: 800 }}>{title}</Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>{description}</Typography>
-      </Box>
-      {actions}
-    </Stack>
-  );
+  return <Stack direction={{ xs: "column", sm: "row" }} gap={2} justifyContent="space-between" alignItems={{ sm: "flex-start" }}>
+    <Box><Typography component="h1" variant="h5" sx={{ fontWeight: 800 }}>{title}</Typography><Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>{description}</Typography></Box>
+    {actions}
+  </Stack>;
 }
 
 export function Section({ title, description, action, children }: { title: string; description?: string; action?: ReactNode; children: ReactNode }) {

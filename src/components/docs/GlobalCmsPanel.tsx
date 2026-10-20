@@ -3,7 +3,7 @@ import { Box, Chip, Stack, Typography } from "@mui/material";
 import { cmsEntries } from "../../content/docs/cmsEntries";
 import CmsContentTable from "./CmsContentTable";
 
-export default function GlobalCmsPanel() {
+export default function GlobalCmsPanel({ hideHeading = false }: { hideHeading?: boolean } = {}) {
   const rows = useMemo(
     () =>
       cmsEntries
@@ -14,16 +14,16 @@ export default function GlobalCmsPanel() {
 
   return (
     <Stack spacing={3}>
-      <Box>
+      {!hideHeading && <Box>
         <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>
           Global Content
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 920 }}>
           The template's baseline content — every piece of managed copy, imagery, and
           document/link content before any client-specific overrides are applied. For a given
-          client's resolved content, see the <strong>Client Content</strong> tab.
+          client's resolved content, see the <strong>Effective Site</strong> scope.
         </Typography>
-      </Box>
+      </Box>}
 
       <Box
         sx={{
@@ -45,7 +45,7 @@ export default function GlobalCmsPanel() {
         >
           <Stack direction="row" spacing={1} alignItems="center">
             <Typography variant="h6" component="h2" sx={{ fontWeight: 800 }}>
-              Content
+              {hideHeading ? "Content items" : "Content"}
             </Typography>
             <Chip label={rows.length} size="small" />
           </Stack>

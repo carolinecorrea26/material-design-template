@@ -4,6 +4,7 @@ import { Box, Paper, Typography } from "@mui/material";
 import { FLOW_NODE_MIN_HEIGHT, FLOW_NODE_WIDTH } from "../layout";
 
 export default function FlowNodeShell({
+  layoutHeight,
   label,
   description,
   icon,
@@ -12,6 +13,7 @@ export default function FlowNodeShell({
   href,
   onNavigate,
 }: {
+  layoutHeight?: number;
   label: string;
   description?: string;
   icon: ReactNode;
@@ -42,7 +44,8 @@ export default function FlowNodeShell({
         : {})}
       sx={{
         width: FLOW_NODE_WIDTH,
-        minHeight: FLOW_NODE_MIN_HEIGHT,
+        height: layoutHeight,
+        minHeight: layoutHeight ?? FLOW_NODE_MIN_HEIGHT,
         boxSizing: "border-box",
         position: "relative",
         display: "block",

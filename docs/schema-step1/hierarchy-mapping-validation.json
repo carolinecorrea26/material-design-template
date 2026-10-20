@@ -1,0 +1,21 @@
+{
+  "scope": "File-only mapping verification",
+  "sourceRecordCoverage": {
+    "hostingAssociationCandidates": 95,
+    "lowerAssociationRows": 127,
+    "sites": 10,
+    "siteAssociationAssignments": 30,
+    "sourceOnlyHostingCandidates": 86,
+    "selectableAssociationCandidates": 25,
+    "directColumnsImpacted": 23,
+    "ownershipDifferencesBetweenExports": 7
+  },
+  "allSourceRowsAndRelationshipsCovered": true,
+  "amaAutomaticContextVerified": true,
+  "applicationUpperBound": 1,
+  "identityMergesAuthorizedOrPerformed": false,
+  "reviewedExportIntegrityTest": "passed, 1 test",
+  "generatorSyntaxAndTargetedLint": "passed",
+  "databaseConnected": false,
+  "migrationsChangedOrApplied": false
+}

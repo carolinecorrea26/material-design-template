@@ -48,7 +48,7 @@ export const associationEntities: Association[] = [
   {
     id: "american-veterinary-medical-association",
     clientId: "avma",
-    name: "American Veterinary Medical Association",
+    name: "AVMA LIFE Trust",
     acronym: "AVMA",
     logo: "/client/avma/logo.png",
     logoAlt: "AVMA Logo",
@@ -70,8 +70,8 @@ export const associationEntities: Association[] = [
 
 const isitrustRelationships: SiteAssociation[] = isitrustAssociationNames.map(
   ([associationId]) => ({
-    id: `isitrust-default--${associationId}`,
-    siteId: "isitrust-default",
+    id: `isitrust--${associationId}`,
+    siteId: "isitrust",
     associationId,
     enabled: true,
   }),
@@ -79,27 +79,27 @@ const isitrustRelationships: SiteAssociation[] = isitrustAssociationNames.map(
 
 export const siteAssociationEntities: SiteAssociation[] = [
   {
-    id: "ama-default--american-medical-association",
-    siteId: "ama-default",
+    id: "ama--american-medical-association",
+    siteId: "ama",
     associationId: "american-medical-association",
     enabled: true,
   },
   {
-    id: "asce-default--american-society-of-civil-engineers",
-    siteId: "asce-default",
+    id: "asce--american-society-of-civil-engineers",
+    siteId: "asce",
     associationId: "american-society-of-civil-engineers",
     enabled: true,
   },
   {
-    id: "avma-default--american-veterinary-medical-association",
-    siteId: "avma-default",
+    id: "avma--american-veterinary-medical-association",
+    siteId: "avma",
     associationId: "american-veterinary-medical-association",
     enabled: true,
   },
   ...isitrustRelationships,
   {
-    id: "waepa-standard--waepa",
-    siteId: "waepa-standard",
+    id: "waepa--waepa",
+    siteId: "waepa",
     associationId: "waepa",
     enabled: true,
   },

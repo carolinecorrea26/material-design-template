@@ -1,6 +1,8 @@
+import { getPagePath } from "../../config/pages";
 import { useEffect, useState, type ReactNode } from "react";
 import {
   Box,
+  ButtonBase,
   Breadcrumbs,
   Step,
   StepContent,
@@ -23,6 +25,7 @@ import { useApplicationForm } from "../../app/ApplicationFormContext";
 import { useApplicationSession } from "../../app/ApplicationSessionContext";
 
 import { getPageNavTitle } from "../../config/pages";
+import { useSinglePageFlow } from "../../app/SinglePageFlowContext";
 
 const PENDING_BREADCRUMB_COMPLETION_EVENT = "form:pendingbreadcrumbcompletion";
 
@@ -88,6 +91,7 @@ function getBreadcrumbEntries(
 
 export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
   const navigate = useNavigate();
+  const singlePageFlow = useSinglePageFlow();
   const { values } = useApplicationForm();
   const { reviewSubmitted, advisorApplicantFlow } = useApplicationSession();
   const [pendingCompletedPageId, setPendingCompletedPageId] =
@@ -117,7 +121,7 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
     };
   }, []);
 
-  const activeSteps = getActiveProgressSteps(values);
+  const activeSteps = getActiveProgressSteps(values, pageId);
   const activeStepIndex = getActiveProgressStepIndex(pageId, values);
   const currentStepConfig = activeSteps[activeStepIndex];
 
@@ -164,16 +168,15 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
         const isCompleted =
           index < currentEntryIndex || isPendingCompletedEntry;
         const isClickable =
-          isCompleted && !reviewSubmitted && !advisorApplicantFlow;
+          isCompleted && !reviewSubmitted && !advisorApplicantFlow && !singlePageFlow?.navigationPending;
 
         return (
           <Box
             key={entry.id}
-            component={isClickable ? "button" : "span"}
+            component={isClickable ? ButtonBase : "span"}
+            onClick={isClickable ? () => singlePageFlow ? singlePageFlow.goToSection(entry.navigateTo) : navigate(getPagePath(entry.navigateTo)) : undefined}
+            aria-label={isClickable ? `Go to ${entry.label}` : undefined}
             aria-current={isCurrentEntry ? "page" : undefined}
-            onClick={
-              isClickable ? () => navigate(`/${entry.navigateTo}`) : undefined
-            }
             sx={{
               display: "inline-flex",
               alignItems: "center",
@@ -181,7 +184,6 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
               background: "none",
               border: "none",
               padding: 0,
-              cursor: isClickable ? "pointer" : "default",
             }}
           >
             <Typography
@@ -195,9 +197,7 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
               {entry.label}
             </Typography>
             {isCompleted && (
-              <CheckCircleRoundedIcon
-                sx={{ fontSize: 14, color: "success.main" }}
-              />
+              <CheckCircleRoundedIcon sx={{ fontSize: 16, color: "success.main" }} />
             )}
           </Box>
         );
@@ -216,7 +216,7 @@ export default function ProgressStep({
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
 
-  const activeSteps = getActiveProgressSteps(values);
+  const activeSteps = getActiveProgressSteps(values, pageId);
   const activeStep = getActiveProgressStepIndex(pageId, values);
 
   return (
@@ -297,7 +297,7 @@ export default function ProgressStep({
                         ? () => {
                             const firstPage = step.pageIds[0];
                             if (firstPage) {
-                              navigate(`/${firstPage}`);
+                              navigate(getPagePath(firstPage));
                             }
                           }
                         : undefined

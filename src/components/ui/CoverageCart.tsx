@@ -1,3 +1,9 @@
+import EstimatedRate from "./EstimatedRate";
+import { resolveRatePresentation } from "../../domain/ratePresentation";
+import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
+import ReferenceRateTableLink from "./ReferenceRateTableLink";
+import { usePrototypeRates } from "../../app/usePrototypeRates";
+import { applicationUnderwriting, resolveApplicationCoverage } from "../../domain/coverageRuntime";
 import { useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
@@ -34,10 +40,11 @@ import TotalCostSummary, {
 } from "./TotalCostSummary";
 import EmptyState from "../feedback/EmptyState";
 import { formatUSD } from "../../utils/formatUSD";
+import { selectedRiderOnly } from "../../domain/coverageRiderOnly";
 import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
 import { getDisplayedPremium } from "../../app/useCoverageState";
 import { getResolvedFormFlow } from "../../config/formFlow";
-import { pages } from "../../config/pages";
+import { getConfiguredPages, getPagePath } from "../../config/pages";
 import type { PageId } from "../../types";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -119,6 +126,12 @@ function useSummaryData() {
   const { values } = useApplicationForm();
   const allCoverages = useMemo(() => getActiveClientCoverages(), []);
 
+  const rateRequests = Object.entries(values.coverageAmounts as Record<string, number> ?? {}).flatMap(([key, amount]) => {
+    const [productKey, applicant] = key.split(":");
+    return Array.isArray(values.coverageSelections) && values.coverageSelections.includes(productKey) && (values.productApplicants as Record<string, string[]> ?? {})[productKey]?.includes(applicant)
+      ? [{ productKey, applicant: applicant as CoverageApplicantId, amount }] : [];
+  });
+  const rates = usePrototypeRates(rateRequests, values, "monthly", "coverage");
   return useMemo(() => {
     const selectedIds: string[] = Array.isArray(values.coverageSelections)
       ? values.coverageSelections
@@ -216,7 +229,10 @@ function useSummaryData() {
           }
 
           let monthlyEstimate: number | undefined;
-          if (amount != null && amount > 0) {
+          if (selectedRiderOnly(coverage, applicantId, values)) {
+            monthlyEstimate = NaN;
+            totalMonthly = NaN;
+          } else if (amount != null && amount > 0) {
             let base = estimateMonthlyPremium(coverage.categoryId, amount);
             if (coverage.riders) {
               for (const rider of coverage.riders) {
@@ -226,8 +242,8 @@ function useSummaryData() {
                 }
               }
             }
-            monthlyEstimate = base;
-            totalMonthly += base;
+            monthlyEstimate = rates.enabled ? rates.premium(amountKey) : base;
+            totalMonthly += monthlyEstimate;
           }
 
           return { applicantId, amount, riders: selectedRiders, monthlyEstimate };
@@ -242,7 +258,7 @@ function useSummaryData() {
       totalMonthly: Math.round(totalMonthly * 100) / 100,
       badgeCount,
     };
-  }, [values, allCoverages]);
+  }, [values, allCoverages, rates]);
 }
 
 /** Returns the badge count for the cart icon in AppHeader. */
@@ -290,32 +306,24 @@ function CoverageCartDrawer({
       const flow = getResolvedFormFlow();
       const coverageIndex = flow.indexOf("coverage");
       const currentPath = location.pathname.replace(/\/$/, "");
-      const currentPage = pages.find((p) => p.path === currentPath);
+      const currentPage = getConfiguredPages().find((p) => p.path === currentPath);
       const currentPageId = currentPage?.id as PageId | undefined;
       const currentIndex = currentPageId ? flow.indexOf(currentPageId) : -1;
       if (currentIndex > coverageIndex) {
         onClose();
-        navigate("/coverage");
+        navigate(getPagePath("coverage"));
       }
     }
   }
 
-  const ineligibleProducts: string[] = [];
-  if (entries.length > 1) {
-    const hoursWorked = Number(values["hours-worked-per-week"]);
-    const monthlyIncome = Number(values["average-monthly-income"]);
-    const hasDisability = entries.some((e) => e.coverage.categoryId === "DI");
-    const hasOO = entries.some((e) => e.coverage.categoryId === "OO");
-    if (hasDisability && hoursWorked > 0 && hoursWorked < 20)
-      ineligibleProducts.push("Disability");
-    if (hasDisability && monthlyIncome > 0 && monthlyIncome < 500)
-      if (!ineligibleProducts.includes("Disability"))
-        ineligibleProducts.push("Disability");
-    if (hasOO) {
-      const expenses = Number(values["monthly-business-expenses"]);
-      if (expenses === 0 && values["monthly-business-expenses"] != null)
-        ineligibleProducts.push("Office Overhead");
-    }
+  const ineligibleProducts = entries.filter(entry => entry.applicants.some(({ applicantId }) =>
+    !resolveApplicationCoverage(entry.coverage, applicantId, values, getActiveClientCoverages()).selectable,
+  )).map(entry => entry.coverage.name);
+
+  // Retain the existing Office Overhead expense warning alongside rule outcomes.
+  if (entries.length > 1 && entries.some(entry => entry.coverage.categoryId === "OO") &&
+      values["monthly-business-expenses"] != null && Number(values["monthly-business-expenses"]) === 0) {
+    ineligibleProducts.push("Office Overhead");
   }
 
   const groupedByCategory = useMemo(() => {
@@ -418,7 +426,7 @@ function CoverageCartDrawer({
                         >
                           <Typography variant="productNameLabel">
                             {coverage.name}
-                            {coverage.underwritingType === "QD" && (
+                            {applicants.every(({ applicantId }) => applicationUnderwriting(coverage, applicantId, values).underwritingType === "QD") && (
                               <QuickDecisionIndicator />
                             )}
                           </Typography>
@@ -428,13 +436,10 @@ function CoverageCartDrawer({
                                 (s, a) => s + (a.monthlyEstimate ?? 0),
                                 0,
                               );
-                              return productTotal > 0 ? (
-                                <Typography
-                                  variant="body2"
-                                  sx={{ fontWeight: 700, whiteSpace: "nowrap" }}
-                                >
-                                  {formatUSD(productTotal)}/mo
-                                </Typography>
+                              const library = getPrototypeLibrary();
+                              const reference = library ? resolveRatePresentation(library.site, coverage.id).referenceTable : null;
+                              return reference ? <ReferenceRateTableLink table={reference} /> : productTotal > 0 || !Number.isFinite(productTotal) ? (
+                                <EstimatedRate amount={productTotal} suffix="/mo" variant="body2" fontWeight={700} />
                               ) : null;
                             })()}
                             <IconButton
@@ -453,7 +458,8 @@ function CoverageCartDrawer({
 
                         {applicants.map(
                           ({ applicantId, amount, riders: selectedRiders, monthlyEstimate }) => {
-                            const hasSelectedAmount = amount != null && amount > 0;
+                            const standalone = selectedRiderOnly(coverage, applicantId, values);
+                            const hasSelectedAmount = amount != null && (amount > 0 || !!standalone);
                             return (
                               <Box key={applicantId} sx={{ pl: 1 }}>
                                 <Stack spacing={0.5}>
@@ -465,7 +471,7 @@ function CoverageCartDrawer({
                                   {hasSelectedAmount ? (
                                     <>
                                       <Typography variant="caption" color="text.secondary">
-                                        Requested: {formatUSD(amount, 0)}
+                                        {standalone ? `$0 - Applying for ${standalone.name} only` : `Requested: ${formatUSD(amount, 0)}`}
                                       </Typography>
                                       {selectedRiders.length > 0 && (
                                         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
@@ -483,10 +489,10 @@ function CoverageCartDrawer({
                                           ))}
                                         </Box>
                                       )}
-                                      {monthlyEstimate != null && (
+                                      {monthlyEstimate != null && !(getPrototypeLibrary() && resolveRatePresentation(getPrototypeLibrary()!.site, coverage.id).referenceTable) && (
                                         <Typography variant="caption" color="text.secondary">
                                           Est. cost<sup>1</sup>:{" "}
-                                          {formatUSD(monthlyEstimate)}
+                                          <EstimatedRate amount={monthlyEstimate} variant="caption" />
                                         </Typography>
                                       )}
                                     </>

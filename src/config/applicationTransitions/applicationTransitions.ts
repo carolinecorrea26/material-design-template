@@ -4,7 +4,9 @@ import type {
   CoverageCategoryId,
 } from "../coverages/types";
 import { getCategoryQuestionFieldIds } from "../coverageQuestionRequirements";
+import type { FieldId } from "../fields/types";
 import type { ApplicationTransitionDefinition } from "./types";
+import { executeApplicationTransition } from "./executeApplicationTransition";
 
 export type QuoteApplySource = {
   birthday: string;
@@ -21,13 +23,16 @@ export type QuoteApplySource = {
   productApplicants: Record<string, CoverageApplicantId[]>;
   coverageAmounts: Record<string, number>;
   hideSmokerQuestion?: boolean;
+  /** The actual saved quote-field participation, including Site additions. */
+  collectedFieldIds?: string[];
 };
 
 function quoteRequires(fieldId: string) {
-  return (source: QuoteApplySource) =>
-    getCategoryQuestionFieldIds(source.selectedCategories, "self", {
+  return (source: QuoteApplySource) => source.collectedFieldIds
+    ? source.collectedFieldIds.includes(fieldId)
+    : getCategoryQuestionFieldIds(source.selectedCategories, "self", {
       hideSmokerQuestion: source.hideSmokerQuestion,
-    }).includes(fieldId as never);
+    }).some(id => id === fieldId);
 }
 
 export const quoteApplyTransition: ApplicationTransitionDefinition<QuoteApplySource> = {
@@ -84,6 +89,15 @@ export const quoteApplyTransition: ApplicationTransitionDefinition<QuoteApplySou
     },
   ],
 };
+
+/** Only collected contextual fields participate. Empty inputs cannot erase an
+ * existing answer; canonical quote answers and selected coverage take precedence. */
+export function executeQuoteApplyTransition(source: QuoteApplySource, currentValues: ApplicationFormValues = {}, contextualFields: Array<{ fieldId: FieldId; value: string | boolean | string[] }> = []) {
+  const contextual = executeApplicationTransition({ id: "quote-contextual-fields", trigger: "quote.apply",
+    fieldMappings: contextualFields.map(({ fieldId }) => ({ source: fieldId, targetFieldId: fieldId })),
+  }, Object.fromEntries(contextualFields.map(({ fieldId, value }) => [fieldId, value])), currentValues);
+  return executeApplicationTransition(quoteApplyTransition, source, contextual);
+}
 
 type ContactCarryForwardSource = ApplicationFormValues;
 

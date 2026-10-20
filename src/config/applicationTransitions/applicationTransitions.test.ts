@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   contactCarryForwardTransition,
   executeApplicationTransition,
+  executeQuoteApplyTransition,
   quoteApplyTransition,
   type QuoteApplySource,
 } from ".";
@@ -103,4 +104,20 @@ describe("application transitions", () => {
     expect(fieldCatalog["spouse-average-monthly-income"].format).toBe("currency");
     expect(fieldCatalog["monthly-business-expenses"].format).toBe("currency");
   });
+});
+
+it("pre-fills the fields actually collected by a Site quote, including category additions", () => {
+  const result = executeQuoteApplyTransition({ ...quoteSource, selectedCategories: ["LI"], collectedFieldIds: ["gender", "hours-worked-per-week", "average-monthly-income", "monthly-business-expenses", "business-expense-responsibility"] }, { smoker: "yes", "first-name": "Retained" }, [
+    { fieldId: "is-self-employed", value: "no" }, { fieldId: "years-self-employed", value: "" },
+  ]);
+  expect(result).toMatchObject({ gender: "female", "hours-worked-per-week": "45", "average-monthly-income": "9000", "monthly-business-expenses": "4000", "business-expense-responsibility": "75", smoker: "yes", "first-name": "Retained", "is-self-employed": "no" });
+  expect(result["years-self-employed"]).toBeUndefined();
+});
+it("keeps prior answers when collected quote inputs are blank and lets current quote answers win", () => {
+  const result = executeQuoteApplyTransition({ ...quoteSource, gender: "", collectedFieldIds: ["gender", "hours-worked-per-week"] }, { gender: "male", "years-self-employed": "3" }, [
+    { fieldId: "years-self-employed", value: "" }, { fieldId: "hours-worked-per-week", value: "10" },
+  ]);
+  expect(result.gender).toBe("male");
+  expect(result["years-self-employed"]).toBe("3");
+  expect(result["hours-worked-per-week"]).toBe("45");
 });

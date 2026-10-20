@@ -1,3 +1,5 @@
+import { defaultApplicationOrder } from "./pageCatalog";
+import { getPrototypeLibrary } from "../domain/prototypeLibrary";
 import type { PageId } from "../types";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import type { CoverageCategoryId } from "./coverages/types";
@@ -6,27 +8,12 @@ import { resolvePageParticipation } from "./flowGates";
 
 export { getSelectedCategoryIds } from "./flowGates";
 
-export const formFlow: PageId[] = [
-  "membership",
-  "eligibility",
-  "coverage",
-  "beneficiary",
-  "contact",
-  "profile",
-  "review",
-  "health-si",
-  "health-li",
-  "health-qd",
-  "health-di",
-  "health-cir",
-  "payment",
-  "docusign",
-  "receipt",
-];
+export const formFlow: PageId[] = defaultApplicationOrder.filter(id => id !== "home");
 
-/** Returns the active form flow. */
+/** Read the active Site's saved order and participation from its installed revision. */
 export function getResolvedFormFlow(): PageId[] {
-  return formFlow;
+  const library = getPrototypeLibrary();
+  return library ? library.pages.filter(page => page.enabled && page.definition.flow === "application" && page.definition.type !== "home").map(page => page.definition.id) : formFlow;
 }
 
 /** Coverage-category IDs that require follow-up questions. */

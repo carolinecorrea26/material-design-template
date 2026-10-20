@@ -5,6 +5,7 @@ import type { FlowNodeComponentProps } from "./types";
 export default function ActionFlowNode({ data }: FlowNodeComponentProps) {
   return (
     <FlowNodeShell
+      layoutHeight={data.layoutHeight as number | undefined}
       label={data.label}
       description={data.description}
       icon={<TouchAppRoundedIcon fontSize="small" />}

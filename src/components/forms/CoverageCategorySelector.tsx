@@ -74,7 +74,6 @@ export default function CoverageCategorySelector({
                 <Icon
                   sx={{
                     color: "primary.dark",
-                    backgroundColor: "background.iconBadge",
                     borderRadius: "9999px",
                     padding: "2px",
                     width: "2rem",

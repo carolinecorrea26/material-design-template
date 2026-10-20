@@ -1,8 +1,8 @@
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
+import QuickDecisionIcon from "./QuickDecisionIcon";
 
 export default function QuickDecisionIndicator() {
   return (
-    <OfflineBoltIcon
+    <QuickDecisionIcon
       color="success"
       titleAccess="QuickDecision"
       sx={{ fontSize: "1.25rem", verticalAlign: "middle", pl: 0.5 }}

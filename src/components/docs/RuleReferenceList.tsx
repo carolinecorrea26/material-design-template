@@ -82,7 +82,7 @@ export default function RuleReferenceList({
     return (
       <Stack spacing={1.5}>
         <SearchField value={filter} onChange={setFilter} placeholder="Filter rules…" />
-        <ResponsiveTableContainer>
+        <ResponsiveTableContainer libraryTable="rules">
           <Table size="small" sx={{ tableLayout: "fixed", width: "max-content" }}>
             <colgroup>
               <col style={{ width: widths.ruleId }} />
@@ -262,7 +262,7 @@ export default function RuleReferenceList({
                 </Stack>
               </AccordionSummary>
               <AccordionDetails sx={{ p: 0 }}>
-                <ResponsiveTableContainer>
+                <ResponsiveTableContainer libraryTable="rules">
                   <Table size="small" sx={{ tableLayout: "fixed", width: "max-content" }}>
                     <colgroup>
                       <col style={{ width: widths.ruleId }} />

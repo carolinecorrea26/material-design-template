@@ -1,3 +1,7 @@
+import { orderCoveragePresentation } from "../../domain/coveragePresentation";
+import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
+import { resolveSiteId } from "../../data/activeSite";
+import { activeCoverageCategoryRestriction, restrictCoverageCategories } from "./coverageCategoryScope";
 import { coverages } from "../coverages";
 import { getActiveClient } from "./getActiveClient";
 import type { ClientConfig } from "../clients/types";
@@ -24,7 +28,9 @@ function mergeIdentifiers<T extends ProductIdentifierSet>(
 }
 
 export function getActiveClientCoverages() {
-  return getClientCoverages(getActiveClient());
+  const client = getActiveClient();
+  const products = restrictCoverageCategories((getPrototypeLibrary(resolveSiteId())?.products ?? getClientCoverages(client)), activeCoverageCategoryRestriction(resolveSiteId()));
+  return orderCoveragePresentation(products, client.coverages, new URLSearchParams(window.location.search).get("featured_prod")).products;
 }
 
 /** Same merging logic as {@link getActiveClientCoverages}, for an arbitrary client. */
@@ -43,6 +49,9 @@ export function getClientCoverages(client: ClientConfig) {
 
       return {
         ...coverage,
+        requirements: override?.requirements ? { ...coverage.requirements, ...override.requirements } : coverage.requirements,
+        underwritingBands: override?.underwritingBands ?? coverage.underwritingBands,
+        underwritingBandsStatus: override?.underwritingBandsStatus ?? coverage.underwritingBandsStatus,
         name: override?.name ?? coverage.name,
         brochureUrl: override?.brochureUrl ?? coverage.brochureUrl,
         categoryId: override?.categoryId ?? coverage.categoryId,

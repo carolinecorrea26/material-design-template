@@ -1,3 +1,4 @@
+import type { FieldDefinition } from "../../domain/fields";
 import { Stack, Typography, type StackProps } from "@mui/material";
 import RateFrequencyToggle from "./RateFrequencyToggle";
 
@@ -8,6 +9,7 @@ type RateFrequencyControlProps = {
   onChange: (value: RateFrequency) => void;
   justifyContent?: StackProps["justifyContent"];
   ariaLabel?: string;
+  field?: FieldDefinition;
 };
 
 /** Labeled monthly/annual control shared by quote and cart cost summaries. */
@@ -15,6 +17,7 @@ export default function RateFrequencyControl({
   value,
   onChange,
   justifyContent = "center",
+  field,
   ariaLabel = "Toggle estimated cost between monthly and annual",
 }: RateFrequencyControlProps) {
   return (
@@ -29,19 +32,19 @@ export default function RateFrequencyControl({
         fontWeight={700}
         color={value === "monthly" ? "primary.main" : "text.secondary"}
       >
-        Monthly
+        {field?.options?.find(option => option.value === "monthly")?.label ?? "Monthly"}
       </Typography>
       <RateFrequencyToggle
         checked={value === "annual"}
         onChange={(event) => onChange(event.target.checked ? "annual" : "monthly")}
-        slotProps={{ input: { "aria-label": ariaLabel } }}
+        slotProps={{ input: { "aria-label": field?.label ?? ariaLabel } }}
       />
       <Typography
         variant="caption"
         fontWeight={700}
         color={value === "annual" ? "primary.main" : "text.secondary"}
       >
-        Annual
+        {field?.options?.find(option => option.value === "annual")?.label ?? "Annual"}
       </Typography>
     </Stack>
   );

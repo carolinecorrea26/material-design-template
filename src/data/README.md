@@ -1,3 +1,5 @@
+> Current Library organization and main Site identities are described in [Portal Library ownership and schema review](../../docs/portal-library-model-review.md). Main Sites use client names such as `asce` and `waepa`; earlier `*-default` and `waepa-standard` names below are historical aliases.
+
 # Canonical domain and rules architecture
 
 ## September 2026 architecture audit
@@ -266,22 +268,21 @@ If the active Association has no logo, the resolver safely retains the effective
 
 | Business concept | Current canonical/runtime source | Parallel or derived representation |
 | --- | --- | --- |
-| Clients and Sites | `registry.ts`; WAEPA authored in `waepa.ts` | Other clients adapt `config/clients/*.ts`; `clientGroups.ts` remains legacy |
+| Clients and Sites | Explicit entities in `registry.ts`; WAEPA authored in `waepa.ts` | Existing source-controlled client definitions supply Client defaults; the legacy aggregate map is not used for canonical identity or effective resolution |
 | Associations and Site relationships | `associations.ts` and registry relationship APIs | Membership field options are derived, not authored |
-| Active Association and branding | `associationSelection.ts`, `activeAssociation.ts`, `resolvers.ts`, existing application context | None for Association selection; legacy ClientConfig still supplies non-Association defaults |
+| Active Association and branding | `associationSelection.ts`, `activeAssociation.ts`, `resolvers.ts`, existing application context | None for Association selection |
 | Pages, groups, and progress | Existing `src/config` registries | Documentation resolvers add display metadata |
 | Fields | `fieldCatalog`, `pageFieldOrder`, `fieldOverrides.ts`, and `resolvedFieldRegistry.ts` | `ClientConfig.fields` remains an input-only adapter normalized at the registry boundary |
 | Rules/conditions | `content/docs/siteRules.ts`; `config/conditions` | applicable Rules and readable expressions are derived |
 | Coverage/config/flows | Existing normalized Phase 1 registries and resolvers | Several legacy/config documentation representations remain |
-| CMS and content | `SiteId`-keyed content overrides, CMS entries, and content builders | Legacy-client adapter retained only for design previews |
+| CMS and content | `SiteId`-keyed content overrides, CMS entries, and content builders | Asset-path aliases remain for old public client folders |
 | Email | `SiteId`-keyed preview generation and persistence | Legacy stored previews are upgraded through a compatibility adapter when read |
 
 ## Compatibility retained
 
-- `getActiveClient()` still returns the legacy effective `ClientConfig` for the active Site.
-- `resolveClientId()` still returns the Site's legacy runtime ID.
+- `getActiveClient()` remains as a compatibility projection for page components not yet split by configuration domain. Its value is now assembled from canonical Client defaults and Site overrides.
 - Runtime-generated links and developer tools emit `?site=`. `?client=` remains a supported read-only compatibility alias.
-- `legacyClientId`, the `waepagi` legacy ID, `clientGroups.ts`, and `ClientConfig` remain in place.
+- The `waepagi` inbound/asset alias and the `ClientConfig` authoring type remain while their remaining consumers are migrated. Canonical Site entities no longer store a legacy client identity.
 - WAEPA's special Membership behavior remains unchanged.
 - Association selection changes neither the active Client ID nor the active Site ID.
 
@@ -292,21 +293,39 @@ If the active Association has no logo, the resolver safely retains the effective
 3. `pageSections.ts` repeats field IDs for layout/applicant grouping; its subset relationship to
    `pageFieldOrder` is enforced, but merging those concepts would broaden the page-layout architecture.
 4. Configuration definitions, executable defaults/accessors, and flow diagrams remain separately authored. Rule prose is intentionally documentation, linked to executable conditions only where applicable.
-5. Single-site Clients other than WAEPA are still adapted from `src/config/clients`.
-6. `legacyClientId`, `clientGroups.ts`, and the `waepagi` compatibility ID remain until configuration consumers no longer require `ClientConfig`.
+5. Single-site Client defaults still use their source-controlled `src/config/clients` authoring definitions, but each Client and Site is explicitly registered and effective resolution no longer reads the legacy aggregate map.
+6. The persistence schema's `legacyClientId` column and the `waepagi` compatibility alias remain only for old records, inbound URLs, public asset folders, and page components still typed against `ClientConfig`.
 
 ## Phase 3 runtime migration
 
 Content overrides/builders, CMS inspection, email previews, resume links, prototype links, coverage-note
 overrides, membership overrides, cross-Site page discovery, and developer Site switching now use `SiteId`.
 Association-aware runtime copy and email payloads resolve the active canonical Association independently
-from Client and Site identity. Stored email previews written before this migration are mapped to a Site
-when read. Compatibility-only structures have not been removed while configuration consumers still need them.
+from Client and Site identity. Effective configuration is assembled from canonical Client defaults and Site
+overrides. Stored email previews written before this migration are mapped to a Site when read. Admin Center's
+Portal Library directly presents pages/fields, email, CMS content, themes/branding, and documents without
+navigation to the preserved legacy reference pages.
 
 ## Recommended next phase
 
-Move the remaining single-site clients into explicit Client defaults plus Site overrides, migrate page
-components from the effective `ClientConfig` adapter to domain-specific Site resolvers, and then retire
-`clientGroups.ts`, `clientGroupId`, `siteLabel`, the `waepagi`
-legacy ID, and `resolveClientId()` only after their final consumers have moved. Confirm provisional TPA
+Migrate the remaining page components from the effective `ClientConfig` compatibility projection to
+domain-specific Site resolvers, and then retire the `waepagi`
+legacy alias after its final inbound URL, persisted-record, and asset-path consumers have moved. Confirm provisional TPA
 records with an authoritative business source before grouping any Clients or adding TPA branding/support.
+
+## Client QuickDecision artwork
+
+`ClientBranding.icons.quickDecision` optionally supplies custom SVG artwork. WAEPA owns
+`/client/waepa/icons/quick-decision.svg`, shared by its standard and guaranteed-issue Sites.
+`QuickDecisionIcon` resolves this artwork across product indicators, explainers, navigation,
+and processing; other clients and missing assets use the standard lightning bolt. Embedded
+theme previews supply their own branding through `ClientIconContext`. The Branding & Design
+definitions table displays the effective asset. WAEPA standard membership lists New Member
+before Current Member; option values and conditional membership rules are unchanged.
+
+
+### Stored Pages contract (October 9, 2026)
+
+`pages.definition` owns each page's route, type and flow (`application`, `resume`, `advisor`, `internal`). `pages.position` owns global order; the relational `site_pages` assignment owns each Site's order and requirement. `resolvePageCatalog` supplies both Library rows and the installed prototype revision. Applicant routes, Next/Back, breadcrumbs, header/cart route lookup and preview links use that revision. Disabled definitions remain visible in the Library, while excluded assignments leave the active journey. Registered React renderers and internal authoring-tool routes remain code-owned.
+
+Authored defaults in `src/config/pageCatalog.ts` compile into seed records; they do not override an installed revision. Regenerate local exports with `npm run mock:seed` and restart the mock service. For PostgreSQL, apply `202610090001_page_catalog_contract.sql`; it adds stored flow identity and validates routes. It only corrects the legacy seed order when the existing order is untouched, preserving customized order and requirements. This migration does not rewrite immutable published release payloads or existing draft snapshots. Legacy snapshots without flow metadata require a migrated draft/new release before this runtime can consume them. The local service had no drafts or releases during this correction.

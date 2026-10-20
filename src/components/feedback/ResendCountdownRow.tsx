@@ -6,12 +6,14 @@ type ResendCountdownRowProps = {
   secondsLeft: number;
   kind: "link" | "code";
   onResend: () => void;
+  disabled?: boolean;
 };
 
 export default function ResendCountdownRow({
   secondsLeft,
   kind,
   onResend,
+  disabled = false,
 }: ResendCountdownRowProps) {
   const label = kind === "link" ? "Link" : "Code";
   return (
@@ -43,6 +45,7 @@ export default function ResendCountdownRow({
         size="small"
         startIcon={<RefreshRoundedIcon />}
         onClick={onResend}
+        disabled={disabled}
         sx={{ textTransform: "none", fontSize: "0.8125rem" }}
       >
         Resend {kind}

@@ -1,3 +1,6 @@
+import { getPrototypeLibrary } from "../domain/prototypeLibrary";
+import { getClientPageFields } from "../config/clientFields/getClientPageFields";
+import { childMapping } from "../config/fields/eligibilityListFields";
 import { useEffect, useMemo, useRef, useState } from "react";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
@@ -20,10 +23,8 @@ import FormRoutePage, {
 import FieldRenderer from "../components/forms/FieldRenderer";
 import DynamicList from "../components/forms/DynamicList";
 import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
-import MemberVerification, {
-  isTpaMemberMatch,
-} from "../components/ui/MemberVerification";
-import { fieldCatalog } from "../config/fields";
+import MemberVerification from "../components/ui/MemberVerification";
+import { lookupPrototypeTpa, resolveTpaOutcome, tpaOutcomeValues, type TpaResolution } from "../domain/tpaIntegration";
 import {
   deriveStateProvinceFromZipOrPostalCode,
   formatZipOrPostalCode,
@@ -31,22 +32,6 @@ import {
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { getActiveClient } from "../config/client/getActiveClient";
 import FieldGrid from "../components/layout/FieldGrid";
-
-const childMapping = {
-  fields: [
-    fieldCatalog["child-first-name"],
-    fieldCatalog["child-last-name"],
-    fieldCatalog["child-birth-date"],
-    fieldCatalog["child-gender"],
-  ],
-  fieldToKey: {
-    "child-first-name": "firstName",
-    "child-last-name": "lastName",
-    "child-birth-date": "birthDate",
-    "child-gender": "gender",
-  } as const,
-  gridFields: ["child-first-name", "child-last-name"],
-};
 
 export default function Eligibility() {
   const location = useLocation();
@@ -63,9 +48,9 @@ export default function Eligibility() {
   );
 
   const [memberVerificationOpen, setMemberVerificationOpen] = useState(false);
-  // Set to true once the modal has been completed; validate() checks this to
-  // allow the subsequent programmatic form submission through.
-  const tpaCompletedRef = useRef(false);
+  // Track the lookup inputs so changes require a fresh verification attempt.
+  const tpaCompletedRef = useRef<string | null>(null);
+  const tpaMemberRef = useRef<TpaResolution>({ existingMember: false, activeCoverage: false });
   // Ref to the hidden form submit button so we can trigger it after modal close.
   const formSubmitRef = useRef<HTMLButtonElement | null>(null);
 
@@ -75,8 +60,7 @@ export default function Eligibility() {
   }, [location.pathname, navigate, resumeLoadedFromRouteState]);
 
   function handleModalClose(verified: boolean) {
-    setPageValues({ "tpa-verified": verified });
-    tpaCompletedRef.current = true;
+    setPageValues(tpaOutcomeValues(tpaMemberRef.current, resolveTpaOutcome(client, tpaMemberRef.current, verified)));
     setMemberVerificationOpen(false);
     // Programmatically re-submit the form now that the modal is done.
     // validate() will pass this time because tpaCompletedRef.current is true.
@@ -90,11 +74,12 @@ export default function Eligibility() {
       <FormRoutePage
         pageId="eligibility"
         validate={(nextValues) => {
+          if (client.applicantExperience?.eligibleStatesOnly && !deriveStateProvinceFromZipOrPostalCode(String(nextValues["zip-postal-code"] ?? ""), getClientPageFields("eligibility").find(f => f.id === "state-province")?.options ?? [])) return "The state for this ZIP / Postal Code may not be eligible for coverage.";
           const dependents = Array.isArray(nextValues.dependents)
             ? nextValues.dependents
             : [];
 
-          if (dependents.includes("child")) {
+          if (dependents.includes("child") && client.applicantExperience?.childEligibility?.mode !== "notice-only") {
             const children = Array.isArray(nextValues.children)
               ? nextValues.children
               : [];
@@ -115,14 +100,18 @@ export default function Eligibility() {
             }
           }
 
-          // Open the TPA modal and block navigation until it's completed.
-          if (
-            isTpaMemberMatch(client.id, nextValues) &&
-            !tpaCompletedRef.current
-          ) {
+          const member = lookupPrototypeTpa(client, nextValues);
+          const outcome = resolveTpaOutcome(client, member);
+          const lookupKey = JSON.stringify([client.id, client.tpaIntegration, member,
+            (client.tpaIntegration?.lookupFields ?? ["first-name", "last-name", "birth-date", ...Object.keys(client.features?.memberVerificationMatchFacts ?? {})]).map(field => nextValues[field])]);
+          if (outcome.verifyIdentity && tpaCompletedRef.current !== lookupKey) {
+            tpaMemberRef.current = member;
+            tpaCompletedRef.current = lookupKey;
+            setPageValues(tpaOutcomeValues(member, resolveTpaOutcome(client, member, false)));
             setMemberVerificationOpen(true);
-            return "\u200b"; // zero-width space: truthy (blocks nav) but invisible
+            return "\u200b";
           }
+          if (!outcome.verifyIdentity) setPageValues(tpaOutcomeValues(member, outcome));
 
           return undefined;
         }}
@@ -170,31 +159,16 @@ function EligibilityFields({
   control,
   errors,
   watchedValues,
-  allFields: rawAllFields,
+  allFields,
   pageSections,
   setValue,
   trigger,
 }: FormRouteRenderProps) {
-  const { values: appValues } = useApplicationForm();
-  const client = getActiveClient();
+  const experience = getActiveClient().applicantExperience;
+  const collection = getPrototypeLibrary()?.fieldCollections.children;
   const [showAutoSetMessage, setShowAutoSetMessage] = useState(false);
   const showMessageFrameRef = useRef<number | null>(null);
   const hideMessageTimeoutRef = useRef<number | null>(null);
-
-  const allFields = useMemo(() => {
-    if (client.id === "ama" && appValues.membership === "spouse") {
-      return rawAllFields.map((field) => {
-        if (field.id === "dependents" && field.options) {
-          return {
-            ...field,
-            options: field.options.filter((opt) => opt.value !== "spouse"),
-          };
-        }
-        return field;
-      });
-    }
-    return rawAllFields;
-  }, [rawAllFields, client.id, appValues.membership]);
 
   useEffect(() => {
     return () => {
@@ -228,7 +202,10 @@ function EligibilityFields({
       stateProvinceOptions,
     );
 
-    if (!derivedStateProvinceValue) return;
+    if (!derivedStateProvinceValue) {
+      if (experience?.eligibleStatesOnly && stateProvinceValue) setValue("state-province", "", { shouldDirty: true, shouldValidate: true });
+      return;
+    }
     if (derivedStateProvinceValue === stateProvinceValue) return;
 
     setValue("state-province", derivedStateProvinceValue, {
@@ -251,7 +228,7 @@ function EligibilityFields({
     hideMessageTimeoutRef.current = window.setTimeout(() => {
       setShowAutoSetMessage(false);
     }, 4000);
-  }, [zipPostalCodeValue, stateProvinceOptions, stateProvinceValue, setValue]);
+  }, [zipPostalCodeValue, stateProvinceOptions, stateProvinceValue, setValue, experience]);
 
   return (
     <>
@@ -259,16 +236,21 @@ function EligibilityFields({
         if (!isSectionVisible(section, watchedValues)) return null;
 
         const content =
-          section.id === "childSection" ? (
+          section.id === "childSection" && experience?.childEligibility?.mode === "notice-only" ? <Alert severity="info">{experience.childEligibility.note}</Alert> : section.id === "childSection" ? (
             <>
               <Alert severity="info" sx={{ mt: 1, mb: 2 }}>
                 Only unmarried children are eligible for coverage.
               </Alert>
               <DynamicList
                 control={control}
-                name="children"
-                label="Child"
-                mapping={childMapping}
+                name={collection?.name ?? "children"}
+                label={collection?.label ?? "Child"}
+                maxItems={collection?.maxItems ?? 10}
+                mapping={collection?.mapping ?? {
+                  ...childMapping,
+                  fields: [...childMapping.fields, ...allFields.filter(field => field.id === "child-unmarried" || field.id === "child-full-time-student")],
+                  fieldToKey: { ...childMapping.fieldToKey, "child-unmarried": "unmarried", "child-full-time-student": "fullTimeStudent" },
+                }}
                 renderItem={(item) => (
                   <Typography variant="body2">
                     {`${item.firstName} ${item.lastName}`.trim().toUpperCase()}
@@ -430,7 +412,7 @@ function EligibilityFields({
                       <FieldRenderer
                         field={field}
                         control={control}
-                        errors={errors}
+                        errors={!stateProvinceOptions.some(o => o.value === deriveStateProvinceFromZipOrPostalCode(zipPostalCodeValue, stateProvinceOptions)) && zipPostalCodeValue.trim().length >= 5 && experience?.eligibleStatesOnly ? { ...errors, "state-province": { type: "eligibility", message: "The state for this ZIP / Postal Code may not be eligible for coverage." } } as typeof errors : errors}
                       />
                       <Collapse
                         in={showAutoSetMessage}

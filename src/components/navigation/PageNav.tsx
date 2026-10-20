@@ -28,6 +28,7 @@ export default function PageNav({
   return (
     <Box sx={{ mt: "2rem", mb: "1rem" }}>
       <Button
+        data-analytics-navigation="next"
         type="submit"
         form={formId}
         variant="contained"

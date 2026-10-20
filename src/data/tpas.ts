@@ -13,8 +13,8 @@ export function compatibilityTpaId(clientId: string): TpaId {
 
 export function toCompatibilityTpa(config: ClientConfig): Tpa {
   return {
-    id: compatibilityTpaId(config.clientGroupId ?? config.id),
-    name: `Compatibility TPA for ${config.clientGroupId ?? config.id}`,
+    id: compatibilityTpaId(config.id),
+    name: `Compatibility TPA for ${config.id}`,
     provisional: true,
   };
 }

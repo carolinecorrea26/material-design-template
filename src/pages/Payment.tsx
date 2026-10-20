@@ -1,7 +1,22 @@
+import { getSurfaceField, getSurfaceFields, paymentControlField } from "../config/fields/storedSurfaces";
+import SharedPaymentControls from "../components/forms/SharedPaymentControls";
+import { sharedPaymentState, SHARED_METHOD_FIELD, SHARED_FREQUENCY_FIELD } from "../domain/sharedPaymentChoices";
+import EstimatedRate from "../components/ui/EstimatedRate";
+import TotalCostSummary from "../components/ui/TotalCostSummary";
+import ReferenceRateTableLink from "../components/ui/ReferenceRateTableLink";
+import { resolveRatePresentation } from "../domain/ratePresentation";
+import { mockRequest, type MockPayment, type MockQuote } from "../mock/client";
+import { validateApplicationCoverages } from "../domain/coverageRuntime";
+import { useApplicationForm } from "../app/ApplicationFormContext";
+import { usePrototypeRates } from "../app/usePrototypeRates";
+import type { CoverageApplicantId } from "../domain/coverage";
+import { getPrototypeLibrary } from "../domain/prototypeLibrary";
+import { resolveCoverageJourneyPolicy } from "../domain/coverageJourneyPolicy";
+import { paymentSelectionAllowed } from "../domain/paymentPolicy";
+import { paymentMethodOptions, paymentFrequencyOptions, PAYMENT_INFO_OPT_IN_FIELD_ID } from "../config/fields/paymentFields";
 import { useState } from "react";
-import { Alert, Box, Divider, Stack, Typography } from "@mui/material";
+import { Alert, Box, Button, Divider, Stack, Typography } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { formatUSD as formatCurrency } from "../utils/formatUSD";
 import ProductCard from "../components/layout/ProductCard";
 import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
 import FormRoutePage from "../app/RoutePage";
@@ -15,8 +30,7 @@ import { groupCoveragesByCategory } from "../utils/groupCoveragesByCategory";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getClientPageRequirement } from "../config/client/getClientPageRequirement";
-import { fieldCatalog } from "../config/fields";
-import type { FieldDefinition, FieldId } from "../config/fields/types";
+import type { FieldDefinition } from "../config/fields/types";
 import { paymentHandlingHelpItem } from "../content/helpContent";
 import FormHelpChips from "../components/content/HelpChips";
 import AppDrawer from "../components/layout/AppDrawer";
@@ -30,39 +44,6 @@ type AppliedProduct = {
     applicant: string;
     amount: number;
   }>;
-};
-
-const paymentMethodOptions = [
-  { value: "bill-me", label: "Bill me" },
-  { value: "bank-account", label: "Bank account" },
-] as const;
-
-const paymentFrequencyOptions = [
-  { value: "monthly", label: "Monthly", multiplier: 1 },
-  { value: "quarterly", label: "Quarterly", multiplier: 3 },
-  { value: "semiannually", label: "Semiannually", multiplier: 6 },
-  { value: "annually", label: "Annually", multiplier: 12 },
-] as const;
-
-const BANK_FIELD_IDS: FieldId[] = [
-  "bank-name-on-account",
-  "bank-institution",
-  "bank-routing-number",
-  "bank-account-number",
-  "bank-authorization",
-];
-
-const PAYMENT_INFO_OPT_IN_FIELD_ID = "payment-information-opt-in";
-
-const paymentInfoOptInField: FieldDefinition = {
-  id: PAYMENT_INFO_OPT_IN_FIELD_ID,
-  label: "Do you want to add payment information?",
-  inputType: "radio",
-  required: true,
-  options: [
-    { value: "yes", label: "Yes" },
-    { value: "no", label: "No" },
-  ],
 };
 
 function shouldShowPaymentQuestions(
@@ -97,7 +78,12 @@ function getPaymentPageError(
     return undefined;
   }
 
+  const sharing = getSharedPaymentState(values);
+  if (sharing.shareMethod && (!sharing.method || appliedProducts.some(product => prototypePaymentMethods(product.coverageId).length > 0 && values[`payment-method:${product.coverageId}`] !== sharing.method))) return "Choose a payment method available for all products.";
+  if (sharing.shareFrequency && (!sharing.frequency || appliedProducts.some(product => prototypePaymentMethods(product.coverageId).length > 0 && values[`payment-frequency:${product.coverageId}`] !== sharing.frequency))) return "Choose a payment frequency available for all products.";
+
   const hasMissingPaymentInfo = appliedProducts.some((product) => {
+    if (!prototypePaymentMethods(product.coverageId).length) return false;
     const paymentMethod = values[`payment-method:${product.coverageId}`];
     const paymentFrequency = values[`payment-frequency:${product.coverageId}`];
 
@@ -250,7 +236,7 @@ function getPaymentDevFields(
   const fields: FieldDefinition[] = [];
 
   if (pageRequirement === "optional") {
-    fields.push(paymentInfoOptInField);
+    fields.push(getSurfaceField("paymentControls", PAYMENT_INFO_OPT_IN_FIELD_ID)!);
   }
 
   if (!shouldShowPaymentQuestions(pageRequirement, values)) {
@@ -264,48 +250,61 @@ function getPaymentDevFields(
     return values[fieldId] === "bank-account";
   });
 
+  const sharing = getSharedPaymentState(values);
+  const add = (field: FieldDefinition | undefined) => { if (field) fields.push(field); };
+  if (sharing.shareMethod) add(paymentControlField("payment-shared-method", SHARED_METHOD_FIELD, sharing.methodOptions));
+  if (sharing.shareFrequency) add(paymentControlField("payment-shared-frequency", SHARED_FREQUENCY_FIELD, sharing.frequencyOptions));
   for (const product of appliedProducts) {
-    fields.push({
-      id: `payment-method:${product.coverageId}`,
-      label: "Payment Method",
-      inputType: "radio",
-      options: paymentMethodOptions.map((option) => ({
-        value: option.value,
-        label: option.label,
-      })),
-    });
-
-    fields.push({
-      id: `payment-frequency:${product.coverageId}`,
-      label: "Payment Frequency",
-      inputType: "dropdown",
-      options: paymentFrequencyOptions.map((option) => ({
-        value: option.value,
-        label: option.label,
-      })),
-    });
+    if (!sharing.shareMethod) add(paymentControlField("payment-method", `payment-method:${product.coverageId}`, prototypePaymentMethods(product.coverageId)));
+    if (!sharing.shareFrequency) add(paymentControlField("payment-frequency", `payment-frequency:${product.coverageId}`, prototypePaymentFrequencies(product.coverageId, values[`payment-method:${product.coverageId}`])));
   }
-
-  if (hasAnyBankAccountSelected) {
-    fields.push(...BANK_FIELD_IDS.map((fieldId) => fieldCatalog[fieldId]));
-  }
+  if (hasAnyBankAccountSelected) fields.push(...getSurfaceFields("paymentBank"));
 
   return fields;
 }
 
 export default function Payment() {
+  const { setPageValues, requiresRevalidation } = useApplicationForm();
   const pageRequirement = getClientPageRequirement("payment");
   const helpItems = [paymentHandlingHelpItem];
   const [activeHelpId, setActiveHelpId] = useState<string | null>(null);
   const activeHelpItem =
     helpItems.find((item) => item.id === activeHelpId) ?? null;
 
+  const [mockError, setMockError] = useState("");
+  const [mockBusy, setMockBusy] = useState(false);
+  const [authorization, setAuthorization] = useState<{ input: string; paymentIds: string[]; status: string } | null>(null);
+  const entriesFor = (values: Record<string, unknown>) => getAppliedProducts(values).flatMap(p => p.applicants.map(a => ({ productKey: p.coverageId, applicant: a.applicant, amount: a.amount })));
+  const inputFor = (values: Record<string, unknown>) => JSON.stringify({ entries: entriesFor(values), choices: getAppliedProducts(values).map(p => [values[`payment-method:${p.coverageId}`], values[`payment-frequency:${p.coverageId}`]]) });
+  const authorize = async (values: Record<string, unknown>, paymentToken: string) => {
+    const validation = getPaymentPageError(pageRequirement, values) ?? prototypePaymentError(values) ?? validateApplicationCoverages(getActiveClientCoverages(), values);
+    if (validation) { setMockError(validation); return; }
+    setMockBusy(true); setMockError(""); setAuthorization(null);
+    try {
+      const payments: MockPayment[] = [];
+      for (const entry of entriesFor(values)) {
+        const quote = await mockRequest<MockQuote>("/rates/quote", { siteKey: getPrototypeLibrary()!.site.siteKey, revision: getPrototypeLibrary()!.revision, productKey: entry.productKey, dimensions: { applicant: entry.applicant }, amount: entry.amount, paymentMethod: values[`payment-method:${entry.productKey}`], frequency: ({ annually: "annual", semiannually: "semiannual" } as Record<string, string>)[String(values[`payment-frequency:${entry.productKey}`])] ?? values[`payment-frequency:${entry.productKey}`] });
+        payments.push(await mockRequest<MockPayment>("/payments/authorize", { quoteId: quote.quoteId, paymentToken, idempotencyKey: crypto.randomUUID() }));
+      }
+      setAuthorization({ input: inputFor(values), paymentIds: payments.map(p => p.paymentId), status: payments.every(p => p.status === "authorized") ? "authorized" : "declined" });
+    } catch (error) { setMockError(error instanceof Error ? error.message : "Payment authorization failed"); }
+    finally { setMockBusy(false); }
+  };
   return (
     <FormRoutePage
       pageId="payment"
+      onBeforeNext={({ values, continueNavigation }) => {
+        if (!import.meta.env.VITE_MOCK_PLATFORM_ENABLED) return true;
+        if (requiresRevalidation) { setMockError('Complete Coverage or Review against the current Library before submitting.'); return false; }
+        if (!authorization || authorization.status !== "authorized" || authorization.input !== inputFor(values)) { setMockError("Authorize payment for your current selections before submitting."); return false; }
+        setMockBusy(true);
+        void mockRequest<{ submissionId: string }>("/applications/submit", { siteKey: getPrototypeLibrary()!.site.siteKey, revision: getPrototypeLibrary()!.revision, entries: entriesFor(values), paymentIds: authorization.paymentIds, idempotencyKey: authorization.paymentIds[0] }).then(result => { setPageValues({ "mock-submission-id": result.submissionId }); continueNavigation(); }).catch(error => setMockError(error.message)).finally(() => setMockBusy(false));
+        return false;
+      }}
+      disableNextButton={mockBusy}
       devFillFields={(values) => getPaymentDevFields(values, pageRequirement)}
       validate={(values) =>
-        getPaymentPageError(pageRequirement, values as Record<string, unknown>)
+        getPaymentPageError(pageRequirement, values as Record<string, unknown>) ?? prototypePaymentError(values)
       }
       help={
         <>
@@ -320,7 +319,7 @@ export default function Payment() {
         </>
       }
     >
-      {({ control, errors, watchedValues }) => {
+      {({ control, errors, watchedValues, setValue }) => {
         const values = watchedValues as Record<string, unknown>;
         const categorySectionLabelOverrides =
           getActiveClient().coverages.categorySectionLabels;
@@ -329,6 +328,7 @@ export default function Payment() {
           values,
         );
         const appliedProducts = getAppliedProducts(values);
+        const sharing = getSharedPaymentState(values);
 
         const groupedCategories = groupCoveragesByCategory(appliedProducts);
 
@@ -339,9 +339,14 @@ export default function Payment() {
 
         return (
           <Stack spacing={2}>
-            {pageRequirement === "optional" && (
+            {import.meta.env.VITE_MOCK_PLATFORM_ENABLED && <Stack spacing={1}>
+              <Stack direction="row" spacing={1}><Button disabled={mockBusy} onClick={() => void authorize(values, "mock-approved")}>Authorize payment</Button><Button disabled={mockBusy} onClick={() => void authorize(values, "mock-declined")}>Try declined payment</Button></Stack>
+              {authorization && <Alert severity={authorization.status === "authorized" ? "success" : "warning"}>Payment: {authorization.status}. {authorization.input !== inputFor(values) ? "Elections changed; authorize again." : ""}</Alert>}
+              {mockError && <Alert severity="error">{mockError}</Alert>}
+            </Stack>}
+            {pageRequirement === "optional" && getSurfaceField("paymentControls", PAYMENT_INFO_OPT_IN_FIELD_ID) && (
               <FieldRenderer
-                field={paymentInfoOptInField}
+                field={getSurfaceField("paymentControls", PAYMENT_INFO_OPT_IN_FIELD_ID)!}
                 control={control}
                 errors={errors}
               />
@@ -368,6 +373,8 @@ export default function Payment() {
                     during the application process.
                   </Typography>
                 </Alert>
+
+                {appliedProducts.length > 0 && (sharing.shareMethod || sharing.shareFrequency) && <SharedPaymentControls state={sharing} control={control} errors={errors} setValue={setValue} />}
 
                 {groupedCategories.length === 0 ? (
                   <Alert severity="info">
@@ -430,40 +437,10 @@ export default function Payment() {
                                     {product.coverageName}
                                   </Typography>
 
-                                  <FieldRenderer
-                                    field={{
-                                      id: paymentMethodFieldId,
-                                      label: "Payment Method",
-                                      inputType: "radio",
-                                      options: paymentMethodOptions.map(
-                                        (option) => ({
-                                          value: option.value,
-                                          label: option.label,
-                                        }),
-                                      ),
-                                    }}
-                                    control={control}
-                                    errors={errors}
-                                  />
+                                  {!sharing.shareMethod && paymentControlField("payment-method", paymentMethodFieldId, prototypePaymentMethods(product.coverageId)) && <FieldRenderer field={paymentControlField("payment-method", paymentMethodFieldId, prototypePaymentMethods(product.coverageId))!} control={control} errors={errors} />}
+                                  {!sharing.shareFrequency && sharing.updates[paymentFrequencyFieldId] === undefined && paymentControlField("payment-frequency", paymentFrequencyFieldId, prototypePaymentFrequencies(product.coverageId, selectedPaymentMethod)) && <FieldRenderer field={{ ...paymentControlField("payment-frequency", paymentFrequencyFieldId, prototypePaymentFrequencies(product.coverageId, selectedPaymentMethod))!, disabled: !selectedPaymentMethod }} control={control} errors={errors} />}
 
-                                  <FieldRenderer
-                                    field={{
-                                      id: paymentFrequencyFieldId,
-                                      label: "Payment Frequency",
-                                      inputType: "dropdown",
-                                      placeholder: "Select frequency",
-                                      disabled: !selectedPaymentMethod,
-                                      options: paymentFrequencyOptions.map(
-                                        (option) => ({
-                                          value: option.value,
-                                          label: option.label,
-                                        }),
-                                      ),
-                                    }}
-                                    control={control}
-                                    errors={errors}
-                                  />
-
+                                  {getPrototypeLibrary() ? <PrototypePaymentCosts product={product} values={values} /> : (
                                   <Box
                                     sx={{
                                       mt: 0.5,
@@ -500,16 +477,7 @@ export default function Payment() {
                                                 entry.applicant,
                                               )}
                                             </Typography>
-                                            <Typography
-                                              variant="subtitle2"
-                                              fontWeight={700}
-                                              sx={{ whiteSpace: "nowrap" }}
-                                            >
-                                              {formatCurrency(
-                                                entry.monthlyPremium *
-                                                  frequencyMultiplier,
-                                              )}
-                                            </Typography>
+                                            <EstimatedRate amount={entry.monthlyPremium * frequencyMultiplier} variant="subtitle2" fontWeight={700} />
                                           </Stack>
                                         ))}
 
@@ -533,22 +501,12 @@ export default function Payment() {
                                               : `Estimated ${frequencyLabel.toLowerCase()} cost`}
                                             <sup>1</sup>
                                           </Typography>
-                                          <Typography
-                                            component="span"
-                                            variant="subtitle2"
-                                            fontWeight={700}
-                                            sx={{
-                                              color: "primary.main",
-                                              whiteSpace: "nowrap",
-                                              fontSize: "1.25rem",
-                                            }}
-                                          >
-                                            {formatCurrency(totalForFrequency)}
-                                          </Typography>
+                                          <EstimatedRate amount={totalForFrequency} variant="subtitle2" sx={{ fontWeight: 700, color: "primary.main", fontSize: "1.25rem" }} />
                                         </Stack>
                                       </Box>
                                     </Stack>
                                   </Box>
+                                  )}
                                 </Stack>
                               </ProductCard>
                             );
@@ -566,10 +524,10 @@ export default function Payment() {
                       variant="subsection"
                     />
 
-                    {BANK_FIELD_IDS.map((fieldId) => (
+                    {getSurfaceFields("paymentBank").map((field) => (
                       <FieldRenderer
-                        key={fieldId}
-                        field={fieldCatalog[fieldId]}
+                        key={field.id}
+                        field={field}
                         control={control}
                         errors={errors}
                       />
@@ -588,10 +546,7 @@ export default function Payment() {
                     <Box component="sup" sx={{ fontSize: "0.8em", mr: 0.5 }}>
                       1
                     </Box>
-                    Quoted cost is the best rate available based on the
-                    information you provided. Final cost may be based upon
-                    factors such as gender, health status, and use of
-                    tobacco/nicotine. Rates current as of 2026.
+                    Quoted cost is the best rate available based on the information you provided. Final cost may be based upon factors such as gender, health status, and use of tobacco/nicotine. Rates current as of 2026.
                   </Typography>
                 </Box>
               </>
@@ -601,4 +556,58 @@ export default function Payment() {
       }}
     </FormRoutePage>
   );
+}
+
+function prototypePaymentError(values: Record<string, unknown>): string | undefined {
+  const library = getPrototypeLibrary();
+  if (!library || !shouldShowPaymentQuestions(getClientPageRequirement('payment'), values)) return;
+  for (const product of getAppliedProducts(values)) {
+    const policy = resolveCoverageJourneyPolicy(library.site, product.coverageId)?.payment;
+    if (!policy || policy.collection === 'none') continue;
+    const method = values[`payment-method:${product.coverageId}`];
+    const raw = String(values[`payment-frequency:${product.coverageId}`] ?? '');
+    const frequency = ({ annually: 'annual', semiannually: 'semiannual' } as Record<string, string>)[raw] ?? raw;
+    const methodField = paymentControlField('payment-method', `payment-method:${product.coverageId}`, prototypePaymentMethods(product.coverageId));
+    const frequencyField = paymentControlField('payment-frequency', `payment-frequency:${product.coverageId}`, prototypePaymentFrequencies(product.coverageId, method));
+    if (!methodField?.options?.some(option => option.value === method) || !frequencyField?.options?.some(option => option.value === raw)) return 'Choose an available payment method and frequency.';
+    if (!paymentSelectionAllowed(policy, method as 'bank-account', frequency as 'monthly')) return 'Choose a payment method and frequency available in the Library.';
+  }
+}
+
+function prototypePaymentMethods(productKey: string) {
+  const library = getPrototypeLibrary();
+  if (!library) return paymentMethodOptions;
+  return resolveCoverageJourneyPolicy(library.site, productKey)?.payment.methods.map(option => ({ value: option.method, label: ({ 'bank-account': 'Bank account', 'credit-card': 'Credit card', 'bill-me': 'Bill me' })[option.method] })) ?? [];
+}
+function prototypePaymentFrequencies(productKey: string, method: unknown) {
+  const library = getPrototypeLibrary();
+  if (!library) return paymentFrequencyOptions;
+  const policy = resolveCoverageJourneyPolicy(library.site, productKey)?.payment;
+  const selected = policy?.methods.find(option => option.method === method) ?? policy?.methods.find(option => option.method === policy.defaultMethod);
+  return (selected?.frequencies ?? []).map(frequency => ({ value: frequency === 'annual' ? 'annually' : frequency === 'semiannual' ? 'semiannually' : frequency, label: frequency === 'annual' ? 'Annually' : frequency === 'semiannual' ? 'Semiannually' : frequency[0].toUpperCase() + frequency.slice(1) }));
+}
+
+function PrototypePaymentCosts({ product, values }: { product: AppliedProduct; values: Record<string, unknown> }) {
+  const rates = usePrototypeRates(product.applicants.map(a => ({ productKey: product.coverageId, applicant: a.applicant as CoverageApplicantId, amount: a.amount })), values, "monthly", "coverage");
+  const library = getPrototypeLibrary();
+  const table = library ? resolveRatePresentation(library.site, product.coverageId).referenceTable : null;
+  const prices = product.applicants.map(a => ({ label: getApplicantLabel(a.applicant), amount: rates.premium(`${product.coverageId}:${a.applicant}`) }));
+  const total = prices.reduce((sum, p) => sum + p.amount, 0);
+  const frequency = getFrequencyLabel(String(values[`payment-frequency:${product.coverageId}`] ?? "monthly"));
+  if (table) return <ReferenceRateTableLink table={table} />;
+  return <TotalCostSummary title={`Estimated ${frequency.toLowerCase()} cost`} items={prices.map((price, index) => ({ id: `${product.coverageId}:${product.applicants[index].applicant}`, name: price.label, amount: price.amount }))} total={total} totalSuffix="" />;
+}
+
+function getSharedPaymentState(values: Record<string, unknown>) {
+  const settings = getActiveClient().applicantExperience?.payment;
+  const library = getPrototypeLibrary();
+  const products = getAppliedProducts(values).filter(product => !library || resolveCoverageJourneyPolicy(library.site, product.coverageId)?.payment.collection !== 'none').map(product => {
+    const productMethods = paymentControlField("payment-method", `payment-method:${product.coverageId}`, prototypePaymentMethods(product.coverageId))?.options ?? [];
+    const methods = settings?.allowSharedMethod ? paymentControlField('payment-shared-method', SHARED_METHOD_FIELD, productMethods)?.options ?? [] : productMethods;
+    return { productKey: product.coverageId, methods, frequenciesByMethod: Object.fromEntries(methods.map(method => {
+      const productFrequencies = paymentControlField("payment-frequency", `payment-frequency:${product.coverageId}`, prototypePaymentFrequencies(product.coverageId, method.value))?.options ?? [];
+      return [method.value, settings?.allowSharedFrequency ? paymentControlField('payment-shared-frequency', SHARED_FREQUENCY_FIELD, productFrequencies)?.options ?? [] : productFrequencies];
+    })) };
+  });
+  return sharedPaymentState(products, values, settings);
 }

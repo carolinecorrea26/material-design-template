@@ -1,3 +1,13 @@
+import { orderCoveragePresentation } from "../../domain/coveragePresentation";
+import EstimatedRate from "../ui/EstimatedRate";
+import { useApplicationForm } from "../../app/ApplicationFormContext";
+import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
+import { resolveRatePresentation } from "../../domain/ratePresentation";
+import ReferenceRateTableLink from "../ui/ReferenceRateTableLink";
+import { getCoverageAmountChoices } from "../../utils/coverageAmounts";
+import { getRiderOnlyOptions, selectedRiderOnly } from "../../domain/coverageRiderOnly";
+import type { resolveApplicationCoverage } from "../../domain/coverageRuntime";
+import { residencyExclusionDiagnostic } from "../../domain/residencyPolicy";
 import {
   Alert,
   Box,
@@ -15,7 +25,6 @@ import {
   Typography,
 } from "@mui/material";
 import FeaturedBadge from "../ui/FeaturedBadge";
-import type { SvgIconComponent } from "@mui/icons-material";
 import CategoryCard from "../layout/CategoryCard";
 import CategoryHeader from "../layout/CategoryHeader";
 import { ApplicantSectionLabel } from "../layout/ApplicantSectionDivider";
@@ -140,6 +149,7 @@ const applicantCheckboxLabels: Record<CoverageApplicantId, string> =
   getContent().coverage.applicantCheckboxLabels;
 
 type ProductCatalogProps = {
+  getCoverageBehavior?: (product: ResolvedCoverage, applicant: CoverageApplicantId) => ReturnType<typeof resolveApplicationCoverage>;
   availableCategories: Array<{
     id: CoverageCategoryId;
     label: string;
@@ -171,7 +181,7 @@ type ProductCatalogProps = {
     coverageId: string,
     applicant: CoverageApplicantId,
   ) => void;
-  onAmountChange: (key: string, amount: number) => void;
+  onAmountChange: (key: string, amount: number, riderOnlyId?: string) => void;
   onFrequencyToggle: (freq: EstimatedRateFrequency) => void;
   onRiderToggle: (
     coverageId: string,
@@ -211,6 +221,7 @@ type ProductCatalogProps = {
 
 export default function ProductCatalog(props: ProductCatalogProps) {
   const {
+    getCoverageBehavior,
     availableCategories,
     selectedCategories,
     categoryProducts,
@@ -259,17 +270,8 @@ export default function ProductCatalog(props: ProductCatalogProps) {
       ? "If you're increasing your current coverage, enter the total amount of coverage you want, including the coverage you already have."
       : "If you already have coverage and want to increase it, apply for only the additional coverage amount you want.";
 
-  // Canonical display order for coverage sections
-  const categoryDisplayOrder: CoverageCategoryId[] = [
-    "LI",
-    "AD",
-    "DI",
-    "OO",
-    "SH",
-  ];
-  const orderedCategories = [...selectedCategories].sort(
-    (a, b) => categoryDisplayOrder.indexOf(a) - categoryDisplayOrder.indexOf(b),
-  );
+  const categoryDisplayOrder = orderCoveragePresentation(categoryProducts, client.coverages, new URLSearchParams(window.location.search).get("featured_prod")).categories;
+  const orderedCategories = [...selectedCategories].sort((a, b) => categoryDisplayOrder.indexOf(a) - categoryDisplayOrder.indexOf(b));
 
   if (selectedCategories.length === 0 || !showProducts) return null;
 
@@ -374,7 +376,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                         categoryId,
                         categorySectionLabelOverrides,
                       )}
-                      icon={CategoryIcon as SvgIconComponent}
+                      icon={category.icon}
                     >
                       {notes && (
                         <Alert severity="info">
@@ -420,6 +422,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
                           onMaxBenefitPeriodChange={onMaxBenefitPeriodChange}
                           getVisibleApplicants={getVisibleApplicants}
                           calcApplicantPremium={calcApplicantPremium}
+                          getCoverageBehavior={getCoverageBehavior}
                           generateAmountChoices={generateAmountChoices}
                         />
                       ))}
@@ -483,6 +486,7 @@ export default function ProductCatalog(props: ProductCatalogProps) {
 // ── Product Card ──────────────────────────────────────────────────────────────
 
 type ProductCardProps = {
+  getCoverageBehavior?: ProductCatalogProps["getCoverageBehavior"];
   coverage: ProductCatalogProps["categoryProducts"][number];
   productApplicants: Record<string, CoverageApplicantId[]>;
   storedAmounts: Record<string, number>;
@@ -504,7 +508,8 @@ type ProductCardProps = {
   generateAmountChoices: ProductCatalogProps["generateAmountChoices"];
 };
 
-function ProductCard({
+export function ProductCard({
+  getCoverageBehavior,
   coverage,
   productApplicants,
   storedAmounts,
@@ -525,6 +530,9 @@ function ProductCard({
   calcApplicantPremium,
   generateAmountChoices,
 }: ProductCardProps) {
+  const { values: applicationValues } = useApplicationForm();
+  const library = getPrototypeLibrary();
+  const ratePresentation = library ? resolveRatePresentation(library.site, coverage.id) : null;
   const client = getActiveClient();
   const breakdownConfig = client.coverages.productEstimatedCostBreakdown;
   const resolvedSectionTitles = getResolvedApplicantSectionTitles(
@@ -536,7 +544,7 @@ function ProductCard({
   );
   const currentApplicants = productApplicants[coverage.id] ?? [];
   const hasAnyApplicantSelected = currentApplicants.length > 0;
-  const amountLabel = getBenefitAmountLabel(coverage.categoryId);
+  const amountLabel = coverage.options.find(option => option.id === "amount")?.label ?? getBenefitAmountLabel(coverage.categoryId);
   const rateSuffix = rateFrequency === "annual" ? "/yr" : "/mo";
   const isMultiApplicant = visibleApplicants.length > 1;
 
@@ -562,6 +570,7 @@ function ProductCard({
   const policyFeeAmount = toMonthlyAmount(breakdownConfig?.policyFee?.amount);
   const shouldShowBreakdown =
     hasAnyApplicantSelected &&
+    !currentApplicants.some(applicant => selectedRiderOnly(coverage, applicant, applicationValues)) &&
     breakdownConfig?.enabled === true &&
     (premiumCost > 0 || riderItems.length > 0 || policyFeeAmount > 0);
 
@@ -592,7 +601,7 @@ function ProductCard({
             ) : (
               coverage.name
             )}
-            {coverage.underwritingType === "QD" && <QuickDecisionIndicator />}
+            {!coverage.underwritingBands?.length && coverage.underwritingType === "QD" && <QuickDecisionIndicator />}
           </Typography>
           {coverage.featured && <FeaturedBadge />}
         </Stack>
@@ -692,21 +701,25 @@ function ProductCard({
       {/* Per-applicant sections */}
       <Stack spacing={isMultiApplicant ? 3 : 2} sx={{ mt: 1 }}>
         {visibleApplicants.map((applicantId) => {
+          const behavior = getCoverageBehavior?.(coverage, applicantId);
           const isSelected = currentApplicants.includes(applicantId);
           const sectionId = coverageApplicantToSection[applicantId];
           const key = `${coverage.id}:${applicantId}`;
           const choices = generateAmountChoices(coverage, applicantId);
+          const standaloneOptions = getRiderOnlyOptions(coverage, applicantId);
+          const standalone = selectedRiderOnly(coverage, applicantId, applicationValues);
+          const isRiderOnly = !!standalone;
           const currentAmount = storedAmounts[key] ?? 0;
           const hasAmountSelection = storedAmounts[key] != null;
-          const selectValue = hasAmountSelection ? currentAmount : "";
+          const selectValue = standalone ? `rider-only:${standalone.id}` : hasAmountSelection && choices.includes(currentAmount) && (currentAmount !== 0 || !standaloneOptions.length) ? currentAmount : "";
           const isCalculatingRate = calculatingRateKeys.has(key);
           const premium = calcApplicantPremium(coverage, applicantId);
           const displayedPremium = getDisplayedPremium(premium, rateFrequency);
           const applicantNote = coverage.applicantNotes?.[applicantId];
-          const waitingPeriodOptions =
+          const waitingPeriodOptions = behavior?.waitingPeriod.options ??
             coverage.waitingPeriodOptionsByApplicant?.[applicantId] ??
             coverage.waitingPeriodOptions;
-          const maxBenefitPeriodOptions =
+          const maxBenefitPeriodOptions = behavior?.benefitPeriod.options ??
             coverage.maxBenefitPeriodOptionsByApplicant?.[applicantId] ??
             coverage.maxBenefitPeriodOptions;
           const applicantOptionKey = `${coverage.id}:${applicantId}`;
@@ -728,6 +741,10 @@ function ProductCard({
                 </Alert>
               )}
 
+              {behavior?.unresolvedRequirements.map(item => <Alert key={item.id} severity="warning" sx={{ mb: 1 }}>{item.description}</Alert>)}
+              {behavior?.messages.filter(message => message !== residencyExclusionDiagnostic).map(message => <Alert key={message} severity="warning" sx={{ mb: 1 }}>{message}</Alert>)}
+              {behavior?.underwriting.status === "unresolved" && <Alert severity="warning">Underwriting requirements for this selection are unresolved. Contact support before continuing.</Alert>}
+              {behavior?.underwriting.underwritingType && <Typography variant="body2">Underwriting: {behavior.underwriting.underwritingType}</Typography>}
               {/* Benefit amount & cost */}
               <Stack spacing={1.5} sx={{ mt: 1.5 }}>
                 <FormControl fullWidth margin="normal">
@@ -739,11 +756,18 @@ function ProductCard({
                     label={amountLabel}
                     value={selectValue}
                     displayEmpty={false}
-                    onChange={(e) =>
-                      onAmountChange(key, Number(e.target.value))
-                    }
+                    onChange={(e) => {
+                      const value = String(e.target.value);
+                      if (value.startsWith("rider-only:")) onAmountChange(key, 0, value.slice("rider-only:".length));
+                      else onAmountChange(key, Number(value));
+                    }}
                   >
-                    {choices.map((amt) => (
+                    {standaloneOptions.map(rider => (
+                      <MenuItem key={`rider-only:${rider.id}`} value={`rider-only:${rider.id}`}>
+                        $0 - Applying for {rider.name} only
+                      </MenuItem>
+                    ))}
+                    {choices.filter(amt => amt !== 0 || !standaloneOptions.length).map((amt) => (
                       <MenuItem key={amt} value={amt}>
                         {formatUSD(amt, 0)}
                       </MenuItem>
@@ -800,10 +824,10 @@ function ProductCard({
                 </SelectionGroup>
 
                 {/* Additional fields when applicant is selected */}
-                {isSelected && currentAmount > 0 && (
+                {((isSelected && currentAmount > 0) || isRiderOnly) && (
                   <>
                     {/* Waiting Period (DI and OO) */}
-                    {waitingPeriodOptions &&
+                    {waitingPeriodOptions && waitingPeriodOptions.length > 0 &&
                       (coverage.categoryId === "DI" ||
                         coverage.categoryId === "OO") && (
                         <FormControl fullWidth margin="normal">
@@ -813,7 +837,9 @@ function ProductCard({
                           <Select
                             labelId={`${coverage.id}-waiting-period-label`}
                             label="Waiting Period"
+                            disabled={isRiderOnly || !!behavior?.waitingPeriod.requiredValue}
                             value={
+                              behavior?.waitingPeriod.requiredValue ??
                               storedWaitingPeriods[applicantOptionKey] ??
                               storedWaitingPeriods[coverage.id] ??
                               waitingPeriodOptions[0].value
@@ -846,7 +872,7 @@ function ProductCard({
                     {/* Maximum Benefit Period (OO only) */}
                     {(coverage.categoryId === "OO" ||
                       coverage.categoryId === "DI") &&
-                      maxBenefitPeriodOptions && (
+                      maxBenefitPeriodOptions && maxBenefitPeriodOptions.length > 0 && (
                         <FormControl fullWidth margin="normal">
                           <InputLabel id={`${coverage.id}-max-benefit-period-label`}>
                             {coverage.categoryId === "DI"
@@ -854,6 +880,7 @@ function ProductCard({
                               : "Maximum Benefit Period"}
                           </InputLabel>
                           <Select
+                            disabled={isRiderOnly || !!behavior?.benefitPeriod.requiredValue}
                             labelId={`${coverage.id}-max-benefit-period-label`}
                             label={
                               coverage.categoryId === "DI"
@@ -861,6 +888,7 @@ function ProductCard({
                                 : "Maximum Benefit Period"
                             }
                             value={
+                              behavior?.benefitPeriod.requiredValue ??
                               storedMaxBenefitPeriods[applicantOptionKey] ??
                               storedMaxBenefitPeriods[coverage.id] ??
                               maxBenefitPeriodOptions[0].value
@@ -889,123 +917,118 @@ function ProductCard({
                           )}
                         </FormControl>
                       )}
-
-                    {/* Optional Benefit(s) — riders */}
-                    {coverage.riders && coverage.riders.length > 0 && (
-                      <Box>
-                        <Typography
-                          variant="body2"
-                          sx={{ fontWeight: 700, mb: 1 }}
-                        >
-                          Optional Benefit(s)
-                        </Typography>
-                        <Stack spacing={1}>
-                          {coverage.riders
-                            .filter(
-                              (rider) =>
-                                !rider.applicants ||
-                                rider.applicants.includes(applicantId),
-                            )
-                            .map((rider) => {
-                            const riderKey = `${coverage.id}:${rider.id}:${applicantId}`;
-                            const isChecked = !!storedRiders[riderKey];
-
-                            return (
-                              <Box key={rider.id}>
-                                <SelectionGroup>
-                                  <Checkbox
-                                    checked={isChecked}
-                                    onChange={() =>
-                                      onRiderToggle(
-                                        coverage.id,
-                                        rider.id,
-                                        applicantId,
-                                      )
-                                    }
-                                    inputProps={{
-                                      "aria-label": `${rider.name} selection`,
-                                    }}
-                                    size="small"
-                                    sx={{
-                                      p: 0,
-                                      pointerEvents: "none",
-                                      color: "text.primary",
-                                      "&.Mui-checked": {
-                                        color: "primary.main",
-                                      },
-                                    }}
-                                  />
-                                  <Stack
-                                    spacing={0.5}
-                                    sx={{ flex: 1, minWidth: 0 }}
-                                  >
-                                    <Typography
-                                      variant="body2"
-                                      sx={{ fontWeight: 700 }}
-                                    >
-                                      {rider.name}
-                                    </Typography>
-                                    <Typography
-                                      variant="body2"
-                                      color="text.secondary"
-                                    >
-                                      {rider.description}
-                                    </Typography>
-                                  </Stack>
-                                </SelectionGroup>
-
-                                {rider.hasAmount &&
-                                  isChecked &&
-                                  rider.coverageAmounts && (
-                                    <FormControl
-                                      margin="normal"
-                                      sx={{ ml: 4, minWidth: 250 }}
-                                    >
-                                      <InputLabel
-                                        id={`${riderKey}-amount-label`}
-                                      >
-                                        Rider Benefit Amount
-                                      </InputLabel>
-                                      <Select
-                                        labelId={`${riderKey}-amount-label`}
-                                        label="Rider Benefit Amount"
-                                        value={
-                                          storedRiderAmounts[riderKey] ?? 0
-                                        }
-                                        onChange={(e) =>
-                                          onRiderAmountChange(
-                                            coverage.id,
-                                            rider.id,
-                                            applicantId,
-                                            Number(e.target.value),
-                                          )
-                                        }
-                                      >
-                                        {generateAmountChoices(
-                                          {
-                                            ...coverage,
-                                            coverageAmounts: rider.coverageAmounts,
-                                          },
-                                          applicantId,
-                                        ).map((amt) => (
-                                          <MenuItem key={amt} value={amt}>
-                                            {formatUSD(amt, 0)}
-                                          </MenuItem>
-                                        ))}
-                                      </Select>
-                                    </FormControl>
-                                  )}
-                              </Box>
-                            );
-                          })}
-                        </Stack>
-                      </Box>
-                    )}
                   </>
                 )}
 
+                {/* Offered riders remain visible before Add coverage. */}
+                {coverage.riders && coverage.riders.length > 0 && (
+                  <Box>
+                    <Typography
+                      variant="body2"
+                      sx={{ fontWeight: 700, mb: 1 }}
+                    >
+                      Optional Benefit(s)
+                    </Typography>
+                    <Stack spacing={1}>
+                      {coverage.riders
+                        .filter(
+                          (rider) =>
+                            (!rider.applicants || rider.applicants.includes(applicantId)) && (!rider.dependentApplicant || Array.isArray(applicationValues.dependents) && applicationValues.dependents.includes(rider.dependentApplicant)),
+                        )
+                        .map((rider) => {
+                        const riderKey = `${coverage.id}:${rider.id}:${applicantId}`;
+                        const isChecked = !!storedRiders[riderKey];
+
+                        return (
+                          <Box key={rider.id} sx={rider.displayAsProduct ? { border: "1px solid", borderColor: "divider", borderRadius: 1, p: 2 } : undefined}>
+                            {rider.dependentApplicant && <ApplicantSectionLabel label={resolvedSectionTitles[coverageApplicantToSection[rider.dependentApplicant]]} sx={{ mb: 1 }} />}
+                            <SelectionGroup disabled={isRiderOnly || rider.included}>
+                              <Checkbox
+                                checked={isChecked}
+                                disabled={isRiderOnly || rider.included}
+                                onChange={() =>
+                                  onRiderToggle(
+                                    coverage.id,
+                                    rider.id,
+                                    applicantId,
+                                  )
+                                }
+                                inputProps={{
+                                  "aria-label": `${rider.name} selection`,
+                                }}
+                                size="small"
+                                sx={{
+                                  p: 0,
+                                  pointerEvents: "none",
+                                  color: "text.primary",
+                                  "&.Mui-checked": {
+                                    color: "primary.main",
+                                  },
+                                }}
+                              />
+                              <Stack
+                                spacing={0.5}
+                                sx={{ flex: 1, minWidth: 0 }}
+                              >
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontWeight: 700 }}
+                                >
+                                  {rider.name}
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  {rider.description}
+                                </Typography>
+                              </Stack>
+                            </SelectionGroup>
+
+                            {rider.hasAmount &&
+                              isChecked &&
+                              rider.coverageAmounts && (
+                                <FormControl
+                                  margin="normal"
+                                  sx={{ ml: 4, minWidth: 250 }}
+                                >
+                                  <InputLabel
+                                    id={`${riderKey}-amount-label`}
+                                  >
+                                    {rider.amountLabel ?? "Rider Benefit Amount"}
+                                  </InputLabel>
+                                  <Select
+                                    disabled={isRiderOnly && standalone?.id !== rider.id}
+                                    labelId={`${riderKey}-amount-label`}
+                                    label={rider.amountLabel ?? "Rider Benefit Amount"}
+                                    value={storedRiderAmounts[riderKey] ?? rider.defaultAmount ?? 0}
+                                    onChange={(e) =>
+                                      onRiderAmountChange(
+                                        coverage.id,
+                                        rider.id,
+                                        applicantId,
+                                        Number(e.target.value),
+                                      )
+                                    }
+                                  >
+                                    {[...(rider.included || rider.dependentApplicant || isRiderOnly ? [] : [0]), ...getCoverageAmountChoices({ coverageAmounts: rider.coverageAmounts }, applicantId)].map((amt) => (
+                                      <MenuItem key={amt} value={amt}>
+                                        {formatUSD(amt, 0)}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
+                              )}
+                            {rider.referenceRateTable && <ReferenceRateTableLink table={rider.referenceRateTable} />}
+                          </Box>
+                        );
+                      })}
+                    </Stack>
+                  </Box>
+                )}
+
                 {/* Message when amount is $0 */}
-                {isSelected && hasAmountSelection && currentAmount === 0 && (
+                {isSelected && hasAmountSelection && currentAmount === 0 && !isRiderOnly && (
                   <Alert severity="info" icon={false} sx={{ mt: 1 }}>
                     You have selected $0 for this coverage. This means you are
                     not applying for this product. Please ensure your selections
@@ -1022,7 +1045,7 @@ function ProductCard({
                     alignItems="center"
                     sx={{ minHeight: 21 }}
                   >
-                    {isCalculatingRate || frequencyCalculating ? (
+                    {ratePresentation?.referenceTable ? <ReferenceRateTableLink table={ratePresentation.referenceTable} /> : isCalculatingRate || frequencyCalculating ? (
                       <CircularProgress
                         size={16}
                         thickness={4}
@@ -1032,15 +1055,7 @@ function ProductCard({
                     ) : (
                       <Typography variant="body2" color="text.secondary">
                         Est. cost<sup>1</sup>:{" "}
-                        <Typography
-                          component="span"
-                          variant="subtitle2"
-                          fontWeight={700}
-                          sx={{ color: "primary.main", fontSize: "1.25rem" }}
-                        >
-                          {formatUSD(displayedPremium)}
-                          {rateSuffix}
-                        </Typography>
+                        <EstimatedRate amount={displayedPremium} suffix={rateSuffix} variant="body2" sx={{ color: "primary.main", fontWeight: 700, fontSize: "1.25rem" }} />
                       </Typography>
                     )}
                   </Stack>
@@ -1053,6 +1068,7 @@ function ProductCard({
 
       {shouldShowBreakdown && (
         <ProductCostBreakdown
+          helpPhone={client.support.helpPhone}
           premiumCost={premiumCost}
           riderItems={riderItems}
           policyFee={

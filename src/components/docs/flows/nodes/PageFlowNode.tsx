@@ -8,6 +8,7 @@ export default function PageFlowNode({ data }: FlowNodeComponentProps) {
 
   return (
     <FlowNodeShell
+      layoutHeight={data.layoutHeight as number | undefined}
       label={label}
       description={description}
       icon={<DescriptionRoundedIcon fontSize="small" />}

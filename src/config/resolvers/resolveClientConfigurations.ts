@@ -1,3 +1,6 @@
+import { getResolvedFieldResolutionsForSite } from "../fields/resolvedFieldRegistry";
+import { siteFieldOverrides } from "../fields/fieldOverrides";
+import { getSiteIdForClientAlias, siteEntities } from "../../data/registry";
 import type { ClientConfig } from "../clients/types";
 import {
   configurationsData,
@@ -21,8 +24,15 @@ export function classifyConfigurable(scope: ConfigurationScope): ConfigurableKin
  * ClientConfig value so Global and Client views describe the same choices.
  */
 const CONFIG_ACCESSORS: Partial<Record<string, (client: ClientConfig) => unknown>> = {
+  "ClientConfig.reviewPolicy": c => c.reviewPolicy,
+  "overrides[].rateInputs": c => Object.fromEntries(Object.entries(c.coverages.overrides ?? {}).flatMap(([id, product]) => product?.rateInputs ? [[id, product.rateInputs]] : [])),
+  "overrides[].requirements.exclusiveProducts": c => Object.fromEntries(Object.entries(c.coverages.overrides ?? {}).flatMap(([id, product]) => product?.requirements?.exclusiveProducts ? [[id, product.requirements.exclusiveProducts]] : [])),
   "ClientConfig.branding": (c) => c.branding,
+  "ClientConfig.branding.icons": (c) => c.branding.icons,
+  "ClientConfig.features.singlePageArtwork": (c) => c.features?.singlePageArtwork ?? "none",
+  "ClientConfig.features.applyingStepsPresentation": (c) => c.features?.applyingStepsPresentation,
   "ClientConfig.theme": (c) => c.theme,
+  "ClientConfig.tpaIntegration": (c) => c.tpaIntegration,
   "ClientConfig.applicantLabels": (c) => c.applicantLabels,
   "ClientConfig.support.phone / phoneDisplay / phoneHours": (c) => ({
     phone: c.support.phone,
@@ -70,7 +80,9 @@ const CONFIG_ACCESSORS: Partial<Record<string, (client: ClientConfig) => unknown
   "ClientConfig.coverageQuestions": (c) => c.coverageQuestions,
   "ClientConfig.coverages.hideSmokerQuestion": (c) => c.coverages.hideSmokerQuestion,
   "ClientConfig.fields[pageId].extra / hidden / required / overrides": (c) => c.fields,
-  "ClientConfig.fields.eligibility.extra": (c) => c.fields.eligibility?.extra,
+  "ClientConfig.fields.membership.extra": (c) => getResolvedFieldResolutionsForSite("membership", getSiteIdForClientAlias(c.id), {
+    sites: siteEntities, clientForSite: () => c, fieldOverrides: siteFieldOverrides,
+  }).filter(field => field.included && field.status === "client-specific").map(field => field.fieldId),
 };
 
 function isEmptyValue(value: unknown): boolean {
@@ -88,6 +100,9 @@ function isEmptyValue(value: unknown): boolean {
  * client that explicitly sets the default value "overridden".
  */
 export const CONFIG_DEFAULTS: Partial<Record<string, unknown>> = {
+  "ClientConfig.features.singlePageArtwork": "none",
+  "ClientConfig.features.applyingStepsPresentation": "image",
+  "ClientConfig.fields.membership.extra": [],
   "ClientConfig.theme": { type: "preset", preset: "default" },
   "ClientConfig.features.homePageVariant": "default",
   "ClientConfig.features.defaultTemplate": "multi",
