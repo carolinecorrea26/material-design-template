@@ -11,7 +11,6 @@ import { changeRequestService } from "../../services/changeRequestService";
 import { auditService } from "../../services/auditService";
 import { applicationService } from "../../services/applicationService";
 import { analyticsService } from "../../services/analyticsService";
-import { persistenceMode } from "../../persistence/client";
 import type { Site } from "../../persistence/types";
 import { useServiceData } from "../../hooks/useServiceData";
 import type { AdminCenterContext } from "../../components/admin/AdminCenterShell";
@@ -43,7 +42,7 @@ export default function AdminHome() {
   const maxApps = Math.max(...appMeasurements.map((row) => row.value), 1);
   const attention = [...changes.slice(0, 3).map((change) => ({ id: change.id, title: `${change.changeNumber} · ${change.title}`, meta: `${change.status} · ${change.ownerId ?? change.requestedBy}`, to: `/admin-center/changes/${change.changeNumber}`, status: change.status })), ...actionApps.filter((app) => app.currentActionOwnerType === "TPA" || app.currentActionOwnerType === "Advisor").slice(0, 2).map((app) => ({ id: app.id, title: `${app.applicationNumber} · ${app.productKey}`, meta: `Waiting for ${app.currentActionOwnerType}`, to: `/admin-center/applications/${app.applicationNumber}`, status: app.status }))];
 
-  return <Workspace><WorkspaceHeader title="Admin Center" description={`What needs attention across the portal for ${persona.label}. ${persistenceMode === "supabase" ? "Connected to Supabase." : "Using persistent local demo data."}`} />
+  return <Workspace><WorkspaceHeader title="Admin Center" description={`What needs attention across the portal for ${persona.label}. Using persistent local demo data.`} />
     {error && <Alert severity="error">{error.message}</Alert>}{loading && <Typography>Loading operational data…</Typography>}
     <Paper variant="outlined" sx={{ p: 2 }}><Stack direction={{ xs: "column", sm: "row" }} gap={1.5} alignItems={{ sm: "center" }}><Box sx={{ flex: 1 }}><Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 0.75 }}>Find a site</Typography><Autocomplete fullWidth options={data?.sites ?? []} value={selectedSite} onChange={(_, value) => setSelectedSite(value)} getOptionLabel={(site) => { const client = clientMap.get(site.clientId); const org = client && orgMap.get(client.organizationId); return `${site.name} · ${site.key} · ${client?.acronym ?? ""} · ${org?.name ?? ""}`; }} renderInput={(params) => <TextField {...params} size="small" placeholder="Search by site, key, client, or TPA" />} /></Box><Button variant="contained" disabled={!selectedSite} endIcon={<ArrowForwardRoundedIcon />} onClick={() => selectedSite && navigate(`/admin-center/library/pages?scope=effective&site=${selectedSite.key}`)} sx={{ mt: { sm: 3.4 } }}>Open site</Button></Stack></Paper>
 

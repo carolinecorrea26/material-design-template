@@ -9,7 +9,6 @@ import SearchField from "../../components/docs/SearchField";
 import { foundationRepositories } from "../../repositories/foundations";
 import { useServiceData } from "../../hooks/useServiceData";
 import { defaultMigrationSchedule, migrationScheduleService } from "../../services/migrationScheduleService";
-import { persistenceMode } from "../../persistence/client";
 import { migrationStages, migrationStatuses, type MigrationSchedule, type MigrationStatus } from "../../persistence/types";
 
 const load = async () => {
@@ -53,7 +52,7 @@ export default function MigrationScheduleWorkspace() {
   };
   return <Workspace>
     <WorkspaceHeader title="Migration schedule" description="Track client migration requirements, prototype progress, and Majesco environments with expected dates." />
-    <Typography variant="body2" color="text.secondary">{persistenceMode === "local" ? "Changes are saved in this browser’s local prototype data." : "Changes are saved to the connected portal database."} Statuses start as Not assessed and dates as TBD. Schedule statuses are planning records; acceptance and activation require their own verification.</Typography>
+    <Typography variant="body2" color="text.secondary">Changes are saved in this browser’s local prototype data. Statuses start as Not assessed and dates as TBD. Schedule statuses are planning records; acceptance and activation require their own verification.</Typography>
     {error && <Alert severity="error">{error.message}</Alert>}
     {saved && <Alert severity="success" onClose={() => setSaved("")}>{saved}</Alert>}
     <Stack direction={{ xs: "column", sm: "row" }} gap={2} alignItems={{ sm: "center" }}>

@@ -3,7 +3,7 @@ import type { RowPage, RowQuery } from "./query";
 import type { SnapshotReader } from "./snapshot";
 
 export interface PersistenceAdapter extends Partial<SnapshotReader> {
-  readonly kind: "local" | "supabase";
+  readonly kind: "local";
   list<T extends TableName>(table: T): Promise<RowFor<T>[]>;
   query?<T extends TableName>(table: T, query?: RowQuery<T>): Promise<RowPage<T>>;
   get<T extends TableName>(table: T, id: string): Promise<RowFor<T> | null>;

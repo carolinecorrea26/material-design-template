@@ -73,20 +73,20 @@ values. Input-type and keyboard names are generic display formatting.
 prototype and Library, including a rendered phone selector. `catalog:check`
 also rejects missing display names and defaults outside authored options.
 
-The SQL migrations and migration exports below are retained as historical review
-and test tools. `mock:seed` generates those fixtures; it does not overwrite the
-shared JSON catalog. The older database setup notes below describe those earlier
-paths rather than the active configuration source.
+The SQL migrations, Supabase adapter and Postgres verification scripts were archived
+in the `redesignv6` refactor and removed from the working tree. They remain in git at
+tag `archive/sql-postgres-v5`. Migration exports under `src/migration` remain only as
+historical fixtures until the requirements refactor replaces them; `mock:seed` generates
+those fixtures and does not overwrite the shared JSON catalog.
 
-Current architecture and schema completion review: [project structure and Library review](docs/project-review/README.md).
-It includes all 147 tables, current relationships, reference dispositions and a proposed cleanup sequence.
-The full completion gate remains open; this review does not apply migrations or change runtime behavior.
+Current architecture review: [project structure and Library review](docs/project-review/README.md).
+Its table counts, SQL dictionaries and relationship diagrams describe the archived schema.
 
 ## ASCE development/testing handoff
 
-Current local database setup, storage boundaries and repeatable verification are in
-[ASCE database setup](docs/asce-database-setup.md). `npm run db:verify-asce` checks
-the entire SQL migration chain with fresh/upgrade seeds and the focused ASCE runtime tests.
+Storage boundaries and verification: no database is used. Configuration comes from the
+JSON catalog; operational demo data stays in browser storage and `.mock-platform/`.
+`npm run test:asce` runs the focused ASCE runtime tests.
 
 Start with [ASCE handoff and startup](docs/asce-handoff.md),
 [acceptance and owners](docs/asce-handoff-acceptance.md),
@@ -116,13 +116,9 @@ activation readiness. The default local mock consumes the persisted Library;
 production activation and complete source acceptance remain gated.
 
 The current configuration source is the shared JSON catalog described above.
-Operational demo services retain local persistence. The Supabase adapter and SQL
-migrations remain available for historical verification; setting the old
-Supabase environment variables does not switch the running application away
-from the shared catalog.
+Operational demo services retain local persistence. No database is configured.
 
-For a local Supabase CLI project, `npm run db:reset` reapplies migrations and
-the repeatable seed. For the browser fallback, call `resetLocalDemoData()` from
+For the browser fallback, call `resetLocalDemoData()` from
 `src/persistence/reset.ts` in a developer console/tooling entry point. No reset
 control is exposed in normal user UI.
 
@@ -184,7 +180,7 @@ the [source/table inventory](docs/canonical-mcr-inventory.md) for retained sourc
 
 Phase 4C is closed successfully and Phase 5 repository access is implemented. `phase5Ready: true`, `phase6Ready: true`: the six [ASCE business decisions](docs/asce-business-decisions.md) now have approved canonical records and persisted approval evidence. This is readiness for a deliberate Phase 6 implementation, not runtime activation. Application and Library reads preserve existing compatibility behavior; Admin foundational reads use the existing persistence adapters. See [Phase 5 repository boundaries and validation](docs/phase5-repositories.md) and [Phase 4C curation](docs/phase4c-curated-boundary.md).
 
-Step 2 adds an opt-in shared read boundary and consistent normalized snapshots. See [the shared data and revision contract](docs/shared-data-revision-contract.md) for integration, SQL validation and remaining gates. The applicant runtime remains on its existing adapter.
+Step 2 adds an opt-in shared read boundary and consistent normalized snapshots. See [the shared data and revision contract](docs/shared-data-revision-contract.md) for integration and remaining gates (its SQL function was archived). The applicant runtime remains on its existing adapter.
 
 Before Step 3, the [legacy platform review and revised plan](docs/legacy-platform-migration-review.md) compares the supplied Site configuration reference against current template capabilities. Its [review register](docs/legacy-platform-review-register.json) preserves all 203 property-guide entries and scoped behavior evidence; recommendations remain pending, and the active Site scope is unchanged.
 
@@ -202,7 +198,7 @@ Portal Library uses one Effective Site scope selector, initially All. All browse
 synthetic PRASE/payment endpoints and Caroline's local password/TOTP/recovery
 setup with an authenticator QR code (`caroline@example.invalid`; no emails sent).
 See [Step 6 admin setup](docs/step6-admin-authentication.md) for sign-in and recovery. Mock mode uses local data
-and does not call a configured Supabase database. See
+and does not call any database. See
 [the continuation record](docs/migration-continuation-2026-10-02.md) for setup,
 implemented scope, validation and remaining publication/activation gates.
 
@@ -215,10 +211,10 @@ Prototype startup: `npm run dev` loads `public/catalog/portal.json` with the loc
 
 Site Builder now supports new/existing TPA and client selection, Site template selection, validated Library editing, full journey previews and revision-specific readiness review. Accepted snapshots stage in prototype UAT and can be scheduled into the next release, executed in Releases on the scheduled date, and rolled back to a previously launched prototype snapshot. Majesco implementation remains separately tracked in Migration schedule. Published-data activation remains gated. See [steps 4–5 workflow and acceptance](docs/step45-builder-publication.md).
 
-Pages database verification and explicit legacy snapshot conversion are documented in [the page catalog upgrade guide](docs/page-catalog-migration.md).
+Explicit legacy snapshot conversion is documented in [the page catalog upgrade guide](docs/page-catalog-migration.md); its PostgreSQL gate was archived.
 
 ## Portal Library requirements ownership
 
 Portal Library owns site requirements and design guidance; Storybook contains component examples. Rules & configuration groups Business rules, Products & riders, Configurations, URL parameters and Validations. Main Site keys use the client name (`asce`, `waepa`, etc.); distinct variants such as `waepa-gi` remain separate and old bookmarks are accepted.
 
-See [the ownership and schema review](docs/portal-library-model-review.md). Run `npm run library:audit` to regenerate the complete table contracts, SQL definitions, ownership and Storybook link inventory. ASCE information accuracy, applicant verification and the full PDF export are the subsequent phases.
+See [the ownership and schema review](docs/portal-library-model-review.md). ASCE information accuracy, applicant verification and the full PDF export are the subsequent phases.

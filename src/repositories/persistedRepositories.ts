@@ -2,9 +2,7 @@ import type { PersistenceAdapter } from "../persistence/adapter";
 import type { TableName } from "../persistence/types";
 import type { RowQuery } from "../persistence/query";
 
-/** Adapter-backed reads share the same contract for local storage and Supabase.
- * Failures propagate; a failed remote read never silently falls back to demo data.
- */
+/** Adapter-backed reads share one contract. Failures propagate; a failed read never silently falls back to demo data. */
 export function createReadRepository<T extends TableName>(adapter: PersistenceAdapter, table: T) {
   return {
     list: () => adapter.list(table),

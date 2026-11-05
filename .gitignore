@@ -37,3 +37,6 @@ migration-artifacts/
 
 # Server-only local mock credentials, TOTP secrets and recovery hashes
 .mock-platform/
+
+# Generated standalone Admin Center (npm run build:admin-html)
+/output/admin-center.html

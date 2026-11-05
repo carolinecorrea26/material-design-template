@@ -1,5 +1,4 @@
 import { beforeAll, expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
 import { createReviewedMigrationDatabase } from '../migration/fixtures';
 import { effectiveSiteSnapshotTables } from '../repositories/portalDataRepository';
 import { isLibraryDraft, type LibraryDraft } from './libraryDraft';
@@ -25,10 +24,6 @@ function legacy() {
   draft.mockTransport = { id: 'old-draft', version: 4, baseReleaseId: 'old-release' };
   return draft;
 }
-it('keeps the explicit converter aligned with the PostgreSQL legacy mapping', () => {
-  const sql = readFileSync('supabase/migrations/202610090001_page_catalog_contract.sql', 'utf8');
-  expect([...sql.matchAll(/\('([^']+)', (\d+), (\d+)\)/g)].map(([, key, old, next]) => [key, Number(old), Number(next)])).toEqual(legacyPagePositions);
-});
 it('converts a legacy snapshot into an executable detached draft without changing the original', () => {
   const source = legacy(), before = structuredClone(source);
   source.data.pages.find(page => page.key === 'review')!.definition.path = '/custom-review';

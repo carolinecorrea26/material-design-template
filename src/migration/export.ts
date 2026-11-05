@@ -1,5 +1,5 @@
 import type { DatabaseSchema } from "../persistence/types";
-import { tableNames } from "../persistence/supabaseAdapter";
+import { tableNames } from "../persistence/tableNames";
 import { expandedTableSpecs as migrationTableSpecs } from "./canonical";
 import { validateMigrationDatabase } from "./integrity";
 

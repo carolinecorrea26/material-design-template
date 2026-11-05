@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { createMigrationDatabase } from "./fixtures";
-import { migrationSchemaSql, migrationTableSpecs } from "./schema";
+import { migrationTableSpecs } from "./schema";
 import { migrationSeedSql } from "./export";
 import { validateMigrationDatabase } from "./integrity";
 import { canonicalSchemaSql } from "./canonical";
@@ -10,9 +10,6 @@ import { mcrCoverageReport } from "./mcr";
 
 describe("migration schema and deterministic export", () => {
   const db = createMigrationDatabase();
-  it("matches the committed additive SQL migration", () => {
-    expect(readFileSync("supabase/migrations/202609240003_portal_library.sql", "utf8")).toBe(migrationSchemaSql());
-  });
   it("validates every row, scope, foreign key, graph endpoint and serialized column", () => {
     expect(validateMigrationDatabase(db)).toEqual([]);
     expect(Object.keys(migrationTableSpecs).length).toBeGreaterThan(30);

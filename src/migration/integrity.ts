@@ -11,7 +11,7 @@ import { isSelectionPolicy } from "../domain/coverageSelectionPolicy";
 import { isRatePresentationPolicy, isReferenceRateTable } from "../domain/ratePresentation";
 import { isResidencyPolicy } from "../domain/residencyPolicy";
 import type { DatabaseSchema } from "../persistence/types";
-import { tableNames } from "../persistence/supabaseAdapter";
+import { tableNames } from "../persistence/tableNames";
 import { expandedTableSpecs as migrationTableSpecs } from "./canonical";
 
 import { promotionIntegrityErrors } from "./promotion";

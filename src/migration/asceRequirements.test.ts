@@ -1,11 +1,9 @@
 import { LocalStorageAdapter, LOCAL_DATABASE_KEY } from "../persistence/localAdapter";
 import { describe, expect, it } from "vitest";
-import { readFileSync } from "node:fs";
 import { resolveSiteCoverage } from "../data";
 import { createMigrationDatabase } from "./fixtures";
 import { resolveDatabaseSite } from "./resolve";
 import { validateMigrationDatabase } from "./integrity";
-import { siteEnvironmentSchemaSql } from "./schema";
 import { evaluateEligibility, resolveBenefitLimit, coverageRelationshipErrors, resolveUnderwritingBand } from "../domain/coverageRequirements";
 import { getCoverageAmountChoices } from "../utils/coverageAmounts";
 import { launchLinks, siteEnvironmentLinks } from "../data/siteEnvironmentLinks";
@@ -118,9 +116,5 @@ describe("Site environment persistence", () => {
   it("rejects orphaned ownership", () => {
     const changed = structuredClone(db); changed.siteEnvironmentLinks[0].siteKey = "missing";
     expect(validateMigrationDatabase(changed).some((e) => e.includes("orphan site_key"))).toBe(true);
-  });
-  it("matches the additive SQL", () => {
-    const path = "supabase/migrations/202609250001_site_environment_links.sql";
-    expect(readFileSync(path, "utf8")).toBe(siteEnvironmentSchemaSql());
   });
 });

@@ -1,6 +1,6 @@
 import { canonicalTableSpecs } from "./canonicalSchema";
 import { migrationTableSpecs } from "./schema";
-import { tableNames } from "../persistence/supabaseAdapter";
+import { tableNames } from "../persistence/tableNames";
 import { libraryMetadata, providedByTags } from "../domain/provenance";
 import type { DatabaseSchema } from "../persistence/types";
 

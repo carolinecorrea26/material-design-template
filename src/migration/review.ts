@@ -1,5 +1,5 @@
 import type { DatabaseSchema } from '../persistence/types';
-import { tableNames } from '../persistence/supabaseAdapter';
+import { tableNames } from '../persistence/tableNames';
 import { expandedTableSpecs } from './canonical';
 export type CanonicalRelation = { field: string; table: keyof DatabaseSchema; key: string; exists: boolean };
 /** Resolve relationship values, never the junction's own key. Shared with review tests. */

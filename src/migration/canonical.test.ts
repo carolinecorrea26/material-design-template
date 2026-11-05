@@ -7,7 +7,7 @@ import { validateMigrationDatabase } from "./integrity";
 import { canonicalReference, mcrCoverageReport, mcrSource, parseAmount } from "./mcr";
 import { libraryDisplayId } from "../domain/provenance";
 import { resolveSiteCoverage } from "../data/resolvers";
-import { tableNames } from "../persistence/supabaseAdapter";
+import { tableNames } from "../persistence/tableNames";
 import { exportLibraryCsv, exportLibraryXml } from "../services/libraryExport";
 
 const db = createMigrationDatabase();
@@ -115,8 +115,6 @@ describe("canonical corrective Phase 4 gates", () => {
     for (const file of ["src/migration/mcr.ts", "src/migration/normalizeCoverage.ts", "src/pages/admin/library/PatternsFlagsLibrary.tsx", "src/services/libraryExport.ts"]) expect(readFileSync(file, "utf8")).not.toMatch(/(?:clientId|clientKey|siteId|siteKey)\s*===?\s*["'](?:ama|asce|waepa)/);
   });
   it("exports the additive schema and deterministic coverage report for review", () => {
-    const file = "supabase/migrations/202609280001_canonical_normalization.sql";
-    expect(readFileSync(file, "utf8")).toBe(canonicalSchemaSql());
     if (process.env.MIGRATION_EXPORT_DIR) {
       const directory = resolve(process.env.MIGRATION_EXPORT_DIR); mkdirSync(directory, { recursive: true });
       writeFileSync(resolve(directory, "canonical.sql"), canonicalSchemaSql());

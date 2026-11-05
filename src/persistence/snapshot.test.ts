@@ -1,10 +1,6 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { webcrypto } from "node:crypto";
-import { readFileSync } from "node:fs";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import { LocalStorageAdapter } from "./localAdapter";
-import { SupabaseAdapter } from "./supabaseAdapter";
-import { snapshotSchemaSql } from "./snapshotSchema";
 import { createMigrationDatabase } from "../migration/fixtures";
 import { createPortalDataRepository } from "../repositories/portalDataRepository";
 import { localSnapshotRevision, validateSnapshotRequest, type SnapshotTable } from "./snapshot";
@@ -82,47 +78,5 @@ describe("normalized revision boundary", () => {
     expect(matches[1].id).not.toBe("detached");
     expect(() => queryRows(db.sites, { limit: 0 })).toThrow("Invalid query range");
     expect(() => queryRows(db.sites, { offset: -1 })).toThrow("Invalid query range");
-  });
-  it("matches the additive SQL migration and excludes raw/operational tables", () => {
-    const sql = snapshotSchemaSql();
-    expect(readFileSync("supabase/migrations/202610120006_configuration_boundary.sql", "utf8")).toContain(sql.replace("create function public.portal_read_snapshot", "create or replace function public.portal_read_snapshot"));
-    expect(sql).toContain("stable security invoker");
-    expect(sql).toContain("set row_security = on");
-    expect(sql).not.toMatch(/security definer|create policy|grant select|source_requirements|site_configurations|applications/);
-  });
-});
-describe("Supabase transport", () => {
-  it("uses exactly one RPC and preserves nested JSON keys", async () => {
-    const from = vi.fn();
-    const rpc = vi.fn(async () => ({ data: { formatVersion: 1, consistency: "single-read", revision: `postgres:v1:sha256:${"a".repeat(64)}`, data: { sites: [{ id: "site", client_id: "client", definition: { some_key: 1 } }] } }, error: null }));
-    const adapter = new SupabaseAdapter({ from, rpc } as unknown as SupabaseClient);
-    const snapshot = await adapter.readSnapshot(["sites"]);
-    expect(snapshot.data.sites[0]).toEqual({ id: "site", clientId: "client", definition: { some_key: 1 } });
-    expect(rpc).toHaveBeenCalledExactlyOnceWith("portal_read_snapshot", { requested_tables: ["sites"] });
-    expect(from).not.toHaveBeenCalled();
-    rpc.mockResolvedValueOnce({ data: null as never, error: new Error("denied") as never });
-    await expect(adapter.readSnapshot(["sites"])).rejects.toThrow("denied");
-  });
-  it("pages past server row caps with deterministic order and exact counts", async () => {
-    const raw = Array.from({ length: 1101 }, (_, i) => ({ id: String(i).padStart(4, "0"), client_id: "client" }));
-    const ranges: number[][] = [];
-    const orders: string[] = [];
-    const chain = { order: (key: string) => { orders.push(key); return chain; }, range: async (start: number, end: number) => { ranges.push([start, end]); return { data: raw.slice(start, Math.min(end + 1, start + 200)), count: raw.length, error: null }; } };
-    const select = vi.fn(() => chain);
-    const adapter = new SupabaseAdapter({ from: () => ({ select }) } as unknown as SupabaseClient);
-    const rows = await adapter.list("sites");
-    expect(rows).toHaveLength(1101);
-    expect(rows[1100]).toEqual({ id: "1100", clientId: "client" });
-    expect(ranges.map(range => range[0])).toEqual([0, 200, 400, 600, 800, 1000]);
-    expect(orders).toEqual(Array(6).fill("id"));
-    expect(select).toHaveBeenCalledWith("*", { count: "exact" });
-  });
-  it("fails incomplete pagination and applies scalar filters before ranges", async () => {
-    const calls: unknown[] = [];
-    const chain = { eq: (...args: unknown[]) => { calls.push(args); return chain; }, is: (...args: unknown[]) => { calls.push(args); return chain; }, order: (...args: unknown[]) => { calls.push(args); return chain; }, range: async (...args: unknown[]) => { calls.push(args); return { data: [], count: 1, error: null }; } };
-    const adapter = new SupabaseAdapter({ from: () => ({ select: () => chain }) } as unknown as SupabaseClient);
-    await adapter.query("siteProducts", { filters: { siteId: "asce", enabled: true }, orderBy: "productKey", offset: 3, limit: 5 });
-    expect(calls).toEqual([["site_id", "asce"], ["enabled", true], ["product_key", { ascending: true, nullsFirst: false }], ["id", { ascending: true }], [3, 7]]);
-    await expect(adapter.list("sites")).rejects.toThrow("Incomplete paginated response");
   });
 });
