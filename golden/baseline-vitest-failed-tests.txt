@@ -1,0 +1,66 @@
+ FAIL  src/components/admin/AdminCenterShell.test.tsx > uses distinct section icons and hides account management from reviewers
+ FAIL  src/components/coverage/ProductCatalog.test.tsx > shows a rider-only cart entry with separately provided pricing rather than zero premium
+ FAIL  src/components/layout/storedIdentity.test.tsx > ama template renders the stored program contact and resolves its actual administrator
+ FAIL  src/components/layout/storedIdentity.test.tsx > asce template renders the stored program contact and resolves its actual administrator
+ FAIL  src/components/layout/storedIdentity.test.tsx > csea template renders the stored program contact and resolves its actual administrator
+ FAIL  src/components/layout/storedIdentity.test.tsx > isitrust template renders the stored program contact and resolves its actual administrator
+ FAIL  src/components/layout/storedIdentity.test.tsx > keeps AMA's help-ribbon and breakdown phone distinct from its administrator contact
+ FAIL  src/components/layout/storedIdentity.test.tsx > retains original contact evidence separately from the executable saved support profile
+ FAIL  src/components/layout/storedIdentity.test.tsx > uses captured administrator identity in applicant emails without substituting the Association name
+ FAIL  src/components/layout/storedIdentity.test.tsx > waepa template renders the stored program contact and resolves its actual administrator
+ FAIL  src/components/layout/storedIdentity.test.tsx > waepa-gi template renders the stored program contact and resolves its actual administrator
+ FAIL  src/config/conditions/conditions.test.ts > canonical executable conditions > keeps all 95 rules, links every condition, and separates spouse validation from visibility
+ FAIL  src/data/siteSupport.test.tsx > adds only an approved opaque reference to support contact context
+ FAIL  src/data/siteSupport.test.tsx > includes the available identifier in the shared support instruction: {"applicationId":"APP-12345678"}
+ FAIL  src/data/siteSupport.test.tsx > includes the available identifier in the shared support instruction: {"confirmationId":"APP-87654321"}
+ FAIL  src/data/siteSupport.test.tsx > includes the available identifier in the shared support instruction: {"confirmationId":"CONF-87654321"}
+ FAIL  src/data/siteSupport.test.tsx > keeps email-only hiding separate from required site support and respects captured overrides
+ FAIL  src/data/siteSupport.test.tsx > omits missing contact channels and renders no empty support card
+ FAIL  src/data/siteSupport.test.tsx > omits the instruction without an identifier and never prints recovery tokens
+ FAIL  src/data/siteSupport.test.tsx > uses the current Site application on all support cards and keeps explicit receipt context
+ FAIL  src/data/siteSupport.test.tsx > uses the same Site administrator and contact in abe pages and emails
+ FAIL  src/data/siteSupport.test.tsx > uses the same Site administrator and contact in ama pages and emails
+ FAIL  src/data/siteSupport.test.tsx > uses the same Site administrator and contact in asce pages and emails
+ FAIL  src/data/siteSupport.test.tsx > uses the same Site administrator and contact in csea pages and emails
+ FAIL  src/data/siteSupport.test.tsx > uses the same Site administrator and contact in waepa pages and emails
+ FAIL  src/data/siteSupport.test.tsx > uses the same Site administrator and contact in waepa-gi pages and emails
+ FAIL  src/domain/portalLibraryScope.test.ts > portal catalog scope > stores every portal Storybook component in the snapshot and returns detached rows
+ FAIL  src/domain/tpaIntegration.test.ts > client TPA policies > waepa never verifies or enables portfolio; only new members auto-approve
+ FAIL  src/domain/tpaIntegration.test.ts > client TPA policies > waepa-gi never verifies or enables portfolio; only new members auto-approve
+ FAIL  src/migration/abeFinalReviewAssessment.test.ts > keeps the final ABE sign-off tied to both the reviewed implementation and the shipped catalog
+ FAIL  src/migration/abeFinalReviewAssessment.test.ts > records every reviewed source item and all seven implemented decisions with no unanswered questions
+ FAIL  src/migration/abeProcessingAdoption.test.ts > preserves every other Site's captured health forms and effective configuration
+ FAIL  src/migration/abeSiteReview.test.ts > records exact ABE source leaves without signing off unreviewed phases or other Sites
+ FAIL  src/migration/abeSourceReview.test.ts > captures or verifies exact source/native evidence and retains incomplete supporting clauses
+ FAIL  src/migration/amaActiveWorkAdoption.test.tsx > renders the standard DI alert for selected categories
+ FAIL  src/migration/beneficiaryNoteAdoption.test.tsx
+ FAIL  src/migration/disabilityBenefitAdoption.test.ts > persisted disability and overhead benefit dimensions > has valid policies, canonical relationships, source targets and deterministic compilation
+ FAIL  src/migration/disabilityBenefitAdoption.test.ts > persisted disability and overhead benefit dimensions > requires AMA class and exempts residents from financial underwriting while retaining aggregate limits
+ FAIL  src/migration/fieldDefinitionOwnership.test.ts > gives 188 controls and 37 formats one shared owner while preserving constraints and effective values
+ FAIL  src/migration/namedOwnerReview.test.tsx > links ABE's unique dividend capability to its accepted policy and reopens edited field assignments
+ FAIL  src/migration/namedOwnerReview.test.tsx > reopens named reviews on option, selection, requiredness and effective notice edits
+ FAIL  src/migration/navigationReview.test.ts > reopens shared evidence after routing, page order or questionnaire assignment edits
+ FAIL  src/migration/pageParticipationOwnership.test.ts > uses stored health-page participation before applying independent routing gates
+ FAIL  src/migration/requiredFieldOwnership.test.ts > reconciles all 161 copied required values without changing global definitions or scoped placements
+ FAIL  src/migration/requirementCrosswalk.test.ts > captures approved WAEPA bands, source forms, combined DI and Review notices with edit invalidation
+ FAIL  src/migration/requirementCrosswalk.test.ts > closes reviewed mock persistence/Contact areas and invalidates edited native owners
+ FAIL  src/migration/requirementCrosswalk.test.ts > closes the named owner gaps and reconciles complete ISITRUST/WAEPA online instruction cells
+ FAIL  src/migration/requirementCrosswalk.test.ts > conserves source text and leaves compound clauses, guards and shared applicability pending
+ FAIL  src/migration/requirementCrosswalk.test.ts > maps each reviewed Attestation clause to its exact atoms while retaining role guards and unrelated clauses
+ FAIL  src/migration/requirementCrosswalk.test.ts > preserves variant boundaries, accepted CSEA mapping, and service ownership
+ FAIL  src/migration/requirementCrosswalk.test.ts > reconciles complete unqualified current source age ranges and reopens the exact edited native dimension
+ FAIL  src/migration/requirementCrosswalk.test.ts > reconciles exact NSO age bounds and prior ASCE approvals without carrying verification across native edits
+ FAIL  src/migration/requirementCrosswalk.test.ts > records Association caps, conditional NSO Life, WAEPA cleanup and nonblocking missing Coverage copy with native edit invalidation
+ FAIL  src/migration/requirementCrosswalk.test.ts > records reusable global authoring targets and explicit Site assignments without activating unique source behavior
+ FAIL  src/migration/requirementCrosswalk.test.ts > records the implemented entry filters separately from deferred URL work and invalidates changed protocol owners
+ FAIL  src/migration/requirementCrosswalk.test.ts > scopes main-Site attestation cells using explicit labels while preserving adjacent variant boundaries
+ FAIL  src/migration/ruleDocumentationOwnership.test.ts > accounts for every rule while distinguishing routing, planned behavior and non-executable source models
+ FAIL  src/migration/ruleDocumentationOwnership.test.ts > replaces 95 duplicate descriptions with rule documentation links and retains the distinct source detail
+ FAIL  src/migration/stdHealthDecisions.test.ts > routes WAEPA's permitted age/amount boundaries through processing, questions and Review
+ FAIL  src/pages/Membership.basicCollection.test.tsx > retains required collection and reopens exact source leaves after native requiredness or label edits
+ FAIL  src/pages/admin/IssueLogWorkspace.test.tsx > adds and persists open issues for each scope, and removes resolved issues from the open list
+ FAIL  src/pages/admin/IssueLogWorkspace.test.tsx > validates required fields and shows a Jira placeholder
+ FAIL  src/pages/admin/MigrationScheduleWorkspace.test.tsx > displays the migration matrix and saves edited environment progress through the schedule UI
+ FAIL  src/utils/mockEmail.test.ts > Site-keyed mock email previews > generates Site-based resume links for either WAEPA Site
+ FAIL  src/utils/mockEmail.test.ts > Site-keyed mock email previews > maps legacy persisted previews to their Site when read
+ FAIL  src/utils/mockEmail.test.ts > Site-keyed mock email previews > stores the Site ID and resolves Association-aware copy
