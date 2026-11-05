@@ -2,10 +2,10 @@ import { describe, expect, it } from "vitest";
 import { shouldShowMembershipFollowUpFields } from "./membershipFollowUpVisibility";
 
 describe("Membership follow-up visibility", () => {
-  it("shows ISITRUST follow-up fields after a canonical Association is selected", () => {
+  it("shows association follow-up fields after a canonical Association is selected", () => {
     expect(
       shouldShowMembershipFollowUpFields({
-        clientId: "isitrust",
+        membershipOptions: ["example-association"],
         selectionMode: "select",
         membershipValue: "akron-bar-association",
         associationStatus: "resolved",
@@ -16,7 +16,7 @@ describe("Membership follow-up visibility", () => {
   it("keeps select-mode follow-up fields hidden without a valid Association", () => {
     expect(
       shouldShowMembershipFollowUpFields({
-        clientId: "isitrust",
+        membershipOptions: ["example-association"],
         selectionMode: "select",
         membershipValue: "not-enabled-for-this-site",
         associationStatus: "invalid",
@@ -24,10 +24,10 @@ describe("Membership follow-up visibility", () => {
     ).toBe(false);
   });
 
-  it("preserves legacy membership behavior for other Sites", () => {
+  it("uses configured membership choices for shared follow-up behavior", () => {
     expect(
       shouldShowMembershipFollowUpFields({
-        clientId: "asce",
+        membershipOptions: ["yes", "no"],
         selectionMode: "fixed",
         membershipValue: "yes",
         associationStatus: "resolved",
@@ -35,7 +35,7 @@ describe("Membership follow-up visibility", () => {
     ).toBe(true);
     expect(
       shouldShowMembershipFollowUpFields({
-        clientId: "waepa",
+        membershipOptions: ["new", "current"],
         selectionMode: "fixed",
         membershipValue: "new",
         associationStatus: "resolved",

@@ -26,8 +26,12 @@ dist-ssr
 *storybook.log
 storybook-static
 
-src.zip
-src *.zip
+# Local project backup archives
+/*.zip
+
+# Python ingestion/report caches
+__pycache__/
+*.py[cod]
 # Regenerable Phase 1–4 migration review exports
 migration-artifacts/
 

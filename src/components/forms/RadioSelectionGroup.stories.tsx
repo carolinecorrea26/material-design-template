@@ -3,9 +3,10 @@ import type { Meta } from "@storybook/react-vite";
 import RadioSelectionGroup from "./RadioSelectionGroup";
 
 const meta = {
-  title: "Forms/RadioSelectionGroup",
+  id: "forms-radioselectiongroup",
+  title: "Components/Forms/Selection rows/Radio rows",
   component: RadioSelectionGroup,
-  parameters: { layout: "padded" },
+  parameters: { standalone: true, docs: { description: { component: "Accessible radio rows using the app's canonical SelectionGroup surface." } }, layout: "padded" },
 } satisfies Meta<typeof RadioSelectionGroup>;
 
 export default meta;

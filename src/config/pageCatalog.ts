@@ -2,12 +2,12 @@
 // Runtime consumers use the saved catalog once a Library revision is installed.
 export const defaultApplicationOrder = [
   "home", "membership", "eligibility", "coverage", "beneficiary", "contact", "profile", "review",
-  "health-si", "health-li", "health-qd", "health-di", "health-cir", "payment", "docusign", "receipt",
+  "health-si", "health-li", "health-qd", "health-di", "health-ci", "health-cir", "payment", "docusign", "receipt",
 ] as const;
-export type PageFlow = "application" | "resume" | "advisor" | "internal";
+export type PageFlow = "application" | "resume" | "advisor" | "utility" | "internal";
 
 const definitions = [
-  { id: "home", path: "/", type: "home" },
+  { id: "home", path: "/", type: "home", inlineFieldKeys: ["birth-date", "zip-postal-code", "state-province"] },
   {
     id: "membership",
     path: "/membership",
@@ -34,12 +34,20 @@ const definitions = [
   { id: "health-li", path: "/health-li", type: "form", groupId: "health" },
   { id: "health-qd", path: "/health-qd", type: "form", groupId: "health" },
   { id: "health-di", path: "/health-di", type: "form", groupId: "health" },
+  { id: "health-ci", path: "/health-ci", type: "form", groupId: "health" },
   { id: "health-cir", path: "/health-cir", type: "form", groupId: "health" },
   { id: "payment", path: "/payment", type: "form", groupId: "payment" },
   { id: "receipt", path: "/receipt", type: "receipt" },
   { id: "resume", path: "/resume", type: "resume" },
   { id: "resume-method", path: "/resume-method", type: "resume" },
   { id: "resume-code", path: "/resume-code", type: "resume" },
+  { id: "error-404", path: "/404", type: "error" },
+  { id: "error-500", path: "/500", type: "error" },
+  { id: "session-expired", path: "/session-expired", type: "error" },
+  { id: "technical-error", path: "/technical-error", type: "error" },
+  { id: "maintenance", path: "/maintenance", type: "error" },
+  { id: "application-unavailable", path: "/application-unavailable", type: "error" },
+  { id: "outcome-unknown", path: "/outcome-unknown", type: "error" },
   { id: "advisor-login", path: "/advisor-login", type: "form" },
   {
     id: "advisor-send-confirmation",
@@ -93,10 +101,12 @@ const definitions = [
 
 export const defaultPages = definitions.map(page => ({
   ...page,
-  flow: (page.type === "internal" ? "internal" : page.type === "resume" ? "resume"
+  inlineFieldKeys: "inlineFieldKeys" in page ? [...page.inlineFieldKeys] : undefined,
+  displayName: page.id.split("-").map(part => ["si", "li", "qd", "di", "ci", "cir"].includes(part) ? part.toUpperCase() : part.charAt(0).toUpperCase() + part.slice(1)).join(" "),
+  flow: (page.type === "internal" ? "internal" : page.type === "error" ? "utility" : page.type === "resume" ? "resume"
     : ["advisor-login", "advisor-send-confirmation", "application-edit-confirmation"].includes(page.id) ? "advisor" : "application") as PageFlow,
 })).sort((a, b) => {
-  const flows: PageFlow[] = ["application", "resume", "advisor", "internal"];
+  const flows: PageFlow[] = ["application", "resume", "advisor", "utility", "internal"];
   return flows.indexOf(a.flow) - flows.indexOf(b.flow)
     || (a.flow === "application" ? defaultApplicationOrder.indexOf(a.id as typeof defaultApplicationOrder[number]) - defaultApplicationOrder.indexOf(b.id as typeof defaultApplicationOrder[number]) : 0);
 });

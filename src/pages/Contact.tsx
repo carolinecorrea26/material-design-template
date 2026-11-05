@@ -1,34 +1,10 @@
-import { useEffect } from "react";
-import { Box, Typography } from "@mui/material";
-import FormRoutePage, { isSectionVisible } from "../app/RoutePage";
-import FieldRenderer from "../components/forms/FieldRenderer";
-import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
-import { shouldShowApplicantLabel } from "../utils/applicantVisibility";
-import SectionDivider from "../components/layout/SectionDivider";
-import { sectionLabels } from "../config/pageSections";
+import FormRoutePage from "../app/RoutePage";
+import ContactSections from "../app/sections/ConfiguredContactSections";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { getSelectedCategoryIds } from "../config/formFlow";
-import FieldGrid from "../components/layout/FieldGrid";
-import {
-  contactCarryForwardTransition,
-  executeApplicationTransition,
-} from "../config/applicationTransitions";
-
+import { contactCarryForwardTransition, executeApplicationTransition } from "../config/applicationTransitions";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { showContactBusinessSection } from "../domain/applicantExperience";
-
-const streetRow = new Set(["street-address", "apt-suite"]);
-const cityStateZipRow = new Set(["city", "state", "zip-code"]);
-
-const businessStreetRow = new Set([
-  "business-street-address",
-  "business-apt-suite",
-]);
-const businessCityStateZipRow = new Set([
-  "business-city",
-  "business-state",
-  "business-zip-code",
-]);
 
 export default function Contact() {
   const { values } = useApplicationForm();
@@ -42,6 +18,12 @@ export default function Contact() {
     values,
     values,
   );
+  const selectedProducts = Array.isArray(values.coverageSelections) ? values.coverageSelections.map(String) : [];
+  if (values["business-address-same-as-home"] === true && showContactBusinessSection(getActiveClient().applicantExperience, hasDiOrOo, values["correspondence-to"], selectedProducts)) {
+    // Seed the reset values too: the parent's initial reset runs after child
+    // effects and must not erase the same-as-home address copied on mount.
+    for (const key of ["street-address", "apt-suite", "city", "state", "zip-code"]) if (typeof values[key] === "string") defaultValueOverrides[`business-${key}`] = values[key];
+  }
 
   return (
     <FormRoutePage
@@ -60,13 +42,13 @@ export default function Contact() {
       }) => {
         const correspondenceTo = watchedValues["correspondence-to"];
         const showBusinessSection =
-          showContactBusinessSection(getActiveClient().applicantExperience, hasDiOrOo, correspondenceTo);
+          showContactBusinessSection(getActiveClient().applicantExperience, hasDiOrOo, correspondenceTo, Array.isArray(watchedValues.coverageSelections) ? watchedValues.coverageSelections.map(String) : []);
         const sameAsHome = Boolean(
           watchedValues["business-address-same-as-home"],
         );
 
         return (
-          <ContactFields
+          <ContactSections
             control={control}
             errors={errors}
             watchedValues={watchedValues}
@@ -80,361 +62,5 @@ export default function Contact() {
         );
       }}
     </FormRoutePage>
-  );
-}
-
-function ContactFields({
-  control,
-  errors,
-  watchedValues,
-  allFields,
-  pageSections,
-  setValue,
-  showBusinessSection,
-  sameAsHome,
-  hasDiOrOo,
-}: {
-  control: any;
-  errors: any;
-  watchedValues: any;
-  allFields: any[];
-  pageSections: any[];
-  setValue: any;
-  showBusinessSection: boolean;
-  sameAsHome: boolean;
-  hasDiOrOo: boolean;
-}) {
-  const homeStreetAddress = watchedValues["street-address"];
-  const homeAptSuite = watchedValues["apt-suite"];
-  const homeCity = watchedValues["city"];
-  const homeState = watchedValues["state"];
-  const homeZipCode = watchedValues["zip-code"];
-
-  const businessStreetAddress = watchedValues["business-street-address"];
-  const businessAptSuite = watchedValues["business-apt-suite"];
-  const businessCity = watchedValues["business-city"];
-  const businessState = watchedValues["business-state"];
-  const businessZipCode = watchedValues["business-zip-code"];
-
-  // Copy home address to business address when checkbox is checked
-  useEffect(() => {
-    if (!showBusinessSection || !sameAsHome) {
-      return;
-    }
-
-    const homeToBusinessValues: Record<string, string | undefined> = {
-      "business-street-address": homeStreetAddress,
-      "business-apt-suite": homeAptSuite,
-      "business-city": homeCity,
-      "business-state": homeState,
-      "business-zip-code": homeZipCode,
-    };
-
-    const businessAddressValues: Record<string, string | undefined> = {
-      "business-street-address": businessStreetAddress,
-      "business-apt-suite": businessAptSuite,
-      "business-city": businessCity,
-      "business-state": businessState,
-      "business-zip-code": businessZipCode,
-    };
-
-    for (const [businessField, homeVal] of Object.entries(
-      homeToBusinessValues,
-    )) {
-      const businessVal = businessAddressValues[businessField];
-
-      if (homeVal !== undefined && homeVal !== businessVal) {
-        setValue(businessField, homeVal, {
-          shouldDirty: false,
-          shouldTouch: false,
-          shouldValidate: false,
-        });
-      }
-    }
-  }, [
-    sameAsHome,
-    homeStreetAddress,
-    homeAptSuite,
-    homeCity,
-    homeState,
-    homeZipCode,
-    businessStreetAddress,
-    businessAptSuite,
-    businessCity,
-    businessState,
-    businessZipCode,
-    showBusinessSection,
-    setValue,
-  ]);
-
-  return (
-    <>
-      {pageSections.map((section) => {
-        // Business section uses custom OR visibility
-        if (section.id === "contactBusinessInfo") {
-          if (!showBusinessSection) return null;
-        } else {
-          if (!isSectionVisible(section, watchedValues)) return null;
-        }
-
-        if (section.id === "contactResidentialAddress") {
-          // Find the business section for rendering inside Self container
-          const businessSection = pageSections.find(
-            (s) => s.id === "contactBusinessInfo",
-          );
-
-          const content = (
-            <>
-              {/* Residential Address sub-section label */}
-              {/* <SectionDivider label="Home Address" /> */}
-
-              {/* Street address + Apt/Suite row */}
-              <FieldGrid columns="wide-narrow">
-                {section.fieldIds
-                  .filter((id: string) => streetRow.has(id))
-                  .map((fieldId: string) => {
-                    const field = allFields.find((f: any) => f.id === fieldId);
-                    if (!field) return null;
-                    return (
-                      <FieldRenderer
-                        key={field.id}
-                        field={field}
-                        control={control}
-                        errors={errors}
-                      />
-                    );
-                  })}
-              </FieldGrid>
-
-              {/* City / State / Zip row */}
-              <FieldGrid columns="wide-two-narrow">
-                {section.fieldIds
-                  .filter((id: string) => cityStateZipRow.has(id))
-                  .map((fieldId: string) => {
-                    const field = allFields.find((f: any) => f.id === fieldId);
-                    if (!field) return null;
-                    return (
-                      <FieldRenderer
-                        key={field.id}
-                        field={field}
-                        control={control}
-                        errors={errors}
-                      />
-                    );
-                  })}
-              </FieldGrid>
-
-              {/* Other fields (correspondence-to) */}
-              {section.fieldIds
-                .filter(
-                  (id: string) =>
-                    !streetRow.has(id) && !cityStateZipRow.has(id),
-                )
-                .map((fieldId: string) => {
-                  const field = allFields.find((f: any) => f.id === fieldId);
-                  if (!field) return null;
-                  return (
-                    <FieldRenderer
-                      key={field.id}
-                      field={field}
-                      control={control}
-                      errors={errors}
-                    />
-                  );
-                })}
-
-              {/* Business / Employer Info inside Self container */}
-              {showBusinessSection && businessSection && (
-                <Box sx={{ mt: 2 }}>
-                  <SectionDivider
-                    label={sectionLabels.businessEmployerInfo}
-                    variant="subsection"
-                  />
-
-                  {renderBusinessFields(
-                    businessSection,
-                    allFields,
-                    control,
-                    errors,
-                    sameAsHome,
-                    hasDiOrOo,
-                  )}
-                </Box>
-              )}
-            </>
-          );
-
-          return (
-            <div key={section.id}>
-              <ApplicantSectionDivider
-                applicant="self"
-                showLabel={shouldShowApplicantLabel("self", watchedValues)}
-              >
-                {content}
-              </ApplicantSectionDivider>
-            </div>
-          );
-        }
-
-        // Skip standalone business section rendering — it's inside Self now
-        if (section.id === "contactBusinessInfo") {
-          return null;
-        }
-
-        // Spouse section and default rendering
-        const content = (
-          <>
-            {section.fieldIds.map((fieldId: string) => {
-              const field = allFields.find((f: any) => f.id === fieldId);
-              if (!field) return null;
-              return (
-                <FieldRenderer
-                  key={field.id}
-                  field={field}
-                  control={control}
-                  errors={errors}
-                />
-              );
-            })}
-          </>
-        );
-
-        return (
-          <div key={section.id}>
-            {section.applicant ? (
-              <ApplicantSectionDivider
-                applicant={section.applicant}
-                showLabel={shouldShowApplicantLabel(
-                  section.applicant,
-                  watchedValues,
-                )}
-              >
-                {content}
-              </ApplicantSectionDivider>
-            ) : (
-              <>
-                {section.title && (
-                  <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
-                    {section.title}
-                  </Typography>
-                )}
-                {content}
-              </>
-            )}
-          </div>
-        );
-      })}
-    </>
-  );
-}
-
-function renderBusinessFields(
-  section: any,
-  allFields: any[],
-  control: any,
-  errors: any,
-  sameAsHome: boolean,
-  hasDiOrOo: boolean,
-) {
-  const nonAddressNonPhone = section.fieldIds.filter(
-    (id: string) =>
-      !businessStreetRow.has(id) &&
-      !businessCityStateZipRow.has(id) &&
-      id !== "business-phone" &&
-      id !== "business-address-same-as-home",
-  );
-
-  return (
-    <>
-      {/* Show employer name, type of business only for DI/OO */}
-      {hasDiOrOo &&
-        nonAddressNonPhone.map((fieldId: string) => {
-          const field = allFields.find((f: any) => f.id === fieldId);
-          if (!field) return null;
-          return (
-            <FieldRenderer
-              key={field.id}
-              field={field}
-              control={control}
-              errors={errors}
-            />
-          );
-        })}
-
-      {/* Same-as-home checkbox — only for DI/OO */}
-      {hasDiOrOo &&
-        section.fieldIds
-          .filter((id: string) => id === "business-address-same-as-home")
-          .map((fieldId: string) => {
-            const field = allFields.find((f: any) => f.id === fieldId);
-            if (!field) return null;
-            return (
-              <FieldRenderer
-                key={field.id}
-                field={field}
-                control={control}
-                errors={errors}
-              />
-            );
-          })}
-
-      {(!sameAsHome || !hasDiOrOo) && (
-        <>
-          {/* Business street + apt row */}
-          <FieldGrid columns="wide-narrow">
-            {section.fieldIds
-              .filter((id: string) => businessStreetRow.has(id))
-              .map((fieldId: string) => {
-                const field = allFields.find((f: any) => f.id === fieldId);
-                if (!field) return null;
-                return (
-                  <FieldRenderer
-                    key={field.id}
-                    field={field}
-                    control={control}
-                    errors={errors}
-                  />
-                );
-              })}
-          </FieldGrid>
-
-          {/* Business city / state / zip row */}
-          <FieldGrid columns="wide-two-narrow">
-            {section.fieldIds
-              .filter((id: string) => businessCityStateZipRow.has(id))
-              .map((fieldId: string) => {
-                const field = allFields.find((f: any) => f.id === fieldId);
-                if (!field) return null;
-                return (
-                  <FieldRenderer
-                    key={field.id}
-                    field={field}
-                    control={control}
-                    errors={errors}
-                  />
-                );
-              })}
-          </FieldGrid>
-        </>
-      )}
-
-      {/* Business phone — only for DI/OO, hidden when same-as-home */}
-      {hasDiOrOo &&
-        !sameAsHome &&
-        section.fieldIds
-          .filter((id: string) => id === "business-phone")
-          .map((fieldId: string) => {
-            const field = allFields.find((f: any) => f.id === fieldId);
-            if (!field) return null;
-            return (
-              <FieldRenderer
-                key={field.id}
-                field={field}
-                control={control}
-                errors={errors}
-              />
-            );
-          })}
-    </>
   );
 }

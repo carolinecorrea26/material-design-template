@@ -1,0 +1,25 @@
+{
+  "formatVersion": 1,
+  "parts": [
+    "analytics/analytics.json",
+    "components/components.json",
+    "configurations/configurations.json",
+    "configurations/features.json",
+    "configurations/products.json",
+    "configurations/themes.json",
+    "configurations/url-parameters.json",
+    "content/content.json",
+    "content/emails.json",
+    "evidence/evidence.json",
+    "fields/fields.json",
+    "flows/flows.json",
+    "overview/associations.json",
+    "overview/clients.json",
+    "overview/sites.json",
+    "overview/tpas.json",
+    "pages/pages.json",
+    "rules/rules.json",
+    "shared/shared.json",
+    "validations/validation.json"
+  ]
+}

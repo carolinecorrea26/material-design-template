@@ -63,10 +63,11 @@ export function getCategoryQuestionFieldIds(
   options?: { hideSmokerQuestion?: boolean },
 ): FieldId[] {
   const library = getPrototypeLibrary();
-  const catalog = library ? (library.settings.coveragePolicy as { questionRequirements: typeof coverageQuestionRequirements }).questionRequirements : coverageQuestionRequirements;
+  const policy = library?.settings.coveragePolicy as { questionRequirements: typeof coverageQuestionRequirements; questionOverrides?: Partial<typeof coverageQuestionRequirements> } | undefined;
+  const catalog = policy?.questionRequirements ?? coverageQuestionRequirements;
   const fields = new Set<FieldId>();
   for (const categoryId of selectedCategories) {
-    for (const fieldId of catalog[categoryId]?.[applicant] ?? []) {
+    for (const fieldId of policy?.questionOverrides?.[categoryId]?.[applicant] ?? catalog[categoryId]?.[applicant] ?? []) {
       if (options?.hideSmokerQuestion && smokerQuestionIds.has(fieldId)) continue;
       fields.add(fieldId);
     }

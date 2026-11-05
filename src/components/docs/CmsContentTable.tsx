@@ -180,7 +180,6 @@ export default function CmsContentTable({ rows }: { rows: CmsTableRow[] }) {
                     href={getStorybookStoryUrl(entry.storybookId)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    underline="hover"
                     aria-label={`${entry.component} — open Storybook documentation`}
                   >
                   {entry.component}

@@ -67,6 +67,7 @@ export const pagesDefaults: Partial<PagesContent> = {
       "Please answer the following questions about your health as accurately as you can.",
     navTitle: "Health",
   },
+  "health-ci": { title: "Critical illness health questions", subhead: "Answer the health questions required for your critical illness coverage.", navTitle: "Health" },
   "health-cir": {
     title: "About your health",
     subhead: "Answer health questions required for your selected coverage.",
@@ -78,7 +79,7 @@ export const pagesDefaults: Partial<PagesContent> = {
     navTitle: "Payment",
   },
   receipt: {
-    title: "Your application has been submitted!",
+    title: "Application received",
     subhead:
       "Your application has been received, and we'll guide you through any next steps.",
     navTitle: "Receipt",
@@ -103,7 +104,11 @@ export const pagesDefaults: Partial<PagesContent> = {
   },
   "advisor-login": {
     title: "Advisor Portal",
-    subhead: "Start or continue an application below.",
+    subhead: "Prepare applications for your clients.",
+    sectionNotes: {
+      advisorLoginNew: "Enter your advisor details to start at Membership. Complete the application through Profile, then send it to the applicant to review and sign.",
+      advisorLoginSaved: "Enter the applicant’s email address to reopen an application you previously started. You’ll verify access before continuing the saved application.",
+    },
     navTitle: "Advisor login",
   },
   "advisor-send-confirmation": {

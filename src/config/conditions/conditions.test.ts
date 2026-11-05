@@ -229,7 +229,7 @@ describe("canonical executable conditions", () => {
         scope: "global",
         conditionIds: ["condition-spouse-selected"],
       });
-    expect(formatConditionDefinition("condition-waepa-associated-member")).toContain(" OR ");
+    expect(formatConditionDefinition("condition-waepa-associated-member")).toContain("membership equals new AND waepa-attestation oneOf");
   });
 
   it("derives applicable Site rules without treating overrides as rules", () => {

@@ -1,0 +1,3056 @@
+{
+  "workbook": "health_forms_questions.xlsx",
+  "sha256": "039c0dd361e76f8c224e8320cef506f0d7d6e956a02f1017055bd8dcde2488a2",
+  "sheet": "Health questions",
+  "questions": [
+    {
+      "row": 2,
+      "form": "GPA-DI-EZ-1",
+      "section": "1",
+      "id": "a",
+      "text": "a.) Are you now taking any prescribed medications or receiving or contemplating any medical attention or surgical treatment?",
+      "notes": null,
+      "cells": {
+        "A2": "GPA-DI-EZ-1",
+        "B2": "1",
+        "C2": "a",
+        "D2": "a.) Are you now taking any prescribed medications or receiving or contemplating any medical attention or surgical treatment?"
+      }
+    },
+    {
+      "row": 3,
+      "form": "GPA-DI-EZ-1",
+      "section": "1",
+      "id": "b",
+      "text": "b.) During the past five years have you ever been medically diagnosed by a physician as having or been treated for heart or circulatory trouble, evelated blood pressure, chest pain or pressure, gynecological or genitourinary disorders, ulvers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respitory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood or sugar in urine, back trouble/disorder, arthritis, or unexplained weight loss?",
+      "notes": null,
+      "cells": {
+        "A3": "GPA-DI-EZ-1",
+        "B3": "1",
+        "C3": "b",
+        "D3": "b.) During the past five years have you ever been medically diagnosed by a physician as having or been treated for heart or circulatory trouble, evelated blood pressure, chest pain or pressure, gynecological or genitourinary disorders, ulvers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respitory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood or sugar in urine, back trouble/disorder, arthritis, or unexplained weight loss?"
+      }
+    },
+    {
+      "row": 4,
+      "form": "GPA-DI-EZ-1",
+      "section": "1",
+      "id": "c",
+      "text": "c.) During the past five years have you ever been counseled, treated or hospitalized for the use of alcohol or drugs?",
+      "notes": null,
+      "cells": {
+        "A4": "GPA-DI-EZ-1",
+        "B4": "1",
+        "C4": "c",
+        "D4": "c.) During the past five years have you ever been counseled, treated or hospitalized for the use of alcohol or drugs?"
+      }
+    },
+    {
+      "row": 5,
+      "form": "GPA-DI-EZ-1",
+      "section": "1",
+      "id": "d",
+      "text": "d.)  Are you now pregnant?",
+      "notes": null,
+      "cells": {
+        "A5": "GPA-DI-EZ-1",
+        "B5": "1",
+        "C5": "d",
+        "D5": "d.)  Are you now pregnant?"
+      }
+    },
+    {
+      "row": 6,
+      "form": "GPA-DI-EZ-1",
+      "section": "1",
+      "id": "e",
+      "text": "e.) Are you now disabled, or applied or applying for, or receiving any disability or Workers' Compensation benefits or on waiver of premium for life or health insurance?",
+      "notes": null,
+      "cells": {
+        "A6": "GPA-DI-EZ-1",
+        "B6": "1",
+        "C6": "e",
+        "D6": "e.) Are you now disabled, or applied or applying for, or receiving any disability or Workers' Compensation benefits or on waiver of premium for life or health insurance?"
+      }
+    },
+    {
+      "row": 7,
+      "form": "GPA-DI-EZ-3",
+      "section": "2",
+      "id": "a",
+      "text": "a) Are you now taking any prescribed medication or receiving or contemplating any medical attention or surgical treatment?",
+      "notes": null,
+      "cells": {
+        "A7": "GPA-DI-EZ-3",
+        "B7": "2",
+        "C7": "a",
+        "D7": "a) Are you now taking any prescribed medication or receiving or contemplating any medical attention or surgical treatment?"
+      }
+    },
+    {
+      "row": 8,
+      "form": "GPA-DI-EZ-3",
+      "section": "2",
+      "id": "b",
+      "text": "b.) During the past five years, have you ever been medically diagnosed by a physician as having or been treated for:  heart or circulatory trouble, elevated blood pressure, chest pain or pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood, pus or sugar in urine, back trouble/disorder, bone or joint disorder, arthritis, varicose veins, or unexplained weight loss?",
+      "notes": null,
+      "cells": {
+        "A8": "GPA-DI-EZ-3",
+        "B8": "2",
+        "C8": "b",
+        "D8": "b.) During the past five years, have you ever been medically diagnosed by a physician as having or been treated for:  heart or circulatory trouble, elevated blood pressure, chest pain or pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood, pus or sugar in urine, back trouble/disorder, bone or joint disorder, arthritis, varicose veins, or unexplained weight loss?"
+      }
+    },
+    {
+      "row": 9,
+      "form": "GPA-DI-EZ-3",
+      "section": "2",
+      "id": "c",
+      "text": "c) During the past five years have you ever been counseled, treated or hospitalized for the use of alcohol or drugs?",
+      "notes": null,
+      "cells": {
+        "A9": "GPA-DI-EZ-3",
+        "B9": "2",
+        "C9": "c",
+        "D9": "c) During the past five years have you ever been counseled, treated or hospitalized for the use of alcohol or drugs?"
+      }
+    },
+    {
+      "row": 10,
+      "form": "GPA-DI-EZ-3",
+      "section": "2",
+      "id": "d",
+      "text": "d) Are you now pregnant?",
+      "notes": null,
+      "cells": {
+        "A10": "GPA-DI-EZ-3",
+        "B10": "2",
+        "C10": "d",
+        "D10": "d) Are you now pregnant?"
+      }
+    },
+    {
+      "row": 11,
+      "form": "GPA-DI-EZ-3",
+      "section": "2",
+      "id": "e",
+      "text": "e) Are you now disabled, or applied or applying for, or receiving any disability or Workers’ Compensation benefits or on waiver of premium for life or health insurance?",
+      "notes": null,
+      "cells": {
+        "A11": "GPA-DI-EZ-3",
+        "B11": "2",
+        "C11": "e",
+        "D11": "e) Are you now disabled, or applied or applying for, or receiving any disability or Workers’ Compensation benefits or on waiver of premium for life or health insurance?"
+      }
+    },
+    {
+      "row": 12,
+      "form": "GPA-DI-EZ-3",
+      "section": "2",
+      "id": "f",
+      "text": "f.) Tobacco / Nicotine Use: Have you or your spouse (if applying for coverage) used tobacco or any nicotine substitute in any form (including nicotine patches and nicotine chewing gum)?",
+      "notes": "If “Yes,” please state when you last used tobacco or nicotine products and specify the product used.\nMember: ______   __________________________    Spouse (only show if spouse cov available): ______   __________________________\nMo / Yr               Product\t                                                                                         Mo / Yr                  Product\ng.)  (Omit G when a VA Application)",
+      "cells": {
+        "A12": "GPA-DI-EZ-3",
+        "B12": "2",
+        "C12": "f",
+        "D12": "f.) Tobacco / Nicotine Use: Have you or your spouse (if applying for coverage) used tobacco or any nicotine substitute in any form (including nicotine patches and nicotine chewing gum)?",
+        "E12": "If “Yes,” please state when you last used tobacco or nicotine products and specify the product used.\nMember: ______   __________________________    Spouse (only show if spouse cov available): ______   __________________________\nMo / Yr               Product\t                                                                                         Mo / Yr                  Product\ng.)  (Omit G when a VA Application)"
+      }
+    },
+    {
+      "row": 13,
+      "form": "GPA-DI-EZ-3",
+      "section": "2",
+      "id": "7",
+      "text": "Residents of All States Except for the residents of VA, Minnesota and Connecticut - Has any person to be insured been convicted of a crime or served time in prison because of a conviction or have an arrest pending?",
+      "notes": null,
+      "cells": {
+        "A13": "GPA-DI-EZ-3",
+        "B13": "2",
+        "C13": "7",
+        "D13": "Residents of All States Except for the residents of VA, Minnesota and Connecticut - Has any person to be insured been convicted of a crime or served time in prison because of a conviction or have an arrest pending?"
+      }
+    },
+    {
+      "row": 14,
+      "form": "GPA-DI-EZ-3",
+      "section": "2",
+      "id": "8",
+      "text": "For residents of Minnesota and Connecticut only - Has any person to be insured been convicted of a crime or served time in prison because of a conviction or been convicted for any reason during the past 15 years?",
+      "notes": null,
+      "cells": {
+        "A14": "GPA-DI-EZ-3",
+        "B14": "2",
+        "C14": "8",
+        "D14": "For residents of Minnesota and Connecticut only - Has any person to be insured been convicted of a crime or served time in prison because of a conviction or been convicted for any reason during the past 15 years?"
+      }
+    },
+    {
+      "row": 15,
+      "form": "EZ-1",
+      "section": "3",
+      "id": "1",
+      "text": "Is any person proposed for insurance now taking any prescribed medication or receiving or contemplating any medical attention or surgical treatment?",
+      "notes": null,
+      "cells": {
+        "A15": "EZ-1",
+        "B15": "3",
+        "C15": "1",
+        "D15": "Is any person proposed for insurance now taking any prescribed medication or receiving or contemplating any medical attention or surgical treatment?"
+      }
+    },
+    {
+      "row": 16,
+      "form": "EZ-1",
+      "section": "3",
+      "id": "2",
+      "text": "During the past five years has any person proposed for insurance ever been medically diagnosed by a physician as having or been treated for: heart trouble, elevated blood pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood or sugar in urine, back trouble/disorder, arthritis, or unexplained weight loss?",
+      "notes": null,
+      "cells": {
+        "A16": "EZ-1",
+        "B16": "3",
+        "C16": "2",
+        "D16": "During the past five years has any person proposed for insurance ever been medically diagnosed by a physician as having or been treated for: heart trouble, elevated blood pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood or sugar in urine, back trouble/disorder, arthritis, or unexplained weight loss?"
+      }
+    },
+    {
+      "row": 17,
+      "form": "EZ-1",
+      "section": "3",
+      "id": "3",
+      "text": "During the past five years has any person proposed for insurance been counseled, treated or hospitalized for the use of alcohol or drugs?",
+      "notes": null,
+      "cells": {
+        "A17": "EZ-1",
+        "B17": "3",
+        "C17": "3",
+        "D17": "During the past five years has any person proposed for insurance been counseled, treated or hospitalized for the use of alcohol or drugs?"
+      }
+    },
+    {
+      "row": 18,
+      "form": "EZ-2",
+      "section": "4",
+      "id": "1",
+      "text": "Are you now taking any prescribed medication or receiving or contemplating any medical attention or surgical treatment?",
+      "notes": null,
+      "cells": {
+        "A18": "EZ-2",
+        "B18": "4",
+        "C18": "1",
+        "D18": "Are you now taking any prescribed medication or receiving or contemplating any medical attention or surgical treatment?"
+      }
+    },
+    {
+      "row": 19,
+      "form": "EZ-2",
+      "section": "4",
+      "id": "2",
+      "text": "During the past five years have you ever been medically diagnosed by a physician as having or been treated for: heart trouble, elevated blood pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood or sugar in urine, back trouble/disorder, arthritis, or unexplained weight loss?",
+      "notes": null,
+      "cells": {
+        "A19": "EZ-2",
+        "B19": "4",
+        "C19": "2",
+        "D19": "During the past five years have you ever been medically diagnosed by a physician as having or been treated for: heart trouble, elevated blood pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood or sugar in urine, back trouble/disorder, arthritis, or unexplained weight loss?"
+      }
+    },
+    {
+      "row": 20,
+      "form": "EZ-2",
+      "section": "4",
+      "id": "3",
+      "text": "During the past five years have you ever been counseled, treated or hospitalized for the use of alcohol or drugs?",
+      "notes": null,
+      "cells": {
+        "A20": "EZ-2",
+        "B20": "4",
+        "C20": "3",
+        "D20": "During the past five years have you ever been counseled, treated or hospitalized for the use of alcohol or drugs?"
+      }
+    },
+    {
+      "row": 21,
+      "form": "EZ-3",
+      "section": "5",
+      "id": "1",
+      "text": "Is any person proposed for insurance now ill, receiving or considering medical attention or treatment, or considering surgery?",
+      "notes": null,
+      "cells": {
+        "A21": "EZ-3",
+        "B21": "5",
+        "C21": "1",
+        "D21": "Is any person proposed for insurance now ill, receiving or considering medical attention or treatment, or considering surgery?"
+      }
+    },
+    {
+      "row": 22,
+      "form": "EZ-3",
+      "section": "5",
+      "id": "2",
+      "text": "Within the last five years, has any person proposed for insurance been counseled, hospitalized or treated for:  (a) using alcohol or drugs; or (b)  mental, emotional or nervous disorder?",
+      "notes": null,
+      "cells": {
+        "A22": "EZ-3",
+        "B22": "5",
+        "C22": "2",
+        "D22": "Within the last five years, has any person proposed for insurance been counseled, hospitalized or treated for:  (a) using alcohol or drugs; or (b)  mental, emotional or nervous disorder?"
+      }
+    },
+    {
+      "row": 23,
+      "form": "EZ-3",
+      "section": "5",
+      "id": "3",
+      "text": "Within the last five years, has any person proposed for insurance been diagnosed by a physician as having, or been treated for: heart trouble, elevated blood pressure, cancer, diabetes, epilepsy, neurological or respiratory disorder, kidney or liver disorder, pancreas disorder, enlarged lymph nodes or tumors, disorder of the circulatory or digestive system, gynecological or genitourinary disorders, immunodeficiency or blood disorder, or unexplained weight loss?",
+      "notes": null,
+      "cells": {
+        "A23": "EZ-3",
+        "B23": "5",
+        "C23": "3",
+        "D23": "Within the last five years, has any person proposed for insurance been diagnosed by a physician as having, or been treated for: heart trouble, elevated blood pressure, cancer, diabetes, epilepsy, neurological or respiratory disorder, kidney or liver disorder, pancreas disorder, enlarged lymph nodes or tumors, disorder of the circulatory or digestive system, gynecological or genitourinary disorders, immunodeficiency or blood disorder, or unexplained weight loss?"
+      }
+    },
+    {
+      "row": 24,
+      "form": "EZ-4",
+      "section": "6",
+      "id": "1",
+      "text": "Is any person proposed for insurance now taking any prescribed medication or receiving or contemplating  any medical attention or surgical treatment?",
+      "notes": null,
+      "cells": {
+        "A24": "EZ-4",
+        "B24": "6",
+        "C24": "1",
+        "D24": "Is any person proposed for insurance now taking any prescribed medication or receiving or contemplating  any medical attention or surgical treatment?"
+      }
+    },
+    {
+      "row": 25,
+      "form": "EZ-4",
+      "section": "6",
+      "id": "2",
+      "text": "During the past five years has any person proposed for insurance ever been medically diagnosed by a physician as having or been treated for: heart trouble, elevated blood pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood or sugar in urine, back trouble/disorder, arthritis, or unexplained weight loss?",
+      "notes": null,
+      "cells": {
+        "A25": "EZ-4",
+        "B25": "6",
+        "C25": "2",
+        "D25": "During the past five years has any person proposed for insurance ever been medically diagnosed by a physician as having or been treated for: heart trouble, elevated blood pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood or sugar in urine, back trouble/disorder, arthritis, or unexplained weight loss?"
+      }
+    },
+    {
+      "row": 26,
+      "form": "EZ-4",
+      "section": "6",
+      "id": "3",
+      "text": "During the past five years has any person proposed for insurance been counseled, treated or hospitalized for the use of alcohol or drugs?",
+      "notes": null,
+      "cells": {
+        "A26": "EZ-4",
+        "B26": "6",
+        "C26": "3",
+        "D26": "During the past five years has any person proposed for insurance been counseled, treated or hospitalized for the use of alcohol or drugs?"
+      }
+    },
+    {
+      "row": 27,
+      "form": "EZ-4",
+      "section": "6",
+      "id": "4",
+      "text": "During the past five years has any person proposed for insurance suffered from incontinence or required assistance in bathing, toileting, dressing, eating, cooking or transferring?",
+      "notes": null,
+      "cells": {
+        "A27": "EZ-4",
+        "B27": "6",
+        "C27": "4",
+        "D27": "During the past five years has any person proposed for insurance suffered from incontinence or required assistance in bathing, toileting, dressing, eating, cooking or transferring?"
+      }
+    },
+    {
+      "row": 28,
+      "form": "EZ-4",
+      "section": "6",
+      "id": "5",
+      "text": "Has any person proposed for insurance had a parent, brother or sister who, prior to age 60 had been medically diagnosed by a physician as having, or been treated for: cancer, a stroke, paralysis, hypertension, diabetes, heart disease, kidney disease, neuromuscular or mental illness?",
+      "notes": "For Instate Indiana sitused contract, change language in 6.E. to “or been treated for: chest discomfort, coronary artery disease, heart murmur, irregular pulse, protein or blood in urine, urinary tract disorder, multiple sclerosis, seizures, memory loss, counseling or hospitalization for a mental health condition, drugs or alcohol?”",
+      "cells": {
+        "A28": "EZ-4",
+        "B28": "6",
+        "C28": "5",
+        "D28": "Has any person proposed for insurance had a parent, brother or sister who, prior to age 60 had been medically diagnosed by a physician as having, or been treated for: cancer, a stroke, paralysis, hypertension, diabetes, heart disease, kidney disease, neuromuscular or mental illness?",
+        "E28": "For Instate Indiana sitused contract, change language in 6.E. to “or been treated for: chest discomfort, coronary artery disease, heart murmur, irregular pulse, protein or blood in urine, urinary tract disorder, multiple sclerosis, seizures, memory loss, counseling or hospitalization for a mental health condition, drugs or alcohol?”"
+      }
+    },
+    {
+      "row": 29,
+      "form": "PR1",
+      "section": "7",
+      "id": "1",
+      "text": "Are you now, and have you been for the last 30 days, performing all the duties of your occupation on a full time basis for 25 or more hours per week at your usual place of business?",
+      "notes": null,
+      "cells": {
+        "A29": "PR1",
+        "B29": "7",
+        "C29": "1",
+        "D29": "Are you now, and have you been for the last 30 days, performing all the duties of your occupation on a full time basis for 25 or more hours per week at your usual place of business?"
+      }
+    },
+    {
+      "row": 30,
+      "form": "PR1",
+      "section": "7",
+      "id": "2",
+      "text": "Are you or any other person to be insured disabled or receiving any disability or workers compensation benefits or on waiver of premium for life or health insurance?",
+      "notes": null,
+      "cells": {
+        "A30": "PR1",
+        "B30": "7",
+        "C30": "2",
+        "D30": "Are you or any other person to be insured disabled or receiving any disability or workers compensation benefits or on waiver of premium for life or health insurance?"
+      }
+    },
+    {
+      "row": 31,
+      "form": "PR1",
+      "section": "7",
+      "id": "3",
+      "text": "Are you or any other person to be insured now ill, or receiving medical attention or surgical treatment?",
+      "notes": null,
+      "cells": {
+        "A31": "PR1",
+        "B31": "7",
+        "C31": "3",
+        "D31": "Are you or any other person to be insured now ill, or receiving medical attention or surgical treatment?"
+      }
+    },
+    {
+      "row": 32,
+      "form": "PR1",
+      "section": "7",
+      "id": "4",
+      "text": "During the past five years, has any person to be insured consulted any physician or other medical care practitioner other than for a routine physical examination, or checkup, or been hospitalized or had an operation or had any illness, disease or injury?",
+      "notes": null,
+      "cells": {
+        "A32": "PR1",
+        "B32": "7",
+        "C32": "4",
+        "D32": "During the past five years, has any person to be insured consulted any physician or other medical care practitioner other than for a routine physical examination, or checkup, or been hospitalized or had an operation or had any illness, disease or injury?"
+      }
+    },
+    {
+      "row": 33,
+      "form": "PR1",
+      "section": "7",
+      "id": "5",
+      "text": "Are you or any other person to be insured taking any kind of medication or, so far as you know, in impaired physical or mental health?",
+      "notes": null,
+      "cells": {
+        "A33": "PR1",
+        "B33": "7",
+        "C33": "5",
+        "D33": "Are you or any other person to be insured taking any kind of medication or, so far as you know, in impaired physical or mental health?"
+      }
+    },
+    {
+      "row": 34,
+      "form": "PR1",
+      "section": "7",
+      "id": "6",
+      "text": "Is any person to be insured now pregnant?",
+      "notes": null,
+      "cells": {
+        "A34": "PR1",
+        "B34": "7",
+        "C34": "6",
+        "D34": "Is any person to be insured now pregnant?"
+      }
+    },
+    {
+      "row": 35,
+      "form": "PR1",
+      "section": "7",
+      "id": "7",
+      "text": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for:",
+      "notes": null,
+      "cells": {
+        "A35": "PR1",
+        "B35": "7",
+        "C35": "7",
+        "D35": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for:"
+      }
+    },
+    {
+      "row": 36,
+      "form": "PR1",
+      "section": "7",
+      "id": "a",
+      "text": "a)Heart or circulatory trouble, high blood pressure, pain or pressure in chest?",
+      "notes": null,
+      "cells": {
+        "A36": "PR1",
+        "B36": "7",
+        "C36": "a",
+        "D36": "a)Heart or circulatory trouble, high blood pressure, pain or pressure in chest?"
+      }
+    },
+    {
+      "row": 37,
+      "form": "PR1",
+      "section": "7",
+      "id": "b",
+      "text": "b)Arthritis, back trouble, bone or joint disorder?",
+      "notes": null,
+      "cells": {
+        "A37": "PR1",
+        "B37": "7",
+        "C37": "b",
+        "D37": "b)Arthritis, back trouble, bone or joint disorder?"
+      }
+    },
+    {
+      "row": 38,
+      "form": "PR1",
+      "section": "7",
+      "id": "c",
+      "text": "c)Fainting spells, convulsions or epilepsy?",
+      "notes": null,
+      "cells": {
+        "A38": "PR1",
+        "B38": "7",
+        "C38": "c",
+        "D38": "c)Fainting spells, convulsions or epilepsy?"
+      }
+    },
+    {
+      "row": 39,
+      "form": "PR1",
+      "section": "7",
+      "id": "d",
+      "text": "d)Sugar, blood, albumin or pus in urine?",
+      "notes": null,
+      "cells": {
+        "A39": "PR1",
+        "B39": "7",
+        "C39": "d",
+        "D39": "d)Sugar, blood, albumin or pus in urine?"
+      }
+    },
+    {
+      "row": 40,
+      "form": "PR1",
+      "section": "7",
+      "id": "e",
+      "text": "e)Diabetes, kidney trouble, ulcers or digestive disorder?",
+      "notes": null,
+      "cells": {
+        "A40": "PR1",
+        "B40": "7",
+        "C40": "e",
+        "D40": "e)Diabetes, kidney trouble, ulcers or digestive disorder?"
+      }
+    },
+    {
+      "row": 41,
+      "form": "PR1",
+      "section": "7",
+      "id": "f",
+      "text": "f)Disorder of breast or reproductive organs or functions?",
+      "notes": null,
+      "cells": {
+        "A41": "PR1",
+        "B41": "7",
+        "C41": "f",
+        "D41": "f)Disorder of breast or reproductive organs or functions?"
+      }
+    },
+    {
+      "row": 42,
+      "form": "PR1",
+      "section": "7",
+      "id": "g",
+      "text": "g)Nervous or mental disorder, emotional conditions or psychiatric care?",
+      "notes": null,
+      "cells": {
+        "A42": "PR1",
+        "B42": "7",
+        "C42": "g",
+        "D42": "g)Nervous or mental disorder, emotional conditions or psychiatric care?"
+      }
+    },
+    {
+      "row": 43,
+      "form": "PR1",
+      "section": "7",
+      "id": "h",
+      "text": "h)Cancer, tumor or cyst?",
+      "notes": null,
+      "cells": {
+        "A43": "PR1",
+        "B43": "7",
+        "C43": "h",
+        "D43": "h)Cancer, tumor or cyst?"
+      }
+    },
+    {
+      "row": 44,
+      "form": "PR1",
+      "section": "7",
+      "id": "i",
+      "text": "i)Varicose veins, hemorrhoids or hernia?",
+      "notes": null,
+      "cells": {
+        "A44": "PR1",
+        "B44": "7",
+        "C44": "i",
+        "D44": "i)Varicose veins, hemorrhoids or hernia?"
+      }
+    },
+    {
+      "row": 45,
+      "form": "PR1",
+      "section": "7",
+      "id": "j",
+      "text": "j)Disorder of eyes, ears, nose or sinuses?",
+      "notes": null,
+      "cells": {
+        "A45": "PR1",
+        "B45": "7",
+        "C45": "j",
+        "D45": "j)Disorder of eyes, ears, nose or sinuses?"
+      }
+    },
+    {
+      "row": 46,
+      "form": "PR1",
+      "section": "7",
+      "id": "k",
+      "text": "k)Thyroid, liver or respiratory disorder?",
+      "notes": null,
+      "cells": {
+        "A46": "PR1",
+        "B46": "7",
+        "C46": "k",
+        "D46": "k)Thyroid, liver or respiratory disorder?"
+      }
+    },
+    {
+      "row": 47,
+      "form": "PR1",
+      "section": "7",
+      "id": "l",
+      "text": "l)Alcoholism or drug habit?",
+      "notes": null,
+      "cells": {
+        "A47": "PR1",
+        "B47": "7",
+        "C47": "l",
+        "D47": "l)Alcoholism or drug habit?"
+      }
+    },
+    {
+      "row": 48,
+      "form": "PR1",
+      "section": "7",
+      "id": "m",
+      "text": "m)Disorder of the blood?",
+      "notes": null,
+      "cells": {
+        "A48": "PR1",
+        "B48": "7",
+        "C48": "m",
+        "D48": "m)Disorder of the blood?"
+      }
+    },
+    {
+      "row": 49,
+      "form": "PRS1",
+      "section": "8",
+      "id": "1",
+      "text": "Are you now, and have you been for the last 30 days, performing all the duties of your occupation on a full time basis for 25 or more hours per week at your usual place of business?",
+      "notes": null,
+      "cells": {
+        "A49": "PRS1",
+        "B49": "8",
+        "C49": "1",
+        "D49": "Are you now, and have you been for the last 30 days, performing all the duties of your occupation on a full time basis for 25 or more hours per week at your usual place of business?"
+      }
+    },
+    {
+      "row": 50,
+      "form": "PRS1",
+      "section": "8",
+      "id": "2",
+      "text": "Are you or any other person to be insured disabled or receiving any disability or workers compensation benefits or on waiver of premium for life or health insurance?",
+      "notes": null,
+      "cells": {
+        "A50": "PRS1",
+        "B50": "8",
+        "C50": "2",
+        "D50": "Are you or any other person to be insured disabled or receiving any disability or workers compensation benefits or on waiver of premium for life or health insurance?"
+      }
+    },
+    {
+      "row": 51,
+      "form": "PRS1",
+      "section": "8",
+      "id": "3",
+      "text": "Are you or any other person to be insured now ill, or receiving medical attention or surgical treatment?",
+      "notes": null,
+      "cells": {
+        "A51": "PRS1",
+        "B51": "8",
+        "C51": "3",
+        "D51": "Are you or any other person to be insured now ill, or receiving medical attention or surgical treatment?"
+      }
+    },
+    {
+      "row": 52,
+      "form": "PRS1",
+      "section": "8",
+      "id": "4",
+      "text": "During the past five years, has any person to be insured consulted any physician or other medical care practitioner other than for a routine physical examination, or checkup, or been hospitalized or had an operation or had any illness, disease or injury?",
+      "notes": null,
+      "cells": {
+        "A52": "PRS1",
+        "B52": "8",
+        "C52": "4",
+        "D52": "During the past five years, has any person to be insured consulted any physician or other medical care practitioner other than for a routine physical examination, or checkup, or been hospitalized or had an operation or had any illness, disease or injury?"
+      }
+    },
+    {
+      "row": 53,
+      "form": "PRS1",
+      "section": "8",
+      "id": "5",
+      "text": "Are you or any other person to be insured taking any kind of medication or, so far as you know, in impaired physical or mental health?",
+      "notes": null,
+      "cells": {
+        "A53": "PRS1",
+        "B53": "8",
+        "C53": "5",
+        "D53": "Are you or any other person to be insured taking any kind of medication or, so far as you know, in impaired physical or mental health?"
+      }
+    },
+    {
+      "row": 54,
+      "form": "PRS1",
+      "section": "8",
+      "id": "6",
+      "text": "Is any person to be insured now pregnant?",
+      "notes": null,
+      "cells": {
+        "A54": "PRS1",
+        "B54": "8",
+        "C54": "6",
+        "D54": "Is any person to be insured now pregnant?"
+      }
+    },
+    {
+      "row": 55,
+      "form": "PRS1",
+      "section": "8",
+      "id": "7",
+      "text": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for:",
+      "notes": null,
+      "cells": {
+        "A55": "PRS1",
+        "B55": "8",
+        "C55": "7",
+        "D55": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for:"
+      }
+    },
+    {
+      "row": 56,
+      "form": "PRS1",
+      "section": "8",
+      "id": "a",
+      "text": "a.    Heart or circulatory trouble, high blood pressure, pain or pressure in chest?",
+      "notes": null,
+      "cells": {
+        "A56": "PRS1",
+        "B56": "8",
+        "C56": "a",
+        "D56": "a.    Heart or circulatory trouble, high blood pressure, pain or pressure in chest?"
+      }
+    },
+    {
+      "row": 57,
+      "form": "PRS1",
+      "section": "8",
+      "id": "b",
+      "text": "b. Arthritis, back trouble, bone or joint disorder?",
+      "notes": null,
+      "cells": {
+        "A57": "PRS1",
+        "B57": "8",
+        "C57": "b",
+        "D57": "b. Arthritis, back trouble, bone or joint disorder?"
+      }
+    },
+    {
+      "row": 58,
+      "form": "PRS1",
+      "section": "8",
+      "id": "c",
+      "text": "c.  Fainting spells, convulsions or epilepsy?",
+      "notes": null,
+      "cells": {
+        "A58": "PRS1",
+        "B58": "8",
+        "C58": "c",
+        "D58": "c.  Fainting spells, convulsions or epilepsy?"
+      }
+    },
+    {
+      "row": 59,
+      "form": "PRS1",
+      "section": "8",
+      "id": "d",
+      "text": "d.  Sugar, blood, albumin or pus in urine?",
+      "notes": null,
+      "cells": {
+        "A59": "PRS1",
+        "B59": "8",
+        "C59": "d",
+        "D59": "d.  Sugar, blood, albumin or pus in urine?"
+      }
+    },
+    {
+      "row": 60,
+      "form": "PRS1",
+      "section": "8",
+      "id": "e",
+      "text": "e.  Diabetes, kidney trouble, ulcers or digestive disorder?",
+      "notes": null,
+      "cells": {
+        "A60": "PRS1",
+        "B60": "8",
+        "C60": "e",
+        "D60": "e.  Diabetes, kidney trouble, ulcers or digestive disorder?"
+      }
+    },
+    {
+      "row": 61,
+      "form": "PRS1",
+      "section": "8",
+      "id": "f",
+      "text": "f.   Disorder of breast or reproductive organs or functions?",
+      "notes": null,
+      "cells": {
+        "A61": "PRS1",
+        "B61": "8",
+        "C61": "f",
+        "D61": "f.   Disorder of breast or reproductive organs or functions?"
+      }
+    },
+    {
+      "row": 62,
+      "form": "PRS1",
+      "section": "8",
+      "id": "g",
+      "text": "g.   Nervous or mental disorder, emotional conditions or psychiatric care?",
+      "notes": null,
+      "cells": {
+        "A62": "PRS1",
+        "B62": "8",
+        "C62": "g",
+        "D62": "g.   Nervous or mental disorder, emotional conditions or psychiatric care?"
+      }
+    },
+    {
+      "row": 63,
+      "form": "PRS1",
+      "section": "8",
+      "id": "h",
+      "text": "h.  Cancer, tumor or cyst?",
+      "notes": null,
+      "cells": {
+        "A63": "PRS1",
+        "B63": "8",
+        "C63": "h",
+        "D63": "h.  Cancer, tumor or cyst?"
+      }
+    },
+    {
+      "row": 64,
+      "form": "PRS1",
+      "section": "8",
+      "id": "i",
+      "text": "i.   Varicose veins, hemorrhoids or hernia?",
+      "notes": null,
+      "cells": {
+        "A64": "PRS1",
+        "B64": "8",
+        "C64": "i",
+        "D64": "i.   Varicose veins, hemorrhoids or hernia?"
+      }
+    },
+    {
+      "row": 65,
+      "form": "PRS1",
+      "section": "8",
+      "id": "j",
+      "text": "j.   Disorder of eyes, ears, nose or sinuses?",
+      "notes": null,
+      "cells": {
+        "A65": "PRS1",
+        "B65": "8",
+        "C65": "j",
+        "D65": "j.   Disorder of eyes, ears, nose or sinuses?"
+      }
+    },
+    {
+      "row": 66,
+      "form": "PRS1",
+      "section": "8",
+      "id": "k",
+      "text": "k.  Thyroid, liver or respiratory disorder?",
+      "notes": null,
+      "cells": {
+        "A66": "PRS1",
+        "B66": "8",
+        "C66": "k",
+        "D66": "k.  Thyroid, liver or respiratory disorder?"
+      }
+    },
+    {
+      "row": 67,
+      "form": "PRS1",
+      "section": "8",
+      "id": "l",
+      "text": "l.    Alcoholism or drug habit?",
+      "notes": null,
+      "cells": {
+        "A67": "PRS1",
+        "B67": "8",
+        "C67": "l",
+        "D67": "l.    Alcoholism or drug habit?"
+      }
+    },
+    {
+      "row": 68,
+      "form": "PRS1",
+      "section": "8",
+      "id": "m",
+      "text": "m.  Disorder of the blood?",
+      "notes": null,
+      "cells": {
+        "A68": "PRS1",
+        "B68": "8",
+        "C68": "m",
+        "D68": "m.  Disorder of the blood?"
+      }
+    },
+    {
+      "row": 69,
+      "form": "PRS1",
+      "section": "8",
+      "id": "21",
+      "text": "Standard AIDS Question",
+      "notes": "See attached page for further options",
+      "cells": {
+        "A69": "PRS1",
+        "B69": "8",
+        "C69": "21",
+        "D69": "Standard AIDS Question",
+        "E69": "See attached page for further options"
+      }
+    },
+    {
+      "row": 70,
+      "form": "PRS1",
+      "section": "8",
+      "id": "n",
+      "text": "n.  Other Health or physical impairment including:",
+      "notes": "(i) Being medically diagnosed as having Acquired Immune Deficiency Syndrome",
+      "cells": {
+        "A70": "PRS1",
+        "B70": "8",
+        "C70": "n",
+        "D70": "n.  Other Health or physical impairment including:",
+        "E70": "(i) Being medically diagnosed as having Acquired Immune Deficiency Syndrome"
+      }
+    },
+    {
+      "row": 71,
+      "form": "PRS1",
+      "section": "8",
+      "id": "23",
+      "text": "(AIDS) or AIDS Related Complex (ARC) ?",
+      "notes": null,
+      "cells": {
+        "A71": "PRS1",
+        "B71": "8",
+        "C71": "23",
+        "D71": "(AIDS) or AIDS Related Complex (ARC) ?"
+      }
+    },
+    {
+      "row": 72,
+      "form": "PRS1",
+      "section": "8",
+      "id": "24",
+      "text": "(ii)  Chronic cough, persistent diarrhea, enlarged lymph glands, chronic fatigue in the past five years?",
+      "notes": null,
+      "cells": {
+        "A72": "PRS1",
+        "B72": "8",
+        "C72": "24",
+        "D72": "(ii)  Chronic cough, persistent diarrhea, enlarged lymph glands, chronic fatigue in the past five years?"
+      }
+    },
+    {
+      "row": 73,
+      "form": "PRS1",
+      "section": "8",
+      "id": "25",
+      "text": "(iii) Any other impairment?",
+      "notes": null,
+      "cells": {
+        "A73": "PRS1",
+        "B73": "8",
+        "C73": "25",
+        "D73": "(iii) Any other impairment?"
+      }
+    },
+    {
+      "row": 74,
+      "form": "PRS1",
+      "section": "8",
+      "id": "26",
+      "text": "Except for residents of Maryland, has any person to be insured had a parent, brother or sister who, prior to age 60 had been medically diagnosed by a physician as having, or been treated for, cancer, a stroke, paralysis, hypertension, diabetes, heart disease, kidney disease, neuro-muscular or mental illness?",
+      "notes": null,
+      "cells": {
+        "A74": "PRS1",
+        "B74": "8",
+        "C74": "26",
+        "D74": "Except for residents of Maryland, has any person to be insured had a parent, brother or sister who, prior to age 60 had been medically diagnosed by a physician as having, or been treated for, cancer, a stroke, paralysis, hypertension, diabetes, heart disease, kidney disease, neuro-muscular or mental illness?"
+      }
+    },
+    {
+      "row": 75,
+      "form": "PRS1",
+      "section": "8",
+      "id": "27",
+      "text": "Within the past two years, have you or your spouse participated in, or do either of you, within the next two years, plan to participate in: aircraft flying other than as a passenger, scuba diving, ultralight flying, ballooning, parachuting, mountaineering, rodeo riding, snowmobiling, hang gliding, parasailing, bungee jumping, or organized motorcycle racing, or any type of organized motorized racing?",
+      "notes": "Driver’s License No.:  Member  _____________________\nSpouse  _______________________\nState in which issued:  Member  ______________________\nSpouse  _______________________",
+      "cells": {
+        "A75": "PRS1",
+        "B75": "8",
+        "C75": "27",
+        "D75": "Within the past two years, have you or your spouse participated in, or do either of you, within the next two years, plan to participate in: aircraft flying other than as a passenger, scuba diving, ultralight flying, ballooning, parachuting, mountaineering, rodeo riding, snowmobiling, hang gliding, parasailing, bungee jumping, or organized motorcycle racing, or any type of organized motorized racing?",
+        "E75": "Driver’s License No.:  Member  _____________________\nSpouse  _______________________\nState in which issued:  Member  ______________________\nSpouse  _______________________"
+      }
+    },
+    {
+      "row": 76,
+      "form": "PRS1",
+      "section": "8",
+      "id": "28",
+      "text": "Have you or your spouse had a driver’s license suspended or revoked or had any moving violations within the last five years?",
+      "notes": null,
+      "cells": {
+        "A76": "PRS1",
+        "B76": "8",
+        "C76": "28",
+        "D76": "Have you or your spouse had a driver’s license suspended or revoked or had any moving violations within the last five years?"
+      }
+    },
+    {
+      "row": 77,
+      "form": "PRS1",
+      "section": "8",
+      "id": "29",
+      "text": "Except for the residents of Minnesota and Connecticut, in the last seven years, have you and/or your spouse been convicted of a crime or served time in prison because of a conviction or have an  arrest pending?",
+      "notes": null,
+      "cells": {
+        "A77": "PRS1",
+        "B77": "8",
+        "C77": "29",
+        "D77": "Except for the residents of Minnesota and Connecticut, in the last seven years, have you and/or your spouse been convicted of a crime or served time in prison because of a conviction or have an  arrest pending?"
+      }
+    },
+    {
+      "row": 78,
+      "form": "PRS1",
+      "section": "8",
+      "id": "30",
+      "text": "For residents of Minnesota and Connecticut only, in the last seven years, have you and/or your      spouse been convicted of a crime or served time in prisonbecause of a conviction or been arrested and convicted for any reason?",
+      "notes": null,
+      "cells": {
+        "A78": "PRS1",
+        "B78": "8",
+        "C78": "30",
+        "D78": "For residents of Minnesota and Connecticut only, in the last seven years, have you and/or your      spouse been convicted of a crime or served time in prisonbecause of a conviction or been arrested and convicted for any reason?"
+      }
+    },
+    {
+      "row": 79,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "1",
+      "text": "Are you or your spouse now ill, or receiving or contemplating any medical attention or surgical treatment?",
+      "notes": null,
+      "cells": {
+        "A79": "CI-2014",
+        "B79": "9",
+        "C79": "1",
+        "D79": "Are you or your spouse now ill, or receiving or contemplating any medical attention or surgical treatment?"
+      }
+    },
+    {
+      "row": 80,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "2",
+      "text": "Are you or your spouse taking any kind of medication or, so far as you know, in impaired physical or mental health?",
+      "notes": null,
+      "cells": {
+        "A80": "CI-2014",
+        "B80": "9",
+        "C80": "2",
+        "D80": "Are you or your spouse taking any kind of medication or, so far as you know, in impaired physical or mental health?"
+      }
+    },
+    {
+      "row": 81,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "3",
+      "text": "Have you or your spouse used tobacco or nicotine in any form, including patch or gum, within the past 24 months?",
+      "notes": null,
+      "cells": {
+        "A81": "CI-2014",
+        "B81": "9",
+        "C81": "3",
+        "D81": "Have you or your spouse used tobacco or nicotine in any form, including patch or gum, within the past 24 months?"
+      }
+    },
+    {
+      "row": 82,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "4",
+      "text": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for:",
+      "notes": null,
+      "cells": {
+        "A82": "CI-2014",
+        "B82": "9",
+        "C82": "4",
+        "D82": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for:"
+      }
+    },
+    {
+      "row": 83,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "a",
+      "text": "a. Heart attack, heart or circulatory trouble, high blood pressure, pain or pressure in chest?",
+      "notes": null,
+      "cells": {
+        "A83": "CI-2014",
+        "B83": "9",
+        "C83": "a",
+        "D83": "a. Heart attack, heart or circulatory trouble, high blood pressure, pain or pressure in chest?"
+      }
+    },
+    {
+      "row": 84,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "b",
+      "text": "b. Organ transplant?",
+      "notes": null,
+      "cells": {
+        "A84": "CI-2014",
+        "B84": "9",
+        "C84": "b",
+        "D84": "b. Organ transplant?"
+      }
+    },
+    {
+      "row": 85,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "c",
+      "text": "c. Stroke?",
+      "notes": null,
+      "cells": {
+        "A85": "CI-2014",
+        "B85": "9",
+        "C85": "c",
+        "D85": "c. Stroke?"
+      }
+    },
+    {
+      "row": 86,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "d",
+      "text": "d. Coma?",
+      "notes": null,
+      "cells": {
+        "A86": "CI-2014",
+        "B86": "9",
+        "C86": "d",
+        "D86": "d. Coma?"
+      }
+    },
+    {
+      "row": 87,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "e",
+      "text": "e. Cancer, carcinoma in situ, tumor or cyst?",
+      "notes": null,
+      "cells": {
+        "A87": "CI-2014",
+        "B87": "9",
+        "C87": "e",
+        "D87": "e. Cancer, carcinoma in situ, tumor or cyst?"
+      }
+    },
+    {
+      "row": 88,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "f",
+      "text": "f. Dementia or problems with memory or ability to think or reason?",
+      "notes": null,
+      "cells": {
+        "A88": "CI-2014",
+        "B88": "9",
+        "C88": "f",
+        "D88": "f. Dementia or problems with memory or ability to think or reason?"
+      }
+    },
+    {
+      "row": 89,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "g",
+      "text": "g. Diabetes, kidney trouble, ulcers or digestive disorder?",
+      "notes": null,
+      "cells": {
+        "A89": "CI-2014",
+        "B89": "9",
+        "C89": "g",
+        "D89": "g. Diabetes, kidney trouble, ulcers or digestive disorder?"
+      }
+    },
+    {
+      "row": 90,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "h",
+      "text": "h. Thyroid, liver or respiratory disorder?",
+      "notes": null,
+      "cells": {
+        "A90": "CI-2014",
+        "B90": "9",
+        "C90": "h",
+        "D90": "h. Thyroid, liver or respiratory disorder?"
+      }
+    },
+    {
+      "row": 91,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "i",
+      "text": "i. Alcoholism or drug habit?",
+      "notes": null,
+      "cells": {
+        "A91": "CI-2014",
+        "B91": "9",
+        "C91": "i",
+        "D91": "i. Alcoholism or drug habit?"
+      }
+    },
+    {
+      "row": 92,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "j",
+      "text": "j. Disorder of the blood, except for HIV (Human Immunodeficiency Virus)?",
+      "notes": null,
+      "cells": {
+        "A92": "CI-2014",
+        "B92": "9",
+        "C92": "j",
+        "D92": "j. Disorder of the blood, except for HIV (Human Immunodeficiency Virus)?"
+      }
+    },
+    {
+      "row": 93,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "k",
+      "text": "k. Blindness or glaucoma or partial or total loss of hearing in one or both ears; partial or total loss of speech, motor neuron disease or paralysis?",
+      "notes": null,
+      "cells": {
+        "A93": "CI-2014",
+        "B93": "9",
+        "C93": "k",
+        "D93": "k. Blindness or glaucoma or partial or total loss of hearing in one or both ears; partial or total loss of speech, motor neuron disease or paralysis?"
+      }
+    },
+    {
+      "row": 94,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "l",
+      "text": "l.   Other health or physical impairment including:",
+      "notes": null,
+      "cells": {
+        "A94": "CI-2014",
+        "B94": "9",
+        "C94": "l",
+        "D94": "l.   Other health or physical impairment including:"
+      }
+    },
+    {
+      "row": 95,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "17",
+      "text": "(i) Being medically diagnosed as having Acquired Immune Deficiency Syndrome (AIDS) or AIDS-related complex (ARC); immune system?",
+      "notes": null,
+      "cells": {
+        "A95": "CI-2014",
+        "B95": "9",
+        "C95": "17",
+        "D95": "(i) Being medically diagnosed as having Acquired Immune Deficiency Syndrome (AIDS) or AIDS-related complex (ARC); immune system?"
+      }
+    },
+    {
+      "row": 96,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "18",
+      "text": "(ii) Chronic cough, persistent diarrhea, enlarged lymph glands, chronic fatigue, in the past five years?",
+      "notes": null,
+      "cells": {
+        "A96": "CI-2014",
+        "B96": "9",
+        "C96": "18",
+        "D96": "(ii) Chronic cough, persistent diarrhea, enlarged lymph glands, chronic fatigue, in the past five years?"
+      }
+    },
+    {
+      "row": 97,
+      "form": "CI-2014",
+      "section": "9",
+      "id": "19",
+      "text": "(iii) Any other impairment?",
+      "notes": "Note: for Question 4.i. for CA only, use: i. Substance Abuse?\nNote: for VA residents add statement: \"The undersigned applicant has certified that he/she has read the completed application and false statement or missrepresentation inthe application may result in the loss of coverage under the Policy.\"",
+      "cells": {
+        "A97": "CI-2014",
+        "B97": "9",
+        "C97": "19",
+        "D97": "(iii) Any other impairment?",
+        "E97": "Note: for Question 4.i. for CA only, use: i. Substance Abuse?\nNote: for VA residents add statement: \"The undersigned applicant has certified that he/she has read the completed application and false statement or missrepresentation inthe application may result in the loss of coverage under the Policy.\""
+      }
+    },
+    {
+      "row": 98,
+      "form": "CHR",
+      "section": "10",
+      "id": "1",
+      "text": "Do you currently need or in the past 5 years have you needed human assistance or supervision to perform any of the following activities? Bathing, dressing, eating, walking, moving in/out of a bed or chair or wheel chair, toileting, bowel or bladder control (if \"Yes\", please circle all that apply.",
+      "notes": null,
+      "cells": {
+        "A98": "CHR",
+        "B98": "10",
+        "C98": "1",
+        "D98": "Do you currently need or in the past 5 years have you needed human assistance or supervision to perform any of the following activities? Bathing, dressing, eating, walking, moving in/out of a bed or chair or wheel chair, toileting, bowel or bladder control (if \"Yes\", please circle all that apply."
+      }
+    },
+    {
+      "row": 99,
+      "form": "CHR",
+      "section": "10",
+      "id": "2",
+      "text": "Within the past 5 years, have you been bed-ridden at your home or any other private residence for 2 weeks or more?",
+      "notes": null,
+      "cells": {
+        "A99": "CHR",
+        "B99": "10",
+        "C99": "2",
+        "D99": "Within the past 5 years, have you been bed-ridden at your home or any other private residence for 2 weeks or more?"
+      }
+    },
+    {
+      "row": 100,
+      "form": "CHR",
+      "section": "10",
+      "id": "3",
+      "text": "Within the past 5 years, have you had a fall or been diagnosed or treated by a member of the medical profession for a   fracture,  paralysis, numbness, balance problems or skin ulcers?",
+      "notes": null,
+      "cells": {
+        "A100": "CHR",
+        "B100": "10",
+        "C100": "3",
+        "D100": "Within the past 5 years, have you had a fall or been diagnosed or treated by a member of the medical profession for a   fracture,  paralysis, numbness, balance problems or skin ulcers?"
+      }
+    },
+    {
+      "row": 101,
+      "form": "CHR",
+      "section": "10",
+      "id": "4",
+      "text": "Within the past 5 years did you lose any part of your fingers, hands, feet or limbs due to amputation, accident, disease, or deformity; or been diagnosed or treated by a member of the medical profession for any conditions causing crippling or limited motion?",
+      "notes": null,
+      "cells": {
+        "A101": "CHR",
+        "B101": "10",
+        "C101": "4",
+        "D101": "Within the past 5 years did you lose any part of your fingers, hands, feet or limbs due to amputation, accident, disease, or deformity; or been diagnosed or treated by a member of the medical profession for any conditions causing crippling or limited motion?"
+      }
+    },
+    {
+      "row": 102,
+      "form": "CHR",
+      "section": "10",
+      "id": "5",
+      "text": "Are you now, or have you been in the past 5 years, in a wheelchair or dependent or required supportive equipment such as braces, crutches, walker, cane, back support, or splint?",
+      "notes": null,
+      "cells": {
+        "A102": "CHR",
+        "B102": "10",
+        "C102": "5",
+        "D102": "Are you now, or have you been in the past 5 years, in a wheelchair or dependent or required supportive equipment such as braces, crutches, walker, cane, back support, or splint?"
+      }
+    },
+    {
+      "row": 103,
+      "form": "CHR",
+      "section": "10",
+      "id": "6",
+      "text": "Within the past 6 months, have you had or been recommended by a member of the medical profession   to have physical therapy?",
+      "notes": null,
+      "cells": {
+        "A103": "CHR",
+        "B103": "10",
+        "C103": "6",
+        "D103": "Within the past 6 months, have you had or been recommended by a member of the medical profession   to have physical therapy?"
+      }
+    },
+    {
+      "row": 104,
+      "form": "CHR",
+      "section": "10",
+      "id": "7",
+      "text": "Within the past 5 years, have you been evaluated, counseled, treated by a member of the medical profession or hospitalized for any problems with memory or ability to think or reason?",
+      "notes": null,
+      "cells": {
+        "A104": "CHR",
+        "B104": "10",
+        "C104": "7",
+        "D104": "Within the past 5 years, have you been evaluated, counseled, treated by a member of the medical profession or hospitalized for any problems with memory or ability to think or reason?"
+      }
+    },
+    {
+      "row": 105,
+      "form": "CHR",
+      "section": "10",
+      "id": "8",
+      "text": "Within the past 5 years, have you been confined or has confinement been recommended by a member of the medical profession, to a hospital, nursing home, rehabilitation facility or extended care facility?",
+      "notes": null,
+      "cells": {
+        "A105": "CHR",
+        "B105": "10",
+        "C105": "8",
+        "D105": "Within the past 5 years, have you been confined or has confinement been recommended by a member of the medical profession, to a hospital, nursing home, rehabilitation facility or extended care facility?"
+      }
+    },
+    {
+      "row": 106,
+      "form": "CHR",
+      "section": "10",
+      "id": "9",
+      "text": "Have you received Medicaid benefits or any similar federal or state financial assistance within the past 5 years? (Note: Medicaid is not the same as Medicare)",
+      "notes": null,
+      "cells": {
+        "A106": "CHR",
+        "B106": "10",
+        "C106": "9",
+        "D106": "Have you received Medicaid benefits or any similar federal or state financial assistance within the past 5 years? (Note: Medicaid is not the same as Medicare)"
+      }
+    },
+    {
+      "row": 107,
+      "form": "CHR",
+      "section": "10",
+      "id": "10",
+      "text": "Have you received Medicare disability benefits within the past 5 years?",
+      "notes": null,
+      "cells": {
+        "A107": "CHR",
+        "B107": "10",
+        "C107": "10",
+        "D107": "Have you received Medicare disability benefits within the past 5 years?"
+      }
+    },
+    {
+      "row": 108,
+      "form": "CHR",
+      "section": "10",
+      "id": "11",
+      "text": "In what type of dwelling do you reside? Private Home, Apartment, Retirement Home, Congregate Care Community, Nursing Care Facility, Mobile Home, Continuing Care/Care Community, Retirement Community, Assisted Living Unit, Personal Care Home or an Adult Care Home, Other (Please specify)",
+      "notes": null,
+      "cells": {
+        "A108": "CHR",
+        "B108": "10",
+        "C108": "11",
+        "D108": "In what type of dwelling do you reside? Private Home, Apartment, Retirement Home, Congregate Care Community, Nursing Care Facility, Mobile Home, Continuing Care/Care Community, Retirement Community, Assisted Living Unit, Personal Care Home or an Adult Care Home, Other (Please specify)"
+      }
+    },
+    {
+      "row": 109,
+      "form": "CHR",
+      "section": "10",
+      "id": "12",
+      "text": "Within the past 5 years, have you been declined for issue, reinstatement or renewal of any type of long-term care insurance?",
+      "notes": null,
+      "cells": {
+        "A109": "CHR",
+        "B109": "10",
+        "C109": "12",
+        "D109": "Within the past 5 years, have you been declined for issue, reinstatement or renewal of any type of long-term care insurance?"
+      }
+    },
+    {
+      "row": 110,
+      "form": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+      "section": "11",
+      "id": "1",
+      "text": "[Form introduction / instruction]",
+      "notes": "STATEMENT OF HEALTH: To the best of your knowledge and belief, answer the following questions as they apply to you and your lawful spouse, if applying.",
+      "cells": {
+        "A110": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+        "B110": "11",
+        "C110": "1",
+        "D110": "[Form introduction / instruction]",
+        "E110": "STATEMENT OF HEALTH: To the best of your knowledge and belief, answer the following questions as they apply to you and your lawful spouse, if applying."
+      }
+    },
+    {
+      "row": 111,
+      "form": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+      "section": "11",
+      "id": "a",
+      "text": "a. Is any person proposed for insurance now taking any prescribed medication or receiving or contemplating any medical attention or surgical treatment?",
+      "notes": null,
+      "cells": {
+        "A111": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+        "B111": "11",
+        "C111": "a",
+        "D111": "a. Is any person proposed for insurance now taking any prescribed medication or receiving or contemplating any medical attention or surgical treatment?"
+      }
+    },
+    {
+      "row": 112,
+      "form": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+      "section": "11",
+      "id": "b",
+      "text": "b. During the past five years, has any person proposed for insurance ever been medically diagnosed by a physician as having or been treated for:  heart or circulatory trouble, elevated blood pressure, chest pain or pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood, pus or sugar in urine, back trouble/disorder, bone or joint disorder, arthritis, varicose veins, or unexplained weight loss?",
+      "notes": null,
+      "cells": {
+        "A112": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+        "B112": "11",
+        "C112": "b",
+        "D112": "b. During the past five years, has any person proposed for insurance ever been medically diagnosed by a physician as having or been treated for:  heart or circulatory trouble, elevated blood pressure, chest pain or pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood, pus or sugar in urine, back trouble/disorder, bone or joint disorder, arthritis, varicose veins, or unexplained weight loss?"
+      }
+    },
+    {
+      "row": 113,
+      "form": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+      "section": "11",
+      "id": "c",
+      "text": "c. During the past five years has any person proposed for insurance ever been counseled, treated or hospitalized for the use of alcohol or drugs?",
+      "notes": null,
+      "cells": {
+        "A113": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+        "B113": "11",
+        "C113": "c",
+        "D113": "c. During the past five years has any person proposed for insurance ever been counseled, treated or hospitalized for the use of alcohol or drugs?"
+      }
+    },
+    {
+      "row": 114,
+      "form": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+      "section": "11",
+      "id": "d",
+      "text": "d. Is any person proposed for insurance now pregnant?",
+      "notes": null,
+      "cells": {
+        "A114": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+        "B114": "11",
+        "C114": "d",
+        "D114": "d. Is any person proposed for insurance now pregnant?"
+      }
+    },
+    {
+      "row": 115,
+      "form": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+      "section": "11",
+      "id": "e",
+      "text": "e. Is any person proposed for insurance now disabled, or applied or applying for, or receiving any disability or Workers’ Compensation benefits or on waiver of premium for life or health insurance?",
+      "notes": null,
+      "cells": {
+        "A115": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+        "B115": "11",
+        "C115": "e",
+        "D115": "e. Is any person proposed for insurance now disabled, or applied or applying for, or receiving any disability or Workers’ Compensation benefits or on waiver of premium for life or health insurance?"
+      }
+    },
+    {
+      "row": 116,
+      "form": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+      "section": "11",
+      "id": "f",
+      "text": "f. During the past five years has any person proposed for insurance suffered from incontinence or required assistance in bathing, toileting, dressing, eating, cooking or transferring?",
+      "notes": null,
+      "cells": {
+        "A116": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+        "B116": "11",
+        "C116": "f",
+        "D116": "f. During the past five years has any person proposed for insurance suffered from incontinence or required assistance in bathing, toileting, dressing, eating, cooking or transferring?"
+      }
+    },
+    {
+      "row": 117,
+      "form": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+      "section": "11",
+      "id": "g",
+      "text": "g. Has any person proposed for insurance had a parent, brother or sister who, prior to age 60 had been medically diagnosed by a physician as having, or been treated for: cancer, a stroke, paralysis, hypertension, diabetes, heart disease, kidney disease, neuromuscular or mental illness?",
+      "notes": null,
+      "cells": {
+        "A117": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+        "B117": "11",
+        "C117": "g",
+        "D117": "g. Has any person proposed for insurance had a parent, brother or sister who, prior to age 60 had been medically diagnosed by a physician as having, or been treated for: cancer, a stroke, paralysis, hypertension, diabetes, heart disease, kidney disease, neuromuscular or mental illness?"
+      }
+    },
+    {
+      "row": 118,
+      "form": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+      "section": "11",
+      "id": "9",
+      "text": "Except for the residents of Minnesota and Connecticut , has any person to be insured been convicted of a crime or served time in prison because of a conviction or have an arrest pending?",
+      "notes": null,
+      "cells": {
+        "A118": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+        "B118": "11",
+        "C118": "9",
+        "D118": "Except for the residents of Minnesota and Connecticut , has any person to be insured been convicted of a crime or served time in prison because of a conviction or have an arrest pending?"
+      }
+    },
+    {
+      "row": 119,
+      "form": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+      "section": "11",
+      "id": "10",
+      "text": "For residents of Minnesota and Connecticut only , has any person to be insured been convicted of a crime or served time in prison because of a conviction or been convicted for any reason during the past 15 years?",
+      "notes": null,
+      "cells": {
+        "A119": "GPA-DI EZ-3 as amended by GMA-EZ-4",
+        "B119": "11",
+        "C119": "10",
+        "D119": "For residents of Minnesota and Connecticut only , has any person to be insured been convicted of a crime or served time in prison because of a conviction or been convicted for any reason during the past 15 years?"
+      }
+    },
+    {
+      "row": 120,
+      "form": "GMA-EZ1 as amended by GPA-DI-EZ-3",
+      "section": "12",
+      "id": "1",
+      "text": "[Form introduction / instruction]",
+      "notes": "STATEMENT OF HEALTH: (Please initial any changes you make on this form.) To the best of your knowledge and belief, answer the following questions as they apply to you.",
+      "cells": {
+        "A120": "GMA-EZ1 as amended by GPA-DI-EZ-3",
+        "B120": "12",
+        "C120": "1",
+        "D120": "[Form introduction / instruction]",
+        "E120": "STATEMENT OF HEALTH: (Please initial any changes you make on this form.) To the best of your knowledge and belief, answer the following questions as they apply to you."
+      }
+    },
+    {
+      "row": 121,
+      "form": "GMA-EZ1 as amended by GPA-DI-EZ-3",
+      "section": "12",
+      "id": "a",
+      "text": "a) Are you now taking  any prescribed medication or receiving or contemplating any medical attention or surgical treatment?",
+      "notes": null,
+      "cells": {
+        "A121": "GMA-EZ1 as amended by GPA-DI-EZ-3",
+        "B121": "12",
+        "C121": "a",
+        "D121": "a) Are you now taking  any prescribed medication or receiving or contemplating any medical attention or surgical treatment?"
+      }
+    },
+    {
+      "row": 122,
+      "form": "GMA-EZ1 as amended by GPA-DI-EZ-3",
+      "section": "12",
+      "id": "b",
+      "text": "b) During the past five years, have you ever been medically diagnosed by a physician as having or been treated for:  heart or circulatory trouble, elevated blood pressure, chest pain or pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood, pus or sugar in urine, back trouble/disorder, bone or joint disorder, arthritis, varicose veins, or unexplained weight loss?",
+      "notes": null,
+      "cells": {
+        "A122": "GMA-EZ1 as amended by GPA-DI-EZ-3",
+        "B122": "12",
+        "C122": "b",
+        "D122": "b) During the past five years, have you ever been medically diagnosed by a physician as having or been treated for:  heart or circulatory trouble, elevated blood pressure, chest pain or pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood, pus or sugar in urine, back trouble/disorder, bone or joint disorder, arthritis, varicose veins, or unexplained weight loss?"
+      }
+    },
+    {
+      "row": 123,
+      "form": "GMA-EZ1 as amended by GPA-DI-EZ-3",
+      "section": "12",
+      "id": "c",
+      "text": "c) During the past five years have you ever been counseled, treated or hospitalized for the use of alcohol or drugs?",
+      "notes": null,
+      "cells": {
+        "A123": "GMA-EZ1 as amended by GPA-DI-EZ-3",
+        "B123": "12",
+        "C123": "c",
+        "D123": "c) During the past five years have you ever been counseled, treated or hospitalized for the use of alcohol or drugs?"
+      }
+    },
+    {
+      "row": 124,
+      "form": "GMA-EZ1 as amended by GPA-DI-EZ-3",
+      "section": "12",
+      "id": "d",
+      "text": "d) Are you now pregnant?",
+      "notes": null,
+      "cells": {
+        "A124": "GMA-EZ1 as amended by GPA-DI-EZ-3",
+        "B124": "12",
+        "C124": "d",
+        "D124": "d) Are you now pregnant?"
+      }
+    },
+    {
+      "row": 125,
+      "form": "GMA-EZ1 as amended by GPA-DI-EZ-3",
+      "section": "12",
+      "id": "e",
+      "text": "e) Are you now disabled, or applied or applying for, or receiving any disability or Workers’ Compensation benefits or on waiver of premium for life or health insurance?",
+      "notes": "f) Insert QD Tobacco/Nicotine Question",
+      "cells": {
+        "A125": "GMA-EZ1 as amended by GPA-DI-EZ-3",
+        "B125": "12",
+        "C125": "e",
+        "D125": "e) Are you now disabled, or applied or applying for, or receiving any disability or Workers’ Compensation benefits or on waiver of premium for life or health insurance?",
+        "E125": "f) Insert QD Tobacco/Nicotine Question"
+      }
+    },
+    {
+      "row": 126,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "1",
+      "text": "Any weight change in last year ? Yes/No",
+      "notes": "if \"Yes\":\nPlease provide amount and reason.\n\"Amount(lbs):\" and \"Reason:\" fields rendered. Reason accepts up to 500 characters\na)Have you ever applied for insurance that was declined, postponed, rated, rescinded, cancelled or modified in any way or have you ever been denied renewal or reinstatement Yes/No\nIf \"Yes\" - mandatory \"Details:\" field rendered (accepts 500 characters)",
+      "cells": {
+        "A126": "GMA-L/H-TELE-SUPP",
+        "B126": "13",
+        "C126": "1",
+        "D126": "Any weight change in last year ? Yes/No",
+        "E126": "if \"Yes\":\nPlease provide amount and reason.\n\"Amount(lbs):\" and \"Reason:\" fields rendered. Reason accepts up to 500 characters\na)Have you ever applied for insurance that was declined, postponed, rated, rescinded, cancelled or modified in any way or have you ever been denied renewal or reinstatement Yes/No\nIf \"Yes\" - mandatory \"Details:\" field rendered (accepts 500 characters)"
+      }
+    },
+    {
+      "row": 127,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "b",
+      "text": "b) Have you ever received or claimed benefits or a pension for sickness, injury or impairment or are you satisfying an elimination period? Yes/No",
+      "notes": "If \"Yes\" - mandatory \"Details:\" field rendered (accepts 500 characters)",
+      "cells": {
+        "A127": "GMA-L/H-TELE-SUPP",
+        "B127": "13",
+        "C127": "b",
+        "D127": "b) Have you ever received or claimed benefits or a pension for sickness, injury or impairment or are you satisfying an elimination period? Yes/No",
+        "E127": "If \"Yes\" - mandatory \"Details:\" field rendered (accepts 500 characters)"
+      }
+    },
+    {
+      "row": 128,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "a",
+      "text": "a) Do you contemplate any medical or surgical treatment? Yes/No",
+      "notes": "If Yes: render 4 mandatory fields:\nDate (MM/YYYY)\nTreatment <TextArea 300 char limit>\nCondition\nName and address of Physician and Hospital<TextArea 300 char limit>\n\"Add Row\" button",
+      "cells": {
+        "A128": "GMA-L/H-TELE-SUPP",
+        "B128": "13",
+        "C128": "a",
+        "D128": "a) Do you contemplate any medical or surgical treatment? Yes/No",
+        "E128": "If Yes: render 4 mandatory fields:\nDate (MM/YYYY)\nTreatment <TextArea 300 char limit>\nCondition\nName and address of Physician and Hospital<TextArea 300 char limit>\n\"Add Row\" button"
+      }
+    },
+    {
+      "row": 129,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "b",
+      "text": "b) Are you receiving any treatment or taking any medication at the present time? Yes/No",
+      "notes": "If \"Yes\" render extra fields:\nMedication<TextArea 300 char limit>\nDosage<TextArea 300 char limit>\nFrequency<TextArea 300 char limit>\nReason for use of medication:\nName and address of Physician and Hospital<TextArea 300 char limit>\nAdd Row Button\nFor Females only.",
+      "cells": {
+        "A129": "GMA-L/H-TELE-SUPP",
+        "B129": "13",
+        "C129": "b",
+        "D129": "b) Are you receiving any treatment or taking any medication at the present time? Yes/No",
+        "E129": "If \"Yes\" render extra fields:\nMedication<TextArea 300 char limit>\nDosage<TextArea 300 char limit>\nFrequency<TextArea 300 char limit>\nReason for use of medication:\nName and address of Physician and Hospital<TextArea 300 char limit>\nAdd Row Button\nFor Females only."
+      }
+    },
+    {
+      "row": 130,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "c",
+      "text": "c) Are you currently pregnant? Yes/No",
+      "notes": "If Yes: render \"Expected due date:\" (mm/dd/yyyy)",
+      "cells": {
+        "A130": "GMA-L/H-TELE-SUPP",
+        "B130": "13",
+        "C130": "c",
+        "D130": "c) Are you currently pregnant? Yes/No",
+        "E130": "If Yes: render \"Expected due date:\" (mm/dd/yyyy)"
+      }
+    },
+    {
+      "row": 131,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "d",
+      "text": "d) Have you ever experienced complications of pregnancy? Yes/No",
+      "notes": "If Yes: render \"Details:\" <TextArea 500 char limit>",
+      "cells": {
+        "A131": "GMA-L/H-TELE-SUPP",
+        "B131": "13",
+        "C131": "d",
+        "D131": "d) Have you ever experienced complications of pregnancy? Yes/No",
+        "E131": "If Yes: render \"Details:\" <TextArea 500 char limit>"
+      }
+    },
+    {
+      "row": 132,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "7",
+      "text": "Please provide following details:",
+      "notes": "a) Name and address of regular attending physician:\nName <TextArea 500 char limit>\nStreet Address or P.O. Box  <TextArea 500 char limit>\nStreet Address 2:\nCity:\nState/Province:\nZip Code:\nPhone number:                Ext.:\nb) Date and reason for last consult:\nDate (MM/YYYY) Reason <TextArea 500 char limit>\nc) Diagnosis, results, treatment given or medications prescribed:\nDetails <TextArea 500 char limit>\nd) Have you had an EKG, blood tests, x-rays or other diagnostic tests in the past 5 years: Yes/No\nIf Yes, display following\nDetails <TextArea 500 char limit>",
+      "cells": {
+        "A132": "GMA-L/H-TELE-SUPP",
+        "B132": "13",
+        "C132": "7",
+        "D132": "Please provide following details:",
+        "E132": "a) Name and address of regular attending physician:\nName <TextArea 500 char limit>\nStreet Address or P.O. Box  <TextArea 500 char limit>\nStreet Address 2:\nCity:\nState/Province:\nZip Code:\nPhone number:                Ext.:\nb) Date and reason for last consult:\nDate (MM/YYYY) Reason <TextArea 500 char limit>\nc) Diagnosis, results, treatment given or medications prescribed:\nDetails <TextArea 500 char limit>\nd) Have you had an EKG, blood tests, x-rays or other diagnostic tests in the past 5 years: Yes/No\nIf Yes, display following\nDetails <TextArea 500 char limit>"
+      }
+    },
+    {
+      "row": 133,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "8",
+      "text": "During the past five years have you ever been medically diagnosed by a physician as having or been treated for:",
+      "notes": null,
+      "cells": {
+        "A133": "GMA-L/H-TELE-SUPP",
+        "B133": "13",
+        "C133": "8",
+        "D133": "During the past five years have you ever been medically diagnosed by a physician as having or been treated for:"
+      }
+    },
+    {
+      "row": 134,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "a",
+      "text": "a) abnormal blood pressure, chest pain, phlebitis, or any other disease/disorder of the heart or blood vessels? Yes/No",
+      "notes": "If Yes :\nDate of onset(MM/YYYY),\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast date of treatment(MM/YYYY)\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)",
+      "cells": {
+        "A134": "GMA-L/H-TELE-SUPP",
+        "B134": "13",
+        "C134": "a",
+        "D134": "a) abnormal blood pressure, chest pain, phlebitis, or any other disease/disorder of the heart or blood vessels? Yes/No",
+        "E134": "If Yes :\nDate of onset(MM/YYYY),\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast date of treatment(MM/YYYY)\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)"
+      }
+    },
+    {
+      "row": 135,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "b",
+      "text": "b) ulcer, jaundice, chronic diarrhea, gallbladder or liver disease/disorder, or any other disease/disorder of the stomach, intestines, rectum, colon, or digestive system?  Yes/No",
+      "notes": "If Yes:\nDate of onset(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast date of treatment(MM/YYYY)\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)",
+      "cells": {
+        "A135": "GMA-L/H-TELE-SUPP",
+        "B135": "13",
+        "C135": "b",
+        "D135": "b) ulcer, jaundice, chronic diarrhea, gallbladder or liver disease/disorder, or any other disease/disorder of the stomach, intestines, rectum, colon, or digestive system?  Yes/No",
+        "E135": "If Yes:\nDate of onset(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast date of treatment(MM/YYYY)\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)"
+      }
+    },
+    {
+      "row": 136,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "c",
+      "text": "c) asthma, allergies, bronchitis, emphysema, COPD (Chronic Obstructive Pulmonary Disease), tuberculosis or any other lung or respiratory disease/disorder?   Yes/ No",
+      "notes": "If Yes:\nDate of onset(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast date of treatment(MM/YYYY)\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)",
+      "cells": {
+        "A136": "GMA-L/H-TELE-SUPP",
+        "B136": "13",
+        "C136": "c",
+        "D136": "c) asthma, allergies, bronchitis, emphysema, COPD (Chronic Obstructive Pulmonary Disease), tuberculosis or any other lung or respiratory disease/disorder?   Yes/ No",
+        "E136": "If Yes:\nDate of onset(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast date of treatment(MM/YYYY)\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)"
+      }
+    },
+    {
+      "row": 137,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "d",
+      "text": "d) abnormal urine, venereal disease, or any disease/disorder of the kidneys, bladder, prostate, breast or reproductive organs?  Yes / No",
+      "notes": "If Yes:\nDate of onset(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast date of treatment(MM/YYYY)\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)",
+      "cells": {
+        "A137": "GMA-L/H-TELE-SUPP",
+        "B137": "13",
+        "C137": "d",
+        "D137": "d) abnormal urine, venereal disease, or any disease/disorder of the kidneys, bladder, prostate, breast or reproductive organs?  Yes / No",
+        "E137": "If Yes:\nDate of onset(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast date of treatment(MM/YYYY)\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)"
+      }
+    },
+    {
+      "row": 138,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "e",
+      "text": "e) rheumatic/arthritic disease, fibrositis, ruptured disc, back or neck pain, knee problems, whiplash, amputation or any other disease/disorder, injury or deformity of the spine, joints, bones or muscles?  Yes/ No",
+      "notes": "If Yes:\nDate of onset(MM/YYYY)\nLast date of treatment(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)",
+      "cells": {
+        "A138": "GMA-L/H-TELE-SUPP",
+        "B138": "13",
+        "C138": "e",
+        "D138": "e) rheumatic/arthritic disease, fibrositis, ruptured disc, back or neck pain, knee problems, whiplash, amputation or any other disease/disorder, injury or deformity of the spine, joints, bones or muscles?  Yes/ No",
+        "E138": "If Yes:\nDate of onset(MM/YYYY)\nLast date of treatment(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)"
+      }
+    },
+    {
+      "row": 139,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "f",
+      "text": "f) convulsions, seizures, epilepsy, paralysis, numbness, stroke, dizziness, loss of consciousness, recurrent headaches or migraines, or any other disease or disorder of the brain or nervous system?  Yes/No",
+      "notes": "If Yes:\nDate of onset(MM/YYYY)\nLast date of treatment(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)",
+      "cells": {
+        "A139": "GMA-L/H-TELE-SUPP",
+        "B139": "13",
+        "C139": "f",
+        "D139": "f) convulsions, seizures, epilepsy, paralysis, numbness, stroke, dizziness, loss of consciousness, recurrent headaches or migraines, or any other disease or disorder of the brain or nervous system?  Yes/No",
+        "E139": "If Yes:\nDate of onset(MM/YYYY)\nLast date of treatment(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)"
+      }
+    },
+    {
+      "row": 140,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "g",
+      "text": "g) stress, anxiety, depression, nervous state, fatigue, or any psychiatric disorder ?  Yes/No",
+      "notes": "If Yes:\nDate of onset(MM/YYYY)\nLast date of treatment(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)",
+      "cells": {
+        "A140": "GMA-L/H-TELE-SUPP",
+        "B140": "13",
+        "C140": "g",
+        "D140": "g) stress, anxiety, depression, nervous state, fatigue, or any psychiatric disorder ?  Yes/No",
+        "E140": "If Yes:\nDate of onset(MM/YYYY)\nLast date of treatment(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)"
+      }
+    },
+    {
+      "row": 141,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "h",
+      "text": "h) diabetes, thyroid or any other endocrine disease/disorder?  Yes/ No",
+      "notes": "If Yes:\nDate of onset(MM/YYYY)\nLast date of treatment(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)",
+      "cells": {
+        "A141": "GMA-L/H-TELE-SUPP",
+        "B141": "13",
+        "C141": "h",
+        "D141": "h) diabetes, thyroid or any other endocrine disease/disorder?  Yes/ No",
+        "E141": "If Yes:\nDate of onset(MM/YYYY)\nLast date of treatment(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)"
+      }
+    },
+    {
+      "row": 142,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "i",
+      "text": "i) anemia, leukemia, or any other disease/disorder of the blood, lymph glands or immune system, chronic fatigue or fibromyalgia?  Yes/ No",
+      "notes": "If Yes:\nDate of onset(MM/YYYY)\nLast date of treatment(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)",
+      "cells": {
+        "A142": "GMA-L/H-TELE-SUPP",
+        "B142": "13",
+        "C142": "i",
+        "D142": "i) anemia, leukemia, or any other disease/disorder of the blood, lymph glands or immune system, chronic fatigue or fibromyalgia?  Yes/ No",
+        "E142": "If Yes:\nDate of onset(MM/YYYY)\nLast date of treatment(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)"
+      }
+    },
+    {
+      "row": 143,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "j",
+      "text": "j) any disease/disorder of the skin, eyes, ears, nose or throat, including loss of speech?  Yes/No",
+      "notes": "If Yes:\nDate of onset(MM/YYYY)\nLast date of treatment(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)",
+      "cells": {
+        "A143": "GMA-L/H-TELE-SUPP",
+        "B143": "13",
+        "C143": "j",
+        "D143": "j) any disease/disorder of the skin, eyes, ears, nose or throat, including loss of speech?  Yes/No",
+        "E143": "If Yes:\nDate of onset(MM/YYYY)\nLast date of treatment(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)"
+      }
+    },
+    {
+      "row": 144,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "k",
+      "text": "k) cancer, tumor, cyst?  Yes/No",
+      "notes": "If Yes:\nDate of onset(MM/YYYY)\nLast date of treatment(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)",
+      "cells": {
+        "A144": "GMA-L/H-TELE-SUPP",
+        "B144": "13",
+        "C144": "k",
+        "D144": "k) cancer, tumor, cyst?  Yes/No",
+        "E144": "If Yes:\nDate of onset(MM/YYYY)\nLast date of treatment(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)"
+      }
+    },
+    {
+      "row": 145,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "l",
+      "text": "l) any other illness, disease/disorder or condition not noted above? Yes/No",
+      "notes": "If Yes:\nDate of onset(MM/YYYY)\nLast date of treatment(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)",
+      "cells": {
+        "A145": "GMA-L/H-TELE-SUPP",
+        "B145": "13",
+        "C145": "l",
+        "D145": "l) any other illness, disease/disorder or condition not noted above? Yes/No",
+        "E145": "If Yes:\nDate of onset(MM/YYYY)\nLast date of treatment(MM/YYYY)\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)"
+      }
+    },
+    {
+      "row": 146,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "a",
+      "text": "a) Do you drink alcoholic beverages?  Yes /No",
+      "notes": "If \"Yes\" - please record number of glasses in each category. With 4 additional mandatory fields rendered: \"Frequency:\" (Select from drop down: Daily. Weekly, Monthly), \"Wine\",  \"Beer\", \"Liquor\"\nIf \"No\" - \"In the past five years have you consumed any alcoholic beverages? Yes/No\" rendered\nIf \"Yes\" -  please record number of glasses in each category. With 4 additional mandatory fields rendered: \"Frequency:\" (Select from drop down: Daily. Weekly, Monthly), \"Wine\",  \"Beer\", \"Liquor\"",
+      "cells": {
+        "A146": "GMA-L/H-TELE-SUPP",
+        "B146": "13",
+        "C146": "a",
+        "D146": "a) Do you drink alcoholic beverages?  Yes /No",
+        "E146": "If \"Yes\" - please record number of glasses in each category. With 4 additional mandatory fields rendered: \"Frequency:\" (Select from drop down: Daily. Weekly, Monthly), \"Wine\",  \"Beer\", \"Liquor\"\nIf \"No\" - \"In the past five years have you consumed any alcoholic beverages? Yes/No\" rendered\nIf \"Yes\" -  please record number of glasses in each category. With 4 additional mandatory fields rendered: \"Frequency:\" (Select from drop down: Daily. Weekly, Monthly), \"Wine\",  \"Beer\", \"Liquor\""
+      }
+    },
+    {
+      "row": 147,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "b",
+      "text": "b) During the past five years have you ever consumed more alcohol than as indicated above?  Yes/No",
+      "notes": "If \"Yes\" - 2 mandatory fields rendered: \"Date\" and \"Details\" (accepts up to 500 characters)",
+      "cells": {
+        "A147": "GMA-L/H-TELE-SUPP",
+        "B147": "13",
+        "C147": "b",
+        "D147": "b) During the past five years have you ever consumed more alcohol than as indicated above?  Yes/No",
+        "E147": "If \"Yes\" - 2 mandatory fields rendered: \"Date\" and \"Details\" (accepts up to 500 characters)"
+      }
+    },
+    {
+      "row": 148,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "c",
+      "text": "c) During the past five years have you ever used sedatives, analgesics, hypnotics, tranquilizers or stimulants?  Yes/No",
+      "notes": "If \"Yes\" - mandatory \"Details:\" field rendered (accepts up to 500 characters)\nIf Yes,\nDate of last use (MM/YYYY)\nFrequency<TextArea 300 char limit>\nDrug<TextArea 300 char limit>\nDetails<TextArea 300 char limit>\n\"Add Row\" Button",
+      "cells": {
+        "A148": "GMA-L/H-TELE-SUPP",
+        "B148": "13",
+        "C148": "c",
+        "D148": "c) During the past five years have you ever used sedatives, analgesics, hypnotics, tranquilizers or stimulants?  Yes/No",
+        "E148": "If \"Yes\" - mandatory \"Details:\" field rendered (accepts up to 500 characters)\nIf Yes,\nDate of last use (MM/YYYY)\nFrequency<TextArea 300 char limit>\nDrug<TextArea 300 char limit>\nDetails<TextArea 300 char limit>\n\"Add Row\" Button"
+      }
+    },
+    {
+      "row": 149,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "d",
+      "text": "d) During the past five years have you ever used marijuana, hashish, cocaine, narcotics, hallucinogens or any other drugs not prescribed by a physician or obtained over the counter?  Yes/No",
+      "notes": "If \"Yes\" - mandatory \"Details:\" field rendered (accepts up to 500 characters)\nIf Yes,\nDate of last use (MM/YYYY)\nFrequency<TextArea 300 char limit>\nDrug<TextArea 300 char limit>\nDetails<TextArea 300 char limit>\nAdd Row Button",
+      "cells": {
+        "A149": "GMA-L/H-TELE-SUPP",
+        "B149": "13",
+        "C149": "d",
+        "D149": "d) During the past five years have you ever used marijuana, hashish, cocaine, narcotics, hallucinogens or any other drugs not prescribed by a physician or obtained over the counter?  Yes/No",
+        "E149": "If \"Yes\" - mandatory \"Details:\" field rendered (accepts up to 500 characters)\nIf Yes,\nDate of last use (MM/YYYY)\nFrequency<TextArea 300 char limit>\nDrug<TextArea 300 char limit>\nDetails<TextArea 300 char limit>\nAdd Row Button"
+      }
+    },
+    {
+      "row": 150,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "e",
+      "text": "e) Have you used tobacco or any nicotine substitute in any form (including nicotine patches and nicotine chewing gum)? Yes/No",
+      "notes": "If \"Yes\" - 2 mandatory fields rendered:\n\"If \"Yes\", please state when you last used tobacco or nicotine products\" (date input)\n\"If \"Yes\", please specify the product(s) used\" text input",
+      "cells": {
+        "A150": "GMA-L/H-TELE-SUPP",
+        "B150": "13",
+        "C150": "e",
+        "D150": "e) Have you used tobacco or any nicotine substitute in any form (including nicotine patches and nicotine chewing gum)? Yes/No",
+        "E150": "If \"Yes\" - 2 mandatory fields rendered:\n\"If \"Yes\", please state when you last used tobacco or nicotine products\" (date input)\n\"If \"Yes\", please specify the product(s) used\" text input"
+      }
+    },
+    {
+      "row": 151,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "f",
+      "text": "f) During the past five years have you ever consulted a physician, received treatment,or been convicted due to the influence of alcohol and/or drugs?  Yes/No",
+      "notes": "Date (MM/YYYY) Details<TextArea 500 char limit>\nName and address of physician and hospital<TextArea 500 char limits>",
+      "cells": {
+        "A151": "GMA-L/H-TELE-SUPP",
+        "B151": "13",
+        "C151": "f",
+        "D151": "f) During the past five years have you ever consulted a physician, received treatment,or been convicted due to the influence of alcohol and/or drugs?  Yes/No",
+        "E151": "Date (MM/YYYY) Details<TextArea 500 char limit>\nName and address of physician and hospital<TextArea 500 char limits>"
+      }
+    },
+    {
+      "row": 152,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "27",
+      "text": "During the past five years, have you had your driver's license suspended, or revoked, or had any moving violations ? Yes/No",
+      "notes": "If \"Yes\" - mandatory field \"Describe (include frequency):\" renderd (accepts up to 500 characters)",
+      "cells": {
+        "A152": "GMA-L/H-TELE-SUPP",
+        "B152": "13",
+        "C152": "27",
+        "D152": "During the past five years, have you had your driver's license suspended, or revoked, or had any moving violations ? Yes/No",
+        "E152": "If \"Yes\" - mandatory field \"Describe (include frequency):\" renderd (accepts up to 500 characters)"
+      }
+    },
+    {
+      "row": 153,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "28",
+      "text": "All states except of Minnesota and Connecticut - In the last five years, have you been convicted of a crime or served time in prison because of a conviction or have an arrest pending? Yes/No",
+      "notes": null,
+      "cells": {
+        "A153": "GMA-L/H-TELE-SUPP",
+        "B153": "13",
+        "C153": "28",
+        "D153": "All states except of Minnesota and Connecticut - In the last five years, have you been convicted of a crime or served time in prison because of a conviction or have an arrest pending? Yes/No"
+      }
+    },
+    {
+      "row": 154,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "29",
+      "text": "For residents of Minnesota and Connecticut - In the last five years, have you been convicted of a crime or served time in prison because of a conviction or been arrested and convicted for any reason? Yes/No",
+      "notes": "If \"Yes\", \"Detail\" text field rendered (accepts up to 500 characters)\nIf \"Yes\", render additional fields:\nDate (MM/YYYY)\nDetails <TextArea 300 char limit>\n\"Add Row\" Button",
+      "cells": {
+        "A154": "GMA-L/H-TELE-SUPP",
+        "B154": "13",
+        "C154": "29",
+        "D154": "For residents of Minnesota and Connecticut - In the last five years, have you been convicted of a crime or served time in prison because of a conviction or been arrested and convicted for any reason? Yes/No",
+        "E154": "If \"Yes\", \"Detail\" text field rendered (accepts up to 500 characters)\nIf \"Yes\", render additional fields:\nDate (MM/YYYY)\nDetails <TextArea 300 char limit>\n\"Add Row\" Button"
+      }
+    },
+    {
+      "row": 155,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "30",
+      "text": "Have any of your parents, brothers, or sisters prior to age 60 been medically diagnosed by a physician as having or been treated for cancer, a stroke, paralysis, hypertension, diabetes, heart disease, kidney disease or neuromuscular or mental disorder? Yes/No",
+      "notes": "If Yes:\nFamily member (with the drill down Father, Mother, Brother, Sister), Age of Onset and Status (drill down Living, Deceased) fields are rendered",
+      "cells": {
+        "A155": "GMA-L/H-TELE-SUPP",
+        "B155": "13",
+        "C155": "30",
+        "D155": "Have any of your parents, brothers, or sisters prior to age 60 been medically diagnosed by a physician as having or been treated for cancer, a stroke, paralysis, hypertension, diabetes, heart disease, kidney disease or neuromuscular or mental disorder? Yes/No",
+        "E155": "If Yes:\nFamily member (with the drill down Father, Mother, Brother, Sister), Age of Onset and Status (drill down Living, Deceased) fields are rendered"
+      }
+    },
+    {
+      "row": 156,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "31",
+      "text": "During the past five years have you ever been medically diagnosed by a physician as having been treated for:",
+      "notes": null,
+      "cells": {
+        "A156": "GMA-L/H-TELE-SUPP",
+        "B156": "13",
+        "C156": "31",
+        "D156": "During the past five years have you ever been medically diagnosed by a physician as having been treated for:"
+      }
+    },
+    {
+      "row": 157,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "a",
+      "text": "a. organ Transplant",
+      "notes": "If Yes:\nDate of onset(MM/YYYY),\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast date of treatment(MM/YYYY)\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)",
+      "cells": {
+        "A157": "GMA-L/H-TELE-SUPP",
+        "B157": "13",
+        "C157": "a",
+        "D157": "a. organ Transplant",
+        "E157": "If Yes:\nDate of onset(MM/YYYY),\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast date of treatment(MM/YYYY)\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)"
+      }
+    },
+    {
+      "row": 158,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "b",
+      "text": "b. coma",
+      "notes": "If Yes:\nDate of onset(MM/YYYY),\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast date of treatment(MM/YYYY)\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)",
+      "cells": {
+        "A158": "GMA-L/H-TELE-SUPP",
+        "B158": "13",
+        "C158": "b",
+        "D158": "b. coma",
+        "E158": "If Yes:\nDate of onset(MM/YYYY),\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast date of treatment(MM/YYYY)\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)"
+      }
+    },
+    {
+      "row": 159,
+      "form": "GMA-L/H-TELE-SUPP",
+      "section": "13",
+      "id": "c",
+      "text": "c. dementia or problems with Memory or ability to think or reason",
+      "notes": "If Yes:\nDate of onset(MM/YYYY),\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast date of treatment(MM/YYYY)\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)",
+      "cells": {
+        "A159": "GMA-L/H-TELE-SUPP",
+        "B159": "13",
+        "C159": "c",
+        "D159": "c. dementia or problems with Memory or ability to think or reason",
+        "E159": "If Yes:\nDate of onset(MM/YYYY),\nIllness or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast date of treatment(MM/YYYY)\nNumber of attacks<TextArea 300 char limit>\nTreatment and results<TextArea 300 char limit>\nName and address of physician and hospital<TextArea 300 char limits>\n\"Add Row\" Button with text on side (“for each condition”)"
+      }
+    },
+    {
+      "row": 160,
+      "form": "Supp DI",
+      "section": "14",
+      "id": "a",
+      "text": "a) Do you contemplate any medical or surgical treatment?",
+      "notes": "If Yes:\nDate:\nTreatment :\nCondition\nName and Address of Physician and Hospital\noption to add row",
+      "cells": {
+        "A160": "Supp DI",
+        "B160": "14",
+        "C160": "a",
+        "D160": "a) Do you contemplate any medical or surgical treatment?",
+        "E160": "If Yes:\nDate:\nTreatment :\nCondition\nName and Address of Physician and Hospital\noption to add row"
+      }
+    },
+    {
+      "row": 161,
+      "form": "Supp DI",
+      "section": "14",
+      "id": "b",
+      "text": "b) Are you receiving any treatment or taking any medication at the present time?",
+      "notes": "If Yes:\nMedication/Treatment:\nDosage:\nFrequency:\nReason for use of medication:\nName and Address of Physician and Hospital\noption to add row",
+      "cells": {
+        "A161": "Supp DI",
+        "B161": "14",
+        "C161": "b",
+        "D161": "b) Are you receiving any treatment or taking any medication at the present time?",
+        "E161": "If Yes:\nMedication/Treatment:\nDosage:\nFrequency:\nReason for use of medication:\nName and Address of Physician and Hospital\noption to add row"
+      }
+    },
+    {
+      "row": 162,
+      "form": "Supp DI",
+      "section": "14",
+      "id": "3",
+      "text": "During the past five years have you ever been medically diagnosed by a physician as having or been treated for:",
+      "notes": null,
+      "cells": {
+        "A162": "Supp DI",
+        "B162": "14",
+        "C162": "3",
+        "D162": "During the past five years have you ever been medically diagnosed by a physician as having or been treated for:"
+      }
+    },
+    {
+      "row": 163,
+      "form": "Supp DI",
+      "section": "14",
+      "id": "a",
+      "text": "a) abnormal urine, venereal disease, or any disease/disorder of the kidneys, bladder, prostate, breast or reproductive organs?",
+      "notes": "if Yes:\nDate Of Onset(MM/YYYY),\nIllness Or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast Date Of Treatment(MM/YYYY)\nNumber Of Episodes<TextArea 300 char limit>\nTreatment And Results<TextArea 300 char limit>\nName and Address of Physician and Hospital<TextArea 300 char limits\noption to add row",
+      "cells": {
+        "A163": "Supp DI",
+        "B163": "14",
+        "C163": "a",
+        "D163": "a) abnormal urine, venereal disease, or any disease/disorder of the kidneys, bladder, prostate, breast or reproductive organs?",
+        "E163": "if Yes:\nDate Of Onset(MM/YYYY),\nIllness Or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast Date Of Treatment(MM/YYYY)\nNumber Of Episodes<TextArea 300 char limit>\nTreatment And Results<TextArea 300 char limit>\nName and Address of Physician and Hospital<TextArea 300 char limits\noption to add row"
+      }
+    },
+    {
+      "row": 164,
+      "form": "Supp DI",
+      "section": "14",
+      "id": "b",
+      "text": "b) ulcer, jaundice, chronic diarrhea, gallbladder or liver disease/disorder, or any other disease/disorder of the stomach, intestines, rectum, colon, or digestive system?",
+      "notes": "if Yes:\nDate Of Onset(MM/YYYY),\nIllness Or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast Date Of Treatment(MM/YYYY)\nNumber Of Episodes<TextArea 300 char limit>\nTreatment And Results<TextArea 300 char limit>\nName and Address of Physician and Hospital<TextArea 300 char limits\noption to add row",
+      "cells": {
+        "A164": "Supp DI",
+        "B164": "14",
+        "C164": "b",
+        "D164": "b) ulcer, jaundice, chronic diarrhea, gallbladder or liver disease/disorder, or any other disease/disorder of the stomach, intestines, rectum, colon, or digestive system?",
+        "E164": "if Yes:\nDate Of Onset(MM/YYYY),\nIllness Or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast Date Of Treatment(MM/YYYY)\nNumber Of Episodes<TextArea 300 char limit>\nTreatment And Results<TextArea 300 char limit>\nName and Address of Physician and Hospital<TextArea 300 char limits\noption to add row"
+      }
+    },
+    {
+      "row": 165,
+      "form": "Supp DI",
+      "section": "14",
+      "id": "c",
+      "text": "c) rheumatic/arthritic disease, fibrositis, ruptured disc, back or neck pain, knee problems, whiplash, amputation or any other disease/disorder, injury or deformity of the spine, joints, bones or muscles?",
+      "notes": "if Yes:\nDate Of Onset(MM/YYYY),\nIllness Or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast Date Of Treatment(MM/YYYY)\nNumber Of Episodes<TextArea 300 char limit>\nTreatment And Results<TextArea 300 char limit>\nName and Address of Physician and Hospital<TextArea 300 char limits\noption to add row",
+      "cells": {
+        "A165": "Supp DI",
+        "B165": "14",
+        "C165": "c",
+        "D165": "c) rheumatic/arthritic disease, fibrositis, ruptured disc, back or neck pain, knee problems, whiplash, amputation or any other disease/disorder, injury or deformity of the spine, joints, bones or muscles?",
+        "E165": "if Yes:\nDate Of Onset(MM/YYYY),\nIllness Or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast Date Of Treatment(MM/YYYY)\nNumber Of Episodes<TextArea 300 char limit>\nTreatment And Results<TextArea 300 char limit>\nName and Address of Physician and Hospital<TextArea 300 char limits\noption to add row"
+      }
+    },
+    {
+      "row": 166,
+      "form": "Supp DI",
+      "section": "14",
+      "id": "d",
+      "text": "d) abnormal blood pressure, chest pain, phlebitis, or any other disease/disorder of the heart or blood vessels?",
+      "notes": "if Yes:\nDate Of Onset(MM/YYYY),\nIllness Or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast Date Of Treatment(MM/YYYY)\nNumber Of Episodes<TextArea 300 char limit>\nTreatment And Results<TextArea 300 char limit>\nName and Address of Physician and Hospital<TextArea 300 char limits\noption to add row",
+      "cells": {
+        "A166": "Supp DI",
+        "B166": "14",
+        "C166": "d",
+        "D166": "d) abnormal blood pressure, chest pain, phlebitis, or any other disease/disorder of the heart or blood vessels?",
+        "E166": "if Yes:\nDate Of Onset(MM/YYYY),\nIllness Or Injury<TextArea 300 char limit>\nSymptoms<TextArea 300 char limit>\nLast Date Of Treatment(MM/YYYY)\nNumber Of Episodes<TextArea 300 char limit>\nTreatment And Results<TextArea 300 char limit>\nName and Address of Physician and Hospital<TextArea 300 char limits\noption to add row"
+      }
+    },
+    {
+      "row": 167,
+      "form": "Supp DI",
+      "section": "14",
+      "id": "a",
+      "text": "a) During the past five years have you ever used marijuana, hashish, cocaine, narcotics, hallucinogens or any other drugs not prescribed by a physician or obtained over the counter?",
+      "notes": "If Yes:\nDate of Last Use:\nFrequency:\nDrug:\nDetails:\noption to add row",
+      "cells": {
+        "A167": "Supp DI",
+        "B167": "14",
+        "C167": "a",
+        "D167": "a) During the past five years have you ever used marijuana, hashish, cocaine, narcotics, hallucinogens or any other drugs not prescribed by a physician or obtained over the counter?",
+        "E167": "If Yes:\nDate of Last Use:\nFrequency:\nDrug:\nDetails:\noption to add row"
+      }
+    },
+    {
+      "row": 168,
+      "form": "Supp DI",
+      "section": "14",
+      "id": "a",
+      "text": "a) Have you ever received or claimed benefits or a pension for sickness, injury or impairment or are you satisfying an elimination period?",
+      "notes": "If Yes:\nDetails:",
+      "cells": {
+        "A168": "Supp DI",
+        "B168": "14",
+        "C168": "a",
+        "D168": "a) Have you ever received or claimed benefits or a pension for sickness, injury or impairment or are you satisfying an elimination period?",
+        "E168": "If Yes:\nDetails:"
+      }
+    },
+    {
+      "row": 169,
+      "form": "GPA-DI-EZ-3",
+      "section": "15",
+      "id": "a",
+      "text": "a) Are you now taking any prescribed medication or receiving or contemplating any medical attention or surgical treatment?",
+      "notes": null,
+      "cells": {
+        "A169": "GPA-DI-EZ-3",
+        "B169": "15",
+        "C169": "a",
+        "D169": "a) Are you now taking any prescribed medication or receiving or contemplating any medical attention or surgical treatment?"
+      }
+    },
+    {
+      "row": 170,
+      "form": "GPA-DI-EZ-3",
+      "section": "15",
+      "id": "b",
+      "text": "b.) During the past five years, have you ever been medically diagnosed by a physician as having or been treated for:  heart or circulatory trouble, elevated blood pressure, chest pain or pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood, pus or sugar in urine, back trouble/disorder, bone or joint disorder, arthritis, varicose veins, or unexplained weight loss?",
+      "notes": null,
+      "cells": {
+        "A170": "GPA-DI-EZ-3",
+        "B170": "15",
+        "C170": "b",
+        "D170": "b.) During the past five years, have you ever been medically diagnosed by a physician as having or been treated for:  heart or circulatory trouble, elevated blood pressure, chest pain or pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood, pus or sugar in urine, back trouble/disorder, bone or joint disorder, arthritis, varicose veins, or unexplained weight loss?"
+      }
+    },
+    {
+      "row": 171,
+      "form": "GPA-DI-EZ-3",
+      "section": "15",
+      "id": "c",
+      "text": "c) During the past five years have you ever been counseled, treated or hospitalized for the use of alcohol or drugs?",
+      "notes": null,
+      "cells": {
+        "A171": "GPA-DI-EZ-3",
+        "B171": "15",
+        "C171": "c",
+        "D171": "c) During the past five years have you ever been counseled, treated or hospitalized for the use of alcohol or drugs?"
+      }
+    },
+    {
+      "row": 172,
+      "form": "GPA-DI-EZ-3",
+      "section": "15",
+      "id": "d",
+      "text": "d) Are you now pregnant?",
+      "notes": null,
+      "cells": {
+        "A172": "GPA-DI-EZ-3",
+        "B172": "15",
+        "C172": "d",
+        "D172": "d) Are you now pregnant?"
+      }
+    },
+    {
+      "row": 173,
+      "form": "GPA-DI-EZ-3",
+      "section": "15",
+      "id": "e",
+      "text": "e) Are you now disabled, or applied or applying for, or receiving any disability or Workers’ Compensation benefits or on waiver of premium for life or health insurance?",
+      "notes": null,
+      "cells": {
+        "A173": "GPA-DI-EZ-3",
+        "B173": "15",
+        "C173": "e",
+        "D173": "e) Are you now disabled, or applied or applying for, or receiving any disability or Workers’ Compensation benefits or on waiver of premium for life or health insurance?"
+      }
+    },
+    {
+      "row": 174,
+      "form": "GPA-DI-EZ-3",
+      "section": "15",
+      "id": "f",
+      "text": "f.) Tobacco / Nicotine Use: Have you or your spouse (if applying for coverage) used tobacco or any nicotine substitute in any form (including nicotine patches and nicotine chewing gum)?",
+      "notes": "If “Yes,” please state when you last used tobacco or nicotine products and specify the product used.\nMember: ______   __________________________    Spouse (only show if spouse cov available): ______   __________________________\nMo / Yr               Product                                                                                          Mo / Yr                  Product",
+      "cells": {
+        "A174": "GPA-DI-EZ-3",
+        "B174": "15",
+        "C174": "f",
+        "D174": "f.) Tobacco / Nicotine Use: Have you or your spouse (if applying for coverage) used tobacco or any nicotine substitute in any form (including nicotine patches and nicotine chewing gum)?",
+        "E174": "If “Yes,” please state when you last used tobacco or nicotine products and specify the product used.\nMember: ______   __________________________    Spouse (only show if spouse cov available): ______   __________________________\nMo / Yr               Product                                                                                          Mo / Yr                  Product"
+      }
+    },
+    {
+      "row": 175,
+      "form": "GPA-DI-EZ-3",
+      "section": "15",
+      "id": "g",
+      "text": "g.) - Residents of All States Except for the residents of VA, Minnesota and Connecticut - Has any person to be insured been convicted of a crime or served time in prison because of a conviction or have an arrest pending?",
+      "notes": null,
+      "cells": {
+        "A175": "GPA-DI-EZ-3",
+        "B175": "15",
+        "C175": "g",
+        "D175": "g.) - Residents of All States Except for the residents of VA, Minnesota and Connecticut - Has any person to be insured been convicted of a crime or served time in prison because of a conviction or have an arrest pending?"
+      }
+    },
+    {
+      "row": 176,
+      "form": "GPA-DI-EZ-3",
+      "section": "15",
+      "id": "8",
+      "text": "For residents of Minnesota and Connecticut only - Has any person to be insured been convicted of a crime or served time in prison because of a conviction or been convicted for any reason during the past 15 years?",
+      "notes": null,
+      "cells": {
+        "A176": "GPA-DI-EZ-3",
+        "B176": "15",
+        "C176": "8",
+        "D176": "For residents of Minnesota and Connecticut only - Has any person to be insured been convicted of a crime or served time in prison because of a conviction or been convicted for any reason during the past 15 years?"
+      }
+    },
+    {
+      "row": 177,
+      "form": "WAEPAWL",
+      "section": "16",
+      "id": "1",
+      "text": "[Form introduction / instruction]",
+      "notes": "Questions 1, 4, 14 do not get displayed for Simplified Issue applications.",
+      "cells": {
+        "A177": "WAEPAWL",
+        "B177": "16",
+        "C177": "1",
+        "D177": "[Form introduction / instruction]",
+        "E177": "Questions 1, 4, 14 do not get displayed for Simplified Issue applications."
+      }
+    },
+    {
+      "row": 178,
+      "form": "WAEPAWL",
+      "section": "16",
+      "id": "2",
+      "text": "Are you currently confined to a hospital, nursing home, psychiatric facility, incarcerated in a prison/correctional facility, currently on parole or currently receiving home health care/assisted living care?",
+      "notes": null,
+      "cells": {
+        "A178": "WAEPAWL",
+        "B178": "16",
+        "C178": "2",
+        "D178": "Are you currently confined to a hospital, nursing home, psychiatric facility, incarcerated in a prison/correctional facility, currently on parole or currently receiving home health care/assisted living care?"
+      }
+    },
+    {
+      "row": 179,
+      "form": "WAEPAWL",
+      "section": "16",
+      "id": "3",
+      "text": "During the last five years have you ever been declined, postponed, or offered rated life or health insurance or been denied a reinstatement, reissue or renewal for life or health insurance, or are you currently receiving disability benefits?",
+      "notes": null,
+      "cells": {
+        "A179": "WAEPAWL",
+        "B179": "16",
+        "C179": "3",
+        "D179": "During the last five years have you ever been declined, postponed, or offered rated life or health insurance or been denied a reinstatement, reissue or renewal for life or health insurance, or are you currently receiving disability benefits?"
+      }
+    },
+    {
+      "row": 180,
+      "form": "WAEPAWL",
+      "section": "16",
+      "id": "4",
+      "text": "Are you currently undergoing a medical evaluation for any condition not yet given a diagnosis?",
+      "notes": null,
+      "cells": {
+        "A180": "WAEPAWL",
+        "B180": "16",
+        "C180": "4",
+        "D180": "Are you currently undergoing a medical evaluation for any condition not yet given a diagnosis?"
+      }
+    },
+    {
+      "row": 181,
+      "form": "WAEPAWL",
+      "section": "16",
+      "id": "5",
+      "text": "In the last five years, have you been convicted of a felony; been charged or convicted with assault; been charged with operating a vehicle while under the influence of alcohol or drugs; been charged three or more times with a moving violation; currently have a revoked or suspended license; or currently on parole or incarcerated in a correctional institution?",
+      "notes": null,
+      "cells": {
+        "A181": "WAEPAWL",
+        "B181": "16",
+        "C181": "5",
+        "D181": "In the last five years, have you been convicted of a felony; been charged or convicted with assault; been charged with operating a vehicle while under the influence of alcohol or drugs; been charged three or more times with a moving violation; currently have a revoked or suspended license; or currently on parole or incarcerated in a correctional institution?"
+      }
+    },
+    {
+      "row": 182,
+      "form": "WAEPAWL",
+      "section": "16",
+      "id": "6",
+      "text": "During the last five years, has any person to be insured been medically diagnosed by a licensed member of the medical profession with HIV or AIDS, or tested positive for Human Immunodeficiency Virus (HIV)?",
+      "notes": null,
+      "cells": {
+        "A182": "WAEPAWL",
+        "B182": "16",
+        "C182": "6",
+        "D182": "During the last five years, has any person to be insured been medically diagnosed by a licensed member of the medical profession with HIV or AIDS, or tested positive for Human Immunodeficiency Virus (HIV)?"
+      }
+    },
+    {
+      "row": 183,
+      "form": "WAEPAWL",
+      "section": "16",
+      "id": "7",
+      "text": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for heart disease, a heart attack, chest pains, irregular heartbeat, arrhythmia, open heart surgery, defibrillator or a pacemaker?",
+      "notes": null,
+      "cells": {
+        "A183": "WAEPAWL",
+        "B183": "16",
+        "C183": "7",
+        "D183": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for heart disease, a heart attack, chest pains, irregular heartbeat, arrhythmia, open heart surgery, defibrillator or a pacemaker?"
+      }
+    },
+    {
+      "row": 184,
+      "form": "WAEPAWL",
+      "section": "16",
+      "id": "8",
+      "text": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for diabetes, a stroke (CVA), a transient ischemic attack (TIA), aneurysm or kidney disease?",
+      "notes": null,
+      "cells": {
+        "A184": "WAEPAWL",
+        "B184": "16",
+        "C184": "8",
+        "D184": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for diabetes, a stroke (CVA), a transient ischemic attack (TIA), aneurysm or kidney disease?"
+      }
+    },
+    {
+      "row": 185,
+      "form": "WAEPAWL",
+      "section": "16",
+      "id": "9",
+      "text": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for depression, anxiety, mental disorder, suicide attempt(s), drug use or treatment, or alcohol abuse or treatment?",
+      "notes": null,
+      "cells": {
+        "A185": "WAEPAWL",
+        "B185": "16",
+        "C185": "9",
+        "D185": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for depression, anxiety, mental disorder, suicide attempt(s), drug use or treatment, or alcohol abuse or treatment?"
+      }
+    },
+    {
+      "row": 186,
+      "form": "WAEPAWL",
+      "section": "16",
+      "id": "10",
+      "text": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for cirrhosis, hepatitis, Lou Gehrig’s Disease/ALS or other neuro-muscular, paralysis or seizure disorder?",
+      "notes": null,
+      "cells": {
+        "A186": "WAEPAWL",
+        "B186": "16",
+        "C186": "10",
+        "D186": "During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for cirrhosis, hepatitis, Lou Gehrig’s Disease/ALS or other neuro-muscular, paralysis or seizure disorder?"
+      }
+    },
+    {
+      "row": 187,
+      "form": "WAEPAWL",
+      "section": "16",
+      "id": "11",
+      "text": "10. During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for cancer (except basal cell or squamous cell skin cancer), tumors, cysts, masses or growths of any type, lymphoma, any blood disorder, except HIV, or connective tissue disorder?",
+      "notes": null,
+      "cells": {
+        "A187": "WAEPAWL",
+        "B187": "16",
+        "C187": "11",
+        "D187": "10. During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for cancer (except basal cell or squamous cell skin cancer), tumors, cysts, masses or growths of any type, lymphoma, any blood disorder, except HIV, or connective tissue disorder?"
+      }
+    },
+    {
+      "row": 188,
+      "form": "WAEPAWL",
+      "section": "16",
+      "id": "12",
+      "text": "11. During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for Crohn’s disease, disorder of pancreas, disorder of the immune system, except HIV?",
+      "notes": null,
+      "cells": {
+        "A188": "WAEPAWL",
+        "B188": "16",
+        "C188": "12",
+        "D188": "11. During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for Crohn’s disease, disorder of pancreas, disorder of the immune system, except HIV?"
+      }
+    },
+    {
+      "row": 189,
+      "form": "WAEPAWL",
+      "section": "16",
+      "id": "13",
+      "text": "12. During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for hypertension, elevated cholesterol, respiratory disease or disorder, or sleep apnea?",
+      "notes": null,
+      "cells": {
+        "A189": "WAEPAWL",
+        "B189": "16",
+        "C189": "13",
+        "D189": "12. During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for hypertension, elevated cholesterol, respiratory disease or disorder, or sleep apnea?"
+      }
+    },
+    {
+      "row": 190,
+      "form": "WAEPAWL",
+      "section": "16",
+      "id": "14",
+      "text": "13. During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for anemia, colitis or arthritis?",
+      "notes": null,
+      "cells": {
+        "A190": "WAEPAWL",
+        "B190": "16",
+        "C190": "14",
+        "D190": "13. During the last five years have you been medically diagnosed by a licensed member of the medical profession as having or been treated for anemia, colitis or arthritis?"
+      }
+    },
+    {
+      "row": 191,
+      "form": "WAEPAWL",
+      "section": "16",
+      "id": "15",
+      "text": "14. During the past five years, have you flown an airplane (other than scheduled commercial or corporate aviation); engaged in any of the following: sky sports, underwater sports, climbing sports, motor sports, in any type vehicle, or any extreme sport (bungee jumping, cave exploration, heliskiing, rodeo riding, etc)?",
+      "notes": null,
+      "cells": {
+        "A191": "WAEPAWL",
+        "B191": "16",
+        "C191": "15",
+        "D191": "14. During the past five years, have you flown an airplane (other than scheduled commercial or corporate aviation); engaged in any of the following: sky sports, underwater sports, climbing sports, motor sports, in any type vehicle, or any extreme sport (bungee jumping, cave exploration, heliskiing, rodeo riding, etc)?"
+      }
+    },
+    {
+      "row": 192,
+      "form": "WAEPAWL",
+      "section": "16",
+      "id": "16",
+      "text": "15. Have any of your siblings or either of your parents been diagnosed with or died from cancer or cardiovascular disease prior to age 60?",
+      "notes": "For all questions – if Yes, render TELE-SUPP version of the follow-up info:",
+      "cells": {
+        "A192": "WAEPAWL",
+        "B192": "16",
+        "C192": "16",
+        "D192": "15. Have any of your siblings or either of your parents been diagnosed with or died from cancer or cardiovascular disease prior to age 60?",
+        "E192": "For all questions – if Yes, render TELE-SUPP version of the follow-up info:"
+      }
+    },
+    {
+      "row": 193,
+      "form": "EZ-4 for AKC",
+      "section": "17",
+      "id": "1",
+      "text": "Is any person proposed for insurance now taking any prescribed medication or receiving or contemplating  any medical attention or surgical treatment?",
+      "notes": null,
+      "cells": {
+        "A193": "EZ-4 for AKC",
+        "B193": "17",
+        "C193": "1",
+        "D193": "Is any person proposed for insurance now taking any prescribed medication or receiving or contemplating  any medical attention or surgical treatment?"
+      }
+    },
+    {
+      "row": 194,
+      "form": "EZ-4 for AKC",
+      "section": "17",
+      "id": "2",
+      "text": "During the past five years has any person proposed for insurance ever been medically diagnosed by a physician as having or been treated for: heart trouble, elevated blood pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood or sugar in urine, back trouble/disorder, arthritis, or unexplained weight loss?",
+      "notes": null,
+      "cells": {
+        "A194": "EZ-4 for AKC",
+        "B194": "17",
+        "C194": "2",
+        "D194": "During the past five years has any person proposed for insurance ever been medically diagnosed by a physician as having or been treated for: heart trouble, elevated blood pressure, gynecological or genitourinary disorders, ulcers, cancer, diabetes, mental or nervous disorder or psychotherapeutic treatment, epilepsy, respiratory disorder, kidney or liver disorder, (including hepatitis), enlarged lymph nodes or immunodeficiency disorder, thyroid disorder, blood disorder, albumin, blood or sugar in urine, back trouble/disorder, arthritis, or unexplained weight loss?"
+      }
+    },
+    {
+      "row": 195,
+      "form": "EZ-4 for AKC",
+      "section": "17",
+      "id": "3",
+      "text": "During the past five years has any person proposed for insurance been counseled, treated or hospitalized for the use of alcohol or drugs?",
+      "notes": null,
+      "cells": {
+        "A195": "EZ-4 for AKC",
+        "B195": "17",
+        "C195": "3",
+        "D195": "During the past five years has any person proposed for insurance been counseled, treated or hospitalized for the use of alcohol or drugs?"
+      }
+    },
+    {
+      "row": 196,
+      "form": "EZ-4 for AKC",
+      "section": "17",
+      "id": "4",
+      "text": "Has any person proposed for insurance had a parent, brother or sister who, prior to age 60 had been medically diagnosed by a physician as having, or been treated for: cancer, a stroke, paralysis, hypertension, diabetes, heart disease, kidney disease, neuromuscular or mental illness?",
+      "notes": "For Instate Indiana sitused contract, change language in 6.E. to “or been treated for: chest discomfort, coronary artery disease, heart murmur, irregular pulse, protein or blood in urine, urinary tract disorder, multiple sclerosis, seizures, memory loss, counseling or hospitalization for a mental health condition, drugs or alcohol?”",
+      "cells": {
+        "A196": "EZ-4 for AKC",
+        "B196": "17",
+        "C196": "4",
+        "D196": "Has any person proposed for insurance had a parent, brother or sister who, prior to age 60 had been medically diagnosed by a physician as having, or been treated for: cancer, a stroke, paralysis, hypertension, diabetes, heart disease, kidney disease, neuromuscular or mental illness?",
+        "E196": "For Instate Indiana sitused contract, change language in 6.E. to “or been treated for: chest discomfort, coronary artery disease, heart murmur, irregular pulse, protein or blood in urine, urinary tract disorder, multiple sclerosis, seizures, memory loss, counseling or hospitalization for a mental health condition, drugs or alcohol?”"
+      }
+    },
+    {
+      "row": 197,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "1",
+      "text": "Are you  now ill, or receiving or contemplating any medical attention or surgical treatment?",
+      "notes": null,
+      "cells": {
+        "A197": "CI-2014 - CI only applications",
+        "B197": "18",
+        "C197": "1",
+        "D197": "Are you  now ill, or receiving or contemplating any medical attention or surgical treatment?"
+      }
+    },
+    {
+      "row": 198,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "2",
+      "text": "Are you taking any kind of medication or, so far as you know, in impaired physical or mental health?",
+      "notes": null,
+      "cells": {
+        "A198": "CI-2014 - CI only applications",
+        "B198": "18",
+        "C198": "2",
+        "D198": "Are you taking any kind of medication or, so far as you know, in impaired physical or mental health?"
+      }
+    },
+    {
+      "row": 199,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "3",
+      "text": "Have you used tobacco or nicotine in any form, including patch or gum, within the past 24 months?",
+      "notes": null,
+      "cells": {
+        "A199": "CI-2014 - CI only applications",
+        "B199": "18",
+        "C199": "3",
+        "D199": "Have you used tobacco or nicotine in any form, including patch or gum, within the past 24 months?"
+      }
+    },
+    {
+      "row": 200,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "4",
+      "text": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for:",
+      "notes": null,
+      "cells": {
+        "A200": "CI-2014 - CI only applications",
+        "B200": "18",
+        "C200": "4",
+        "D200": "During the past five years, has any person to be insured ever been medically diagnosed by a physician as having or been treated for:"
+      }
+    },
+    {
+      "row": 201,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "a",
+      "text": "a. Heart attack, heart or circulatory trouble, high blood pressure, pain or pressure in chest?",
+      "notes": null,
+      "cells": {
+        "A201": "CI-2014 - CI only applications",
+        "B201": "18",
+        "C201": "a",
+        "D201": "a. Heart attack, heart or circulatory trouble, high blood pressure, pain or pressure in chest?"
+      }
+    },
+    {
+      "row": 202,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "b",
+      "text": "b. Organ transplant?",
+      "notes": null,
+      "cells": {
+        "A202": "CI-2014 - CI only applications",
+        "B202": "18",
+        "C202": "b",
+        "D202": "b. Organ transplant?"
+      }
+    },
+    {
+      "row": 203,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "c",
+      "text": "c. Stroke?",
+      "notes": null,
+      "cells": {
+        "A203": "CI-2014 - CI only applications",
+        "B203": "18",
+        "C203": "c",
+        "D203": "c. Stroke?"
+      }
+    },
+    {
+      "row": 204,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "d",
+      "text": "d. Coma?",
+      "notes": null,
+      "cells": {
+        "A204": "CI-2014 - CI only applications",
+        "B204": "18",
+        "C204": "d",
+        "D204": "d. Coma?"
+      }
+    },
+    {
+      "row": 205,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "e",
+      "text": "e. Cancer, carcinoma in situ, tumor or cyst?",
+      "notes": null,
+      "cells": {
+        "A205": "CI-2014 - CI only applications",
+        "B205": "18",
+        "C205": "e",
+        "D205": "e. Cancer, carcinoma in situ, tumor or cyst?"
+      }
+    },
+    {
+      "row": 206,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "f",
+      "text": "f. Dementia or problems with memory or ability to think or reason?",
+      "notes": null,
+      "cells": {
+        "A206": "CI-2014 - CI only applications",
+        "B206": "18",
+        "C206": "f",
+        "D206": "f. Dementia or problems with memory or ability to think or reason?"
+      }
+    },
+    {
+      "row": 207,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "g",
+      "text": "g. Diabetes, kidney trouble, ulcers or digestive disorder?",
+      "notes": null,
+      "cells": {
+        "A207": "CI-2014 - CI only applications",
+        "B207": "18",
+        "C207": "g",
+        "D207": "g. Diabetes, kidney trouble, ulcers or digestive disorder?"
+      }
+    },
+    {
+      "row": 208,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "h",
+      "text": "h. Thyroid, liver or respiratory disorder?",
+      "notes": null,
+      "cells": {
+        "A208": "CI-2014 - CI only applications",
+        "B208": "18",
+        "C208": "h",
+        "D208": "h. Thyroid, liver or respiratory disorder?"
+      }
+    },
+    {
+      "row": 209,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "i",
+      "text": "i. Alcoholism or drug habit?",
+      "notes": null,
+      "cells": {
+        "A209": "CI-2014 - CI only applications",
+        "B209": "18",
+        "C209": "i",
+        "D209": "i. Alcoholism or drug habit?"
+      }
+    },
+    {
+      "row": 210,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "j",
+      "text": "j. Disorder of the blood, except for HIV (Human Immunodeficiency Virus)?",
+      "notes": null,
+      "cells": {
+        "A210": "CI-2014 - CI only applications",
+        "B210": "18",
+        "C210": "j",
+        "D210": "j. Disorder of the blood, except for HIV (Human Immunodeficiency Virus)?"
+      }
+    },
+    {
+      "row": 211,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "k",
+      "text": "k. Blindness or glaucoma or partial or total loss of hearing in one or both ears; partial or total loss of speech, motor neuron disease or paralysis?",
+      "notes": null,
+      "cells": {
+        "A211": "CI-2014 - CI only applications",
+        "B211": "18",
+        "C211": "k",
+        "D211": "k. Blindness or glaucoma or partial or total loss of hearing in one or both ears; partial or total loss of speech, motor neuron disease or paralysis?"
+      }
+    },
+    {
+      "row": 212,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "l",
+      "text": "l.   Other health or physical impairment including:",
+      "notes": null,
+      "cells": {
+        "A212": "CI-2014 - CI only applications",
+        "B212": "18",
+        "C212": "l",
+        "D212": "l.   Other health or physical impairment including:"
+      }
+    },
+    {
+      "row": 213,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "17",
+      "text": "(i) Being medically diagnosed as having Acquired Immune Deficiency Syndrome (AIDS) or AIDS-related complex (ARC); immune system?",
+      "notes": null,
+      "cells": {
+        "A213": "CI-2014 - CI only applications",
+        "B213": "18",
+        "C213": "17",
+        "D213": "(i) Being medically diagnosed as having Acquired Immune Deficiency Syndrome (AIDS) or AIDS-related complex (ARC); immune system?"
+      }
+    },
+    {
+      "row": 214,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "18",
+      "text": "(ii) Chronic cough, persistent diarrhea, enlarged lymph glands, chronic fatigue, in the past five years?",
+      "notes": null,
+      "cells": {
+        "A214": "CI-2014 - CI only applications",
+        "B214": "18",
+        "C214": "18",
+        "D214": "(ii) Chronic cough, persistent diarrhea, enlarged lymph glands, chronic fatigue, in the past five years?"
+      }
+    },
+    {
+      "row": 215,
+      "form": "CI-2014 - CI only applications",
+      "section": "18",
+      "id": "19",
+      "text": "(iii) Any other impairment?",
+      "notes": "Note: for Question 4.i. for CA only, use: i. Substance Abuse?\nNote: for VA residents add statement on the Read and Sign above the signature line  (should be online and on the PDF): \"The undersigned applicant has certified that he/she has read the completed application and false statement or missrepresentation inthe application may result in the loss of coverage under the Policy.\"",
+      "cells": {
+        "A215": "CI-2014 - CI only applications",
+        "B215": "18",
+        "C215": "19",
+        "D215": "(iii) Any other impairment?",
+        "E215": "Note: for Question 4.i. for CA only, use: i. Substance Abuse?\nNote: for VA residents add statement on the Read and Sign above the signature line  (should be online and on the PDF): \"The undersigned applicant has certified that he/she has read the completed application and false statement or missrepresentation inthe application may result in the loss of coverage under the Policy.\""
+      }
+    }
+  ]
+}

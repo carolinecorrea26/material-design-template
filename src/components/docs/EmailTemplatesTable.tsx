@@ -204,7 +204,6 @@ export default function EmailTemplatesTable({
                     <Link
                       component="button"
                       type="button"
-                      underline="hover"
                       onClick={() => handleOpenRow(row)}
                       sx={{ fontWeight: 700, textAlign: "left" }}
                     >

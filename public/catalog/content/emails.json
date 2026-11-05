@@ -1,0 +1,1226 @@
+{
+  "emailTemplates": [
+    {
+      "id": "autosave",
+      "key": "autosave",
+      "definition": {
+        "rendererKey": "autosave",
+        "source": "src/utils/mockEmail.ts"
+      },
+      "position": 0,
+      "displayId": 93713535416874,
+      "providedBy": null,
+      "sourceReference": "prototype:emailTemplates/autosave"
+    },
+    {
+      "id": "receipt",
+      "key": "receipt",
+      "definition": {
+        "rendererKey": "receipt",
+        "source": "src/utils/mockEmail.ts"
+      },
+      "position": 1,
+      "displayId": 220166496703980,
+      "providedBy": null,
+      "sourceReference": "prototype:emailTemplates/receipt"
+    },
+    {
+      "id": "resume-magic-link",
+      "key": "resume-magic-link",
+      "definition": {
+        "rendererKey": "resume-magic-link",
+        "source": "src/utils/mockEmail.ts"
+      },
+      "position": 2,
+      "displayId": 251028805545084,
+      "providedBy": null,
+      "sourceReference": "prototype:emailTemplates/resume-magic-link"
+    },
+    {
+      "id": "pending-reminder",
+      "key": "pending-reminder",
+      "definition": {
+        "rendererKey": "pending-reminder",
+        "source": "src/utils/mockEmail.ts"
+      },
+      "position": 3,
+      "displayId": 270695760652628,
+      "providedBy": null,
+      "sourceReference": "prototype:emailTemplates/pending-reminder"
+    },
+    {
+      "id": "purge-reminder",
+      "key": "purge-reminder",
+      "definition": {
+        "rendererKey": "purge-reminder",
+        "source": "src/utils/mockEmail.ts"
+      },
+      "position": 4,
+      "displayId": 259656181651472,
+      "providedBy": null,
+      "sourceReference": "prototype:emailTemplates/purge-reminder"
+    },
+    {
+      "id": "advisor-sent-for-signature",
+      "key": "advisor-sent-for-signature",
+      "definition": {
+        "rendererKey": "advisor-sent-for-signature",
+        "source": "src/utils/mockEmail.ts"
+      },
+      "position": 5,
+      "displayId": 281150477526496,
+      "providedBy": null,
+      "sourceReference": "prototype:emailTemplates/advisor-sent-for-signature"
+    },
+    {
+      "id": "advisor-sent-to-applicant",
+      "key": "advisor-sent-to-applicant",
+      "definition": {
+        "rendererKey": "advisor-sent-to-applicant",
+        "source": "src/utils/mockEmail.ts"
+      },
+      "position": 6,
+      "displayId": 172203385689422,
+      "providedBy": null,
+      "sourceReference": "prototype:emailTemplates/advisor-sent-to-applicant"
+    },
+    {
+      "id": "advisor-pending-reminder",
+      "key": "advisor-pending-reminder",
+      "definition": {
+        "rendererKey": "advisor-pending-reminder",
+        "source": "src/utils/mockEmail.ts"
+      },
+      "position": 7,
+      "displayId": 104655132547003,
+      "providedBy": null,
+      "sourceReference": "prototype:emailTemplates/advisor-pending-reminder"
+    },
+    {
+      "id": "advisor-edit-request",
+      "key": "advisor-edit-request",
+      "definition": {
+        "rendererKey": "advisor-edit-request",
+        "source": "src/utils/mockEmail.ts"
+      },
+      "position": 8,
+      "displayId": 87289325162295,
+      "providedBy": null,
+      "sourceReference": "prototype:emailTemplates/advisor-edit-request"
+    },
+    {
+      "id": "advisor-application-complete",
+      "key": "advisor-application-complete",
+      "definition": {
+        "rendererKey": "advisor-application-complete",
+        "source": "src/utils/mockEmail.ts"
+      },
+      "position": 9,
+      "displayId": 243327918458645,
+      "providedBy": null,
+      "sourceReference": "prototype:emailTemplates/advisor-application-complete"
+    }
+  ],
+  "siteEmailTemplates": [
+    {
+      "id": "demo.autosave",
+      "key": "demo.autosave",
+      "siteKey": "demo",
+      "emailTemplateKey": "autosave",
+      "enabled": true,
+      "position": 0,
+      "displayId": 210602793754634,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/demo.autosave"
+    },
+    {
+      "id": "demo.receipt",
+      "key": "demo.receipt",
+      "siteKey": "demo",
+      "emailTemplateKey": "receipt",
+      "enabled": true,
+      "position": 1,
+      "displayId": 209508966453580,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/demo.receipt"
+    },
+    {
+      "id": "demo.resume-magic-link",
+      "key": "demo.resume-magic-link",
+      "siteKey": "demo",
+      "emailTemplateKey": "resume-magic-link",
+      "enabled": true,
+      "position": 2,
+      "displayId": 29631730520028,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/demo.resume-magic-link"
+    },
+    {
+      "id": "demo.pending-reminder",
+      "key": "demo.pending-reminder",
+      "siteKey": "demo",
+      "emailTemplateKey": "pending-reminder",
+      "enabled": true,
+      "position": 3,
+      "displayId": 227825069049524,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/demo.pending-reminder"
+    },
+    {
+      "id": "demo.purge-reminder",
+      "key": "demo.purge-reminder",
+      "siteKey": "demo",
+      "emailTemplateKey": "purge-reminder",
+      "enabled": true,
+      "position": 4,
+      "displayId": 138394226288880,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/demo.purge-reminder"
+    },
+    {
+      "id": "demo.advisor-sent-for-signature",
+      "key": "demo.advisor-sent-for-signature",
+      "siteKey": "demo",
+      "emailTemplateKey": "advisor-sent-for-signature",
+      "enabled": true,
+      "position": 5,
+      "displayId": 261606775264320,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/demo.advisor-sent-for-signature"
+    },
+    {
+      "id": "demo.advisor-sent-to-applicant",
+      "key": "demo.advisor-sent-to-applicant",
+      "siteKey": "demo",
+      "emailTemplateKey": "advisor-sent-to-applicant",
+      "enabled": true,
+      "position": 6,
+      "displayId": 57434131546798,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/demo.advisor-sent-to-applicant"
+    },
+    {
+      "id": "demo.advisor-pending-reminder",
+      "key": "demo.advisor-pending-reminder",
+      "siteKey": "demo",
+      "emailTemplateKey": "advisor-pending-reminder",
+      "enabled": true,
+      "position": 7,
+      "displayId": 265813063308315,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/demo.advisor-pending-reminder"
+    },
+    {
+      "id": "demo.advisor-edit-request",
+      "key": "demo.advisor-edit-request",
+      "siteKey": "demo",
+      "emailTemplateKey": "advisor-edit-request",
+      "enabled": true,
+      "position": 8,
+      "displayId": 170690287104663,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/demo.advisor-edit-request"
+    },
+    {
+      "id": "demo.advisor-application-complete",
+      "key": "demo.advisor-application-complete",
+      "siteKey": "demo",
+      "emailTemplateKey": "advisor-application-complete",
+      "enabled": true,
+      "position": 9,
+      "displayId": 21009803856373,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/demo.advisor-application-complete"
+    },
+    {
+      "id": "abe.autosave",
+      "key": "abe.autosave",
+      "siteKey": "abe",
+      "emailTemplateKey": "autosave",
+      "enabled": true,
+      "position": 0,
+      "displayId": 165998450598607,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/abe.autosave"
+    },
+    {
+      "id": "abe.receipt",
+      "key": "abe.receipt",
+      "siteKey": "abe",
+      "emailTemplateKey": "receipt",
+      "enabled": true,
+      "position": 1,
+      "displayId": 156935300818487,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/abe.receipt"
+    },
+    {
+      "id": "abe.resume-magic-link",
+      "key": "abe.resume-magic-link",
+      "siteKey": "abe",
+      "emailTemplateKey": "resume-magic-link",
+      "enabled": true,
+      "position": 2,
+      "displayId": 51144243019107,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/abe.resume-magic-link"
+    },
+    {
+      "id": "abe.pending-reminder",
+      "key": "abe.pending-reminder",
+      "siteKey": "abe",
+      "emailTemplateKey": "pending-reminder",
+      "enabled": true,
+      "position": 3,
+      "displayId": 159458011340941,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/abe.pending-reminder"
+    },
+    {
+      "id": "abe.purge-reminder",
+      "key": "abe.purge-reminder",
+      "siteKey": "abe",
+      "emailTemplateKey": "purge-reminder",
+      "enabled": true,
+      "position": 4,
+      "displayId": 121121623999877,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/abe.purge-reminder"
+    },
+    {
+      "id": "abe.advisor-sent-for-signature",
+      "key": "abe.advisor-sent-for-signature",
+      "siteKey": "abe",
+      "emailTemplateKey": "advisor-sent-for-signature",
+      "enabled": true,
+      "position": 5,
+      "displayId": 220569433484305,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/abe.advisor-sent-for-signature"
+    },
+    {
+      "id": "abe.advisor-sent-to-applicant",
+      "key": "abe.advisor-sent-to-applicant",
+      "siteKey": "abe",
+      "emailTemplateKey": "advisor-sent-to-applicant",
+      "enabled": true,
+      "position": 6,
+      "displayId": 200413865208125,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/abe.advisor-sent-to-applicant"
+    },
+    {
+      "id": "abe.advisor-pending-reminder",
+      "key": "abe.advisor-pending-reminder",
+      "siteKey": "abe",
+      "emailTemplateKey": "advisor-pending-reminder",
+      "enabled": true,
+      "position": 7,
+      "displayId": 113441489537714,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/abe.advisor-pending-reminder"
+    },
+    {
+      "id": "abe.advisor-edit-request",
+      "key": "abe.advisor-edit-request",
+      "siteKey": "abe",
+      "emailTemplateKey": "advisor-edit-request",
+      "enabled": true,
+      "position": 8,
+      "displayId": 263713781899914,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/abe.advisor-edit-request"
+    },
+    {
+      "id": "abe.advisor-application-complete",
+      "key": "abe.advisor-application-complete",
+      "siteKey": "abe",
+      "emailTemplateKey": "advisor-application-complete",
+      "enabled": true,
+      "position": 9,
+      "displayId": 12897445622392,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/abe.advisor-application-complete"
+    },
+    {
+      "id": "ama.autosave",
+      "key": "ama.autosave",
+      "siteKey": "ama",
+      "emailTemplateKey": "autosave",
+      "enabled": true,
+      "position": 0,
+      "displayId": 19580698016874,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/ama.autosave"
+    },
+    {
+      "id": "ama.receipt",
+      "key": "ama.receipt",
+      "siteKey": "ama",
+      "emailTemplateKey": "receipt",
+      "enabled": true,
+      "position": 1,
+      "displayId": 108543468143916,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/ama.receipt"
+    },
+    {
+      "id": "ama.resume-magic-link",
+      "key": "ama.resume-magic-link",
+      "siteKey": "ama",
+      "emailTemplateKey": "resume-magic-link",
+      "enabled": true,
+      "position": 2,
+      "displayId": 250341947780284,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/ama.resume-magic-link"
+    },
+    {
+      "id": "ama.pending-reminder",
+      "key": "ama.pending-reminder",
+      "siteKey": "ama",
+      "emailTemplateKey": "pending-reminder",
+      "enabled": true,
+      "position": 3,
+      "displayId": 280043162143764,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/ama.pending-reminder"
+    },
+    {
+      "id": "ama.purge-reminder",
+      "key": "ama.purge-reminder",
+      "siteKey": "ama",
+      "emailTemplateKey": "purge-reminder",
+      "enabled": true,
+      "position": 4,
+      "displayId": 42105072400080,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/ama.purge-reminder"
+    },
+    {
+      "id": "ama.advisor-sent-for-signature",
+      "key": "ama.advisor-sent-for-signature",
+      "siteKey": "ama",
+      "emailTemplateKey": "advisor-sent-for-signature",
+      "enabled": true,
+      "position": 5,
+      "displayId": 34064025071008,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/ama.advisor-sent-for-signature"
+    },
+    {
+      "id": "ama.advisor-sent-to-applicant",
+      "key": "ama.advisor-sent-to-applicant",
+      "siteKey": "ama",
+      "emailTemplateKey": "advisor-sent-to-applicant",
+      "enabled": true,
+      "position": 6,
+      "displayId": 168054228995342,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/ama.advisor-sent-to-applicant"
+    },
+    {
+      "id": "ama.advisor-pending-reminder",
+      "key": "ama.advisor-pending-reminder",
+      "siteKey": "ama",
+      "emailTemplateKey": "advisor-pending-reminder",
+      "enabled": true,
+      "position": 7,
+      "displayId": 126703356525563,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/ama.advisor-pending-reminder"
+    },
+    {
+      "id": "ama.advisor-edit-request",
+      "key": "ama.advisor-edit-request",
+      "siteKey": "ama",
+      "emailTemplateKey": "advisor-edit-request",
+      "enabled": true,
+      "position": 8,
+      "displayId": 135321338843255,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/ama.advisor-edit-request"
+    },
+    {
+      "id": "ama.advisor-application-complete",
+      "key": "ama.advisor-application-complete",
+      "siteKey": "ama",
+      "emailTemplateKey": "advisor-application-complete",
+      "enabled": true,
+      "position": 9,
+      "displayId": 185457189236053,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/ama.advisor-application-complete"
+    },
+    {
+      "id": "asce.autosave",
+      "key": "asce.autosave",
+      "siteKey": "asce",
+      "emailTemplateKey": "autosave",
+      "enabled": true,
+      "position": 0,
+      "displayId": 47943270916495,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/asce.autosave"
+    },
+    {
+      "id": "asce.receipt",
+      "key": "asce.receipt",
+      "siteKey": "asce",
+      "emailTemplateKey": "receipt",
+      "enabled": true,
+      "position": 1,
+      "displayId": 65722702072567,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/asce.receipt"
+    },
+    {
+      "id": "asce.resume-magic-link",
+      "key": "asce.resume-magic-link",
+      "siteKey": "asce",
+      "emailTemplateKey": "resume-magic-link",
+      "enabled": true,
+      "position": 2,
+      "displayId": 269131139221795,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/asce.resume-magic-link"
+    },
+    {
+      "id": "asce.pending-reminder",
+      "key": "asce.pending-reminder",
+      "siteKey": "asce",
+      "emailTemplateKey": "pending-reminder",
+      "enabled": true,
+      "position": 3,
+      "displayId": 171418439713741,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/asce.pending-reminder"
+    },
+    {
+      "id": "asce.purge-reminder",
+      "key": "asce.purge-reminder",
+      "siteKey": "asce",
+      "emailTemplateKey": "purge-reminder",
+      "enabled": true,
+      "position": 4,
+      "displayId": 144908318604997,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/asce.purge-reminder"
+    },
+    {
+      "id": "asce.advisor-sent-for-signature",
+      "key": "asce.advisor-sent-for-signature",
+      "siteKey": "asce",
+      "emailTemplateKey": "advisor-sent-for-signature",
+      "enabled": true,
+      "position": 5,
+      "displayId": 128087695474769,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/asce.advisor-sent-for-signature"
+    },
+    {
+      "id": "asce.advisor-sent-to-applicant",
+      "key": "asce.advisor-sent-to-applicant",
+      "siteKey": "asce",
+      "emailTemplateKey": "advisor-sent-to-applicant",
+      "enabled": true,
+      "position": 6,
+      "displayId": 235983205655165,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/asce.advisor-sent-to-applicant"
+    },
+    {
+      "id": "asce.advisor-pending-reminder",
+      "key": "asce.advisor-pending-reminder",
+      "siteKey": "asce",
+      "emailTemplateKey": "advisor-pending-reminder",
+      "enabled": true,
+      "position": 7,
+      "displayId": 59787655341938,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/asce.advisor-pending-reminder"
+    },
+    {
+      "id": "asce.advisor-edit-request",
+      "key": "asce.advisor-edit-request",
+      "siteKey": "asce",
+      "emailTemplateKey": "advisor-edit-request",
+      "enabled": true,
+      "position": 8,
+      "displayId": 212400063503946,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/asce.advisor-edit-request"
+    },
+    {
+      "id": "asce.advisor-application-complete",
+      "key": "asce.advisor-application-complete",
+      "siteKey": "asce",
+      "emailTemplateKey": "advisor-application-complete",
+      "enabled": true,
+      "position": 9,
+      "displayId": 75688634336056,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/asce.advisor-application-complete"
+    },
+    {
+      "id": "avma.autosave",
+      "key": "avma.autosave",
+      "siteKey": "avma",
+      "emailTemplateKey": "autosave",
+      "enabled": true,
+      "position": 0,
+      "displayId": 174854148413952,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/avma.autosave"
+    },
+    {
+      "id": "avma.receipt",
+      "key": "avma.receipt",
+      "siteKey": "avma",
+      "emailTemplateKey": "receipt",
+      "enabled": true,
+      "position": 1,
+      "displayId": 49026325603162,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/avma.receipt"
+    },
+    {
+      "id": "avma.resume-magic-link",
+      "key": "avma.resume-magic-link",
+      "siteKey": "avma",
+      "emailTemplateKey": "resume-magic-link",
+      "enabled": true,
+      "position": 2,
+      "displayId": 229841771976866,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/avma.resume-magic-link"
+    },
+    {
+      "id": "avma.pending-reminder",
+      "key": "avma.pending-reminder",
+      "siteKey": "avma",
+      "emailTemplateKey": "pending-reminder",
+      "enabled": true,
+      "position": 3,
+      "displayId": 204007759277934,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/avma.pending-reminder"
+    },
+    {
+      "id": "avma.purge-reminder",
+      "key": "avma.purge-reminder",
+      "siteKey": "avma",
+      "emailTemplateKey": "purge-reminder",
+      "enabled": true,
+      "position": 4,
+      "displayId": 131479207306254,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/avma.purge-reminder"
+    },
+    {
+      "id": "avma.advisor-sent-for-signature",
+      "key": "avma.advisor-sent-for-signature",
+      "siteKey": "avma",
+      "emailTemplateKey": "advisor-sent-for-signature",
+      "enabled": true,
+      "position": 5,
+      "displayId": 84833612661038,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/avma.advisor-sent-for-signature"
+    },
+    {
+      "id": "avma.advisor-sent-to-applicant",
+      "key": "avma.advisor-sent-to-applicant",
+      "siteKey": "avma",
+      "emailTemplateKey": "advisor-sent-to-applicant",
+      "enabled": true,
+      "position": 6,
+      "displayId": 7213057290392,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/avma.advisor-sent-to-applicant"
+    },
+    {
+      "id": "avma.advisor-pending-reminder",
+      "key": "avma.advisor-pending-reminder",
+      "siteKey": "avma",
+      "emailTemplateKey": "advisor-pending-reminder",
+      "enabled": true,
+      "position": 7,
+      "displayId": 217323258535021,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/avma.advisor-pending-reminder"
+    },
+    {
+      "id": "avma.advisor-edit-request",
+      "key": "avma.advisor-edit-request",
+      "siteKey": "avma",
+      "emailTemplateKey": "advisor-edit-request",
+      "enabled": true,
+      "position": 8,
+      "displayId": 258709485834465,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/avma.advisor-edit-request"
+    },
+    {
+      "id": "avma.advisor-application-complete",
+      "key": "avma.advisor-application-complete",
+      "siteKey": "avma",
+      "emailTemplateKey": "advisor-application-complete",
+      "enabled": true,
+      "position": 9,
+      "displayId": 221025668063675,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/avma.advisor-application-complete"
+    },
+    {
+      "id": "csea.autosave",
+      "key": "csea.autosave",
+      "siteKey": "csea",
+      "emailTemplateKey": "autosave",
+      "enabled": true,
+      "position": 0,
+      "displayId": 119352720931299,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/csea.autosave"
+    },
+    {
+      "id": "csea.receipt",
+      "key": "csea.receipt",
+      "siteKey": "csea",
+      "emailTemplateKey": "receipt",
+      "enabled": true,
+      "position": 1,
+      "displayId": 56661706654515,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/csea.receipt"
+    },
+    {
+      "id": "csea.resume-magic-link",
+      "key": "csea.resume-magic-link",
+      "siteKey": "csea",
+      "emailTemplateKey": "resume-magic-link",
+      "enabled": true,
+      "position": 2,
+      "displayId": 58440271116455,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/csea.resume-magic-link"
+    },
+    {
+      "id": "csea.pending-reminder",
+      "key": "csea.pending-reminder",
+      "siteKey": "csea",
+      "emailTemplateKey": "pending-reminder",
+      "enabled": true,
+      "position": 3,
+      "displayId": 74420657097729,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/csea.pending-reminder"
+    },
+    {
+      "id": "csea.purge-reminder",
+      "key": "csea.purge-reminder",
+      "siteKey": "csea",
+      "emailTemplateKey": "purge-reminder",
+      "enabled": true,
+      "position": 4,
+      "displayId": 213478860167801,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/csea.purge-reminder"
+    },
+    {
+      "id": "csea.advisor-sent-for-signature",
+      "key": "csea.advisor-sent-for-signature",
+      "siteKey": "csea",
+      "emailTemplateKey": "advisor-sent-for-signature",
+      "enabled": true,
+      "position": 5,
+      "displayId": 140693641205581,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/csea.advisor-sent-for-signature"
+    },
+    {
+      "id": "csea.advisor-sent-to-applicant",
+      "key": "csea.advisor-sent-to-applicant",
+      "siteKey": "csea",
+      "emailTemplateKey": "advisor-sent-to-applicant",
+      "enabled": true,
+      "position": 6,
+      "displayId": 188504878270321,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/csea.advisor-sent-to-applicant"
+    },
+    {
+      "id": "csea.advisor-pending-reminder",
+      "key": "csea.advisor-pending-reminder",
+      "siteKey": "csea",
+      "emailTemplateKey": "advisor-pending-reminder",
+      "enabled": true,
+      "position": 7,
+      "displayId": 179863609411654,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/csea.advisor-pending-reminder"
+    },
+    {
+      "id": "csea.advisor-edit-request",
+      "key": "csea.advisor-edit-request",
+      "siteKey": "csea",
+      "emailTemplateKey": "advisor-edit-request",
+      "enabled": true,
+      "position": 8,
+      "displayId": 219876923178006,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/csea.advisor-edit-request"
+    },
+    {
+      "id": "csea.advisor-application-complete",
+      "key": "csea.advisor-application-complete",
+      "siteKey": "csea",
+      "emailTemplateKey": "advisor-application-complete",
+      "enabled": true,
+      "position": 9,
+      "displayId": 245508627735756,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/csea.advisor-application-complete"
+    },
+    {
+      "id": "nso.autosave",
+      "key": "nso.autosave",
+      "siteKey": "nso",
+      "emailTemplateKey": "autosave",
+      "enabled": true,
+      "position": 0,
+      "displayId": 172948077696233,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/nso.autosave"
+    },
+    {
+      "id": "nso.receipt",
+      "key": "nso.receipt",
+      "siteKey": "nso",
+      "emailTemplateKey": "receipt",
+      "enabled": true,
+      "position": 1,
+      "displayId": 233459503336657,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/nso.receipt"
+    },
+    {
+      "id": "nso.resume-magic-link",
+      "key": "nso.resume-magic-link",
+      "siteKey": "nso",
+      "emailTemplateKey": "resume-magic-link",
+      "enabled": true,
+      "position": 2,
+      "displayId": 19772763437901,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/nso.resume-magic-link"
+    },
+    {
+      "id": "nso.pending-reminder",
+      "key": "nso.pending-reminder",
+      "siteKey": "nso",
+      "emailTemplateKey": "pending-reminder",
+      "enabled": true,
+      "position": 3,
+      "displayId": 264203498989563,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/nso.pending-reminder"
+    },
+    {
+      "id": "nso.purge-reminder",
+      "key": "nso.purge-reminder",
+      "siteKey": "nso",
+      "emailTemplateKey": "purge-reminder",
+      "enabled": true,
+      "position": 4,
+      "displayId": 222607520349119,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/nso.purge-reminder"
+    },
+    {
+      "id": "nso.advisor-sent-for-signature",
+      "key": "nso.advisor-sent-for-signature",
+      "siteKey": "nso",
+      "emailTemplateKey": "advisor-sent-for-signature",
+      "enabled": true,
+      "position": 5,
+      "displayId": 114844538945739,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/nso.advisor-sent-for-signature"
+    },
+    {
+      "id": "nso.advisor-sent-to-applicant",
+      "key": "nso.advisor-sent-to-applicant",
+      "siteKey": "nso",
+      "emailTemplateKey": "advisor-sent-to-applicant",
+      "enabled": true,
+      "position": 6,
+      "displayId": 184227718399419,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/nso.advisor-sent-to-applicant"
+    },
+    {
+      "id": "nso.advisor-pending-reminder",
+      "key": "nso.advisor-pending-reminder",
+      "siteKey": "nso",
+      "emailTemplateKey": "advisor-pending-reminder",
+      "enabled": true,
+      "position": 7,
+      "displayId": 192674675318552,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/nso.advisor-pending-reminder"
+    },
+    {
+      "id": "nso.advisor-edit-request",
+      "key": "nso.advisor-edit-request",
+      "siteKey": "nso",
+      "emailTemplateKey": "advisor-edit-request",
+      "enabled": true,
+      "position": 8,
+      "displayId": 27882716928248,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/nso.advisor-edit-request"
+    },
+    {
+      "id": "nso.advisor-application-complete",
+      "key": "nso.advisor-application-complete",
+      "siteKey": "nso",
+      "emailTemplateKey": "advisor-application-complete",
+      "enabled": true,
+      "position": 9,
+      "displayId": 50108180339410,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/nso.advisor-application-complete"
+    },
+    {
+      "id": "isitrust.autosave",
+      "key": "isitrust.autosave",
+      "siteKey": "isitrust",
+      "emailTemplateKey": "autosave",
+      "enabled": true,
+      "position": 0,
+      "displayId": 204970320312834,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/isitrust.autosave"
+    },
+    {
+      "id": "isitrust.receipt",
+      "key": "isitrust.receipt",
+      "siteKey": "isitrust",
+      "emailTemplateKey": "receipt",
+      "enabled": true,
+      "position": 1,
+      "displayId": 169955776448692,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/isitrust.receipt"
+    },
+    {
+      "id": "isitrust.resume-magic-link",
+      "key": "isitrust.resume-magic-link",
+      "siteKey": "isitrust",
+      "emailTemplateKey": "resume-magic-link",
+      "enabled": true,
+      "position": 2,
+      "displayId": 205419112822500,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/isitrust.resume-magic-link"
+    },
+    {
+      "id": "isitrust.pending-reminder",
+      "key": "isitrust.pending-reminder",
+      "siteKey": "isitrust",
+      "emailTemplateKey": "pending-reminder",
+      "enabled": true,
+      "position": 3,
+      "displayId": 209642151317388,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/isitrust.pending-reminder"
+    },
+    {
+      "id": "isitrust.purge-reminder",
+      "key": "isitrust.purge-reminder",
+      "siteKey": "isitrust",
+      "emailTemplateKey": "purge-reminder",
+      "enabled": true,
+      "position": 4,
+      "displayId": 73587441983384,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/isitrust.purge-reminder"
+    },
+    {
+      "id": "isitrust.advisor-sent-for-signature",
+      "key": "isitrust.advisor-sent-for-signature",
+      "siteKey": "isitrust",
+      "emailTemplateKey": "advisor-sent-for-signature",
+      "enabled": true,
+      "position": 5,
+      "displayId": 45526678260248,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/isitrust.advisor-sent-for-signature"
+    },
+    {
+      "id": "isitrust.advisor-sent-to-applicant",
+      "key": "isitrust.advisor-sent-to-applicant",
+      "siteKey": "isitrust",
+      "emailTemplateKey": "advisor-sent-to-applicant",
+      "enabled": true,
+      "position": 6,
+      "displayId": 11535067290662,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/isitrust.advisor-sent-to-applicant"
+    },
+    {
+      "id": "isitrust.advisor-pending-reminder",
+      "key": "isitrust.advisor-pending-reminder",
+      "siteKey": "isitrust",
+      "emailTemplateKey": "advisor-pending-reminder",
+      "enabled": true,
+      "position": 7,
+      "displayId": 101566551641795,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/isitrust.advisor-pending-reminder"
+    },
+    {
+      "id": "isitrust.advisor-edit-request",
+      "key": "isitrust.advisor-edit-request",
+      "siteKey": "isitrust",
+      "emailTemplateKey": "advisor-edit-request",
+      "enabled": true,
+      "position": 8,
+      "displayId": 154287728853039,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/isitrust.advisor-edit-request"
+    },
+    {
+      "id": "isitrust.advisor-application-complete",
+      "key": "isitrust.advisor-application-complete",
+      "siteKey": "isitrust",
+      "emailTemplateKey": "advisor-application-complete",
+      "enabled": true,
+      "position": 9,
+      "displayId": 26222640570781,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/isitrust.advisor-application-complete"
+    },
+    {
+      "id": "waepa.autosave",
+      "key": "waepa.autosave",
+      "siteKey": "waepa",
+      "emailTemplateKey": "autosave",
+      "enabled": true,
+      "position": 0,
+      "displayId": 144433714905569,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa.autosave"
+    },
+    {
+      "id": "waepa.receipt",
+      "key": "waepa.receipt",
+      "siteKey": "waepa",
+      "emailTemplateKey": "receipt",
+      "enabled": true,
+      "position": 1,
+      "displayId": 67003512877177,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa.receipt"
+    },
+    {
+      "id": "waepa.resume-magic-link",
+      "key": "waepa.resume-magic-link",
+      "siteKey": "waepa",
+      "emailTemplateKey": "resume-magic-link",
+      "enabled": true,
+      "position": 2,
+      "displayId": 261320950806517,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa.resume-magic-link"
+    },
+    {
+      "id": "waepa.pending-reminder",
+      "key": "waepa.pending-reminder",
+      "siteKey": "waepa",
+      "emailTemplateKey": "pending-reminder",
+      "enabled": true,
+      "position": 3,
+      "displayId": 216268912542995,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa.pending-reminder"
+    },
+    {
+      "id": "waepa.purge-reminder",
+      "key": "waepa.purge-reminder",
+      "siteKey": "waepa",
+      "emailTemplateKey": "purge-reminder",
+      "enabled": true,
+      "position": 4,
+      "displayId": 231509603177607,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa.purge-reminder"
+    },
+    {
+      "id": "waepa.advisor-sent-for-signature",
+      "key": "waepa.advisor-sent-for-signature",
+      "siteKey": "waepa",
+      "emailTemplateKey": "advisor-sent-for-signature",
+      "enabled": true,
+      "position": 5,
+      "displayId": 13137269428675,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa.advisor-sent-for-signature"
+    },
+    {
+      "id": "waepa.advisor-sent-to-applicant",
+      "key": "waepa.advisor-sent-to-applicant",
+      "siteKey": "waepa",
+      "emailTemplateKey": "advisor-sent-to-applicant",
+      "enabled": true,
+      "position": 6,
+      "displayId": 265420412713875,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa.advisor-sent-to-applicant"
+    },
+    {
+      "id": "waepa.advisor-pending-reminder",
+      "key": "waepa.advisor-pending-reminder",
+      "siteKey": "waepa",
+      "emailTemplateKey": "advisor-pending-reminder",
+      "enabled": true,
+      "position": 7,
+      "displayId": 170494883621632,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa.advisor-pending-reminder"
+    },
+    {
+      "id": "waepa.advisor-edit-request",
+      "key": "waepa.advisor-edit-request",
+      "siteKey": "waepa",
+      "emailTemplateKey": "advisor-edit-request",
+      "enabled": true,
+      "position": 8,
+      "displayId": 76468635226896,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa.advisor-edit-request"
+    },
+    {
+      "id": "waepa.advisor-application-complete",
+      "key": "waepa.advisor-application-complete",
+      "siteKey": "waepa",
+      "emailTemplateKey": "advisor-application-complete",
+      "enabled": true,
+      "position": 9,
+      "displayId": 217244197829946,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa.advisor-application-complete"
+    },
+    {
+      "id": "waepa-gi.autosave",
+      "key": "waepa-gi.autosave",
+      "siteKey": "waepa-gi",
+      "emailTemplateKey": "autosave",
+      "enabled": true,
+      "position": 0,
+      "displayId": 60770392611510,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa-gi.autosave"
+    },
+    {
+      "id": "waepa-gi.receipt",
+      "key": "waepa-gi.receipt",
+      "siteKey": "waepa-gi",
+      "emailTemplateKey": "receipt",
+      "enabled": true,
+      "position": 1,
+      "displayId": 71308891326448,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa-gi.receipt"
+    },
+    {
+      "id": "waepa-gi.resume-magic-link",
+      "key": "waepa-gi.resume-magic-link",
+      "siteKey": "waepa-gi",
+      "emailTemplateKey": "resume-magic-link",
+      "enabled": true,
+      "position": 2,
+      "displayId": 169885446557080,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa-gi.resume-magic-link"
+    },
+    {
+      "id": "waepa-gi.pending-reminder",
+      "key": "waepa-gi.pending-reminder",
+      "siteKey": "waepa-gi",
+      "emailTemplateKey": "pending-reminder",
+      "enabled": true,
+      "position": 3,
+      "displayId": 188485394350048,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa-gi.pending-reminder"
+    },
+    {
+      "id": "waepa-gi.purge-reminder",
+      "key": "waepa-gi.purge-reminder",
+      "siteKey": "waepa-gi",
+      "emailTemplateKey": "purge-reminder",
+      "enabled": true,
+      "position": 4,
+      "displayId": 216736662900972,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa-gi.purge-reminder"
+    },
+    {
+      "id": "waepa-gi.advisor-sent-for-signature",
+      "key": "waepa-gi.advisor-sent-for-signature",
+      "siteKey": "waepa-gi",
+      "emailTemplateKey": "advisor-sent-for-signature",
+      "enabled": true,
+      "position": 5,
+      "displayId": 145113423800724,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa-gi.advisor-sent-for-signature"
+    },
+    {
+      "id": "waepa-gi.advisor-sent-to-applicant",
+      "key": "waepa-gi.advisor-sent-to-applicant",
+      "siteKey": "waepa-gi",
+      "emailTemplateKey": "advisor-sent-to-applicant",
+      "enabled": true,
+      "position": 6,
+      "displayId": 25116279899722,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa-gi.advisor-sent-to-applicant"
+    },
+    {
+      "id": "waepa-gi.advisor-pending-reminder",
+      "key": "waepa-gi.advisor-pending-reminder",
+      "siteKey": "waepa-gi",
+      "emailTemplateKey": "advisor-pending-reminder",
+      "enabled": true,
+      "position": 7,
+      "displayId": 105674104005879,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa-gi.advisor-pending-reminder"
+    },
+    {
+      "id": "waepa-gi.advisor-edit-request",
+      "key": "waepa-gi.advisor-edit-request",
+      "siteKey": "waepa-gi",
+      "emailTemplateKey": "advisor-edit-request",
+      "enabled": true,
+      "position": 8,
+      "displayId": 82586552052795,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa-gi.advisor-edit-request"
+    },
+    {
+      "id": "waepa-gi.advisor-application-complete",
+      "key": "waepa-gi.advisor-application-complete",
+      "siteKey": "waepa-gi",
+      "emailTemplateKey": "advisor-application-complete",
+      "enabled": true,
+      "position": 9,
+      "displayId": 71495158340705,
+      "providedBy": null,
+      "sourceReference": "prototype:siteEmailTemplates/waepa-gi.advisor-application-complete"
+    }
+  ]
+}

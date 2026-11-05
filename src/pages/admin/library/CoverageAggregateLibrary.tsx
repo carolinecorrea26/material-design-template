@@ -1,5 +1,5 @@
 import { resolveRatePresentation } from "../../../domain/ratePresentation";
-import ReferenceRateTableLink from "../../../components/ui/ReferenceRateTableLink";
+import ReferenceRateTableLink from "../../../components/coverage/ReferenceRateTableLink";
 import { useMemo } from "react";
 import { Alert, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import ResponsiveTableContainer from "../../../components/docs/ResponsiveTableContainer";

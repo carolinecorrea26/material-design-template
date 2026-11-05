@@ -1,0 +1,74 @@
+# Rule organization and interpretation
+
+October 20, 2026. The latest supplied MCR is `Master Client Requirements_09_28_2026_v78 (1).xlsx`. Its immutable extraction is `src/migration/sources/mcr-v78.json`; workbook and extraction hashes are pinned in `activeSiteScope.ts`. Review applies to ABE, AMA, ASCE, AVMA, CSEA, NSO, ISITRUST, Standard WAEPA and WAEPA GI. Other variants are deferred; Demo is synthetic.
+
+## Interpreting source instructions
+
+This is not a one-to-one migration. For every applicable instruction, retain its original text and scope, describe the underlying business intent, compare current new-template functionality, then record the interpretation and its authority. Instructions that exist to work around the old template require review with the user before being translated. A source cell, catalog link or successful test does not by itself approve that interpretation.
+
+Approved user decisions override conflicting source instructions at their exact scope. Preserve existing accepted and provisional decisions, including their revisit conditions. When source meaning is unclear, present the user with the Site/product/applicant, exact cell, current behavior, concrete alternatives and the consequence. Record an explicit superseded, accepted exception, replacement, deferred or unresolved disposition instead of erasing evidence. An unresolved clause must not inherit acceptance from another instruction in the same cell.
+
+The crosswalk records source intent, linked current-template functionality, interpretation status, proposed reusable configuration, actual captured owner evidence and verification separately. Its generated clause candidates still require semantic decomposition. The latest-workbook overlay is review-only; changed source evidence does not inherit historical policy adoption. Existing compiler derivations retain their historical source until a changed policy is explicitly reviewed and adopted.
+
+## Hierarchy and execution boundaries
+
+Catalog organization is `application → area → behavior family → rule`. Requirement links connect each rule to scoped owners and evidence. Examples include Membership qualifications/follow-ups, Coverage product policies, Review consent/disclosures and Persistence application recovery. Stable rule identities, source references, dependencies and execution-owner links provide traceability. The Business rules Library table exposes a filterable hierarchy column; authored rule definitions persist that metadata in Library snapshots.
+
+Hierarchy and sequence are review order. Execution remains with the shared field/condition, typed product policy, scoped assignment, routing resolver or service contract referenced by the rule. Dependencies are checked for missing identities, duplicates and cycles. Before activation, each executable change must also pass its owner's predicate, ambiguity, overlap and override checks; a clean dependency graph cannot certify policy non-interference. A general conflict engine and full ownership reconciliation are not completed by this metadata.
+
+For every area, distinguish:
+
+| Dimension | Meaning |
+| --- | --- |
+| Source/interpretation | What the source said and what was accepted for the new template |
+| Catalog status | Documented, executable, planned or source reference |
+| Coverage disposition | Verified, accepted exception, superseded, deferred or review pending |
+| Execution ownership | The stored field, policy, scoped assignment or service that actually controls behavior |
+| Verification | Specific checks and rendered/persistence/isolation evidence; catalog presence is insufficient |
+
+Unique MCR behavior uses reusable global definitions or typed configuration with explicit values/assignments for the Sites that need it. A global definition does not make its value a global default. Keep one execution owner per behavior and derive compatibility views. Prose edits cannot silently change behavior. Service constants remain service-owned unless an explicit service contract makes them editable.
+
+## Decisions incorporated in this batch
+
+Standard WAEPA uses the user's exact six qualification choices: active civilian federal employee, former federal employee, spouse Associate Member, adult child/step-child Associate Member, parent/parent-in-law Associate Member and sibling Associate Member. The shared `waepa-attestation` field and `condition-waepa-associated-member` own those choices and follow-ups; Standard WAEPA opts in through existing field placements. The retired-annuitant choice is omitted from the current dropdown. Its historical condition/fields remain available for captured revisions.
+
+Adult-child Associate Member Life entry is allowed; the conflicting legacy C122 entry block is superseded. This does not establish blanket eligibility for all products or change dependent coverage. WAEPA GI retains its accepted generic entry question. The current associate information fields are reused for all four relationships, with member first/last name required and membership ID optional. Rule descriptions identify those owners and current functionality.
+
+Preserve ABE's accepted Review notices/fields and dividend decisions. The crosswalk inventories existing stored Review blocks across current Sites. Compare those controls, shared Review fields and jurisdiction notices with applicable source evidence before inferring further gaps. The user explicitly deferred custom consent until its wording and applicable Sites are supplied. This remains a flagged requirement and does not block task completion; preserve existing Review behavior.
+
+The user approved the nine changed ISITRUST residency lists at Main!N278:N286 on October 20. Reusable global product residency definitions have explicit ISITRUST assignments; their earlier selected policies remain preserved as superseded evidence. N280's `YT` token means Yukon and no longer excludes Utah through the historical spelling repair. The existing mainland-US-plus-DC country scope remains provisional. ATPE is added to the current ISITRUST application with seven products and dedicated current residency lists (Group Term: N179, FL/MT/NV/VT). Its older ten-state Group Term exception is superseded. The user approved ATPE 10-Year Term ages 20–54, a $500,000 spouse maximum and a 50% advisory spouse comparison for Group Term. Native scoped assignments own these differences. Later approvals adopt ATPE-specific underwriting thresholds/outcomes, source Life and CI questionnaires, separate applicant histories and guarded follow-ups, and suppressed premium estimates. The monthly ACH or Bill me choice remains required for ISITRUST, including ATPE; its legacy skip flag does not remove Payment. Other source reconciliation remains visible. ISI St. Louis retains its separate pending disposition.
+
+## Remaining work
+
+Save and resume is closed for the current mock prototype against reviewed code/test fingerprints, including persistence and feedback in both layouts and changed-revision revalidation. The other ten review areas remain open. Complete atomic enumeration, source applicability, business interpretation and owner discovery; retain current new-template behavior and explicit template rationales, including planned/source records. Review legacy workarounds with the user in concrete batches. Then reconcile ownership, validate scoped assignments, propagate approved changes through captured revisions and collect boundary, rendered, persistence/reload and Site-isolation evidence. [Execution plan](rules-coverage-plan.md) and [crosswalk](step1-requirement-crosswalk.md) retain the closure gates.
+
+The approved qualification definitions and hierarchy metadata enter regenerated reviewed seed data. New prototype sessions use that seed after the mock server reloads it. Existing saved drafts/releases require explicit compatible migration or a newly based draft/release; application and historical snapshots remain intact.
+
+AMA consent uses the captured native Review policy. C80 applies to member/spouse Life, DI and Overhead requests; C97 applies otherwise. The physician opening is retained only for the Physician applicant type, as explicitly approved October 20. These predicates and copy are reusable configuration with an explicit AMA assignment; they do not become other Sites’ defaults.
+
+October 20 continuation: ATPE 20-Year uses QD and full source questions; the QD LI Core/Expanded evidence supersedes the provisional FUW outcome. Standard WAEPA keeps phone on Membership and shows business details only with STD selected. AVMA college text is retained and the missing dropdown list is nonblocking. Medical authorization follows actual health-question participation outside ABE, whose accepted behavior is preserved. NSO nurse-type collection reuses a shared dropdown definition with an explicit NSO placement.
+
+Medical Review wording: user approved the v78 standard B41, Minnesota C43 and Virginia QD C48 authorization versions and the B36 introductory statement under the actual-health-question guard. The Minnesota embedded fraud/consent labels are layout instructions; its final HIV-test exclusion follows the actual consent. Supplemental Health B115:B117/C117 is a source-backed native block at 14pt before signature, with AMA’s no-title exception. ABE remains unchanged.
+
+October 20 STD continuation: AVMA retains its current GI/no-health-question flow as an accepted provisional exception pending missing source form information. Standard WAEPA uses QD at ages 17–49 and FUW at 50–69. Canonical underwriting bands have explicit WAEPA/product/member assignments; its shared journey policy explicitly maps QD to the processing page and FUW to existing DI questions provisionally. Eligibility ages, the 30-hour rule and benefit/income limits stay with their existing owners. ISITRUST’s separately approved provisional STD exception remains in effect.
+
+The dedicated full financial questionnaire has no current Site/product assignment. Current v78 Main R80 is ACS (Surgeons) Long-Term Disability; the archived native financial question-set assignment is AANA. Both remain outside current Sites, with distinct evidence. The financial scope guard reopens on a new current assignment, source trigger or affirmative flag. This does not suppress income eligibility, other-insurance fields or AVMA loan-statement requirements.
+
+Later October 20 clarification: shared fields/pages use the standardized new-template placement across clients. Required ABE email stays on Membership and carries forward; legacy requests to repeat it on Eligibility and Contact are superseded. Unique client fields still need explicit placement. WAEPA referral uses optional TV/Radio/Newspaper multiple selections in Membership Information for new members on both Sites. GI adds a required separate New/Current Member status after its retained generic Yes gate; status controls referral display only.
+
+Connecticut’s source B119 warning appears immediately before member signature for actual health-question participation, preserving ABE. Standard WAEPA Group Term Life displays C75’s accelerated-death-benefit note after Fraud Notice and before Consent; only New York Life applications show the bold uppercase war-restriction notice. GI and STD-only requests do not inherit C75.
+
+The missing linked 2018 QD state-variation document is explicitly deferred as nonblocking; retain existing state-specific behavior until authoritative content is supplied. The workbook’s formula and comments have bounded historical/outside-Site scope, and every hyperlink is accounted as a separate reference. URL examples still require parameter-specific applicability review.
+
+ISITRUST questionnaire continuation: the user approved general Life, CI-only and combined source forms for the other 25 current Associations. Source B63:B75 and B87:B99 match after whitespace normalization, allowing shared field definitions with distinct source references. Explicit Association assignments keep ATPE separate; actual health-page participation, approved processing/shorter flows, DI/OO questionnaires and STD-only’s accepted exception retain their scope. Virginia CI certification follows the same explicit Association/product/state guards.
+
+General ISITRUST term continuation: user approved 10-Year QD at 20–60 and FUW at 61–64, and 20-Year QD at 20–54, with full source Life questions for every permitted adult amount. QD LI 75–76 and the explicit decision resolve Main’s No QD flags. Captured native policies previously used a FUW fallback; the older shared catalog QD cutoff was not the captured execution owner. ATPE, child processing, eligibility and amount limits keep their separate scope. The native shared-record evidence is reconciled only after confirming those other properties unchanged.
+
+
+The October 20 continuation separately approves the general ISITRUST Life processing and eligibility changes. Group Term uses QD at ages 18–60; only ages 18–54 at amounts up to $500,000 retain the short processing flow, with full source Life questions for higher amounts and ages 55–60. Ages 61–64 use FUW and full Life questions. General 10-Year uses QD at 20–60 and FUW at 61–64, always with full source Life questions. General 20-Year member/spouse eligibility and QD use ages 20–54, always with full source Life questions. Each of the 25 general Associations has an explicit assignment; ATPE and amount limits retain their own owners.
+
+Beneficiary participation has its own reusable native policy, separate from designation notes. The user approved excluding the general ISITRUST Group Term spouse and AMA dependent Premier Accident spouse, suppressing ISITRUST AD&D beneficiary selection, and following ATPE’s dedicated flags: CI collects beneficiaries; AD&D and Graded Benefit Life do not. No automatic-beneficiary statement is inferred for these exclusions. Native page routing and card display share these assignments. CIR-only zero-base selections skip the page, and copying beneficiaries cannot bypass target allocation or trust restrictions.
+
+WAEPA retains required monthly ACH and credit-card choices under the approved interpretation of conflicting AE/AK source instructions. NSO retains zero collection fees provisionally; the source’s unconfirmed $5 Direct Bill fee is a nonblocking requirement pending confirmation of the fee and collection basis. The IMPORTANT NOTICE viewer, including standard, New Mexico and Virginia source variants, is explicitly deferred as nonblocking. Consent references do not imply that the viewer exists.
+
+Read & Sign B120/C120 and Main AE246 directly establish California CSEA’s payroll-deduction statement for the source-linked DI product. It appears before the member signature regardless of health participation. The separately provisional standalone AD&D product has no established payroll assignment and does not inherit it.

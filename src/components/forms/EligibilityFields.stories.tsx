@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import EligibilityFields, { type EligibilityValues } from "./EligibilityFields";
 
 /**
- * EligibilityFields is a shared DOB/ZIP/State trio used by the Home page's
+ * EligibilityFields is a shared ZIP/State/Birthday trio used by Eligibility, the Home page's
  * quote entry card and inside QuoteCalculator's eligibility-collection step.
  * ZIP auto-derives State (deriveStateProvinceFromZipOrPostalCode); editing
  * ZIP again re-derives it, but a manual State edit isn't overwritten until
@@ -14,9 +14,10 @@ import EligibilityFields, { type EligibilityValues } from "./EligibilityFields";
  * validation-display convention applies everywhere.
  */
 const meta = {
-  title: "Coverage & Commerce/EligibilityFields",
+  id: "coverage-commerce-eligibilityfields",
+  title: "Components/Pages/Eligibility/Sections/Eligibility details",
   component: EligibilityFields,
-  parameters: { layout: "padded" },
+  parameters: { standalone: true, docs: { description: { component: "Collects and validates applicant eligibility details." } }, layout: "padded" },
 } satisfies Meta<typeof EligibilityFields>;
 
 export default meta;
@@ -50,7 +51,7 @@ export const Default: StoryObj = {
 export const ZipAutoDerivesState: StoryObj = {
   name: "ZIP auto-derives State (try editing ZIP)",
   render: () => <EligibilityDemo initialValues={{ birthday: "", zipCode: "10001", state: "NY" }} />,
-  parameters: {
+  parameters: { standalone: true,
     docs: {
       description: {
         story:

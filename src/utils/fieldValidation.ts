@@ -12,9 +12,11 @@ export function fieldValidationChecks(field: FieldDefinition): FieldValidationCh
   }
   if (field.inputType === "checkbox-group" || field.inputType === "multi-select") {
     if (field.required) add("Select at least one option", "Select at least one option.", value => Array.isArray(value) && value.length > 0);
+    if (field.options?.length) add("Select available options", `Select available ${field.label} options.`, value => value === undefined || value === null || Array.isArray(value) && new Set(value).size === value.length && value.every(item => typeof item === "string" && field.options!.some(option => option.value === item)));
     return checks;
   }
   if (field.required) add("Required", `${field.label} is required.`, value => !!value, "required");
+  if (["radio", "dropdown", "searchable-select"].includes(field.inputType) && field.options?.length) add("Select an available option", `Select an available ${field.label} option.`, value => value === undefined || value === null || value === "" || typeof value === "string" && field.options!.some(option => option.value === value));
   if (field.maxLength !== undefined) add(`At most ${field.maxLength} characters`, `${field.label} must be ${field.maxLength} characters or fewer.`, value => !value || (field.format === 'currency' || field.format === 'percent' ? String(value).replace(/[^0-9]/g, '').length : String(value).length) <= field.maxLength!);
   let valueCheck: FieldValidationCheck | undefined;
   const format = (rule: string, message: string, validate: FieldValidationCheck["validate"]) => { valueCheck = { kind: "value", rule, message, validate: value => !value || validate(value) }; };
@@ -24,7 +26,8 @@ export function fieldValidationChecks(field: FieldDefinition): FieldValidationCh
   if (field.format === "phone") format("Phone number: exactly 10 digits", "Enter a valid 10-digit phone number.", value => digits(value).length === 10);
   if (field.format === "ssn") format("SSN: exactly 9 digits", "Enter a valid 9-digit SSN.", value => digits(value).length === 9);
   if (field.format === "percent") format("Percentage: up to 3 digits", "Enter a percent value with up to 3 digits.", value => digits(value).length <= 3);
-  if (field.format === "month-year") format("Month / year: 6 digits (MM/YYYY)", "Enter a valid month and year (MM/YYYY).", value => digits(value).length === 6);
+  if (field.format === "month-year") format("Month / year: valid month and 4-digit year (MM/YYYY)", "Enter a valid month and year (MM/YYYY).", value => /^(0[1-9]|1[0-2])\/\d{4}$/.test(String(value)));
+  if (field.inputType === "date") format("Valid calendar date (YYYY-MM-DD)", "Enter a valid date.", value => /^\d{4}-\d{2}-\d{2}$/.test(String(value)) && Number.isFinite(Date.parse(String(value))) && new Date(String(value)).toISOString().slice(0, 10) === value);
   if (field.inputType === "number") format(field.allowDecimal ? "Nonnegative number; decimals allowed" : "Nonnegative whole number", "Enter a valid nonnegative number.", value => (field.allowDecimal ? /^\d+(\.\d+)?$/ : /^\d+$/).test(String(value)));
   if (valueCheck) checks.push(valueCheck);
   return checks;

@@ -7,15 +7,17 @@ import { createMockPlatform, totp } from './mock-platform.mjs';
 import { isLibraryDraft } from '../src/domain/libraryDraft';
 import { createSiteBuild } from '../src/domain/siteBuild';
 import { resolvePrototypeLibrary } from '../src/domain/prototypeLibrary';
+import { effectiveSiteSnapshotTables, normalizedSnapshotTables } from '../src/persistence/catalogTables';
 let server, dir;
 afterEach(async () => { if (server) await new Promise(resolve => server.close(resolve)); if (dir) rmSync(dir, { recursive: true, force: true }); });
 it('persists a real new TPA/client/Site, reopens the builder, and verifies its isolated executable snapshot and analytics', async () => {
   const read = file => JSON.parse(readFileSync(`migration-artifacts/mock/${file}.json`, 'utf8'));
-  const database = read('database'), prototypeDatabase = read('prototype-data'), analyticsTags = read('analytics-tags');
+  const database = read('database'), analyticsTags = read('analytics-tags');
+  const prototypeData = Object.fromEntries([...new Set(effectiveSiteSnapshotTables)].map(table => [table, database[table]]));
   dir = mkdtempSync(join(tmpdir(), 'builder-acceptance-'));
-  const otherDraft = { formatVersion: 1, siteKey: 'ama', baseRevision: 'local:v1:sha256:' + '0'.repeat(64), editVersion: 0, data: prototypeDatabase };
+  const otherDraft = { formatVersion: 1, siteKey: 'ama', baseRevision: 'local:v1:sha256:' + '0'.repeat(64), editVersion: 0, data: prototypeData };
   writeFileSync(join(dir, 'state.json'), JSON.stringify({ version: 1, admin: null, drafts: { other: { id: 'other', version: 1, siteKey: 'ama', payload: otherDraft } }, builderDrafts: { otherBuild: { id: 'otherBuild', ownerId: 'another-user', siteKey: 'ama', libraryDraftId: 'other' } }, payments: {}, releases: {}, heads: {}, audit: [], analytics: [] }));
-  server = createMockPlatform({ database, prototypeDatabase, libraryDatabase: read('library-data'), analyticsTags, statePath: join(dir, 'state.json'), validatePayload: async payload => {
+  server = createMockPlatform({ database, prototypeTables: effectiveSiteSnapshotTables, libraryTables: normalizedSnapshotTables, analyticsTags, statePath: join(dir, 'state.json'), validatePayload: async payload => {
     if (!isLibraryDraft(payload)) throw new Error('Invalid Library snapshot');
     resolvePrototypeLibrary(payload.data, payload.siteKey, payload.baseRevision);
   } });

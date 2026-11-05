@@ -3,8 +3,9 @@ import { useEffect, useState, type ReactNode } from "react";
 import {
   Box,
   ButtonBase,
-  Breadcrumbs,
+  Breadcrumbs as MuiBreadcrumbs,
   Step,
+  StepButton,
   StepContent,
   StepLabel,
   Stepper,
@@ -29,14 +30,14 @@ import { useSinglePageFlow } from "../../app/SinglePageFlowContext";
 
 const PENDING_BREADCRUMB_COMPLETION_EVENT = "form:pendingbreadcrumbcompletion";
 
-export function getVerticalStepperStepLabel(step: {
+export function getProgressStepLabel(step: {
   id: string;
   label: string;
 }) {
   return step.label;
 }
 
-type FormVerticalStepperProps = {
+type ProgressStepProps = {
   pageId: PageId;
   children: ReactNode;
 };
@@ -89,7 +90,7 @@ function getBreadcrumbEntries(
   return entries;
 }
 
-export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
+export function Breadcrumbs({ pageId }: { pageId: PageId }) {
   const navigate = useNavigate();
   const singlePageFlow = useSinglePageFlow();
   const { values } = useApplicationForm();
@@ -138,7 +139,8 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
   );
 
   return (
-    <Breadcrumbs
+    <MuiBreadcrumbs
+      aria-label="Breadcrumbs"
       separator={
         <ArrowRightRoundedIcon sx={{ fontSize: 16, display: "block" }} />
       }
@@ -187,7 +189,7 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
             }}
           >
             <Typography
-              variant="formBreadcrumb"
+              variant="caption"
               sx={{
                 color:
                   isCompleted || isCurrentEntry ? "primary.main" : "#94a3b8",
@@ -202,14 +204,14 @@ export function VerticalStepperBreadcrumbs({ pageId }: { pageId: PageId }) {
           </Box>
         );
       })}
-    </Breadcrumbs>
+    </MuiBreadcrumbs>
   );
 }
 
 export default function ProgressStep({
   pageId,
   children,
-}: FormVerticalStepperProps) {
+}: ProgressStepProps) {
   const navigate = useNavigate();
   const { values } = useApplicationForm();
   const { reviewSubmitted, advisorApplicantFlow } = useApplicationSession();
@@ -241,6 +243,8 @@ export default function ProgressStep({
         }}
       >
         <Box
+          component="nav"
+          aria-label="Main steps"
           sx={
             isDesktop
               ? { position: "sticky", top: 12, borderRadius: "24px" }
@@ -284,6 +288,14 @@ export default function ProgressStep({
                 : isCompleted
                   ? "text.secondary"
                   : "#94a3b8";
+              const label = (
+                <Typography
+                  variant="body1" component="span"
+                  sx={{ fontWeight: isActive ? 700 : 500, color: stepLabelColor }}
+                >
+                  {getProgressStepLabel(step)}
+                </Typography>
+              );
 
               return (
                 <Step
@@ -291,29 +303,19 @@ export default function ProgressStep({
                   completed={isCompleted}
                   aria-current={isActive ? "step" : undefined}
                 >
-                  <StepLabel
-                    onClick={
-                      isClickable
-                        ? () => {
-                            const firstPage = step.pageIds[0];
-                            if (firstPage) {
-                              navigate(getPagePath(firstPage));
-                            }
-                          }
-                        : undefined
-                    }
-                    sx={isClickable ? { cursor: "pointer" } : undefined}
-                  >
-                    <Typography
-                      variant="formVerticalStepLabel"
-                      sx={{
-                        fontWeight: isActive ? 700 : 500,
-                        color: stepLabelColor,
+                  {isClickable ? (
+                    <StepButton
+                      onClick={() => {
+                        const firstPage = step.pageIds[0];
+                        if (firstPage) navigate(getPagePath(firstPage));
                       }}
+                      aria-label={`Go to ${step.label}`}
                     >
-                      {getVerticalStepperStepLabel(step)}
-                    </Typography>
-                  </StepLabel>
+                      {label}
+                    </StepButton>
+                  ) : (
+                    <StepLabel>{label}</StepLabel>
+                  )}
                   {!isDesktop && (
                     <StepContent>
                       {isActive && (

@@ -12,7 +12,7 @@ it("executes every persisted applicant/class/association/period/mode mapping", a
     if (!sites.has(key)) sites.set(key, resolveEffectiveSite(db, key));
     return sites.get(key)!;
   });
-  expect(result.tested).toBe(1834);
+  expect(result.tested).toBe(1868);
   expect(result.failures).toEqual([]);
   if (process.env.STEP3_ACCEPTANCE_DIR) {
     mkdirSync(resolve(process.env.STEP3_ACCEPTANCE_DIR), { recursive: true });

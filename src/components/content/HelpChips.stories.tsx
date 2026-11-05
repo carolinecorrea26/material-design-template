@@ -1,5 +1,6 @@
+// Preview notes are documentation only; the canvas contains application UI.
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Alert, Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import FormHelpChips from "./HelpChips";
 
 /**
@@ -9,9 +10,10 @@ import FormHelpChips from "./HelpChips";
  * Membership, HealthDi, HealthSi, and Payment.
  */
 const meta = {
-  title: "Content/HelpChips",
+  id: "content-helpchips",
+  title: "Components/Content and data display/Help and support/Help chips",
   component: FormHelpChips,
-  parameters: { layout: "padded" },
+  parameters: { docs: { description: { component: "Opens contextual help and reference content from labeled chips." } }, layout: "padded" },
 } satisfies Meta<typeof FormHelpChips>;
 
 export default meta;
@@ -31,10 +33,7 @@ export const Empty: StoryObj = {
   render: () => (
     <>
       <FormHelpChips items={[]} onSelect={() => {}} />
-      <Typography variant="caption" color="text.secondary">
-        No chips, no wrapper markup — the component returns{" "}
-        <code>null</code> when <code>items.length === 0</code>.
-      </Typography>
+
     </>
   ),
 };
@@ -53,24 +52,7 @@ export const NarrowContainerWithOverflow: StoryObj = {
         ]}
         onSelect={() => {}}
       />
-      <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-        The right-edge fade only renders below the <code>md</code>{" "}
-        breakpoint and only once the row actually overflows — resize the
-        viewport to see it appear/disappear.
-      </Typography>
-    </Box>
-  ),
-};
 
-export const AccessibilityNote: StoryObj = {
-  render: () => (
-    <Alert severity="warning" sx={{ maxWidth: 700 }}>
-      The scroll container hides its native scrollbar (
-      <code>scrollbarWidth: "none"</code>) on every browser. On mobile this
-      is compensated for by the fade affordance above; on desktop, with no
-      fade and no visible scrollbar, a user relying on a visible scrollbar
-      has no indication the row scrolls. Flagged in the Phase 1 audit, not
-      fixed here.
-    </Alert>
+    </Box>
   ),
 };

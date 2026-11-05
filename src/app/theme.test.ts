@@ -1,4 +1,9 @@
+// @vitest-environment node
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { Button, ThemeProvider } from "@mui/material";
 import { describe, expect, it } from "vitest";
+import { createTheme } from "@mui/material/styles";
 import { createAppTheme } from "./theme";
 import type { ThemeColorId } from "../config/clients/types";
 
@@ -13,15 +18,35 @@ const presetPrimaryColors: Record<
 };
 
 describe("createAppTheme", () => {
-  it("applies a custom full palette and inherits omitted colors", () => {
-    const theme = createAppTheme({type:"custom",primary:"#001F5F",palette:{background:{default:"#ffffff",paper:"#fafafa"},success:{main:"#228822"},error:{main:"#bb2222"},text:{primary:"#111111"},support:{main:"#eeeeff",border:"#aaaaee"}}});
-    expect(theme.palette.background.default).toBe("#ffffff");
-    expect(theme.palette.success.main).toBe("#228822");
-    expect(theme.palette.error.main).toBe("#bb2222");
-    expect(theme.palette.text.primary).toBe("#111111");
-    expect(theme.typography.body1.color).toBe("#111111");
-    expect(theme.palette.background.surface).toBeTruthy();
-    expect(theme.palette.support.main).toBe("#eeeeff");
+  it.each(["contained", "outlined", "text"] as const)("renders %s buttons as pills by default, including disabled and loading states", variant => {
+    const theme = createAppTheme();
+    for (const state of [{}, { disabled: true }, { loading: true }]) {
+      const markup = renderToStaticMarkup(createElement(ThemeProvider, { theme }, createElement(Button, { variant, ...state }, "Continue")));
+      expect(markup).toContain("border-radius:9999px");
+    }
+  });
+  it("inherits the pill default for custom palettes and honors an explicit standard shape", () => {
+    const button = (buttonShape?: "standard" | "pill") => renderToStaticMarkup(createElement(ThemeProvider,
+      { theme: createAppTheme({ type: "custom", primary: "#001F5F", buttonShape }) }, createElement(Button, { variant: "contained" }, "Continue")));
+    expect(button()).toContain("border-radius:9999px");
+    expect(button("standard")).not.toContain("border-radius:9999px");
+  });
+
+  it.each(Object.keys(presetPrimaryColors) as ThemeColorId[])("inherits %s for buttons and supporting accents without an override", preset => {
+    const theme = createAppTheme(preset);
+    expect(theme.palette.secondary.main).toBe(theme.palette.primary.main);
+    const markup = renderToStaticMarkup(createElement(ThemeProvider, { theme }, createElement(Button, { variant: "contained" }, "Continue")));
+    expect(markup).toContain(`--variant-containedBg:${theme.palette.primary.main}`);
+    expect(markup).not.toContain("background-color:#00729f");
+  });
+  it("keeps a button override separate from links and other controls", () => {
+    const theme = createAppTheme({ type: "custom", primary: "#002c85", primaryAction: { main: "#f1b435", tone: "light" } });
+    expect(theme.palette.primary.main).toBe("#002c85");
+    expect(theme.palette.secondary.main).toBe("#002c85");
+    const markup = renderToStaticMarkup(createElement(ThemeProvider, { theme }, createElement(Button, { variant: "contained" }, "Continue")));
+    expect(markup).toContain("background-color:#f1b435");
+    expect(markup).toContain(`color:${theme.palette.text.primary}`);
+    expect(() => createAppTheme({ type: "preset", preset: "default", primaryAction: { main: "#invalid", tone: "dark" } })).toThrow("Invalid button override color");
   });
   it.each(Object.entries(presetPrimaryColors))(
     "preserves the %s preset palette",
@@ -51,4 +76,16 @@ describe("createAppTheme", () => {
       createAppTheme({ type: "custom", primary: "#not-a-color" }),
     ).toThrow("Invalid custom theme primary color");
   });
+});
+
+
+it.each(['default', 'teal', 'purple', 'dark-blue'] as const)('uses standard MUI surface roles for %s without custom palette extensions', preset => {
+  const theme = createAppTheme(preset);
+  const mui = createTheme();
+  for (const key of ['panel', 'support', 'notice']) expect(theme.palette).not.toHaveProperty(key);
+  for (const key of ['subtle', 'surface', 'iconBadge']) expect(theme.palette.background).not.toHaveProperty(key);
+  expect(theme.palette.text).not.toHaveProperty('tertiary');
+  expect(theme.palette.action).toEqual(mui.palette.action);
+  expect(theme.palette.grey).toEqual(mui.palette.grey);
+  expect(theme.palette.background.paper).toBe('#fff');
 });

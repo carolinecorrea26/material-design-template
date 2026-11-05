@@ -1,3 +1,6 @@
+import { ComponentContentContext } from "../content/ComponentContentContext";
+import { getContent } from "../../content";
+import { ClientIconContext } from "../content/ClientIconContext";
 import { useState, type ReactNode } from "react";
 import { Box } from "@mui/material";
 import { getActiveClient } from "../../config/client/getActiveClient";
@@ -9,6 +12,8 @@ import AppFooter from "./AppFooter";
 import { showSinglePageArtwork } from "../../config/homepagePresentation";
 import FormUmbrella from "../home/FormUmbrella";
 import { getFormTemplate } from "../../config/template/resolveTemplate";
+import ApplicationSessionGuard from '../../app/ApplicationSessionGuard';
+import OfflineBanner from '../feedback/OfflineBanner';
 
 /**
  * Controls which chrome elements AppLayout renders:
@@ -30,16 +35,19 @@ export type AppShellVariant =
   | "homepage"
   | "advisorLogin"
   | "advisorSend"
-  | "resumeEmailCode";
+  | "resumeEmailCode"
+  | "recovery";
 
 type AppShellProps = {
   children: ReactNode;
   variant?: AppShellVariant;
+  sessionActive?: boolean;
 };
 
 export default function AppShell({
   children,
   variant = "applicationForm",
+  sessionActive = variant === 'applicationForm' || variant === 'homepage' && getFormTemplate() === 'single',
 }: AppShellProps) {
   const client = getActiveClient();
 
@@ -53,7 +61,7 @@ export default function AppShell({
   }
 
   return (
-    <Box
+    <ComponentContentContext value={getContent()}><ClientIconContext value={client.branding}><Box
       sx={{
         minHeight: "100vh",
         position: "relative",
@@ -63,12 +71,13 @@ export default function AppShell({
         backgroundColor: "background.default",
       }}
     >
+      <OfflineBanner />
       {variant === "homepage" && showSinglePageArtwork(getFormTemplate(), client.features) && <FormUmbrella />}
       {showCookieBanner && <CookieDialog onClose={handleCloseCookieBanner} />}
       <AppHeader client={client} variant={variant} />
-      <AppBody>{children}</AppBody>
+      <AppBody><ApplicationSessionGuard active={sessionActive}>{children}</ApplicationSessionGuard></AppBody>
       <AppFooter client={client} />
       <DevTools />
-    </Box>
+    </Box></ClientIconContext></ComponentContentContext>
   );
 }

@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 type PageNavProps = {
@@ -34,23 +34,12 @@ export default function PageNav({
         variant="contained"
         size="large"
         fullWidth
-        disabled={isTransitioning || disabled}
+        disabled={disabled}
+        loading={isTransitioning}
         aria-label={isTransitioning ? `${nextLabel} — submitting` : undefined}
-        endIcon={!isTransitioning ? <ArrowForwardRoundedIcon /> : undefined}
-        sx={(theme) => ({
-          "&.Mui-disabled": {
-            color: theme.palette.primary.contrastText,
-            backgroundColor: theme.palette.primary.main,
-            boxShadow: `0 8px 18px ${theme.palette.primary.main}3d`,
-            opacity: 1,
-          },
-        })}
+        endIcon={<ArrowForwardRoundedIcon />}
       >
-        {isTransitioning ? (
-          <CircularProgress size={20} color="inherit" aria-hidden />
-        ) : (
-          nextLabel
-        )}
+        {nextLabel}
       </Button>
     </Box>
   );

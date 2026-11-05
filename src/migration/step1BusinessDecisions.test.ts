@@ -38,14 +38,14 @@ it.each(["student-osteopathic-medical-association", "national-press-club"])("res
   installPrototypeLibrary(library);
   for (const product of ["sh-hospital-income", "sh-critical-illness"]) {
     const policy = resolveCoverageJourneyPolicy(library.site, product)!;
-    expect(policy.associationChoices).toHaveLength(23);
+    expect(policy.associationChoices).toHaveLength(24);
     expect(resolveSubmissionMapping(policy, { applicantKey: "member", mode: "new", associationKey }).status).toBe("unresolved");
     expect(prototypeCoverageDecision(product, "member", { membership: associationKey }, [100])).toMatchObject({ amounts: [], messages: ["This product is not available for the selected Association."] });
     expect(resolveSubmissionMapping(policy, { applicantKey: "member", mode: "new", associationKey: "akron-bar-association" }).status).toBe("resolved");
   }
   for (const product of ["li-10yr", "li-20yr"]) {
     const policy = resolveCoverageJourneyPolicy(library.site, product)!;
-    expect(policy.associationChoices).toHaveLength(25);
+    expect(policy.associationChoices).toHaveLength(26);
     expect(resolveSubmissionMapping(policy, { applicantKey: "member", mode: "new", associationKey }).status).toBe("resolved");
   }
 });

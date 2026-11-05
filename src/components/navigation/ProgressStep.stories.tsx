@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
-import { Box, ThemeProvider, Typography } from "@mui/material";
-import ProgressStep, { VerticalStepperBreadcrumbs } from "./ProgressStep";
+import { Box, Button, Stack, ThemeProvider, Typography } from "@mui/material";
+import ProgressStep, { Breadcrumbs } from "./ProgressStep";
 import {
   ApplicationFormContext,
   type ApplicationFormValues,
@@ -9,6 +9,10 @@ import {
 import { generateFormDataUpToPage } from "../../dev/utils/generateFormData";
 import { createAppTheme } from "../../app/theme";
 import type { PageId } from "../../types";
+import FormRoutePage from "../../app/RoutePage";
+import { SinglePageFlowContext } from "../../app/SinglePageFlowContext";
+import ApplicationPageExample from "../../../.storybook/applicationPageExample";
+import { readSharedCatalog, type SharedCatalog } from "../../persistence/sharedCatalog";
 import {
   ApplicationSessionContext,
   type ApplicationSessionContextValue,
@@ -21,7 +25,7 @@ import {
  * driven by the same `getActiveProgressSteps`/`getActiveProgressStepIndex`
  * config, which drops any step whose pages are all skipped for the current
  * form values (e.g. no coverage selected yet collapses Beneficiary and every
- * Health sub-step). VerticalStepperBreadcrumbs is a second, independent
+ * Health sub-step). Breadcrumbs is a second, independent
  * consumer of that same config — the breadcrumb trail FormRoutePage renders
  * *inside* the page content, above PageHeader, so users can jump between
  * sibling pages within the current step (e.g. between Health sub-pages)
@@ -32,8 +36,10 @@ import {
  * progress.
  */
 const meta = {
-  title: "Navigation/ProgressStep",
-  parameters: { layout: "fullscreen" },
+  id: "navigation-progressstep",
+  title: "Components/Navigation/Main steps and breadcrumbs",
+  loaders: [async () => ({ catalog: await readSharedCatalog() })],
+  parameters: { docs: { description: { component: "Main steps show application progress; breadcrumbs show pages within the current main step." } }, layout: "fullscreen" },
 } satisfies Meta;
 
 export default meta;
@@ -103,7 +109,7 @@ export const ExpandedWithHealthBreadcrumb: Story = {
       values,
       <ProgressStep pageId={pageId}>
         <Box sx={{ mb: 2 }}>
-          <VerticalStepperBreadcrumbs pageId={pageId} />
+          <Breadcrumbs pageId={pageId} />
         </Box>
         <DemoPageContent label="Health — Simplified Issue page content" />
       </ProgressStep>,
@@ -133,7 +139,7 @@ export const Mobile: Story = {
           values,
           <ProgressStep pageId={pageId}>
             <Box sx={{ mb: 2 }}>
-              <VerticalStepperBreadcrumbs pageId={pageId} />
+              <Breadcrumbs pageId={pageId} />
             </Box>
             <DemoPageContent label="Health — Simplified Issue page content" />
           </ProgressStep>,
@@ -198,19 +204,99 @@ export const AdvisorApplicantHandoff: Story = {
 };
 
 export const BreadcrumbStandalone: Story = {
-  name: "VerticalStepperBreadcrumbs (standalone)",
+  name: "Breadcrumbs",
   render: () => {
     const pageId = "health-di" as PageId;
     const values = generateFormDataUpToPage(pageId);
-    return withDemoValues(values, <VerticalStepperBreadcrumbs pageId={pageId} />);
+    return withDemoValues(values, <Breadcrumbs pageId={pageId} />);
   },
   parameters: {
     layout: "padded",
     docs: {
       description: {
         story:
-          "Renders in isolation (no ProgressStep wrapper) to show just the breadcrumb trail. Returns null whenever the current step has only one page — most steps other than Review never render this at all.",
+          "Renders in isolation (no ProgressStep wrapper) to show just the breadcrumb trail. Returns null whenever the current step has only one page — for example, Coverage has only one entry while Getting started and Your application details can have several.",
       },
     },
   },
+};
+
+// Fixed saved-Site scenarios make each navigation state independently reviewable.
+const navigationScenario = {
+  capability: 'multipleTerms' as const,
+  description: 'Main steps show application stages. Breadcrumbs show pages within the current main step. These examples use the real navigation and global template flow; permitted back navigation stops at a local message.',
+  values: { membership: 'yes', 'birth-date': '1990-01-01', 'state-province': 'VA', 'zip-postal-code': '22101', dependents: [],
+    coverageSelections: ['li-10yr'], productApplicants: { 'li-10yr': ['member'] }, coverageAmounts: { 'li-10yr:member': 100000 } },
+};
+
+function PendingCompletionControls() {
+  return <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+    <Button onClick={() => window.dispatchEvent(new CustomEvent('form:pendingbreadcrumbcompletion', { detail: 'contact' }))}>Mark Contact complete before navigation</Button>
+    <Button onClick={() => window.dispatchEvent(new CustomEvent('form:pendingbreadcrumbcompletion', { detail: null }))}>Reset completion</Button>
+  </Stack>;
+}
+
+function NavigationStateExample({ catalog, pageId = 'contact', breadcrumbsOnly = false, session = {}, navigationPending = false, pendingCompletion = false, mobile = false, hidden = false }: {
+  catalog: SharedCatalog; pageId?: PageId; breadcrumbsOnly?: boolean; session?: Partial<ApplicationSessionContextValue>;
+  navigationPending?: boolean; pendingCompletion?: boolean; mobile?: boolean; hidden?: boolean;
+}) {
+  const content = <><Breadcrumbs pageId={pageId} />{pendingCompletion && <PendingCompletionControls />}</>;
+  const navigation = hidden ? <FormRoutePage pageId="advisor-login" hideActions><DemoPageContent label="Standalone page: main steps and breadcrumbs are omitted by the application frame." /></FormRoutePage>
+    : breadcrumbsOnly ? <Box sx={{ p: 3 }}>{content}</Box>
+    : <ProgressStep pageId={pageId}>{content}<DemoPageContent label="Page content supplied to the shared application frame." /></ProgressStep>;
+  return <ApplicationPageExample catalog={catalog} scenario={navigationScenario}>
+    {withDemoValues(navigationScenario.values,
+      <SinglePageFlowContext.Provider value={navigationPending ? { pageId, navigationPending: true, goToSection: () => {}, completeSection: () => {}, setNavigationPending: () => {} } : null}>
+        {mobile ? <ThemeProvider theme={createAppTheme('default', { forceMobileLayout: true })}>{navigation}</ThemeProvider> : navigation}
+      </SinglePageFlowContext.Provider>, session)}
+  </ApplicationPageExample>;
+}
+
+export const MainStepsStates: Story = {
+  name: 'Main steps — completed, active and upcoming',
+  render: (_args, context) => <NavigationStateExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} />,
+};
+export const MainStepsFirstActive: Story = {
+  name: 'Main steps — first active, none completed',
+  render: (_args, context) => <NavigationStateExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} pageId="membership" />,
+};
+export const MainStepsHidden: Story = {
+  name: 'Main steps and breadcrumbs — hidden on standalone page',
+  render: (_args, context) => <NavigationStateExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} hidden />,
+};
+export const BreadcrumbStates: Story = {
+  name: 'Breadcrumbs — completed, active and upcoming',
+  render: (_args, context) => <NavigationStateExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} breadcrumbsOnly />,
+};
+export const BreadcrumbsFirstActive: Story = {
+  name: 'Breadcrumbs — first active, none completed',
+  render: (_args, context) => <NavigationStateExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} pageId="beneficiary" breadcrumbsOnly />,
+};
+export const BreadcrumbsEarlierCompleted: Story = {
+  name: 'Breadcrumbs — last active, earlier entries completed',
+  render: (_args, context) => <NavigationStateExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} pageId="profile" breadcrumbsOnly />,
+};
+export const BreadcrumbsHidden: Story = {
+  name: 'Breadcrumbs — hidden for a single-page main step',
+  render: (_args, context) => <NavigationStateExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} pageId="coverage" />,
+};
+export const BreadcrumbsLocked: Story = {
+  name: 'Main steps and breadcrumbs — completed but locked after submission',
+  render: (_args, context) => <NavigationStateExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} session={{ reviewSubmitted: true }} />,
+};
+export const BreadcrumbsAdvisorLocked: Story = {
+  name: 'Main steps and breadcrumbs — advisor handoff locks',
+  render: (_args, context) => <NavigationStateExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} session={{ advisorApplicantFlow: true }} />,
+};
+export const BreadcrumbsNavigationPending: Story = {
+  name: 'Breadcrumbs — navigation temporarily disabled',
+  render: (_args, context) => <NavigationStateExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} breadcrumbsOnly navigationPending />,
+};
+export const BreadcrumbsPendingCompletion: Story = {
+  name: 'Breadcrumbs — completion before navigation and reset',
+  render: (_args, context) => <NavigationStateExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} breadcrumbsOnly pendingCompletion />,
+};
+export const MobileStates: Story = {
+  name: 'Main steps and breadcrumbs — mobile states',
+  render: (_args, context) => <NavigationStateExample key={context.id} catalog={context.loaded.catalog as SharedCatalog} mobile />,
 };

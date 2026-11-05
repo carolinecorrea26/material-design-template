@@ -1,0 +1,22 @@
+import { beforeAll, expect, it } from "vitest";
+import { createReviewedMigrationDatabase } from "./fixtures";
+import { applyGiAndPayrollReviewAdoption, giAndPayrollReviewDecisionKey } from "./giAndPayrollReviewAdoption";
+import { activeReviewBlocks, isReviewPolicy } from "../domain/reviewPolicy";
+import type { DatabaseSchema } from "../persistence/types";
+let db: DatabaseSchema;
+beforeAll(() => { db = createReviewedMigrationDatabase(); }, 120000);
+it("uses exact source certification and current CSEA DI payroll with separate placement and no new fields", () => {
+  const gi = db.configurationValues.find(row => row.key === "waepa-gi.review-policy")!.value;
+  const csea = db.configurationValues.find(row => row.key === "csea.review-policy")!.value;
+  if (!isReviewPolicy(gi) || !isReviewPolicy(csea)) throw new Error("Invalid fixture");
+  const notice = activeReviewBlocks(gi, [{ productKey: "li-group-term", category: "LI", applicants: ["member"] }]).find(row => row.key === "guaranteed-issue-certification")!;
+  expect(notice).toMatchObject({ placement: "before-review", appearance: "info", fields: [] });
+  expect(notice.paragraphs[0]).toContain("Never been declined or withdrawn"); expect(notice.paragraphs[0]).toContain("60 day response window"); expect(notice.paragraphs[0]).not.toContain("Add as a blue box");
+  const payroll = activeReviewBlocks(csea, [{ productKey: "di-ltd", category: "DI", applicants: ["member"] }], { jurisdiction: "NY", healthQuestionParticipation: false }).find(row => row.key === "csea-disability-payroll-authorization")!;
+  expect(payroll).toMatchObject({ placement: "after-electronic-consent", fields: [] }); expect(payroll.paragraphs[0]).toContain("first payroll deduction is received");
+  expect(activeReviewBlocks(csea, [{ productKey: "li-add", category: "AD", applicants: ["member"] }], { jurisdiction: "NY" }).some(row => row.key === payroll.key)).toBe(false);
+  const copy = structuredClone(db); applyGiAndPayrollReviewAdoption(copy); expect(copy).toEqual(db);
+  expect(db.semanticRequirements.find(row => row.key === giAndPayrollReviewDecisionKey)?.value).toMatchObject({ flaggedRequirement: { completionBlocking: false, key: "csea-standalone-add-payroll-applicability" } });
+  expect((db.configurationValues.find(row => row.key === "abe.review-policy")!.value as { blocks: Array<{ key: string }> }).blocks.some(block => [notice.key, payroll.key].includes(block.key))).toBe(false);
+  expect(isReviewPolicy({ ...gi, blocks: [{ ...notice, placement: "unknown" }] })).toBe(false);
+});

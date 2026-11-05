@@ -12,9 +12,10 @@ import { getContent } from "../../content";
  * variety.
  */
 const meta = {
-  title: "Content/LegalDocList",
+  id: "content-legaldoclist",
+  title: "Components/Content and data display/Document links",
   component: LegalDocList,
-  parameters: { layout: "padded" },
+  parameters: { docs: { description: { component: "Lists application documents and legal disclosures with links." } }, layout: "padded" },
 } satisfies Meta<typeof LegalDocList>;
 
 export default meta;

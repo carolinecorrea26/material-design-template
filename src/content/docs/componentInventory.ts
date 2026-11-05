@@ -1,3 +1,5 @@
+// Historical audit fixture only. Live Library, Storybook and migration definitions
+// come from public/catalog/components/components.json through components.ts.
 export type ComponentRow = {
   name: string;
   category: string;
@@ -65,18 +67,10 @@ export const componentsData: ComponentRow[] = [
     storybookId: "feedback-emptystate--default",
   },
   {
-    name: "LoadingOverlay",
-    category: "feedback",
-    description: "Multi-size loading spinner with optional status message.",
-    sourcePath: "src/components/feedback/LoadingOverlay.tsx",
-    usedIn: "Page transitions, async actions",
-    storybookId: "feedback-loadingoverlay--small",
-  },
-  {
     name: "PageAlert",
     category: "feedback",
     description:
-      "Full-width contextual alert above form content. PageErrorAlert is a deprecated re-export of this component.",
+      "Full-width contextual alert above form content.",
     sourcePath: "src/components/feedback/PageAlert.tsx",
     usedIn: "PageShell error/info display",
     storybookId: "feedback-pagealert--error",
@@ -130,7 +124,7 @@ export const componentsData: ComponentRow[] = [
     category: "forms",
     description:
       "Simplified member-only product card (no riders/waiting periods) used inside the Quote Calculator estimator.",
-    sourcePath: "src/components/forms/EstimatorProductCard.tsx",
+    sourcePath: "src/components/coverage/EstimatorProductCard.tsx",
     usedIn: "QuoteCalculator",
     storybookId: "coverage-commerce-estimatorproductcard--unselected",
   },
@@ -138,7 +132,7 @@ export const componentsData: ComponentRow[] = [
     name: "CoverageCategorySelector",
     category: "forms",
     description: "Multi-select toggle list for choosing coverage categories.",
-    sourcePath: "src/components/forms/CoverageCategorySelector.tsx",
+    sourcePath: "src/components/coverage/CoverageCategorySelector.tsx",
     usedIn: "Coverage page, QuoteCalculator",
     storybookId: "coverage-commerce-coveragecategoryselector--default",
   },
@@ -146,7 +140,7 @@ export const componentsData: ComponentRow[] = [
     name: "CoverageNeedsCalculator",
     category: "forms",
     description: "Interactive calculator estimating recommended life coverage.",
-    sourcePath: "src/components/forms/CoverageNeedsCalculator.tsx",
+    sourcePath: "src/components/coverage/CoverageNeedsCalculator.tsx",
     usedIn: "AppMenu drawer",
     storybookId: "coverage-commerce-coverageneedscalculator--default",
   },
@@ -155,7 +149,7 @@ export const componentsData: ComponentRow[] = [
     category: "forms",
     description:
       "Category-level coverage questions (tobacco, income) with section visibility.",
-    sourcePath: "src/components/forms/CoverageQuestions.tsx",
+    sourcePath: "src/components/coverage/CoverageQuestions.tsx",
     usedIn: "Coverage page",
     storybookId: "coverage-commerce-coveragequestions--life-insurance-selected",
   },
@@ -197,7 +191,7 @@ export const componentsData: ComponentRow[] = [
     category: "forms",
     description:
       "Full product catalog with applicant checkboxes, amounts, riders, rates.",
-    sourcePath: "src/components/forms/ProductCatalog.tsx",
+    sourcePath: "src/components/coverage/ProductCatalog.tsx",
     usedIn: "Coverage page",
     storybookId: "coverage-commerce-productcatalog--interactive",
   },
@@ -205,7 +199,7 @@ export const componentsData: ComponentRow[] = [
     name: "QuoteCalculator",
     category: "forms",
     description: "Quote/rate calculator drawer with category selection.",
-    sourcePath: "src/components/forms/QuoteCalculator.tsx",
+    sourcePath: "src/app/workflows/QuoteCalculator.tsx",
     usedIn: "Home page, Membership page",
     storybookId: "coverage-commerce-quotecalculator--collects-eligibility",
   },
@@ -393,7 +387,7 @@ export const componentsData: ComponentRow[] = [
   {
     name: "ProgressStep",
     category: "navigation",
-    description: "Breadcrumb/stepper progress indicator.",
+    description: "Main application steps and breadcrumbs for pages within the current main step.",
     sourcePath: "src/components/navigation/ProgressStep.tsx",
     usedIn: "AppHeader progress bar",
     storybookId: "navigation-progressstep--collapsed-steps",
@@ -402,7 +396,7 @@ export const componentsData: ComponentRow[] = [
     name: "FeaturedBadge",
     category: "ui",
     description: "Small Featured chip badge with star icon.",
-    sourcePath: "src/components/ui/FeaturedBadge.tsx",
+    sourcePath: "src/components/coverage/FeaturedBadge.tsx",
     usedIn: "ProductCard (featured)",
     storybookId: "coverage-commerce-product-adornments--side-by-side",
   },
@@ -410,7 +404,7 @@ export const componentsData: ComponentRow[] = [
     name: "ProductCostBreakdown",
     category: "ui",
     description: "Itemized premium + rider + policy fee breakdown.",
-    sourcePath: "src/components/ui/ProductCostBreakdown.tsx",
+    sourcePath: "src/components/coverage/ProductCostBreakdown.tsx",
     usedIn: "ProductCatalog (client-config gated)",
     storybookId: "coverage-commerce-productcostbreakdown--monthly",
   },
@@ -418,7 +412,7 @@ export const componentsData: ComponentRow[] = [
     name: "QuickDecisionIndicator",
     category: "ui",
     description: "Green lightning bolt icon for QuickDecision℠.",
-    sourcePath: "src/components/ui/QuickDecisionIndicator.tsx",
+    sourcePath: "src/components/coverage/QuickDecisionIndicator.tsx",
     usedIn: "ProductCard, ProductCatalog",
     storybookId: "coverage-commerce-product-adornments--side-by-side",
   },
@@ -426,7 +420,7 @@ export const componentsData: ComponentRow[] = [
     name: "RateFrequencyToggle",
     category: "ui",
     description: "Switch toggle for monthly/annual rate display.",
-    sourcePath: "src/components/ui/RateFrequencyToggle.tsx",
+    sourcePath: "src/components/coverage/RateFrequencyToggle.tsx",
     usedIn: "CoverageCart, QuoteCalculator",
     storybookId: "coverage-commerce-ratefrequencytoggle--unchecked",
   },
@@ -435,7 +429,7 @@ export const componentsData: ComponentRow[] = [
     category: "ui",
     description:
       "Selected coverage summary with drawer and inline variants. Renders per-product cost breakdown and total. Replaces the former CartDrawer + TotalCostCart split.",
-    sourcePath: "src/components/ui/CoverageCart.tsx",
+    sourcePath: "src/components/coverage/CoverageCart.tsx",
     usedIn: "AppHeader (drawer), ProductCatalog (inline)",
     storybookId: "coverage-commerce-coveragecart--populated-drawer",
   },
@@ -443,7 +437,7 @@ export const componentsData: ComponentRow[] = [
     name: "TotalCostSummary",
     category: "ui",
     description: "Total Estimated Cost summary panel.",
-    sourcePath: "src/components/ui/TotalCostSummary.tsx",
+    sourcePath: "src/components/coverage/TotalCostSummary.tsx",
     usedIn: "CoverageCart, QuoteCalculator",
     storybookId: "coverage-commerce-totalcostsummary--default",
   },
@@ -453,7 +447,7 @@ export const componentsData: ComponentRow[] = [
     description:
       "Renders the How Applying Works step list in either 'page' or 'drawer' variant. " +
       "In drawer variant manages its own sub-drawers for Application Review and QuickDecision℠ content.",
-    sourcePath: "src/components/ui/HowApplyingWorksPanel.tsx",
+    sourcePath: "src/components/home/HowApplyingWorksPanel.tsx",
     usedIn: "Home page, AppMenu drawer",
     storybookId: "coverage-commerce-howapplyingworkspanel--page-variant",
   },
@@ -464,7 +458,7 @@ export const componentsData: ComponentRow[] = [
       "Tabbed coverage category browser showing products, amounts, eligible applicants, " +
       "and QD indicator. Supports 'page' and 'drawer' variants. Featured products sort first. " +
       "Product names were fixed from placeholder href=\"#\" links to plain text in the 2026-09 Storybook pass, since no real product-detail destination exists.",
-    sourcePath: "src/components/ui/CoverageOptionsPanel.tsx",
+    sourcePath: "src/components/coverage/CoverageOptionsPanel.tsx",
     usedIn: "Home page, AppMenu drawer",
     storybookId: "coverage-commerce-coverageoptionspanel--page-variant",
   },
@@ -473,7 +467,7 @@ export const componentsData: ComponentRow[] = [
     category: "ui",
     description:
       "Read-only existing-coverage drawer shown to TPA-verified members on the Coverage page. Uses hardcoded dummy portfolio data, not real member records.",
-    sourcePath: "src/components/ui/CoveragePortfolioDrawer.tsx",
+    sourcePath: "src/components/coverage/CoveragePortfolioDrawer.tsx",
     usedIn: "Coverage page (TPA-verified users only)",
     storybookId: "coverage-commerce-coverageportfoliodrawer--member-only",
   },
@@ -482,7 +476,7 @@ export const componentsData: ComponentRow[] = [
     category: "ui",
     description:
       "Multi-step identity-verification modal with dummy LexisNexis-style security questions (no real identity-verification integration).",
-    sourcePath: "src/components/ui/MemberVerification.tsx",
+    sourcePath: "src/components/verification/MemberVerification.tsx",
     usedIn: "Eligibility page",
     storybookId: "coverage-commerce-memberverification--interactive",
   },
@@ -490,7 +484,7 @@ export const componentsData: ComponentRow[] = [
     name: "RateFrequencyControl",
     category: "ui",
     description: "Canonical labeled Monthly/Annual rate-frequency control.",
-    sourcePath: "src/components/ui/RateFrequencyControl.tsx",
+    sourcePath: "src/components/coverage/RateFrequencyControl.tsx",
     usedIn: "CoverageCart, QuoteCalculator",
     storybookId: "coverage-commerce-ratefrequencycontrol--interactive",
   },
@@ -521,10 +515,10 @@ export const componentsData: ComponentRow[] = [
   {
     name: "FieldGrid",
     category: "layout",
-    description: "Responsive equal, wide/narrow, and wide/two-narrow form rows.",
+    description: "Stacked fields by default, with responsive shared rows for Contact address fields.",
     sourcePath: "src/components/layout/FieldGrid.tsx",
     usedIn: "Membership, Eligibility, Beneficiary, Contact, Profile",
-    storybookId: "layout-fieldgrid--equal-columns",
+    storybookId: "layout-fieldgrid--stacked-fields",
   },
   {
     name: "DetailsTable",

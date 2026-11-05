@@ -1,14 +1,17 @@
-import QuickDecisionIcon from "../components/ui/QuickDecisionIcon";
+import HealthInformationHelp from "../components/health/HealthInformationHelp";
+import QuickDecisionIcon from "../components/coverage/QuickDecisionIcon";
 import FormRoutePage from "../app/RoutePage";
 import ProcessingStatusPage from "../components/feedback/ProcessingStatusPage";
 import { getContent } from "../content";
 
-export default function HealthQd() {
+export default function HealthQd({ loadingTimeoutMs }: { loadingTimeoutMs?: number | null } = {}) {
   const content = getContent().statusMessages.healthQd;
   return (
-    <FormRoutePage pageId="health-qd">
+    <FormRoutePage pageId="health-qd" help={<HealthInformationHelp />} hideActions>
       {() => (
         <ProcessingStatusPage
+          operation="decision"
+          timeoutMs={loadingTimeoutMs}
           heading={
             <>
               {content.heading}

@@ -34,7 +34,9 @@ export function applyReviewAndRateAdoption(db: DatabaseSchema) {
       db.semanticRequirements.push({ id: key, key, ...libraryMetadata("semanticRequirements", key, "docs/step3-review-and-rating.md"), domain: "provisional-source-decision", subjectTable: "sites", subjectKey: scope.key, predicate: "life-aggregate-participation", status: "documented", value: { authority: provisionalDecisionAuthority, selected: aggregateParticipation, revisit: true, sourceReconciliation: "deferred", runtimeActivation: "pending", destinations: [{ table: "configurationValues", key: `${scope.key}.life-aggregate-participation`, column: "value" }] } });
     }
     const review = reviewPolicyForSite(scope.key, client.reviewPolicy);
-    persist(scope.key, `${scope.key}.review-policy`, { kind: "site-review-policy" }, review);
+    // Explicit reviewed consent survives reapplying the historical compiler.
+    const reviewedConsent = db.semanticRequirements.some(row => row.domain === "approved-business-decision" && ["conditional-consent", "association-questionnaires-and-rate-suppression", "medical-authorization-applicability", "approved-abe-review-and-membership"].includes(row.predicate) && row.subjectKey === scope.key);
+    if (!reviewedConsent) persist(scope.key, `${scope.key}.review-policy`, { kind: "site-review-policy" }, review);
     for (const [position, id] of [...new Set(review.blocks.flatMap(block => block.fields))].entries()) {
       if (!db.fields.some(field => field.key === id)) db.fields.push({ id, key: id, ...libraryMetadata("fields", id, "src/config/fields/index.ts"), position: 0, definition: fieldCatalog[id] });
       const key = `${scope.key}.review.${id}.notice`;

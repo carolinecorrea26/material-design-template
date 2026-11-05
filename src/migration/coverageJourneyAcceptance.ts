@@ -1,3 +1,4 @@
+import { completeSourceHealthFixture } from "./sourceQuestionnaireFixture";
 import type { EffectiveSite } from "../domain/effectiveSite";
 import { activeSiteMigrationScope } from "./activeSiteScope";
 import { resolveCoverageJourneyPolicy } from "../domain/coverageJourneyPolicy";
@@ -27,19 +28,20 @@ export async function runCoverageJourneyAcceptance(resolveSite: (siteKey: string
       const residency = product.residencyPolicies[0].value as { allowedJurisdictions: string[] };
       const input: CoverageJourneyInput = {
         ...mapping.when, productKey: product.productKey, amount, membershipConfirmed: true,
-        eligibility: { ageYears: Math.max(c.minimumAgeYears ?? 18, Math.min(40, c.maximumAgeYears ?? 64)), workHoursPerWeek: 40, activeMilitary: false, fullTimeStudent: true, unmarried: true, selectedPlans: [{ productKey: product.productKey, categoryKey: product.catalog!.value.categoryKey, applicantKey: "member" }] },
+        eligibility: { ageYears: Math.max(c.minimumAgeYears ?? 18, Math.min(40, c.maximumAgeYears ?? 64)), workHoursPerWeek: 40, firmMemberCount: 3, activeMilitary: false, activelyAtWork: true, membershipType: "physician", fullTimeStudent: true, unmarried: true, selectedPlans: [{ productKey: product.productKey, categoryKey: product.catalog!.value.categoryKey, applicantKey: "member" }] },
         jurisdiction: residency.allowedJurisdictions[0], election: { riders: [], riderAmounts: {} },
         benefit: { monthlyIncome: 1000000, existingMonthlyBenefit: 0, memberCoverage: true, memberRequestedBenefit: 1000000, memberTotalMonthlyBenefit: 1000000, selfEmployed: false, selfEmployedYears: 10, retirement: false, monthlyLoanPayment: 1000000, eligibleMonthlyExpenses: 1000000, eligibleExpenseFraction: 1, selectedProducts: [product.productKey], otherMonthlyBenefits: Object.fromEntries((benefit?.aggregate?.productKeys ?? []).filter(k => k !== product.productKey).map(k => [k, 0])) },
         answers, attestations: [q.attestationKey],
         payment: policy.payment.defaultMethod && policy.payment.defaultFrequency ? { method: policy.payment.defaultMethod, frequency: policy.payment.defaultFrequency } : undefined,
         dependentElections: Object.fromEntries(policy.dependentElections.map(e => [e.key, { selected: false }])),
       };
-      const result = await evaluateCoverageJourney(site, input, { policies });
+      input.answers = completeSourceHealthFixture(site, input);
+      const result = await evaluateCoverageJourney(site, input, { policies, existingLifeAmount: 0 });
       tested++;
       if (!result.allowed) failures.push({ site: site.siteKey, product: product.productKey, amount, errors: result.errors, missing: result.missingFacts });
       if (result.allowed) {
         if (result.submission?.productKey !== product.productKey || result.submission?.questions && "bank-account-number" in result.submission.questions) failures.push({ site: site.siteKey, product: product.productKey, error: "Invalid submission envelope" });
-        for (const invalid of [{ jurisdiction: undefined }, { amount: -1 }, { attestations: [] }]) if ((await evaluateCoverageJourney(site, { ...input, ...invalid }, { policies })).allowed) failures.push({ site: site.siteKey, product: product.productKey, error: "Accepted incomplete/invalid application", invalid });
+        for (const invalid of [{ jurisdiction: undefined }, { amount: -1 }, { attestations: [] }]) if ((await evaluateCoverageJourney(site, { ...input, ...invalid }, { policies, existingLifeAmount: 0 })).allowed) failures.push({ site: site.siteKey, product: product.productKey, error: "Accepted incomplete/invalid application", invalid });
       }
     }
   }

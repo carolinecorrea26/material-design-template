@@ -111,6 +111,7 @@ export type CoverageRequirements = {
     fullTimeStudentMaximumAgeYears?: number;
     unmarried?: boolean;
     minimumWorkHoursPerWeek?: number;
+    factRequirements?: import("./eligibilityFacts").EligibilityFactRequirement[];
   }>;
   dependencies?: Array<{ applicantType: CoverageApplicantId; requiresApplicant: CoverageApplicantId; categoryId: CoverageCategoryId; sameProduct: boolean }>;
   maximumPlans?: Array<{ applicantType: CoverageApplicantId; categoryId: CoverageCategoryId; count: number }>;

@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
-import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
+import LoopRoundedIcon from "@mui/icons-material/LoopRounded";
 import { formatCountdown } from "../../utils/formatCountdown";
 
 type ResendCountdownRowProps = {
@@ -43,7 +43,7 @@ export default function ResendCountdownRow({
       <Button
         variant="text"
         size="small"
-        startIcon={<RefreshRoundedIcon />}
+        startIcon={<LoopRoundedIcon />}
         onClick={onResend}
         disabled={disabled}
         sx={{ textTransform: "none", fontSize: "0.8125rem" }}

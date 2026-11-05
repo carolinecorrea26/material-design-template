@@ -1,0 +1,1417 @@
+{
+  "organizations": [
+    {
+      "id": "tpa-demo",
+      "key": "tpa-demo",
+      "name": "Demo administrator",
+      "type": "tpa",
+      "status": "active",
+      "createdAt": "2026-09-01T12:00:00.000Z",
+      "updatedAt": "2026-09-01T12:00:00.000Z",
+      "displayId": 137379436643094,
+      "providedBy": null,
+      "sourceReference": "prototype:organizations/tpa-demo"
+    },
+    {
+      "id": "tpa-asce",
+      "key": "tpa-asce",
+      "name": "Pearl Insurance",
+      "type": "tpa",
+      "status": "active",
+      "createdAt": "2026-09-01T12:00:00.000Z",
+      "updatedAt": "2026-09-01T12:00:00.000Z",
+      "displayId": 203474683591869,
+      "providedBy": null,
+      "sourceReference": "prototype:organizations/tpa-asce"
+    },
+    {
+      "id": "mcr.tpa.aafpis",
+      "key": "mcr.tpa.aafpis",
+      "displayId": 104071883083936,
+      "providedBy": null,
+      "sourceReference": "Associations!B2",
+      "name": "AAFP Insurance Services, Inc.",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.lockton",
+      "key": "mcr.tpa.lockton",
+      "displayId": 251134907433788,
+      "providedBy": null,
+      "sourceReference": "Associations!B3",
+      "name": "Lockton Affinity, LLC",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.usi",
+      "key": "mcr.tpa.usi",
+      "displayId": 277490918681423,
+      "providedBy": null,
+      "sourceReference": "Associations!B5",
+      "name": "USI Affinity",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.abe",
+      "key": "mcr.tpa.abe",
+      "displayId": 193926385795402,
+      "providedBy": null,
+      "sourceReference": "docs/project-review/ownership-and-cleanup-plan.md#october-19-user-decisions",
+      "name": "ABA",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.amwins",
+      "key": "mcr.tpa.amwins",
+      "displayId": 73222541508469,
+      "providedBy": null,
+      "sourceReference": "Associations!B12",
+      "name": "AmWins",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.amaia",
+      "key": "mcr.tpa.amaia",
+      "displayId": 193673428205203,
+      "providedBy": null,
+      "sourceReference": "Associations!B15",
+      "name": "AMA Insurance Agency, Inc.",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.crbg",
+      "key": "mcr.tpa.crbg",
+      "displayId": 228900478279890,
+      "providedBy": null,
+      "sourceReference": "Associations!B21",
+      "name": "CRBG",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.ftj",
+      "key": "mcr.tpa.ftj",
+      "displayId": 156543406256208,
+      "providedBy": null,
+      "sourceReference": "Associations!B22",
+      "name": "FTJ",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.beale",
+      "key": "mcr.tpa.beale",
+      "displayId": 155357152492691,
+      "providedBy": null,
+      "sourceReference": "Associations!B24",
+      "name": "Beale",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.hbi",
+      "key": "mcr.tpa.hbi",
+      "displayId": 65282761096285,
+      "providedBy": null,
+      "sourceReference": "Associations!B27",
+      "name": "Hbi",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.sass",
+      "key": "mcr.tpa.sass",
+      "displayId": 248176658650862,
+      "providedBy": null,
+      "sourceReference": "Associations!B30",
+      "name": "Sass",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.agia",
+      "key": "mcr.tpa.agia",
+      "displayId": 124392301499170,
+      "providedBy": null,
+      "sourceReference": "Associations!B31",
+      "name": "AGIA",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.alliant",
+      "key": "mcr.tpa.alliant",
+      "displayId": 279522227890111,
+      "providedBy": null,
+      "sourceReference": "Associations!B34",
+      "name": "Alliant",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.pca",
+      "key": "mcr.tpa.pca",
+      "displayId": 34498435433232,
+      "providedBy": null,
+      "sourceReference": "Associations!B60",
+      "name": "Pearl Carroll & Associates, LLC",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.gilsbar",
+      "key": "mcr.tpa.gilsbar",
+      "displayId": 214784120935638,
+      "providedBy": null,
+      "sourceReference": "Associations!B62",
+      "name": "Gilsbar",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.manulife",
+      "key": "mcr.tpa.manulife",
+      "displayId": 47609663677625,
+      "providedBy": null,
+      "sourceReference": "Associations!B132",
+      "name": "Manulife",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.marsh-ares-amba-on-portal",
+      "key": "mcr.tpa.marsh-ares-amba-on-portal",
+      "displayId": 205436520988472,
+      "providedBy": null,
+      "sourceReference": "Associations!B133",
+      "name": "Marsh-ARES\nAMBA- on Portal",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.marsh",
+      "key": "mcr.tpa.marsh",
+      "displayId": 245774370895259,
+      "providedBy": null,
+      "sourceReference": "Associations!B195",
+      "name": "Marsh",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.asg",
+      "key": "mcr.tpa.asg",
+      "displayId": 191727365379965,
+      "providedBy": null,
+      "sourceReference": "Associations!B229",
+      "name": "ASG",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.loyal-legacy-plan-administrator",
+      "key": "mcr.tpa.loyal-legacy-plan-administrator",
+      "displayId": 253455294766589,
+      "providedBy": null,
+      "sourceReference": "Associations!B230",
+      "name": "Loyal Legacy Plan Administrator",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.meyer",
+      "key": "mcr.tpa.meyer",
+      "displayId": 72999533000902,
+      "providedBy": null,
+      "sourceReference": "Associations!B232",
+      "name": "Meyer",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.waepa",
+      "key": "mcr.tpa.waepa",
+      "displayId": 113985270368680,
+      "providedBy": null,
+      "sourceReference": "Associations!B346",
+      "name": "Worldwide Assurance for Employees of Public Agencies, Inc.",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.agia-az",
+      "key": "mcr.tpa.agia-az",
+      "displayId": 219334059729770,
+      "providedBy": null,
+      "sourceReference": "Associations!B359",
+      "name": "AGIA AZ",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.selman",
+      "key": "mcr.tpa.selman",
+      "displayId": 57272786479684,
+      "providedBy": null,
+      "sourceReference": "Associations!B360",
+      "name": "Selman",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.amba",
+      "key": "mcr.tpa.amba",
+      "displayId": 122192758092803,
+      "providedBy": null,
+      "sourceReference": "Associations!B364",
+      "name": "AMBA",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.marsh-now-amba",
+      "key": "mcr.tpa.marsh-now-amba",
+      "displayId": 35616165610526,
+      "providedBy": null,
+      "sourceReference": "Associations!B372",
+      "name": "Marsh(now AMBA)",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.instpa",
+      "key": "mcr.tpa.instpa",
+      "displayId": 231416773661467,
+      "providedBy": null,
+      "sourceReference": "Associations!B374",
+      "name": "InsTPA",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.lifehelp",
+      "key": "mcr.tpa.lifehelp",
+      "displayId": 184139430543261,
+      "providedBy": null,
+      "sourceReference": "Associations!B376",
+      "name": "LifeHelp",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.aon",
+      "key": "mcr.tpa.aon",
+      "displayId": 181831756938086,
+      "providedBy": null,
+      "sourceReference": "Associations!B385",
+      "name": "AON",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.isi",
+      "key": "mcr.tpa.isi",
+      "displayId": 97168664586219,
+      "providedBy": null,
+      "sourceReference": "Associations!B387",
+      "name": "ISI",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "id": "mcr.tpa.usba",
+      "key": "mcr.tpa.usba",
+      "displayId": 32750433237121,
+      "providedBy": null,
+      "sourceReference": "Associations!B396",
+      "name": "USBA",
+      "type": "TPA",
+      "status": "inactive",
+      "createdAt": "2026-09-28T00:00:00.000Z",
+      "updatedAt": "2026-09-28T00:00:00.000Z"
+    }
+  ],
+  "organizationProfiles": [
+    {
+      "id": "tpa-demo",
+      "key": "tpa-demo",
+      "definition": {
+        "name": "Compatibility TPA for demo",
+        "provisional": true
+      },
+      "position": 0,
+      "organizationKey": "tpa-demo",
+      "displayId": 250397622783359,
+      "providedBy": null,
+      "sourceReference": "prototype:organizationProfiles/tpa-demo"
+    },
+    {
+      "id": "tpa-asce",
+      "key": "tpa-asce",
+      "definition": {
+        "name": "Pearl Insurance",
+        "provisional": false,
+        "acronym": "Pearl",
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.achs",
+            "details": "Pearl Insurance Croup, LLC\n1200 E. Glen Avenue\nPeoria Heights, IL 61616\n\nPhone: 1-800-752-0179\nWebsite: www.acs.org\nEmail: help@acs.org",
+            "source": "Associations!D9"
+          },
+          {
+            "clientKey": "mcr.client.achsgi",
+            "details": "Pearl Insurance Croup, LLC\n1200 E. Glen Avenue\nPeoria Heights, IL 61616\n(7 a.m-7 p.m. CT)\nPhone:  800.752.0179\nWebsite: https://acsmemberinsurance.org\nEmail:ﾠcustomerservice@acsmemberinsurance.org",
+            "source": "Associations!D10"
+          },
+          {
+            "clientKey": "mcr.client.achsncgi",
+            "details": "Pearl Insurance Croup, LLC\n1200 E. Glen Avenue\nPeoria Heights, IL 61616\n\nPhone: 1-800-752-0179\nWebsite: www.acs.org\nEmail: help@acs.org",
+            "source": "Associations!D11"
+          },
+          {
+            "clientKey": "asce",
+            "details": "Pearl Insurance \n1200 E. Glen Avenue \nPeoria Heights, IL 61616 \n\nCall: 1-800-650-ASCE (2723) \nWebsite: http://asceinsurance.com/ \nEmail: customerservice@asceinsurance.com",
+            "source": "Associations!D16"
+          },
+          {
+            "clientKey": "mcr.client.ascegi",
+            "details": "Pearl Insurance \n1200 E. Glen Avenue \nPeoria Heights, IL 61616 \n\nCall: 1-800-650-ASCE (2723) \nWebsite: http://asceinsurance.com/ \nEmail: customerservice@asceinsurance.com\n\nCA Agency License # 0F76076\nAR Agency License # 100106280",
+            "source": "Associations!D17"
+          },
+          {
+            "clientKey": "mcr.client.ascencgi",
+            "details": "Pearl Insurance \n1200 E. Glen Avenue \nPeoria Heights, IL 61616 \n\nCall: 1-800-650-ASCE (2723) \nWebsite: http://asceinsurance.com/ \nEmail: customerservice@asceinsurance.com",
+            "source": "Associations!D18"
+          },
+          {
+            "clientKey": "mcr.client.aiit",
+            "details": "Plans Administered By: \nPearl Insurance\n1200 E. Glen Avenue\nPeoria Heights, IL 61616\n\nPhone: 1-800-222-9958\nEmail: customerservice@aiinsurancetrust.org   \nWebsite: www.aiinsurancetrust.org\n\nLicense: CA# OF76076, AR# 1322",
+            "source": "Associations!D25"
+          },
+          {
+            "clientKey": "mcr.client.aiitgi",
+            "details": "Plans Administered By: \nPearl Insurance\n1200 E. Glen Avenue\nPeoria Heights, IL 61616\n\nPhone: 1-800-222-9958\nEmail: customerservice@aiinsurancetrust.org   \nWebsite: www.aiinsurancetrust.org\n\nLicense: CA# OF76076, AR# 1322",
+            "source": "Associations!D26"
+          },
+          {
+            "clientKey": "mcr.client.apsit",
+            "details": "Plans Administered By\nPearl Insurance\n1200 E. Glen Avenue\nPeoria Heights, IL 61616\n\nCall: 1-800-272-1637\n\nWebsite: http://apsitinsurance.com\n\nEmail: customerservice@apsitinsurance.com",
+            "source": "Associations!D46"
+          },
+          {
+            "clientKey": "avma",
+            "details": "Administered By:\n\nAVMA Insurance Services Program Administrator\nPearl Insurance\n1200 E. Glen Avenue\nPeoria Heights, IL 61616\n\nPolicyholder: Trustees of the AVMA LIFE Trust\nWebsite: \nWelcome to AVMA Insurance Services | AVMA Insurance Services \nPhone: (800) 228-7548\nFax: 888-754-8329\n\nArkansas Insurance License #1322\nCalifornia Insurance License #0F76076",
+            "source": "Associations!D352"
+          },
+          {
+            "clientKey": "mcr.client.avmalifegi",
+            "details": "Administered By:\n\nAVMA Insurance Services Program Administrator\nPearl Insurance\n1200 E. Glen Avenue\nPeoria Heights, IL 61616\n\nPolicyholder: Trustees of the AVMA LIFE Trust\nWebsite: \nWelcome to AVMA Insurance Services | AVMA Insurance Services \nPhone: (800) 228-7548\nFax: 888-754-8329\n\nArkansas Insurance License #1322\nCalifornia Insurance License #0F76076",
+            "source": "Associations!D353"
+          },
+          {
+            "clientKey": "mcr.client.avmalifetrustgrad",
+            "details": "Administered By:\n\nAVMA Insurance Services Program Administrator\nPearl Insurance\n1200 E. Glen Avenue\nPeoria Heights, IL 61616\n\nPolicyholder: Trustees of the AVMA LIFE Trust\nWebsite: \nWelcome to AVMA Insurance Services | AVMA Insurance Services \nPhone: (800) 228-7548\nFax: 888-754-8329\n\nArkansas Insurance License #1322\nCalifornia Insurance License #0F76076",
+            "source": "Associations!D354"
+          },
+          {
+            "clientKey": "mcr.client.avmastudent",
+            "details": "Administered By:\n\nAVMA Insurance Services Program Administrator\nPearl Insurance\n1200 E. Glen Avenue\nPeoria Heights, IL 61616\n\nPolicyholder: Trustees of the AVMA LIFE Trust\nWebsite: \nWelcome to AVMA Insurance Services | AVMA Insurance Services \nPhone: (800) 228-7548\nFax: 888-754-8329\n\nArkansas Insurance License #1322\nCalifornia Insurance License #0F76076",
+            "source": "Associations!D355"
+          },
+          {
+            "clientKey": "mcr.client.nspe",
+            "details": "Plans Administered By:\nPearl Insurance\n1200 E. Glen Avenue\nPeoria Heights, IL 61616\n\nPhone\n1-800-438-2366\n\nWebsite\nnspeinsurance.com\n\nEmail\ncustomerservice@nspeinsurance.com",
+            "source": "Associations!D358"
+          },
+          {
+            "clientKey": "mcr.client.acog",
+            "details": "Plan Administrator:\n\nPearl Insurance\n1200 East Glen Ave.\nPeoria Heights, IL 61616-5348\n\nCall 1-800-214-8122\nMonday through Friday\n7:00 a.m. to 7:00 p.m., Central Time\n\n http://acoginsurance.com\n\nEmail: customerservice@acoginsurance.com",
+            "source": "Associations!D365"
+          },
+          {
+            "clientKey": "mcr.client.nysscpa",
+            "details": "Contact:\nNYSSCPA Member Insurance Program\n1200 E. Glen Ave. Peoria Heights, IL, 61616\nPhone: 1-800-342-6501\nEmail: customerservice@nysscpainsurance.com\n\nCalifornia Insurance License: #0F76076\nArkansas Insurance License: #01000106279",
+            "source": "Associations!D383"
+          }
+        ]
+      },
+      "position": 3,
+      "organizationKey": "tpa-asce",
+      "displayId": 149118012221292,
+      "providedBy": null,
+      "sourceReference": "prototype:organizationProfiles/tpa-asce"
+    },
+    {
+      "id": "profile.mcr.tpa.aafpis",
+      "key": "profile.mcr.tpa.aafpis",
+      "displayId": 86406048768768,
+      "providedBy": null,
+      "sourceReference": "Associations!B2:D2",
+      "organizationKey": "mcr.tpa.aafpis",
+      "position": 9,
+      "definition": {
+        "name": "AAFP Insurance Services, Inc.",
+        "acronym": "AAFPIS",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.aafp",
+            "details": "AAFP Insurance Services, Inc.\nSuite 430\n11400 Tomahawk Creek Parkway\nLeawood, KS 66211\n\nCall: (800)325-8166\nWebsite: www.aafpins.com\nEmail: insurance@aafp.org                                                                             Arkansas Insurance License #246260 (12 font)\nCalifornia Insurance License #0547426 (12 font)                                                    add SMRU # 5833173 in lower right hand corner of footer",
+            "source": "Associations!D2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.lockton",
+      "key": "profile.mcr.tpa.lockton",
+      "displayId": 107485975377180,
+      "providedBy": null,
+      "sourceReference": "Associations!B3:D3",
+      "organizationKey": "mcr.tpa.lockton",
+      "position": 10,
+      "definition": {
+        "name": "Lockton Affinity, LLC",
+        "acronym": "Lockton",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.aao",
+            "details": "Lockton Affinity, LLC\nPO Box 410679, Kansas City, MO 64141-0679\nPhone: (844)983-9888 \n\nEmail: info@AAO-Insurance.com\nWebsite: AAO-Insurance.com",
+            "source": "Associations!D3"
+          },
+          {
+            "clientKey": "mcr.client.aaosi",
+            "details": "Lockton Affinity, LLC.\n\nPO Box 410679\nKansas City, MO 64141-0679\n\nWebsite: https://www.aao-insurance.com/\nPhone: (844) 893-9888\n\nSMRU # 1949746",
+            "source": "Associations!D4"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.usi",
+      "key": "profile.mcr.tpa.usi",
+      "displayId": 150353648719407,
+      "providedBy": null,
+      "sourceReference": "Associations!B5:D5",
+      "organizationKey": "mcr.tpa.usi",
+      "position": 11,
+      "definition": {
+        "name": "USI Affinity",
+        "acronym": "USI",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.aap",
+            "details": "USI Affinity\n90 Matawan Road, Suite 203,\nMatawan, NJ 07747\n\n\nPhone: (855) 874-0142 \nM-Th 8:30-7 | F 8:30-4:30 ET \nFax: 1-312-419-8670  \nWebsite: www.aapinsurance.com\nEmail: info@aapinsurance.com",
+            "source": "Associations!D5"
+          },
+          {
+            "clientKey": "mcr.client.aap",
+            "details": "USI Affinity\n90 Matawan Road, Suite 203,\nMatawan, NJ 07747\n\nPhone: 1-800-257-3220  \nM-Th 8:30-7 | F 8:30-4:30 ET \nWebsite: www.aapinsurance.com\nEmail: info@aapinsurance.com\nAR Insurance License # 325944; CA Insurance License # 0G11911",
+            "source": "Associations!D6"
+          },
+          {
+            "clientKey": "mcr.client.nysba",
+            "details": "USI Affinity\n90 Matawan Road, Suite 203,\nMatawan, NJ 07747\nPhone:(855) 874-0140 \nM-Th 8:30-7 | F 8:30-4:30 ET\nAR Insurance License #: 325944 | CA Insurance License #: OG11911",
+            "source": "Associations!D131"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.abe",
+      "key": "profile.mcr.tpa.abe",
+      "displayId": 66789115944746,
+      "providedBy": null,
+      "sourceReference": "docs/project-review/ownership-and-cleanup-plan.md#october-19-user-decisions",
+      "organizationKey": "mcr.tpa.abe",
+      "position": 12,
+      "definition": {
+        "name": "ABA",
+        "acronym": "ABA",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "abe",
+            "details": "American Bar Endowment \n321 North Clark Street \n14th Floor \nChicago, Illinois 60654-7648 \n\nCall: 800-621-8981 \nWebsite: http://abendowment.org/ \nEmail: information@abendowment.org",
+            "source": "Associations!D7"
+          },
+          {
+            "clientKey": "abe",
+            "details": "American Bar Endowment \n321 North Clark Street \n\nChicago, Illinois 60654-7648 \n\nCall: 800-621-8981 \nWebsite: http://abendowment.org/ \nEmail: information@abendowment.org",
+            "source": "Associations!D8"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.amwins",
+      "key": "profile.mcr.tpa.amwins",
+      "displayId": 64723069064661,
+      "providedBy": null,
+      "sourceReference": "Associations!B12:D12",
+      "organizationKey": "mcr.tpa.amwins",
+      "position": 13,
+      "definition": {
+        "name": "AmWins",
+        "acronym": "AmWins",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.acs",
+            "details": "Administered By:\n\nAMBA P.O. Box 153054 Irving, Texas 75015-3504 \n\nWebsite: https://acs.getamba.com\n\nPhone: (800) 433-1672\n\nEmail: program-info@getamba.com \n\nAR Insurance License No. 100114462\n\nCA Insurance License No. 0I965562",
+            "source": "Associations!D12"
+          },
+          {
+            "clientKey": "mcr.client.acsinitiategi",
+            "details": "Administered By:\n\nAMBA P.O. Box 153054 Irving, Texas 75015-3504 \n\nWebsite: https://acs.getamba.com\n\nPhone: (800) 433-1672\n\nEmail: program-info@getamba.com \n\nAR Insurance License No. 100114462\n\nCA Insurance License No. 0I965562",
+            "source": "Associations!D13"
+          },
+          {
+            "clientKey": "mcr.client.acsposttraininggi",
+            "details": "Administered By:\n\nAMBA P.O. Box 153054 Irving, Texas 75015-3504 \n\nWebsite: https://acs.getamba.com\n\nPhone: (800) 433-1672\n\nEmail: program-info@getamba.com \n\nAR Insurance License No. 100114462\n\nCA Insurance License No. 0I965562",
+            "source": "Associations!D14"
+          },
+          {
+            "clientKey": "mcr.client.caa",
+            "details": "AMBA\n\nP.O. Box 152501\nIrving, Texas 75015-2501\n\nWebsite: www.insurecolumbiaalumni.com\nPhone: (800) 223-1147\nEmail: Contact Us\n\nURL behind Contact US should be irv.policyservice@getamba.com",
+            "source": "Associations!D19"
+          },
+          {
+            "clientKey": "mcr.client.caagi",
+            "details": "AMBA\n\nP.O. Box 152501\nIrving, Texas 75015-2501\n\nWebsite: www.insurecolumbiaalumni.com\nPhone: (800) 223-1147\nEmail: Contact Us\n\nURL behind Contact US should be irv.policyservice@getamba.com",
+            "source": "Associations!D20"
+          },
+          {
+            "clientKey": "mcr.client.ibm",
+            "details": "AMBA\n\nP.O. Box 152501\nIrving, Texas 75015-2501\n\nWebsite: http://www.lifering.net\nPhone: (800) 223-8646\nEmail: irv.policyservice@getamba.com",
+            "source": "Associations!D33"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.amaia",
+      "key": "profile.mcr.tpa.amaia",
+      "displayId": 28570433019507,
+      "providedBy": null,
+      "sourceReference": "Associations!B15:D15",
+      "organizationKey": "mcr.tpa.amaia",
+      "position": 14,
+      "definition": {
+        "name": "AMA Insurance Agency, Inc.",
+        "acronym": "AMAIA",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "ama",
+            "details": "AMA Insurance Agency, Inc.\n330 North Wabash Avenue\nSuite 39300\nChicago, IL 60611-5885\n \nPhone: 1- (800) 458-5736\nMonday - Friday\n8:00 AM - 5:00 PM CT\n \nWebsite: https://www.amainsure.com/\nEmail: wecare@amainsure.com\n\nSMRU 1945510",
+            "source": "Associations!D15"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.crbg",
+      "key": "profile.mcr.tpa.crbg",
+      "displayId": 128488924192818,
+      "providedBy": null,
+      "sourceReference": "Associations!B21:D21",
+      "organizationKey": "mcr.tpa.crbg",
+      "position": 15,
+      "definition": {
+        "name": "CRBG",
+        "acronym": "CRBG",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.crbg",
+            "details": "Plan Administered By \nCompass Rose Benefits Group New Address: \n11490 Commerce Park Drive\nSuite 220\nReston, VA 20191\nCall: (866) 368-7227, option 4\nWebsite: www.compassrosebenefits.com",
+            "source": "Associations!D21"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.ftj",
+      "key": "profile.mcr.tpa.ftj",
+      "displayId": 29406136294192,
+      "providedBy": null,
+      "sourceReference": "Associations!B22:D22",
+      "organizationKey": "mcr.tpa.ftj",
+      "position": 16,
+      "definition": {
+        "name": "FTJ",
+        "acronym": "FTJ",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.nada",
+            "details": "Forrest T. Jones & Company, Inc. (in Arizona, Forrest T. Jones Consulting Company)\n2600 Grand Blvd., Suite 900\nKansas City, MO 64108-4626\n\nWebsite: Home \nPhone: (800) 821-7303\nEmail: info@ftj.com",
+            "source": "Associations!D22"
+          },
+          {
+            "clientKey": "mcr.client.nadaee",
+            "details": "Forrest T. Jones & Company, Inc. (in Arizona, Forrest T. Jones Consulting Company)\n2600 Grand Blvd., Suite 900\nKansas City, MO 64108-4626\n\nWebsite: Home \nPhone: (800) 821-7303\nEmail: info@ftj.com",
+            "source": "Associations!D23"
+          },
+          {
+            "clientKey": "mcr.client.txcpa",
+            "details": "Administered By\n\nForrest T. Jones & Company, Inc.\n(in Arizona, Forrest T. Jones Consulting Company)\n\nP.O. Box 418131\n\nKansas City, MO 64141-8131\n\nPhone: 1-800-845-8941\n\nWebsite: https://www.txcpainsure.org\n\nEmail: info@txcpainsure.org",
+            "source": "Associations!D32"
+          },
+          {
+            "clientKey": "mcr.client.tie",
+            "details": "Plans Administered By:\nForrest T. Jones & Company, Inc. (in\nArizona, Forrest T. Jones Consulting Company),\nP.O. Box 418131\nKansas City, MO 64141-8131\n\nCall: 1-800-821-7303\nEmail: info@ftj.com",
+            "source": "Associations!D63"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.beale",
+      "key": "profile.mcr.tpa.beale",
+      "displayId": 280895495777651,
+      "providedBy": null,
+      "sourceReference": "Associations!B24:D24",
+      "organizationKey": "mcr.tpa.beale",
+      "position": 17,
+      "definition": {
+        "name": "Beale",
+        "acronym": "Beale",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.okba",
+            "details": "Plans Administered By\nBeale Professional Services\n3000 NW 149th Street \nOklahoma City, OK 73134\n\nPhone: 1 (405) 521-1600\n\nWebsite: http://3000ig.com\n\nEmail: jennifer@3000ig.com",
+            "source": "Associations!D24"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.hbi",
+      "key": "profile.mcr.tpa.hbi",
+      "displayId": 219620516397885,
+      "providedBy": null,
+      "sourceReference": "Associations!B27:D27",
+      "organizationKey": "mcr.tpa.hbi",
+      "position": 18,
+      "definition": {
+        "name": "Hbi",
+        "acronym": "HBi",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.itp",
+            "details": "Plans Administered By -\nHagan Barron Intermediaries\nPO Box 1889, Sioux Falls , SD 57101\nPhone: 877-867-1892\nWebsite: http://sassassociates.com\nEmail: mail@sassassociates.com ( new business only)",
+            "source": "Associations!D27"
+          },
+          {
+            "clientKey": "mcr.client.aia",
+            "details": "The AIA Trust Insurance Program Plan Administrator:\nHagan Barron Intermediaries\n\nPO Box 4315\nClinton, IA 52733-4315ﾠ\n1-877-801-3727\nwww.theaiatrust.com",
+            "source": "Associations!D227"
+          },
+          {
+            "clientKey": "mcr.client.aana",
+            "details": "Plans administered by:\nAANA Group Insurance Administrator\nHagan Barron Intermediaries\nPO Box 4315\nClinton, IA 52733-4315\n1-877-273-6588\nwww.myaanainsurance.com                                                                     \nSMRU number 5032175.2",
+            "source": "Associations!D367"
+          },
+          {
+            "clientKey": "mcr.client.crnastudent",
+            "details": "Administered by:\nHagan Insurance Group, LLC\nPO Box 1398, Sioux Falls, SD 57101\n1-877-273-6588\nwww.myaanainsurance.com\nPhone: (877) 273-6588\n7:30am – 4:00pm Central Time, Mon - Fri\n\nCA Insurance License: #OH62489\nAR Insurance License: #94726\n\nRule for license info is....the larger of 12pt font or size of the phone number displayed.",
+            "source": "Associations!D368"
+          },
+          {
+            "clientKey": "mcr.client.acep",
+            "details": "Plans administered by:\nACEP Group Insurance Administrator\nHagan Insurance Group\nPO Box 4315\nClinton, IA 52733-4315\n1-877-285-4445\nhttp://www.acepinsurance.com\n\nArkansas #383582. California #OH62489 (mus be 12pt font)",
+            "source": "Associations!D381"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.sass",
+      "key": "profile.mcr.tpa.sass",
+      "displayId": 147765153116750,
+      "providedBy": null,
+      "sourceReference": "Associations!B30:D30",
+      "organizationKey": "mcr.tpa.sass",
+      "position": 19,
+      "definition": {
+        "name": "Sass",
+        "acronym": "Sass",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.itpsi",
+            "details": "Plans Administered By \nSidney A. Sass Associates \n4400 Rt. 9 South, Ste. 2800 \nFreehold, NJ 07728\n\n \nCall: 1 (800) 569 - 6535 \nWebsite: http://sassassociates.com \nEmail: mail@sassassociates.com",
+            "source": "Associations!D30"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.agia",
+      "key": "profile.mcr.tpa.agia",
+      "displayId": 23959675427458,
+      "providedBy": null,
+      "sourceReference": "Associations!B31:D31",
+      "organizationKey": "mcr.tpa.agia",
+      "position": 20,
+      "definition": {
+        "name": "AGIA",
+        "acronym": "AGIA",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.spe",
+            "details": "Plans Administered By:\nAssociation Group Insurance Administrators\nP. O. Box 9159\nPhoenix, AZ 85068-9159\n\nCall:  1-800-337-3140",
+            "source": "Associations!D31"
+          },
+          {
+            "clientKey": "mcr.client.geo",
+            "details": "Plans Administered By:\nAssociation Group Insurance Administrators\nP. O. Box 9159\nPhoenix, AZ 85068-9159\n\nCall:  1-800-337-3140",
+            "source": "Associations!D35"
+          },
+          {
+            "clientKey": "mcr.client.calsea",
+            "details": "Plans Administered by:\nCSEA Endorsed Insurance Program                                               P.O. Box 9997, Phoenix AZ 85068-0997                                                                                                   \n\n\nhttp://www.cseabenefitsprogram.com/\n\nphone: 1-800-296-2732",
+            "source": "Associations!D362"
+          },
+          {
+            "clientKey": "mcr.client.calsearet",
+            "details": "Plans Administered by:\nCSEA Endorsed Insurance Program                                               P.O. Box 9997, Phoenix AZ 85068-0997                                                                                                   \n\n\nhttp://www.cseabenefitsprogram.com/\n\nphone: 1-800-296-2732",
+            "source": "Associations!D363"
+          },
+          {
+            "clientKey": "mcr.client.acp",
+            "details": "Plan Administered By A.G.I.A., Inc.PO Box 9947\nPhoenix, Arizona 85068\nPhone: (866) 340-8534\nHours:M-F 7AM-4PM PST\nWebsite www.acpmemberinsurance.com                                     ribbon phone number and hours update- Call (866) 340-8534, Monday-Friday 7AM-4PM PSTﾠ",
+            "source": "Associations!D371"
+          },
+          {
+            "clientKey": "mcr.client.amta",
+            "details": "Administered by A.G.I.A., Inc.\nP.O. Box 26860\nPhoenix, Arizona 85068\n\nWebsite: https://www.amtabenefits.com  \nPhone: 1 (866) 803-6773\nM-F 8AM-7PM EST\n\n\nAR Insurance License # Matt Bishop AR Insurance License #8493373.\nCA Insurance License #  Matt Bishop CA Insurance License #0F00863.",
+            "source": "Associations!D398"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.alliant",
+      "key": "profile.mcr.tpa.alliant",
+      "displayId": 89155604182687,
+      "providedBy": null,
+      "sourceReference": "Associations!B34:D34",
+      "organizationKey": "mcr.tpa.alliant",
+      "position": 21,
+      "definition": {
+        "name": "Alliant",
+        "acronym": "Alliant",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.apwudigi",
+            "details": "Administered by:\nVoluntary Benefits Plan®                         \nAIS Administrators, Inc.\nDBA Accretive Insurance & Administrative Solutions\nPO Box 12009, Cheshire, CT 06410\n1-800-422-4492\nHours: M-F, 8:30am-5pm ET\nvbplan@alliant.com\nvoluntarybenefitsplan.com\n\n\nAgency Insurance License Numbers: AR: 245147, CA: 0791700",
+            "source": "Associations!D34"
+          },
+          {
+            "clientKey": "mcr.client.apwu",
+            "details": "Administered by: Voluntary Benefits Plan®\nAIS Administrators, Inc. DBA Accretive Insurance & Administrative Solutions P.O. BOX 12009, Cheshire, CT 06410\nAgency Insurance License Numbers: AR: 245147, CA: 0791700\n1-800-422-4492\nHours: M-F, 8:30am-5pm ET\nvbplan@alliant.com\nvoluntarybenefitsplan.com                                                                 SMRU number: 5033200",
+            "source": "Associations!D377"
+          },
+          {
+            "clientKey": "mcr.client.apwuadd",
+            "details": "Administered by: Voluntary Benefits Plan®                         AIS Administrators, Inc.\nDBA Accretive Insurance & Administrative Solutions\nPO Box 12009, Cheshire, CT 06410\n1-800-422-4492\nHours: M-F, 8:30am-5pm ET\nvbplan@alliant.com\nvoluntarybenefitsplan.com\nSMRU 7822384\n\nAgency Insurance License Numbers: AR: 245147, CA: 0791700",
+            "source": "Associations!D378"
+          },
+          {
+            "clientKey": "mcr.client.npmhu",
+            "details": "Administered by: Union Member Benefits Plan®\nAIS Administrators, Inc. DBA Accretive Insurance & Administrative Solutions P.O. BOX 12009, Cheshire, CT 06410\n1-800-604-6113\nHours: M-F, 8:30am-5pm ET\nunionmemberbenefitsplan.com    \n\nAgency Insurance License Numbers: AR: 245147, CA: 0791700\nSMRU number: 8824347",
+            "source": "Associations!D394"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.pca",
+      "key": "profile.mcr.tpa.pca",
+      "displayId": 188836142293232,
+      "providedBy": null,
+      "sourceReference": "Associations!B60:D60",
+      "organizationKey": "mcr.tpa.pca",
+      "position": 22,
+      "definition": {
+        "name": "Pearl Carroll & Associates, LLC",
+        "acronym": "PCA",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "csea",
+            "details": "Plans Administered By \nPearl Carroll & Associates, LLC \n12 Cornell Road, Latham, NY 12110 \n\nCall: 1-877-847-2732\nWebsite: www.pearlcarroll.com/csea \nEmail:  cseainsurance@pearlinsurance.com",
+            "source": "Associations!D60"
+          },
+          {
+            "clientKey": "mcr.client.cseacap",
+            "details": "Administered By:\nCSEA Group Sponsored Insurance Program\nc/o Pearl Insurance\n13 Airline Drive\nAlbany, NY 12205\n\nWebsite:ﾠcseainsurance.com\nPhone:ﾠ(877) 847-2732\nEmail:ﾠcseainsurance@pearlinsurance.com",
+            "source": "Associations!D61"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.gilsbar",
+      "key": "profile.mcr.tpa.gilsbar",
+      "displayId": 127111613279158,
+      "providedBy": null,
+      "sourceReference": "Associations!B62:D62",
+      "organizationKey": "mcr.tpa.gilsbar",
+      "position": 23,
+      "definition": {
+        "name": "Gilsbar",
+        "acronym": "Gilsbar",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.lsba",
+            "details": "Administered By \nHealthComp\nP.O. Box 1590\nCovington, LA 70434\nCall: 1-855-867-0057 \nWebsite: hchealthbenefits.com\nEmail: cccsupport@healthcomp.com",
+            "source": "Associations!D62"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.manulife",
+      "key": "profile.mcr.tpa.manulife",
+      "displayId": 225849989321753,
+      "providedBy": null,
+      "sourceReference": "Associations!B132:D132",
+      "organizationKey": "mcr.tpa.manulife",
+      "position": 24,
+      "definition": {
+        "name": "Manulife",
+        "acronym": "Manulife",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.oma",
+            "details": "The Manufacturers Life Insurance Company (Manulife)\nPlan Administrator\nManulife, PO Box 670, Stn Waterloo, Waterloo, ON N2J 4B8\nPhone: 1-888-596-8881\nMonday - Friday, 8:45 a.m. to 5 p.m. ET\nE-mail info@omainsurance.com",
+            "source": "Associations!D132"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.marsh-ares-amba-on-portal",
+      "key": "profile.mcr.tpa.marsh-ares-amba-on-portal",
+      "displayId": 165347685096728,
+      "providedBy": null,
+      "sourceReference": "Associations!B133:D133",
+      "organizationKey": "mcr.tpa.marsh-ares-amba-on-portal",
+      "position": 25,
+      "definition": {
+        "name": "Marsh-ARES\nAMBA- on Portal",
+        "acronym": "Marsh-ARES\nAMBA- on Portal",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.agit",
+            "details": "Plans Administered by\nAMBA Administrators, Inc.\n\nP.O. Box 14533\n\nDes Moines, IA 50306\n \nPhone: 1-888-560-ALUM (2586  )\nMonday - Friday\n8:15 AM - 5:00 PM CT\n  \nWebsite: http://www.alumniplans.com\nEmail: customerservice.service@getamba.com",
+            "source": "Associations!D133"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.marsh",
+      "key": "profile.mcr.tpa.marsh",
+      "displayId": 89837737358203,
+      "providedBy": null,
+      "sourceReference": "Associations!B195:D195",
+      "organizationKey": "mcr.tpa.marsh",
+      "position": 26,
+      "definition": {
+        "name": "Marsh",
+        "acronym": "Marsh",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.agitsi",
+            "details": "Plans Administered by\nAlumni Group Insurance Program\nMercer Consumer\nP.O. Box 10374\nDes Moines, IA  50306-0374\n \nPhone: 1-888-560-ALUM (2586)\nMonday - Friday\n8:15 AM - 5:00 PM CT\n  \nWebsite: http://www.alumniplans.com\nEmail: customerservice.service@mercer.com",
+            "source": "Associations!D195"
+          },
+          {
+            "clientKey": "mcr.client.aaop",
+            "details": "Plans Administered by \nMercer Consumer \n12421 Meredith Drive \nUrbandale, IA 50398 \nPhone: 1-888-424-2308 \nEmail: customerservice.service@mercer.com \nWebsite: www.aaoinsure.com",
+            "source": "Associations!D382"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.asg",
+      "key": "profile.mcr.tpa.asg",
+      "displayId": 64590095529309,
+      "providedBy": null,
+      "sourceReference": "Associations!B229:D229",
+      "organizationKey": "mcr.tpa.asg",
+      "position": 27,
+      "definition": {
+        "name": "ASG",
+        "acronym": "ASG",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.aiche",
+            "details": "The AIChE Insurance Program Plan Administrator:\nAffinity Insurance Services, Inc.\n1100 Virginia Drive, Suite 250\nFort Washington, PA 19034\n1-800-98-AIChE (982-4243)\nwww.aicheinsurance.com",
+            "source": "Associations!D229"
+          },
+          {
+            "clientKey": "mcr.client.cap",
+            "details": "The CAP Insurance Program Plan Administrator:\nAffinity Insurance Services, Inc.\n159 East County Line Road\nHatboro, PA, 19040-1218\n1-800-509-6023\nwww.capinsuranceplans.com",
+            "source": "Associations!D231"
+          },
+          {
+            "clientKey": "mcr.client.apta",
+            "details": "Plans Administered by:\nHPSO\n1100 Virginia Drive, Suite 250\nFort Washington, PA 19034\nPhone: 1-800-982-9491\nWebsite: HPSO.com/apta\nemail: service@hpso.com",
+            "source": "Associations!D351"
+          },
+          {
+            "clientKey": "nso",
+            "details": "Plans Administered by:\nNSO \n1100 Virginia Drive, Suite 250\nFort Washington, PA 19034\nPhone: 1-800-541-7644\nWebsite: nso.com\nemail: service@NSO.com",
+            "source": "Associations!D356"
+          },
+          {
+            "clientKey": "mcr.client.hpso",
+            "details": "Plans Administered by:\nHPSO\n1100 Virginia Drive, Suite 250\nFort Washington, PA 19034\nPhone: 1-877-215-2311\nWebsite: hpso.com\nemail: service@hpso.com",
+            "source": "Associations!D357"
+          },
+          {
+            "clientKey": "mcr.client.nycla",
+            "details": "Plans administered by:\nNYCLA Plan Administrator\nAffinity Insurance Services, Inc.\n1100 Virginia Drive, Suite 250\nFort Washington, PA 19034\n1-800-529-9285\nWebsite: nyclainsurance.com",
+            "source": "Associations!D369"
+          },
+          {
+            "clientKey": "mcr.client.aad",
+            "details": "Plans administered by:\nAAD Plan Administrator\nAffinity Insurance Services, Inc.\n1100 Virginia Drive, Suite 250\nFort Washington, PA 19034\n1-888-747-6866\nWebsite: aad-insurance.com",
+            "source": "Associations!D370"
+          },
+          {
+            "clientKey": "mcr.client.aptagradassist",
+            "details": "Plans Administered by:\nHPSO\n1100 Virginia Drive, Suite 250\nFort Washington, PA 19034\nPhone: 1-800-982-9491\nemail: service@hpso.com",
+            "source": "Associations!D379"
+          },
+          {
+            "clientKey": "mcr.client.aptagi",
+            "details": "Plans Administered by:\nHPSO\n1100 Virginia Drive, Suite 250\nFort Washington, PA 19034\nPhone: 1-800-982-9491\nemail: service@hpso.com\n\nAR Insurance License # 100106022\nCA Insurance License # 0G94493 (must be 16pt font)",
+            "source": "Associations!D384"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.loyal-legacy-plan-administrator",
+      "key": "profile.mcr.tpa.loyal-legacy-plan-administrator",
+      "displayId": 202057581300445,
+      "providedBy": null,
+      "sourceReference": "Associations!B230:D230",
+      "organizationKey": "mcr.tpa.loyal-legacy-plan-administrator",
+      "position": 28,
+      "definition": {
+        "name": "Loyal Legacy Plan Administrator",
+        "acronym": "Loyal Legacy Plan Administrator",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.akc",
+            "details": "Loyal Legacy Plan Administrator\n1200 E. Glen Avenue\nPeoria Heights, Illinois 61616\nWebsite: loyallegacyplan.com\nPhone: (844) 282-2446",
+            "source": "Associations!D230"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.meyer",
+      "key": "profile.mcr.tpa.meyer",
+      "displayId": 198537827844262,
+      "providedBy": null,
+      "sourceReference": "Associations!B232:D232",
+      "organizationKey": "mcr.tpa.meyer",
+      "position": 29,
+      "definition": {
+        "name": "Meyer",
+        "acronym": "Meyer",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.cat",
+            "details": "The Collegiate Alumni Trust Administrator                                    Meyer and Associates\n18 Washington Ave\nChatham, NJ  07928\nP: 800-635-7801\nF: 973-635-7578\ninfo@meyerandassoc.com\nmeyerandassoc.com",
+            "source": "Associations!D232"
+          },
+          {
+            "clientKey": "mcr.client.catgi",
+            "details": "The Collegiate Alumni Trust Administrator                                    Meyer and Associates\n18 Washington Ave\nChatham, NJ  07928\nP: 800-635-7801\nF: 973-635-7578\ninfo@meyerandassoc.com\nmeyerandassoc.com",
+            "source": "Associations!D344"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.waepa",
+      "key": "profile.mcr.tpa.waepa",
+      "displayId": 239523613653640,
+      "providedBy": null,
+      "sourceReference": "Associations!B346:D346",
+      "organizationKey": "mcr.tpa.waepa",
+      "position": 30,
+      "definition": {
+        "name": "Worldwide Assurance for Employees of Public Agencies, Inc.",
+        "acronym": "WAEPA",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "waepa",
+            "details": "Worldwide Assurance for Employees of Public Agencies, Inc. 433 Park Ave, Falls Church, VA 22046\n(800)368-3484    \nhttp://www.waepa.org    \ninfo@waepa.org                                                                              phone ribbon: Need help? Call 800-368-3484 M-F \nﾠM-Th 8:30am - 6:30pm, F 8:30am - 5:00pm, ET",
+            "source": "Associations!D346"
+          },
+          {
+            "clientKey": "mcr.client.waepagi",
+            "details": "Worldwide Assurance for Employees of Public Agencies, Inc.433 Park Ave, Falls Church, VA 22046\n(800)368-3484    \nhttp://www.waepa.org    \ninfo@waepa.org                                                                            phone ribbon: Need help? Call 800-368-3484 M-F          \nﾠM-Th 8:30am - 6:30pm, F 8:30am - 5:00pm, ET",
+            "source": "Associations!D347"
+          },
+          {
+            "clientKey": "mcr.client.waepaconfgi",
+            "details": "Worldwide Assurance for Employees of Public Agencies, Inc.433 Park Ave, Falls Church, VA 22046\n(800)368-3484                                                                                                                               8:30am – 5:00pm Eastern Time, Mon - Fri\nhttp://www.waepa.org    \ninfo@waepa.org                                                                            phone ribbon: Need help? Call 800-368-3484 M-F    \nﾠM-Th 8:30am - 6:30pm, F 8:30am - 5:00pm, ET",
+            "source": "Associations!D348"
+          },
+          {
+            "clientKey": "mcr.client.waepaupgrade",
+            "details": "Worldwide Assurance for Employees of Public Agencies, Inc (\", Inc\" should render on the footer only)\n433 Park Ave\nFalls Church, VA 22046\nPhone: 1-800-368-3484\nWebsite: waepa.org\nEmail: info@waepa.org                                                                    phone ribbon: Need help? Call 800-368-3484 M-F \nﾠM-Th 8:30am - 6:30pm, F 8:30am - 5:00pm, ET",
+            "source": "Associations!D349"
+          },
+          {
+            "clientKey": "mcr.client.waepachildgi",
+            "details": "Worldwide Assurance for Employees of Public Agencies, Inc (\", Inc\" should render on the footer only)\n433 Park Ave\nFalls Church, VA 22046\nPhone: 1-800-368-3484\nWebsite: waepa.org\nEmail: info@waepa.org\n\nNo licensing info should render                                                            phone ribbon: Need help? Call 800-368-3484 M-F   \nﾠM-Th 8:30am - 6:30pm, F 8:30am - 5:00pm, ET",
+            "source": "Associations!D350"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.agia-az",
+      "key": "profile.mcr.tpa.agia-az",
+      "displayId": 28967435910986,
+      "providedBy": null,
+      "sourceReference": "Associations!B359:D359",
+      "organizationKey": "mcr.tpa.agia-az",
+      "position": 31,
+      "definition": {
+        "name": "AGIA AZ",
+        "acronym": "AGIA AZ",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.aoa",
+            "details": "Endorsed by:\nThe AOA\n\nAdministered by A.G.I.A., Inc.\nP.O. Box 26860\nPhoenix, AZ 85068\nPhone: \n(866) 417-5214\nHours: M-F 8AM - 7PM (EST)\n\nWebsite: www.aoainsurance.com",
+            "source": "Associations!D359"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.selman",
+      "key": "profile.mcr.tpa.selman",
+      "displayId": 86324643926692,
+      "providedBy": null,
+      "sourceReference": "Associations!B360:D360",
+      "organizationKey": "mcr.tpa.selman",
+      "position": 32,
+      "definition": {
+        "name": "Selman",
+        "acronym": "Selman",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.ruaa",
+            "details": "One Integrity Parkway\nCleveland, OH 44143-1500\n1-800-343-5433",
+            "source": "Associations!D360"
+          },
+          {
+            "clientKey": "mcr.client.ruaa",
+            "details": "One Integrity Parkway\nCleveland, OH 44143-1500\n1-800-343-5433\nAR Insurance License No. 100101639\nCA Insurance License No. 0441679",
+            "source": "Associations!D361"
+          },
+          {
+            "clientKey": "mcr.client.baer",
+            "details": "Broker Info:\nRisk Strategies\n2270 Douglas Blvd; Ste 220\nRoseville, CA 95661\nPhone: (916)367-4295\n\n<Have asked for CA Licensing Info>\n\nAdministered by: \nSelman & Company\nOne Integrity Parkway\nCleveland, OH 44143-1500\nPh: (800)343-5433",
+            "source": "Associations!D395"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.amba",
+      "key": "profile.mcr.tpa.amba",
+      "displayId": 21760180351331,
+      "providedBy": null,
+      "sourceReference": "Associations!B364:D364",
+      "organizationKey": "mcr.tpa.amba",
+      "position": 33,
+      "definition": {
+        "name": "AMBA",
+        "acronym": "AMBA",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.ieee",
+            "details": "Plans Administered by\n\nAMBA Administrators, Inc.\nP.O. Box 14533\nDes Moines, IA 50306\n\nWebsite:ﾠhttps://www.IEEEinsurance.com\nPhone:ﾠ(800) 493-IEEE (4333)\nEmail:ﾠIEEE.service@getamba.com",
+            "source": "Associations!D364"
+          },
+          {
+            "clientKey": "mcr.client.calbar",
+            "details": "Plans Administered by:\n\nAMBA Administrators, Inc.\nP.O. Box 14536\nDes Moines, IA 50306\n\nWebsite:ﾠwww.mybarbenefits.com\nPhone:ﾠ(800) 343-0132\nEmail:ﾠcalbar.service@getamba.com",
+            "source": "Associations!D366"
+          },
+          {
+            "clientKey": "mcr.client.asmegi",
+            "details": "ASME Insurance Program Administered by:\nMercer Consumer, a service of Mercer Health & Benefits Administration LLC* (\"Mercer Consumer\")\nAR Insurance License #100102691\nCA Insurance License #0G39709\nIn CA d/b/a Mercer Health & Benefits Insurance Services LLC\n*Mercer Consumer is a registered trade name of Mercer Health & Benefits Administration LLC.\n12421 Meredith Drive\nUrbandale, IA 50398\nPhone: 1-800-289-2763 (M-F 7:30am-6pm, Sat. 8am-1pm CT)\"\nWebsite: www.asmeinsurance.com\nEmail: asme.service@mercer.com\n\nSMRU # is 1783096",
+            "source": "Associations!D373"
+          },
+          {
+            "clientKey": "mcr.client.roa",
+            "details": "Plans Administered by\nAMBA Administrators, Inc.  \nP.O. Box 14536\nDes Moines, IA  50306\n \nPhone: 1-800-247-7988\n  \nWebsite:\nwww.roainsure.com\nEmail: roa.service@getamba.com",
+            "source": "Associations!D392"
+          },
+          {
+            "clientKey": "mcr.client.moaa",
+            "details": "Plans Administered by\nAMBA Administrators, Inc.  \nP.O. Box 14536\nDes Moines, IA  50306\n \nPhone: 1-800-247-2192\n  \nWebsite:\nwww.moaainsurance.com\nEmail: moaa.service@getamba.com",
+            "source": "Associations!D393"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.marsh-now-amba",
+      "key": "profile.mcr.tpa.marsh-now-amba",
+      "displayId": 223432013079934,
+      "providedBy": null,
+      "sourceReference": "Associations!B372:D372",
+      "organizationKey": "mcr.tpa.marsh-now-amba",
+      "position": 34,
+      "definition": {
+        "name": "Marsh(now AMBA)",
+        "acronym": "Marsh(now AMBA)",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.asme",
+            "details": "Administered by:\n\nAMBA Administrators, Inc.\nP.O. Box 14533\nDes Moines, IA 50306\n\nWebsite:ﾠwww.asmeinsurance.com\nPhone:ﾠ(800) 289-2763\nEmail:ﾠasme.service@getamba.com\n\n\nAssociation Member Benefits Advisors, LLC.  In CA d/b/a Association Member Benefits & Insurance Agency   CA Insurance License #0I96562 | AR Insurance License #100114462",
+            "source": "Associations!D372"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.instpa",
+      "key": "profile.mcr.tpa.instpa",
+      "displayId": 269634992757115,
+      "providedBy": null,
+      "sourceReference": "Associations!B374:D374",
+      "organizationKey": "mcr.tpa.instpa",
+      "position": 35,
+      "definition": {
+        "name": "InsTPA",
+        "acronym": "InsTPA",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.nar",
+            "details": "Plans administered by:\nInsuranceTPA.com\n14 North Parker Drive #300\nJanesville, WI 53545\n800-279-2290\nCustomer Service: 844-927-0527\nWebsite: https://www.sasid.com/ (new business only)            CA Insurance License: #0D43589\nAR Insurance License: #350137",
+            "source": "Associations!D374"
+          },
+          {
+            "clientKey": "mcr.client.nargi",
+            "details": "Plans administered by:\nInsuranceTPA.com\n14 North Parker Drive #300\nJanesville, WI 53545\n800-279-2290\nCustomer Service: 844-927-0527\nWebsite: https://www.sasid.com/ (new business only)",
+            "source": "Associations!D375"
+          },
+          {
+            "clientKey": "mcr.client.auic",
+            "details": "AR Insurance License #350137\nCA Insurance License #0D43589\nPowered by SASid Insurance Development\nPlans administered by:\nInsuranceTPA.com\n14 North Parker Drive #300\nJanesville, WI 53545\nCustomer Service: 844-927-2290",
+            "source": "Associations!D390"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.lifehelp",
+      "key": "profile.mcr.tpa.lifehelp",
+      "displayId": 107601540899581,
+      "providedBy": null,
+      "sourceReference": "Associations!B376:D376",
+      "organizationKey": "mcr.tpa.lifehelp",
+      "position": 36,
+      "definition": {
+        "name": "LifeHelp",
+        "acronym": "LifeHelp",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.lifehelp",
+            "details": "Administered By:\n\nLifeHelp\n2990 Innsbruck Drive\nRedding, CA 96003\nPhone: (800) 345-4543ﾠ\nEmail: memberservice@lifehelp.com\n\nCA Insurance License #: CA-0449782\n\nOn the Help modal phone number should be 800-345-4543",
+            "source": "Associations!D376"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.aon",
+      "key": "profile.mcr.tpa.aon",
+      "displayId": 54694487087430,
+      "providedBy": null,
+      "sourceReference": "Associations!B385:D385",
+      "organizationKey": "mcr.tpa.aon",
+      "position": 37,
+      "definition": {
+        "name": "AON",
+        "acronym": "Aon",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.asae",
+            "details": "Administered by:\nAffinity Insurance Services, Inc.\n1100 Virginia Drive, Suite 250\nFort Washington, PA 19034\nPhone: \nemail: \nWebsite: \n\nAR Insurance License # 100106022\nCA Insurance License # 0G94493 (must be 12pt font)",
+            "source": "Associations!D385"
+          },
+          {
+            "clientKey": "mcr.client.apharm",
+            "details": "Administered by:\nHealthcare Providers Service Organization \nC/O Affinity Insurance Services, Inc.\n1100 Virginia Drive, Suite 250\nFort Washington, Pennsylvania 19034\nWebsite: www.hpso.com\nPhone: (877) 215-2311\n7:30 am – 4:00pm Central Time, Mon - Fri",
+            "source": "Associations!D391"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.isi",
+      "key": "profile.mcr.tpa.isi",
+      "displayId": 251506419776459,
+      "providedBy": null,
+      "sourceReference": "Associations!B387:D387",
+      "organizationKey": "mcr.tpa.isi",
+      "position": 38,
+      "definition": {
+        "name": "ISI",
+        "acronym": "ISI",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "isitrust",
+            "details": "Administered By:\n\nAIS Administrators, Inc. \n\nP.O. Box 12009, \n\nCheshire, CT 06410\n\nPhone Number: (855) 283-7651\n\n Email: assist@aisadmin.com \n\nAR Insurance License #: 245147 | CA Insurance License #: 0791700",
+            "source": "Associations!D387"
+          },
+          {
+            "clientKey": "mcr.client.atpe",
+            "details": "Administered By:\n\nAIS Administrators, Inc. \n\nP.O. Box 12009, \n\nCheshire, CT 06410\n\nPhone Number: (855) 283-7651\n\n Email: assist@aisadmin.com \n\nAR Insurance License #: 245147 | CA Insurance License #: 0791700",
+            "source": "Associations!D388"
+          },
+          {
+            "clientKey": "mcr.client.ncsfa",
+            "details": "Administered By:\n\nAIS Administrators, Inc. \n\nP.O. Box 12009, \n\nCheshire, CT 06410\n\nPhone Number: (855) 283-7651\n\n Email: assist@aisadmin.com \n\nAR Insurance License #: 245147 | CA Insurance License #: 0791700",
+            "source": "Associations!D389"
+          }
+        ]
+      }
+    },
+    {
+      "id": "profile.mcr.tpa.usba",
+      "key": "profile.mcr.tpa.usba",
+      "displayId": 213792783764705,
+      "providedBy": null,
+      "sourceReference": "Associations!B396:D396",
+      "organizationKey": "mcr.tpa.usba",
+      "position": 39,
+      "definition": {
+        "name": "USBA",
+        "acronym": "USBA",
+        "provisional": false,
+        "administrationContacts": [
+          {
+            "clientKey": "mcr.client.usba",
+            "details": "Uniformed Services Benefit Association\n7301 West 129th Street\nSuite 200\nOverland Park, KS 66213\nWebsite:  www.usba.com\nPhone:  (800) 821-7912\nFax: (800) 368-7030\nEmail:  USBAmemb@usba.com\n9:00 a.m. - 4:00 p.m. Central Time, Monday-Friday",
+            "source": "Associations!D396"
+          },
+          {
+            "clientKey": "mcr.client.usba",
+            "details": "Administered by:  \nIEEE Member Group Insurance Program\n\nAdministered by Uniformed Services Benefit Association\n\n7301 West 129th Street\nSuite 200\nOverland Park, Kansas 66213\n\nPhone: (800) 368-7022\nM-F 9:00am–4:00pm CT\nEmail: support@usba.com",
+            "source": "Associations!D397"
+          }
+        ]
+      }
+    }
+  ]
+}

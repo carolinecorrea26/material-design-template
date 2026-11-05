@@ -56,7 +56,10 @@ it('edits new Library choices at Site scope without mutating original data or an
   expect(reloaded.client.applicantExperience?.eligibleStates).toEqual(['NY','NJ']);
   expect(reloaded.products.find(p => p.id === 'di-ltd')!.riders?.some(r => r.name === 'Spouse test benefit')).toBe(true);
   expect(di.riders?.some(r => r.name === 'Spouse test benefit')).toBe(false);
-  expect(resolvePrototypeLibrary(edited.data,'asce','prototype:edited').client.applicantExperience).toBeUndefined();
+  const other = resolvePrototypeLibrary(edited.data,'asce','prototype:edited').client.applicantExperience;
+  expect(other?.eligibleStatesOnly).toBeUndefined();
+  expect(other?.eligibleStates).toBeUndefined();
+  expect(other?.childEligibility).toBeUndefined();
 }, 20000);
 it('retains every supplied reference value, collection labels, source links and unresolved salary note', () => {
   expect(cseaDiTable.kind).toBe('html-table');

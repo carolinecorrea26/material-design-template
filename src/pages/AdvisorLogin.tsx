@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Button,
   Stack,
@@ -7,14 +6,12 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import SupportAgentRoundedIcon from "@mui/icons-material/SupportAgentRounded";
 import FormRoutePage, {
   isSectionVisible,
   type FormRouteRenderProps,
 } from "../app/RoutePage";
 import FieldRenderer from "../components/forms/FieldRenderer";
-import { getPageTitle, getPageSubhead } from "../config/pages";
+import { getPageTitle, getPageSubhead, getPageSectionNote } from "../config/pages";
 
 export default function AdvisorLogin() {
   return (
@@ -23,10 +20,13 @@ export default function AdvisorLogin() {
       formMaxWidth={500}
       hideActions
       noTitle
+      formHeader={<Box sx={{ bgcolor: "primary.dark", color: theme => theme.palette.getContrastText(theme.palette.primary.dark), px: 3, py: 4, textAlign: "center" }}>
+        <Typography variant="h5" component="h1" sx={{ fontWeight: 800 }}>{getPageTitle("advisor-login")}</Typography>
+        <Typography variant="body2" sx={{ mt: 1 }}>{getPageSubhead("advisor-login")}</Typography>
+      </Box>}
       resolveNextPageId={(values) =>
         values["advisor-flow-type"] === "saved" ? "resume" : "membership"
       }
-      defaultValueOverrides={{ "advisor-flow-type": "new" }}
     >
       {(props) => <AdvisorLoginFields {...props} />}
     </FormRoutePage>
@@ -44,31 +44,8 @@ function AdvisorLoginFields({
   const mode = watchedValues["advisor-flow-type"] === "saved" ? "saved" : "new";
 
   return (
-    <Box sx={{ p: { xs: "24px 0", lg: "32px 0" } }}>
+    <Box>
       <Stack spacing={2.5} alignItems="center">
-        <Avatar
-          sx={{
-            bgcolor: (theme) => theme.palette.primary.light + "22",
-            width: 72,
-            height: 72,
-          }}
-        >
-          <SupportAgentRoundedIcon
-            sx={{ color: "primary.main", fontSize: 48 }}
-          />
-        </Avatar>
-
-        <Box sx={{ textAlign: "center" }}>
-          <Typography variant="formPageTitle">
-            {getPageTitle("advisor-login")}
-          </Typography>
-          {getPageSubhead("advisor-login") && (
-            <Typography variant="subtitle1" mt={0.5}>
-              {getPageSubhead("advisor-login")}
-            </Typography>
-          )}
-        </Box>
-
         <Tabs
           value={mode}
           variant="fullWidth"
@@ -80,6 +57,7 @@ function AdvisorLoginFields({
             })
           }
           aria-label="Advisor login type"
+          aria-describedby="advisor-mode-instructions"
           sx={{
             width: "100%",
             borderBottom: 1,
@@ -95,6 +73,10 @@ function AdvisorLoginFields({
           <Tab label="Start" value="new" />
           <Tab label="Continue" value="saved" />
         </Tabs>
+
+        <Typography id="advisor-mode-instructions" variant="body2" color="text.secondary" sx={{ width: "100%", lineHeight: 1.65 }}>
+          {getPageSectionNote("advisor-login", mode === "new" ? "advisorLoginNew" : "advisorLoginSaved")}
+        </Typography>
 
         <Stack spacing={2} sx={{ width: "100%" }}>
           {pageSections.map((section) => {
@@ -127,7 +109,6 @@ function AdvisorLoginFields({
           variant="contained"
           size="large"
           fullWidth
-          startIcon={<LockOutlinedIcon />}
           sx={{
             py: 1.45,
             fontSize: "1rem",

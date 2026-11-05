@@ -45,7 +45,7 @@ export function fieldSurfaceDefaults() {
   ]);
   add('paymentBank', 'payment', 'Banking Information', ['bank-name-on-account', 'bank-institution', 'bank-routing-number', 'bank-account-number', 'bank-authorization'].map(id => (fieldCatalog as Record<string, FieldDefinition>)[id]));
   add('verificationControls', 'eligibility', 'Member verification', [{ id: 'verification-method', label: 'Choose how to provide verification', inputType: 'radio', required: true, options: [
-    { value: 'text', label: 'Send text code' }, { value: 'voice', label: 'Send voice code' }, { value: 'security-questions', label: 'Answer security questions' }, { value: 'skip', label: 'Proceed without member verification' },
+    { value: 'text', label: 'Send text code' }, { value: 'voice', label: 'Send voice code' }, { value: 'security-questions', label: 'Answer security questions' }, { value: 'skip', label: 'Skip member verification and apply' },
   ] }]);
   add('verificationQuestions', 'eligibility', 'Security questions', SECURITY_QUESTIONS.map(question => ({ id: question.id, label: question.question, inputType: 'radio', required: true, options: question.options.map(value => ({ value, label: value })) })));
   return { fields, surfaces };

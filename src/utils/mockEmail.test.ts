@@ -26,6 +26,8 @@ describe("Site-keyed mock email previews", () => {
     expect(receipt?.siteId).toBe("isitrust");
     expect(receipt?.clientId).toBe("isitrust");
     expect(receipt?.html).toContain("Akron Bar Association");
+    const support = new DOMParser().parseFromString(receipt!.html, 'text/html');
+    expect(support.body.textContent).toContain('Please include your confirmation ID for reference when contacting support: CONF-TEST');
   });
 
   it("generates Site-based resume links for either WAEPA Site", () => {

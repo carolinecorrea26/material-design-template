@@ -15,20 +15,19 @@ import { createAppTheme } from "../../app/theme";
  * adding a new drawer, not a bug in this component itself.
  */
 const meta = {
-  title: "Overlays/AppDrawer",
+  id: "overlays-appdrawer",
+  title: "Components/Feedback and overlays/Dialogs and drawers/Containers/Drawer",
   component: AppDrawer,
-  parameters: { layout: "centered" },
+  parameters: { docs: { description: { component: "Displays supporting content in a drawer with a close action." } }, layout: "centered" },
 } satisfies Meta<typeof AppDrawer>;
 
 export default meta;
 
 function DrawerDemo(props: Omit<React.ComponentProps<typeof AppDrawer>, "open" | "onClose" | "children">) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   return (
     <>
-      <Button variant="outlined" onClick={() => setOpen(true)}>
-        Open drawer
-      </Button>
+      {!open && <Button variant="outlined" onClick={() => setOpen(true)}>Reopen dialog</Button>}
       <AppDrawer {...props} open={open} onClose={() => setOpen(false)}>
         <Typography variant="body2" color="text.secondary">
           Drawer content goes here.

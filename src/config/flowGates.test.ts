@@ -58,7 +58,7 @@ const cir = coverage("cir-li", "LI", "FUW", { cir: true });
 const catalog = [li, ad, si, qd, teleLi, teleDi, cir];
 
 function selected(...coverageIds: string[]): ApplicationFormValues {
-  return { coverageSelections: coverageIds };
+  return { coverageSelections: coverageIds, coverageAmounts: Object.fromEntries(coverageIds.map(id => [`${id}:member`, 100000])) };
 }
 
 describe("canonical flow gates", () => {
@@ -66,6 +66,8 @@ describe("canonical flow gates", () => {
     expect(resolveFlowGate("beneficiary", selected("li"), catalog)).toBe(true);
     expect(resolveFlowGate("beneficiary", selected("ad"), catalog)).toBe(true);
     expect(resolveFlowGate("beneficiary", selected("si"), catalog)).toBe(false);
+    expect(resolveFlowGate("beneficiary", { ...selected("li"), coverageAmounts: { "li:member": 0 } }, catalog)).toBe(false);
+    expect(resolveFlowGate("beneficiary", { coverageSelections: ["li"] }, catalog)).toBe(false);
   });
 
   it("activates underwriting gates only for their selected types", () => {

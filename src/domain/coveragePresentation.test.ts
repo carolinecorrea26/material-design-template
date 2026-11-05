@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { coverages } from "../config/coverages";
-import { orderCoveragePresentation } from "./coveragePresentation";
+import { isCoverageProductOrder, orderCoveragePresentation } from "./coveragePresentation";
 
 describe("coverage presentation", () => {
   it("uses category and semantic product order, ignoring stored featured flags", () => {
@@ -24,4 +24,16 @@ describe("coverage presentation", () => {
     expect(result.products[0].featured).toBe(true);
     expect(orderCoveragePresentation(products, {}, "unknown").categories).toEqual(["LI", "AD", "DI", "OO", "SH"]);
   });
+  it("uses optional configured product order before defaults, with URL featured products and categories taking priority", () => {
+    const config = { categoryOrder: ["LI", "DI"] as Array<"LI" | "DI">, productOrder: ["li-20yr", "li-15yr", "li-10yr", "li-term", "di-short-term", "di-ltd"] as const };
+    const products = coverages.map(product => product.id === "di-ltd" ? { ...product, gNumber: { primary: "G-TEST-1" } } : product);
+    const editable = { ...config, productOrder: [...config.productOrder] };
+    expect(orderCoveragePresentation(products, editable).products.filter(row => row.categoryId === "LI").slice(0, 4).map(row => row.id)).toEqual(["li-20yr", "li-15yr", "li-10yr", "li-term"]);
+    const featured = orderCoveragePresentation(products, editable, "G-TEST-1");
+    expect(featured.categories[0]).toBe("DI"); expect(featured.products[0].id).toBe("di-ltd"); expect(featured.products[1].id).toBe("di-short-term");
+    expect(orderCoveragePresentation(products, editable, "unknown").products.map(row => row.id)).toEqual(orderCoveragePresentation(products, editable).products.map(row => row.id));
+    expect(orderCoveragePresentation(products, { productOrder: [] }).products.map(row => row.id)).toEqual(orderCoveragePresentation(products, {}).products.map(row => row.id));
+    expect(isCoverageProductOrder(["li-term", "li-term"])).toBe(false); expect(isCoverageProductOrder(["unknown"], ["li-term"])).toBe(false);
+  });
+
 });

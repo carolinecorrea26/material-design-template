@@ -9,9 +9,10 @@ import CategoryHeader from "./CategoryHeader";
  * no longer skip a heading level.
  */
 const meta = {
-  title: "Layout/CategoryHeader",
+  id: "layout-categoryheader",
+  title: "Components/Layout/Headings and dividers/Category heading",
   component: CategoryHeader,
-  parameters: { layout: "padded" },
+  parameters: { docs: { description: { component: "Heading with an optional icon for coverage category sections. Rendered as an h3 (nested under the page's h2) with h6 visual styling preserved. Icon renders in primary color; label renders in default text color." } }, layout: "padded" },
 } satisfies Meta<typeof CategoryHeader>;
 
 export default meta;

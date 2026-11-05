@@ -1,5 +1,4 @@
 import type { SxProps, Theme } from "@mui/material";
-import { CARD_RADIUS } from "../app/theme";
 
 /** Standard yes/no option set for form radio/select fields. */
 export const YES_NO_OPTIONS = [
@@ -19,5 +18,5 @@ export const SURFACE_SX: SxProps<Theme> = {
 export const CATEGORY_SECTION_SX: SxProps<Theme> = {
   p: "1rem",
   background: "#f9fafd",
-  borderRadius: CARD_RADIUS,
+  borderRadius: 1,
 };

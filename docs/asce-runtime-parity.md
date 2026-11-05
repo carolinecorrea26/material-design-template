@@ -57,8 +57,8 @@ No new client/Site/association identity branching was introduced. An inventory t
 - `src/config/pageSections/types.ts`, `pageSections.ts`
 - `src/app/useCoverageState.ts`, `RoutePage.tsx`, `coverageRuntime.integration.test.ts` (new)
 - `src/pages/Coverage.tsx`, `Eligibility.tsx`, `Review.tsx`, `HealthLi.tsx`, `HealthDi.tsx`
-- `src/components/forms/ProductCatalog.tsx`, `QuoteCalculator.tsx`, `EstimatorProductCard.tsx`, `FieldRenderer.tsx`
-- `src/components/ui/CoverageCart.tsx`, `MemberVerification.tsx`
+- `src/components/coverage/ProductCatalog.tsx`, `QuoteCalculator.tsx`, `EstimatorProductCard.tsx`, `FieldRenderer.tsx`
+- `src/components/coverage/CoverageCart.tsx`, `MemberVerification.tsx`
 - `src/migration/fixtures.tsx`
 - `docs/asce-runtime-parity.md` (new)
 

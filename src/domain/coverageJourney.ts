@@ -1,3 +1,6 @@
+import { portfolioLifeHealthPage } from "./portfolioHealthParticipation";
+import { configuredHealthQuestionnaire, isHealthQuestionnairePolicy, validateConfiguredHealthQuestionnaire } from "./configuredHealthQuestionnaire";
+import { collectsBeneficiaries } from "./beneficiaryParticipation";
 import { applicantAge } from "../utils/applicantAge";
 import { resolveEffectiveEligibility, type EffectiveSite, type EligibilityFacts } from "./effectiveSite";
 import { reconcileCoverageSelection, isSelectionPolicy, type ApplicationMode, type SelectionElection } from "./coverageSelectionPolicy";
@@ -11,6 +14,8 @@ import { verifyExistingPolicy, type PolicyLookup, type PolicyVerificationService
 import type { FieldDefinition } from "./fields";
 import type { ConditionDefinition } from "./rules";
 import { resolveNormalizedAmountCap } from "./amountCapPolicy";
+import { resolveJourneyUnderwriting } from "./coverageJourneyUnderwriting";
+export { resolveJourneyUnderwriting } from "./coverageJourneyUnderwriting";
 
 export type CoverageJourneyInput = MappingDimensions & {
   productKey: string; mode: ApplicationMode; amount: number; membershipConfirmed?: boolean;
@@ -30,7 +35,7 @@ function condition(definition: ConditionDefinition, answers: Record<string, unkn
   const matches = definition.conditions.map(c => {
     if (empty(answers[c.fieldId])) return null;
     const actual = answers[c.fieldId];
-    return c.operator === "equals" ? actual === c.value : c.operator === "notEquals" ? actual !== c.value : Array.isArray(actual) && actual.includes(c.value);
+    return c.operator === "equals" ? actual === c.value : c.operator === "notEquals" ? actual !== c.value : c.operator === "oneOf" ? Array.isArray(c.value) && c.value.includes(actual) : Array.isArray(actual) && actual.includes(c.value);
   });
   if (definition.match === "any") return matches.some(v => v === true) ? true : matches.some(v => v === null) ? null : false;
   return matches.some(v => v === false) ? false : matches.some(v => v === null) ? null : true;
@@ -41,17 +46,23 @@ function validAnswer(field: FieldDefinition, value: unknown) {
   if (field.inputType === "checkbox") return value === true || value === false;
   return typeof value === "string" && value.trim().length > 0;
 }
-export function resolveQuestionParticipation(site: EffectiveSite, productKey: string, applicantKey: string, mode: ApplicationMode, answers: Record<string, unknown> = {}, attestations: string[] = [], electedRiders: string[] = [], underwritingPathway?: string) {
+export function resolveQuestionParticipation(site: EffectiveSite, productKey: string, applicantKey: string, mode: ApplicationMode, answers: Record<string, unknown> = {}, attestations: string[] = [], electedRiders: string[] = [], underwritingPathway?: string, underwritingHealthPage?: string | null, questionnaireContext?: { associationKey?: string; jurisdiction?: string; selectedProducts?: string[]; processing?: import("./configuredHealthQuestionnaire").QuestionnaireProcessing }) {
   const policy = resolveCoverageJourneyPolicy(site, productKey);
   const spec = policy?.questions.filter(q => q.applicantKey === applicantKey && q.modes.includes(mode));
   if (!policy || spec?.length !== 1) return { status: "unresolved" as const, allowed: false, activeFields: [] as string[], cleanedAnswers: {}, missingFacts: [], errors: ["No unique question participation policy"], healthPage: null, cirQuestionnaireRequired: false };
   const q = spec[0], product = site.configuration.products.find(p => p.productKey === productKey)!;
   const cir = electedRiders.some(key => product.riders.find(r => r.key === key)?.definition?.value.id === "cir");
-  // QD is processing, not a question set. Existing LI questions are the explicit
-  // provisional CIR questionnaire until the source-specific form is available.
-  const selectedHealthPage = applicantKey === "child" ? null : underwritingPathway === undefined ? q.healthPage : ["GI", "NA", "NCGI"].includes(underwritingPathway) ? null : underwritingPathway === "QD" ? "health-qd" : underwritingPathway === "SI" ? "health-si" : ["DI", "OO"].includes(product.catalog!.value.categoryKey) ? "health-di" : "health-li";
-  const healthPage = cir && (!selectedHealthPage || selectedHealthPage === "health-qd") ? "health-li" : selectedHealthPage;
-  const health = healthPage ? site.configuration.pages.find(p => p.key === healthPage)?.fields.filter(f => f.included && f.key.startsWith(`${healthPage}-q`) && f.key.endsWith("-spouse") === (applicantKey === "spouse")) ?? [] : [];
+  const nativeHealthPage = underwritingHealthPage !== undefined ? underwritingHealthPage : underwritingPathway && policy.healthPageByUnderwriting && Object.hasOwn(policy.healthPageByUnderwriting, underwritingPathway) ? policy.healthPageByUnderwriting[underwritingPathway as keyof typeof policy.healthPageByUnderwriting] : undefined;
+  const separateCirForm = site.configuration.healthQuestionnairePolicies.some(row => isHealthQuestionnairePolicy(row.value) && row.value.pageId === "health-cir");
+  // A separately assigned CIR form supplements the base product's native health
+  // routing. Unassigned legacy CIR flows retain their provisional Life form.
+  const selectedHealthPage = applicantKey === "child" ? null : nativeHealthPage !== undefined ? nativeHealthPage : underwritingPathway === undefined ? q.healthPage : ["GI", "NA", "NCGI"].includes(underwritingPathway) ? null : underwritingPathway === "QD" ? "health-qd" : underwritingPathway === "SI" ? "health-si" : ["DI", "OO"].includes(product.catalog!.value.categoryKey) ? "health-di" : "health-li";
+  const portfolioPage = portfolioLifeHealthPage(site, productKey, applicantKey, underwritingPathway, questionnaireContext?.selectedProducts ?? [productKey], questionnaireContext?.processing ?? []);
+  const healthPage = portfolioPage.status === "matched" ? portfolioPage.healthPage : cir && !separateCirForm && (!selectedHealthPage || selectedHealthPage === "health-qd") ? "health-li" : selectedHealthPage;
+  const questionnaireValues = { ...answers, association: questionnaireContext?.associationKey ?? answers.association ?? answers.membership, "state-province": questionnaireContext?.jurisdiction ?? answers["state-province"] ?? answers.state, coverageSelections: questionnaireContext?.selectedProducts ?? [productKey], productApplicants: Object.fromEntries((questionnaireContext?.selectedProducts ?? [productKey]).map(key => [key, [applicantKey]])), coverageRiders: { ...(answers.coverageRiders && typeof answers.coverageRiders === "object" && !Array.isArray(answers.coverageRiders) ? answers.coverageRiders : {}), [`${productKey}:cir:${applicantKey}`]: cir } };
+  const configured = ["health-li", "health-di", "health-ci"].includes(healthPage ?? "") ? configuredHealthQuestionnaire(site, healthPage!, applicantKey, questionnaireValues, questionnaireContext?.processing) : null;
+  const hasConfigured = !!configured && configured.status !== "unassigned";
+  const health = healthPage && !hasConfigured ? site.configuration.pages.find(p => p.key === healthPage)?.fields.filter(f => f.included && f.key.startsWith(`${healthPage}-q`) && f.key.endsWith("-spouse") === (applicantKey === "spouse")) ?? [] : [];
   const wanted = [...q.financialFields, ...q.tobaccoFields];
   const allFields = site.configuration.pages.flatMap(p => p.fields);
   const fields = [...health, ...wanted.flatMap(key => {
@@ -59,8 +70,9 @@ export function resolveQuestionParticipation(site: EffectiveSite, productKey: st
     return f ? [f] : [];
   })];
   const errors: string[] = [], missingFacts: string[] = [], activeFields: string[] = [], cleanedAnswers: Record<string, unknown> = {};
+  if (portfolioPage.status === "needs-information") missingFacts.push("portfolio-processing");
   for (const key of wanted) if (!fields.some(f => f.key === key)) errors.push(`Missing participation field ${key}`);
-  if (healthPage && healthPage !== "health-qd" && !health.length) errors.push("Health question set is missing");
+  if (healthPage && healthPage !== "health-qd" && !health.length && !hasConfigured) errors.push("Health question set is missing");
   for (const row of fields) {
     const field = row.definition;
     if (q.tobaccoFields.includes(row.key) && !row.key.endsWith("smoker")) {
@@ -87,20 +99,41 @@ export function resolveQuestionParticipation(site: EffectiveSite, productKey: st
       else cleanedAnswers[detailKey] = answers[detailKey];
     }
   }
+  const cirPageEnabled = site.configuration.pages.some(page => page.key === "health-cir" && page.requirement !== "none");
+  const cirForm = cir && separateCirForm && cirPageEnabled ? configuredHealthQuestionnaire(site, "health-cir", applicantKey, questionnaireValues) : null;
+  for (const sourceForm of [...(hasConfigured && configured ? [configured] : []), ...(cirForm ? [cirForm] : [])]) {
+    if (sourceForm.status !== "resolved") errors.push("No unique valid source health questionnaire is assigned");
+    else {
+      const formError = validateConfiguredHealthQuestionnaire(sourceForm, questionnaireValues);
+      for (const field of sourceForm.fields) {
+        activeFields.push(field.id);
+        if (empty(answers[field.id])) { if (field.required) missingFacts.push(field.id); }
+        else cleanedAnswers[field.id] = answers[field.id];
+      }
+      for (const item of sourceForm.items.filter(item => item.repeated && item.showDetails)) {
+        activeFields.push(item.collection);
+        const rows = answers[item.collection];
+        if (!Array.isArray(rows) || !rows.length) missingFacts.push(item.collection);
+        else cleanedAnswers[item.collection] = rows.map(row => row && typeof row === "object" && !Array.isArray(row) ? Object.fromEntries(item.fields.filter(field => Object.hasOwn(row, field.id)).map(field => [field.id, (row as Record<string, unknown>)[field.id]])) : row);
+      }
+      if (formError && !missingFacts.length) errors.push(formError);
+    }
+  }
   if (!attestations.includes(q.attestationKey)) missingFacts.push(q.attestationKey);
-  return { status: errors.length ? "unresolved" as const : missingFacts.length ? "needs-information" as const : "resolved" as const, allowed: !errors.length && !missingFacts.length, activeFields, cleanedAnswers, missingFacts: [...new Set(missingFacts)], errors, healthPage, cirQuestionnaireRequired: cir };
+  return { status: errors.length ? "unresolved" as const : missingFacts.length ? "needs-information" as const : "resolved" as const, allowed: !errors.length && !missingFacts.length, activeFields, cleanedAnswers, missingFacts: [...new Set(missingFacts)], errors, healthPage, cirQuestionnaireRequired: cir && (!separateCirForm || cirPageEnabled) };
 }
 
 /** Candidate application acceptance, based solely on one captured Library Site.
  * Lookup is performed here; form-supplied verified booleans/amounts are ignored.
  * No insurer submission, funds, UI activation or publication side effects. */
-export async function evaluateCoverageJourney(site: EffectiveSite, input: CoverageJourneyInput, services: { policies: PolicyVerificationService; now?: () => number }) {
+export async function evaluateCoverageJourney(site: EffectiveSite, input: CoverageJourneyInput, services: { policies: PolicyVerificationService; now?: () => number; portfolio?: CoverageJourneyInput[]; existingLifeAmount?: number }) {
   const policy = resolveCoverageJourneyPolicy(site, input.productKey);
   const product = site.configuration.products.find(p => p.productKey === input.productKey);
   const errors: string[] = [], missingFacts: string[] = [];
   const blocked = (error: string) => ({ status: "unresolved" as const, allowed: false, errors: [error], missingFacts: [], submission: null });
   if (!policy || !product || product.selectionPolicies.length !== 1 || !isSelectionPolicy(product.selectionPolicies[0].value)) return blocked("Candidate journey policy is missing or invalid");
   if (!policy.applicants.includes(input.applicantKey)) return blocked("Applicant is unavailable");
+  if (policy.associationChoices.length && input.associationKey && !site.enabledAssociationKeys.includes(input.associationKey)) return blocked("Association is unavailable in this Site");
   if (policy.membershipRequired && input.membershipConfirmed !== true) missingFacts.push("membershipConfirmed");
   let verified: VerifiedPolicy | undefined;
   if (input.mode !== "new") {
@@ -121,11 +154,11 @@ export async function evaluateCoverageJourney(site: EffectiveSite, input: Covera
     if (!age) errors.push("Invalid birth/application date");
     else if (input.eligibility.ageYears !== undefined && input.eligibility.ageYears !== age.ageYears || input.eligibility.ageDays !== undefined && input.eligibility.ageDays !== age.ageDays) errors.push("Age facts do not match application dates");
   }
-  const eligibilityFacts = { ...input.eligibility, ...(age ?? {}) };
+  const eligibilityFacts = { ...input.eligibility, ...(age ?? {}), associationKey: input.associationKey };
   const eligibility = resolveEffectiveEligibility(site, input.productKey, input.applicantKey, eligibilityFacts);
   if (eligibility.status === "needs-information") missingFacts.push("eligibility");
   else if (eligibility.status !== "resolved" || !eligibility.eligible) errors.push(eligibility.reason ?? "Applicant is ineligible");
-  const residency = resolveNormalizedResidency(site, input.productKey, input.applicantKey, { jurisdiction: input.jurisdiction, activeMilitary: input.eligibility.activeMilitary });
+  const residency = resolveNormalizedResidency(site, input.productKey, input.applicantKey, { jurisdiction: input.jurisdiction, activeMilitary: input.eligibility.activeMilitary, associationKey: input.associationKey });
   if (residency.status === "needs-information") missingFacts.push("residency");
   else if (!residency.allowed) errors.push(residency.reason);
   const selection = reconcileCoverageSelection(product.selectionPolicies[0].value, {
@@ -143,12 +176,12 @@ export async function evaluateCoverageJourney(site: EffectiveSite, input: Covera
       errors.push(...benefit.errors); missingFacts.push(...benefit.missingFacts);
       if (benefit.status === "unresolved") errors.push("Benefit policy is unresolved");
     } else if (input.applicantKey !== "member" && product.dependentPolicies.length) {
-      const dependent = resolveDependentCoverage(site, input.productKey, input.applicantKey, { ...input.dependent, amount: input.amount });
+      const dependent = resolveDependentCoverage(site, input.productKey, input.applicantKey, { ...input.dependent, associationKey: input.associationKey, amount: input.amount });
       errors.push(...dependent.errors); missingFacts.push(...dependent.missingFacts);
       if (dependent.status === "unresolved") errors.push("Dependent policy is unresolved");
       if (dependent.derivedAmount !== null) finalAmount = dependent.derivedAmount;
     } else {
-      const amount = validateNormalizedCoverageAmount(site, input.productKey, input.applicantKey, input.amount, input.applicantClass);
+      const amount = validateNormalizedCoverageAmount(site, input.productKey, input.applicantKey, input.amount, input.applicantClass, input.associationKey);
       if (!amount.allowed) (amount.status === "needs-information" ? missingFacts : errors).push(amount.reason);
     }
   }
@@ -160,10 +193,11 @@ export async function evaluateCoverageJourney(site: EffectiveSite, input: Covera
   }
   const dependentElections = reconcileDependentElections(policy, input.dependentElections ?? {});
   errors.push(...dependentElections.errors); missingFacts.push(...dependentElections.missingFacts);
-  const underwriting = resolveJourneyUnderwriting(site, input.productKey, input.applicantKey, eligibilityFacts.ageYears, input.mode === "rider-only" ? verified?.amount : input.amount, input.applicantClass);
+  const processingContext = (row: CoverageJourneyInput) => ({ jurisdiction: row.jurisdiction, existingLifeAmount: services.existingLifeAmount, memberAmount: row.memberAmount ?? services.portfolio?.find(other => other.productKey === row.productKey && other.applicantKey === "member")?.amount, portfolio: (services.portfolio ?? [input]).map(other => ({ productKey: other.productKey, applicantKey: other.applicantKey, amount: other.amount })) });
+  const underwriting = resolveJourneyUnderwriting(site, input.productKey, input.applicantKey, eligibilityFacts.ageYears, input.mode === "rider-only" ? verified?.amount : input.amount, input.applicantClass, input.associationKey, processingContext(input));
   if (underwriting.status === "needs-information") missingFacts.push("underwriting");
   else if (underwriting.status !== "resolved") errors.push("Underwriting policy has no unique executable outcome");
-  const questions = resolveQuestionParticipation(site, input.productKey, input.applicantKey, input.mode, input.answers, input.attestations, selection.election.riders, input.mode === "rider-only" && selection.healthRequired ? "FUW" : underwriting.pathway);
+  const questions = resolveQuestionParticipation(site, input.productKey, input.applicantKey, input.mode, input.answers, input.attestations, selection.election.riders, input.mode === "rider-only" && selection.healthRequired ? "FUW" : underwriting.pathway, input.mode === "rider-only" && selection.healthRequired ? undefined : "healthPage" in underwriting ? underwriting.healthPage : undefined, { associationKey: input.associationKey, jurisdiction: input.jurisdiction, selectedProducts: [...new Set([input.productKey, ...(input.eligibility?.selectedPlans?.filter(plan => plan.applicantKey === input.applicantKey).map(plan => plan.productKey) ?? []), ...(services.portfolio?.filter(row => row.applicantKey === input.applicantKey).map(row => row.productKey) ?? [])])], processing: (services.portfolio ?? [input]).filter(row => row.applicantKey === input.applicantKey).map(row => ({ productKey: row.productKey, ...resolveJourneyUnderwriting(site, row.productKey, row.applicantKey, row.eligibility.ageYears, row.amount, row.applicantClass, row.associationKey, processingContext(row)) })) });
   errors.push(...questions.errors); missingFacts.push(...questions.missingFacts);
   const skipPayment = selection.allowed && selection.skipPayment || policy.payment.collection === "none";
   const payment = skipPayment ? { method: null, frequency: null } : reconcilePaymentSelection(policy.payment, input.payment?.method ?? null, input.payment?.frequency ?? null);
@@ -184,7 +218,7 @@ export async function evaluateCoverageJourney(site: EffectiveSite, input: Covera
     provisional: policy.provisional,
   } : null;
   if (submission?.riders.some(r => !r.code)) return blocked("Rider submission mapping is missing");
-  return { status: errors.length ? "unresolved" as const : missingFacts.length ? "needs-information" as const : "resolved" as const, allowed, errors: [...new Set(errors)], missingFacts: [...new Set(missingFacts)], underwriting, selection, questions, dependentElections, skipPayment, skipBeneficiary: selection.skipBeneficiary, payment, rating: resolveBilling(policy, input.payment?.method ?? policy.payment.defaultMethod ?? "bank-account", input.payment?.frequency ?? policy.payment.defaultFrequency ?? "monthly", null), submission };
+  return { status: errors.length ? "unresolved" as const : missingFacts.length ? "needs-information" as const : "resolved" as const, allowed, errors: [...new Set(errors)], missingFacts: [...new Set(missingFacts)], underwriting, selection, questions, dependentElections, skipPayment, skipBeneficiary: selection.skipBeneficiary || !collectsBeneficiaries(site, input.productKey, product.catalog?.value.categoryKey ?? "", input.applicantKey, input.associationKey), payment, rating: resolveBilling(policy, input.payment?.method ?? policy.payment.defaultMethod ?? "bank-account", input.payment?.frequency ?? policy.payment.defaultFrequency ?? "monthly", null), submission };
 }
 
 /** Per-child elections, not a single shared youngest/oldest child age. */
@@ -204,21 +238,4 @@ export function resolveScheduledChildren(site: EffectiveSite, productKey: string
     return { key: c.key, allowed: result.allowed, amount: result.childAmount, reason: result.errors.join("; ") };
   });
   return { status: "resolved" as const, allowed: decisions.every(c => c.allowed), children: decisions };
-}
-
-/** Existing adopted bands retain priority over the explicit provisional default.
- * Unsupported conditions, incomplete bands and overlaps never imply acceptance. */
-export function resolveJourneyUnderwriting(site: EffectiveSite, productKey: string, applicantKey: string, ageYears?: number, amount?: number, applicantClass?: string) {
-  const policy = resolveCoverageJourneyPolicy(site, productKey);
-  const product = site.configuration.products.find(p => p.productKey === productKey);
-  if (!policy || !product || !policy.applicants.includes(applicantKey)) return { status: "unresolved" as const, pathway: undefined };
-  const applicable = product.underwritingRules.filter(r => !r.value.applicantTypeKey || r.value.applicantTypeKey === applicantKey);
-  if (applicable.some(r => r.value.applicantClass) && applicantClass === undefined) return { status: "needs-information" as const, pathway: undefined };
-  const rows = applicable.filter(r => !r.value.applicantClass || r.value.applicantClass === applicantClass);
-  if (applicable.length && !rows.length) return { status: "unresolved" as const, pathway: undefined };
-  if (!rows.length) return { status: "resolved" as const, pathway: policy.underwritingByApplicant?.[applicantKey] ?? policy.defaultUnderwritingPathway, provisional: policy.provisional };
-  if (!finite(ageYears) || !Number.isInteger(ageYears) || !finite(amount) || amount <= 0) return { status: "needs-information" as const, pathway: undefined };
-  if (rows.some(r => r.value.status !== "documented" || r.value.conditionKey || [r.value.minimumAge, r.value.maximumAge, r.value.minimumAmount, r.value.maximumAmount].some(n => !finite(n)) || !["QD", "FUW", "GI", "SI", "NA", "NCGI", "TELE"].includes(r.value.pathway ?? ""))) return { status: "unresolved" as const, pathway: undefined };
-  const bands = rows.filter(({ value: b }) => ageYears >= b.minimumAge! && ageYears <= b.maximumAge! && (b.minimumAmountExclusive ? amount > b.minimumAmount! : amount >= b.minimumAmount!) && amount <= b.maximumAmount!);
-  return bands.length === 1 ? { status: "resolved" as const, pathway: bands[0].value.pathway!, provenance: bands[0].provenance } : { status: "unresolved" as const, pathway: undefined };
 }

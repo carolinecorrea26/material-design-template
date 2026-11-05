@@ -1,3 +1,4 @@
+import withGlobalTemplate from "./globalTemplateDecorator";
 import type { Preview } from "@storybook/react-vite";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { MemoryRouter } from "react-router-dom";
@@ -17,16 +18,15 @@ import { ApplicationSessionProvider } from "../src/app/ApplicationSessionContext
  */
 const preview: Preview = {
   decorators: [
+    withGlobalTemplate,
     (Story, context) => (
-      <MemoryRouter>
-        <ApplicationSessionProvider>
+      <MemoryRouter initialEntries={context.parameters.router?.initialEntries}>
           <ThemeProvider
             theme={createAppTheme(context.globals.themeColor as ThemeColorId)}
           >
             <CssBaseline />
-            <Story />
+            {context.parameters.standalone ? <Story /> : <ApplicationSessionProvider><Story /></ApplicationSessionProvider>}
           </ThemeProvider>
-        </ApplicationSessionProvider>
       </MemoryRouter>
     ),
   ],
@@ -45,17 +45,23 @@ const preview: Preview = {
     options: {
       storySort: {
         order: [
-          "Forms",
-          "Layout",
-          "Navigation",
-          "Content",
-          "Feedback",
-          "Overlays",
-          "Coverage & Commerce",
-          "Application Patterns",
-          ["Application Page Template", "DetailsTable", "YesNoDetailList"],
-          "Home",
-          "Components",
+          "Foundations", ["Typography", "Colors", "Icons", "Responsive layout"],
+          "Components", [
+            "Actions", ["Buttons", "Links"],
+            "Forms", ["Individual fields", "Field groups", ["Name", "Phone", "Address", "Height", "Layout"], "Selection rows", "Conditional groups", "Repeated records"],
+            "Navigation", "Layout", "Content and data display", "Coverage and pricing",
+            "Feedback and overlays", ["Banners", "Alerts", "Notifications", "Dialogs and drawers", ["Containers", "Application dialogs"], "Loading and processing", "Empty states"],
+            "Pages", [
+              "Home", ["Whole page", "Sections"], "Membership", ["Whole page", "Sections"],
+              "Eligibility", ["Whole page", "Sections"], "Coverage", ["Whole page", "Sections"],
+              "Beneficiary", ["Whole page", "Sections"], "Contact", ["Whole page", "Sections"],
+              "Profile", ["Whole page", "Sections"], "Review", ["Whole page", "Sections"],
+              "Health", ["Whole page", "Sections"], "Payment", ["Whole page", "Sections"],
+              "E-sign", ["Whole page"], "Receipt", ["Whole page", "Sections"],
+              "Resume", ["Whole page"], "Advisor", ["Whole page"], "Error pages", ["Whole page"],
+            ],
+          ],
+          "Reference", ["Component inventory", "Theme configuration"],
         ],
       },
     },

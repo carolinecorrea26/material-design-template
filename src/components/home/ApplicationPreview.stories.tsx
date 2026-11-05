@@ -5,9 +5,10 @@ import ApplicationPreview, {
 } from "./ApplicationPreview";
 
 const meta = {
-  title: "Home/ApplicationPreview",
+  id: "home-applicationpreview",
+  title: "Components/Content and data display/Application illustrations/Application preview",
   component: ApplicationPreview,
-  parameters: { layout: "centered" },
+  parameters: { docs: { description: { component: "Decorative homepage illustration of coverage, health, and receipt scenes. The drawn controls do not collect application answers; functional forms use FieldRenderer." } }, layout: "centered" },
 } satisfies Meta<typeof ApplicationPreview>;
 
 export default meta;
@@ -15,7 +16,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Animated: Story = {
   args: { activeStep: "coverage" },
-  render: () => <AnimatedApplicationPreview />,
+  render: args => <AnimatedApplicationPreview reducedMotion={args.reducedMotion} />,
+  parameters: { controls: { exclude: ["activeStep"] } },
 };
 
 export const NarrowContainer: Story = {

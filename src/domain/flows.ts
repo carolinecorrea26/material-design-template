@@ -1,4 +1,4 @@
-import type { PageId } from "./identities";
+import type { PageId, PageGroupId } from "./identities";
 
 /** Stable identifier for a flow (React key, doc anchor, test fixture name). */
 export type FlowId =
@@ -26,6 +26,8 @@ export type FlowNodeDef = {
   description?: string;
   /** Only present when kind === "page" — the real page this node represents. */
   pageId?: PageId;
+  /** A summary of the enabled saved pages in this group; never expands the graph. */
+  pageGroupId?: PageGroupId;
 };
 
 export type FlowEdgeStyleHint =

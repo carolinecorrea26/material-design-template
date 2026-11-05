@@ -1,13 +1,12 @@
 import { Box, Divider, IconButton, Stack, Typography } from "@mui/material";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import { getActiveClient } from "../../config/client/getActiveClient";
-import type { ApplicationFormValues } from "../../app/ApplicationFormContext";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import type { PageId } from "../../types";
 
-import { buildDocumentSections, documentPages } from './applicationDocumentSections';
-
-type ApplicationDocumentPreviewProps = {
-  values: ApplicationFormValues;
+export type ApplicationDocumentSection = { title: string; groups: { title?: string; entries: { label: string; value: string; fieldId?: string }[] }[] };
+export type ApplicationDocumentPreviewProps = {
+  sections: ApplicationDocumentSection[];
+  associationName: string;
+  sectionPages?: { title: string; pageId: PageId }[];
   signatureName: string;
   signedDate: string;
   currentDate: string;
@@ -32,20 +31,20 @@ function renderEntryValue(value: string) {
 }
 
 export default function ApplicationDocumentPreview({
-  values,
+  sections,
+  associationName,
+  sectionPages = [],
   signatureName,
   signedDate,
   currentDate,
   onEditSection,
   hideSignature,
 }: ApplicationDocumentPreviewProps) {
-  const client = getActiveClient();
-  const sections = buildDocumentSections(values);
   const pages = chunkSections(sections, 3);
 
   // Map section titles back to page IDs for edit buttons
   const sectionTitleToPageId = new Map(
-    documentPages.map((p) => [p.title, p.pageId]),
+    sectionPages.map((p) => [p.title, p.pageId]),
   );
 
   return (
@@ -56,8 +55,6 @@ export default function ApplicationDocumentPreview({
         borderRadius: 2,
         backgroundColor: "#f3f4f6",
         p: { xs: 1.5, md: 2.5 },
-        maxHeight: { xs: "56vh", lg: "72vh" },
-        overflowY: "auto",
       }}
     >
       <Stack spacing={2.5}>
@@ -86,7 +83,7 @@ export default function ApplicationDocumentPreview({
                   >
                     <div>
                       <Typography variant="h5">
-                        {client.branding.name}
+                        {associationName}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         Insurance Application Review Copy
@@ -123,7 +120,7 @@ export default function ApplicationDocumentPreview({
                             aria-label={`Edit ${section.title}`}
                             sx={{ color: "primary.main" }}
                           >
-                            <EditOutlinedIcon fontSize="small" />
+                            <EditRoundedIcon fontSize="small" />
                           </IconButton>
                         )}
                     </Stack>

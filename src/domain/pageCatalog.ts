@@ -2,7 +2,7 @@ import type { DatabaseSchema } from "../persistence/types";
 import type { PageFlow } from "../config/pageCatalog";
 
 type PageData = Pick<DatabaseSchema, "pages" | "sitePages">;
-const flows: PageFlow[] = ["application", "resume", "advisor", "internal"];
+const flows: PageFlow[] = ["application", "resume", "advisor", "utility", "internal"];
 
 /** Page definitions own routes and flow identity. Site relationships own order
  * and participation; disabled pages remain inspectable in the Library. */
@@ -19,7 +19,7 @@ export function resolvePageCatalog(data: PageData, siteKey?: string) {
   const result = data.pages.map(row => {
     const { definition } = row;
     if (definitions.has(row.key) || definition.id !== row.key || !flows.includes(definition.flow)
-      || !["home", "form", "receipt", "resume", "internal"].includes(definition.type)
+      || !["home", "form", "receipt", "resume", "error", "internal"].includes(definition.type)
       || typeof definition.path !== "string" || !/^\/(?!\/)[^?#\s]*$/.test(definition.path)
       || routes.has(definition.path) || !Number.isSafeInteger(row.position) || row.position < 0) throw new Error(`Invalid stored page definition: ${row.key}`);
     definitions.add(row.key); routes.add(definition.path);

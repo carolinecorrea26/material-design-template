@@ -59,7 +59,7 @@ function ChangeLogRow({ entry }: { entry: ChangeLogEntry }) {
       <TableRow>
         <TableCell colSpan={5} sx={{ p: 0, borderBottom: expanded ? undefined : "unset" }}>
           <Collapse in={expanded} id={detailsId}>
-            <Box sx={{ p: 2, bgcolor: "background.subtle" }}>
+            <Box sx={{ p: 2, bgcolor: "background.default" }}>
               <Typography variant="body2" color="text.secondary">
                 {entry.details}
               </Typography>

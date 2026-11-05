@@ -7,14 +7,14 @@ import { normalizeSiteReferences } from '../src/domain/siteIdentity.mjs';
 const ownershipSource = fs.readFileSync('src/domain/libraryOwnership.ts', 'utf8');
 const compiled = ts.transpileModule(ownershipSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 } }).outputText;
 const { libraryOwners, configurationOwner, flagOwner } = await import(`data:text/javascript;base64,${Buffer.from(compiled).toString('base64')}`);
-const snapshot = normalizeSiteReferences(JSON.parse(fs.readFileSync('migration-artifacts/mock/library-data.json', 'utf8')));
+const snapshot = normalizeSiteReferences(JSON.parse(fs.readFileSync('public/catalog/portal.json', 'utf8')).data);
 const ownership = new Map();
 for (const [owner, tables] of Object.entries(libraryOwners)) for (const table of tables) {
   if (ownership.has(table)) throw new Error(`Multiple table owners: ${table}`);
   ownership.set(table, owner);
 }
 for (const table of Object.keys(snapshot)) if (!ownership.has(table)) throw new Error(`Unaccounted Library table: ${table}`);
-for (const table of ownership.keys()) if (!Object.hasOwn(snapshot,table)) throw new Error(`Stale Library export; missing ${table}. Run npm run mock:seed.`);
+for (const table of ownership.keys()) if (!Object.hasOwn(snapshot,table)) throw new Error(`Shared JSON catalog is missing ${table}.`);
 
 const config = ts.readConfigFile('tsconfig.app.json', ts.sys.readFile);
 const options = ts.parseJsonConfigFileContent(config.config, ts.sys, process.cwd()).options;
@@ -57,7 +57,7 @@ if (process.argv.includes('--verify-built-storybook')) {
   if (missing.length || unexpected.length) throw new Error(`Storybook build differs from component inventory: ${JSON.stringify({ missing, unexpected })}`);
 }
 const brokenLinks = [];
-for (const file of walkFiles('src').filter(file => /\.[jt]sx?$/.test(file) && !file.includes('.test.') && !file.includes('/docs/overview/') && !file.endsWith('/foundations/Overview.tsx'))) {
+for (const file of walkFiles('src').filter(file => /\.[jt]sx?$/.test(file) && !file.includes('.test.'))) {
   const text = fs.readFileSync(file, 'utf8');
   for (const match of text.matchAll(/["']((?:forms|layout|content|coverage-commerce|feedback|overlays|navigation|application-patterns|foundations|guidelines|home|components)-[a-z0-9-]+--[a-z0-9-]+)["']/g)) if (!storyIds.has(match[1])) brokenLinks.push({ file, storyId: match[1] });
 }

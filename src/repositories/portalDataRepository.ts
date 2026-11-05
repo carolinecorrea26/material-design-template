@@ -2,10 +2,11 @@ import type { PersistenceAdapter } from "../persistence/adapter";
 import { normalizedSnapshotTables, validateSnapshotData, validateSnapshotRequest, type SnapshotReader, type SnapshotTable } from "../persistence/snapshot";
 import { queryRows, type RowQuery } from "../persistence/query";
 import type { DatabaseSchema, RowFor } from "../persistence/types";
-import { effectiveConfigurationTables } from "../domain/effectiveConfiguration";
+import { effectiveSiteSnapshotTables } from "../persistence/catalogTables";
+export { effectiveSiteSnapshotTables } from "../persistence/catalogTables";
 import { resolveEffectiveSite, type EffectiveSiteData } from "../domain/effectiveSite";
 
-export const effectiveSiteSnapshotTables = [...effectiveConfigurationTables, "sites", "clients", "organizations", "organizationProfiles", "siteProducts", "siteProductApplicants", "eligibilityConstraints", "semanticRequirements", "associations", "siteAssociations", "sitePolicies"] as const;
+
 function freeze<T>(value: T): T {
   if (value && typeof value === "object") { Object.values(value).forEach(freeze); Object.freeze(value); }
   return value;

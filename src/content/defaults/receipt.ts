@@ -1,6 +1,9 @@
 import type { ReceiptContent } from "../types";
 
 export const receiptDefaults: ReceiptContent = {
+  receivedMessage: 'Thank you! We’ve received your application.',
+  paymentNoticeTitle: 'Payment and your welcome kit',
+  paymentNotice: 'Upon full approval, you will be charged according to your selected payment method and frequency. Your welcome kit will include your coverage documents and more information about your payments.',
   decisionSteps: ["Submitted", "Reviewed", "Decision"],
   decisionStatuses: {
     fullyUnderwritten: {
@@ -30,7 +33,7 @@ export const receiptDefaults: ReceiptContent = {
     },
   },
   documentsNote:
-    "Please save a copy of your application documents before leaving this page. For security purposes, a digital copy will not be sent by email.",
+    "Please download a copy of your application below for your records. For security, we cannot send a copy to your email inbox. A copy will be included in your welcome kit.",
   confirmationNumberLabel: "Confirmation number:",
   documentDownloadLabels: {
     application: "Application PDF",
@@ -52,7 +55,7 @@ export const receiptDefaults: ReceiptContent = {
   },
   coverageDecisions: {
     title: "Coverage decisions",
-    description: "Review the current status for each coverage you applied for.",
+    description: "Review the decision for each coverage below. Your coverage and payment selections are listed in your application receipt.",
     noSelectionsMessage:
       "No selected coverage details are available for this application.",
   },

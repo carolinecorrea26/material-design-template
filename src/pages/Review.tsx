@@ -1,3 +1,5 @@
+import { getResolvedFormFlow, shouldSkipPage } from '../config/formFlow';
+import ReviewSections from "../components/review/ReviewSections";
 import { getPrototypeLibrary } from "../domain/prototypeLibrary";
 import { validateNormalizedLifeAggregate } from "../domain/normalizedCoverageAmounts";
 import { numericFact } from "../utils/applicantFacts";
@@ -7,25 +9,18 @@ import { composeReadAndSign, resolveReviewExperience } from "../config/reviewExp
 import { validateApplicationCoverages } from "../domain/coverageRuntime";
 import { buildSelectedCoverageEntries } from "../utils/coverageDecisions";
 import { useEffect, useState } from "react";
-import ReportRoundedIcon from "@mui/icons-material/ReportRounded";
-import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
-import PrintOutlinedIcon from "@mui/icons-material/PrintOutlined";
-import { Alert, Box, Button, List, ListItem, Stack, Typography } from "@mui/material";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import FormRoutePage from "../app/RoutePage";
 import { useSinglePageFlow } from "../app/SinglePageFlowContext";
-import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
 import {
   isApplicantApplying,
   shouldShowApplicantLabel,
 } from "../utils/applicantVisibility";
-import { SECTION_SURFACE_BG } from "../app/theme";
-import FieldRenderer from "../components/forms/FieldRenderer";
 import type { PageId } from "../types";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { fieldCatalog } from "../config/fields";
 import { downloadApplicationPdf } from '../utils/applicationPdf';
-import ApplicationDocumentPreview from "../components/content/ApplicationDocumentPreview";
+import ApplicationDocumentPreview from "../app/sections/ConfiguredApplicationDocumentPreview";
 import { getContent } from "../content";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import ConfirmationDialog from "../components/layout/ConfirmationDialog";
@@ -33,12 +28,13 @@ import SendApplicationDialog from "../components/layout/SendApplicationDialog";
 import { useApplicationSession } from "../app/ApplicationSessionContext";
 import { getPagePath } from "../config/pages";
 
+export default function Review() {
 const reviewContent = getContent().review;
 const editApplicationDialogContent = getContent().dialogs.confirmation.editApplication;
 const requestEditDialogContent =
   getContent().dialogs.sendApplication.requestEditToApplication;
 
-export default function Review() {
+
   const client = getActiveClient();
   const reviewExperience = (values: Record<string, unknown>) => resolveReviewExperience(client, resolveSiteId(), getActiveClientCoverages(), values);
   const navigate = useNavigate();
@@ -97,11 +93,12 @@ export default function Review() {
         }
         const experience = reviewExperience(values);
         if (experience.missingResidency) return "Member residence is required to select the applicable fraud notice.";
+        if (experience.consent.status !== "resolved") return "A valid applicant type is required to select the applicable consent.";
         for (const field of experience.blocks.flatMap(block => block.fields)) {
           if (field.required && (field.inputType === "checkbox" ? values[field.id] !== true : !String(values[field.id] ?? "").trim())) return `${field.label} is required.`;
         }
       }}
-      devFillFields={(currentValues) => [
+      runtimeFields={(currentValues) => [
         ...reviewExperience(currentValues).blocks.flatMap(block => block.fields),
         fieldCatalog["review-self-consent"],
         ...(isApplicantApplying("spouse", currentValues)
@@ -128,85 +125,9 @@ export default function Review() {
         }
 
         return (
-          <Stack spacing={2.5}>
-            {isAdvisorApplicantFlow ? (
-              <>
-                <Alert
-                  severity="info"
-                  icon={<InfoRoundedIcon fontSize="large" />}
-                >
-                  <Stack spacing={0.5}>
-                    <Typography variant="body2" fontWeight={600}>
-                      Your advisor has completed this section of the
-                      application.
-                    </Typography>
-                    <Typography variant="body2">
-                      Review the information below. If anything needs to be
-                      corrected, click the edit icon and your application will
-                      be sent back to your advisor. Otherwise, continue to
-                      complete and submit your application.
-                    </Typography>
-                  </Stack>
-                </Alert>
-
-                <Alert
-                  severity="warning"
-                  icon={<ReportRoundedIcon fontSize="medium" />}
-                  sx={{ py: 0.75 }}
-                >
-                  <Typography variant="body2">
-                    Steps completed by your advisor - Getting Started, Coverage,
-                    and Profile - are locked and cannot be edited directly.
-                  </Typography>
-                </Alert>
-              </>
-            ) : (
-              <Alert
-                severity="warning"
-                icon={<ReportRoundedIcon fontSize="large" />}
-              >
-                <Stack spacing={1.5}>
-                  <Typography variant="body2" fontWeight={600}>
-                    {reviewContent.alertTitle}
-                  </Typography>
-
-                  <Box
-                    component="ul"
-                    sx={{ m: 0, pl: 3, "& li + li": { mt: 1.5 } }}
-                  >
-                    {reviewContent.alertItems.map((item) => (
-                      <li key={item.title}>
-                        <Box>
-                          <Typography variant="subtitle2">
-                            {item.title}
-                          </Typography>
-                          <Typography variant="body2">
-                            {item.description}
-                          </Typography>
-                        </Box>
-                      </li>
-                    ))}
-
-                    {showHealthQuestionsNote ? (
-                      <li>
-                        <Box>
-                          <Typography variant="subtitle2">
-                            {reviewContent.healthQuestionsNote.title}
-                          </Typography>
-                          <Typography variant="body2">
-                            {reviewContent.healthQuestionsNote.description}
-                          </Typography>
-                        </Box>
-                      </li>
-                    ) : null}
-                  </Box>
-                </Stack>
-              </Alert>
-            )}
-
-            <Button variant="outlined" onClick={() => downloadApplicationPdf(values)}>Download application PDF</Button>
-
-            <ApplicationDocumentPreview
+          <>
+            <ReviewSections control={control} errors={errors} reviewContent={reviewContent}
+              documentPreview={<ApplicationDocumentPreview
               values={values}
               signatureName=""
               signedDate=""
@@ -217,8 +138,16 @@ export default function Review() {
               }).format(new Date())}
               onEditSection={isReviewSubmitted ? undefined : openEdit}
               hideSignature
-            />
-
+            />}
+              isAdvisorApplicantFlow={isAdvisorApplicantFlow} showHealthQuestionsNote={showHealthQuestionsNote}
+              remainingSteps={[...new Set(getResolvedFormFlow().slice(getResolvedFormFlow().indexOf('review') + 1).filter(page => !shouldSkipPage(page, values)).flatMap(page => page.startsWith('health-') ? ['Health questions'] : page === 'payment' ? ['Payment'] : page === 'docusign' ? ['Sign with DocuSign'] : []))]}
+              readAndSignText={experience.consent.status === "resolved" ? composeReadAndSign(reviewContent.readAndSignContent, experience.fraudNotice, experience.consent.text, experience.authorizationVisible, experience.medicalAuthorization, experience.premiumContributionStatement) : "Select a valid applicant type to display the applicable consent."}
+              beforeConsentNotices={experience.consent.status === "resolved" ? experience.blocks.filter(block => block.placement === "before-consent") : []}
+              blocks={experience.consent.status === "resolved" ? experience.blocks.filter(block => block.placement !== "before-consent") : []}
+              selfConsentField={fieldCatalog["review-self-consent"]} spouseConsentField={hasSpouse ? fieldCatalog["review-spouse-consent"] : undefined}
+              additionalFields={allFields.filter(field => !["review-self-consent", "review-spouse-consent", ...experience.blocks.flatMap(block => block.fields.map(field => field.id))].includes(field.id))}
+              applicantLabels={client.applicantLabels} showSelfLabel={shouldShowApplicantLabel("self", values)}
+              onPrint={printSection} onDownload={() => downloadApplicationPdf(values)} />
             <ConfirmationDialog
               open={!isAdvisorApplicantFlow && editTargetPageId !== null}
               onClose={() => setEditTargetPageId(null)}
@@ -243,112 +172,7 @@ export default function Review() {
               recipientLabel="advisor"
             />
 
-            <Box>
-              <Typography
-                variant="subtitle1"
-                fontWeight={700}
-                sx={{ mb: 1, textAlign: "center" }}
-              >
-                {reviewContent.readAndSignTitle}
-              </Typography>
-              <Box
-                sx={{
-                  overflowY: "auto",
-                  border: "1px solid",
-                  borderColor: "divider",
-                  borderRadius: 1,
-                  p: 1.5,
-                  backgroundColor: SECTION_SURFACE_BG,
-                }}
-              >
-                <Typography
-                  variant="caption"
-                  sx={{ whiteSpace: "pre-wrap", lineHeight: 1.5 }}
-                >
-                  {composeReadAndSign(reviewContent.readAndSignContent, experience.fraudNotice)}
-                </Typography>
-              </Box>
-              <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
-                <Button
-                  startIcon={<PrintOutlinedIcon />}
-                  onClick={printSection}
-                >
-                  Print
-                </Button>
-              </Box>
-            </Box>
-
-            <Box>
-              <Typography
-                variant="subtitle1"
-                fontWeight={700}
-                sx={{ mb: 1, textAlign: "center" }}
-              >
-                {reviewContent.electronicConsentTitle}
-              </Typography>
-              <Box
-                sx={{
-                  maxHeight: 200,
-                  overflowY: "auto",
-                  border: "1px solid",
-                  borderColor: "divider",
-                  borderRadius: 1,
-                  p: 1.5,
-                  backgroundColor: SECTION_SURFACE_BG,
-                }}
-              >
-                <Typography
-                  variant="caption"
-                  sx={{ whiteSpace: "pre-wrap", lineHeight: 1.5 }}
-                >
-                  {reviewContent.electronicConsentContent}
-                </Typography>
-              </Box>
-              <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
-                <Button
-                  startIcon={<PrintOutlinedIcon />}
-                  onClick={printSection}
-                >
-                  Print
-                </Button>
-              </Box>
-            </Box>
-
-            <Stack spacing={1.5}>
-              <ApplicantSectionDivider
-                applicant="self"
-                showLabel={shouldShowApplicantLabel("self", values)}
-              >
-                <FieldRenderer
-                  field={fieldCatalog["review-self-consent"]}
-                  control={control}
-                  errors={errors}
-                />
-              </ApplicantSectionDivider>
-
-              {hasSpouse ? (
-                <ApplicantSectionDivider applicant="spouse" showLabel>
-                  <FieldRenderer
-                    field={fieldCatalog["review-spouse-consent"]}
-                    control={control}
-                    errors={errors}
-                  />
-                </ApplicantSectionDivider>
-              ) : null}
-            </Stack>
-            {allFields.filter(field => !["review-self-consent", "review-spouse-consent", ...experience.blocks.flatMap(block => block.fields.map(field => field.id))].includes(field.id)).map(field => <FieldRenderer key={field.id} field={field} control={control} errors={errors} />)}
-            {experience.blocks.map(block => (
-              <Box key={block.key} sx={{ p: 2, backgroundColor: SECTION_SURFACE_BG, border: "1px solid", borderColor: "divider", borderRadius: 1 }}>
-                <Stack spacing={2}>
-                  <Typography variant="subtitle1" fontWeight={700}>{block.title}</Typography>
-                  {block.paragraphs.map((paragraph, index) => <Typography key={index} variant="body2" sx={{ whiteSpace: "pre-wrap" }}>{paragraph}</Typography>)}
-                  {block.listItems && <List component="ul" sx={{ listStyleType: "disc", pl: 3, py: 0 }}>{block.listItems.map((item, index) => <ListItem key={index} component="li" sx={{ display: "list-item", p: 0, mb: 1 }}><Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>{item}</Typography></ListItem>)}</List>}
-                  {block.afterList?.map((paragraph, index) => <Typography key={index} variant="body2">{paragraph}</Typography>)}
-                  {block.fields.map(field => <FieldRenderer key={field.id} field={field} control={control} errors={errors} />)}
-                </Stack>
-              </Box>
-            ))}
-          </Stack>
+          </>
         );
       }}
     </FormRoutePage>

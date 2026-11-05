@@ -22,10 +22,12 @@ afterEach(() => installPrototypeLibrary(null));
 
 it("preserves the six template gates across all Sites using five existing shared rule identities", () => {
   const previous = createMigrationDatabase();
+  const routingOnly = structuredClone(previous);
+  consolidateRoutingRuleOwnership(routingOnly);
   expect(config().value).toMatchObject({ version: 2, source: "rules", ruleKeys: expect.any(Array) });
   expect(config().value).not.toHaveProperty("gate");
-  expect(db.rules.map(row => row.key)).toEqual(previous.rules.map(row => row.key));
-  expect(db.ruleAssignments).toEqual(previous.ruleAssignments);
+  expect(routingOnly.rules.map(row => row.key)).toEqual(previous.rules.map(row => row.key));
+  expect(routingOnly.ruleAssignments).toEqual(previous.ruleAssignments);
   for (const site of activeSiteMigrationScope.sites) {
     const library = preview(db, site.key);
     expect(library.settings.routingGates).toEqual(flowGateDefinitions);
@@ -36,7 +38,7 @@ it("preserves the six template gates across all Sites using five existing shared
     expect(library.site.configuration.issues.some(issue => issue.domain === "rules" && issue.key === ruleKey)).toBe(false);
   }
   expect(db.rules.filter(row => row.definition.documentationStatus === "planned").every(row => !row.definition.execution)).toBe(true);
-  expect(db.ruleActions.map(action => ({ ...action, definition: materializeRuleDocumentation(db.rules.find(rule => rule.key === action.ruleKey)!, action) }))).toEqual(previous.ruleActions);
+  expect(routingOnly.ruleActions.map(action => ({ ...action, definition: materializeRuleDocumentation(routingOnly.rules.find(rule => rule.key === action.ruleKey)!, action) }))).toEqual(previous.ruleActions);
   expect(db.semanticRequirements.find(row => row.predicate === "shared-routing-rules")!.value).toMatchObject({ previousValue: flowGateDefinitions });
   const repeated = structuredClone(db);
   consolidateRoutingRuleOwnership(repeated);

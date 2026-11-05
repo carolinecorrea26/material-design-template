@@ -1,3 +1,5 @@
+import { waepaQualifications } from "../../domain/membershipQualifications";
+import { applicationRecoveryRules } from './applicationRecoveryRules';
 import type { RuleDefinition, SiteId } from "../../data";
 import {
   contactCarryForwardTransition,
@@ -12,6 +14,7 @@ import {
 // ---------------------------------------------------------------------------
 
 const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id"] })[] = [
+  ...applicationRecoveryRules,
   {
     area: "Application flow",
     rule: "Resolved next/back navigation",
@@ -37,13 +40,13 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     area: "Application flow",
     rule: "Beneficiary routing",
     behavior:
-      "Beneficiary is shown only when selected coverage includes Life (LI) or Accidental Death (AD), unless the page is configured as none.",
+      "Beneficiary requires a requested amount and an applicant/product allowed by the captured beneficiary participation policy, unless the page is configured as none. The shared fallback gate selects Life (LI) or Accidental Death (AD); explicit Site, Association and applicant exceptions remain authoritative.",
     ref: "src/config/flowGates.ts",
   },
   {
     area: "Application flow",
     rule: "Health SI routing",
-    behavior: "Shown when a selected coverage has SI underwriting.",
+    behavior: "Shown for an active applicant whose resolved health page is health-si, falling back to the captured SI gate when no health-page override exists. Assigned source questionnaires may supersede this page.",
     ref: "src/config/flowGates.ts",
   },
   {
@@ -57,7 +60,7 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     area: "Application flow",
     rule: "Health TELE SUPP routing",
     behavior:
-      "health-li is shown for selected LI + TELE coverage; health-di is shown for selected DI + TELE coverage.",
+      "health-li and health-di use each active applicant's resolved health-page outcome. Without a health-page override, their captured gates require LI + TELE and DI + TELE respectively; assigned source questionnaires can supersede health-di.",
     ref: "src/config/flowGates.ts",
   },
   {
@@ -71,14 +74,14 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     area: "Application flow",
     rule: "Health UW CIR routing",
     behavior:
-      "Shown when a CIR rider is selected.",
+      "Shown when the captured CIR rider gate matches an enabled rider selection and the page participates in the Site flow. WAEPA's dedicated CIR questionnaire retains its separately approved provisional deferral.",
     ref: "src/config/flowGates.ts",
   },
   {
     area: "Application flow",
     rule: "Health QD routing",
     behavior:
-      "Shown when a selected coverage has QD underwriting. Renders as QD LI, QD DI, or a combined QD LI+DI page depending on which products are selected.",
+      "Shown for an active applicant whose resolved health page is health-qd, falling back to the captured QD gate when no health-page override exists. Assigned source questionnaires may supersede this page; the external GMA-JI-L questionnaire shows only the approved prototype loading state.",
     ref: "src/config/flowGates.ts",
   },
   {
@@ -120,7 +123,7 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     area: "Progress/navigation",
     rule: "Back button hidden with no previous page",
     behavior:
-      "The PageHeader/PageTitle back arrow is rendered only when getPreviousFormPageId resolves a previous page for the current values and the page is not after a submitted review; otherwise no back control is shown at all (distinct from it being disabled post-review).",
+      "The PageHeader/PageTitle back arrow is rendered only when getPreviousFormPageId resolves a previous page for the current values and the page is not after a submitted review; otherwise the back control is hidden, including on post-review pages after submission.",
     ref: "src/app/RoutePage.tsx; src/components/layout/PageHeader.tsx; src/components/layout/PageTitle.tsx",
   },
   {
@@ -150,7 +153,7 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     area: "Validation",
     rule: "Page advance",
     behavior:
-      "The user cannot advance when field validation or page-level validation fails; the page shows an error and moves focus/scroll toward the first error.",
+      "Field validation failure blocks advancement, shows an error and scrolls toward the first invalid field. Page-level validation failure blocks advancement, shows its message and scrolls to the top.",
     ref: "src/app/RoutePage.tsx",
   },
   {
@@ -244,7 +247,7 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     rule: "Category selection and two-step product reveal",
     behavior:
       "The user first selects one or more coverage categories via a multi-select chip list. Selecting a category may surface additional required questions (tobacco use, income, hours). When all required questions are answered, a 'See my coverage options' button appears. Clicking it validates the form and, if valid, reveals the product catalog. Changing a category selection or question answer after products are shown collapses the catalog and requires another click.",
-    ref: "src/pages/Coverage.tsx; src/app/useCoverageState.ts; src/components/forms/CoverageCategorySelector.tsx",
+    ref: "src/pages/Coverage.tsx; src/app/useCoverageState.ts; src/components/coverage/CoverageCategorySelector.tsx",
     type: "conditional",
     conditionIds: ["condition-member-smoker", "condition-spouse-smoker"],
   },
@@ -253,7 +256,7 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     rule: "Per-applicant product selection",
     behavior:
       "Each product card lists eligible applicants (member, spouse, child) as checkboxes. Checking an applicant reveals a benefit amount dropdown. DI/OO products also show waiting period and max benefit period dropdowns. Optional riders appear as checkboxes; selecting a rider with an amount range reveals a rider amount dropdown. Coverage selections and amounts are stored per product/applicant key.",
-    ref: "src/components/forms/ProductCatalog.tsx; src/app/useCoverageState.ts",
+    ref: "src/components/coverage/ProductCatalog.tsx; src/app/useCoverageState.ts",
   },
   {
     area: "Coverage",
@@ -267,7 +270,7 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     rule: "Coverage amount note",
     behavior:
       "The site can present either 'additional coverage' or 'total coverage' guidance based on the active client configuration.",
-    ref: "src/components/forms/ProductCatalog.tsx",
+    ref: "src/components/coverage/ProductCatalog.tsx",
   },
   {
     area: "Coverage",
@@ -302,21 +305,21 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     rule: "Inline cart hidden until a product is selected",
     behavior:
       "The 'Your requested coverage' inline panel below the Coverage page product catalog shows nothing at all — no section title and no empty-state placeholder — until at least one applicant has an amount selected for a product (grandTotal > 0). The full-drawer cart variant (opened from the header cart icon or the Coverage page's own summary drawer) is unaffected and still shows its 'No coverage selected yet.' empty state.",
-    ref: "src/components/ui/CoverageCart.tsx (CoverageCartInline)",
+    ref: "src/components/coverage/CoverageCart.tsx (CoverageCartInline)",
   },
   {
     area: "Home / Quote tool",
     rule: "Quote reveal mirrors Coverage page's category reveal",
     behavior:
       "Clicking 'See my quote' validates the category-level fields, reveals the matching product cards, and scrolls the drawer so the revealed products land at the top. The 'See my quote' button then hides and reappears only if the user edits a coverage question (gender, tobacco use, income, hours, business expenses/responsibility) or toggles a coverage category selection — the same show/hide contract as the Coverage page's 'See my coverage options' button.",
-    ref: "src/components/forms/QuoteCalculator.tsx (handleGetEstimates, handleQuoteFieldChange, handleCategoryToggle)",
+    ref: "src/app/workflows/QuoteCalculator.tsx (handleGetEstimates, handleQuoteFieldChange, handleCategoryToggle)",
   },
   {
     area: "Home / Quote tool",
     rule: "Estimated cost panel uses the shared TotalCostSummary component",
     behavior:
       "The quote drawer's estimated cost panel now renders via the same TotalCostSummary component used on the Coverage page and in the coverage cart drawer, instead of a bespoke box. Like the Coverage page's inline cart, the panel is hidden entirely until at least one product/applicant has been added (no 'Added coverage will appear here' placeholder); the rate-frequency toggle and Apply button remain visible whenever products are shown.",
-    ref: "src/components/forms/QuoteCalculator.tsx; src/components/ui/TotalCostSummary.tsx",
+    ref: "src/app/workflows/QuoteCalculator.tsx; src/components/coverage/TotalCostSummary.tsx",
   },
   {
     area: "Home / Quote tool",
@@ -418,7 +421,7 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     area: "Contact",
     rule: "Business address same as home",
     behavior:
-      "The Contact page conditionally hides/reuses business-address inputs when the business address is marked the same as the home address; DI/OO-related contact fields drive additional display rules.",
+      "The captured Contact configuration scopes business fields to selected products when a product list is assigned. Standard WAEPA shows the Business/Employer section with STD and hides it for Life-only; GI retains its separate hiding policy. For visible business addresses, marking the address the same as home reuses the home address. Other DI/OO and correspondence rules retain their configured behavior.",
     ref: "src/pages/Contact.tsx",
   },
   {
@@ -508,7 +511,7 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     rule: "Help and reference drawers",
     behavior:
       "AppDrawer slides in from the right on desktop (420–480px wide) or up from the bottom on mobile (75vh). Used for contextual help topics (HelpChips → AppDrawer), the QuickDecision℠ explainer, the Coverage Portfolio (TPA-verified users on Coverage), and the application menu sub-drawers (coverage options, needs calculator, QD explainer). Drawers are read-only and do not block page submission.",
-    ref: "src/components/layout/AppDrawer.tsx; src/components/ui/CoveragePortfolioDrawer.tsx; src/components/layout/AppMenu.tsx",
+    ref: "src/components/layout/AppDrawer.tsx; src/components/coverage/CoveragePortfolioDrawer.tsx; src/components/layout/AppMenu.tsx",
   },
   {
     area: "Drawers",
@@ -616,7 +619,7 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     area: "Fields",
     rule: "Phone type selector",
     behavior:
-      "Phone-format fields render an inline Mobile/Home/Business type selector tied to a sibling field (field.phoneTypeFieldId, default '<field.id>-type'), unless field.showPhoneTypeSelector is false.",
+      "FieldRenderer composes PhoneField for the number and optional inline Mobile/Home/Business selector. Each contact owns a distinct sibling field (field.phoneTypeFieldId, default '<field.id>-type'), unless field.showPhoneTypeSelector is false.",
     ref: "src/components/forms/FieldRenderer.tsx",
   },
   {
@@ -631,21 +634,21 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     rule: "Panel page/drawer variant with nested sub-drawers",
     behavior:
       "HowApplyingWorksPanel and CoverageOptionsPanel accept a variant: 'page' | 'drawer' prop rendering the same content as a full page section or a compact drawer layout. In 'drawer' variant, HowApplyingWorksPanel manages its own nested sub-drawer state (Application Review / QuickDecision℠) stacked above the parent drawer; in 'page' variant those links call parent-supplied handlers instead.",
-    ref: "src/components/ui/HowApplyingWorksPanel.tsx; src/components/ui/CoverageOptionsPanel.tsx",
+    ref: "src/components/home/HowApplyingWorksPanel.tsx; src/components/coverage/CoverageOptionsPanel.tsx",
   },
   {
     area: "Coverage",
     rule: "Coverage Options featured-first sort and category fallback",
     behavior:
-      "Default category order is LI, AD, DI, OO, SH. A client coverages.categoryOrder (or categories array) configuration overrides it; URL parameter featured_prod moves the identified product’s category first and that product first within it. Default products are Term Life, ascending level-term durations; Long-Term, Long-Term Plus, Mid-Term, Short-Term Disability; Critical Illness, Hospital Indemnity. Remaining products retain catalog order. An unavailable active category falls back to the first available category in the resolved order.",
-    ref: "src/components/ui/CoverageOptionsPanel.tsx",
+      "Default category order is LI, AD, DI, OO, SH. A client coverages.categoryOrder (or categories array) configuration overrides it. A client coverages.productOrder optionally overrides product order within categories; omitted products retain the default order. AMA uses its source 20/15/10-year, Pure Term, Preferred Term, Premier Accident order; URL parameter featured_prod moves the identified product’s category first and that product first within it. Default products are Term Life, ascending level-term durations; Long-Term, Long-Term Plus, Mid-Term, Short-Term Disability; Critical Illness, Hospital Indemnity. Remaining products retain catalog order. An unavailable active category falls back to the first available category in the resolved order.",
+    ref: "src/domain/coveragePresentation.ts; src/config/client/getActiveClientCoverages.ts; src/components/coverage/CoverageOptionsPanel.tsx; src/app/workflows/QuoteCalculator.tsx",
   },
   {
     area: "Application menu",
     rule: "Menu tools",
     behavior:
       "Menu provides Continue Saved Application, How Applying Works, About Coverage, Needs Calculator, About QuickDecision and client Contact information. Each tool closes the main menu drawer and opens a standalone AppDrawer (How Applying Works and About Coverage render HowApplyingWorksPanel / CoverageOptionsPanel in 'drawer' variant).",
-    ref: "src/components/layout/AppMenu.tsx; src/components/ui/HowApplyingWorksPanel.tsx; src/components/ui/CoverageOptionsPanel.tsx",
+    ref: "src/components/layout/AppMenu.tsx; src/components/home/HowApplyingWorksPanel.tsx; src/components/coverage/CoverageOptionsPanel.tsx",
   },
   {
     area: "Eligibility",
@@ -672,8 +675,8 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     area: "Membership",
     rule: "WAEPA new member displays member information",
     behavior:
-      "When WAEPA membership is New Member, display the declaration and member qualification information.",
-    ref: "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts",
+      `When WAEPA membership is New Member, display the required declaration and qualification dropdown. Approved choices: ${waepaQualifications.map(option => option.label).join("; ")}. Former federal employee has no employer/date follow-ups. Adult Child/Step-Child Associate Member entry is allowed; the old MCR entry block is superseded by the October 20 decision. Product-specific eligibility remains separate.`,
+    ref: "fields/waepa-attestation; conditions/condition-membership-waepa-new; src/domain/membershipQualifications.ts; src/pages/Membership.tsx; src/config/fields/fieldOverrides.ts",
     type: "conditional",
     scope: "site",
     siteIds: ["waepa"],
@@ -683,7 +686,7 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     area: "Membership",
     rule: "WAEPA active duty prevents application",
     behavior:
-      "New and current WAEPA members answer the global Armed Forces active-duty question in Additional Membership Information. Yes displays a page error and blocks continuation for every product; No clears this restriction. The installed Site membership disqualification configuration owns the blocking value and message.",
+      "New and current WAEPA members answer the global Armed Forces active-duty question in Additional Membership Information. On Next, Yes displays a page error and prevents continuation for every product. Selecting Yes alone does not display the error or disable Next; No clears this restriction. The installed Site membership disqualification configuration owns the blocking value and message.",
     ref: "src/domain/applicantExperience.ts; src/pages/Membership.tsx; src/data/waepa.ts",
     type: "conditional",
     scope: "site",
@@ -705,7 +708,7 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     area: "Membership",
     rule: "WAEPA federal annuitant fields",
     behavior:
-      "When the WAEPA qualification is federal annuitant, display retired-employer and retirement-date fields.",
+      "Retained historical qualification condition: captured revisions with federal-annuitant may display retired-employer and retirement-date fields. The October 20 approved six-choice dropdown omits this separate option; current applicants choose Former Federal Employee, with no such follow-ups.",
     ref: "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts",
     type: "conditional",
     scope: "site",
@@ -716,8 +719,8 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     area: "Membership",
     rule: "WAEPA associate member information",
     behavior:
-      "When the WAEPA qualification is spouse-associate or child-associate, display associated-member information.",
-    ref: "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts",
+      "For spouse, Adult Child/Step-Child, parent/parent-in-law and sibling Associate Member qualifications, display the reusable associated-member information fields. First and last name are required; membership number is optional. The global qualification definition and condition are explicitly placed on Standard WAEPA; GI retains its accepted separate entry. This does not confer blanket product eligibility.",
+    ref: "conditions/condition-waepa-associated-member; fields/waepa-member-first-name; fields/waepa-member-last-name; fields/waepa-member-id; src/domain/membershipQualifications.ts; src/pages/Membership.tsx; src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts",
     type: "conditional",
     scope: "site",
     siteIds: ["waepa"],

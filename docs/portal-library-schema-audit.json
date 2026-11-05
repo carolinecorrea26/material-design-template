@@ -17705,7 +17705,7 @@
         },
         {
           "name": "QuickDecisionIndicator",
-          "source": "src/components/ui/QuickDecisionIndicator.tsx",
+          "source": "src/components/coverage/QuickDecisionIndicator.tsx",
           "ownsStory": false
         }
       ]
@@ -17867,7 +17867,7 @@
       ]
     },
     {
-      "file": "src/components/forms/CoverageCategorySelector.stories.tsx",
+      "file": "src/components/coverage/CoverageCategorySelector.stories.tsx",
       "title": "Coverage & Commerce/CoverageCategorySelector",
       "section": "Coverage & Commerce",
       "storyIds": [
@@ -17879,13 +17879,13 @@
       "components": [
         {
           "name": "CoverageCategorySelector",
-          "source": "src/components/forms/CoverageCategorySelector.tsx",
+          "source": "src/components/coverage/CoverageCategorySelector.tsx",
           "ownsStory": true
         }
       ]
     },
     {
-      "file": "src/components/forms/CoverageNeedsCalculator.stories.tsx",
+      "file": "src/components/coverage/CoverageNeedsCalculator.stories.tsx",
       "title": "Coverage & Commerce/CoverageNeedsCalculator",
       "section": "Coverage & Commerce",
       "storyIds": [
@@ -17894,13 +17894,13 @@
       "components": [
         {
           "name": "CoverageNeedsCalculator",
-          "source": "src/components/forms/CoverageNeedsCalculator.tsx",
+          "source": "src/components/coverage/CoverageNeedsCalculator.tsx",
           "ownsStory": true
         }
       ]
     },
     {
-      "file": "src/components/forms/CoverageQuestions.stories.tsx",
+      "file": "src/components/coverage/CoverageQuestions.stories.tsx",
       "title": "Coverage & Commerce/CoverageQuestions",
       "section": "Coverage & Commerce",
       "storyIds": [
@@ -17912,7 +17912,7 @@
       "components": [
         {
           "name": "CoverageQuestions",
-          "source": "src/components/forms/CoverageQuestions.tsx",
+          "source": "src/components/coverage/CoverageQuestions.tsx",
           "ownsStory": true
         }
       ]
@@ -17971,7 +17971,7 @@
       ]
     },
     {
-      "file": "src/components/forms/EstimatorProductCard.stories.tsx",
+      "file": "src/components/coverage/EstimatorProductCard.stories.tsx",
       "title": "Coverage & Commerce/EstimatorProductCard",
       "section": "Coverage & Commerce",
       "storyIds": [
@@ -17984,7 +17984,7 @@
       "components": [
         {
           "name": "EstimatorProductCard",
-          "source": "src/components/forms/EstimatorProductCard.tsx",
+          "source": "src/components/coverage/EstimatorProductCard.tsx",
           "ownsStory": true
         }
       ]
@@ -18045,7 +18045,7 @@
       ]
     },
     {
-      "file": "src/components/forms/ProductCatalog.stories.tsx",
+      "file": "src/components/coverage/ProductCatalog.stories.tsx",
       "title": "Coverage & Commerce/ProductCatalog",
       "section": "Coverage & Commerce",
       "storyIds": [
@@ -18055,18 +18055,18 @@
       "components": [
         {
           "name": "ProductCatalog",
-          "source": "src/components/forms/ProductCatalog.tsx",
+          "source": "src/components/coverage/ProductCatalog.tsx",
           "ownsStory": true
         },
         {
           "name": "CoverageCategorySelector",
-          "source": "src/components/forms/CoverageCategorySelector.tsx",
+          "source": "src/components/coverage/CoverageCategorySelector.tsx",
           "ownsStory": false
         }
       ]
     },
     {
-      "file": "src/components/forms/QuoteCalculator.stories.tsx",
+      "file": "src/components/coverage/QuoteCalculator.stories.tsx",
       "title": "Coverage & Commerce/QuoteCalculator",
       "section": "Coverage & Commerce",
       "storyIds": [
@@ -18078,7 +18078,7 @@
       "components": [
         {
           "name": "QuoteCalculator",
-          "source": "src/components/forms/QuoteCalculator.tsx",
+          "source": "src/components/coverage/QuoteCalculator.tsx",
           "ownsStory": true
         }
       ]
@@ -18569,7 +18569,7 @@
       ]
     },
     {
-      "file": "src/components/ui/CoverageCart.stories.tsx",
+      "file": "src/components/coverage/CoverageCart.stories.tsx",
       "title": "Coverage & Commerce/CoverageCart",
       "section": "Coverage & Commerce",
       "storyIds": [
@@ -18579,7 +18579,7 @@
       "components": [
         {
           "name": "CoverageCart",
-          "source": "src/components/ui/CoverageCart.tsx",
+          "source": "src/components/coverage/CoverageCart.tsx",
           "ownsStory": true
         },
         {
@@ -18590,7 +18590,7 @@
       ]
     },
     {
-      "file": "src/components/ui/CoverageOptionsPanel.stories.tsx",
+      "file": "src/components/coverage/CoverageOptionsPanel.stories.tsx",
       "title": "Coverage & Commerce/CoverageOptionsPanel",
       "section": "Coverage & Commerce",
       "storyIds": [
@@ -18601,13 +18601,13 @@
       "components": [
         {
           "name": "CoverageOptionsPanel",
-          "source": "src/components/ui/CoverageOptionsPanel.tsx",
+          "source": "src/components/coverage/CoverageOptionsPanel.tsx",
           "ownsStory": true
         }
       ]
     },
     {
-      "file": "src/components/ui/CoveragePortfolioDrawer.stories.tsx",
+      "file": "src/components/coverage/CoveragePortfolioDrawer.stories.tsx",
       "title": "Coverage & Commerce/CoveragePortfolioDrawer",
       "section": "Coverage & Commerce",
       "storyIds": [
@@ -18617,13 +18617,13 @@
       "components": [
         {
           "name": "CoveragePortfolioDrawer",
-          "source": "src/components/ui/CoveragePortfolioDrawer.tsx",
+          "source": "src/components/coverage/CoveragePortfolioDrawer.tsx",
           "ownsStory": true
         }
       ]
     },
     {
-      "file": "src/components/ui/EstimatedRate.stories.tsx",
+      "file": "src/components/coverage/EstimatedRate.stories.tsx",
       "title": "Components/Estimated Rate",
       "section": "Components",
       "storyIds": [
@@ -18634,18 +18634,18 @@
       "components": [
         {
           "name": "EstimatedRate",
-          "source": "src/components/ui/EstimatedRate.tsx",
+          "source": "src/components/coverage/EstimatedRate.tsx",
           "ownsStory": true
         },
         {
           "name": "TotalCostSummary",
-          "source": "src/components/ui/TotalCostSummary.tsx",
+          "source": "src/components/coverage/TotalCostSummary.tsx",
           "ownsStory": false
         }
       ]
     },
     {
-      "file": "src/components/ui/HowApplyingWorksPanel.stories.tsx",
+      "file": "src/components/home/HowApplyingWorksPanel.stories.tsx",
       "title": "Coverage & Commerce/HowApplyingWorksPanel",
       "section": "Coverage & Commerce",
       "storyIds": [
@@ -18656,13 +18656,13 @@
       "components": [
         {
           "name": "HowApplyingWorksPanel",
-          "source": "src/components/ui/HowApplyingWorksPanel.tsx",
+          "source": "src/components/home/HowApplyingWorksPanel.tsx",
           "ownsStory": true
         }
       ]
     },
     {
-      "file": "src/components/ui/MemberVerification.stories.tsx",
+      "file": "src/components/verification/MemberVerification.stories.tsx",
       "title": "Coverage & Commerce/MemberVerification",
       "section": "Coverage & Commerce",
       "storyIds": [
@@ -18671,13 +18671,13 @@
       "components": [
         {
           "name": "MemberVerification",
-          "source": "src/components/ui/MemberVerification.tsx",
+          "source": "src/components/verification/MemberVerification.tsx",
           "ownsStory": true
         }
       ]
     },
     {
-      "file": "src/components/ui/MobilePreviewFrame.stories.tsx",
+      "file": "src/components/layout/MobilePreviewFrame.stories.tsx",
       "title": "Layout/MobilePreviewFrame",
       "section": "Layout",
       "storyIds": [
@@ -18686,13 +18686,13 @@
       "components": [
         {
           "name": "MobilePreviewFrame",
-          "source": "src/components/ui/MobilePreviewFrame.tsx",
+          "source": "src/components/layout/MobilePreviewFrame.tsx",
           "ownsStory": true
         }
       ]
     },
     {
-      "file": "src/components/ui/ProductAdornments.stories.tsx",
+      "file": "src/components/coverage/ProductAdornments.stories.tsx",
       "title": "Coverage & Commerce/Product Adornments",
       "section": "Coverage & Commerce",
       "storyIds": [
@@ -18701,18 +18701,18 @@
       "components": [
         {
           "name": "FeaturedBadge",
-          "source": "src/components/ui/FeaturedBadge.tsx",
+          "source": "src/components/coverage/FeaturedBadge.tsx",
           "ownsStory": false
         },
         {
           "name": "QuickDecisionIndicator",
-          "source": "src/components/ui/QuickDecisionIndicator.tsx",
+          "source": "src/components/coverage/QuickDecisionIndicator.tsx",
           "ownsStory": false
         }
       ]
     },
     {
-      "file": "src/components/ui/ProductCostBreakdown.stories.tsx",
+      "file": "src/components/coverage/ProductCostBreakdown.stories.tsx",
       "title": "Coverage & Commerce/ProductCostBreakdown",
       "section": "Coverage & Commerce",
       "storyIds": [
@@ -18724,13 +18724,13 @@
       "components": [
         {
           "name": "ProductCostBreakdown",
-          "source": "src/components/ui/ProductCostBreakdown.tsx",
+          "source": "src/components/coverage/ProductCostBreakdown.tsx",
           "ownsStory": true
         }
       ]
     },
     {
-      "file": "src/components/ui/RateFrequencyControl.stories.tsx",
+      "file": "src/components/coverage/RateFrequencyControl.stories.tsx",
       "title": "Coverage & Commerce/RateFrequencyControl",
       "section": "Coverage & Commerce",
       "storyIds": [
@@ -18740,13 +18740,13 @@
       "components": [
         {
           "name": "RateFrequencyControl",
-          "source": "src/components/ui/RateFrequencyControl.tsx",
+          "source": "src/components/coverage/RateFrequencyControl.tsx",
           "ownsStory": true
         }
       ]
     },
     {
-      "file": "src/components/ui/RateFrequencyToggle.stories.tsx",
+      "file": "src/components/coverage/RateFrequencyToggle.stories.tsx",
       "title": "Coverage & Commerce/RateFrequencyToggle",
       "section": "Coverage & Commerce",
       "storyIds": [
@@ -18756,13 +18756,13 @@
       "components": [
         {
           "name": "RateFrequencyToggle",
-          "source": "src/components/ui/RateFrequencyToggle.tsx",
+          "source": "src/components/coverage/RateFrequencyToggle.tsx",
           "ownsStory": true
         }
       ]
     },
     {
-      "file": "src/components/ui/TotalCostSummary.stories.tsx",
+      "file": "src/components/coverage/TotalCostSummary.stories.tsx",
       "title": "Coverage & Commerce/TotalCostSummary",
       "section": "Coverage & Commerce",
       "storyIds": [
@@ -18775,7 +18775,7 @@
       "components": [
         {
           "name": "TotalCostSummary",
-          "source": "src/components/ui/TotalCostSummary.tsx",
+          "source": "src/components/coverage/TotalCostSummary.tsx",
           "ownsStory": true
         }
       ]

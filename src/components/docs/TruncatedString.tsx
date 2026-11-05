@@ -30,7 +30,6 @@ export default function TruncatedString({
         <Link
           component="button"
           type="button"
-          underline="hover"
           onClick={() => setExpanded((v) => !v)}
           sx={{ ml: 1, fontSize: "0.75rem", verticalAlign: "baseline" }}
         >

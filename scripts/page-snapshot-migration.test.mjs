@@ -16,8 +16,10 @@ it('saves, reloads, restarts and explicitly publishes a converted release withou
   const payload = { formatVersion: 1, siteKey: 'asce', baseRevision: `local:v1:sha256:${'a'.repeat(64)}`, editVersion: 0,
     data: Object.fromEntries([...new Set(effectiveSiteSnapshotTables)].map(table => [table, structuredClone(db[table])])) };
   const old = new Map(legacyPagePositions.map(([key, position]) => [key, position]));
-  for (const page of payload.data.pages) { delete page.definition.flow; page.position = old.get(page.key); }
-  for (const row of payload.data.sitePages) row.position = old.get(row.pageKey);
+  // Later page additions are custom placements outside the frozen SQL mapping.
+  const additions = new Map(payload.data.pages.filter(page => !old.has(page.key)).map((page, index) => [page.key, Math.max(...old.values()) + 1 + index]));
+  for (const page of payload.data.pages) { delete page.definition.flow; page.position = old.get(page.key) ?? additions.get(page.key); }
+  for (const row of payload.data.sitePages) row.position = old.get(row.pageKey) ?? additions.get(row.pageKey);
   payload.data.pages.find(page => page.key === 'review').definition.path = '/saved-review';
   const original = { id: 'original-release', version: 1, siteKey: payload.siteKey, payloadHash: 'old-hash', payload, mode: 'mock' };
   const initial = { version: 1, admin: null, payments: {}, drafts: {}, releases: { [original.id]: original }, heads: { [payload.siteKey]: original.id }, audit: [], analytics: [] };
@@ -25,7 +27,7 @@ it('saves, reloads, restarts and explicitly publishes a converted release withou
   let server;
   const stop = async () => { if (server) await new Promise(resolve => server.close(resolve)); server = null; };
   const start = async (readinessApproved = false) => {
-    server = createMockPlatform({ database: db, prototypeDatabase: payload.data, statePath, accountSignInEnabled: false,
+    server = createMockPlatform({ database: db, prototypeTables: effectiveSiteSnapshotTables, statePath, accountSignInEnabled: false,
       validatePayload: draft => { if (!isLibraryDraft(draft)) throw new Error('Invalid draft'); resolvePrototypeLibrary(draft.data, draft.siteKey, draft.baseRevision); },
       // Test-only readiness approval; real publication retains its existing gates.
       checkReadiness: () => readinessApproved ? [] : ['Fresh acceptance evidence required'] });

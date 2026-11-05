@@ -2,9 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import DetailsTable from "./DetailsTable";
 
 const meta = {
-  title: "Application Patterns/DetailsTable",
+  id: "application-patterns-detailstable",
+  title: "Components/Content and data display/Details table",
   component: DetailsTable,
-  parameters: { layout: "padded" },
+  parameters: { docs: { description: { component: "Presents labeled values in a compact details table." } }, layout: "padded" },
 } satisfies Meta<typeof DetailsTable>;
 
 export default meta;

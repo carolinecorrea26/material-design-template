@@ -1,6 +1,9 @@
-import { useEffect, useState, type FormEvent } from 'react';
-import { Alert, Box, Button, CircularProgress, Stack, TextField } from '@mui/material';
-import CheckIcon from '@mui/icons-material/Check';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import FieldRenderer from '../components/forms/FieldRenderer';
+import { getPageFieldDefinition } from '../config/fields/resolvedFieldRegistry';
+import { Alert, Box, Button, CircularProgress, Stack } from '@mui/material';
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import PageHeader from '../components/layout/PageHeader';
 import PageShell from '../components/layout/PageShell';
@@ -10,7 +13,7 @@ import { resolveSiteId } from '../data/activeSite';
 import { applicantRecovery, recoveryFromSearch } from '../services/applicantSaveService';
 import { useApplicationForm } from '../app/ApplicationFormContext';
 import { useApplicationSession } from '../app/ApplicationSessionContext';
-import ApplicantMockOutbox from '../components/ui/ApplicantMockOutbox';
+import ApplicantMockOutbox from '../components/demo/ApplicantMockOutbox';
 import useCountdown from '../hooks/useCountdown';
 import ExpiringCodeAlert from '../components/feedback/ExpiringCodeAlert';
 import ResendCountdownRow from '../components/feedback/ResendCountdownRow';
@@ -22,7 +25,9 @@ export default function ResumeCode() {
   const details = recoveryFromSearch(search, siteKey);
   const { restoreApplication } = useApplicationForm();
   const { resetApplicationSession } = useApplicationSession();
-  const [code, setCode] = useState('');
+  const field = getPageFieldDefinition('resume-code', siteKey, 'resume-security-code');
+  const form = useForm<Record<string, string | boolean | string[]>>({ defaultValues: { [field.id]: '' } });
+  const code = String(form.watch(field.id) ?? '');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -42,12 +47,11 @@ export default function ResumeCode() {
     try {
       const challenge = await applicantRecovery.challenge(details, search.get('method') ?? 'email');
       restart(Math.max(0, Math.ceil((challenge.expiresAt - Date.now()) / 1000)));
-      setCode(''); setResent(true);
+      form.setValue(field.id, ''); setResent(true);
     } catch (reason) { setError(reason instanceof Error ? reason.message : 'Resend failed'); }
     finally { setBusy(false); }
   }
-  async function verify(event: FormEvent) {
-    event.preventDefault();
+  async function verify() {
     if (!details || !restoreApplication || busy || success || secondsLeft === 0 || !import.meta.env.VITE_MOCK_PLATFORM_ENABLED) return;
     if (!/^\d{6}$/.test(code.trim())) { setError('Enter your six-digit verification code.'); return; }
     setBusy(true); setError('');
@@ -63,13 +67,13 @@ export default function ResumeCode() {
   return <Box sx={{ flex: 1, px: { xs: 2, sm: 3 }, py: { xs: 4, sm: 6 } }}>
     <PageShell title={getPageTitle('resume-code')} maxWidth={600} noTitle><FormShell sx={{ px: { xs: 2, sm: 4 }, py: 6 }}>
       <PageHeader title={getPageTitle('resume-code')} subhead={subhead} onBack={() => navigate(`${getPagePath('resume-method')}?${search}`)} />
-      <Stack component="form" spacing={2} onSubmit={event => void verify(event)} noValidate sx={{ py: 1 }}>
+      <Stack component="form" spacing={2} onSubmit={form.handleSubmit(() => void verify())} noValidate sx={{ py: 1 }}>
         {!details && <Alert severity="error">Open a valid resume link to continue.</Alert>}
         <ExpiringCodeAlert secondsLeft={secondsLeft} kind="code" onResend={() => void resend()} showConfirmation={resent} confirmationMessage="A new verification code has been sent." />
-        <TextField fullWidth required label="Verification Code" value={code} disabled={busy || success || secondsLeft === 0} onChange={event => { setCode(event.target.value); setError(''); setResent(false); }} inputProps={{ inputMode: 'numeric', maxLength: 6 }} error={!!error} helperText={error || undefined} />
+        <FieldRenderer field={{ ...field, disabled: field.disabled || busy || success || secondsLeft === 0 }} control={form.control} errors={error ? { ...form.formState.errors, [field.id]: { type: 'manual', message: error } } : form.formState.errors} onValueChange={() => { setError(''); setResent(false); }} />
         <ResendCountdownRow secondsLeft={secondsLeft} kind="code" disabled={busy || success || unavailable} onResend={() => void resend()} />
         <Button type="submit" fullWidth size="large" variant="contained" disabled={busy || success || unavailable || secondsLeft === 0} sx={{ mt: '24px !important', ...(success ? { '&.Mui-disabled': { bgcolor: 'success.main', color: 'common.white' } } : {}) }}>
-          {success ? <CheckIcon aria-label="Verified successfully" /> : busy ? <CircularProgress size={24} color="inherit" aria-label="Verifying code" /> : 'Next'}
+          {success ? <CheckRoundedIcon aria-label="Verified successfully" /> : busy ? <CircularProgress size={24} color="inherit" aria-label="Verifying code" /> : 'Next'}
         </Button>
         {details && <ApplicantMockOutbox applicationId={details.applicationId} siteKey={siteKey} recipient={details.recipient} />}
       </Stack>

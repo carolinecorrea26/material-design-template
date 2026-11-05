@@ -1,4 +1,4 @@
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import { IconButton } from "@mui/material";
 
 export default function StepEditButton({ label, disabled, onClick }: {
@@ -21,7 +21,7 @@ export default function StepEditButton({ label, disabled, onClick }: {
         "&:hover": { bgcolor: "#d3e1ff" },
       }}
     >
-      <EditOutlinedIcon fontSize="inherit" />
+      <EditRoundedIcon fontSize="inherit" />
     </IconButton>
   );
 }

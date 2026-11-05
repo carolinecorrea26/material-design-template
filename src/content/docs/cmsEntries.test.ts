@@ -81,15 +81,13 @@ describe("cmsEntries", () => {
     );
 
     expect(homeButtons.map((entry) => entry.globalValue)).toEqual([
-      "Begin application",
-      "Learn more",
-      "Continue here",
+      "Start my application",
+      "Continue application",
       "Learn more about the review process.",
     ]);
     expect(homeButtons.map((entry) => entry.component)).toEqual([
       "Primary Hero Button",
       "Secondary Hero Button",
-      "Resume Application Link",
       "Review Process Link",
     ]);
   });

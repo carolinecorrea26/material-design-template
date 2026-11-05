@@ -1,12 +1,4 @@
 import type { PageId } from "../types";
-import {
-  HowToReg,
-  HealthAndSafety,
-  Badge,
-  FactCheck,
-  Draw,
-} from "@mui/icons-material";
-import type { SvgIconComponent } from "@mui/icons-material";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import { getResolvedFormFlow, shouldSkipPage } from "./formFlow";
 import { getContent } from "../content";
@@ -15,7 +7,6 @@ export type ProgressStep = {
   id: string;
   label: string;
   pageIds: PageId[];
-  icon: SvgIconComponent;
 };
 
 /** Pages that belong to the consolidated "Health" breadcrumb */
@@ -24,7 +15,7 @@ export const HEALTH_PAGE_IDS: PageId[] = [
   "health-li",
   "health-qd",
   "health-di",
-  "health-cir",
+  "health-ci", "health-cir",
 ];
 
 export const progressSteps: ProgressStep[] = (() => {
@@ -33,39 +24,34 @@ export const progressSteps: ProgressStep[] = (() => {
     {
       id: "getting-started",
       label: labels["getting-started"] ?? "Eligibility",
-      icon: HowToReg,
       pageIds: ["membership", "eligibility"],
     },
     {
       id: "coverage-options",
       label: labels["coverage-options"] ?? "Coverage",
-      icon: HealthAndSafety,
       pageIds: ["coverage"],
     },
     {
       id: "profile",
       label: labels["profile"] ?? "Profile",
-      icon: Badge,
       pageIds: ["beneficiary", "contact", "profile"],
     },
     {
       id: "application-review",
       label: labels["application-review"] ?? "Review",
-      icon: FactCheck,
       pageIds: [
         "review",
         "health-si",
         "health-li",
         "health-qd",
         "health-di",
-        "health-cir",
+        "health-ci", "health-cir",
         "payment",
       ],
     },
     {
       id: "esign-submit",
       label: labels["esign-submit"] ?? "E-sign",
-      icon: Draw,
       pageIds: ["docusign"],
     },
   ];

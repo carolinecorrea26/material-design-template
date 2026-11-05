@@ -11,7 +11,7 @@ it.each([
   expect(isConditionDefinition(definition)).toBe(false);
   expect(evaluateCondition(definition as ConditionDefinition, { dependents: ["spouse"] })).toBe(false);
 });
-it("preserves all/any and the three supported operators", () => {
+it("preserves all/any and scalar/collection operators", () => {
   expect(evaluateCondition(valid, { dependents: ["spouse"] })).toBe(true);
   expect(evaluateCondition(valid, { dependents: [] })).toBe(false);
   const conditions: ConditionDefinition["conditions"] = [{ fieldId: "membership", operator: "equals", value: "new" }, { fieldId: "membership", operator: "notEquals", value: "current" }];

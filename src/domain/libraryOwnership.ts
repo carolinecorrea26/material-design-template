@@ -33,16 +33,23 @@ export const ownerLabels: Record<LibraryOwner, string> = {
 
 const targetOwners = {
   'field-definition-ownership': 'fields',
-  'site-page-participation': 'pages',
+  'site-page-participation': 'configurations',
   'site-product-availability': 'products',
   'site-structure-ownership': 'fields',
   'site-routing-policy': 'rules',
+  'site-category-eligibility': 'rules',
+  'site-beneficiary-notes': 'rules',
+  'site-beneficiary-participation': 'rules',
+  'site-health-questionnaires': 'fields',
+  'site-financial-questionnaire': 'rules',
   'site-life-aggregate-participation': 'rules', 'product-rate-modifier-policy': 'rules', 'site-review-policy': 'rules',
   'product-rate-input-policy': 'rules', 'product-journey-policy': 'rules', 'product-selection-policy': 'rules',
   'site-rate-presentation': 'configurations', 'product-reference-rate-table': 'rules', 'product-presentation': 'products',
   'product-rider-set': 'products', 'product-rider-override': 'products', 'product-rate-outcome': 'rules', 'product-rating-adjustments': 'rules',
   'product-residency-policy': 'rules', 'product-benefit-policy': 'rules', 'product-dependent-policy': 'rules',
   'site-life-aggregate': 'rules', 'product-eligibility-facts': 'rules', 'product-amount-cap-policy': 'rules',
+  'product-association-eligibility': 'rules',
+  'product-association-amounts': 'rules',
 } as const satisfies Record<ConfigurationTarget['kind'], LibraryOwner>;
 
 export function configurationPath(row: ConfigurationDefinitionRow): string {
@@ -57,7 +64,7 @@ export function configurationOwner(row: ConfigurationDefinitionRow): LibraryOwne
   const path = configurationPath(row);
   if (/^(branding|theme)(\.|$)/.test(path)) return 'themes';
   if (/^(support|licenseInfo)(\.|$)/.test(path)) return 'client-information';
-  if (/^pages(\.|$)/.test(path)) return 'pages';
+  if (/^pages(\.|$)/.test(path)) return 'configurations';
   if (/^(fields|fieldSurfaces|fieldCollections)(\.|$)/.test(path)) return 'fields';
   if (/^flows(\.|$)/.test(path)) return 'flows';
   if (/^coverages\.(enabled|categories)(\.|$)/.test(path)) return 'rules';

@@ -211,7 +211,7 @@ SQL source: `supabase/migrations/202609240003_portal_library.sql:196`. Contract:
 | metadata.requiresInterpretation | 19 | true (database:mcr.product.application-form) |
 | metadata.scope | 34 | "Client Configurable" (database:config-branding-icons) |
 | metadata.source | 1 | "Riders!C29" (database:csea.di-ltd.included-rider-set) |
-| metadata.sourcePath | 34 | "src/domain/configuration.ts / src/components/ui/ClientCategoryIcon.tsx" (database:config-branding-icons); "src/config/homepagePresentation.ts / src/pages/Home.tsx / src/components/layout/AppShell.tsx" (database:config-features-singlepageartwork); "src/config/homepagePresentation.ts" (database:config-features-applyingstepspresentation) |
+| metadata.sourcePath | 34 | "src/domain/configuration.ts / src/components/content/ClientCategoryIcon.tsx" (database:config-branding-icons); "src/config/homepagePresentation.ts / src/pages/Home.tsx / src/components/layout/AppShell.tsx" (database:config-features-singlepageartwork); "src/config/homepagePresentation.ts" (database:config-features-applyingstepspresentation) |
 | path | 544 | null (database:config-branding-icons) |
 | path[] | 851 | "theme" (database:theme.type); "type" (database:theme.type); "preset" (database:theme.preset) |
 | target | 136 | null (database:theme.type) |
@@ -682,7 +682,7 @@ SQL source: `supabase/migrations/202610120001_portal_components.sql:2`. Contract
 
 | Path | Occurrences | Sample value and row |
 | --- | --- | --- |
-| source | 67 | "src/components/layout/DetailsTable.tsx" (database:component-details-table); "src/components/forms/YesNoDetailList.tsx" (database:component-yes-no-detail-list); "src/components/ui/EstimatedRate.tsx" (database:component-estimated-rate) |
+| source | 67 | "src/components/layout/DetailsTable.tsx" (database:component-details-table); "src/components/forms/YesNoDetailList.tsx" (database:component-yes-no-detail-list); "src/components/coverage/EstimatedRate.tsx" (database:component-estimated-rate) |
 | storybookPath | 67 | "?path=/story/application-patterns-detailstable--confirmation-details" (database:component-details-table); "?path=/story/application-patterns-yesnodetaillist--interactive" (database:component-yes-no-detail-list); "?path=/story/components-estimated-rate--available" (database:component-estimated-rate) |
 | storyId | 67 | "application-patterns-detailstable--confirmation-details" (database:component-details-table); "application-patterns-yesnodetaillist--interactive" (database:component-yes-no-detail-list); "components-estimated-rate--available" (database:component-estimated-rate) |
 

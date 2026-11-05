@@ -27,7 +27,7 @@ export const abeClient: ClientConfig = {
   pages: {
     requirements: {
       beneficiary: "optional",
-      payment: "required",
+      payment: "optional",
     },
   },
   coverages: {

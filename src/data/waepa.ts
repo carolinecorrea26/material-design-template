@@ -48,7 +48,7 @@ export const waepaClientEntity: Client = {
     },
   },
   configurationDefaults: {
-    theme: { type: "custom", primary: "#001F5F" },
+    theme: { type: "custom", primary: "#002c85", primaryAction: { main: "#f1b435", tone: "light" }, buttonShape: "standard" },
     tpaIntegration: {
       mode: "membership-auto-approval",
       lookupFields: ["first-name", "last-name", "birth-date"],

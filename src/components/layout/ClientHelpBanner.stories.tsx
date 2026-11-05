@@ -14,9 +14,10 @@ import { getActiveClient } from "../../config/client/getActiveClient";
  * information.
  */
 const meta = {
-  title: "Layout/ClientHelpBanner",
+  id: "layout-clienthelpbanner",
+  title: "Components/Content and data display/Help and support/Client help banner",
   component: ClientHelpBanner,
-  parameters: { layout: "fullscreen" },
+  parameters: { docs: { description: { component: "Provides client-configured phone, chat and other support actions." } }, layout: "fullscreen" },
 } satisfies Meta<typeof ClientHelpBanner>;
 
 export default meta;

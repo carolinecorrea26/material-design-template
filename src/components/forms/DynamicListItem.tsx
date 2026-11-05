@@ -22,7 +22,7 @@ export default function DynamicListItem({
       sx={{
         border: "1px solid",
         borderColor: "divider",
-        // backgroundColor: "background.surface",
+        // backgroundColor: "action.hover",
         borderRadius: 1.5,
         px: 2,
         py: 1.5,

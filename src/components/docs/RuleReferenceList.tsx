@@ -249,7 +249,7 @@ export default function RuleReferenceList({
                   px: 2,
                   py: 0.75,
                   minHeight: 44,
-                  backgroundColor: "background.subtle",
+                  backgroundColor: "background.default",
                   borderBottom: "1px solid",
                   borderColor: "divider",
                 }}

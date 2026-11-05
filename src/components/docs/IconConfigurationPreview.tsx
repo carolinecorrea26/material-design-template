@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Stack, TextField, Typography } from "@mui/material";
 import type { ClientBranding } from "../../domain/configuration";
-import { ClientIconContext } from "../ui/ClientIconContext";
-import QuickDecisionIcon from "../ui/QuickDecisionIcon";
+import { ClientIconContext } from "../content/ClientIconContext";
+import QuickDecisionIcon from "../coverage/QuickDecisionIcon";
 import { coverageCategories } from "../../config/coverageCategories";
 
 export default function IconConfigurationPreview({branding}:{branding:ClientBranding}) {

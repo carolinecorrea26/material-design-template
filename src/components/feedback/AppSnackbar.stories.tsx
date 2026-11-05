@@ -12,9 +12,10 @@ import ProgressSavedSnackbar from "./ProgressSavedSnackbar";
  * is a one-line preset built on top of it.
  */
 const meta = {
-  title: "Feedback/AppSnackbar",
+  id: "feedback-appsnackbar",
+  title: "Components/Feedback and overlays/Notifications",
   component: AppSnackbar,
-  parameters: { layout: "centered" },
+  parameters: { docs: { description: { component: "Shows a temporary feedback message with an optional action." } }, layout: "centered" },
 } satisfies Meta<typeof AppSnackbar>;
 
 export default meta;

@@ -158,6 +158,8 @@ export type ClientProductEstimatedCostBreakdown = {
 };
 
 export type ClientCoverages = {
+  /** Product order within category; omitted products use the default semantic order. */
+  productOrder?: CoverageId[];
   /** Display order override; omitted categories follow the canonical default order. */
   categoryOrder?: CoverageCategoryId[];
   categories?: CoverageCategoryId[];
@@ -227,7 +229,7 @@ export type HomePageVariant =
 
 export type ThemeColorId = "default" | "teal" | "purple" | "dark-blue";
 
-export type ClientThemeConfig =
+export type ClientThemeConfig = (
   | {
       type: "preset";
       preset: ThemeColorId;
@@ -236,10 +238,14 @@ export type ClientThemeConfig =
   | {
       type: "custom";
       primary: `#${string}`;
-      /** Optional overrides for all palette colors; omitted tokens inherit the template. */
-      palette?: import("@mui/material/styles").PaletteOptions;
       preset?: never;
-    };
+    }
+) & {
+  /** Optional filled-primary-button override; omitted buttons use the theme's primary color. */
+  primaryAction?: { main: `#${string}`; tone: "light" | "dark" };
+  /** Normal buttons use the shared shape radius unless pill is selected. */
+  buttonShape?: "standard" | "pill";
+};
 
 /** Single labeled source for ThemeColorId, so a new theme value only needs updating here and in theme.ts. */
 export const themeColorLabels: Record<ThemeColorId, string> = {

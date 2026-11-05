@@ -1,0 +1,2632 @@
+{
+  "flows": [
+    {
+      "id": "global:*.consumer",
+      "key": "global:*.consumer",
+      "definition": {
+        "id": "consumer",
+        "title": "Consumer Application Flow",
+        "intro": "Shows the stable consumer application backbone. Page inclusion and page contents are resolved by client configuration, applicant data, selected coverage, underwriting requirements, and enabled riders. Conditional coverage behavior, field/section variations, and health-page routing are documented in their configuration/routing sections rather than selectively expanded in this backbone flow."
+      },
+      "position": 0,
+      "displayId": 1043647687091,
+      "providedBy": null,
+      "sourceReference": "prototype:flows/global:*.consumer"
+    },
+    {
+      "id": "global:*.advisor",
+      "key": "global:*.advisor",
+      "definition": {
+        "id": "advisor",
+        "title": "Advisor-Assisted Flow",
+        "intro": "The advisor completes the application through Profile and transfers it to the applicant for review and final completion. Only one actor may access the application at a time."
+      },
+      "position": 1,
+      "displayId": 125560853787877,
+      "providedBy": null,
+      "sourceReference": "prototype:flows/global:*.advisor"
+    },
+    {
+      "id": "global:*.resume",
+      "key": "global:*.resume",
+      "definition": {
+        "id": "resume",
+        "title": "Resume & Verification Flow",
+        "intro": "Restores an incomplete application through an email-based secure link and phone verification code."
+      },
+      "position": 2,
+      "displayId": 45854880176152,
+      "providedBy": null,
+      "sourceReference": "prototype:flows/global:*.resume"
+    },
+    {
+      "id": "global:*.autosave",
+      "key": "global:*.autosave",
+      "definition": {
+        "id": "autosave",
+        "title": "Autosave & Persistence Flow",
+        "intro": "Autosave begins after successful Membership submission. Field-level saving by external underwriting experiences is outside Portal autosave scope."
+      },
+      "position": 3,
+      "displayId": 5899090999861,
+      "providedBy": null,
+      "sourceReference": "prototype:flows/global:*.autosave"
+    },
+    {
+      "id": "global:*.quote",
+      "key": "global:*.quote",
+      "definition": {
+        "id": "quote",
+        "title": "Quote Flow",
+        "intro": "Available through configured entry points (drawer/modal, not a standalone page). Collects minimum information to determine available products and estimated premiums."
+      },
+      "position": 4,
+      "displayId": 16974405495589,
+      "providedBy": null,
+      "sourceReference": "prototype:flows/global:*.quote"
+    },
+    {
+      "id": "global:*.tpaVerification",
+      "key": "global:*.tpaVerification",
+      "definition": {
+        "id": "tpaVerification",
+        "title": "TPA Member Verification Flow",
+        "intro": "After membership attestation, look up First Name, Last Name and DOB (plus configured client fields). Existing members with active coverage proceed to LexisNexis identity verification. A pass enables the coverage portfolio and TPA auto-approval at submission; failure or skipping sends the application to the TPA admin for manual review without a portfolio. AMA uses this standard flow. ASCE also requires Membership ID."
+      },
+      "position": 5,
+      "displayId": 98412108367981,
+      "providedBy": null,
+      "sourceReference": "prototype:flows/global:*.tpaVerification"
+    },
+    {
+      "id": "client:asce.tpaVerification",
+      "key": "client:asce.tpaVerification",
+      "definition": {
+        "id": "tpaVerification",
+        "title": "TPA Member Verification Flow",
+        "intro": "ASCE follows the standard coverage-verification policy, with Membership ID required in addition to First Name, Last Name and DOB. Existing member + active coverage proceeds to LexisNexis; pass enables portfolio and TPA auto-approval, fail/skipped goes to TPA admin manual review without a portfolio."
+      },
+      "position": 0,
+      "displayId": 72648973495693,
+      "providedBy": null,
+      "sourceReference": "prototype:flows/client:asce.tpaVerification"
+    },
+    {
+      "id": "client:waepa.tpaVerification",
+      "key": "client:waepa.tpaVerification",
+      "definition": {
+        "id": "tpaVerification",
+        "title": "TPA Member Verification Flow",
+        "intro": "WAEPA performs membership attestation and a TPA lookup by First Name, Last Name and DOB. Neither branch runs LexisNexis or shows a coverage portfolio. New members auto-approve at submission; existing members go to the TPA admin for manual review, regardless of coverage status."
+      },
+      "position": 0,
+      "displayId": 247693024278927,
+      "providedBy": null,
+      "sourceReference": "prototype:flows/client:waepa.tpaVerification"
+    }
+  ],
+  "siteFlows": [
+    {
+      "id": "global:*.consumer",
+      "key": "global:*.consumer",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "flowKey": "global:*.consumer",
+      "flowId": "consumer",
+      "position": 0,
+      "displayId": 171336723407982,
+      "providedBy": null,
+      "sourceReference": "prototype:siteFlows/global:*.consumer"
+    },
+    {
+      "id": "global:*.advisor",
+      "key": "global:*.advisor",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "flowKey": "global:*.advisor",
+      "flowId": "advisor",
+      "position": 1,
+      "displayId": 105443556312714,
+      "providedBy": null,
+      "sourceReference": "prototype:siteFlows/global:*.advisor"
+    },
+    {
+      "id": "global:*.resume",
+      "key": "global:*.resume",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "flowKey": "global:*.resume",
+      "flowId": "resume",
+      "position": 2,
+      "displayId": 35542340517145,
+      "providedBy": null,
+      "sourceReference": "prototype:siteFlows/global:*.resume"
+    },
+    {
+      "id": "global:*.autosave",
+      "key": "global:*.autosave",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "flowKey": "global:*.autosave",
+      "flowId": "autosave",
+      "position": 3,
+      "displayId": 235902397715220,
+      "providedBy": null,
+      "sourceReference": "prototype:siteFlows/global:*.autosave"
+    },
+    {
+      "id": "global:*.quote",
+      "key": "global:*.quote",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "flowKey": "global:*.quote",
+      "flowId": "quote",
+      "position": 4,
+      "displayId": 100266032971202,
+      "providedBy": null,
+      "sourceReference": "prototype:siteFlows/global:*.quote"
+    },
+    {
+      "id": "global:*.tpaVerification",
+      "key": "global:*.tpaVerification",
+      "scope": "global",
+      "clientKey": null,
+      "siteKey": null,
+      "flowKey": "global:*.tpaVerification",
+      "flowId": "tpaVerification",
+      "position": 5,
+      "displayId": 270193333297306,
+      "providedBy": null,
+      "sourceReference": "prototype:siteFlows/global:*.tpaVerification"
+    },
+    {
+      "id": "client:asce.tpaVerification",
+      "key": "client:asce.tpaVerification",
+      "scope": "client",
+      "clientKey": "asce",
+      "siteKey": null,
+      "flowKey": "client:asce.tpaVerification",
+      "flowId": "tpaVerification",
+      "position": 0,
+      "displayId": 84967547457176,
+      "providedBy": null,
+      "sourceReference": "prototype:siteFlows/client:asce.tpaVerification"
+    },
+    {
+      "id": "client:waepa.tpaVerification",
+      "key": "client:waepa.tpaVerification",
+      "scope": "client",
+      "clientKey": "waepa",
+      "siteKey": null,
+      "flowKey": "client:waepa.tpaVerification",
+      "flowId": "tpaVerification",
+      "position": 0,
+      "displayId": 68641818211060,
+      "providedBy": null,
+      "sourceReference": "prototype:siteFlows/client:waepa.tpaVerification"
+    }
+  ],
+  "flowSteps": [
+    {
+      "id": "global:*.consumer.consumer-landing",
+      "key": "global:*.consumer.consumer-landing",
+      "definition": {
+        "id": "consumer-landing",
+        "kind": "page",
+        "pageId": "home",
+        "label": "Landing Page",
+        "description": "Starts a new application, opens Quote, or resumes an application."
+      },
+      "position": 0,
+      "flowKey": "global:*.consumer",
+      "displayId": 58218357003363,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.consumer.consumer-landing"
+    },
+    {
+      "id": "global:*.consumer.consumer-membership",
+      "key": "global:*.consumer.consumer-membership",
+      "definition": {
+        "id": "consumer-membership",
+        "kind": "page",
+        "pageId": "membership",
+        "label": "Membership",
+        "description": "Collects membership and applicant contact information. Establishes application record and starts autosave."
+      },
+      "position": 1,
+      "flowKey": "global:*.consumer",
+      "displayId": 200547788906128,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.consumer.consumer-membership"
+    },
+    {
+      "id": "global:*.consumer.consumer-eligibility",
+      "key": "global:*.consumer.consumer-eligibility",
+      "definition": {
+        "id": "consumer-eligibility",
+        "kind": "page",
+        "pageId": "eligibility",
+        "label": "Eligibility",
+        "description": "Collects ZIP/postal code, state, date of birth, dependent selection, and configured eligibility responses."
+      },
+      "position": 2,
+      "flowKey": "global:*.consumer",
+      "displayId": 221483941613025,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.consumer.consumer-eligibility"
+    },
+    {
+      "id": "global:*.consumer.consumer-coverage",
+      "key": "global:*.consumer.consumer-coverage",
+      "definition": {
+        "id": "consumer-coverage",
+        "kind": "page",
+        "pageId": "coverage",
+        "label": "Coverage",
+        "description": "Collects eligible applicants, products, amounts, riders, and estimated premiums. Available choices and downstream requirements vary by selected coverage and client configuration."
+      },
+      "position": 3,
+      "flowKey": "global:*.consumer",
+      "displayId": 256037373078082,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.consumer.consumer-coverage"
+    },
+    {
+      "id": "global:*.consumer.consumer-beneficiary",
+      "key": "global:*.consumer.consumer-beneficiary",
+      "definition": {
+        "id": "consumer-beneficiary",
+        "kind": "page",
+        "pageId": "beneficiary",
+        "label": "Beneficiary",
+        "description": "Included when selected coverage is configured for beneficiary designation (Required/Optional/None mode)."
+      },
+      "position": 4,
+      "flowKey": "global:*.consumer",
+      "displayId": 203155766320809,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.consumer.consumer-beneficiary"
+    },
+    {
+      "id": "global:*.consumer.consumer-contact",
+      "key": "global:*.consumer.consumer-contact",
+      "definition": {
+        "id": "consumer-contact",
+        "kind": "page",
+        "pageId": "contact",
+        "label": "Contact",
+        "description": "Collects configured applicant, mailing, business, and spouse contact information."
+      },
+      "position": 5,
+      "flowKey": "global:*.consumer",
+      "displayId": 105615869733412,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.consumer.consumer-contact"
+    },
+    {
+      "id": "global:*.consumer.consumer-profile",
+      "key": "global:*.consumer.consumer-profile",
+      "definition": {
+        "id": "consumer-profile",
+        "kind": "page",
+        "pageId": "profile",
+        "label": "Profile",
+        "description": "Collects configured personal, employment, financial, existing-coverage, travel, residence, and spouse information."
+      },
+      "position": 6,
+      "flowKey": "global:*.consumer",
+      "displayId": 66551273093405,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.consumer.consumer-profile"
+    },
+    {
+      "id": "global:*.consumer.consumer-review",
+      "key": "global:*.consumer.consumer-review",
+      "definition": {
+        "id": "consumer-review",
+        "kind": "page",
+        "pageId": "review",
+        "label": "Review",
+        "description": "Presents application summary and required consent/acknowledgement sections."
+      },
+      "position": 7,
+      "flowKey": "global:*.consumer",
+      "displayId": 71913417364188,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.consumer.consumer-review"
+    },
+    {
+      "id": "global:*.consumer.consumer-health-summary",
+      "key": "global:*.consumer.consumer-health-summary",
+      "definition": {
+        "id": "consumer-health-summary",
+        "kind": "summary",
+        "pageGroupId": "health",
+        "label": "Health Routing",
+        "description": "Applicable health forms are resolved independently from selected coverage and underwriting type. See Health Routing below for the condition-to-page mapping."
+      },
+      "position": 8,
+      "flowKey": "global:*.consumer",
+      "displayId": 252117275846391,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.consumer.consumer-health-summary"
+    },
+    {
+      "id": "global:*.consumer.consumer-payment",
+      "key": "global:*.consumer.consumer-payment",
+      "definition": {
+        "id": "consumer-payment",
+        "kind": "page",
+        "pageId": "payment",
+        "label": "Payment",
+        "description": "Collects payment information when included by Required or Optional page mode."
+      },
+      "position": 9,
+      "flowKey": "global:*.consumer",
+      "displayId": 246960724387206,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.consumer.consumer-payment"
+    },
+    {
+      "id": "global:*.consumer.consumer-esign",
+      "key": "global:*.consumer.consumer-esign",
+      "definition": {
+        "id": "consumer-esign",
+        "kind": "page",
+        "pageId": "docusign",
+        "label": "E-Sign",
+        "description": "Completes the configured electronic-signature process (DocuSign)."
+      },
+      "position": 10,
+      "flowKey": "global:*.consumer",
+      "displayId": 173075200203074,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.consumer.consumer-esign"
+    },
+    {
+      "id": "global:*.consumer.consumer-receipt",
+      "key": "global:*.consumer.consumer-receipt",
+      "definition": {
+        "id": "consumer-receipt",
+        "kind": "page",
+        "pageId": "receipt",
+        "label": "Receipt",
+        "description": "Displays submission confirmation, decision information, and configured next steps."
+      },
+      "position": 11,
+      "flowKey": "global:*.consumer",
+      "displayId": 90596182932892,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.consumer.consumer-receipt"
+    },
+    {
+      "id": "global:*.advisor.advisor-saved-resume",
+      "key": "global:*.advisor.advisor-saved-resume",
+      "definition": {
+        "id": "advisor-saved-resume",
+        "kind": "page",
+        "pageId": "resume",
+        "label": "Resume saved application (Advisor)",
+        "description": "Enter applicant email, open the secure link and complete resume verification."
+      },
+      "position": 0,
+      "flowKey": "global:*.advisor",
+      "displayId": 14363103343861,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-saved-resume"
+    },
+    {
+      "id": "global:*.advisor.advisor-saved-method",
+      "key": "global:*.advisor.advisor-saved-method",
+      "definition": {
+        "id": "advisor-saved-method",
+        "kind": "page",
+        "pageId": "resume-method",
+        "label": "Resume delivery method (Advisor)",
+        "description": "After opening the secure email link, choose Text or Call for the verification code."
+      },
+      "position": 1,
+      "flowKey": "global:*.advisor",
+      "displayId": 54589477318855,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-saved-method"
+    },
+    {
+      "id": "global:*.advisor.advisor-saved-code",
+      "key": "global:*.advisor.advisor-saved-code",
+      "definition": {
+        "id": "advisor-saved-code",
+        "kind": "page",
+        "pageId": "resume-code",
+        "label": "Resume Code (Advisor)",
+        "description": "Load the saved application and return to Eligibility."
+      },
+      "position": 2,
+      "flowKey": "global:*.advisor",
+      "displayId": 156453288029367,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-saved-code"
+    },
+    {
+      "id": "global:*.advisor.advisor-login",
+      "key": "global:*.advisor.advisor-login",
+      "definition": {
+        "id": "advisor-login",
+        "kind": "page",
+        "pageId": "advisor-login",
+        "label": "Advisor Login",
+        "description": "Start opens Membership. Continue opens Resume for a saved application."
+      },
+      "position": 3,
+      "flowKey": "global:*.advisor",
+      "displayId": 89960588704741,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-login"
+    },
+    {
+      "id": "global:*.advisor.advisor-membership",
+      "key": "global:*.advisor.advisor-membership",
+      "definition": {
+        "id": "advisor-membership",
+        "kind": "page",
+        "pageId": "membership",
+        "label": "Membership",
+        "description": "Advisor begins application."
+      },
+      "position": 4,
+      "flowKey": "global:*.advisor",
+      "displayId": 221888726193056,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-membership"
+    },
+    {
+      "id": "global:*.advisor.advisor-eligibility",
+      "key": "global:*.advisor.advisor-eligibility",
+      "definition": {
+        "id": "advisor-eligibility",
+        "kind": "page",
+        "pageId": "eligibility",
+        "label": "Eligibility",
+        "description": "Advisor completes eligibility information."
+      },
+      "position": 5,
+      "flowKey": "global:*.advisor",
+      "displayId": 150917433048433,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-eligibility"
+    },
+    {
+      "id": "global:*.advisor.advisor-coverage",
+      "key": "global:*.advisor.advisor-coverage",
+      "definition": {
+        "id": "advisor-coverage",
+        "kind": "page",
+        "pageId": "coverage",
+        "label": "Coverage",
+        "description": "Advisor completes coverage selections."
+      },
+      "position": 6,
+      "flowKey": "global:*.advisor",
+      "displayId": 262742753643570,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-coverage"
+    },
+    {
+      "id": "global:*.advisor.advisor-beneficiary",
+      "key": "global:*.advisor.advisor-beneficiary",
+      "definition": {
+        "id": "advisor-beneficiary",
+        "kind": "page",
+        "pageId": "beneficiary",
+        "label": "Beneficiary (if applicable)",
+        "description": "Advisor completes beneficiary information when included in resolved flow."
+      },
+      "position": 7,
+      "flowKey": "global:*.advisor",
+      "displayId": 142131689246265,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-beneficiary"
+    },
+    {
+      "id": "global:*.advisor.advisor-contact",
+      "key": "global:*.advisor.advisor-contact",
+      "definition": {
+        "id": "advisor-contact",
+        "kind": "page",
+        "pageId": "contact",
+        "label": "Contact",
+        "description": "Advisor completes contact information."
+      },
+      "position": 8,
+      "flowKey": "global:*.advisor",
+      "displayId": 67866645901556,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-contact"
+    },
+    {
+      "id": "global:*.advisor.advisor-profile",
+      "key": "global:*.advisor.advisor-profile",
+      "definition": {
+        "id": "advisor-profile",
+        "kind": "page",
+        "pageId": "profile",
+        "label": "Profile",
+        "description": "Advisor completes the final advisor page."
+      },
+      "position": 9,
+      "flowKey": "global:*.advisor",
+      "displayId": 39705988244269,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-profile"
+    },
+    {
+      "id": "global:*.advisor.advisor-send-dialog",
+      "key": "global:*.advisor.advisor-send-dialog",
+      "definition": {
+        "id": "advisor-send-dialog",
+        "kind": "action",
+        "label": "Send Application Dialog",
+        "description": "After clicking Next on Profile, advisor sees SendApplicationDialog titled 'Send to applicant for review' with applicant name + email and send-confirmation copy."
+      },
+      "position": 10,
+      "flowKey": "global:*.advisor",
+      "displayId": 214723806478133,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-send-dialog"
+    },
+    {
+      "id": "global:*.advisor.advisor-send-confirmation",
+      "key": "global:*.advisor.advisor-send-confirmation",
+      "definition": {
+        "id": "advisor-send-confirmation",
+        "kind": "page",
+        "pageId": "advisor-send-confirmation",
+        "label": "Advisor Send Confirmation",
+        "description": "Confirmation page showing the applicant email, send timestamp, and purge date. Advisor can start a new application."
+      },
+      "position": 11,
+      "flowKey": "global:*.advisor",
+      "displayId": 243404716207672,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-send-confirmation"
+    },
+    {
+      "id": "global:*.advisor.advisor-resume-verification",
+      "key": "global:*.advisor.advisor-resume-verification",
+      "definition": {
+        "id": "advisor-resume-verification",
+        "kind": "page",
+        "pageId": "resume",
+        "label": "Resume & Verification (Applicant)",
+        "description": "Applicant enters via resume?flow=advisor, submits email and proceeds to Review without the verification-code step in the current prototype."
+      },
+      "position": 12,
+      "flowKey": "global:*.advisor",
+      "displayId": 262150067986677,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-resume-verification"
+    },
+    {
+      "id": "global:*.advisor.advisor-review",
+      "key": "global:*.advisor.advisor-review",
+      "definition": {
+        "id": "advisor-review",
+        "kind": "page",
+        "pageId": "review",
+        "label": "Review (advisor mode)",
+        "description": "Applicant reviews advisor-entered application data on the standard Review page (flow=advisor). Earlier stepper steps are locked."
+      },
+      "position": 13,
+      "flowKey": "global:*.advisor",
+      "displayId": 60069450691244,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-review"
+    },
+    {
+      "id": "global:*.advisor.advisor-edit-decision",
+      "key": "global:*.advisor.advisor-edit-decision",
+      "definition": {
+        "id": "advisor-edit-decision",
+        "kind": "decision",
+        "label": "Applicant requests edit?",
+        "description": "Edit icon on Review (advisor mode) opens the edit-request dialog."
+      },
+      "position": 14,
+      "flowKey": "global:*.advisor",
+      "displayId": 43823321810873,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-edit-decision"
+    },
+    {
+      "id": "global:*.advisor.advisor-edit-dialog",
+      "key": "global:*.advisor.advisor-edit-dialog",
+      "definition": {
+        "id": "advisor-edit-dialog",
+        "kind": "action",
+        "label": "Request Edit Dialog",
+        "description": "SendApplicationDialog titled 'Request edit to application' with advisor email only and alert copy."
+      },
+      "position": 15,
+      "flowKey": "global:*.advisor",
+      "displayId": 239063290048079,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-edit-dialog"
+    },
+    {
+      "id": "global:*.advisor.advisor-edit-confirmation",
+      "key": "global:*.advisor.advisor-edit-confirmation",
+      "definition": {
+        "id": "advisor-edit-confirmation",
+        "kind": "page",
+        "pageId": "application-edit-confirmation",
+        "label": "Application Edit Confirmation",
+        "description": "Confirms the edit request was sent to the advisor dummy email. Application lock transfers back to the advisor; applicant access ends here."
+      },
+      "position": 16,
+      "flowKey": "global:*.advisor",
+      "displayId": 2890564499118,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-edit-confirmation"
+    },
+    {
+      "id": "global:*.advisor.advisor-health-summary",
+      "key": "global:*.advisor.advisor-health-summary",
+      "definition": {
+        "id": "advisor-health-summary",
+        "kind": "summary",
+        "pageGroupId": "health",
+        "label": "Health Routing",
+        "description": "Applicable health forms as separate routes grouped under one Health progress stage — see Health Routing below for per-condition detail."
+      },
+      "position": 17,
+      "flowKey": "global:*.advisor",
+      "displayId": 223919228274759,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-health-summary"
+    },
+    {
+      "id": "global:*.advisor.advisor-payment",
+      "key": "global:*.advisor.advisor-payment",
+      "definition": {
+        "id": "advisor-payment",
+        "kind": "page",
+        "pageId": "payment",
+        "label": "Payment",
+        "description": "Collects payment information when included by Required or Optional page mode."
+      },
+      "position": 18,
+      "flowKey": "global:*.advisor",
+      "displayId": 207276071337462,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-payment"
+    },
+    {
+      "id": "global:*.advisor.advisor-esign",
+      "key": "global:*.advisor.advisor-esign",
+      "definition": {
+        "id": "advisor-esign",
+        "kind": "page",
+        "pageId": "docusign",
+        "label": "E-Sign",
+        "description": "Completes the configured electronic-signature process (DocuSign)."
+      },
+      "position": 19,
+      "flowKey": "global:*.advisor",
+      "displayId": 235465116398642,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-esign"
+    },
+    {
+      "id": "global:*.advisor.advisor-receipt",
+      "key": "global:*.advisor.advisor-receipt",
+      "definition": {
+        "id": "advisor-receipt",
+        "kind": "page",
+        "pageId": "receipt",
+        "label": "Receipt",
+        "description": "Displays submission confirmation, decision information, and configured next steps."
+      },
+      "position": 20,
+      "flowKey": "global:*.advisor",
+      "displayId": 23863745824588,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.advisor.advisor-receipt"
+    },
+    {
+      "id": "global:*.resume.resume-request",
+      "key": "global:*.resume.resume-request",
+      "definition": {
+        "id": "resume-request",
+        "kind": "page",
+        "pageId": "resume",
+        "label": "Resume Request",
+        "description": "User enters application email address; reminder-email links prefill it."
+      },
+      "position": 0,
+      "flowKey": "global:*.resume",
+      "displayId": 84720358279887,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.resume.resume-request"
+    },
+    {
+      "id": "global:*.resume.resume-request-confirmation",
+      "key": "global:*.resume.resume-request-confirmation",
+      "definition": {
+        "id": "resume-request-confirmation",
+        "kind": "action",
+        "label": "Request Confirmation",
+        "description": "System shows same confirmation whether or not a matching application is found."
+      },
+      "position": 1,
+      "flowKey": "global:*.resume",
+      "displayId": 137653974781879,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.resume.resume-request-confirmation"
+    },
+    {
+      "id": "global:*.resume.resume-link",
+      "key": "global:*.resume.resume-link",
+      "definition": {
+        "id": "resume-link",
+        "kind": "action",
+        "label": "Resume Link",
+        "description": "User opens the time-limited email link."
+      },
+      "position": 2,
+      "flowKey": "global:*.resume",
+      "displayId": 218052992697690,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.resume.resume-link"
+    },
+    {
+      "id": "global:*.resume.resume-method",
+      "key": "global:*.resume.resume-method",
+      "definition": {
+        "id": "resume-method",
+        "kind": "page",
+        "pageId": "resume-method",
+        "label": "Resume Method",
+        "description": "User selects how to receive their verification code: Text or Call."
+      },
+      "position": 3,
+      "flowKey": "global:*.resume",
+      "displayId": 5639242928607,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.resume.resume-method"
+    },
+    {
+      "id": "global:*.resume.resume-code",
+      "key": "global:*.resume.resume-code",
+      "definition": {
+        "id": "resume-code",
+        "kind": "page",
+        "pageId": "resume-code",
+        "label": "Resume Code",
+        "description": "User enters the security code sent via the chosen delivery method."
+      },
+      "position": 4,
+      "flowKey": "global:*.resume",
+      "displayId": 46049224120719,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.resume.resume-code"
+    },
+    {
+      "id": "global:*.resume.resume-result-decision",
+      "key": "global:*.resume.resume-result-decision",
+      "definition": {
+        "id": "resume-result-decision",
+        "kind": "decision",
+        "label": "Verification Result",
+        "description": "Displays success or failure."
+      },
+      "position": 5,
+      "flowKey": "global:*.resume",
+      "displayId": 86314549568296,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.resume.resume-result-decision"
+    },
+    {
+      "id": "global:*.resume.resume-restored",
+      "key": "global:*.resume.resume-restored",
+      "definition": {
+        "id": "resume-restored",
+        "kind": "end",
+        "label": "Restored Destination",
+        "description": "User is routed to the next incomplete page."
+      },
+      "position": 6,
+      "flowKey": "global:*.resume",
+      "displayId": 260456610864196,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.resume.resume-restored"
+    },
+    {
+      "id": "global:*.autosave.autosave-start",
+      "key": "global:*.autosave.autosave-start",
+      "definition": {
+        "id": "autosave-start",
+        "kind": "start",
+        "label": "Membership Submission",
+        "description": "Autosave begins after successful Membership submission for both consumer and advisor applications."
+      },
+      "position": 0,
+      "flowKey": "global:*.autosave",
+      "displayId": 243802296759100,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.autosave.autosave-start"
+    },
+    {
+      "id": "global:*.autosave.autosave-page-submission",
+      "key": "global:*.autosave.autosave-page-submission",
+      "definition": {
+        "id": "autosave-page-submission",
+        "kind": "action",
+        "label": "Page Submission",
+        "description": "Portal form data is saved when a page is successfully submitted."
+      },
+      "position": 1,
+      "flowKey": "global:*.autosave",
+      "displayId": 213948122871742,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.autosave.autosave-page-submission"
+    },
+    {
+      "id": "global:*.autosave.autosave-outcome-decision",
+      "key": "global:*.autosave.autosave-outcome-decision",
+      "definition": {
+        "id": "autosave-outcome-decision",
+        "kind": "decision",
+        "label": "Save outcome?",
+        "description": "Whether the autosave request for the submitted page completed successfully."
+      },
+      "position": 2,
+      "flowKey": "global:*.autosave",
+      "displayId": 87647514013537,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.autosave.autosave-outcome-decision"
+    },
+    {
+      "id": "global:*.autosave.autosave-confirmed",
+      "key": "global:*.autosave.autosave-confirmed",
+      "definition": {
+        "id": "autosave-confirmed",
+        "kind": "end",
+        "label": "Save Confirmed",
+        "description": "Saved indicator appears only after the save is confirmed."
+      },
+      "position": 3,
+      "flowKey": "global:*.autosave",
+      "displayId": 154469377686897,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.autosave.autosave-confirmed"
+    },
+    {
+      "id": "global:*.autosave.autosave-failure-summary",
+      "key": "global:*.autosave.autosave-failure-summary",
+      "definition": {
+        "id": "autosave-failure-summary",
+        "kind": "summary",
+        "label": "Save Failure — Recovery Scenarios (10)",
+        "description": "Network connectivity failure; server/application error; API or service unavailability; session expiration; validation failure; database persistence failure; concurrent update conflict; browser interruption; storage limit exceeded; partial save failure. The source documentation gives no distinct downstream destination per scenario, so these are summarized here rather than modeled as separate branches."
+      },
+      "position": 4,
+      "flowKey": "global:*.autosave",
+      "displayId": 84469359031067,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.autosave.autosave-failure-summary"
+    },
+    {
+      "id": "global:*.quote.quote-entry",
+      "key": "global:*.quote.quote-entry",
+      "definition": {
+        "id": "quote-entry",
+        "kind": "start",
+        "label": "Entry Point",
+        "description": "Available from Landing Page and Membership page (drawer/modal, not standalone page)."
+      },
+      "position": 0,
+      "flowKey": "global:*.quote",
+      "displayId": 141993793480528,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.quote.quote-entry"
+    },
+    {
+      "id": "global:*.quote.quote-collect-inputs",
+      "key": "global:*.quote.quote-collect-inputs",
+      "definition": {
+        "id": "quote-collect-inputs",
+        "kind": "action",
+        "label": "Collect Inputs",
+        "description": "Collects minimum information required: DOB, gender, tobacco status, category-specific inputs."
+      },
+      "position": 1,
+      "flowKey": "global:*.quote",
+      "displayId": 207006182103796,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.quote.quote-collect-inputs"
+    },
+    {
+      "id": "global:*.quote.quote-calculate-estimates",
+      "key": "global:*.quote.quote-calculate-estimates",
+      "definition": {
+        "id": "quote-calculate-estimates",
+        "kind": "action",
+        "label": "Calculate Estimates",
+        "description": "Calculates estimated premiums for supported categories (LI, AD, DI, OO, SH)."
+      },
+      "position": 2,
+      "flowKey": "global:*.quote",
+      "displayId": 144430675784666,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.quote.quote-calculate-estimates"
+    },
+    {
+      "id": "global:*.quote.quote-product-selection",
+      "key": "global:*.quote.quote-product-selection",
+      "definition": {
+        "id": "quote-product-selection",
+        "kind": "action",
+        "label": "Product Selection",
+        "description": "At least one product must be selected before continuing into application — a validation gate, not a routing branch."
+      },
+      "position": 3,
+      "flowKey": "global:*.quote",
+      "displayId": 248920364432668,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.quote.quote-product-selection"
+    },
+    {
+      "id": "global:*.quote.quote-carry-into-application",
+      "key": "global:*.quote.quote-carry-into-application",
+      "definition": {
+        "id": "quote-carry-into-application",
+        "kind": "end",
+        "label": "Carry into Application",
+        "description": "Applicable quote inputs and selected products carry into the application fields."
+      },
+      "position": 4,
+      "flowKey": "global:*.quote",
+      "displayId": 174451030644691,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.quote.quote-carry-into-application"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-membership",
+      "key": "global:*.tpaVerification.tpa-membership",
+      "definition": {
+        "id": "tpa-membership",
+        "kind": "page",
+        "pageId": "membership",
+        "label": "Membership attestation",
+        "description": "Applicant claims membership eligibility before the TPA lookup."
+      },
+      "position": 0,
+      "flowKey": "global:*.tpaVerification",
+      "displayId": 198227434052489,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.tpaVerification.tpa-membership"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-eligibility-lookup",
+      "key": "global:*.tpaVerification.tpa-eligibility-lookup",
+      "definition": {
+        "id": "tpa-eligibility-lookup",
+        "kind": "external",
+        "label": "TPA Eligibility Lookup",
+        "description": "Look up First Name, Last Name and DOB, plus any configured additional fields. Return existing-member and active-coverage status."
+      },
+      "position": 1,
+      "flowKey": "global:*.tpaVerification",
+      "displayId": 72425190077263,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.tpaVerification.tpa-eligibility-lookup"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-match-decision",
+      "key": "global:*.tpaVerification.tpa-match-decision",
+      "definition": {
+        "id": "tpa-match-decision",
+        "kind": "decision",
+        "label": "Existing member + active coverage?",
+        "description": "Both conditions must be true to offer LexisNexis identity verification."
+      },
+      "position": 2,
+      "flowKey": "global:*.tpaVerification",
+      "displayId": 174524244738543,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.tpaVerification.tpa-match-decision"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-no-match",
+      "key": "global:*.tpaVerification.tpa-no-match",
+      "definition": {
+        "id": "tpa-no-match",
+        "kind": "end",
+        "label": "Regular Application — No Portfolio",
+        "description": "No existing member or no active coverage. Continue without a coverage portfolio; submission goes to the TPA admin for manual review."
+      },
+      "position": 3,
+      "flowKey": "global:*.tpaVerification",
+      "displayId": 154194209739414,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.tpaVerification.tpa-no-match"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-method-decision",
+      "key": "global:*.tpaVerification.tpa-method-decision",
+      "definition": {
+        "id": "tpa-method-decision",
+        "kind": "decision",
+        "label": "Choose Verification Method",
+        "description": "Applicant may verify by text code, voice code, or security questions, or proceed without verification."
+      },
+      "position": 4,
+      "flowKey": "global:*.tpaVerification",
+      "displayId": 177446649024253,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.tpaVerification.tpa-method-decision"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-security-questions",
+      "key": "global:*.tpaVerification.tpa-security-questions",
+      "definition": {
+        "id": "tpa-security-questions",
+        "kind": "action",
+        "label": "LexisNexis Security Questions",
+        "description": "Three identity questions are presented. Selecting a none-of-the-above response causes verification failure."
+      },
+      "position": 5,
+      "flowKey": "global:*.tpaVerification",
+      "displayId": 89744408144667,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.tpaVerification.tpa-security-questions"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-result-decision",
+      "key": "global:*.tpaVerification.tpa-result-decision",
+      "definition": {
+        "id": "tpa-result-decision",
+        "kind": "decision",
+        "label": "Verification successful?",
+        "description": "A completed verification attempt resolves to success or failure."
+      },
+      "position": 6,
+      "flowKey": "global:*.tpaVerification",
+      "displayId": 193986402697585,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.tpaVerification.tpa-result-decision"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-verified-outcome",
+      "key": "global:*.tpaVerification.tpa-verified-outcome",
+      "definition": {
+        "id": "tpa-verified-outcome",
+        "kind": "end",
+        "label": "Regular Application — Portfolio Enabled",
+        "description": "tpa-verified=true. Continue the regular consumer application flow. Coverage shows the existing Coverage Portfolio, and submission is marked for auto-approval in the TPA Admin Portal."
+      },
+      "position": 7,
+      "flowKey": "global:*.tpaVerification",
+      "displayId": 203131977652940,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.tpaVerification.tpa-verified-outcome"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-unverified-outcome",
+      "key": "global:*.tpaVerification.tpa-unverified-outcome",
+      "definition": {
+        "id": "tpa-unverified-outcome",
+        "kind": "end",
+        "label": "Regular Application — No Portfolio",
+        "description": "LexisNexis failed or was skipped. Continue without a coverage portfolio; submission goes to the TPA admin for manual review."
+      },
+      "position": 8,
+      "flowKey": "global:*.tpaVerification",
+      "displayId": 212858770252923,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/global:*.tpaVerification.tpa-unverified-outcome"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-membership",
+      "key": "client:asce.tpaVerification.tpa-membership",
+      "definition": {
+        "id": "tpa-membership",
+        "kind": "page",
+        "pageId": "membership",
+        "label": "Membership attestation",
+        "description": "Applicant claims membership eligibility before the TPA lookup."
+      },
+      "position": 0,
+      "flowKey": "client:asce.tpaVerification",
+      "displayId": 77941441034845,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/client:asce.tpaVerification.tpa-membership"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-eligibility-lookup",
+      "key": "client:asce.tpaVerification.tpa-eligibility-lookup",
+      "definition": {
+        "id": "tpa-eligibility-lookup",
+        "kind": "external",
+        "label": "TPA Eligibility Lookup",
+        "description": "Look up First Name, Last Name, DOB and Membership ID. Return existing-member and active-coverage status."
+      },
+      "position": 1,
+      "flowKey": "client:asce.tpaVerification",
+      "displayId": 78786793846611,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/client:asce.tpaVerification.tpa-eligibility-lookup"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-match-decision",
+      "key": "client:asce.tpaVerification.tpa-match-decision",
+      "definition": {
+        "id": "tpa-match-decision",
+        "kind": "decision",
+        "label": "Existing member + active coverage?",
+        "description": "Both conditions must be true to offer LexisNexis identity verification."
+      },
+      "position": 2,
+      "flowKey": "client:asce.tpaVerification",
+      "displayId": 223648086695323,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/client:asce.tpaVerification.tpa-match-decision"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-no-match",
+      "key": "client:asce.tpaVerification.tpa-no-match",
+      "definition": {
+        "id": "tpa-no-match",
+        "kind": "end",
+        "label": "Regular Application — No Portfolio",
+        "description": "No existing member or no active coverage. Continue without a coverage portfolio; submission goes to the TPA admin for manual review."
+      },
+      "position": 3,
+      "flowKey": "client:asce.tpaVerification",
+      "displayId": 82063891010754,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/client:asce.tpaVerification.tpa-no-match"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-method-decision",
+      "key": "client:asce.tpaVerification.tpa-method-decision",
+      "definition": {
+        "id": "tpa-method-decision",
+        "kind": "decision",
+        "label": "Choose Verification Method",
+        "description": "Applicant may verify by text code, voice code, or security questions, or proceed without verification."
+      },
+      "position": 4,
+      "flowKey": "client:asce.tpaVerification",
+      "displayId": 242175382112329,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/client:asce.tpaVerification.tpa-method-decision"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-security-questions",
+      "key": "client:asce.tpaVerification.tpa-security-questions",
+      "definition": {
+        "id": "tpa-security-questions",
+        "kind": "action",
+        "label": "LexisNexis Security Questions",
+        "description": "Three identity questions are presented. Selecting a none-of-the-above response causes verification failure."
+      },
+      "position": 5,
+      "flowKey": "client:asce.tpaVerification",
+      "displayId": 125313709138743,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/client:asce.tpaVerification.tpa-security-questions"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-result-decision",
+      "key": "client:asce.tpaVerification.tpa-result-decision",
+      "definition": {
+        "id": "tpa-result-decision",
+        "kind": "decision",
+        "label": "Verification successful?",
+        "description": "A completed verification attempt resolves to success or failure."
+      },
+      "position": 6,
+      "flowKey": "client:asce.tpaVerification",
+      "displayId": 263720880067861,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/client:asce.tpaVerification.tpa-result-decision"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-verified-outcome",
+      "key": "client:asce.tpaVerification.tpa-verified-outcome",
+      "definition": {
+        "id": "tpa-verified-outcome",
+        "kind": "end",
+        "label": "Regular Application — Portfolio Enabled",
+        "description": "tpa-verified=true. Continue the regular consumer application flow. Coverage shows the existing Coverage Portfolio, and submission is marked for auto-approval in the TPA Admin Portal."
+      },
+      "position": 7,
+      "flowKey": "client:asce.tpaVerification",
+      "displayId": 56005679984576,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/client:asce.tpaVerification.tpa-verified-outcome"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-unverified-outcome",
+      "key": "client:asce.tpaVerification.tpa-unverified-outcome",
+      "definition": {
+        "id": "tpa-unverified-outcome",
+        "kind": "end",
+        "label": "Regular Application — No Portfolio",
+        "description": "LexisNexis failed or was skipped. Continue without a coverage portfolio; submission goes to the TPA admin for manual review."
+      },
+      "position": 8,
+      "flowKey": "client:asce.tpaVerification",
+      "displayId": 50994469025471,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/client:asce.tpaVerification.tpa-unverified-outcome"
+    },
+    {
+      "id": "client:waepa.tpaVerification.waepa-attestation",
+      "key": "client:waepa.tpaVerification.waepa-attestation",
+      "definition": {
+        "id": "waepa-attestation",
+        "kind": "page",
+        "pageId": "membership",
+        "label": "Membership attestation"
+      },
+      "position": 0,
+      "flowKey": "client:waepa.tpaVerification",
+      "displayId": 103282496732844,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/client:waepa.tpaVerification.waepa-attestation"
+    },
+    {
+      "id": "client:waepa.tpaVerification.waepa-lookup",
+      "key": "client:waepa.tpaVerification.waepa-lookup",
+      "definition": {
+        "id": "waepa-lookup",
+        "kind": "external",
+        "label": "TPA API lookup",
+        "description": "First Name, Last Name and DOB. Return existing-member and coverage status."
+      },
+      "position": 1,
+      "flowKey": "client:waepa.tpaVerification",
+      "displayId": 57231596050376,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/client:waepa.tpaVerification.waepa-lookup"
+    },
+    {
+      "id": "client:waepa.tpaVerification.waepa-membership-decision",
+      "key": "client:waepa.tpaVerification.waepa-membership-decision",
+      "definition": {
+        "id": "waepa-membership-decision",
+        "kind": "decision",
+        "label": "Existing member?",
+        "description": "Use the lookup result; coverage status does not change the outcome."
+      },
+      "position": 2,
+      "flowKey": "client:waepa.tpaVerification",
+      "displayId": 246453055831123,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/client:waepa.tpaVerification.waepa-membership-decision"
+    },
+    {
+      "id": "client:waepa.tpaVerification.waepa-new-member",
+      "key": "client:waepa.tpaVerification.waepa-new-member",
+      "definition": {
+        "id": "waepa-new-member",
+        "kind": "action",
+        "label": "New Member",
+        "description": "No LexisNexis verification and no coverage portfolio."
+      },
+      "position": 3,
+      "flowKey": "client:waepa.tpaVerification",
+      "displayId": 254606849403253,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/client:waepa.tpaVerification.waepa-new-member"
+    },
+    {
+      "id": "client:waepa.tpaVerification.waepa-new-member-outcome",
+      "key": "client:waepa.tpaVerification.waepa-new-member-outcome",
+      "definition": {
+        "id": "waepa-new-member-outcome",
+        "kind": "end",
+        "label": "Auto-approve — No Portfolio",
+        "description": "Continue the application; mark submission for TPA auto-approval."
+      },
+      "position": 4,
+      "flowKey": "client:waepa.tpaVerification",
+      "displayId": 241640323078572,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/client:waepa.tpaVerification.waepa-new-member-outcome"
+    },
+    {
+      "id": "client:waepa.tpaVerification.waepa-current-member",
+      "key": "client:waepa.tpaVerification.waepa-current-member",
+      "definition": {
+        "id": "waepa-current-member",
+        "kind": "end",
+        "label": "Manual Review — No Portfolio",
+        "description": "No LexisNexis verification. Continue the application; send submission to the TPA admin for manual review."
+      },
+      "position": 5,
+      "flowKey": "client:waepa.tpaVerification",
+      "displayId": 238668415681264,
+      "providedBy": null,
+      "sourceReference": "prototype:flowSteps/client:waepa.tpaVerification.waepa-current-member"
+    }
+  ],
+  "flowTransitions": [
+    {
+      "id": "global:*.consumer.consumer-e1",
+      "key": "global:*.consumer.consumer-e1",
+      "definition": {
+        "id": "consumer-e1",
+        "source": "consumer-landing",
+        "target": "consumer-membership"
+      },
+      "position": 0,
+      "flowKey": "global:*.consumer",
+      "sourceStepKey": "global:*.consumer.consumer-landing",
+      "targetStepKey": "global:*.consumer.consumer-membership",
+      "displayId": 37438791749889,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.consumer.consumer-e1"
+    },
+    {
+      "id": "global:*.consumer.consumer-e2",
+      "key": "global:*.consumer.consumer-e2",
+      "definition": {
+        "id": "consumer-e2",
+        "source": "consumer-membership",
+        "target": "consumer-eligibility"
+      },
+      "position": 1,
+      "flowKey": "global:*.consumer",
+      "sourceStepKey": "global:*.consumer.consumer-membership",
+      "targetStepKey": "global:*.consumer.consumer-eligibility",
+      "displayId": 34140256865256,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.consumer.consumer-e2"
+    },
+    {
+      "id": "global:*.consumer.consumer-e3",
+      "key": "global:*.consumer.consumer-e3",
+      "definition": {
+        "id": "consumer-e3",
+        "source": "consumer-eligibility",
+        "target": "consumer-coverage"
+      },
+      "position": 2,
+      "flowKey": "global:*.consumer",
+      "sourceStepKey": "global:*.consumer.consumer-eligibility",
+      "targetStepKey": "global:*.consumer.consumer-coverage",
+      "displayId": 35239768493467,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.consumer.consumer-e3"
+    },
+    {
+      "id": "global:*.consumer.consumer-e4",
+      "key": "global:*.consumer.consumer-e4",
+      "definition": {
+        "id": "consumer-e4",
+        "source": "consumer-coverage",
+        "target": "consumer-beneficiary"
+      },
+      "position": 3,
+      "flowKey": "global:*.consumer",
+      "sourceStepKey": "global:*.consumer.consumer-coverage",
+      "targetStepKey": "global:*.consumer.consumer-beneficiary",
+      "displayId": 40737326634522,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.consumer.consumer-e4"
+    },
+    {
+      "id": "global:*.consumer.consumer-e5",
+      "key": "global:*.consumer.consumer-e5",
+      "definition": {
+        "id": "consumer-e5",
+        "source": "consumer-beneficiary",
+        "target": "consumer-contact"
+      },
+      "position": 4,
+      "flowKey": "global:*.consumer",
+      "sourceStepKey": "global:*.consumer.consumer-beneficiary",
+      "targetStepKey": "global:*.consumer.consumer-contact",
+      "displayId": 41836838262733,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.consumer.consumer-e5"
+    },
+    {
+      "id": "global:*.consumer.consumer-e6",
+      "key": "global:*.consumer.consumer-e6",
+      "definition": {
+        "id": "consumer-e6",
+        "source": "consumer-contact",
+        "target": "consumer-profile"
+      },
+      "position": 5,
+      "flowKey": "global:*.consumer",
+      "sourceStepKey": "global:*.consumer.consumer-contact",
+      "targetStepKey": "global:*.consumer.consumer-profile",
+      "displayId": 38538303378100,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.consumer.consumer-e6"
+    },
+    {
+      "id": "global:*.consumer.consumer-e7",
+      "key": "global:*.consumer.consumer-e7",
+      "definition": {
+        "id": "consumer-e7",
+        "source": "consumer-profile",
+        "target": "consumer-review"
+      },
+      "position": 6,
+      "flowKey": "global:*.consumer",
+      "sourceStepKey": "global:*.consumer.consumer-profile",
+      "targetStepKey": "global:*.consumer.consumer-review",
+      "displayId": 39637815006311,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.consumer.consumer-e7"
+    },
+    {
+      "id": "global:*.consumer.consumer-e8",
+      "key": "global:*.consumer.consumer-e8",
+      "definition": {
+        "id": "consumer-e8",
+        "source": "consumer-review",
+        "target": "consumer-health-summary"
+      },
+      "position": 7,
+      "flowKey": "global:*.consumer",
+      "sourceStepKey": "global:*.consumer.consumer-review",
+      "targetStepKey": "global:*.consumer.consumer-health-summary",
+      "displayId": 27543187095990,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.consumer.consumer-e8"
+    },
+    {
+      "id": "global:*.consumer.consumer-e9",
+      "key": "global:*.consumer.consumer-e9",
+      "definition": {
+        "id": "consumer-e9",
+        "source": "consumer-health-summary",
+        "target": "consumer-payment"
+      },
+      "position": 8,
+      "flowKey": "global:*.consumer",
+      "sourceStepKey": "global:*.consumer.consumer-health-summary",
+      "targetStepKey": "global:*.consumer.consumer-payment",
+      "displayId": 28642698724201,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.consumer.consumer-e9"
+    },
+    {
+      "id": "global:*.consumer.consumer-e10",
+      "key": "global:*.consumer.consumer-e10",
+      "definition": {
+        "id": "consumer-e10",
+        "source": "consumer-payment",
+        "target": "consumer-esign"
+      },
+      "position": 9,
+      "flowKey": "global:*.consumer",
+      "sourceStepKey": "global:*.consumer.consumer-payment",
+      "targetStepKey": "global:*.consumer.consumer-esign",
+      "displayId": 14201831765571,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.consumer.consumer-e10"
+    },
+    {
+      "id": "global:*.consumer.consumer-e11",
+      "key": "global:*.consumer.consumer-e11",
+      "definition": {
+        "id": "consumer-e11",
+        "source": "consumer-esign",
+        "target": "consumer-receipt"
+      },
+      "position": 10,
+      "flowKey": "global:*.consumer",
+      "sourceStepKey": "global:*.consumer.consumer-esign",
+      "targetStepKey": "global:*.consumer.consumer-receipt",
+      "displayId": 13102320137360,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.consumer.consumer-e11"
+    },
+    {
+      "id": "global:*.advisor.advisor-e1",
+      "key": "global:*.advisor.advisor-e1",
+      "definition": {
+        "id": "advisor-e1",
+        "source": "advisor-login",
+        "target": "advisor-membership",
+        "condition": "Start"
+      },
+      "position": 0,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-login",
+      "targetStepKey": "global:*.advisor.advisor-membership",
+      "displayId": 74189377275793,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e1"
+    },
+    {
+      "id": "global:*.advisor.advisor-saved-entry",
+      "key": "global:*.advisor.advisor-saved-entry",
+      "definition": {
+        "id": "advisor-saved-entry",
+        "source": "advisor-login",
+        "target": "advisor-saved-resume",
+        "condition": "Continue"
+      },
+      "position": 1,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-login",
+      "targetStepKey": "global:*.advisor.advisor-saved-resume",
+      "displayId": 251854641008879,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-saved-entry"
+    },
+    {
+      "id": "global:*.advisor.advisor-saved-verification",
+      "key": "global:*.advisor.advisor-saved-verification",
+      "definition": {
+        "id": "advisor-saved-verification",
+        "source": "advisor-saved-resume",
+        "target": "advisor-saved-method"
+      },
+      "position": 2,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-saved-resume",
+      "targetStepKey": "global:*.advisor.advisor-saved-method",
+      "displayId": 105450077211562,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-saved-verification"
+    },
+    {
+      "id": "global:*.advisor.advisor-saved-delivery",
+      "key": "global:*.advisor.advisor-saved-delivery",
+      "definition": {
+        "id": "advisor-saved-delivery",
+        "source": "advisor-saved-method",
+        "target": "advisor-saved-code",
+        "condition": "Text / Call"
+      },
+      "position": 3,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-saved-method",
+      "targetStepKey": "global:*.advisor.advisor-saved-code",
+      "displayId": 159825009566217,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-saved-delivery"
+    },
+    {
+      "id": "global:*.advisor.advisor-saved-loaded",
+      "key": "global:*.advisor.advisor-saved-loaded",
+      "definition": {
+        "id": "advisor-saved-loaded",
+        "source": "advisor-saved-code",
+        "target": "advisor-eligibility"
+      },
+      "position": 4,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-saved-code",
+      "targetStepKey": "global:*.advisor.advisor-eligibility",
+      "displayId": 166286061415300,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-saved-loaded"
+    },
+    {
+      "id": "global:*.advisor.advisor-e2",
+      "key": "global:*.advisor.advisor-e2",
+      "definition": {
+        "id": "advisor-e2",
+        "source": "advisor-membership",
+        "target": "advisor-eligibility"
+      },
+      "position": 5,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-membership",
+      "targetStepKey": "global:*.advisor.advisor-eligibility",
+      "displayId": 70890842391160,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e2"
+    },
+    {
+      "id": "global:*.advisor.advisor-e3",
+      "key": "global:*.advisor.advisor-e3",
+      "definition": {
+        "id": "advisor-e3",
+        "source": "advisor-eligibility",
+        "target": "advisor-coverage"
+      },
+      "position": 6,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-eligibility",
+      "targetStepKey": "global:*.advisor.advisor-coverage",
+      "displayId": 71990354019371,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e3"
+    },
+    {
+      "id": "global:*.advisor.advisor-e4",
+      "key": "global:*.advisor.advisor-e4",
+      "definition": {
+        "id": "advisor-e4",
+        "source": "advisor-coverage",
+        "target": "advisor-beneficiary"
+      },
+      "position": 7,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-coverage",
+      "targetStepKey": "global:*.advisor.advisor-beneficiary",
+      "displayId": 77487912160426,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e4"
+    },
+    {
+      "id": "global:*.advisor.advisor-e5",
+      "key": "global:*.advisor.advisor-e5",
+      "definition": {
+        "id": "advisor-e5",
+        "source": "advisor-beneficiary",
+        "target": "advisor-contact"
+      },
+      "position": 8,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-beneficiary",
+      "targetStepKey": "global:*.advisor.advisor-contact",
+      "displayId": 78587423788637,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e5"
+    },
+    {
+      "id": "global:*.advisor.advisor-e6",
+      "key": "global:*.advisor.advisor-e6",
+      "definition": {
+        "id": "advisor-e6",
+        "source": "advisor-contact",
+        "target": "advisor-profile"
+      },
+      "position": 9,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-contact",
+      "targetStepKey": "global:*.advisor.advisor-profile",
+      "displayId": 75288888904004,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e6"
+    },
+    {
+      "id": "global:*.advisor.advisor-e7",
+      "key": "global:*.advisor.advisor-e7",
+      "definition": {
+        "id": "advisor-e7",
+        "source": "advisor-profile",
+        "target": "advisor-send-dialog"
+      },
+      "position": 10,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-profile",
+      "targetStepKey": "global:*.advisor.advisor-send-dialog",
+      "displayId": 76388400532215,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e7"
+    },
+    {
+      "id": "global:*.advisor.advisor-e8",
+      "key": "global:*.advisor.advisor-e8",
+      "definition": {
+        "id": "advisor-e8",
+        "source": "advisor-send-dialog",
+        "target": "advisor-send-confirmation",
+        "condition": "Send"
+      },
+      "position": 11,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-send-dialog",
+      "targetStepKey": "global:*.advisor.advisor-send-confirmation",
+      "displayId": 64293772621894,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e8"
+    },
+    {
+      "id": "global:*.advisor.advisor-e9",
+      "key": "global:*.advisor.advisor-e9",
+      "definition": {
+        "id": "advisor-e9",
+        "source": "advisor-send-dialog",
+        "target": "advisor-profile",
+        "condition": "Cancel",
+        "styleHint": "loop-back"
+      },
+      "position": 12,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-send-dialog",
+      "targetStepKey": "global:*.advisor.advisor-profile",
+      "displayId": 65393284250105,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e9"
+    },
+    {
+      "id": "global:*.advisor.advisor-e10",
+      "key": "global:*.advisor.advisor-e10",
+      "definition": {
+        "id": "advisor-e10",
+        "source": "advisor-send-confirmation",
+        "target": "advisor-resume-verification"
+      },
+      "position": 13,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-send-confirmation",
+      "targetStepKey": "global:*.advisor.advisor-resume-verification",
+      "displayId": 79778165323411,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e10"
+    },
+    {
+      "id": "global:*.advisor.advisor-e11",
+      "key": "global:*.advisor.advisor-e11",
+      "definition": {
+        "id": "advisor-e11",
+        "source": "advisor-resume-verification",
+        "target": "advisor-review"
+      },
+      "position": 14,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-resume-verification",
+      "targetStepKey": "global:*.advisor.advisor-review",
+      "displayId": 78678653695200,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e11"
+    },
+    {
+      "id": "global:*.advisor.advisor-e12",
+      "key": "global:*.advisor.advisor-e12",
+      "definition": {
+        "id": "advisor-e12",
+        "source": "advisor-review",
+        "target": "advisor-edit-decision"
+      },
+      "position": 15,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-review",
+      "targetStepKey": "global:*.advisor.advisor-edit-decision",
+      "displayId": 81977188579833,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e12"
+    },
+    {
+      "id": "global:*.advisor.advisor-e13",
+      "key": "global:*.advisor.advisor-e13",
+      "definition": {
+        "id": "advisor-e13",
+        "source": "advisor-edit-decision",
+        "target": "advisor-edit-dialog",
+        "condition": "Request edit"
+      },
+      "position": 16,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-edit-decision",
+      "targetStepKey": "global:*.advisor.advisor-edit-dialog",
+      "displayId": 80877676951622,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e13"
+    },
+    {
+      "id": "global:*.advisor.advisor-e14",
+      "key": "global:*.advisor.advisor-e14",
+      "definition": {
+        "id": "advisor-e14",
+        "source": "advisor-edit-decision",
+        "target": "advisor-health-summary",
+        "condition": "Continue (no edits)"
+      },
+      "position": 17,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-edit-decision",
+      "targetStepKey": "global:*.advisor.advisor-health-summary",
+      "displayId": 84176211836255,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e14"
+    },
+    {
+      "id": "global:*.advisor.advisor-e15",
+      "key": "global:*.advisor.advisor-e15",
+      "definition": {
+        "id": "advisor-e15",
+        "source": "advisor-edit-dialog",
+        "target": "advisor-edit-confirmation",
+        "condition": "Send",
+        "styleHint": "dialog-return"
+      },
+      "position": 18,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-edit-dialog",
+      "targetStepKey": "global:*.advisor.advisor-edit-confirmation",
+      "displayId": 83076700208044,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e15"
+    },
+    {
+      "id": "global:*.advisor.advisor-e16",
+      "key": "global:*.advisor.advisor-e16",
+      "definition": {
+        "id": "advisor-e16",
+        "source": "advisor-edit-dialog",
+        "target": "advisor-review",
+        "condition": "Cancel",
+        "styleHint": "loop-back"
+      },
+      "position": 19,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-edit-dialog",
+      "targetStepKey": "global:*.advisor.advisor-review",
+      "displayId": 86375235092677,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e16"
+    },
+    {
+      "id": "global:*.advisor.advisor-e17",
+      "key": "global:*.advisor.advisor-e17",
+      "definition": {
+        "id": "advisor-e17",
+        "source": "advisor-health-summary",
+        "target": "advisor-payment"
+      },
+      "position": 20,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-health-summary",
+      "targetStepKey": "global:*.advisor.advisor-payment",
+      "displayId": 85275723464466,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e17"
+    },
+    {
+      "id": "global:*.advisor.advisor-e18",
+      "key": "global:*.advisor.advisor-e18",
+      "definition": {
+        "id": "advisor-e18",
+        "source": "advisor-payment",
+        "target": "advisor-esign"
+      },
+      "position": 21,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-payment",
+      "targetStepKey": "global:*.advisor.advisor-esign",
+      "displayId": 88574258349099,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e18"
+    },
+    {
+      "id": "global:*.advisor.advisor-e19",
+      "key": "global:*.advisor.advisor-e19",
+      "definition": {
+        "id": "advisor-e19",
+        "source": "advisor-esign",
+        "target": "advisor-receipt"
+      },
+      "position": 22,
+      "flowKey": "global:*.advisor",
+      "sourceStepKey": "global:*.advisor.advisor-esign",
+      "targetStepKey": "global:*.advisor.advisor-receipt",
+      "displayId": 87474746720888,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.advisor.advisor-e19"
+    },
+    {
+      "id": "global:*.resume.resume-e1",
+      "key": "global:*.resume.resume-e1",
+      "definition": {
+        "id": "resume-e1",
+        "source": "resume-request",
+        "target": "resume-request-confirmation"
+      },
+      "position": 0,
+      "flowKey": "global:*.resume",
+      "sourceStepKey": "global:*.resume.resume-request",
+      "targetStepKey": "global:*.resume.resume-request-confirmation",
+      "displayId": 72313070278603,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.resume.resume-e1"
+    },
+    {
+      "id": "global:*.resume.resume-e2",
+      "key": "global:*.resume.resume-e2",
+      "definition": {
+        "id": "resume-e2",
+        "source": "resume-request-confirmation",
+        "target": "resume-link"
+      },
+      "position": 1,
+      "flowKey": "global:*.resume",
+      "sourceStepKey": "global:*.resume.resume-request-confirmation",
+      "targetStepKey": "global:*.resume.resume-link",
+      "displayId": 73412581906814,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.resume.resume-e2"
+    },
+    {
+      "id": "global:*.resume.resume-e3",
+      "key": "global:*.resume.resume-e3",
+      "definition": {
+        "id": "resume-e3",
+        "source": "resume-link",
+        "target": "resume-method"
+      },
+      "position": 2,
+      "flowKey": "global:*.resume",
+      "sourceStepKey": "global:*.resume.resume-link",
+      "targetStepKey": "global:*.resume.resume-method",
+      "displayId": 74512093535025,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.resume.resume-e3"
+    },
+    {
+      "id": "global:*.resume.resume-e4",
+      "key": "global:*.resume.resume-e4",
+      "definition": {
+        "id": "resume-e4",
+        "source": "resume-method",
+        "target": "resume-code",
+        "condition": "Text"
+      },
+      "position": 3,
+      "flowKey": "global:*.resume",
+      "sourceStepKey": "global:*.resume.resume-method",
+      "targetStepKey": "global:*.resume.resume-code",
+      "displayId": 75611605163236,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.resume.resume-e4"
+    },
+    {
+      "id": "global:*.resume.resume-e5",
+      "key": "global:*.resume.resume-e5",
+      "definition": {
+        "id": "resume-e5",
+        "source": "resume-method",
+        "target": "resume-code",
+        "condition": "Call"
+      },
+      "position": 4,
+      "flowKey": "global:*.resume",
+      "sourceStepKey": "global:*.resume.resume-method",
+      "targetStepKey": "global:*.resume.resume-code",
+      "displayId": 76711116791447,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.resume.resume-e5"
+    },
+    {
+      "id": "global:*.resume.resume-e6",
+      "key": "global:*.resume.resume-e6",
+      "definition": {
+        "id": "resume-e6",
+        "source": "resume-code",
+        "target": "resume-result-decision"
+      },
+      "position": 5,
+      "flowKey": "global:*.resume",
+      "sourceStepKey": "global:*.resume.resume-code",
+      "targetStepKey": "global:*.resume.resume-result-decision",
+      "displayId": 77810628419658,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.resume.resume-e6"
+    },
+    {
+      "id": "global:*.resume.resume-e7",
+      "key": "global:*.resume.resume-e7",
+      "definition": {
+        "id": "resume-e7",
+        "source": "resume-result-decision",
+        "target": "resume-restored",
+        "condition": "Successful"
+      },
+      "position": 6,
+      "flowKey": "global:*.resume",
+      "sourceStepKey": "global:*.resume.resume-result-decision",
+      "targetStepKey": "global:*.resume.resume-restored",
+      "displayId": 78910140047869,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.resume.resume-e7"
+    },
+    {
+      "id": "global:*.resume.resume-e8",
+      "key": "global:*.resume.resume-e8",
+      "definition": {
+        "id": "resume-e8",
+        "source": "resume-result-decision",
+        "target": "resume-code",
+        "condition": "Unsuccessful",
+        "styleHint": "loop-back"
+      },
+      "position": 7,
+      "flowKey": "global:*.resume",
+      "sourceStepKey": "global:*.resume.resume-result-decision",
+      "targetStepKey": "global:*.resume.resume-code",
+      "displayId": 62417465624704,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.resume.resume-e8"
+    },
+    {
+      "id": "global:*.autosave.autosave-e1",
+      "key": "global:*.autosave.autosave-e1",
+      "definition": {
+        "id": "autosave-e1",
+        "source": "autosave-start",
+        "target": "autosave-page-submission"
+      },
+      "position": 0,
+      "flowKey": "global:*.autosave",
+      "sourceStepKey": "global:*.autosave.autosave-start",
+      "targetStepKey": "global:*.autosave.autosave-page-submission",
+      "displayId": 152676423779129,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.autosave.autosave-e1"
+    },
+    {
+      "id": "global:*.autosave.autosave-e2",
+      "key": "global:*.autosave.autosave-e2",
+      "definition": {
+        "id": "autosave-e2",
+        "source": "autosave-page-submission",
+        "target": "autosave-outcome-decision"
+      },
+      "position": 1,
+      "flowKey": "global:*.autosave",
+      "sourceStepKey": "global:*.autosave.autosave-page-submission",
+      "targetStepKey": "global:*.autosave.autosave-outcome-decision",
+      "displayId": 149377888894496,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.autosave.autosave-e2"
+    },
+    {
+      "id": "global:*.autosave.autosave-e3",
+      "key": "global:*.autosave.autosave-e3",
+      "definition": {
+        "id": "autosave-e3",
+        "source": "autosave-outcome-decision",
+        "target": "autosave-confirmed",
+        "condition": "Confirmed"
+      },
+      "position": 2,
+      "flowKey": "global:*.autosave",
+      "sourceStepKey": "global:*.autosave.autosave-outcome-decision",
+      "targetStepKey": "global:*.autosave.autosave-confirmed",
+      "displayId": 150477400522707,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.autosave.autosave-e3"
+    },
+    {
+      "id": "global:*.autosave.autosave-e4",
+      "key": "global:*.autosave.autosave-e4",
+      "definition": {
+        "id": "autosave-e4",
+        "source": "autosave-outcome-decision",
+        "target": "autosave-failure-summary",
+        "condition": "Failure"
+      },
+      "position": 3,
+      "flowKey": "global:*.autosave",
+      "sourceStepKey": "global:*.autosave.autosave-outcome-decision",
+      "targetStepKey": "global:*.autosave.autosave-failure-summary",
+      "displayId": 155974958663762,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.autosave.autosave-e4"
+    },
+    {
+      "id": "global:*.quote.quote-e1",
+      "key": "global:*.quote.quote-e1",
+      "definition": {
+        "id": "quote-e1",
+        "source": "quote-entry",
+        "target": "quote-collect-inputs"
+      },
+      "position": 0,
+      "flowKey": "global:*.quote",
+      "sourceStepKey": "global:*.quote.quote-entry",
+      "targetStepKey": "global:*.quote.quote-collect-inputs",
+      "displayId": 10577469011997,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.quote.quote-e1"
+    },
+    {
+      "id": "global:*.quote.quote-e2",
+      "key": "global:*.quote.quote-e2",
+      "definition": {
+        "id": "quote-e2",
+        "source": "quote-collect-inputs",
+        "target": "quote-calculate-estimates"
+      },
+      "position": 1,
+      "flowKey": "global:*.quote",
+      "sourceStepKey": "global:*.quote.quote-collect-inputs",
+      "targetStepKey": "global:*.quote.quote-calculate-estimates",
+      "displayId": 7278934127364,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.quote.quote-e2"
+    },
+    {
+      "id": "global:*.quote.quote-e3",
+      "key": "global:*.quote.quote-e3",
+      "definition": {
+        "id": "quote-e3",
+        "source": "quote-calculate-estimates",
+        "target": "quote-product-selection"
+      },
+      "position": 2,
+      "flowKey": "global:*.quote",
+      "sourceStepKey": "global:*.quote.quote-calculate-estimates",
+      "targetStepKey": "global:*.quote.quote-product-selection",
+      "displayId": 8378445755575,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.quote.quote-e3"
+    },
+    {
+      "id": "global:*.quote.quote-e4",
+      "key": "global:*.quote.quote-e4",
+      "definition": {
+        "id": "quote-e4",
+        "source": "quote-product-selection",
+        "target": "quote-carry-into-application"
+      },
+      "position": 3,
+      "flowKey": "global:*.quote",
+      "sourceStepKey": "global:*.quote.quote-product-selection",
+      "targetStepKey": "global:*.quote.quote-carry-into-application",
+      "displayId": 5079910870942,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.quote.quote-e4"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-attestation-lookup",
+      "key": "global:*.tpaVerification.tpa-attestation-lookup",
+      "definition": {
+        "id": "tpa-attestation-lookup",
+        "source": "tpa-membership",
+        "target": "tpa-eligibility-lookup"
+      },
+      "position": 0,
+      "flowKey": "global:*.tpaVerification",
+      "sourceStepKey": "global:*.tpaVerification.tpa-membership",
+      "targetStepKey": "global:*.tpaVerification.tpa-eligibility-lookup",
+      "displayId": 181200249768449,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.tpaVerification.tpa-attestation-lookup"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-e1",
+      "key": "global:*.tpaVerification.tpa-e1",
+      "definition": {
+        "id": "tpa-e1",
+        "source": "tpa-eligibility-lookup",
+        "target": "tpa-match-decision"
+      },
+      "position": 1,
+      "flowKey": "global:*.tpaVerification",
+      "sourceStepKey": "global:*.tpaVerification.tpa-eligibility-lookup",
+      "targetStepKey": "global:*.tpaVerification.tpa-match-decision",
+      "displayId": 178284522720452,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.tpaVerification.tpa-e1"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-e2",
+      "key": "global:*.tpaVerification.tpa-e2",
+      "definition": {
+        "id": "tpa-e2",
+        "source": "tpa-match-decision",
+        "target": "tpa-no-match",
+        "condition": "No"
+      },
+      "position": 2,
+      "flowKey": "global:*.tpaVerification",
+      "sourceStepKey": "global:*.tpaVerification.tpa-match-decision",
+      "targetStepKey": "global:*.tpaVerification.tpa-no-match",
+      "displayId": 181583057605085,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.tpaVerification.tpa-e2"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-e3",
+      "key": "global:*.tpaVerification.tpa-e3",
+      "definition": {
+        "id": "tpa-e3",
+        "source": "tpa-match-decision",
+        "target": "tpa-method-decision",
+        "condition": "Yes"
+      },
+      "position": 3,
+      "flowKey": "global:*.tpaVerification",
+      "sourceStepKey": "global:*.tpaVerification.tpa-match-decision",
+      "targetStepKey": "global:*.tpaVerification.tpa-method-decision",
+      "displayId": 180483545976874,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.tpaVerification.tpa-e3"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-e4",
+      "key": "global:*.tpaVerification.tpa-e4",
+      "definition": {
+        "id": "tpa-e4",
+        "source": "tpa-method-decision",
+        "target": "tpa-result-decision",
+        "condition": "Text code"
+      },
+      "position": 4,
+      "flowKey": "global:*.tpaVerification",
+      "sourceStepKey": "global:*.tpaVerification.tpa-method-decision",
+      "targetStepKey": "global:*.tpaVerification.tpa-result-decision",
+      "displayId": 174985987835819,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.tpaVerification.tpa-e4"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-e5",
+      "key": "global:*.tpaVerification.tpa-e5",
+      "definition": {
+        "id": "tpa-e5",
+        "source": "tpa-method-decision",
+        "target": "tpa-result-decision",
+        "condition": "Voice code"
+      },
+      "position": 5,
+      "flowKey": "global:*.tpaVerification",
+      "sourceStepKey": "global:*.tpaVerification.tpa-method-decision",
+      "targetStepKey": "global:*.tpaVerification.tpa-result-decision",
+      "displayId": 173886476207608,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.tpaVerification.tpa-e5"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-e6",
+      "key": "global:*.tpaVerification.tpa-e6",
+      "definition": {
+        "id": "tpa-e6",
+        "source": "tpa-method-decision",
+        "target": "tpa-security-questions",
+        "condition": "Security questions"
+      },
+      "position": 6,
+      "flowKey": "global:*.tpaVerification",
+      "sourceStepKey": "global:*.tpaVerification.tpa-method-decision",
+      "targetStepKey": "global:*.tpaVerification.tpa-security-questions",
+      "displayId": 177185011092241,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.tpaVerification.tpa-e6"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-e7",
+      "key": "global:*.tpaVerification.tpa-e7",
+      "definition": {
+        "id": "tpa-e7",
+        "source": "tpa-method-decision",
+        "target": "tpa-unverified-outcome",
+        "condition": "Proceed without verification"
+      },
+      "position": 7,
+      "flowKey": "global:*.tpaVerification",
+      "sourceStepKey": "global:*.tpaVerification.tpa-method-decision",
+      "targetStepKey": "global:*.tpaVerification.tpa-unverified-outcome",
+      "displayId": 176085499464030,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.tpaVerification.tpa-e7"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-e8",
+      "key": "global:*.tpaVerification.tpa-e8",
+      "definition": {
+        "id": "tpa-e8",
+        "source": "tpa-security-questions",
+        "target": "tpa-result-decision"
+      },
+      "position": 8,
+      "flowKey": "global:*.tpaVerification",
+      "sourceStepKey": "global:*.tpaVerification.tpa-security-questions",
+      "targetStepKey": "global:*.tpaVerification.tpa-result-decision",
+      "displayId": 170587941322975,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.tpaVerification.tpa-e8"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-e9",
+      "key": "global:*.tpaVerification.tpa-e9",
+      "definition": {
+        "id": "tpa-e9",
+        "source": "tpa-result-decision",
+        "target": "tpa-verified-outcome",
+        "condition": "Yes"
+      },
+      "position": 9,
+      "flowKey": "global:*.tpaVerification",
+      "sourceStepKey": "global:*.tpaVerification.tpa-result-decision",
+      "targetStepKey": "global:*.tpaVerification.tpa-verified-outcome",
+      "displayId": 169488429694764,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.tpaVerification.tpa-e9"
+    },
+    {
+      "id": "global:*.tpaVerification.tpa-e10",
+      "key": "global:*.tpaVerification.tpa-e10",
+      "definition": {
+        "id": "tpa-e10",
+        "source": "tpa-result-decision",
+        "target": "tpa-unverified-outcome",
+        "condition": "No"
+      },
+      "position": 10,
+      "flowKey": "global:*.tpaVerification",
+      "sourceStepKey": "global:*.tpaVerification.tpa-result-decision",
+      "targetStepKey": "global:*.tpaVerification.tpa-unverified-outcome",
+      "displayId": 134954648453788,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/global:*.tpaVerification.tpa-e10"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-attestation-lookup",
+      "key": "client:asce.tpaVerification.tpa-attestation-lookup",
+      "definition": {
+        "id": "tpa-attestation-lookup",
+        "source": "tpa-membership",
+        "target": "tpa-eligibility-lookup"
+      },
+      "position": 0,
+      "flowKey": "client:asce.tpaVerification",
+      "sourceStepKey": "client:asce.tpaVerification.tpa-membership",
+      "targetStepKey": "client:asce.tpaVerification.tpa-eligibility-lookup",
+      "displayId": 119714225705295,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/client:asce.tpaVerification.tpa-attestation-lookup"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-e1",
+      "key": "client:asce.tpaVerification.tpa-e1",
+      "definition": {
+        "id": "tpa-e1",
+        "source": "tpa-eligibility-lookup",
+        "target": "tpa-match-decision"
+      },
+      "position": 1,
+      "flowKey": "client:asce.tpaVerification",
+      "sourceStepKey": "client:asce.tpaVerification.tpa-eligibility-lookup",
+      "targetStepKey": "client:asce.tpaVerification.tpa-match-decision",
+      "displayId": 246052491593754,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/client:asce.tpaVerification.tpa-e1"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-e2",
+      "key": "client:asce.tpaVerification.tpa-e2",
+      "definition": {
+        "id": "tpa-e2",
+        "source": "tpa-match-decision",
+        "target": "tpa-no-match",
+        "condition": "No"
+      },
+      "position": 2,
+      "flowKey": "client:asce.tpaVerification",
+      "sourceStepKey": "client:asce.tpaVerification.tpa-match-decision",
+      "targetStepKey": "client:asce.tpaVerification.tpa-no-match",
+      "displayId": 244952979965543,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/client:asce.tpaVerification.tpa-e2"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-e3",
+      "key": "client:asce.tpaVerification.tpa-e3",
+      "definition": {
+        "id": "tpa-e3",
+        "source": "tpa-match-decision",
+        "target": "tpa-method-decision",
+        "condition": "Yes"
+      },
+      "position": 3,
+      "flowKey": "client:asce.tpaVerification",
+      "sourceStepKey": "client:asce.tpaVerification.tpa-match-decision",
+      "targetStepKey": "client:asce.tpaVerification.tpa-method-decision",
+      "displayId": 243853468337332,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/client:asce.tpaVerification.tpa-e3"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-e4",
+      "key": "client:asce.tpaVerification.tpa-e4",
+      "definition": {
+        "id": "tpa-e4",
+        "source": "tpa-method-decision",
+        "target": "tpa-result-decision",
+        "condition": "Text code"
+      },
+      "position": 4,
+      "flowKey": "client:asce.tpaVerification",
+      "sourceStepKey": "client:asce.tpaVerification.tpa-method-decision",
+      "targetStepKey": "client:asce.tpaVerification.tpa-result-decision",
+      "displayId": 242753956709121,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/client:asce.tpaVerification.tpa-e4"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-e5",
+      "key": "client:asce.tpaVerification.tpa-e5",
+      "definition": {
+        "id": "tpa-e5",
+        "source": "tpa-method-decision",
+        "target": "tpa-result-decision",
+        "condition": "Voice code"
+      },
+      "position": 5,
+      "flowKey": "client:asce.tpaVerification",
+      "sourceStepKey": "client:asce.tpaVerification.tpa-method-decision",
+      "targetStepKey": "client:asce.tpaVerification.tpa-result-decision",
+      "displayId": 241654445080910,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/client:asce.tpaVerification.tpa-e5"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-e6",
+      "key": "client:asce.tpaVerification.tpa-e6",
+      "definition": {
+        "id": "tpa-e6",
+        "source": "tpa-method-decision",
+        "target": "tpa-security-questions",
+        "condition": "Security questions"
+      },
+      "position": 6,
+      "flowKey": "client:asce.tpaVerification",
+      "sourceStepKey": "client:asce.tpaVerification.tpa-method-decision",
+      "targetStepKey": "client:asce.tpaVerification.tpa-security-questions",
+      "displayId": 240554933452699,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/client:asce.tpaVerification.tpa-e6"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-e7",
+      "key": "client:asce.tpaVerification.tpa-e7",
+      "definition": {
+        "id": "tpa-e7",
+        "source": "tpa-method-decision",
+        "target": "tpa-unverified-outcome",
+        "condition": "Proceed without verification"
+      },
+      "position": 7,
+      "flowKey": "client:asce.tpaVerification",
+      "sourceStepKey": "client:asce.tpaVerification.tpa-method-decision",
+      "targetStepKey": "client:asce.tpaVerification.tpa-unverified-outcome",
+      "displayId": 239455421824488,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/client:asce.tpaVerification.tpa-e7"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-e8",
+      "key": "client:asce.tpaVerification.tpa-e8",
+      "definition": {
+        "id": "tpa-e8",
+        "source": "tpa-security-questions",
+        "target": "tpa-result-decision"
+      },
+      "position": 8,
+      "flowKey": "client:asce.tpaVerification",
+      "sourceStepKey": "client:asce.tpaVerification.tpa-security-questions",
+      "targetStepKey": "client:asce.tpaVerification.tpa-result-decision",
+      "displayId": 238355910196277,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/client:asce.tpaVerification.tpa-e8"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-e9",
+      "key": "client:asce.tpaVerification.tpa-e9",
+      "definition": {
+        "id": "tpa-e9",
+        "source": "tpa-result-decision",
+        "target": "tpa-verified-outcome",
+        "condition": "Yes"
+      },
+      "position": 9,
+      "flowKey": "client:asce.tpaVerification",
+      "sourceStepKey": "client:asce.tpaVerification.tpa-result-decision",
+      "targetStepKey": "client:asce.tpaVerification.tpa-verified-outcome",
+      "displayId": 237256398568066,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/client:asce.tpaVerification.tpa-e9"
+    },
+    {
+      "id": "client:asce.tpaVerification.tpa-e10",
+      "key": "client:asce.tpaVerification.tpa-e10",
+      "definition": {
+        "id": "tpa-e10",
+        "source": "tpa-result-decision",
+        "target": "tpa-unverified-outcome",
+        "condition": "No"
+      },
+      "position": 10,
+      "flowKey": "client:asce.tpaVerification",
+      "sourceStepKey": "client:asce.tpaVerification.tpa-result-decision",
+      "targetStepKey": "client:asce.tpaVerification.tpa-unverified-outcome",
+      "displayId": 118522181607262,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/client:asce.tpaVerification.tpa-e10"
+    },
+    {
+      "id": "client:waepa.tpaVerification.waepa-attestation-lookup",
+      "key": "client:waepa.tpaVerification.waepa-attestation-lookup",
+      "definition": {
+        "id": "waepa-attestation-lookup",
+        "source": "waepa-attestation",
+        "target": "waepa-lookup"
+      },
+      "position": 0,
+      "flowKey": "client:waepa.tpaVerification",
+      "sourceStepKey": "client:waepa.tpaVerification.waepa-attestation",
+      "targetStepKey": "client:waepa.tpaVerification.waepa-lookup",
+      "displayId": 187955057316774,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/client:waepa.tpaVerification.waepa-attestation-lookup"
+    },
+    {
+      "id": "client:waepa.tpaVerification.waepa-lookup-result",
+      "key": "client:waepa.tpaVerification.waepa-lookup-result",
+      "definition": {
+        "id": "waepa-lookup-result",
+        "source": "waepa-lookup",
+        "target": "waepa-membership-decision"
+      },
+      "position": 1,
+      "flowKey": "client:waepa.tpaVerification",
+      "sourceStepKey": "client:waepa.tpaVerification.waepa-lookup",
+      "targetStepKey": "client:waepa.tpaVerification.waepa-membership-decision",
+      "displayId": 39166251342655,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/client:waepa.tpaVerification.waepa-lookup-result"
+    },
+    {
+      "id": "client:waepa.tpaVerification.waepa-tpa-e1",
+      "key": "client:waepa.tpaVerification.waepa-tpa-e1",
+      "definition": {
+        "id": "waepa-tpa-e1",
+        "source": "waepa-membership-decision",
+        "target": "waepa-new-member",
+        "condition": "New member"
+      },
+      "position": 2,
+      "flowKey": "client:waepa.tpaVerification",
+      "sourceStepKey": "client:waepa.tpaVerification.waepa-membership-decision",
+      "targetStepKey": "client:waepa.tpaVerification.waepa-new-member",
+      "displayId": 194881346112937,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/client:waepa.tpaVerification.waepa-tpa-e1"
+    },
+    {
+      "id": "client:waepa.tpaVerification.waepa-tpa-e2",
+      "key": "client:waepa.tpaVerification.waepa-tpa-e2",
+      "definition": {
+        "id": "waepa-tpa-e2",
+        "source": "waepa-new-member",
+        "target": "waepa-new-member-outcome"
+      },
+      "position": 3,
+      "flowKey": "client:waepa.tpaVerification",
+      "sourceStepKey": "client:waepa.tpaVerification.waepa-new-member",
+      "targetStepKey": "client:waepa.tpaVerification.waepa-new-member-outcome",
+      "displayId": 191582811228304,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/client:waepa.tpaVerification.waepa-tpa-e2"
+    },
+    {
+      "id": "client:waepa.tpaVerification.waepa-tpa-e3",
+      "key": "client:waepa.tpaVerification.waepa-tpa-e3",
+      "definition": {
+        "id": "waepa-tpa-e3",
+        "source": "waepa-membership-decision",
+        "target": "waepa-current-member",
+        "condition": "Existing member"
+      },
+      "position": 4,
+      "flowKey": "client:waepa.tpaVerification",
+      "sourceStepKey": "client:waepa.tpaVerification.waepa-membership-decision",
+      "targetStepKey": "client:waepa.tpaVerification.waepa-current-member",
+      "displayId": 192682322856515,
+      "providedBy": null,
+      "sourceReference": "prototype:flowTransitions/client:waepa.tpaVerification.waepa-tpa-e3"
+    }
+  ]
+}

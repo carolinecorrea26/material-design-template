@@ -10,6 +10,7 @@ import { staticSiteAdapter } from "../repositories/staticSiteAdapter";
 import { createSiteRepository } from "../repositories/siteRepository";
 import { resolveClientCoverage } from "../config/resolvers";
 import { resolveUnderwritingBand } from "./coverageRequirements";
+import { asceBusinessDecisions } from "./asceBusinessDecisions";
 
 let db: DatabaseSchema;
 beforeAll(() => { vi.stubGlobal("crypto", webcrypto); db = createMigrationDatabase(); });
@@ -66,7 +67,8 @@ describe("Phase 6A candidate resolution", () => {
     for (const [product, applicant] of [["li-10yr", "child"], ["li-15yr", "member"], ["missing", "member"]]) expect(resolveEffectiveUnderwriting(site, product, applicant, 65, 100000).status).toBe("unresolved");
   });
   it("rejects missing or changed approval evidence and canonical targets", () => {
-    for (const decision of db.semanticRequirements.filter(r => r.domain === "approved-business-decision")) {
+    const keys = new Set(asceBusinessDecisions.map(decision => `business-decision.${decision.key}`));
+    for (const decision of db.semanticRequirements.filter(r => keys.has(r.key))) {
       expect(() => resolveEffectiveSite({ ...db, semanticRequirements: db.semanticRequirements.filter(r => r.key !== decision.key) }, "asce")).toThrow("Unapproved");
       expect(() => resolveEffectiveSite({ ...db, semanticRequirements: [...db.semanticRequirements, decision] }, "asce")).toThrow("Unapproved");
     }
@@ -90,7 +92,7 @@ describe("Phase 6A candidate resolution", () => {
   });
   it("reads only persisted normalized inputs, refreshes reads, propagates failures", async () => {
     const adapter = new LocalStorageAdapter(db);
-    const allowed = new Set([...effectiveConfigurationTables, "sites", "clients", "siteProducts", "siteProductApplicants", "eligibilityConstraints", "underwritingBands", "semanticRequirements", "associations", "siteAssociations", "sitePolicies"]);
+    const allowed = new Set([...effectiveConfigurationTables, "sites", "clients", "organizations", "organizationProfiles", "associationEntities", "associationContacts", "siteProducts", "siteProductApplicants", "eligibilityConstraints", "underwritingBands", "semanticRequirements", "associations", "siteAssociations", "sitePolicies"]);
     const snapshot = adapter.readSnapshot.bind(adapter);
     adapter.readSnapshot = async tables => { for (const table of tables) if (!allowed.has(table)) throw new Error(`Forbidden: ${table}`); return snapshot(tables); };
     const repository = createEffectiveSiteRepository(adapter);
@@ -98,7 +100,7 @@ describe("Phase 6A candidate resolution", () => {
     const site = db.sites.find(s => s.key === "asce")!;
     await adapter.update("sites", site.id, { name: "Persisted name" });
     expect((await repository.resolve("asce")).name.value).toBe("Persisted name");
-    const approval = db.semanticRequirements.find(r => r.domain === "approved-business-decision")!;
+    const approval = db.semanticRequirements.find(r => r.key === `business-decision.${asceBusinessDecisions[0].key}`)!;
     await adapter.remove("semanticRequirements", approval.id);
     await expect(repository.resolve("asce")).rejects.toThrow("Unapproved");
     adapter.readSnapshot = async () => { throw new Error("transport failure"); };

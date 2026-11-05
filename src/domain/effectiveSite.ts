@@ -1,4 +1,10 @@
+import { isCoverageJourneyPolicy } from "./coverageJourneyPolicy";
+import { isBeneficiaryNotePolicy } from "./beneficiaryNotes";
+import { isBeneficiaryParticipationPolicy } from "./beneficiaryParticipation";
 import { validateEligibilityConstraint, validateUnderwritingBand, validateUnderwritingOverlap } from "./coveragePolicyValidation";
+import { eligibilityFactSatisfied, eligibilityAgeMaximumSatisfied, isEligibilityFactRequirements, type EligibilityFactRequirement } from "./eligibilityFacts";
+import { categoryEligibility, readCategoryEligibilityPolicy } from "./categoryEligibilityPolicy";
+import { resolveAssociationEligibility } from "./associationEligibilityPolicy";
 import { resolveEffectiveConfiguration, type EffectiveConfiguration, type EffectiveConfigurationData } from "./effectiveConfiguration";
 import type { DatabaseSchema } from "../persistence/types";
 import type { LibraryMetadata } from "./provenance";
@@ -16,6 +22,9 @@ export type EffectiveApplicant = {
 };
 /** Phase 6B candidate. Unimplemented domains are explicit; this is not a browser configuration. */
 export type EffectiveSite = {
+  /** Retained policy references may name disabled, still-assigned Associations. */
+  assignedAssociationKeys: string[];
+  enabledAssociationKeys: string[];
   siteKey: string;
   clientKey: string;
   name: ResolvedValue<string>;
@@ -87,6 +96,11 @@ export function resolveEffectiveSite(data: EffectiveSiteData, siteKey: string): 
     }) };
   });
   const configuration = resolveEffectiveConfiguration(data, siteKey, clients[0].key, site.id, products.map(p => p.productKey));
+  readCategoryEligibilityPolicy(configuration.categoryEligibilityPolicies);
+  const assignedProducts = new Set(data.siteProducts.filter(link => link.siteId === site.id).map(link => link.productKey));
+  for (const policy of configuration.beneficiaryParticipationPolicies) if (isBeneficiaryParticipationPolicy(policy.value) && policy.value.rules.some(rule => !assignedProducts.has(rule.productKey))) throw new Error("Invalid beneficiary participation policy product scope");
+  for (const policy of configuration.beneficiaryNotePolicies) if (isBeneficiaryNotePolicy(policy.value) && policy.value.notes.some(note => note.productKeys.some(key => !assignedProducts.has(key)))) throw new Error("Invalid beneficiary note policy product scope");
+  for (const policy of configuration.beneficiaryParticipationPolicies) if (isBeneficiaryParticipationPolicy(policy.value) && policy.value.rules.some(rule => rule.associationKeys?.some(key => !data.siteAssociations.some(link => link.siteKey === siteKey && link.associationKey === key)))) throw new Error("Invalid beneficiary participation policy Association scope");
   const implementedScopes = products.flatMap(p => p.applicants.flatMap(a => {
     if (eligibilityExecution(configuration, p.productKey, a).reason) return [];
     const c = a.constraints!.value;
@@ -100,11 +114,14 @@ export function resolveEffectiveSite(data: EffectiveSiteData, siteKey: string): 
     return [{ productKey: p.productKey, applicantKey: a.applicantKey, decisions }];
   }));
   const provisionalDecisions = data.semanticRequirements.filter(decision => decision.domain === "provisional-source-decision" && decision.subjectTable === "sites" && decision.subjectKey === siteKey).sort((a, b) => compare(a.key, b.key)).map(decision => ({ key: decision.key, value: decision.value, provenance: [provenance("semanticRequirements", decision)] }));
-  return structuredClone({ provisionalDecisions, siteKey, clientKey: clients[0].key, name: { value: site.name, provenance: [provenance("sites", site)] }, runtimeActivation: "pending-phase-6", resolution: { completeness: "partial", implementedScopes }, configuration, products });
+  return structuredClone({ assignedAssociationKeys: data.siteAssociations.filter(link => link.siteKey === siteKey).map(link => link.associationKey), enabledAssociationKeys: data.siteAssociations.filter(link => link.siteKey === siteKey && link.enabled).map(link => link.associationKey), provisionalDecisions, siteKey, clientKey: clients[0].key, name: { value: site.name, provenance: [provenance("sites", site)] }, runtimeActivation: "pending-phase-6", resolution: { completeness: "partial", implementedScopes }, configuration, products });
 }
 
 export type EffectiveDecision = { status: "resolved" | "needs-information" | "unresolved" | "ineligible"; eligible?: boolean; pathway?: string; reason?: string; provenance: RuleProvenance[] };
-export type EligibilityFacts = { ageYears?: number; ageDays?: number; fullTimeStudent?: boolean; unmarried?: boolean; workHoursPerWeek?: number; activeMilitary?: boolean;
+export type EligibilityFacts = { ageYears?: number; ageDays?: number; fullTimeStudent?: boolean; unmarried?: boolean; workHoursPerWeek?: number; activeMilitary?: boolean; activelyAtWork?: boolean; associationMember?: boolean; membershipType?: string;
+  associationKey?: string;
+  honorablyDischargedServiceMember?: boolean;
+  firmMemberCount?: number;
   selectedPlans?: { productKey: string; categoryKey: string; applicantKey: string }[];
 };
 /** Shared structural eligibility gate for capability metadata and execution. */
@@ -114,7 +131,7 @@ function eligibilityExecution(configuration: EffectiveConfiguration, productKey:
   const dependencies = product?.dependencies.filter(r => r.value.applicantTypeKey === applicant?.applicantKey) ?? [];
   const maximumPlans = product?.maximumPlans.filter(r => r.value.applicantTypeKey === applicant?.applicantKey) ?? [];
   const facts = product?.eligibilityFacts.filter(rule => rule.applicantKey === applicant?.applicantKey) ?? [];
-  const validFacts = facts.every(rule => Array.isArray(rule.value) && rule.value.length > 0 && rule.value.every(requirement => requirement && typeof requirement === "object" && requirement.fact === "activeMilitary" && typeof requirement.equals === "boolean" && Object.keys(requirement).length === 2));
+  const validFacts = facts.every(rule => isEligibilityFactRequirements(rule.value));
   const provenance = [...facts.flatMap(rule => rule.provenance), ...(applicant?.constraints?.provenance ?? applicant?.provenance ?? []), ...rules.flatMap(r => r.provenance), ...dependencies.flatMap(r => r.provenance), ...maximumPlans.flatMap(r => r.provenance)];
   const reason = !applicant?.constraints || !product ? "Unsupported product or applicant scope"
     : Object.values(applicant.constraints.value).every(v => v === null) ? "Empty eligibility constraint"
@@ -129,9 +146,18 @@ export function resolveEffectiveEligibility(site: EffectiveSite, productKey: str
   const applicant = site.products.find(p => p.productKey === productKey)?.applicants.find(a => a.applicantKey === applicantKey);
   const execution = eligibilityExecution(site.configuration, productKey, applicant);
   if (execution.reason) return { status: "unresolved", reason: execution.reason, provenance: execution.provenance };
-  const { value: c } = applicant!.constraints!;
+  const baseConstraints = applicant!.constraints!.value;
   const provenance = execution.provenance;
   const facts: EligibilityFacts = typeof ageOrFacts === "number" ? { ageYears: ageOrFacts } : ageOrFacts ?? {};
+  const requiresAssociationChoice = site.configuration.products.find(product => product.productKey === productKey)?.journeyPolicies.some(row => isCoverageJourneyPolicy(row.value) && row.value.associationChoices.length > 0);
+  if (requiresAssociationChoice && facts.associationKey && !site.enabledAssociationKeys.includes(facts.associationKey)) return { status: "unresolved", eligible: false, reason: "Association is unavailable in this Site", provenance };
+  const association = resolveAssociationEligibility(site, productKey, applicantKey, facts);
+  if (association.result !== "eligible") return { status: association.invalid ? "unresolved" : association.result === "needs-information" ? "needs-information" : "resolved", eligible: false, reason: association.reason ?? "Applicant does not satisfy association eligibility", provenance: [...provenance, ...(site.configuration.products.find(product => product.productKey === productKey)?.associationEligibilityPolicies ?? []).flatMap(policy => policy.provenance)] };
+  const c = association.replacesAgeBounds ? { ...baseConstraints, minimumAgeDays: null, minimumAgeYears: null, maximumAgeYears: null, studentMaximumAgeYears: null } : baseConstraints;
+  const categoryPolicy = readCategoryEligibilityPolicy(site.configuration.categoryEligibilityPolicies);
+  const category = site.configuration.products.find(product => product.productKey === productKey)?.catalog?.value.categoryKey ?? "";
+  const categoryDecision = categoryEligibility(categoryPolicy, facts.membershipType, category);
+  if (categoryDecision !== "eligible") return { status: categoryDecision === "ineligible" ? "resolved" : "needs-information", eligible: false, reason: "Applicant type does not establish eligibility for this category", provenance: [...provenance, ...site.configuration.categoryEligibilityPolicies.flatMap(policy => policy.provenance)] };
   const valid = (n: unknown, integer = false): n is number => typeof n === "number" && Number.isFinite(n) && n >= 0 && (!integer || Number.isInteger(n));
   const ageRequired = c.minimumAgeYears !== null || c.maximumAgeYears !== null || c.studentMaximumAgeYears !== null;
   if (ageRequired && !valid(facts.ageYears, true) || c.minimumAgeDays !== null && !valid(facts.ageDays, true) || c.unmarried !== null && typeof facts.unmarried !== "boolean" || c.minimumWorkHours !== null && !valid(facts.workHoursPerWeek)) return { status: "needs-information", provenance };
@@ -140,10 +166,14 @@ export function resolveEffectiveEligibility(site: EffectiveSite, productKey: str
     if (typeof facts.fullTimeStudent !== "boolean") return { status: "needs-information", provenance };
     if (facts.fullTimeStudent) maximum = c.studentMaximumAgeYears;
   }
-  let eligible = (c.minimumAgeDays === null || facts.ageDays! >= c.minimumAgeDays) && (c.minimumAgeYears === null || facts.ageYears! >= c.minimumAgeYears) && (maximum === null || facts.ageYears! <= maximum) && (c.unmarried === null || facts.unmarried === c.unmarried) && (c.minimumWorkHours === null || facts.workHoursPerWeek! >= c.minimumWorkHours);
-  for (const rule of execution.facts) for (const requirement of rule.value as Array<{ fact: "activeMilitary"; equals: boolean }>) {
-    if (typeof facts[requirement.fact] !== "boolean") return { status: "needs-information", reason: `${requirement.fact} is required`, provenance };
-    eligible &&= facts[requirement.fact] === requirement.equals;
+  const maximumSatisfied = maximum === null ? true : eligibilityAgeMaximumSatisfied(facts.ageYears, maximum, execution.facts.flatMap(rule => rule.value as EligibilityFactRequirement[]), facts);
+  if (maximumSatisfied === undefined) return { status: "needs-information", provenance };
+  let eligible = (c.minimumAgeDays === null || facts.ageDays! >= c.minimumAgeDays) && (c.minimumAgeYears === null || facts.ageYears! >= c.minimumAgeYears) && maximumSatisfied && (c.unmarried === null || facts.unmarried === c.unmarried) && (c.minimumWorkHours === null || facts.workHoursPerWeek! >= c.minimumWorkHours);
+  for (const rule of execution.facts) for (const requirement of rule.value as EligibilityFactRequirement[]) {
+    if ("extendsMaximumAgeTo" in requirement) continue;
+    const satisfied = eligibilityFactSatisfied(requirement, facts[requirement.fact]);
+    if (satisfied === undefined) return { status: "needs-information", reason: `${requirement.fact} is required`, provenance };
+    eligible &&= satisfied;
   }
   const { rules, dependencies, maximumPlans } = execution;
   const evidence = provenance;

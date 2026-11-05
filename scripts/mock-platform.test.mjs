@@ -142,6 +142,22 @@ it('rejects sensitive analytics payloads and accepts only known tag metadata', a
   expect((await client.request('/analytics/events', { siteKey: 'all' })).status).toBe(401);
 });
 
+it('permits deferring collection only for a Site with saved optional payment', async () => {
+  const stored = { ...database, sitePages: sites.map(siteKey => ({ siteKey, pageKey: 'payment', requirement: siteKey === 'abe' ? 'optional' : 'required' })) };
+  const client = await api({ database: stored });
+  const revision = (await client.request('/prototype/library', { siteKey: 'abe' })).data.revision;
+  const body = { siteKey: 'abe', revision, entries: [{ productKey: 'test-life', applicant: 'member', amount: 10000 }], paymentIds: [], paymentDeferred: true, idempotencyKey: 'optional-payment-001' };
+  const result = await client.request('/applications/submit', body);
+  expect(result.status).toBe(200);
+  expect(result.data).toMatchObject({ status: 'submitted', insurerSubmitted: false, fundsMoved: false, entryCount: 1 });
+  expect((await client.request('/applications/submit', body)).data).toEqual(result.data);
+  expect((await client.request('/applications/submit', { ...body, revision: 'prototype:old', idempotencyKey: 'optional-payment-002' })).status).toBe(409);
+  expect((await client.request('/applications/submit', { ...body, paymentDeferred: false, idempotencyKey: 'optional-payment-003' })).status).toBe(400);
+  expect((await client.request('/applications/submit', { ...body, entries: [{ ...body.entries[0], amount: -1 }], idempotencyKey: 'optional-payment-004' })).status).toBe(400);
+  const requiredRevision = (await client.request('/prototype/library', { siteKey: 'asce' })).data.revision;
+  expect((await client.request('/applications/submit', { ...body, siteKey: 'asce', revision: requiredRevision, idempotencyKey: 'optional-payment-005' })).status).toBe(400);
+});
+
 it('requires approved fixture payments and persists idempotent mock submissions without insurer side effects', async () => {
   const directory = mkdtempSync(join(tmpdir(), 'asce-submission-')); temporaryStores.push(directory);
   const statePath = join(directory, 'state.json');
@@ -208,17 +224,19 @@ it('protects reference uploads, converts a legible image and retains ambiguous o
 
 it('reads the stored Library catalog, isolates saved Site drafts, and excludes operational tables', async () => {
   const stored = { ...database, fields: [{ id: 'child-first-name', key: 'child-first-name', definition: { label: 'Stored child name' } }], analyticsTags: [] };
-  const client = await api({ database: stored, prototypeDatabase: { sites: stored.sites, fields: stored.fields } });
+  const client = await api({ database: stored, prototypeTables: ['sites', 'fields'], libraryTables: ['sites', 'fields'] });
   expect((await client.request('/library/catalog', { siteKey: 'all', tables: ['fields'] })).status).toBe(401);
   const enrollment = await client.request('/auth/setup', { username: 'caroline', password: 'a-long-mock-password' });
   await client.request('/auth/verify', { code: client.code(enrollment.data.secret) });
   const first = await client.request('/library/catalog', { siteKey: 'all', tables: ['fields'] });
   expect(first.data.data.fields).toEqual(stored.fields);
+  expect((await client.request('/prototype/library', { siteKey: 'csea' })).data.payload.data.fields).toEqual(first.data.data.fields);
   expect((await client.request('/library/catalog', { siteKey: 'all', tables: ['users'] })).status).toBe(400);
   const payload = { formatVersion: 1, siteKey: 'csea', baseRevision: 'test', editVersion: 1, data: { ...stored, configurationValues: [], fields: [{ ...stored.fields[0], definition: { label: 'Saved child name' } }] } };
   await client.request('/library/save', { expectedVersion: 0, payload });
   const saved = await client.request('/library/catalog', { siteKey: 'csea', tables: ['fields'] });
   expect(saved.data.data.fields[0].definition.label).toBe('Saved child name');
+  expect((await client.request('/prototype/library', { siteKey: 'csea' })).data.payload.data.fields).toEqual(saved.data.data.fields);
   expect(saved.data.revision).not.toBe(first.data.revision);
   expect((await client.request('/library/catalog', { siteKey: 'asce', tables: ['fields'] })).data.data.fields).toEqual(stored.fields);
 });
@@ -390,4 +408,18 @@ it('reviews matching revisions, stages UAT, schedules production and rolls back 
   expect((await client.request('/prototype/library', { siteKey: first.siteKey, environment: 'production' })).data.revision).toBe(`prototype:${first.payloadHash}`);
   expect((await client.request('/prototype/library', { siteKey: first.siteKey })).data.revision).toBe(`prototype:${second.payloadHash}`);
   expect((await client.request('/library/read', { siteKey: first.siteKey })).data).toBeNull();
+});
+
+it('looks up synthetic AMA records without changing application eligibility or storing applicant names', async () => {
+  const client = await api();
+  const identity = { siteKey: 'ama', firstName: 'Taylor', lastName: 'Morgan', birthDate: '1980-05-04' };
+  const result = await client.request('/membership/ama-lookup', identity);
+  expect(result.status).toBe(200);
+  expect(result.data).toMatchObject({ mode: 'mock', provider: 'ama-mock', status: 'matched', isMember: true, identity: { firstName: 'Taylor', lastName: 'Morgan', birthDate: '1980-05-04' } });
+  expect(result.data.medicalEducationNumber).toMatch(/^MOCK-ME-\d{10}$/);
+  expect((await client.request('/membership/ama-lookup', identity)).data).toEqual(result.data);
+  expect((await client.request('/membership/ama-lookup', { ...identity, firstName: 'Nonmember' })).data).toMatchObject({ status: 'matched', isMember: false });
+  expect((await client.request('/membership/ama-lookup', { ...identity, firstName: 'No', lastName: 'Match' })).data).toMatchObject({ status: 'not-found', medicalEducationNumber: null, isMember: false });
+  expect((await client.request('/membership/ama-lookup', { ...identity, firstName: 'Service', lastName: 'Error' })).status).toBe(503);
+  for (const patch of [{ siteKey: 'abe' }, { birthDate: '2026-02-31' }, { birthDate: '2999-01-01' }, { firstName: '' }, { birthDate: '05/04/1980' }]) expect((await client.request('/membership/ama-lookup', { ...identity, ...patch })).status).toBe(400);
 });

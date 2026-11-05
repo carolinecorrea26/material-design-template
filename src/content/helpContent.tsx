@@ -1,17 +1,16 @@
 import { helpChipDefinitions } from "./interactionLabels";
 import { Box, Stack, Link, Typography } from "@mui/material";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
+import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
+import CalculateRoundedIcon from "@mui/icons-material/CalculateRounded";
 import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import CreditCardOffOutlinedIcon from "@mui/icons-material/CreditCardOffOutlined";
+import LockRoundedIcon from "@mui/icons-material/LockRounded";
+import CreditCardOffRoundedIcon from "@mui/icons-material/CreditCardOffRounded";
 import LoopRoundedIcon from "@mui/icons-material/LoopRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
-import CoverageNeedsCalculator from "../components/forms/CoverageNeedsCalculator";
+import CoverageNeedsCalculator from "../app/sections/ConfiguredCoverageNeedsCalculator";
 import type { FormPageHelpItem } from "../components/content/HelpChips";
-import { InlineDrawerLink, QuickDecisionMark } from "../components/content/QuickDecisionExplainer";
-import CoverageOptionsPanel from "../components/ui/CoverageOptionsPanel";
-import HowApplyingWorksPanel from "../components/ui/HowApplyingWorksPanel";
+import CoverageOptionsPanel from "../app/sections/ConfiguredCoverageOptionsPanel";
+import HowApplyingWorksPanel from "../components/home/HowApplyingWorksPanel";
 import { getContent, resolveTemplate } from "./index";
 import type { coverageCategories } from "../config/coverageCategories";
 import type {
@@ -24,49 +23,7 @@ type CoverageProductGroup = {
   products: CoverageDefinition[];
 };
 
-export function ApplicationReviewDrawerContent({
-  onOpenQuickDecision,
-}: {
-  onOpenQuickDecision: () => void;
-}) {
-  const reviewHelp = getContent().help.applicationReview;
-  return (
-    <Stack spacing={2}>
-      <Typography variant="body2" color="text.secondary">
-        {reviewHelp.intro}
-      </Typography>
-
-      <Box>
-        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-          {reviewHelp.whatToExpectTitle}
-        </Typography>
-        <Stack component="ul" spacing={1} sx={{ m: 0, pl: 2.5 }}>
-          {reviewHelp.whatToExpectItems.map((item, i) => (
-            <Typography
-              key={i}
-              component="li"
-              variant="body2"
-              color="text.secondary"
-            >
-              {item}
-            </Typography>
-          ))}
-        </Stack>
-      </Box>
-
-      <Typography variant="body2" color="text.secondary">
-        {reviewHelp.closingNote.split("QuickDecision")[0]}
-        <InlineDrawerLink onClick={onOpenQuickDecision}>
-          <QuickDecisionMark />
-        </InlineDrawerLink>
-        {reviewHelp.closingNote
-          .split("QuickDecision")
-          .slice(1)
-          .join("QuickDecision")}
-      </Typography>
-    </Stack>
-  );
-}
+export { default as ApplicationReviewDrawerContent } from "../components/content/ApplicationReviewDrawerContent";
 
 export function GroupInsuranceDrawerContent({
   associationName,
@@ -129,7 +86,6 @@ export function CoverageProductsDrawerContent({
                 <Link
                   key={product.id}
                   href="#"
-                  underline="hover"
                   onClick={(event) => event.preventDefault()}
                   sx={{
                     width: "fit-content",
@@ -223,7 +179,7 @@ export const beneficiaryHelpItems: FormPageHelpItem[] = (() => {
 
 export const coverageQuestionsWhyAskedHelpItem: FormPageHelpItem = (() => {
   const whyAsked = getContent().help.whyAsked;
-  const icons = [CalculateOutlinedIcon, TuneRoundedIcon, InfoOutlinedIcon];
+  const icons = [CalculateRoundedIcon, TuneRoundedIcon, InfoRoundedIcon];
   return {
     id: "why-asked",
     label: "Why is this information being asked?",
@@ -235,7 +191,7 @@ export const coverageQuestionsWhyAskedHelpItem: FormPageHelpItem = (() => {
         </Typography>
 
         {whyAsked.sections.map((section, i) => {
-          const IconComponent = icons[i] ?? InfoOutlinedIcon;
+          const IconComponent = icons[i] ?? InfoRoundedIcon;
           return (
             <Box key={i} sx={{ display: "flex", gap: 2 }}>
               <IconComponent
@@ -267,8 +223,8 @@ export const coverageQuestionsWhyAskedHelpItem: FormPageHelpItem = (() => {
 export const paymentHandlingHelpItem: FormPageHelpItem = (() => {
   const payment = getContent().help.paymentHandling;
   const icons = [
-    CreditCardOffOutlinedIcon,
-    LockOutlinedIcon,
+    CreditCardOffRoundedIcon,
+    LockRoundedIcon,
     LoopRoundedIcon,
     DeleteOutlineRoundedIcon,
   ];
@@ -282,7 +238,7 @@ export const paymentHandlingHelpItem: FormPageHelpItem = (() => {
         </Typography>
 
         {payment.sections.map((section, i) => {
-          const IconComponent = icons[i] ?? InfoOutlinedIcon;
+          const IconComponent = icons[i] ?? InfoRoundedIcon;
           return (
             <Box key={i} sx={{ display: "flex", gap: 2 }}>
               <IconComponent

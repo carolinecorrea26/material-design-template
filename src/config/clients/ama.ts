@@ -28,7 +28,7 @@ const amaDisabilityRiders: ClientRiderConfig[] = [
 export const amaClient: ClientConfig = {
   id: "ama",
   // theme: { type: "preset", preset: "dark-blue" },
-  theme: { type: "preset", preset: "default" },
+  theme: { type: "preset", preset: "default", buttonShape: "pill" },
   tpaIntegration: { mode: "coverage-verification", lookupFields: ["first-name", "last-name", "birth-date"], prototypeRecords: [{ facts: { "first-name": "Taylor", "last-name": "Morgan", "birth-date": "1990-08-26" }, activeCoverage: true }] },
   branding: {
     name: "American Medical Association",
@@ -56,6 +56,7 @@ export const amaClient: ClientConfig = {
     },
   },
   coverages: {
+    productOrder: ["li-20yr", "li-15yr", "li-10yr", "li-term", "li-preferred", "li-premier-accident", "di-step-rated", "di-level-rated", "oo-office-overhead", "sh-hospital-income"],
     categories: ["LI", "AD", "DI", "OO", "SH"],
     categorySectionLabels: {
       OO: "Office Overhead Expense",

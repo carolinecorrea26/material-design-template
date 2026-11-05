@@ -1,0 +1,2594 @@
+{
+  "formatVersion": 1,
+  "pageKey": "coverage",
+  "source": "src/pages/Coverage.tsx",
+  "method": "Trace actual JSX component references from Coverage and nested source modules. Stop recursion at the shared FormRoutePage boundary, which has its own stories; do not count all application infrastructure as Coverage-specific UI. Component source reachability is separate from verified conditional rendering.",
+  "summary": {
+    "pageImportedComponents": 9,
+    "referencedComponentModules": 35,
+    "directStoryReferences": 34,
+    "compositionReferencesOnly": 1,
+    "missingComponentReferences": 0,
+    "missingBuiltStoryIds": [],
+    "completePageStories": 5
+  },
+  "components": [
+    {
+      "source": "src/app/RoutePage.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "direct",
+      "status": "direct-story-reference",
+      "directStories": [
+        "application-patterns-application-page-template--standard-form-page",
+        "application-patterns-application-page-template--initial-transition",
+        "application-patterns-application-page-template--standalone-variant"
+      ],
+      "compositionStories": [],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/content/HelpChips.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "direct",
+      "status": "direct-story-reference",
+      "directStories": [
+        "content-helpchips--default",
+        "content-helpchips--empty",
+        "content-helpchips--narrow-container-with-overflow",
+        "layout-pageheader--with-help-chips"
+      ],
+      "compositionStories": [
+        "pages-membership-introduction-and-help--default"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/content/QuickDecisionExplainer.tsx",
+      "symbols": [
+        "InlineDrawerLink",
+        "QuickDecisionMark",
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "content-quickdecision--drawer-explainer-content",
+        "content-quickdecision--mark-variants",
+        "pages-home-how-applying-works--default"
+      ],
+      "compositionStories": [
+        "content-quickdecision--info-box-inline-collapse",
+        "coverage-commerce-coverageoptionspanel--page-variant",
+        "coverage-commerce-coverageoptionspanel--drawer-variant",
+        "coverage-commerce-coverageoptionspanel--initial-category",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "pages-home-coverage-options--default",
+        "coverage-commerce-howapplyingworkspanel--page-variant",
+        "coverage-commerce-howapplyingworkspanel--drawer-variant",
+        "coverage-commerce-howapplyingworkspanel--animated",
+        "layout-appheader--homepage-variant",
+        "layout-appheader--recovery-variant",
+        "layout-appheader--application-form-variant",
+        "layout-appheader--utility-variant",
+        "layout-appmenu--default",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/content/QuickDecisionInfoBox.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "content-quickdecision--info-box-inline-collapse"
+      ],
+      "compositionStories": [
+        "coverage-commerce-coverageoptionspanel--page-variant",
+        "coverage-commerce-coverageoptionspanel--drawer-variant",
+        "coverage-commerce-coverageoptionspanel--initial-category",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "pages-home-coverage-options--default",
+        "layout-appheader--homepage-variant",
+        "layout-appheader--recovery-variant",
+        "layout-appheader--application-form-variant",
+        "layout-appheader--utility-variant",
+        "layout-appmenu--default",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/coverage/CoverageCart.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "coverage-commerce-coveragecart--empty-drawer",
+        "coverage-commerce-coveragecart--populated-drawer"
+      ],
+      "compositionStories": [
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "layout-appheader--homepage-variant",
+        "layout-appheader--recovery-variant",
+        "layout-appheader--application-form-variant",
+        "layout-appheader--utility-variant",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/coverage/CoverageCategorySelector.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "coverage-commerce-coveragecategoryselector--default",
+        "coverage-commerce-coveragecategoryselector--none-selected",
+        "coverage-commerce-coveragecategoryselector--required-error",
+        "coverage-commerce-coveragecategoryselector--custom-legend"
+      ],
+      "compositionStories": [
+        "coverage-commerce-coveragequestions--no-category-selected",
+        "coverage-commerce-coveragequestions--life-insurance-selected",
+        "coverage-commerce-coveragequestions--disability-selected",
+        "coverage-commerce-coveragequestions--with-spouse",
+        "coverage-commerce-coveragequestions--office-overhead-selected",
+        "coverage-commerce-coveragequestions--supplemental-health-selected",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "pages-membership-introduction-and-help--default"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/coverage/CoveragePortfolioDrawer.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "direct",
+      "status": "direct-story-reference",
+      "directStories": [
+        "coverage-commerce-coverageportfoliodrawer--member-only",
+        "coverage-commerce-coverageportfoliodrawer--with-spouse"
+      ],
+      "compositionStories": [],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/coverage/CoverageQuestions.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "direct",
+      "status": "direct-story-reference",
+      "directStories": [
+        "coverage-commerce-coveragequestions--no-category-selected",
+        "coverage-commerce-coveragequestions--life-insurance-selected",
+        "coverage-commerce-coveragequestions--disability-selected",
+        "coverage-commerce-coveragequestions--with-spouse",
+        "coverage-commerce-coveragequestions--office-overhead-selected",
+        "coverage-commerce-coveragequestions--supplemental-health-selected"
+      ],
+      "compositionStories": [],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/coverage/CoverageSelectionFeedback.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "direct",
+      "status": "direct-story-reference",
+      "directStories": [
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating"
+      ],
+      "compositionStories": [],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/coverage/EstimatedRate.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "components-estimated-rate--available",
+        "components-estimated-rate--calculating",
+        "components-estimated-rate--unavailable",
+        "components-estimated-rate--cost-summaries"
+      ],
+      "compositionStories": [
+        "coverage-commerce-coveragecart--empty-drawer",
+        "coverage-commerce-coveragecart--populated-drawer",
+        "coverage-commerce-estimatorproductcard--unselected",
+        "coverage-commerce-estimatorproductcard--selected",
+        "coverage-commerce-estimatorproductcard--featured",
+        "coverage-commerce-estimatorproductcard--quick-decision-eligible",
+        "coverage-commerce-estimatorproductcard--calculating",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "coverage-commerce-productcostbreakdown--monthly",
+        "coverage-commerce-productcostbreakdown--annual",
+        "coverage-commerce-productcostbreakdown--no-riders-or-fee",
+        "coverage-commerce-productcostbreakdown--multiple-riders",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "coverage-commerce-totalcostsummary--default",
+        "coverage-commerce-totalcostsummary--annual-suffix",
+        "coverage-commerce-totalcostsummary--calculating",
+        "coverage-commerce-totalcostsummary--with-disclaimer",
+        "coverage-commerce-totalcostsummary--single-item",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "layout-appheader--homepage-variant",
+        "layout-appheader--recovery-variant",
+        "layout-appheader--application-form-variant",
+        "layout-appheader--utility-variant",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant",
+        "pages-membership-introduction-and-help--default"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/coverage/FeaturedBadge.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "coverage-commerce-product-adornments--side-by-side"
+      ],
+      "compositionStories": [
+        "coverage-commerce-estimatorproductcard--unselected",
+        "coverage-commerce-estimatorproductcard--selected",
+        "coverage-commerce-estimatorproductcard--featured",
+        "coverage-commerce-estimatorproductcard--quick-decision-eligible",
+        "coverage-commerce-estimatorproductcard--calculating",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "pages-membership-introduction-and-help--default"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/coverage/ProductCatalog.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "direct",
+      "status": "direct-story-reference",
+      "directStories": [
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating"
+      ],
+      "compositionStories": [],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/coverage/ProductCostBreakdown.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "coverage-commerce-productcostbreakdown--monthly",
+        "coverage-commerce-productcostbreakdown--annual",
+        "coverage-commerce-productcostbreakdown--no-riders-or-fee",
+        "coverage-commerce-productcostbreakdown--multiple-riders"
+      ],
+      "compositionStories": [
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/coverage/QuickDecisionIcon.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "composition-reference-only",
+      "directStories": [],
+      "compositionStories": [
+        "content-quickdecision--info-box-inline-collapse",
+        "content-quickdecision--drawer-explainer-content",
+        "content-quickdecision--mark-variants",
+        "coverage-commerce-coveragecart--empty-drawer",
+        "coverage-commerce-coveragecart--populated-drawer",
+        "coverage-commerce-coverageoptionspanel--page-variant",
+        "coverage-commerce-coverageoptionspanel--drawer-variant",
+        "coverage-commerce-coverageoptionspanel--initial-category",
+        "coverage-commerce-estimatorproductcard--unselected",
+        "coverage-commerce-estimatorproductcard--selected",
+        "coverage-commerce-estimatorproductcard--featured",
+        "coverage-commerce-estimatorproductcard--quick-decision-eligible",
+        "coverage-commerce-estimatorproductcard--calculating",
+        "coverage-commerce-product-adornments--side-by-side",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "pages-home-how-applying-works--default",
+        "pages-home-coverage-options--default",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "coverage-commerce-howapplyingworkspanel--page-variant",
+        "coverage-commerce-howapplyingworkspanel--drawer-variant",
+        "coverage-commerce-howapplyingworkspanel--animated",
+        "layout-appheader--homepage-variant",
+        "layout-appheader--recovery-variant",
+        "layout-appheader--application-form-variant",
+        "layout-appheader--utility-variant",
+        "layout-appmenu--default",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant",
+        "pages-membership-introduction-and-help--default"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/coverage/QuickDecisionIndicator.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "content-quickdecision--mark-variants",
+        "coverage-commerce-product-adornments--side-by-side"
+      ],
+      "compositionStories": [
+        "coverage-commerce-coveragecart--empty-drawer",
+        "coverage-commerce-coveragecart--populated-drawer",
+        "coverage-commerce-coverageoptionspanel--page-variant",
+        "coverage-commerce-coverageoptionspanel--drawer-variant",
+        "coverage-commerce-coverageoptionspanel--initial-category",
+        "coverage-commerce-estimatorproductcard--unselected",
+        "coverage-commerce-estimatorproductcard--selected",
+        "coverage-commerce-estimatorproductcard--featured",
+        "coverage-commerce-estimatorproductcard--quick-decision-eligible",
+        "coverage-commerce-estimatorproductcard--calculating",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "pages-home-coverage-options--default",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "layout-appheader--homepage-variant",
+        "layout-appheader--recovery-variant",
+        "layout-appheader--application-form-variant",
+        "layout-appheader--utility-variant",
+        "layout-appmenu--default",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant",
+        "pages-membership-introduction-and-help--default"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/coverage/RateFrequencyControl.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "coverage-commerce-ratefrequencycontrol--interactive",
+        "coverage-commerce-ratefrequencycontrol--end-aligned"
+      ],
+      "compositionStories": [
+        "coverage-commerce-coveragecart--empty-drawer",
+        "coverage-commerce-coveragecart--populated-drawer",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "layout-appheader--homepage-variant",
+        "layout-appheader--recovery-variant",
+        "layout-appheader--application-form-variant",
+        "layout-appheader--utility-variant",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant",
+        "pages-membership-introduction-and-help--default"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/coverage/RateFrequencyToggle.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "coverage-commerce-ratefrequencytoggle--unchecked",
+        "coverage-commerce-ratefrequencytoggle--checked"
+      ],
+      "compositionStories": [
+        "coverage-commerce-coveragecart--empty-drawer",
+        "coverage-commerce-coveragecart--populated-drawer",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "coverage-commerce-ratefrequencycontrol--interactive",
+        "coverage-commerce-ratefrequencycontrol--end-aligned",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "layout-appheader--homepage-variant",
+        "layout-appheader--recovery-variant",
+        "layout-appheader--application-form-variant",
+        "layout-appheader--utility-variant",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant",
+        "pages-membership-introduction-and-help--default"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/coverage/ReferenceRateTableLink.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "coverage-reference-rate-table--image",
+        "coverage-reference-rate-table--pdf",
+        "coverage-reference-rate-table--html-table",
+        "coverage-reference-rate-table--link",
+        "coverage-reference-rate-table--xml"
+      ],
+      "compositionStories": [
+        "coverage-commerce-coveragecart--empty-drawer",
+        "coverage-commerce-coveragecart--populated-drawer",
+        "components-estimated-rate--cost-summaries",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "coverage-commerce-totalcostsummary--default",
+        "coverage-commerce-totalcostsummary--annual-suffix",
+        "coverage-commerce-totalcostsummary--calculating",
+        "coverage-commerce-totalcostsummary--with-disclaimer",
+        "coverage-commerce-totalcostsummary--single-item",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "layout-appheader--homepage-variant",
+        "layout-appheader--recovery-variant",
+        "layout-appheader--application-form-variant",
+        "layout-appheader--utility-variant",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant",
+        "pages-membership-introduction-and-help--default"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/coverage/TotalCostSummary.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "components-estimated-rate--cost-summaries",
+        "coverage-commerce-totalcostsummary--default",
+        "coverage-commerce-totalcostsummary--annual-suffix",
+        "coverage-commerce-totalcostsummary--calculating",
+        "coverage-commerce-totalcostsummary--with-disclaimer",
+        "coverage-commerce-totalcostsummary--single-item"
+      ],
+      "compositionStories": [
+        "coverage-commerce-coveragecart--empty-drawer",
+        "coverage-commerce-coveragecart--populated-drawer",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "layout-appheader--homepage-variant",
+        "layout-appheader--recovery-variant",
+        "layout-appheader--application-form-variant",
+        "layout-appheader--utility-variant",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant",
+        "pages-membership-introduction-and-help--default"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/feedback/AppSnackbar.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "feedback-appsnackbar--success",
+        "feedback-appsnackbar--error",
+        "feedback-appsnackbar--warning",
+        "feedback-appsnackbar--info"
+      ],
+      "compositionStories": [
+        "application-patterns-application-page-template--standard-form-page",
+        "application-patterns-application-page-template--initial-transition",
+        "application-patterns-application-page-template--standalone-variant",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "feedback-appsnackbar--progress-saved-preset"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/feedback/EmptyState.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "feedback-emptystate--default",
+        "feedback-emptystate--with-body",
+        "feedback-emptystate--custom-icon"
+      ],
+      "compositionStories": [
+        "coverage-commerce-coveragecart--empty-drawer",
+        "coverage-commerce-coveragecart--populated-drawer",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "layout-appheader--homepage-variant",
+        "layout-appheader--recovery-variant",
+        "layout-appheader--application-form-variant",
+        "layout-appheader--utility-variant",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant",
+        "pages-membership-introduction-and-help--default"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/feedback/PageAlert.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "direct",
+      "status": "direct-story-reference",
+      "directStories": [
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "feedback-pagealert--error",
+        "feedback-pagealert--warning",
+        "feedback-pagealert--info",
+        "feedback-pagealert--success",
+        "feedback-pagealert--dismissible",
+        "feedback-pagealert--no-message",
+        "feedback-pagealert--all-severities",
+        "feedback-pagealert--field-validation-on-next",
+        "feedback-technical-error--save-failure-preserves-answers"
+      ],
+      "compositionStories": [
+        "application-patterns-application-page-template--standard-form-page",
+        "application-patterns-application-page-template--initial-transition",
+        "application-patterns-application-page-template--standalone-variant",
+        "feedback-processingstatuspage--external-service",
+        "feedback-processingstatuspage--bounded-local-status",
+        "feedback-processingstatuspage--complete",
+        "feedback-processingstatuspage--timeout",
+        "feedback-processingstatuspage--unconfirmed-submission",
+        "feedback-technical-error--default",
+        "feedback-technical-error--offline",
+        "feedback-technical-error--save-conflict",
+        "feedback-technical-error--same-incident-in-alert-and-page",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/forms/ConditionalGroup.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "forms-conditionalgroup--hidden-and-revealed",
+        "forms-conditionalgroup--nested-content"
+      ],
+      "compositionStories": [
+        "coverage-commerce-coveragequestions--no-category-selected",
+        "coverage-commerce-coveragequestions--life-insurance-selected",
+        "coverage-commerce-coveragequestions--disability-selected",
+        "coverage-commerce-coveragequestions--with-spouse",
+        "coverage-commerce-coveragequestions--office-overhead-selected",
+        "coverage-commerce-coveragequestions--supplemental-health-selected"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/forms/ControlledFieldRenderer.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "feedback-technical-error--save-failure-preserves-answers",
+        "forms-controlled-field-adapter--default",
+        "layout-fieldgrid--stacked-fields",
+        "layout-fieldgrid--street-and-apartment",
+        "layout-fieldgrid--city-state-and-zip",
+        "layout-pageshell--default",
+        "layout-pageshell--with-back-button",
+        "layout-pageshell--with-error",
+        "layout-pageshell--narrow-max-width"
+      ],
+      "compositionStories": [
+        "coverage-commerce-coveragecategoryselector--default",
+        "coverage-commerce-coveragecategoryselector--none-selected",
+        "coverage-commerce-coveragecategoryselector--required-error",
+        "coverage-commerce-coveragecategoryselector--custom-legend",
+        "coverage-commerce-coveragequestions--no-category-selected",
+        "coverage-commerce-coveragequestions--life-insurance-selected",
+        "coverage-commerce-coveragequestions--disability-selected",
+        "coverage-commerce-coveragequestions--with-spouse",
+        "coverage-commerce-coveragequestions--office-overhead-selected",
+        "coverage-commerce-coveragequestions--supplemental-health-selected",
+        "coverage-commerce-estimatorproductcard--unselected",
+        "coverage-commerce-estimatorproductcard--selected",
+        "coverage-commerce-estimatorproductcard--featured",
+        "coverage-commerce-estimatorproductcard--quick-decision-eligible",
+        "coverage-commerce-estimatorproductcard--calculating",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "pages-eligibility-children-information--empty",
+        "pages-eligibility-children-information--with-child",
+        "pages-eligibility-covered-applicants--default",
+        "pages-eligibility-covered-applicants--with-dependent-details",
+        "pages-eligibility-your-information--default",
+        "pages-eligibility-your-information--zip-derived-state",
+        "pages-eligibility-spouse-information--default",
+        "pages-eligibility-spouse-information--completed",
+        "coverage-commerce-eligibilityfields--default",
+        "coverage-commerce-eligibilityfields--zip-auto-derives-state",
+        "coverage-commerce-eligibilityfields--required-errors",
+        "coverage-commerce-eligibilityfields--age-ineligible",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "pages-membership-introduction-and-help--default"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/forms/FieldRenderer.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "application-patterns-application-page-template--standard-form-page",
+        "application-patterns-application-page-template--initial-transition",
+        "feedback-pagealert--field-validation-on-next",
+        "forms-conditionalgroup--hidden-and-revealed",
+        "forms-fieldrenderer--playground",
+        "forms-fieldrenderer--text-floating-label",
+        "forms-fieldrenderer--text-standard-label",
+        "forms-fieldrenderer--email",
+        "forms-fieldrenderer--phone-with-type-selector",
+        "forms-fieldrenderer--phone-plain",
+        "forms-fieldrenderer--number-input",
+        "forms-fieldrenderer--currency",
+        "forms-fieldrenderer--percent",
+        "forms-fieldrenderer--ssn",
+        "forms-fieldrenderer--date-input",
+        "forms-fieldrenderer--month-year",
+        "forms-fieldrenderer--textarea",
+        "forms-fieldrenderer--dropdown-floating-label",
+        "forms-fieldrenderer--dropdown-standard-label",
+        "forms-fieldrenderer--searchable-select",
+        "forms-fieldrenderer--multi-select",
+        "forms-fieldrenderer--radio",
+        "forms-fieldrenderer--checkbox-single",
+        "forms-fieldrenderer--checkbox-group",
+        "forms-fieldrenderer--disabled",
+        "forms-fieldrenderer--text-error-required",
+        "forms-fieldrenderer--dropdown-error-required",
+        "forms-fieldrenderer--radio-error-required",
+        "forms-fieldrenderer--checkbox-error-required",
+        "forms-fieldrenderer--completion-icons-debug-mode"
+      ],
+      "compositionStories": [
+        "coverage-commerce-coveragecategoryselector--default",
+        "coverage-commerce-coveragecategoryselector--none-selected",
+        "coverage-commerce-coveragecategoryselector--required-error",
+        "coverage-commerce-coveragecategoryselector--custom-legend",
+        "coverage-commerce-coverageneedscalculator--default",
+        "coverage-commerce-coveragequestions--no-category-selected",
+        "coverage-commerce-coveragequestions--life-insurance-selected",
+        "coverage-commerce-coveragequestions--disability-selected",
+        "coverage-commerce-coveragequestions--with-spouse",
+        "coverage-commerce-coveragequestions--office-overhead-selected",
+        "coverage-commerce-coveragequestions--supplemental-health-selected",
+        "coverage-commerce-estimatorproductcard--unselected",
+        "coverage-commerce-estimatorproductcard--selected",
+        "coverage-commerce-estimatorproductcard--featured",
+        "coverage-commerce-estimatorproductcard--quick-decision-eligible",
+        "coverage-commerce-estimatorproductcard--calculating",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "pages-eligibility-children-information--empty",
+        "pages-eligibility-children-information--with-child",
+        "pages-eligibility-covered-applicants--default",
+        "pages-eligibility-covered-applicants--with-dependent-details",
+        "pages-eligibility-your-information--default",
+        "pages-eligibility-your-information--zip-derived-state",
+        "pages-eligibility-spouse-information--default",
+        "pages-eligibility-spouse-information--completed",
+        "feedback-technical-error--save-failure-preserves-answers",
+        "forms-controlled-field-adapter--default",
+        "forms-dynamiclist--empty",
+        "forms-dynamiclist--populated",
+        "forms-dynamiclist--max-items-reached",
+        "forms-dynamiclist--with-grid-fields",
+        "coverage-commerce-eligibilityfields--default",
+        "coverage-commerce-eligibilityfields--zip-auto-derives-state",
+        "coverage-commerce-eligibilityfields--required-errors",
+        "coverage-commerce-eligibilityfields--age-ineligible",
+        "coverage-commerce-physicianinformation--default",
+        "application-patterns-yesnodetaillist--interactive",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "layout-appheader--homepage-variant",
+        "layout-appheader--recovery-variant",
+        "layout-appheader--application-form-variant",
+        "layout-appheader--utility-variant",
+        "layout-appmenu--default",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant",
+        "layout-fieldgrid--stacked-fields",
+        "layout-fieldgrid--street-and-apartment",
+        "layout-fieldgrid--city-state-and-zip",
+        "layout-pageshell--default",
+        "layout-pageshell--with-back-button",
+        "layout-pageshell--with-error",
+        "layout-pageshell--narrow-max-width",
+        "pages-membership-additional-membership-information--member-id",
+        "pages-membership-additional-membership-information--professional-information",
+        "pages-membership-additional-membership-information--physician-spouse",
+        "pages-membership-additional-membership-information--new-member",
+        "pages-membership-additional-membership-information--active-federal-employee",
+        "pages-membership-additional-membership-information--associate-member",
+        "pages-membership-member-information--default",
+        "pages-membership-member-information--with-title",
+        "pages-membership-introduction-and-help--default",
+        "pages-membership-membership-status--default",
+        "pages-membership-membership-status--not-a-member",
+        "pages-membership-membership-status--association-selection",
+        "pages-membership-membership-status--physician",
+        "pages-membership-membership-status--new-or-current-member",
+        "coverage-commerce-memberverification--interactive"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/forms/RadioSelectionGroup.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "forms-radioselectiongroup--interactive",
+        "forms-radioselectiongroup--beneficiary-type",
+        "forms-radioselectiongroup--disabled"
+      ],
+      "compositionStories": [
+        "application-patterns-application-page-template--standard-form-page",
+        "application-patterns-application-page-template--initial-transition",
+        "coverage-commerce-coveragecategoryselector--default",
+        "coverage-commerce-coveragecategoryselector--none-selected",
+        "coverage-commerce-coveragecategoryselector--required-error",
+        "coverage-commerce-coveragecategoryselector--custom-legend",
+        "coverage-commerce-coverageneedscalculator--default",
+        "coverage-commerce-coveragequestions--no-category-selected",
+        "coverage-commerce-coveragequestions--life-insurance-selected",
+        "coverage-commerce-coveragequestions--disability-selected",
+        "coverage-commerce-coveragequestions--with-spouse",
+        "coverage-commerce-coveragequestions--office-overhead-selected",
+        "coverage-commerce-coveragequestions--supplemental-health-selected",
+        "coverage-commerce-estimatorproductcard--unselected",
+        "coverage-commerce-estimatorproductcard--selected",
+        "coverage-commerce-estimatorproductcard--featured",
+        "coverage-commerce-estimatorproductcard--quick-decision-eligible",
+        "coverage-commerce-estimatorproductcard--calculating",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "pages-eligibility-children-information--empty",
+        "pages-eligibility-children-information--with-child",
+        "pages-eligibility-covered-applicants--default",
+        "pages-eligibility-covered-applicants--with-dependent-details",
+        "pages-eligibility-your-information--default",
+        "pages-eligibility-your-information--zip-derived-state",
+        "pages-eligibility-spouse-information--default",
+        "pages-eligibility-spouse-information--completed",
+        "feedback-pagealert--field-validation-on-next",
+        "feedback-technical-error--save-failure-preserves-answers",
+        "forms-conditionalgroup--hidden-and-revealed",
+        "forms-controlled-field-adapter--default",
+        "forms-dynamiclist--empty",
+        "forms-dynamiclist--populated",
+        "forms-dynamiclist--max-items-reached",
+        "forms-dynamiclist--with-grid-fields",
+        "coverage-commerce-eligibilityfields--default",
+        "coverage-commerce-eligibilityfields--zip-auto-derives-state",
+        "coverage-commerce-eligibilityfields--required-errors",
+        "coverage-commerce-eligibilityfields--age-ineligible",
+        "forms-fieldrenderer--playground",
+        "forms-fieldrenderer--text-floating-label",
+        "forms-fieldrenderer--text-standard-label",
+        "forms-fieldrenderer--email",
+        "forms-fieldrenderer--phone-with-type-selector",
+        "forms-fieldrenderer--phone-plain",
+        "forms-fieldrenderer--number-input",
+        "forms-fieldrenderer--currency",
+        "forms-fieldrenderer--percent",
+        "forms-fieldrenderer--ssn",
+        "forms-fieldrenderer--date-input",
+        "forms-fieldrenderer--month-year",
+        "forms-fieldrenderer--textarea",
+        "forms-fieldrenderer--dropdown-floating-label",
+        "forms-fieldrenderer--dropdown-standard-label",
+        "forms-fieldrenderer--searchable-select",
+        "forms-fieldrenderer--multi-select",
+        "forms-fieldrenderer--radio",
+        "forms-fieldrenderer--checkbox-single",
+        "forms-fieldrenderer--checkbox-group",
+        "forms-fieldrenderer--disabled",
+        "forms-fieldrenderer--text-error-required",
+        "forms-fieldrenderer--dropdown-error-required",
+        "forms-fieldrenderer--radio-error-required",
+        "forms-fieldrenderer--checkbox-error-required",
+        "forms-fieldrenderer--completion-icons-debug-mode",
+        "coverage-commerce-physicianinformation--default",
+        "application-patterns-yesnodetaillist--interactive",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "layout-appheader--homepage-variant",
+        "layout-appheader--recovery-variant",
+        "layout-appheader--application-form-variant",
+        "layout-appheader--utility-variant",
+        "layout-appmenu--default",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant",
+        "layout-fieldgrid--stacked-fields",
+        "layout-fieldgrid--street-and-apartment",
+        "layout-fieldgrid--city-state-and-zip",
+        "layout-pageshell--default",
+        "layout-pageshell--with-back-button",
+        "layout-pageshell--with-error",
+        "layout-pageshell--narrow-max-width",
+        "pages-membership-additional-membership-information--member-id",
+        "pages-membership-additional-membership-information--professional-information",
+        "pages-membership-additional-membership-information--physician-spouse",
+        "pages-membership-additional-membership-information--new-member",
+        "pages-membership-additional-membership-information--active-federal-employee",
+        "pages-membership-additional-membership-information--associate-member",
+        "pages-membership-member-information--default",
+        "pages-membership-member-information--with-title",
+        "pages-membership-introduction-and-help--default",
+        "pages-membership-membership-status--default",
+        "pages-membership-membership-status--not-a-member",
+        "pages-membership-membership-status--association-selection",
+        "pages-membership-membership-status--physician",
+        "pages-membership-membership-status--new-or-current-member",
+        "coverage-commerce-memberverification--interactive"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/forms/SelectionGroup.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "forms-selectiongroup--checkbox-row-unselected",
+        "forms-selectiongroup--checkbox-row-selected",
+        "forms-selectiongroup--radio-row",
+        "forms-selectiongroup--icon-toggle-row-unselected",
+        "forms-selectiongroup--icon-toggle-row-selected",
+        "forms-selectiongroup--focus-visible"
+      ],
+      "compositionStories": [
+        "application-patterns-application-page-template--standard-form-page",
+        "application-patterns-application-page-template--initial-transition",
+        "coverage-commerce-coveragecategoryselector--default",
+        "coverage-commerce-coveragecategoryselector--none-selected",
+        "coverage-commerce-coveragecategoryselector--required-error",
+        "coverage-commerce-coveragecategoryselector--custom-legend",
+        "coverage-commerce-coverageneedscalculator--default",
+        "coverage-commerce-coveragequestions--no-category-selected",
+        "coverage-commerce-coveragequestions--life-insurance-selected",
+        "coverage-commerce-coveragequestions--disability-selected",
+        "coverage-commerce-coveragequestions--with-spouse",
+        "coverage-commerce-coveragequestions--office-overhead-selected",
+        "coverage-commerce-coveragequestions--supplemental-health-selected",
+        "coverage-commerce-estimatorproductcard--unselected",
+        "coverage-commerce-estimatorproductcard--selected",
+        "coverage-commerce-estimatorproductcard--featured",
+        "coverage-commerce-estimatorproductcard--quick-decision-eligible",
+        "coverage-commerce-estimatorproductcard--calculating",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "pages-eligibility-children-information--empty",
+        "pages-eligibility-children-information--with-child",
+        "pages-eligibility-covered-applicants--default",
+        "pages-eligibility-covered-applicants--with-dependent-details",
+        "pages-eligibility-your-information--default",
+        "pages-eligibility-your-information--zip-derived-state",
+        "pages-eligibility-spouse-information--default",
+        "pages-eligibility-spouse-information--completed",
+        "feedback-pagealert--field-validation-on-next",
+        "feedback-technical-error--save-failure-preserves-answers",
+        "forms-conditionalgroup--hidden-and-revealed",
+        "forms-controlled-field-adapter--default",
+        "forms-dynamiclist--empty",
+        "forms-dynamiclist--populated",
+        "forms-dynamiclist--max-items-reached",
+        "forms-dynamiclist--with-grid-fields",
+        "coverage-commerce-eligibilityfields--default",
+        "coverage-commerce-eligibilityfields--zip-auto-derives-state",
+        "coverage-commerce-eligibilityfields--required-errors",
+        "coverage-commerce-eligibilityfields--age-ineligible",
+        "forms-fieldrenderer--playground",
+        "forms-fieldrenderer--text-floating-label",
+        "forms-fieldrenderer--text-standard-label",
+        "forms-fieldrenderer--email",
+        "forms-fieldrenderer--phone-with-type-selector",
+        "forms-fieldrenderer--phone-plain",
+        "forms-fieldrenderer--number-input",
+        "forms-fieldrenderer--currency",
+        "forms-fieldrenderer--percent",
+        "forms-fieldrenderer--ssn",
+        "forms-fieldrenderer--date-input",
+        "forms-fieldrenderer--month-year",
+        "forms-fieldrenderer--textarea",
+        "forms-fieldrenderer--dropdown-floating-label",
+        "forms-fieldrenderer--dropdown-standard-label",
+        "forms-fieldrenderer--searchable-select",
+        "forms-fieldrenderer--multi-select",
+        "forms-fieldrenderer--radio",
+        "forms-fieldrenderer--checkbox-single",
+        "forms-fieldrenderer--checkbox-group",
+        "forms-fieldrenderer--disabled",
+        "forms-fieldrenderer--text-error-required",
+        "forms-fieldrenderer--dropdown-error-required",
+        "forms-fieldrenderer--radio-error-required",
+        "forms-fieldrenderer--checkbox-error-required",
+        "forms-fieldrenderer--completion-icons-debug-mode",
+        "coverage-commerce-physicianinformation--default",
+        "forms-radioselectiongroup--interactive",
+        "forms-radioselectiongroup--beneficiary-type",
+        "forms-radioselectiongroup--disabled",
+        "application-patterns-yesnodetaillist--interactive",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "layout-appheader--homepage-variant",
+        "layout-appheader--recovery-variant",
+        "layout-appheader--application-form-variant",
+        "layout-appheader--utility-variant",
+        "layout-appmenu--default",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant",
+        "layout-fieldgrid--stacked-fields",
+        "layout-fieldgrid--street-and-apartment",
+        "layout-fieldgrid--city-state-and-zip",
+        "layout-pageshell--default",
+        "layout-pageshell--with-back-button",
+        "layout-pageshell--with-error",
+        "layout-pageshell--narrow-max-width",
+        "pages-membership-additional-membership-information--member-id",
+        "pages-membership-additional-membership-information--professional-information",
+        "pages-membership-additional-membership-information--physician-spouse",
+        "pages-membership-additional-membership-information--new-member",
+        "pages-membership-additional-membership-information--active-federal-employee",
+        "pages-membership-additional-membership-information--associate-member",
+        "pages-membership-member-information--default",
+        "pages-membership-member-information--with-title",
+        "pages-membership-introduction-and-help--default",
+        "pages-membership-membership-status--default",
+        "pages-membership-membership-status--not-a-member",
+        "pages-membership-membership-status--association-selection",
+        "pages-membership-membership-status--physician",
+        "pages-membership-membership-status--new-or-current-member",
+        "coverage-commerce-memberverification--interactive"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/layout/AppDrawer.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "direct",
+      "status": "direct-story-reference",
+      "directStories": [
+        "coverage-commerce-coveragecart--empty-drawer",
+        "coverage-commerce-coveragecart--populated-drawer",
+        "pages-home-how-applying-works--default",
+        "overlays-appdrawer--default",
+        "overlays-appdrawer--mobile-bottom-sheet",
+        "overlays-appdrawer--swipeable",
+        "overlays-appdrawer--no-title-aria-label-only"
+      ],
+      "compositionStories": [
+        "coverage-commerce-coverageportfoliodrawer--member-only",
+        "coverage-commerce-coverageportfoliodrawer--with-spouse",
+        "components-estimated-rate--cost-summaries",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "coverage-commerce-totalcostsummary--default",
+        "coverage-commerce-totalcostsummary--annual-suffix",
+        "coverage-commerce-totalcostsummary--calculating",
+        "coverage-commerce-totalcostsummary--with-disclaimer",
+        "coverage-commerce-totalcostsummary--single-item",
+        "feedback-processingstatuspage--external-service",
+        "feedback-processingstatuspage--bounded-local-status",
+        "feedback-processingstatuspage--complete",
+        "feedback-processingstatuspage--timeout",
+        "feedback-processingstatuspage--unconfirmed-submission",
+        "feedback-technical-error--default",
+        "feedback-technical-error--offline",
+        "feedback-technical-error--save-conflict",
+        "feedback-technical-error--save-failure-preserves-answers",
+        "feedback-technical-error--same-incident-in-alert-and-page",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "coverage-commerce-howapplyingworkspanel--page-variant",
+        "coverage-commerce-howapplyingworkspanel--drawer-variant",
+        "coverage-commerce-howapplyingworkspanel--animated",
+        "layout-appheader--homepage-variant",
+        "layout-appheader--recovery-variant",
+        "layout-appheader--application-form-variant",
+        "layout-appheader--utility-variant",
+        "layout-appmenu--default",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant",
+        "pages-membership-introduction-and-help--default"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/layout/ApplicantSectionDivider.tsx",
+      "symbols": [
+        "ApplicantSectionLabel",
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "layout-applicantsectiondivider--member-section",
+        "layout-applicantsectiondivider--spouse-section",
+        "layout-applicantsectiondivider--with-note",
+        "layout-applicantsectiondivider--label-hidden-member-only-flow",
+        "layout-applicantsectiondivider--label-standalone"
+      ],
+      "compositionStories": [
+        "coverage-commerce-coveragequestions--no-category-selected",
+        "coverage-commerce-coveragequestions--life-insurance-selected",
+        "coverage-commerce-coveragequestions--disability-selected",
+        "coverage-commerce-coveragequestions--with-spouse",
+        "coverage-commerce-coveragequestions--office-overhead-selected",
+        "coverage-commerce-coveragequestions--supplemental-health-selected",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "pages-eligibility-children-information--empty",
+        "pages-eligibility-children-information--with-child",
+        "pages-eligibility-covered-applicants--default",
+        "pages-eligibility-covered-applicants--with-dependent-details",
+        "pages-eligibility-your-information--default",
+        "pages-eligibility-your-information--zip-derived-state",
+        "pages-eligibility-spouse-information--default",
+        "pages-eligibility-spouse-information--completed"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/layout/AppModal.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "overlays-appmodal--default",
+        "overlays-appmodal--single-action",
+        "overlays-appmodal--two-actions",
+        "overlays-appmodal--no-close-icon",
+        "overlays-appmodal--force-full-screen"
+      ],
+      "compositionStories": [
+        "coverage-commerce-coveragecart--empty-drawer",
+        "coverage-commerce-coveragecart--populated-drawer",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "pages-eligibility-children-information--empty",
+        "pages-eligibility-children-information--with-child",
+        "pages-eligibility-covered-applicants--default",
+        "pages-eligibility-covered-applicants--with-dependent-details",
+        "pages-eligibility-your-information--default",
+        "pages-eligibility-your-information--zip-derived-state",
+        "pages-eligibility-spouse-information--default",
+        "pages-eligibility-spouse-information--completed",
+        "forms-dynamiclist--empty",
+        "forms-dynamiclist--populated",
+        "forms-dynamiclist--max-items-reached",
+        "forms-dynamiclist--with-grid-fields",
+        "application-patterns-yesnodetaillist--interactive",
+        "layout-appfooter--default",
+        "layout-appheader--homepage-variant",
+        "layout-appheader--recovery-variant",
+        "layout-appheader--application-form-variant",
+        "layout-appheader--utility-variant",
+        "layout-appshell--application-form-variant",
+        "layout-appshell--homepage-variant",
+        "layout-appshell--advisor-login-variant",
+        "overlays-confirmationdialog--default",
+        "overlays-confirmationdialog--destructive-color",
+        "overlays-confirmationdialog--custom-labels",
+        "overlays-sendapplicationdialog--default",
+        "overlays-sendapplicationdialog--to-advisor",
+        "overlays-sendapplicationdialog--missing-recipient-data"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/layout/CategoryCard.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "layout-categorycard--default"
+      ],
+      "compositionStories": [
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/layout/CategoryHeader.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "layout-categoryheader--with-icon",
+        "layout-categoryheader--without-icon"
+      ],
+      "compositionStories": [
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "layout-categorycard--default",
+        "pages-membership-introduction-and-help--default"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/layout/ConfirmationDialog.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "direct",
+      "status": "direct-story-reference",
+      "directStories": [
+        "overlays-confirmationdialog--default",
+        "overlays-confirmationdialog--destructive-color",
+        "overlays-confirmationdialog--custom-labels"
+      ],
+      "compositionStories": [],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/layout/ProductCard.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "layout-productcard--unselected",
+        "layout-productcard--selected",
+        "layout-productcard--side-by-side"
+      ],
+      "compositionStories": [
+        "coverage-commerce-estimatorproductcard--unselected",
+        "coverage-commerce-estimatorproductcard--selected",
+        "coverage-commerce-estimatorproductcard--featured",
+        "coverage-commerce-estimatorproductcard--quick-decision-eligible",
+        "coverage-commerce-estimatorproductcard--calculating",
+        "coverage-commerce-productcatalog--interactive",
+        "coverage-commerce-productcatalog--first-product-from-empty-cart",
+        "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+        "coverage-commerce-productcatalog--add-after-clearing-cart",
+        "coverage-commerce-productcatalog--disability-below-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-work-hours",
+        "coverage-commerce-productcatalog--disability-missing-income",
+        "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+        "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+        "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+        "coverage-commerce-productcatalog--spouse-not-eligible",
+        "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+        "coverage-commerce-productcatalog--applicant-rider-options",
+        "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+        "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+        "coverage-commerce-productcatalog--reference-rate-table",
+        "coverage-commerce-productcatalog--unresolved-product-requirements",
+        "coverage-commerce-productcatalog--no-category-selected",
+        "coverage-commerce-productcatalog--products-loading",
+        "coverage-commerce-productcatalog--selected-product-recalculating",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "pages-membership-introduction-and-help--default"
+      ],
+      "builtStoryIdsMissing": []
+    },
+    {
+      "source": "src/components/layout/SectionDivider.tsx",
+      "symbols": [
+        "default"
+      ],
+      "pagePlacement": "nested",
+      "status": "direct-story-reference",
+      "directStories": [
+        "layout-sectiondivider--subsection-preset",
+        "layout-sectiondivider--subsection-with-icon",
+        "layout-sectiondivider--chip-filled",
+        "layout-sectiondivider--chip-outlined",
+        "layout-sectiondivider--chip-text",
+        "layout-sectiondivider--color-default",
+        "layout-sectiondivider--size-comparison"
+      ],
+      "compositionStories": [
+        "coverage-commerce-coveragequestions--no-category-selected",
+        "coverage-commerce-coveragequestions--life-insurance-selected",
+        "coverage-commerce-coveragequestions--disability-selected",
+        "coverage-commerce-coveragequestions--with-spouse",
+        "coverage-commerce-coveragequestions--office-overhead-selected",
+        "coverage-commerce-coveragequestions--supplemental-health-selected",
+        "coverage-commerce-quotecalculator--collects-eligibility",
+        "coverage-commerce-quotecalculator--eligibility-already-known",
+        "coverage-commerce-quotecalculator--custom-title",
+        "coverage-commerce-quotecalculator--inline-homepage",
+        "coverage-commerce-physicianinformation--default",
+        "pages-home-hero--standard-quote",
+        "pages-home-hero--hero-image",
+        "pages-membership-additional-membership-information--member-id",
+        "pages-membership-additional-membership-information--professional-information",
+        "pages-membership-additional-membership-information--physician-spouse",
+        "pages-membership-additional-membership-information--new-member",
+        "pages-membership-additional-membership-information--active-federal-employee",
+        "pages-membership-additional-membership-information--associate-member",
+        "pages-membership-introduction-and-help--default"
+      ],
+      "builtStoryIdsMissing": []
+    }
+  ],
+  "packagePrimitives": [
+    {
+      "module": "@mui/material",
+      "symbol": "Box",
+      "usedIn": [
+        "src/pages/Coverage.tsx",
+        "src/components/content/HelpChips.tsx",
+        "src/components/layout/AppDrawer.tsx",
+        "src/components/feedback/PageAlert.tsx",
+        "src/components/forms/FieldRenderer.tsx",
+        "src/components/forms/RadioSelectionGroup.tsx",
+        "src/components/forms/SelectionGroup.tsx",
+        "src/components/coverage/CoverageQuestions.tsx",
+        "src/components/forms/ConditionalGroup.tsx",
+        "src/components/layout/ApplicantSectionDivider.tsx",
+        "src/components/coverage/ProductCatalog.tsx",
+        "src/components/content/QuickDecisionInfoBox.tsx",
+        "src/components/coverage/QuickDecisionIcon.tsx",
+        "src/components/content/QuickDecisionExplainer.tsx",
+        "src/components/layout/CategoryCard.tsx",
+        "src/components/coverage/ReferenceRateTableLink.tsx",
+        "src/components/coverage/EstimatedRate.tsx",
+        "src/components/coverage/ProductCostBreakdown.tsx",
+        "src/components/coverage/CoverageCart.tsx",
+        "src/components/feedback/EmptyState.tsx",
+        "src/components/coverage/TotalCostSummary.tsx",
+        "src/components/coverage/CoveragePortfolioDrawer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Button",
+      "usedIn": [
+        "src/pages/Coverage.tsx",
+        "src/components/layout/AppModal.tsx"
+      ]
+    },
+    {
+      "module": "@mui/icons-material/AccountBalanceWalletRounded",
+      "symbol": "default",
+      "usedIn": [
+        "src/pages/Coverage.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Stack",
+      "usedIn": [
+        "src/pages/Coverage.tsx",
+        "src/components/content/HelpChips.tsx",
+        "src/components/layout/AppDrawer.tsx",
+        "src/components/forms/FieldRenderer.tsx",
+        "src/components/coverage/CoverageQuestions.tsx",
+        "src/components/coverage/ProductCatalog.tsx",
+        "src/components/content/QuickDecisionExplainer.tsx",
+        "src/components/layout/CategoryHeader.tsx",
+        "src/components/layout/CategoryCard.tsx",
+        "src/components/coverage/ProductCostBreakdown.tsx",
+        "src/components/coverage/CoverageCart.tsx",
+        "src/components/feedback/EmptyState.tsx",
+        "src/components/coverage/TotalCostSummary.tsx",
+        "src/components/coverage/RateFrequencyControl.tsx",
+        "src/components/coverage/CoveragePortfolioDrawer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Divider",
+      "usedIn": [
+        "src/pages/Coverage.tsx",
+        "src/components/layout/SectionDivider.tsx",
+        "src/components/coverage/ProductCostBreakdown.tsx",
+        "src/components/coverage/TotalCostSummary.tsx",
+        "src/components/coverage/CoveragePortfolioDrawer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/icons-material/ArrowForwardRounded",
+      "symbol": "default",
+      "usedIn": [
+        "src/pages/Coverage.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Chip",
+      "usedIn": [
+        "src/components/content/HelpChips.tsx",
+        "src/components/layout/SectionDivider.tsx",
+        "src/components/coverage/FeaturedBadge.tsx",
+        "src/components/coverage/CoverageCart.tsx",
+        "src/components/coverage/CoveragePortfolioDrawer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/icons-material/HelpOutlineRounded",
+      "symbol": "default",
+      "usedIn": [
+        "src/components/content/HelpChips.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Typography",
+      "usedIn": [
+        "src/components/layout/AppDrawer.tsx",
+        "src/components/forms/FieldRenderer.tsx",
+        "src/components/layout/SectionDivider.tsx",
+        "src/components/layout/ApplicantSectionDivider.tsx",
+        "src/components/coverage/ProductCatalog.tsx",
+        "src/components/content/QuickDecisionInfoBox.tsx",
+        "src/components/content/QuickDecisionExplainer.tsx",
+        "src/components/layout/CategoryHeader.tsx",
+        "src/components/coverage/ReferenceRateTableLink.tsx",
+        "src/components/coverage/EstimatedRate.tsx",
+        "src/components/coverage/ProductCostBreakdown.tsx",
+        "src/components/coverage/CoverageCart.tsx",
+        "src/components/feedback/EmptyState.tsx",
+        "src/components/coverage/TotalCostSummary.tsx",
+        "src/components/layout/AppModal.tsx",
+        "src/components/coverage/RateFrequencyControl.tsx",
+        "src/components/coverage/CoveragePortfolioDrawer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "IconButton",
+      "usedIn": [
+        "src/components/layout/AppDrawer.tsx",
+        "src/components/coverage/CoverageCart.tsx",
+        "src/components/layout/AppModal.tsx"
+      ]
+    },
+    {
+      "module": "@mui/icons-material/CloseRounded",
+      "symbol": "default",
+      "usedIn": [
+        "src/components/layout/AppDrawer.tsx",
+        "src/components/layout/AppModal.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "SwipeableDrawer",
+      "usedIn": [
+        "src/components/layout/AppDrawer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Drawer",
+      "usedIn": [
+        "src/components/layout/AppDrawer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Alert",
+      "usedIn": [
+        "src/components/feedback/PageAlert.tsx",
+        "src/components/layout/ApplicantSectionDivider.tsx",
+        "src/components/coverage/ProductCatalog.tsx",
+        "src/components/coverage/CoverageCart.tsx",
+        "src/components/feedback/AppSnackbar.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Link",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx",
+        "src/components/coverage/ProductCatalog.tsx",
+        "src/components/coverage/ReferenceRateTableLink.tsx",
+        "src/components/coverage/ProductCostBreakdown.tsx"
+      ]
+    },
+    {
+      "module": "@mui/icons-material/CheckCircleRounded",
+      "symbol": "default",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/icons-material/HighlightOffRounded",
+      "symbol": "default",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material/InputAdornment",
+      "symbol": "default",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Tooltip",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/icons-material/InfoOutlined",
+      "symbol": "default",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx",
+        "src/components/coverage/EstimatedRate.tsx",
+        "src/components/coverage/CoverageCart.tsx"
+      ]
+    },
+    {
+      "module": "react-hook-form",
+      "symbol": "Controller",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/icons-material/LockOutlined",
+      "symbol": "default",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "TextField",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "FormControl",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx",
+        "src/components/forms/RadioSelectionGroup.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "FormLabel",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx",
+        "src/components/forms/RadioSelectionGroup.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "FormHelperText",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx",
+        "src/components/forms/RadioSelectionGroup.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Select",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "MenuItem",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "InputLabel",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Autocomplete",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Checkbox",
+      "usedIn": [
+        "src/components/forms/FieldRenderer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "RadioGroup",
+      "usedIn": [
+        "src/components/forms/RadioSelectionGroup.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Radio",
+      "usedIn": [
+        "src/components/forms/RadioSelectionGroup.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "CircularProgress",
+      "usedIn": [
+        "src/components/coverage/ProductCatalog.tsx",
+        "src/components/coverage/EstimatedRate.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Collapse",
+      "usedIn": [
+        "src/components/coverage/ProductCatalog.tsx"
+      ]
+    },
+    {
+      "module": "@mui/icons-material/OfflineBolt",
+      "symbol": "default",
+      "usedIn": [
+        "src/components/coverage/QuickDecisionIcon.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "ButtonBase",
+      "usedIn": [
+        "src/components/content/QuickDecisionExplainer.tsx"
+      ]
+    },
+    {
+      "module": "@mui/icons-material/StarsRounded",
+      "symbol": "default",
+      "usedIn": [
+        "src/components/coverage/FeaturedBadge.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Table",
+      "usedIn": [
+        "src/components/coverage/ReferenceRateTableLink.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "TableHead",
+      "usedIn": [
+        "src/components/coverage/ReferenceRateTableLink.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "TableRow",
+      "usedIn": [
+        "src/components/coverage/ReferenceRateTableLink.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "TableCell",
+      "usedIn": [
+        "src/components/coverage/ReferenceRateTableLink.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "TableBody",
+      "usedIn": [
+        "src/components/coverage/ReferenceRateTableLink.tsx"
+      ]
+    },
+    {
+      "module": "@mui/icons-material/ShoppingCartOutlined",
+      "symbol": "default",
+      "usedIn": [
+        "src/components/coverage/CoverageCart.tsx"
+      ]
+    },
+    {
+      "module": "@mui/icons-material/TaskAlt",
+      "symbol": "default",
+      "usedIn": [
+        "src/components/coverage/CoverageCart.tsx"
+      ]
+    },
+    {
+      "module": "@mui/icons-material/Close",
+      "symbol": "default",
+      "usedIn": [
+        "src/components/coverage/CoverageCart.tsx"
+      ]
+    },
+    {
+      "module": "@mui/icons-material/DeleteOutline",
+      "symbol": "default",
+      "usedIn": [
+        "src/components/coverage/CoverageCart.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "DialogContentText",
+      "usedIn": [
+        "src/components/coverage/CoverageCart.tsx",
+        "src/components/layout/ConfirmationDialog.tsx"
+      ]
+    },
+    {
+      "module": "@mui/icons-material/EditOutlined",
+      "symbol": "default",
+      "usedIn": [
+        "src/components/coverage/CoverageCart.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Dialog",
+      "usedIn": [
+        "src/components/layout/AppModal.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "DialogTitle",
+      "usedIn": [
+        "src/components/layout/AppModal.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "DialogContent",
+      "usedIn": [
+        "src/components/layout/AppModal.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "DialogActions",
+      "usedIn": [
+        "src/components/layout/AppModal.tsx"
+      ]
+    },
+    {
+      "module": "@mui/material",
+      "symbol": "Snackbar",
+      "usedIn": [
+        "src/components/feedback/AppSnackbar.tsx"
+      ]
+    }
+  ],
+  "stateGaps": [
+    {
+      "id": "qd-client-icon-override",
+      "source": "src/components/coverage/QuickDecisionIcon.tsx",
+      "status": "optional-shared-icon-examples",
+      "detail": "The shared QD icon accepts branding.icons.quickDecision and falls back to the shared icon on load failure. Dedicated override/failure examples are optional shared branding follow-up, not a separate Coverage component."
+    }
+  ],
+  "inactivePageContent": [
+    {
+      "source": "src/pages/Coverage.tsx",
+      "detail": "helpItems is currently empty, so HelpChips and the associated help drawer add no visible Coverage help controls."
+    }
+  ],
+  "sharedFrame": {
+    "source": "src/app/RoutePage.tsx",
+    "detail": "Reusable PageHeader and the application frame have their existing shared references. Coverage does not add an introduction section."
+  },
+  "unrelatedGlobalAuditErrors": [
+    {
+      "type": "story-without-real-source-render",
+      "story": "foundations-design-foundations--foundations"
+    },
+    {
+      "type": "story-without-real-source-render",
+      "story": "foundations-icons--icons"
+    },
+    {
+      "type": "invalid-legacy-inventory-example",
+      "name": "FieldGrid",
+      "source": "src/components/layout/FieldGrid.tsx",
+      "storyId": "layout-fieldgrid--equal-columns",
+      "sourceExists": true,
+      "storyExists": false,
+      "rendersSource": false
+    }
+  ],
+  "sections": [
+    {
+      "label": "Coverage questions",
+      "pieces": [
+        "Category question",
+        "Category follow-up questions",
+        "Additional product facts"
+      ],
+      "storyId": "coverage-commerce-coveragequestions--no-category-selected"
+    },
+    {
+      "label": "Product reveal",
+      "pieces": [
+        "Product boxes",
+        "Coverage and rider notes/options by applicant",
+        "Combined cost of all selected products"
+      ],
+      "storyId": "coverage-commerce-productcatalog--interactive"
+    }
+  ],
+  "stateCoverage": [
+    {
+      "storyId": "coverage-commerce-productcatalog--interactive",
+      "export": "Interactive",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--first-product-from-empty-cart",
+      "export": "FirstProductFromEmptyCart",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--additional-product-with-existing-cart",
+      "export": "AdditionalProductWithExistingCart",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--add-after-clearing-cart",
+      "export": "AddAfterClearingCart",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--disability-below-work-hours",
+      "export": "DisabilityBelowWorkHours",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--disability-missing-work-hours",
+      "export": "DisabilityMissingWorkHours",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--disability-missing-income",
+      "export": "DisabilityMissingIncome",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--mixed-eligible-and-ineligible-categories",
+      "export": "MixedEligibleAndIneligibleCategories",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--mutually-exclusive-product-selected",
+      "export": "MutuallyExclusiveProductSelected",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--restored-mutually-exclusive-conflict",
+      "export": "RestoredMutuallyExclusiveConflict",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--spouse-not-eligible",
+      "export": "SpouseNotEligible",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--selected-waiting-and-benefit-periods",
+      "export": "SelectedWaitingAndBenefitPeriods",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--applicant-rider-options",
+      "export": "ApplicantRiderOptions",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--rider-only-with-zero-base-coverage",
+      "export": "RiderOnlyWithZeroBaseCoverage",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--selected-product-estimate-unavailable",
+      "export": "SelectedProductEstimateUnavailable",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--reference-rate-table",
+      "export": "ReferenceRateTable",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--unresolved-product-requirements",
+      "export": "UnresolvedProductRequirements",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--no-category-selected",
+      "export": "NoCategorySelected",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--products-loading",
+      "export": "ProductsLoading",
+      "built": true
+    },
+    {
+      "storyId": "coverage-commerce-productcatalog--selected-product-recalculating",
+      "export": "SelectedProductRecalculating",
+      "built": true
+    },
+    {
+      "storyId": "pages-coverage-whole-page--interactive",
+      "built": true
+    },
+    {
+      "storyId": "pages-coverage-whole-page--entry-link-without-products",
+      "built": true
+    },
+    {
+      "storyId": "pages-coverage-whole-page--entry-link-with-unavailable-selections",
+      "built": true
+    },
+    {
+      "storyId": "pages-coverage-whole-page--dependent-only-confirmation",
+      "built": true
+    },
+    {
+      "storyId": "pages-coverage-whole-page--reference-rate-table",
+      "built": true
+    },
+    {
+      "storyId": "coverage-reference-rate-table--image",
+      "built": true
+    },
+    {
+      "storyId": "coverage-reference-rate-table--pdf",
+      "built": true
+    },
+    {
+      "storyId": "coverage-reference-rate-table--html-table",
+      "built": true
+    },
+    {
+      "storyId": "coverage-reference-rate-table--link",
+      "built": true
+    },
+    {
+      "storyId": "coverage-reference-rate-table--xml",
+      "built": true
+    }
+  ],
+  "resolvedScenarioGaps": [
+    {
+      "id": "whole-page",
+      "source": "src/pages/Coverage.tsx",
+      "status": "covered",
+      "detail": "Five stories mount the real Coverage page, with saved catalog rules and in-memory applicant answers."
+    },
+    {
+      "id": "entry-link-notices",
+      "source": "src/pages/Coverage.tsx",
+      "status": "covered",
+      "detail": "Complete-page examples demonstrate no matching products and explicit removal of unavailable saved selections."
+    },
+    {
+      "id": "dependent-only-confirmation",
+      "source": "src/pages/Coverage.tsx",
+      "status": "covered",
+      "detail": "AVMA spouse-only selection exercises real Next validation, confirmation, Cancel and Continue; integration test verifies navigation."
+    },
+    {
+      "id": "reference-rate-table",
+      "source": "src/components/coverage/ReferenceRateTableLink.tsx",
+      "status": "covered",
+      "detail": "Complete-page CSEA example plus direct image, PDF, HTML-table, link and XML examples."
+    }
+  ],
+  "completePageExamples": [
+    {
+      "storyId": "pages-coverage-whole-page--interactive",
+      "built": true
+    },
+    {
+      "storyId": "pages-coverage-whole-page--entry-link-without-products",
+      "built": true
+    },
+    {
+      "storyId": "pages-coverage-whole-page--entry-link-with-unavailable-selections",
+      "built": true
+    },
+    {
+      "storyId": "pages-coverage-whole-page--dependent-only-confirmation",
+      "built": true
+    },
+    {
+      "storyId": "pages-coverage-whole-page--reference-rate-table",
+      "built": true
+    }
+  ],
+  "referenceRateExamples": [
+    {
+      "storyId": "coverage-reference-rate-table--image",
+      "built": true
+    },
+    {
+      "storyId": "coverage-reference-rate-table--pdf",
+      "built": true
+    },
+    {
+      "storyId": "coverage-reference-rate-table--html-table",
+      "built": true
+    },
+    {
+      "storyId": "coverage-reference-rate-table--link",
+      "built": true
+    },
+    {
+      "storyId": "coverage-reference-rate-table--xml",
+      "built": true
+    }
+  ],
+  "verification": {
+    "focusedTestsPassed": 46,
+    "typeScript": "passed",
+    "targetedEslint": "passed",
+    "applicationBuild": "passed",
+    "storybookBuild": "passed",
+    "browserChecks": [
+      "dependent-only dialog and Cancel",
+      "empty entry-link notice",
+      "reference image drawer",
+      "HTML reference drawer and source link"
+    ],
+    "pdfPreview": "The in-app browser leaves the PDF iframe blank; the Open PDF link is available. Inline PDF acceptance remains browser-dependent."
+  }
+}

@@ -2,19 +2,21 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "@mui/material";
 import SendApplicationDialog from "./SendApplicationDialog";
+import { getContent } from "../../content";
 
 /**
  * SendApplicationDialog is a second AppModal preset (alongside
  * ConfirmationDialog), confirming the recipient before an advisor↔applicant
  * handoff email is sent. Used from Profile (advisor sending to the
  * applicant) and Review (applicant sending an edit back to the advisor).
- * Missing from `componentInventory.ts` today — the same gap flagged in the
- * Phase 1 audit.
+ * Canonical shared dialog; the page examples review its placement and supplied
+ * recipient rather than duplicating this component.
  */
 const meta = {
-  title: "Overlays/SendApplicationDialog",
+  id: "overlays-sendapplicationdialog",
+  title: "Components/Feedback and overlays/Dialogs and drawers/Application dialogs/Send application",
   component: SendApplicationDialog,
-  parameters: { layout: "centered" },
+  parameters: { standalone: true, review: { scope: 'shared-component', focus: 'Recipient details, applicant/advisor variants, missing values, Send and Cancel. Example callbacks only close the dialog.' }, docs: { description: { component: "Lets advisors send an application or request an edit from an applicant." } }, layout: "centered" },
 } satisfies Meta<typeof SendApplicationDialog>;
 
 export default meta;
@@ -22,12 +24,10 @@ export default meta;
 function SendDialogDemo(
   props: Omit<React.ComponentProps<typeof SendApplicationDialog>, "open" | "onClose" | "onConfirm">,
 ) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   return (
     <>
-      <Button variant="outlined" onClick={() => setOpen(true)}>
-        Trigger send confirmation
-      </Button>
+      {!open && <Button variant="outlined" onClick={() => setOpen(true)}>Reopen dialog</Button>}
       <SendApplicationDialog
         {...props}
         open={open}
@@ -42,6 +42,7 @@ export const Default: StoryObj = {
   name: "To applicant (advisor → applicant handoff)",
   render: () => (
     <SendDialogDemo
+      {...getContent().dialogs.sendApplication.sendToApplicant}
       recipientLabel="applicant"
       recipientName="Jordan Rivera"
       recipientEmail="jordan.rivera@example.com"
@@ -50,13 +51,13 @@ export const Default: StoryObj = {
 };
 
 export const ToAdvisor: StoryObj = {
-  name: "To advisor (applicant edit return)",
+  name: "Request application edits — send to advisor",
   render: () => (
     <SendDialogDemo
+      {...getContent().dialogs.sendApplication.requestEditToApplication}
       recipientLabel="advisor"
       showRecipientName={false}
       recipientEmail="advisor@example.com"
-      introText="This edited application will be sent back to your advisor:"
     />
   ),
   parameters: {

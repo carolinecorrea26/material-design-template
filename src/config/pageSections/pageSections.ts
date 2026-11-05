@@ -36,7 +36,7 @@ export const pageSections: Partial<Record<PageId, PageSectionConfig[]>> = {
       pageId: "coverage",
       description: sectionLabels.workAndIncome,
       applicant: "self",
-      fieldIds: ["hours-worked-per-week", "average-monthly-income"],
+      fieldIds: ["hours-worked-per-week", "actively-at-work", "average-monthly-income"],
     },
     {
       id: "selfCoverageBusinessExpenses",

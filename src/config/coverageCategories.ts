@@ -1,12 +1,9 @@
-import { clientCategoryIcon } from "../components/ui/ClientCategoryIcon";
-import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
-// import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined";
-import AccessibleOutlinedIcon from "@mui/icons-material/AccessibleOutlined";
-import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
-// import MonitorHeartOutlinedIcon from "@mui/icons-material/MonitorHeartOutlined";
-import PersonalInjuryOutlinedIcon from "@mui/icons-material/PersonalInjuryOutlined";
+import { clientCategoryIcon } from "../components/content/ClientCategoryIcon";
+import LocalHospitalRoundedIcon from "@mui/icons-material/LocalHospitalRounded";
+import AccessibleRoundedIcon from "@mui/icons-material/AccessibleRounded";
+import BusinessRoundedIcon from "@mui/icons-material/BusinessRounded";
+import PersonalInjuryRoundedIcon from "@mui/icons-material/PersonalInjuryRounded";
 import Diversity1RoundedIcon from "@mui/icons-material/Diversity1Rounded";
-// import EmergencyOutlinedIcon from "@mui/icons-material/EmergencyOutlined";
 
 export const coverageCategories = [
   { id: "LI", label: "Life", icon: clientCategoryIcon("LI", Diversity1RoundedIcon) },
@@ -14,20 +11,20 @@ export const coverageCategories = [
     id: "AD",
     label: "Accidental Death and Dismemberment",
     shortLabel: "AD&D",
-    icon: clientCategoryIcon("AD", PersonalInjuryOutlinedIcon),
+    icon: clientCategoryIcon("AD", PersonalInjuryRoundedIcon),
   },
-  { id: "DI", label: "Disability", icon: clientCategoryIcon("DI", AccessibleOutlinedIcon) },
+  { id: "DI", label: "Disability", icon: clientCategoryIcon("DI", AccessibleRoundedIcon) },
   {
     id: "OO",
     label: "Office Overhead",
     shortLabel: "Office",
-    icon: clientCategoryIcon("OO", BusinessOutlinedIcon),
+    icon: clientCategoryIcon("OO", BusinessRoundedIcon),
   },
   {
     id: "SH",
     label: "Supplemental Health",
     shortLabel: "Supp. Health",
-    icon: clientCategoryIcon("SH", LocalHospitalOutlinedIcon),
+    icon: clientCategoryIcon("SH", LocalHospitalRoundedIcon),
   },
 ] as const;
 

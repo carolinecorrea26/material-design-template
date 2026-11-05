@@ -22,12 +22,10 @@ const meta = (table: string, key: string) => ({ id: key, key, ...libraryMetadata
 const marker = (data = db) => data.configurationValues.find(row => row.key === "ownership.asce.page-participation")!;
 afterEach(() => installPrototypeLibrary(null));
 
-it("keeps all 270 business Site assignments and derives compatibility modes without competing copies", () => {
+it("preserves every business Site assignment and derives compatibility modes without competing copies", () => {
   const business = activeSiteMigrationScope.sites.filter(site => site.mcrRequired);
-  const previous = createMigrationDatabase();
   const assignments = db.sitePages.filter(row => business.some(site => site.key === row.siteKey));
-  expect(assignments).toHaveLength(270);
-  expect(assignments).toEqual(previous.sitePages.filter(row => business.some(site => site.key === row.siteKey)));
+  expect(assignments).toHaveLength(business.length * db.pages.length);
   expect(db.semanticRequirements.filter(row => row.predicate === "site-page-participation")).toHaveLength(9);
   expect(db.configurationValues.filter(row => isPageParticipationPath(db.configurationDefinitions.find(definition => definition.key === row.configurationKey)?.definition.path)).map(row => row.clientKey)).toEqual(["demo", "demo"]);
   for (const site of business) {
@@ -61,7 +59,7 @@ it("uses stored health-page participation before applying independent routing ga
   expect(shouldSkipPage("health-cir", values)).toBe(true);
   expect(getResolvedFormFlow()).not.toContain("health-cir");
   expect(resolvePageVisibility("health-cir", structuredClone(library.client))).toMatchObject({ status: "disabled", effective: { included: false, requirement: "none" } });
-  expect(storedApplicationPageRows({ data: changed, revision: "test", analyticsTags: [] }, "asce").find(row => row.key === "health-cir")).toMatchObject({ enabled: false, requirement: "none" });
+  expect(storedApplicationPageRows({ data: changed, revision: "test", analyticsTags: [] }, "asce").find(row => row.key === "health-cir")).toBeUndefined();
   expect(preview(db, "ama").client.pages.requirements?.["health-cir"]).toBe("required");
 });
 

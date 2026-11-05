@@ -544,7 +544,7 @@ export default function ClientSiteDetailsPanel({
           wherever they appear; inherited defaults are shown without emphasis. For template-wide
           documentation — flows, rules &amp; validation, and the
           full configuration schema — see{" "}
-          <Link component="button" underline="hover" onClick={() => onNavigateToGlobal()}>
+          <Link component="button" onClick={() => onNavigateToGlobal()}>
             Global Site Details
           </Link>
           .
@@ -1095,7 +1095,7 @@ export default function ClientSiteDetailsPanel({
                   <Typography variant="body2" color="text.secondary">
                     See Effective Configuration below for page-related
                     configuration options, or{" "}
-                    <Link component="button" underline="hover" onClick={() => onNavigateToGlobal()}>
+                    <Link component="button" onClick={() => onNavigateToGlobal()}>
                       Global Site Details
                     </Link>{" "}
                     for the full rules and configuration reference.
@@ -1309,7 +1309,7 @@ export default function ClientSiteDetailsPanel({
                   <Typography variant="body2" color="text.secondary">
                     See Effective Configuration below for field-related
                     configuration options, or{" "}
-                    <Link component="button" underline="hover" onClick={() => onNavigateToGlobal()}>
+                    <Link component="button" onClick={() => onNavigateToGlobal()}>
                       Global Site Details
                     </Link>{" "}
                     for the full rules and configuration reference.
@@ -1585,7 +1585,7 @@ export default function ClientSiteDetailsPanel({
                   <Typography variant="body2" color="text.secondary">
                     See Effective Configuration below for coverage-related
                     configuration options, or{" "}
-                    <Link component="button" underline="hover" onClick={() => onNavigateToGlobal()}>
+                    <Link component="button" onClick={() => onNavigateToGlobal()}>
                       Global Site Details
                     </Link>{" "}
                     for the full rules and configuration reference.
@@ -1607,7 +1607,7 @@ export default function ClientSiteDetailsPanel({
                   <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
                     {schemaOnlyConfigurationCount} additional options are global, schema-only, or
                     planned and do not currently have a live per-client value — see{" "}
-                    <Link component="button" underline="hover" onClick={() => onNavigateToGlobal("configuration-options-subsection")}>
+                    <Link component="button" onClick={() => onNavigateToGlobal("configuration-options-subsection")}>
                       Global Site Details → Configuration Options
                     </Link>
                     .

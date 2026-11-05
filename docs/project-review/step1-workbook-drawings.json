@@ -1,0 +1,4039 @@
+{
+  "workbookSha256": "70071168a401dc3b7182f3769f6631cdae5178878495315f58ee920e2b9651ce",
+  "drawings": [
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 132,
+        "col": 1
+      },
+      "to": {
+        "row": 153,
+        "col": 4
+      },
+      "mediaPath": "xl/media/image3.png",
+      "sha256": "a35618ec6f7a22eba470cbe6f9cd2d9caea0a261701e13b90451d3ac298f28f3",
+      "bytes": 1624829,
+      "id": "v78.drawing.1",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 8,
+        "col": 2
+      },
+      "to": {
+        "row": 8,
+        "col": 2
+      },
+      "mediaPath": "xl/media/image4.png",
+      "sha256": "27b5975aa0858d93d18f603ab1db3349632baff4ec778907a2affa3220bc9703",
+      "bytes": 182163,
+      "id": "v78.drawing.2",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 64,
+        "col": 5
+      },
+      "to": {
+        "row": 84,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image3.png",
+      "sha256": "a35618ec6f7a22eba470cbe6f9cd2d9caea0a261701e13b90451d3ac298f28f3",
+      "bytes": 1624829,
+      "id": "v78.drawing.3",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 8,
+        "col": 12
+      },
+      "to": {
+        "row": 8,
+        "col": 12
+      },
+      "mediaPath": "xl/media/image5.png",
+      "sha256": "844f17bf655e8ccdbc46941a32a72b4683db9b89eef9a2ea503674700567ae49",
+      "bytes": 124953,
+      "id": "v78.drawing.4",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 10,
+        "col": 12
+      },
+      "to": {
+        "row": 10,
+        "col": 13
+      },
+      "mediaPath": "xl/media/image6.png",
+      "sha256": "208d84a0b968271e2e8f967845d7d45fd83d5bc2aedc97af658a3100f3b05e90",
+      "bytes": 126852,
+      "id": "v78.drawing.5",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 10,
+        "col": 14
+      },
+      "to": {
+        "row": 10,
+        "col": 14
+      },
+      "mediaPath": "xl/media/image7.png",
+      "sha256": "c82f2fafa6f69376c03e0618bcf892204436ed574233fe805ef48824bf4520db",
+      "bytes": 54986,
+      "id": "v78.drawing.6",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 14,
+        "col": 2
+      },
+      "to": {
+        "row": 14,
+        "col": 2
+      },
+      "mediaPath": "xl/media/image8.png",
+      "sha256": "37cb7aac7ac0737f9dd1be6a840a00e1dc4d1154845b17b2fa226f5857ca99b6",
+      "bytes": 261076,
+      "id": "v78.drawing.7",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 15,
+        "col": 2
+      },
+      "to": {
+        "row": 15,
+        "col": 3
+      },
+      "mediaPath": "xl/media/image9.png",
+      "sha256": "c9e8a4468d5b08c489da6569bfc3b41f8df843b15891ffc19153faadaf6907fb",
+      "bytes": 147065,
+      "id": "v78.drawing.8",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 16,
+        "col": 2
+      },
+      "to": {
+        "row": 16,
+        "col": 2
+      },
+      "mediaPath": "xl/media/image10.png",
+      "sha256": "a3386e975db5192718da8f235b6b0ead344a1ac4c00e7f04831d0ef45eb67142",
+      "bytes": 259855,
+      "id": "v78.drawing.9",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 16,
+        "col": 12
+      },
+      "to": {
+        "row": 16,
+        "col": 13
+      },
+      "mediaPath": "xl/media/image6.png",
+      "sha256": "208d84a0b968271e2e8f967845d7d45fd83d5bc2aedc97af658a3100f3b05e90",
+      "bytes": 126852,
+      "id": "v78.drawing.10",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 24,
+        "col": 10
+      },
+      "to": {
+        "row": 24,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image11.jpeg",
+      "sha256": "494b8722aa77d70c0483dfacbd0d38f7208ec26763722eafd55a0dd7ca0f902c",
+      "bytes": 21175,
+      "id": "v78.drawing.11",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 24,
+        "col": 12
+      },
+      "to": {
+        "row": 24,
+        "col": 12
+      },
+      "mediaPath": "xl/media/image12.jpeg",
+      "sha256": "87dfc101c48db166917d7527be9682782bc0006fd0f5173a0828c5ae551e812c",
+      "bytes": 20703,
+      "id": "v78.drawing.12",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 24,
+        "col": 14
+      },
+      "to": {
+        "row": 24,
+        "col": 14
+      },
+      "mediaPath": "xl/media/image13.jpeg",
+      "sha256": "af5e88013fa6b02bc320dd2cde9214fa173fa68697e56b145add57c153aef048",
+      "bytes": 18648,
+      "id": "v78.drawing.13",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 21,
+        "col": 2
+      },
+      "to": {
+        "row": 21,
+        "col": 2
+      },
+      "mediaPath": "xl/media/image14.png",
+      "sha256": "e25654b8b274fa2919e0f579f58a817eef3787c9f39577b973bc622243640d73",
+      "bytes": 99160,
+      "id": "v78.drawing.14",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 12,
+        "col": 12
+      },
+      "to": {
+        "row": 12,
+        "col": 12
+      },
+      "mediaPath": "xl/media/image7.png",
+      "sha256": "c82f2fafa6f69376c03e0618bcf892204436ed574233fe805ef48824bf4520db",
+      "bytes": 54986,
+      "id": "v78.drawing.15",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 26,
+        "col": 13
+      },
+      "to": {
+        "row": 26,
+        "col": 13
+      },
+      "mediaPath": "xl/media/image13.jpeg",
+      "sha256": "af5e88013fa6b02bc320dd2cde9214fa173fa68697e56b145add57c153aef048",
+      "bytes": 18648,
+      "id": "v78.drawing.16",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 51,
+        "col": 12
+      },
+      "to": {
+        "row": 51,
+        "col": 12
+      },
+      "mediaPath": "xl/media/image15.png",
+      "sha256": "5120dc9ad324266bd2e3040bc6da5347f3e2d402ac0282649c7978316f39f1f0",
+      "bytes": 122512,
+      "id": "v78.drawing.17",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 51,
+        "col": 12
+      },
+      "to": {
+        "row": 51,
+        "col": 13
+      },
+      "mediaPath": "xl/media/image6.png",
+      "sha256": "208d84a0b968271e2e8f967845d7d45fd83d5bc2aedc97af658a3100f3b05e90",
+      "bytes": 126852,
+      "id": "v78.drawing.18",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 32,
+        "col": 14
+      },
+      "to": {
+        "row": 32,
+        "col": 14
+      },
+      "mediaPath": "xl/media/image16.png",
+      "sha256": "2ffc4bdef9500fc62a95bf88b548df526d0e97c4f67fe07d9b39349e72cb3174",
+      "bytes": 55378,
+      "id": "v78.drawing.19",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 51,
+        "col": 12
+      },
+      "to": {
+        "row": 51,
+        "col": 13
+      },
+      "mediaPath": "xl/media/image6.png",
+      "sha256": "208d84a0b968271e2e8f967845d7d45fd83d5bc2aedc97af658a3100f3b05e90",
+      "bytes": 126852,
+      "id": "v78.drawing.20",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 51,
+        "col": 10
+      },
+      "to": {
+        "row": 51,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image17.jpeg",
+      "sha256": "7e4a1caa4eea50d0c49ff0f6582e4cbecca44260f74af59924f383d870c4636b",
+      "bytes": 21767,
+      "id": "v78.drawing.21",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 51,
+        "col": 12
+      },
+      "to": {
+        "row": 51,
+        "col": 13
+      },
+      "mediaPath": "xl/media/image12.jpeg",
+      "sha256": "87dfc101c48db166917d7527be9682782bc0006fd0f5173a0828c5ae551e812c",
+      "bytes": 20703,
+      "id": "v78.drawing.22",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 48,
+        "col": 14
+      },
+      "to": {
+        "row": 48,
+        "col": 14
+      },
+      "mediaPath": "xl/media/image13.jpeg",
+      "sha256": "af5e88013fa6b02bc320dd2cde9214fa173fa68697e56b145add57c153aef048",
+      "bytes": 18648,
+      "id": "v78.drawing.23",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 53,
+        "col": 12
+      },
+      "to": {
+        "row": 53,
+        "col": 12
+      },
+      "mediaPath": "xl/media/image18.png",
+      "sha256": "a09c31ce8096c60b3cd18bdb6bfe088b070ebf9fa5085f830e232df194e4a164",
+      "bytes": 63024,
+      "id": "v78.drawing.24",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 53,
+        "col": 14
+      },
+      "to": {
+        "row": 53,
+        "col": 14
+      },
+      "mediaPath": "xl/media/image19.png",
+      "sha256": "0f3123052d7e5134f655f7d4fa145f98768ec728992cb41b798e6f28f8a5c817",
+      "bytes": 144591,
+      "id": "v78.drawing.25",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Multi-page Requirements",
+      "from": {
+        "row": 48,
+        "col": 2
+      },
+      "to": {
+        "row": 48,
+        "col": 2
+      },
+      "mediaPath": "xl/media/image20.png",
+      "sha256": "fc6e5453a3ef6d8bb77181678752cc361361d76ca8e34d66aa10b543939deea7",
+      "bytes": 2129977,
+      "id": "v78.drawing.26",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Single-Page Requirements",
+      "from": {
+        "row": 45,
+        "col": 2
+      },
+      "to": {
+        "row": 65,
+        "col": 4
+      },
+      "mediaPath": "xl/media/image3.png",
+      "sha256": "a35618ec6f7a22eba470cbe6f9cd2d9caea0a261701e13b90451d3ac298f28f3",
+      "bytes": 1624829,
+      "id": "v78.drawing.27",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "New UX Single-Page Requirements",
+      "from": {
+        "row": 7,
+        "col": 2
+      },
+      "to": {
+        "row": 7,
+        "col": 2
+      },
+      "mediaPath": "xl/media/image21.png",
+      "sha256": "de342f080f6a1da5d269ba3fa680dbe56774e3dbbff28e75bac2453aec8d1dd8",
+      "bytes": 157600,
+      "id": "v78.drawing.28",
+      "siteKeys": [],
+      "disposition": "historical-ux-reference",
+      "finding": "Current prototype owns layout/flow. No automatic behavior or visual adoption from the historical UX screenshot."
+    },
+    {
+      "sheet": "Attestation Online and PDF",
+      "from": {
+        "row": 79,
+        "col": 4
+      },
+      "to": {
+        "row": 79,
+        "col": 4
+      },
+      "mediaPath": "xl/media/image22.png",
+      "sha256": "b07e482d4c6b2b9e242e36d09dcea673a61856a934e5b2f7868f404c8eeda566",
+      "bytes": 15433,
+      "id": "v78.drawing.29",
+      "siteKeys": [],
+      "disposition": "outside-reviewed-primary-attestation-rows",
+      "finding": "Anchors 20, 79, 111 and 137 are outside the explicit primary current-Site row spans in requirementCrosswalkSourceScope.ts. Do not absorb adjacent variants."
+    },
+    {
+      "sheet": "Attestation Online and PDF",
+      "from": {
+        "row": 111,
+        "col": 4
+      },
+      "to": {
+        "row": 111,
+        "col": 4
+      },
+      "mediaPath": "xl/media/image23.jpeg",
+      "sha256": "e13524f5ab79cf694aba18241d5e4b84d5de75eeb4ead1013b845ace05998af4",
+      "bytes": 16791,
+      "id": "v78.drawing.30",
+      "siteKeys": [],
+      "disposition": "outside-reviewed-primary-attestation-rows",
+      "finding": "Anchors 20, 79, 111 and 137 are outside the explicit primary current-Site row spans in requirementCrosswalkSourceScope.ts. Do not absorb adjacent variants."
+    },
+    {
+      "sheet": "Attestation Online and PDF",
+      "from": {
+        "row": 20,
+        "col": 3
+      },
+      "to": {
+        "row": 20,
+        "col": 3
+      },
+      "mediaPath": "xl/media/image24.jpg",
+      "sha256": "9bdadb78845bd7df16c3452ee031cb4c2bb31986aafd89f2c9dacd34cc0ad05a",
+      "bytes": 19675,
+      "id": "v78.drawing.31",
+      "siteKeys": [],
+      "disposition": "outside-reviewed-primary-attestation-rows",
+      "finding": "Anchors 20, 79, 111 and 137 are outside the explicit primary current-Site row spans in requirementCrosswalkSourceScope.ts. Do not absorb adjacent variants."
+    },
+    {
+      "sheet": "Attestation Online and PDF",
+      "from": {
+        "row": 137,
+        "col": 3
+      },
+      "to": {
+        "row": 138,
+        "col": 5
+      },
+      "mediaPath": "xl/media/image25.png",
+      "sha256": "4acf5c58f8aa0c25ab54cb31dd0fba401b3887d3474ce75792b3c5ffb7621425",
+      "bytes": 74977,
+      "id": "v78.drawing.32",
+      "siteKeys": [],
+      "disposition": "outside-reviewed-primary-attestation-rows",
+      "finding": "Anchors 20, 79, 111 and 137 are outside the explicit primary current-Site row spans in requirementCrosswalkSourceScope.ts. Do not absorb adjacent variants."
+    },
+    {
+      "sheet": "Health Questions",
+      "from": {
+        "row": 107,
+        "col": 3
+      },
+      "to": {
+        "row": 107,
+        "col": 4
+      },
+      "mediaPath": "xl/media/image26.png",
+      "sha256": "d8e3c402105611c972b58d58e37d5abada9a270a0995daf00c580e163f27e507",
+      "bytes": 146202,
+      "id": "v78.drawing.33",
+      "siteKeys": [],
+      "disposition": "outside-current-site-variant",
+      "sourceLabel": "WAEPAWL",
+      "finding": "Viewed: health-history Yes/No and repeatable detail-field screenshot. Anchored to WAEPAWL, outside current Standard WAEPA and WAEPA GI source rows.",
+      "visualReview": "Viewed: health-history Yes/No and repeatable detail-field screenshot. Anchored to WAEPAWL, outside current Standard WAEPA and WAEPA GI source rows."
+    },
+    {
+      "sheet": "Read & Sign",
+      "from": {
+        "row": 283,
+        "col": 2
+      },
+      "to": {
+        "row": 295,
+        "col": 16
+      },
+      "mediaPath": "xl/media/image27.png",
+      "sha256": "f18277eb7d5816f2280c35d2e1730db5f54af88b5bc8770696316a49ef983a3f",
+      "bytes": 15616,
+      "id": "v78.drawing.34",
+      "siteKeys": [],
+      "disposition": "outside-current-site-variant",
+      "sourceLabel": "APWU/APWUADD",
+      "finding": "Viewed: payroll-deduction consent screenshot. Explicit nearby A283 label is APWU/APWUADD, outside current Sites.",
+      "visualReview": "Viewed: payroll-deduction consent screenshot. Explicit nearby A283 label is APWU/APWUADD, outside current Sites."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 36,
+        "col": 7
+      },
+      "to": {
+        "row": 36,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image28.jpeg",
+      "sha256": "d25bbe17108b4e28730511669acababd1359683fc96a3735639727ddd0acf0ce",
+      "bytes": 3105,
+      "id": "v78.drawing.35",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 37,
+        "col": 7
+      },
+      "to": {
+        "row": 37,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image29.jpeg",
+      "sha256": "4d7048a90d67cc4067dc4c4696556ea429c7e59c1339a195a6b500191d3a72af",
+      "bytes": 4552,
+      "id": "v78.drawing.36",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 38,
+        "col": 7
+      },
+      "to": {
+        "row": 38,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image30.jpeg",
+      "sha256": "13235dea4e0f920d74f8469f1bf9b96876b4659e85f31be78e7f04b9772bef29",
+      "bytes": 5141,
+      "id": "v78.drawing.37",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 41,
+        "col": 7
+      },
+      "to": {
+        "row": 41,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image31.jpeg",
+      "sha256": "1fa0fc6fdd2821d0dc6dfb03910bad0fe738ae35c0801087ca65b3a8d0c814db",
+      "bytes": 3167,
+      "id": "v78.drawing.38",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 42,
+        "col": 7
+      },
+      "to": {
+        "row": 42,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image32.jpeg",
+      "sha256": "19fb0030cc07d33b2a7fb6db3d93908868e134068aa1426d6b02b829a0351c53",
+      "bytes": 4013,
+      "id": "v78.drawing.39",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 43,
+        "col": 7
+      },
+      "to": {
+        "row": 43,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image33.jpeg",
+      "sha256": "5cb463b8991d86d4413f55a2821572fb86237f1acd01a4d63e1bcf170af8056d",
+      "bytes": 2989,
+      "id": "v78.drawing.40",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 44,
+        "col": 7
+      },
+      "to": {
+        "row": 44,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image34.jpeg",
+      "sha256": "185dba6234cec67129354aff5d634d80856e8ee7f406db0866a4fb3d09e21fa8",
+      "bytes": 4247,
+      "id": "v78.drawing.41",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 39,
+        "col": 7
+      },
+      "to": {
+        "row": 39,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image35.jpeg",
+      "sha256": "061ff450da3996c9d972e1ac195ee46247bba511fd77bfb3d3db6aa7271e1107",
+      "bytes": 2629,
+      "id": "v78.drawing.42",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 27,
+        "col": 8
+      },
+      "to": {
+        "row": 27,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image36.jpeg",
+      "sha256": "50caed561145239682ba9216e5f9a53dd46cf265aae5af9f1a387b3098280158",
+      "bytes": 6999,
+      "id": "v78.drawing.43",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "SASS",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 46,
+        "col": 7
+      },
+      "to": {
+        "row": 46,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image37.jpeg",
+      "sha256": "7279f86327a0ff49741d97d8fd115485b9e1ec1e62b930dd6a79b922563a76f5",
+      "bytes": 2521,
+      "id": "v78.drawing.44",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "APSIT\nAmerican Physical Society Insurance Trust",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 47,
+        "col": 7
+      },
+      "to": {
+        "row": 47,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image38.jpeg",
+      "sha256": "612bf095fc2c844f82a460c786139ca4ac2148ab6cd94ba0b30693e841cabdda",
+      "bytes": 2235,
+      "id": "v78.drawing.45",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 48,
+        "col": 7
+      },
+      "to": {
+        "row": 48,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image39.jpeg",
+      "sha256": "c91df52028cdd6c58ab9e6734bb49ee0f6977e21b120e439c0545c6364e82e3e",
+      "bytes": 2349,
+      "id": "v78.drawing.46",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 49,
+        "col": 7
+      },
+      "to": {
+        "row": 49,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image40.jpeg",
+      "sha256": "6d1ecb7e95e0c4be43dc96623ec6b7ccafc369ad09ac6b79f8ae780f07e2b864",
+      "bytes": 1559,
+      "id": "v78.drawing.47",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 50,
+        "col": 7
+      },
+      "to": {
+        "row": 50,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image41.jpeg",
+      "sha256": "7e71f5aca479ba35cc38fa14e407aa21a803e722a6cd0370c3144dc8e4eeb26a",
+      "bytes": 2008,
+      "id": "v78.drawing.48",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 51,
+        "col": 7
+      },
+      "to": {
+        "row": 51,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image42.jpeg",
+      "sha256": "342ec62c6fb1af030d31cd0c97096fa25952c4a4377085f6bda2db6a72eaed3c",
+      "bytes": 2032,
+      "id": "v78.drawing.49",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 52,
+        "col": 7
+      },
+      "to": {
+        "row": 52,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image43.jpeg",
+      "sha256": "9c280436f00916d4a2ed63d572cddc4258542f78004df3c5173e63fb2705e057",
+      "bytes": 3166,
+      "id": "v78.drawing.50",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 53,
+        "col": 7
+      },
+      "to": {
+        "row": 53,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image44.jpeg",
+      "sha256": "74c669bcce6687bd1a90d8778791d6810d20943885dca89c284839f0337245c9",
+      "bytes": 2930,
+      "id": "v78.drawing.51",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 54,
+        "col": 7
+      },
+      "to": {
+        "row": 54,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image45.jpeg",
+      "sha256": "f19de944e1da9ac3761a05072d410d61b1720388a50345946f0a76f2e7b5e821",
+      "bytes": 2835,
+      "id": "v78.drawing.52",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 55,
+        "col": 7
+      },
+      "to": {
+        "row": 55,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image46.jpeg",
+      "sha256": "b0af4fa0a3e00ef4875614ceb7b0aa4c3f662277a21befd0144be2145ba952ee",
+      "bytes": 1635,
+      "id": "v78.drawing.53",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 56,
+        "col": 7
+      },
+      "to": {
+        "row": 56,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image47.jpeg",
+      "sha256": "2cdf88e66eaba5e606783f2ff8e774cda935e5cddb3651d791ec3991401170d9",
+      "bytes": 2767,
+      "id": "v78.drawing.54",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 57,
+        "col": 7
+      },
+      "to": {
+        "row": 57,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image48.jpeg",
+      "sha256": "ea777ac9ee2ddc8415b7a3e7210613e00a2de9c3c8915e909ea9a14bba93cdf0",
+      "bytes": 1799,
+      "id": "v78.drawing.55",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 58,
+        "col": 7
+      },
+      "to": {
+        "row": 59,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image49.jpeg",
+      "sha256": "dc65dd00d3d2662ba5b79decc0dd8f15dd9f1bde644363f2db53b21d6003bb33",
+      "bytes": 2136,
+      "id": "v78.drawing.56",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 40,
+        "col": 7
+      },
+      "to": {
+        "row": 40,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image50.jpeg",
+      "sha256": "a3064edb64c9c087e8dc2bb4dfcd6501ce7820630c010592dd367bd51ae914b1",
+      "bytes": 2175,
+      "id": "v78.drawing.57",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 131,
+        "col": 7
+      },
+      "to": {
+        "row": 131,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image51.png",
+      "sha256": "a1f85fc049ed9bff048c70474576373c6c48897aaee99eedc9b9cd114736fdbf",
+      "bytes": 22574,
+      "id": "v78.drawing.58",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "NYSBA/NYSBAGI",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 132,
+        "col": 7
+      },
+      "to": {
+        "row": 132,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image52.png",
+      "sha256": "e43f2251a69eb3c3f9a626972666f2955b2238e594a63e3c3e1e04e5592dd19e",
+      "bytes": 4113,
+      "id": "v78.drawing.59",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Ontario Medical Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 132,
+        "col": 7
+      },
+      "to": {
+        "row": 132,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image53.png",
+      "sha256": "2e211483bb76cae24eb7cf39f51dbecee1eab8a70991458c2c757cc574c1b013",
+      "bytes": 9047,
+      "id": "v78.drawing.60",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Ontario Medical Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 132,
+        "col": 7
+      },
+      "to": {
+        "row": 132,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image54.jpeg",
+      "sha256": "6cc124ecc93bf6a0cba67f8e04ee187307c168bd641849c2b319e7cc0178e5d7",
+      "bytes": 10125,
+      "id": "v78.drawing.61",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Ontario Medical Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 132,
+        "col": 7
+      },
+      "to": {
+        "row": 132,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image55.png",
+      "sha256": "66a6a232451ef1aa1a45ff219fe58a710efbc74fe51cc5ccdab33054887ecc0b",
+      "bytes": 11098,
+      "id": "v78.drawing.62",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Ontario Medical Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 132,
+        "col": 7
+      },
+      "to": {
+        "row": 132,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image56.png",
+      "sha256": "3d63b773c59f8a0612f60b1f9f52a26d677d46c7f10f3e7aeefdb08fbcee046b",
+      "bytes": 10967,
+      "id": "v78.drawing.63",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Ontario Medical Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 132,
+        "col": 7
+      },
+      "to": {
+        "row": 132,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image57.png",
+      "sha256": "7bd6a41645cc1c68621368fe742bed91f065dd1391e81002e79d8512bedce86e",
+      "bytes": 5747,
+      "id": "v78.drawing.64",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Ontario Medical Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 227,
+        "col": 7
+      },
+      "to": {
+        "row": 227,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image58.png",
+      "sha256": "5627eb3154919a47b08e3db5db9f7452edc720376c1564fcdfeafaf63a7e9edf",
+      "bytes": 11560,
+      "id": "v78.drawing.65",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "AIA Trust\nAmerican Institute of Architects Trust",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 227,
+        "col": 8
+      },
+      "to": {
+        "row": 227,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image59.png",
+      "sha256": "31f5a1a2df4368d4249095b68cdd3dc9da31595312c679ed7b1cd4f861787d79",
+      "bytes": 6307,
+      "id": "v78.drawing.66",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "AIA Trust\nAmerican Institute of Architects Trust",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 229,
+        "col": 7
+      },
+      "to": {
+        "row": 229,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image60.jpeg",
+      "sha256": "3ccc5478591f27b0b6d64165ce52cc98d9a796322b63efd83c7e54aed711f63c",
+      "bytes": 10110,
+      "id": "v78.drawing.67",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American Institute of Chemical Engineers",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 229,
+        "col": 8
+      },
+      "to": {
+        "row": 229,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image61.jpeg",
+      "sha256": "b19c2f0cfa0d6382049cc594c64076d680b1592799f12585e4cb8f172dc5675d",
+      "bytes": 848930,
+      "id": "v78.drawing.68",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American Institute of Chemical Engineers",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 231,
+        "col": 7
+      },
+      "to": {
+        "row": 231,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image62.jpeg",
+      "sha256": "097844cf41cadbe5790039135347ec610cfa9dcbcc2641a05df95fe8dbda35ae",
+      "bytes": 585510,
+      "id": "v78.drawing.69",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "College of American Pathologists",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 35,
+        "col": 7
+      },
+      "to": {
+        "row": 35,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image63.jpeg",
+      "sha256": "647c2e1990334a9ab755fc521494cde8438a5f23e88a3780c64b49af5d1ed218",
+      "bytes": 2865,
+      "id": "v78.drawing.70",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "GeoCare\nSociety of Economic Geologists",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 30,
+        "col": 8
+      },
+      "to": {
+        "row": 30,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image64.jpeg",
+      "sha256": "831a27c761940228f252eb00571f4c60ee18191e4e84df3543d7c43e3fd86d3e",
+      "bytes": 9048,
+      "id": "v78.drawing.71",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "SASS-SI",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 133,
+        "col": 7
+      },
+      "to": {
+        "row": 195,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image65.jpeg",
+      "sha256": "85e538158b7bd29f69be1fd049142808926b2ec3a31093772edbff352177a20f",
+      "bytes": 93826,
+      "id": "v78.drawing.72",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Mercer  Alumni",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 195,
+        "col": 7
+      },
+      "to": {
+        "row": 226,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image66.jpeg",
+      "sha256": "bf2f1ff0a71e77faef8666bae9909b9dff4d91db28ac6f92d695a5df452b8a57",
+      "bytes": 49027,
+      "id": "v78.drawing.73",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Mercer  Alumni - SI",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 234,
+        "col": 7
+      },
+      "to": {
+        "row": 325,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image67.jpeg",
+      "sha256": "5f15f0c5bc3787be39fe5b475ac65c8da0372cca2e33520a2f6ed2411158325b",
+      "bytes": 362958,
+      "id": "v78.drawing.74",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 238,
+        "col": 9
+      },
+      "to": {
+        "row": 239,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image68.jpeg",
+      "sha256": "9c8489d2012433bfab4cdd13424ad1e900f48f6a10790e9b2a2d56392ae0e452",
+      "bytes": 4357,
+      "id": "v78.drawing.75",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 240,
+        "col": 9
+      },
+      "to": {
+        "row": 241,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image69.jpeg",
+      "sha256": "d17cff000cb19a785579c6f220e6da9b489a615ae0478ffdab5539bfdaeb6dcb",
+      "bytes": 5459,
+      "id": "v78.drawing.76",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 246,
+        "col": 9
+      },
+      "to": {
+        "row": 246,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image70.jpeg",
+      "sha256": "d2ad8b5c525fdd3c6dd85ec131681438c909d2ebcdaa1d8af2030c0aa515c8cc",
+      "bytes": 6256,
+      "id": "v78.drawing.77",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 247,
+        "col": 9
+      },
+      "to": {
+        "row": 247,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image71.jpeg",
+      "sha256": "2fd3dadf7346453ec908ac017de54df661fb810b7600e0d97df8ff651853a0d1",
+      "bytes": 4191,
+      "id": "v78.drawing.78",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 261,
+        "col": 9
+      },
+      "to": {
+        "row": 262,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image72.jpeg",
+      "sha256": "aa832b0242657a0e0b2e7522b297580e648029de59fc67e1547492caa942b463",
+      "bytes": 4894,
+      "id": "v78.drawing.79",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 263,
+        "col": 9
+      },
+      "to": {
+        "row": 263,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image73.jpeg",
+      "sha256": "e8eabcfbcd26a0b47e6ba3ddf6cce9076d3e4f8bb32878d86f077b323ee252f3",
+      "bytes": 7570,
+      "id": "v78.drawing.80",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 264,
+        "col": 9
+      },
+      "to": {
+        "row": 265,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image74.jpeg",
+      "sha256": "1ba62ac257517e042b2a1fdaf17933b8e3f5efc74959d649fcf990df8988e384",
+      "bytes": 7097,
+      "id": "v78.drawing.81",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 274,
+        "col": 9
+      },
+      "to": {
+        "row": 275,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image75.jpeg",
+      "sha256": "331bc4bb8e38fb415ae7fb39a57a2f4a1359ba30293caf1cc5ecb33c1ce2bab9",
+      "bytes": 4764,
+      "id": "v78.drawing.82",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 278,
+        "col": 9
+      },
+      "to": {
+        "row": 278,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image76.jpeg",
+      "sha256": "90b7f72cdf123e82b02b9cc8ef49ae1659cac43cafd24cc6eeda83a38f6e55b4",
+      "bytes": 4028,
+      "id": "v78.drawing.83",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 279,
+        "col": 9
+      },
+      "to": {
+        "row": 279,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image77.jpeg",
+      "sha256": "703a9bc102f634b523e5d69c8216b5b41aa8922ceeceb883a227ff58e9f7d595",
+      "bytes": 4486,
+      "id": "v78.drawing.84",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 281,
+        "col": 9
+      },
+      "to": {
+        "row": 281,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image78.jpeg",
+      "sha256": "38d6c884f83d812a96748a1dbbef2dbbda239606fd2eef428835b8f23a9feab9",
+      "bytes": 4363,
+      "id": "v78.drawing.85",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 282,
+        "col": 8
+      },
+      "to": {
+        "row": 282,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image79.jpeg",
+      "sha256": "e5358cb8c0fd8bc86b4703daf4af8074d8955ccd91febc941e13da45ee02d988",
+      "bytes": 4615,
+      "id": "v78.drawing.86",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 290,
+        "col": 9
+      },
+      "to": {
+        "row": 290,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image80.jpeg",
+      "sha256": "23671e9e33addd63d85da1307c5b364d1037430c0a3e29ee040990eded838e81",
+      "bytes": 7943,
+      "id": "v78.drawing.87",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 291,
+        "col": 9
+      },
+      "to": {
+        "row": 292,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image81.jpeg",
+      "sha256": "428c1dd6b5b6fe9f5799c2b2ccaf1dd41a5dc0d9d02483e1c561227def5f05e1",
+      "bytes": 6361,
+      "id": "v78.drawing.88",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 293,
+        "col": 9
+      },
+      "to": {
+        "row": 293,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image82.jpeg",
+      "sha256": "ccbe8f5ca5733ae1d158ef34c60eddae794daa0fb2bb4ede5473241298440575",
+      "bytes": 6430,
+      "id": "v78.drawing.89",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 295,
+        "col": 9
+      },
+      "to": {
+        "row": 295,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image83.jpeg",
+      "sha256": "cc5e210982e4c1e8dfeb4718c3808bbe7b3ede25b891f04361ce85013b1fea63",
+      "bytes": 6728,
+      "id": "v78.drawing.90",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 297,
+        "col": 9
+      },
+      "to": {
+        "row": 297,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image84.jpeg",
+      "sha256": "044a32d28a156e9e2c9479bca20ef01fb21c3ab1b0cfae1c948d3b7f45abc9ee",
+      "bytes": 5748,
+      "id": "v78.drawing.91",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 299,
+        "col": 9
+      },
+      "to": {
+        "row": 300,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image85.jpeg",
+      "sha256": "3a63c5e969c349c81fab9a1c745068185936fcd6fc63da5a95fe14d8311f0bdf",
+      "bytes": 4860,
+      "id": "v78.drawing.92",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 301,
+        "col": 9
+      },
+      "to": {
+        "row": 301,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image86.jpeg",
+      "sha256": "8ac054d8b4082fea13f7b906ca7a194d5eeaa461afadfd2187deb027103e770c",
+      "bytes": 5951,
+      "id": "v78.drawing.93",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 305,
+        "col": 9
+      },
+      "to": {
+        "row": 306,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image87.jpeg",
+      "sha256": "b77fa8e540ebd2805c5cdd77aa932612dcd44589d598fa8e93305cc7a84d86ab",
+      "bytes": 5008,
+      "id": "v78.drawing.94",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 307,
+        "col": 9
+      },
+      "to": {
+        "row": 307,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image88.jpeg",
+      "sha256": "2651d7d6c4d65a33ed3a0aed11114dce8d0729f3d26919bdbea8741416f3fe11",
+      "bytes": 5893,
+      "id": "v78.drawing.95",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 310,
+        "col": 8
+      },
+      "to": {
+        "row": 310,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image89.jpeg",
+      "sha256": "d6c398e24e237581c9e6964518b5b72f5731c57c4e1e6e3fe21f51d64b70c657",
+      "bytes": 3517,
+      "id": "v78.drawing.96",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 312,
+        "col": 9
+      },
+      "to": {
+        "row": 312,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image90.jpeg",
+      "sha256": "809af28eecfecd8c817368337996d6b912365c4cc01548b48e0942fc148cc523",
+      "bytes": 7570,
+      "id": "v78.drawing.97",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 320,
+        "col": 9
+      },
+      "to": {
+        "row": 320,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image91.jpeg",
+      "sha256": "00b7df053cd4474d0adf0cce1d0fd277dbbe7c148b16a599f5b4a8f642bf6b9f",
+      "bytes": 5744,
+      "id": "v78.drawing.98",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 323,
+        "col": 9
+      },
+      "to": {
+        "row": 324,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image92.jpeg",
+      "sha256": "55176ad849c49122debe9d0c844f9fbb522414c42ccc4759aaa1fbd09ddf1c7a",
+      "bytes": 6365,
+      "id": "v78.drawing.99",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 324,
+        "col": 9
+      },
+      "to": {
+        "row": 324,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image93.jpeg",
+      "sha256": "83711f3f7586a6155e652f1c6795fffe602bcb9f74e6ea9441956d6c4106210a",
+      "bytes": 5429,
+      "id": "v78.drawing.100",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 325,
+        "col": 9
+      },
+      "to": {
+        "row": 326,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image94.jpeg",
+      "sha256": "5951faa8ef1333e4f0eed19f4a696e5d833225a1d282fa00275476bc426fd568",
+      "bytes": 5507,
+      "id": "v78.drawing.101",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 63,
+        "col": 7
+      },
+      "to": {
+        "row": 63,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image95.jpeg",
+      "sha256": "bef5594960355a2316ce17a6a5ccf8a0f371b27978f1651e2a8e0d9613076ef0",
+      "bytes": 6747,
+      "id": "v78.drawing.102",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "TIE\nTrust for Insuring Educators",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 316,
+        "col": 10
+      },
+      "to": {
+        "row": 316,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image96.jpeg",
+      "sha256": "bcfa6999b0307fbd014f2be3637a3a2bdf5af92a51c2f97d9810f434b8f4b90c",
+      "bytes": 10505,
+      "id": "v78.drawing.103",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 315,
+        "col": 10
+      },
+      "to": {
+        "row": 315,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image97.jpeg",
+      "sha256": "26af17b7825e16f768d64d396da543860557f0c56a9c67a9f020c36199bccbfb",
+      "bytes": 10076,
+      "id": "v78.drawing.104",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 290,
+        "col": 10
+      },
+      "to": {
+        "row": 290,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image98.jpeg",
+      "sha256": "4605adc473f9383323c90c95d0e19757fab904d7c64026f68375fb09fac5e81d",
+      "bytes": 11061,
+      "id": "v78.drawing.105",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 294,
+        "col": 10
+      },
+      "to": {
+        "row": 295,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image99.jpeg",
+      "sha256": "c7d3c1f541d76dff08feb646d423685b488080f4ee1d246fefffc3b9209d92fd",
+      "bytes": 9809,
+      "id": "v78.drawing.106",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 251,
+        "col": 10
+      },
+      "to": {
+        "row": 251,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image100.jpeg",
+      "sha256": "5d391794dc4bf5a7f0803535d696d49831623ec40098cff43c6fbc6082c97c99",
+      "bytes": 6333,
+      "id": "v78.drawing.107",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 242,
+        "col": 10
+      },
+      "to": {
+        "row": 244,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image101.jpeg",
+      "sha256": "c5b3b9a58aa080ffbe7b197be721e06725a1502ef3c7ba458288573021b7b236",
+      "bytes": 13844,
+      "id": "v78.drawing.108",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 244,
+        "col": 10
+      },
+      "to": {
+        "row": 246,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image102.jpeg",
+      "sha256": "cd204f6b2b88b7e890f40455f412351184a22d10f6b39dc1e1154528330a3707",
+      "bytes": 5044,
+      "id": "v78.drawing.109",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 195,
+        "col": 8
+      },
+      "to": {
+        "row": 195,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image103.png",
+      "sha256": "919afc130e0f297b2a3198b9228ac312e173e0eeb2e751589afa6c197caefe43",
+      "bytes": 5707,
+      "id": "v78.drawing.110",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Mercer  Alumni - SI",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 351,
+        "col": 8
+      },
+      "to": {
+        "row": 351,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image104.jpeg",
+      "sha256": "38327f291fbeaebd7787dafcf02ef829c388452136e4e57e33d8995ed47f403f",
+      "bytes": 58972,
+      "id": "v78.drawing.111",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American Physical Therapy Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 351,
+        "col": 10
+      },
+      "to": {
+        "row": 351,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image105.png",
+      "sha256": "1b02e73ae29ab78bd526b3b22d1480e96eedb050ca157f8f853dcc0f8f4f39a7",
+      "bytes": 6209,
+      "id": "v78.drawing.112",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American Physical Therapy Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 352,
+        "col": 8
+      },
+      "to": {
+        "row": 352,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image106.jpeg",
+      "sha256": "10b31e9d07d9a653558a681d740d0d6083471beae642a09dae81b469d9b1bfa5",
+      "bytes": 13798,
+      "id": "v78.drawing.113",
+      "siteKeys": [
+        "avma"
+      ],
+      "disposition": "branding-reference",
+      "sourceLabel": "AVMA LIFE Trust - \nBe sure to reference AVMA LIFE Trust in the website.  See Column D.  Their Logo is not adequate per NYL Legal without specifying Trust.",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 352,
+        "col": 9
+      },
+      "to": {
+        "row": 352,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image107.png",
+      "sha256": "01d27033fae02ee31d2294df426199c62248efc9f0884c0a51278bb108dd55e3",
+      "bytes": 13175,
+      "id": "v78.drawing.114",
+      "siteKeys": [
+        "avma"
+      ],
+      "disposition": "branding-reference",
+      "sourceLabel": "AVMA LIFE Trust - \nBe sure to reference AVMA LIFE Trust in the website.  See Column D.  Their Logo is not adequate per NYL Legal without specifying Trust.",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo.",
+      "visualReview": "Viewed: AVMA LIFE logo and Veterinarian Inspired Coverage tagline; the source separately requires AVMA LIFE Trust in website text, already retained by current branding name."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 325,
+        "col": 7
+      },
+      "to": {
+        "row": 327,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image108.jpeg",
+      "sha256": "1f03b3cad0f31d136ad03230f9d3502a267795882fbde4a33bad98dbb6c246b1",
+      "bytes": 18480,
+      "id": "v78.drawing.115",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 253,
+        "col": 11
+      },
+      "to": {
+        "row": 254,
+        "col": 13
+      },
+      "mediaPath": "xl/media/image109.jpeg",
+      "sha256": "e2107dace70fc1cd7d7f97d91e917ec064591dcf564ad873724d4d87ed13bdff",
+      "bytes": 639182,
+      "id": "v78.drawing.116",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 261,
+        "col": 11
+      },
+      "to": {
+        "row": 262,
+        "col": 16
+      },
+      "mediaPath": "xl/media/image110.jpeg",
+      "sha256": "724f931c8e010b8da01682fed843073c7339599f32d6c88ab5ee43ebe5d65b8d",
+      "bytes": 49421,
+      "id": "v78.drawing.117",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 301,
+        "col": 10
+      },
+      "to": {
+        "row": 303,
+        "col": 12
+      },
+      "mediaPath": "xl/media/image111.jpeg",
+      "sha256": "66e703d768e6cf0d3d8e9ddf9986b6af7ce3dbf00bed6b4b8b2d9574774c22dc",
+      "bytes": 34400,
+      "id": "v78.drawing.118",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 308,
+        "col": 11
+      },
+      "to": {
+        "row": 309,
+        "col": 12
+      },
+      "mediaPath": "xl/media/image112.jpeg",
+      "sha256": "02d17626df04aa3ab135725a2fb780a435a5b2e9d6002974f4c6846a3dec65e8",
+      "bytes": 20648,
+      "id": "v78.drawing.119",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 315,
+        "col": 11
+      },
+      "to": {
+        "row": 316,
+        "col": 13
+      },
+      "mediaPath": "xl/media/image113.jpeg",
+      "sha256": "d24524d997a08df3d9b1dba9dd4233b7afab8435f0a2a875e3a2fd31a66bcb6e",
+      "bytes": 7307,
+      "id": "v78.drawing.120",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 316,
+        "col": 11
+      },
+      "to": {
+        "row": 317,
+        "col": 12
+      },
+      "mediaPath": "xl/media/image114.png",
+      "sha256": "824d9063b9e94de80b04d91cfc7a55df2f1e56abb0b1b05174529a52f56924e3",
+      "bytes": 32176,
+      "id": "v78.drawing.121",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 358,
+        "col": 7
+      },
+      "to": {
+        "row": 358,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image115.jpeg",
+      "sha256": "8deda7db9a8612b2db9f21d40862d1f10d7b36dc7c4f71a1f08d5251abc30897",
+      "bytes": 48083,
+      "id": "v78.drawing.122",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "NSPE\nNational Society of Professional Engineers",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 359,
+        "col": 7
+      },
+      "to": {
+        "row": 359,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image116.jpeg",
+      "sha256": "6bbed2039909b3ba94c51382aea50d81180e68315f0c3bfe111fd8f3f5c09396",
+      "bytes": 40338,
+      "id": "v78.drawing.123",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "AOA\nAmerican Optometric Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 327,
+        "col": 7
+      },
+      "to": {
+        "row": 327,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image117.jpeg",
+      "sha256": "b430cf8e35a9f35462f1c95ce947a2f8b4530141e551cddc3c55c2732914c955",
+      "bytes": 54433,
+      "id": "v78.drawing.124",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 328,
+        "col": 7
+      },
+      "to": {
+        "row": 328,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image118.jpeg",
+      "sha256": "b661db057ee4151d7fecae7e468852e3a95c7fc013dc3fe5e0d9ab26f9c2a06f",
+      "bytes": 76079,
+      "id": "v78.drawing.125",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 362,
+        "col": 7
+      },
+      "to": {
+        "row": 363,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image119.png",
+      "sha256": "2f4acee784859f0a9a17efb5facd15073c403ed9ada75ba4db3eb57dbaa89d46",
+      "bytes": 31208,
+      "id": "v78.drawing.126",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "CSEA California State Employees Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 15,
+        "col": 7
+      },
+      "to": {
+        "row": 15,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image120.png",
+      "sha256": "c744ef5f7e49d0e708281c12653cd81084a157b429c2ed6b8b4ffd1b3cc5d7fe",
+      "bytes": 5289,
+      "id": "v78.drawing.127",
+      "siteKeys": [
+        "ama"
+      ],
+      "disposition": "branding-reference",
+      "sourceLabel": "AMA\nAmerican Medical Association\n\nAMAGI and SI",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo.",
+      "visualReview": "Viewed: AMA Insurance logo only."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 364,
+        "col": 7
+      },
+      "to": {
+        "row": 364,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image121.tiff",
+      "sha256": "aaa13090832e134f0fdd7f180e07f6bd32bc1ac0df2db868205090b1665d6669",
+      "bytes": 12978,
+      "id": "v78.drawing.128",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "IEEE",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 365,
+        "col": 6
+      },
+      "to": {
+        "row": 365,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image122.jpeg",
+      "sha256": "193d908b0b29e84418bddb719c75b0b07c6e29855e87f0f2f7c599859f7197c4",
+      "bytes": 70457,
+      "id": "v78.drawing.129",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "ACOG",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 365,
+        "col": 9
+      },
+      "to": {
+        "row": 365,
+        "col": 11
+      },
+      "mediaPath": "xl/media/image123.png",
+      "sha256": "fce671e0bba3cfd6a34fe757034e1144b29a4bd4a49927a79db9c33bd3be6321",
+      "bytes": 22856,
+      "id": "v78.drawing.130",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "ACOG",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 46,
+        "col": 4
+      },
+      "to": {
+        "row": 47,
+        "col": 4
+      },
+      "mediaPath": "xl/media/image124.png",
+      "sha256": "2f6f72c3bf7200d43da8b261092b84fe71e88f6e61fed848b872ee45b75a52c9",
+      "bytes": 26877,
+      "id": "v78.drawing.131",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "APSIT\nAmerican Physical Society Insurance Trust",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 329,
+        "col": 7
+      },
+      "to": {
+        "row": 329,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image125.JPG",
+      "sha256": "2c7bbdac6a48ef5a645c3830cd7c4a1d653f2e4c8cf910f75ff16d33e98d2f5c",
+      "bytes": 45800,
+      "id": "v78.drawing.132",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 283,
+        "col": 9
+      },
+      "to": {
+        "row": 284,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image126.jpeg",
+      "sha256": "e0085b4eb7577fa67875c85382505e078863a17ca0fe50a920773fbf2e985ed4",
+      "bytes": 50510,
+      "id": "v78.drawing.133",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 312,
+        "col": 8
+      },
+      "to": {
+        "row": 314,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image127.jpg",
+      "sha256": "2088d047e37d11cdf5b339f8806e64beb0692d1918db268bcabbd00a82efd131",
+      "bytes": 62246,
+      "id": "v78.drawing.134",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 286,
+        "col": 8
+      },
+      "to": {
+        "row": 290,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image128.png",
+      "sha256": "4ca7c5491b7bb0e89ec5b61cc227eddf95398b7facd980cb53a8bfb151196257",
+      "bytes": 15560,
+      "id": "v78.drawing.135",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 3,
+        "col": 7
+      },
+      "to": {
+        "row": 3,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image129.png",
+      "sha256": "c855f68bdd9577d59b75d0e7a094c7d3983c8f5e57a2e83b93a26a406aad2770",
+      "bytes": 23081,
+      "id": "v78.drawing.136",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "AAO\nAmerican Association of Orthodontists",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 369,
+        "col": 7
+      },
+      "to": {
+        "row": 369,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image130.emf",
+      "sha256": "42f82f4fbccdd5b344eb3f20d27ffe6efac042be402833f70052f183aa44bb5e",
+      "bytes": 25388,
+      "id": "v78.drawing.137",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "New York County Lawyers Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 369,
+        "col": 7
+      },
+      "to": {
+        "row": 369,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image130.emf",
+      "sha256": "42f82f4fbccdd5b344eb3f20d27ffe6efac042be402833f70052f183aa44bb5e",
+      "bytes": 25388,
+      "id": "v78.drawing.138",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "New York County Lawyers Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 370,
+        "col": 6
+      },
+      "to": {
+        "row": 370,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image131.jpeg",
+      "sha256": "846e46984297c565cb6f404116835afc199e07de17c03d6ed67482807fad85b7",
+      "bytes": 24436,
+      "id": "v78.drawing.139",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American Academy of Dermatology",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 370,
+        "col": 8
+      },
+      "to": {
+        "row": 370,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image132.png",
+      "sha256": "f1b7ed728605953ce930f724c7df00a0ff8045f682043307bf9c1a51d3d08591",
+      "bytes": 19605,
+      "id": "v78.drawing.140",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American Academy of Dermatology",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 371,
+        "col": 7
+      },
+      "to": {
+        "row": 371,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image133.jpeg",
+      "sha256": "699eec2e6181cf37dd615d72f261159d453420eebeb7e67136bf3dd6531d929f",
+      "bytes": 25197,
+      "id": "v78.drawing.141",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Amerrican College of Physians",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 228,
+        "col": 7
+      },
+      "to": null,
+      "mediaPath": "xl/media/image58.png",
+      "sha256": "5627eb3154919a47b08e3db5db9f7452edc720376c1564fcdfeafaf63a7e9edf",
+      "bytes": 11560,
+      "id": "v78.drawing.142",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "AIA Trust\nAmerican Institute of Architects Trust",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 228,
+        "col": 8
+      },
+      "to": null,
+      "mediaPath": "xl/media/image59.png",
+      "sha256": "31f5a1a2df4368d4249095b68cdd3dc9da31595312c679ed7b1cd4f861787d79",
+      "bytes": 6307,
+      "id": "v78.drawing.143",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "AIA Trust\nAmerican Institute of Architects Trust",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 330,
+        "col": 7
+      },
+      "to": {
+        "row": 331,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image134.JPG",
+      "sha256": "86b35ad7373b2bcbe53f22b087017fbfab171ad7913b7a742acdf49700825860",
+      "bytes": 231742,
+      "id": "v78.drawing.144",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 331,
+        "col": 7
+      },
+      "to": {
+        "row": 331,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image135.jpeg",
+      "sha256": "5ea18509e941f6bb0ad56ed26073c227daf180d72f320d9eb35ef79d8ad46c49",
+      "bytes": 43406,
+      "id": "v78.drawing.145",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 258,
+        "col": 8
+      },
+      "to": {
+        "row": 260,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image136.jpeg",
+      "sha256": "7aa82c654cd91c0cc5cebcfb5831d412765814486950a2b7a118dd4d4f956c6b",
+      "bytes": 23147,
+      "id": "v78.drawing.146",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 332,
+        "col": 7
+      },
+      "to": {
+        "row": 332,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image137.jpeg",
+      "sha256": "c8161d368c4ae3d349043bb0faf121d97045aa14ec8c688496206d52d8cf01f6",
+      "bytes": 50491,
+      "id": "v78.drawing.147",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 6,
+        "col": 7
+      },
+      "to": {
+        "row": 6,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image138.jpg",
+      "sha256": "f3be0cd7425e803da8206737bbef0fd2ad010716f76730635220727ca0edbd20",
+      "bytes": 12135,
+      "id": "v78.drawing.148",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "AAPGI\nAmerican Academy of Pediatrics",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 172,
+        "col": 6
+      },
+      "to": {
+        "row": 173,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image139.jpeg",
+      "sha256": "1b36884279bf2ac09254b41a574cd20ea4369543b2f4619c3d8392fac182caf3",
+      "bytes": 8193,
+      "id": "v78.drawing.149",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 333,
+        "col": 7
+      },
+      "to": {
+        "row": 333,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image140.gif",
+      "sha256": "d9f9a7c2852d5c9bb3e2b32e87a21828d0886198339c9a67c5b133f50eb8b319",
+      "bytes": 5584,
+      "id": "v78.drawing.150",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 333,
+        "col": 7
+      },
+      "to": {
+        "row": 335,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image141.JPG",
+      "sha256": "f7668c812444515adc748dd5c2b8c32ca296359d8e0f75c9d1fcff7ce2c70b43",
+      "bytes": 15893,
+      "id": "v78.drawing.151",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 334,
+        "col": 7
+      },
+      "to": {
+        "row": 336,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image142.jpeg",
+      "sha256": "84b89df20080eb9d2b1c2112a566dd7840613d0e17686d6afecbda3230c139ce",
+      "bytes": 61291,
+      "id": "v78.drawing.152",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 336,
+        "col": 7
+      },
+      "to": {
+        "row": 336,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image143.jpeg",
+      "sha256": "dec70a4dcba3ac0f3ca772ffeb93ed0aa54c15e94294063630c054d4cd32c781",
+      "bytes": 46169,
+      "id": "v78.drawing.153",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 73,
+        "col": 7
+      },
+      "to": {
+        "row": 73,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image144.png",
+      "sha256": "840e0bdd7ede921a013b4cfdb1a3c3d02c9d7db330bd5c81522858fe1bfbb4ca",
+      "bytes": 6307,
+      "id": "v78.drawing.154",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 377,
+        "col": 7
+      },
+      "to": {
+        "row": 377,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image145.jpeg",
+      "sha256": "ea87122dcfe79bb66cde2cf60bf70b8027288f5dadc9e7229993dd4a80979a8a",
+      "bytes": 24088,
+      "id": "v78.drawing.155",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American Postal Workers Union",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 379,
+        "col": 8
+      },
+      "to": null,
+      "mediaPath": "xl/media/image104.jpeg",
+      "sha256": "38327f291fbeaebd7787dafcf02ef829c388452136e4e57e33d8995ed47f403f",
+      "bytes": 58972,
+      "id": "v78.drawing.156",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American Physical Therapy Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 379,
+        "col": 9
+      },
+      "to": null,
+      "mediaPath": "xl/media/image105.png",
+      "sha256": "1b02e73ae29ab78bd526b3b22d1480e96eedb050ca157f8f853dcc0f8f4f39a7",
+      "bytes": 6209,
+      "id": "v78.drawing.157",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American Physical Therapy Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 337,
+        "col": 7
+      },
+      "to": {
+        "row": 337,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image146.png",
+      "sha256": "cf3df3fc5a1125746a65aead543fc238eb98f635be90d5d4d3051e3525b3014b",
+      "bytes": 10519,
+      "id": "v78.drawing.158",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 306,
+        "col": 10
+      },
+      "to": {
+        "row": 308,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image147.jpeg",
+      "sha256": "f4c3beab0f84f3a22ac6c12d82e5bd04056db322d3bdb3657d87d9da8962198f",
+      "bytes": 15919,
+      "id": "v78.drawing.159",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 251,
+        "col": 8
+      },
+      "to": {
+        "row": 253,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image148.jpeg",
+      "sha256": "74c026dc1904f8e0bf346440612e3de6ddd214628a3a5943e442eb32000c9146",
+      "bytes": 35489,
+      "id": "v78.drawing.160",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 301,
+        "col": 10
+      },
+      "to": {
+        "row": 301,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image149.jpeg",
+      "sha256": "7b6ac4f193f590ceec514cb3a9bcbe872a9e43def9bc2ecf2f89c80a88bf6de7",
+      "bytes": 25221,
+      "id": "v78.drawing.161",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 265,
+        "col": 8
+      },
+      "to": {
+        "row": 266,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image150.jpeg",
+      "sha256": "8b1cf7ea22e5ee65279b38c7f5fd8beb20bd255d5e638d2434da314ca5ea9d17",
+      "bytes": 28403,
+      "id": "v78.drawing.162",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 337,
+        "col": 7
+      },
+      "to": {
+        "row": 339,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image151.jpeg",
+      "sha256": "7c784db672538fe717a20fcc7f9a7c17ef86320be1e1eb99785b49cfc487b9b3",
+      "bytes": 83286,
+      "id": "v78.drawing.163",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 364,
+        "col": 8
+      },
+      "to": {
+        "row": 364,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image152.jpg",
+      "sha256": "54d72f2407ce0a5c674c9ca069994b9da0da16cda1e7f160194baa68c84749bd",
+      "bytes": 22964,
+      "id": "v78.drawing.164",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "IEEE",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 376,
+        "col": 7
+      },
+      "to": {
+        "row": 376,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image153.jpg",
+      "sha256": "a9c565dd56acdffe770ea5891d95d693ef498c43f5d749421383b7b6f3c22cc8",
+      "bytes": 30277,
+      "id": "v78.drawing.165",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "LifeHelp",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 381,
+        "col": 7
+      },
+      "to": {
+        "row": 381,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image154.png",
+      "sha256": "b64d96dad3a0b5b20036c2f0c5908b3764ccd9fb2be79dbffc181f6eea8e9b85",
+      "bytes": 4289,
+      "id": "v78.drawing.166",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American College of Emergency Physicians",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 381,
+        "col": 8
+      },
+      "to": {
+        "row": 381,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image155.png",
+      "sha256": "2eac3b748cc769559f40c54a05321f7692d9a8327456f8ce1917010f52adbed2",
+      "bytes": 6027,
+      "id": "v78.drawing.167",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American College of Emergency Physicians",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 381,
+        "col": 6
+      },
+      "to": {
+        "row": 383,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image156.png",
+      "sha256": "65f4eadb51d016aed2598af890b0c836c8adfff6d63ac0b88672be66b215a35f",
+      "bytes": 60342,
+      "id": "v78.drawing.168",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American College of Emergency Physicians",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 382,
+        "col": 8
+      },
+      "to": {
+        "row": 382,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image157.jpeg",
+      "sha256": "59ae166c59be4a36a271ec8d4ee9526e2cd9742c355846654db5c95d76eefd4a",
+      "bytes": 27658,
+      "id": "v78.drawing.169",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "AAOp",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 12,
+        "col": 9
+      },
+      "to": {
+        "row": 12,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image158.png",
+      "sha256": "39276b2b9645602ce62e90bdeede30e604b8ecd1db896c5a665854dead07d96e",
+      "bytes": 33638,
+      "id": "v78.drawing.170",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "ACS\nAmerican College of Surgeons\nACSQD - same info",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 383,
+        "col": 7
+      },
+      "to": {
+        "row": 383,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image159.png",
+      "sha256": "c20e4d04ff24c2bc67185acd3f80399155b56bae86c471cd5cbe54ad7bc02b39",
+      "bytes": 6578,
+      "id": "v78.drawing.171",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "NYSSCPA",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 384,
+        "col": 8
+      },
+      "to": null,
+      "mediaPath": "xl/media/image104.jpeg",
+      "sha256": "38327f291fbeaebd7787dafcf02ef829c388452136e4e57e33d8995ed47f403f",
+      "bytes": 58972,
+      "id": "v78.drawing.172",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American Physical Therapy Association (APTA)",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 379,
+        "col": 6
+      },
+      "to": {
+        "row": 379,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image160.png",
+      "sha256": "4a2b73a8932be2eb5ea421517757c175df46d72d2e80ef4e6bf307a9361e802b",
+      "bytes": 18693,
+      "id": "v78.drawing.173",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American Physical Therapy Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 339,
+        "col": 7
+      },
+      "to": {
+        "row": 339,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image161.png",
+      "sha256": "2e2bf27c33d4c51ad517fa68f5f2d51f4cc5f28e30f9992e30b937379c430819",
+      "bytes": 24296,
+      "id": "v78.drawing.174",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 340,
+        "col": 7
+      },
+      "to": {
+        "row": 341,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image162.jpeg",
+      "sha256": "c53f41d9163e93075cf83ed783c512460acadf92e706a651ba1dba892c2f2122",
+      "bytes": 47864,
+      "id": "v78.drawing.175",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 4,
+        "col": 7
+      },
+      "to": {
+        "row": 4,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image129.png",
+      "sha256": "c855f68bdd9577d59b75d0e7a094c7d3983c8f5e57a2e83b93a26a406aad2770",
+      "bytes": 23081,
+      "id": "v78.drawing.176",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "AAO\nAmerican Association of Orthodontists",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 347,
+        "col": 7
+      },
+      "to": {
+        "row": 348,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image163.png",
+      "sha256": "e6bbd377707ac209b14dc48427463b4a272972c27e351b46908f773c1c31de06",
+      "bytes": 5161,
+      "id": "v78.drawing.177",
+      "siteKeys": [
+        "waepa-gi"
+      ],
+      "disposition": "branding-reference",
+      "sourceLabel": "Worldwide Assurance for Employees of Public Agencies",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 361,
+        "col": 8
+      },
+      "to": {
+        "row": 361,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image164.png",
+      "sha256": "d6719166c852a404e6c6bd6f5afe4b9c523fb0d11f19e9a625ca9faa0d8f6d07",
+      "bytes": 6452,
+      "id": "v78.drawing.178",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Rutgers University Alumni Associciation\n(RUAAGI)",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 361,
+        "col": 8
+      },
+      "to": {
+        "row": 361,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image164.png",
+      "sha256": "d6719166c852a404e6c6bd6f5afe4b9c523fb0d11f19e9a625ca9faa0d8f6d07",
+      "bytes": 6452,
+      "id": "v78.drawing.179",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Rutgers University Alumni Associciation\n(RUAAGI)",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 13,
+        "col": 8
+      },
+      "to": {
+        "row": 13,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image158.png",
+      "sha256": "39276b2b9645602ce62e90bdeede30e604b8ecd1db896c5a665854dead07d96e",
+      "bytes": 33638,
+      "id": "v78.drawing.180",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "ACSInitiateGI",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 368,
+        "col": 7
+      },
+      "to": {
+        "row": 368,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image165.png",
+      "sha256": "21bbc8f3cc441075a1c720fccccb319ae0c7949de2961edf2b390ad7af2fccf4",
+      "bytes": 16759,
+      "id": "v78.drawing.181",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "AANA (CRNA Program)",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 322,
+        "col": 10
+      },
+      "to": {
+        "row": 324,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image166.png",
+      "sha256": "98e17245abab2c865680c5deb53a99d1bf2083d696ccf757e185d164995811fc",
+      "bytes": 15707,
+      "id": "v78.drawing.182",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 343,
+        "col": 7
+      },
+      "to": {
+        "row": 343,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image167.png",
+      "sha256": "8c8011aec6623d97e4751417696d1a67c47519ecb71dcc859aa34c61fbd14698",
+      "bytes": 16345,
+      "id": "v78.drawing.183",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 378,
+        "col": 7
+      },
+      "to": {
+        "row": 378,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image145.jpeg",
+      "sha256": "ea87122dcfe79bb66cde2cf60bf70b8027288f5dadc9e7229993dd4a80979a8a",
+      "bytes": 24088,
+      "id": "v78.drawing.184",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American Postal Workers Union",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 390,
+        "col": 7
+      },
+      "to": {
+        "row": 390,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image168.png",
+      "sha256": "ee7345f2873f4842ee79b49611fdc030ebcddd351b92c4f1e1582fef2692ad0e",
+      "bytes": 21251,
+      "id": "v78.drawing.185",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Association of United Internet Consumers",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 367,
+        "col": 6
+      },
+      "to": {
+        "row": 367,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image169.png",
+      "sha256": "2aed1f4b3eb07cf72a0a7469141c4314da1aea7a412015b523dd903feceb6464",
+      "bytes": 42754,
+      "id": "v78.drawing.186",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American Association of Nurse Anesthesis",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 7,
+        "col": 7
+      },
+      "to": {
+        "row": 7,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image170.png",
+      "sha256": "f52d3d7bb0a1d7f72cf466403c41da2eca9b7c3e6ebd664a891dfd23cfa90626",
+      "bytes": 23335,
+      "id": "v78.drawing.187",
+      "siteKeys": [
+        "abe"
+      ],
+      "disposition": "branding-reference",
+      "sourceLabel": "ABE\nAmerican Bar Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo.",
+      "visualReview": "Viewed: American Bar Endowment logo and service tagline only."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 12,
+        "col": 7
+      },
+      "to": {
+        "row": 12,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image171.png",
+      "sha256": "5a9638dc85838798e02d5f0752f508849a68ff840dfe798b1fdaeb6e69104757",
+      "bytes": 13573,
+      "id": "v78.drawing.188",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "ACS\nAmerican College of Surgeons\nACSQD - same info",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 13,
+        "col": 7
+      },
+      "to": {
+        "row": 13,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image172.png",
+      "sha256": "39efa9831456eeb59fd2e1f4262868a870c0c5987b7c7e2a3e701aafb3a86992",
+      "bytes": 19791,
+      "id": "v78.drawing.189",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "ACSInitiateGI",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 380,
+        "col": 8
+      },
+      "to": {
+        "row": 380,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image173.png",
+      "sha256": "46c2e2e611aab5bd30e5e2f598f5498af2be7b6a2045475cfe7c46a0bd599d34",
+      "bytes": 9854,
+      "id": "v78.drawing.190",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "AIR FORCE ASSOCIATION",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 380,
+        "col": 10
+      },
+      "to": {
+        "row": 381,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image174.png",
+      "sha256": "1a8a46517655132a274c8599fc5759bba9915f4e161524ea2b5324e51a1d814a",
+      "bytes": 36224,
+      "id": "v78.drawing.191",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "AIR FORCE ASSOCIATION",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 1,
+        "col": 6
+      },
+      "to": {
+        "row": 2,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image175.png",
+      "sha256": "9429bf7973be89a6bba581fc0766323f5e718a88a930088b864686d61f697cc3",
+      "bytes": 59784,
+      "id": "v78.drawing.192",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Association Acronym",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 350,
+        "col": 7
+      },
+      "to": {
+        "row": 351,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image176.png",
+      "sha256": "62b43b6afba0a48fd2ef6b3416a297a06285d1d26d0d0e9abfb983192d708ede",
+      "bytes": 43408,
+      "id": "v78.drawing.193",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Worldwide Assurance for Employees of Public Agencies",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 384,
+        "col": 7
+      },
+      "to": {
+        "row": 384,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image177.png",
+      "sha256": "6663ab9a0e9263d1fbb42e772089d8699af329e4e585696e96bebf2c1e49c28f",
+      "bytes": 40326,
+      "id": "v78.drawing.194",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "American Physical Therapy Association (APTA)",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 372,
+        "col": 6
+      },
+      "to": {
+        "row": 372,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image178.png",
+      "sha256": "9030bbd298c9aa49d7e47764901123e8989051441d0895ec91f76a0c10ffd223",
+      "bytes": 24751,
+      "id": "v78.drawing.195",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "The American Society of Mechanical Engineers",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 366,
+        "col": 6
+      },
+      "to": {
+        "row": 366,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image179.png",
+      "sha256": "9ba5d83bfbd7c605da286586a674e66972cf2d635ef669b944eccd177afb6a9e",
+      "bytes": 95745,
+      "id": "v78.drawing.196",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Cal Bar",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 356,
+        "col": 7
+      },
+      "to": {
+        "row": 358,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image180.png",
+      "sha256": "cb09d9ca993add36b026f158890cdf7690a82b2f903afa478c68d180b71e7851",
+      "bytes": 55029,
+      "id": "v78.drawing.197",
+      "siteKeys": [
+        "nso"
+      ],
+      "disposition": "branding-reference",
+      "sourceLabel": "Nurses Services Organization",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 374,
+        "col": 6
+      },
+      "to": {
+        "row": 374,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image181.png",
+      "sha256": "97ef5a2a006b0de74a21ebdd55eda1fa00f80c7fbeef257d89f9667abce07d36",
+      "bytes": 341613,
+      "id": "v78.drawing.198",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "National Association of REALTORS\u00ae",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 375,
+        "col": 6
+      },
+      "to": {
+        "row": 375,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image182.png",
+      "sha256": "b098cb4760f33d6ba5c4edd7ee4e0b30be887fcbb92fc841e2e6e47887c12fff",
+      "bytes": 51082,
+      "id": "v78.drawing.199",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "National Association of REALTORS\u00ae",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 355,
+        "col": 7
+      },
+      "to": {
+        "row": 356,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image183.png",
+      "sha256": "ee25f9124bf91b6aa79d24e2bdeaa0b7392fa2e60d4765415ea89f5d706d5c95",
+      "bytes": 70716,
+      "id": "v78.drawing.200",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "AVMA LIFE Trust",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 25,
+        "col": 6
+      },
+      "to": {
+        "row": 25,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image184.png",
+      "sha256": "a54525ac79796e56714a3fabf837f87c64f5e627409ad107be1bb6c18f148efd",
+      "bytes": 15601,
+      "id": "v78.drawing.201",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "AIIT\nAppraisal Institute Insurance Trust\n(Formerly known as REAGIT\nReal Estate Appraisers Group Insurance Trust)",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 133,
+        "col": 6
+      },
+      "to": {
+        "row": 133,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image185.png",
+      "sha256": "b2958dc178fde6102550720809e85378462991decda7abc5f8b8968ec110aad0",
+      "bytes": 42094,
+      "id": "v78.drawing.202",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Mercer  Alumni",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 232,
+        "col": 6
+      },
+      "to": {
+        "row": 232,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image186.png",
+      "sha256": "87a8e2105836543540de3551424c9977f74213c2baa8a430cce97abe62535714",
+      "bytes": 126048,
+      "id": "v78.drawing.203",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "Collegiate alumni Trust",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 340,
+        "col": 7
+      },
+      "to": {
+        "row": 342,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image187.png",
+      "sha256": "3ca841259b18b7a6d0d8923ca61f3485d4857a4490f0128764573d3a7b67bdd9",
+      "bytes": 88502,
+      "id": "v78.drawing.204",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 359,
+        "col": 8
+      },
+      "to": {
+        "row": 362,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image188.png",
+      "sha256": "87489d7bf6736f046919dab0de027115c4d4bb6228853f734bf9d9c94c756987",
+      "bytes": 18991,
+      "id": "v78.drawing.205",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "AOA\nAmerican Optometric Association",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 177,
+        "col": 9
+      },
+      "to": {
+        "row": 179,
+        "col": 10
+      },
+      "mediaPath": "xl/media/image189.png",
+      "sha256": "503c188fc087ba7fd26da095d2f2542aa241e6967baf835b258ea0e51fb6a85a",
+      "bytes": 4189,
+      "id": "v78.drawing.206",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 272,
+        "col": 7
+      },
+      "to": {
+        "row": 274,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image190.jpeg",
+      "sha256": "1a9328185f63b043aecd77039b0ca065cb7f17429def4a1bb41fa324369b63bf",
+      "bytes": 35695,
+      "id": "v78.drawing.207",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 302,
+        "col": 6
+      },
+      "to": {
+        "row": 302,
+        "col": 9
+      },
+      "mediaPath": "xl/media/image191.jpeg",
+      "sha256": "aa747b17d17b99e9f8f78939285bdd68a95a77f39d57a1ddf6076f59b392932a",
+      "bytes": 43764,
+      "id": "v78.drawing.208",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 396,
+        "col": 7
+      },
+      "to": {
+        "row": 396,
+        "col": 7
+      },
+      "mediaPath": "xl/media/image192.png",
+      "sha256": "8ea207a630ea199b1dbbdba5f9941212fb8c1dc87a1b247b50570ef53587ecfe",
+      "bytes": 11465,
+      "id": "v78.drawing.209",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "USBA",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    },
+    {
+      "sheet": "Associations",
+      "from": {
+        "row": 396,
+        "col": 8
+      },
+      "to": {
+        "row": 396,
+        "col": 8
+      },
+      "mediaPath": "xl/media/image192.png",
+      "sha256": "8ea207a630ea199b1dbbdba5f9941212fb8c1dc87a1b247b50570ef53587ecfe",
+      "bytes": 11465,
+      "id": "v78.drawing.210",
+      "siteKeys": [],
+      "disposition": "branding-reference",
+      "sourceLabel": "USBA",
+      "finding": "Association logo/branding reference under the G/H source headers. Anchor overlap does not assign another row or Site. Current branding remains the template baseline; no functional application rule is inferred from a logo."
+    }
+  ],
+  "reviewedOn": "2026-10-20",
+  "scope": "Current business Library Sites; source identity and branding reference review, without changing runtime or source workbook.",
+  "authority": "Pinned original v78 workbook matches src/migration/sources/mcr-v78.json workbook SHA256 and every anchored media hash. The current prototype remains the layout/branding baseline; accepted ABE Review is preserved.",
+  "note": "Coordinates are one-based. Reused media has separate drawing anchors; a rectangle spanning a neighboring row does not assign that row. Source outside current scope remains preserved.",
+  "otherMedia": [
+    {
+      "path": "xl/media/image1.png",
+      "sha256": "df1da2ac30d9b1c76bf068527f70818992485dfae318fdb06f27435575036d03",
+      "disposition": "branding-reference",
+      "finding": "Viewed: AVMA Insurance Services logo in Excel rich-data storage; retain current template branding and the existing AVMA LIFE Trust name."
+    },
+    {
+      "path": "xl/media/image2.png",
+      "sha256": "e8d637d9dd349387ce71c5353e7825fa27f92bf5b4025aa9baf82300c4998862",
+      "disposition": "outside-current-site-branding",
+      "finding": "Viewed: American Pharmacists Association logo in rich-data storage; outside current business Sites."
+    },
+    {
+      "path": "xl/media/image30.emf",
+      "sha256": "501c75a89248c7ad0925c84c5878c3bf324031285ec8b161a9d72b0c4a4387d1",
+      "disposition": "branding-package-icon",
+      "finding": "Legacy OLE icon for AVMA LIFE Logo.jpg packages at Associations rows 352, 353 and 354. These are branding assets, not additional application instructions."
+    },
+    {
+      "path": "xl/media/image22.emf",
+      "sha256": "ad1ec627320f1dd947403d50ab72c72df0402b537eed73d094b175362c760d25",
+      "disposition": "outside-current-site-variant",
+      "finding": "Legacy OLE Word-document icon at Attestation Online and PDF row 63 (CAT); outside reviewed primary current-Site spans."
+    },
+    {
+      "path": "xl/media/image23.emf",
+      "sha256": "e6394af84d54795bf05e2a932f8c1460fcc5cc9ad4ec48cba78f3613faf917f5",
+      "disposition": "outside-current-site-variant",
+      "finding": "Legacy OLE PDF-document icon at Attestation Online and PDF row 63 (CAT); outside current Sites."
+    }
+  ],
+  "embeddedObjects": [
+    {
+      "path": "xl/embeddings/Microsoft_Word_Document.docx",
+      "sha256": "0372c0d286bccb318b51785e884ec97871ba2a2da87b035782bfc956e277e221",
+      "disposition": "outside-current-site-variant",
+      "finding": "Word/PDF object at Attestation Online and PDF row 63, explicitly labeled CAT; outside current Sites."
+    },
+    {
+      "path": "xl/embeddings/oleObject1.bin",
+      "sha256": "5ddf773b0aaa23ebcf9feae5afd5e291b7e15c4453209286c78b9f95b4cd649f",
+      "disposition": "outside-current-site-variant",
+      "finding": "Word/PDF object at Attestation Online and PDF row 63, explicitly labeled CAT; outside current Sites."
+    },
+    {
+      "path": "xl/embeddings/oleObject2.bin",
+      "sha256": "0d70715d84b412ae4cba1c311030d637458af6055b7e10313b1ce3fa59e4946f",
+      "disposition": "branding-package-reference",
+      "finding": "OLE package identifies AVMA LIFE Logo.jpg; current template branding remains authoritative."
+    },
+    {
+      "path": "xl/embeddings/oleObject3.bin",
+      "sha256": "0d70715d84b412ae4cba1c311030d637458af6055b7e10313b1ce3fa59e4946f",
+      "disposition": "branding-package-reference",
+      "finding": "OLE package identifies AVMA LIFE Logo.jpg; current template branding remains authoritative."
+    },
+    {
+      "path": "xl/embeddings/oleObject4.bin",
+      "sha256": "0d70715d84b412ae4cba1c311030d637458af6055b7e10313b1ce3fa59e4946f",
+      "disposition": "branding-package-reference",
+      "finding": "OLE package identifies AVMA LIFE Logo.jpg; current template branding remains authoritative."
+    }
+  ],
+  "mediaConservation": {
+    "snapshotMediaCount": 195,
+    "directAnchoredMediaCount": 190,
+    "otherMediaCount": 5,
+    "allMediaHashesMatch": true
+  }
+}

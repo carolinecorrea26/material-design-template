@@ -1,9 +1,9 @@
-import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
+import PrivacyTipRoundedIcon from "@mui/icons-material/PrivacyTipRounded";
 import { Box, Stack, Typography, type SxProps, type Theme } from "@mui/material";
 import type { SvgIconComponent } from "@mui/icons-material";
 
 type EmptyStateProps = {
-  /** Icon to display. Defaults to PrivacyTipIcon. */
+  /** Icon to display. Defaults to PrivacyTipRoundedIcon. */
   icon?: SvgIconComponent;
   /** Primary message. Required. */
   title: string;
@@ -16,7 +16,7 @@ type EmptyStateProps = {
  * Generic empty state: centered icon + title + optional body text.
  * Used wherever a section or panel has nothing to show yet.
  */
-export default function EmptyState({ icon: Icon = PrivacyTipIcon, title, body, sx }: EmptyStateProps) {
+export default function EmptyState({ icon: Icon = PrivacyTipRoundedIcon, title, body, sx }: EmptyStateProps) {
   return (
     <Box
       sx={[

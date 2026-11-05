@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Box, Link, Stack, Typography } from "@mui/material";
-import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
-import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import LanguageRoundedIcon from "@mui/icons-material/LanguageRounded";
+import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
+import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
+import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import type { ClientConfig } from "../../config/clients/types";
 import { getContent } from "../../content";
 import AppModal from "../layout/AppModal";
@@ -93,14 +93,13 @@ export default function AppFooter({ client }: AppFooterProps) {
             <Stack sx={{ mt: 2 }} spacing={0.75}>
               {client.support.website && (
                 <Stack direction="row" spacing={1} alignItems="center">
-                  <LanguageOutlinedIcon
+                  <LanguageRoundedIcon
                     sx={{ fontSize: 16, color: "text.secondary" }}
                   />
                   <Link
                     href={/^https?:\/\//i.test(client.support.website) ? client.support.website : `https://${client.support.website}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    underline="hover"
                     variant="caption"
                   >
                     {client.support.website}
@@ -110,12 +109,11 @@ export default function AppFooter({ client }: AppFooterProps) {
 
               {client.support.email && (
                 <Stack direction="row" spacing={1} alignItems="center">
-                  <EmailOutlinedIcon
+                  <EmailRoundedIcon
                     sx={{ fontSize: 16, color: "text.secondary" }}
                   />
                   <Link
                     href={`mailto:${client.support.email}`}
-                    underline="hover"
                     variant="caption"
                   >
                     {client.support.email}
@@ -125,12 +123,11 @@ export default function AppFooter({ client }: AppFooterProps) {
 
               {(client.support.phoneDisplay ?? client.support.phone) && (
                 <Stack direction="row" spacing={1} alignItems="center">
-                  <PhoneOutlinedIcon
+                  <PhoneRoundedIcon
                     sx={{ fontSize: 16, color: "text.secondary" }}
                   />
                   <Link
                     href={`tel:${client.support.phone}`}
-                    underline="hover"
                     variant="caption"
                   >
                     {client.support.phoneDisplay ?? client.support.phone}
@@ -140,7 +137,7 @@ export default function AppFooter({ client }: AppFooterProps) {
 
               {client.support.phoneHours && (
                 <Stack direction="row" spacing={1} alignItems="center">
-                  <AccessTimeOutlinedIcon
+                  <AccessTimeRoundedIcon
                     sx={{ fontSize: 16, color: "text.secondary" }}
                   />
                   <Typography variant="caption" color="text.secondary">

@@ -57,7 +57,7 @@ export function resolveDatabaseSite(db: DatabaseSchema, siteKey: string) {
   const pages = ordered(db.pages).map((page) => {
     const assignment = db.sitePages.find((r) => r.siteKey === siteKey && r.pageKey === page.key);
     if (!assignment) throw new Error(`Missing page assignment ${siteKey}.${page.key}`);
-    const requirement = page.definition.healthGate ? "required" : assignment.requirement;
+    const requirement = assignment.requirement;
     return { id: page.key, path: page.definition.path, included: requirement !== "none", requirement };
   });
   const fieldDefinition = (key: string): FieldDefinition => {
@@ -141,6 +141,7 @@ export function evaluateDatabaseCondition(db: DatabaseSchema, conditionKey: stri
     const actual = values[clause.fieldId];
     if (clause.operator === "equals") return actual === clause.value;
     if (clause.operator === "notEquals") return actual !== clause.value;
+    if (clause.operator === "oneOf") return Array.isArray(clause.value) && clause.value.includes(actual);
     return Array.isArray(actual) && typeof clause.value === "string" && actual.includes(clause.value);
   });
   return definition.match === "all" ? results.every(Boolean) : results.some(Boolean);

@@ -6,6 +6,9 @@ import Resume from './Resume';
 import ResumeCode from './ResumeCode';
 import ResumeMethod from './ResumeMethod';
 import { applicantRecovery } from '../services/applicantSaveService';
+import { createReviewedMigrationDatabase } from '../migration/fixtures';
+import { installPrototypeLibrary, resolvePrototypeLibrary } from '../domain/prototypeLibrary';
+import { fieldCatalogRows } from './admin/library/fieldCatalogRows';
 
 const restore = vi.fn();
 vi.mock('../services/applicantSaveService', () => ({ applicantRecovery: { request: vi.fn(), verify: vi.fn(), challenge: vi.fn(), outbox: vi.fn() }, readSavedApplication: () => null, recoveryFromSearch: () => ({ siteKey: 'asce', applicationId: 'saved', recipient: 'member@example.invalid', recoveryId: 'recovery', token: 'token' }) }));
@@ -19,7 +22,7 @@ beforeEach(() => {
   (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
   container = document.createElement('div'); document.body.appendChild(container); root = createRoot(container);
 });
-afterEach(async () => { await act(async () => root.unmount()); container.remove(); vi.useRealTimers(); vi.unstubAllEnvs(); });
+afterEach(async () => { await act(async () => root.unmount()); installPrototypeLibrary(null); container.remove(); vi.useRealTimers(); vi.unstubAllEnvs(); });
 const input = async (value: string) => act(async () => {
   const field = container.querySelector('input')!;
   Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(field, value);
@@ -29,6 +32,30 @@ const submit = async () => act(async () => { container.querySelector('form')!.di
 function LocationProbe() { const location = useLocation(); return <output>{location.pathname}:{JSON.stringify(location.state)}</output>; }
 
 describe('restored resume flow', () => {
+  it('renders saved Resume labels and choices from the same field records as the Library', async () => {
+    const data = createReviewedMigrationDatabase();
+    const email = data.fields.find(field => field.key === 'resume-email')!;
+    const method = data.fields.find(field => field.key === 'resume-delivery-method')!;
+    const code = data.fields.find(field => field.key === 'resume-security-code')!;
+    email.definition.label = 'Saved recovery email';
+    method.definition.label = 'Saved delivery question';
+    method.definition.options = [{ value: 'call', label: 'Saved phone call' }];
+    code.definition.label = 'Saved recovery code'; code.definition.maxLength = 8;
+    installPrototypeLibrary(resolvePrototypeLibrary(data, 'asce', 'saved-fields-test'));
+    const catalog = fieldCatalogRows({ data, revision: 'saved-fields-test', analyticsTags: [] }, 'asce');
+    for (const [Component, saved] of [[Resume, email], [ResumeMethod, method], [ResumeCode, code]] as const) {
+      await act(async () => root.render(<MemoryRouter><Component /></MemoryRouter>));
+      expect(container.textContent).toContain(catalog.find(field => field.key === saved.key)!.field.label);
+      if (saved === method) {
+        expect(container.textContent).toContain('Saved phone call');
+        const radios = container.querySelectorAll<HTMLInputElement>('input[type="radio"]');
+        expect(radios).toHaveLength(1);
+        await act(async () => radios[0].click());
+        expect(radios[0].checked).toBe(true);
+      }
+      if (saved === code) expect(container.querySelector('input')?.maxLength).toBe(8);
+    }
+  });
   it('keeps email-only entry, back navigation, and a disabled loading button', async () => {
     let complete!: (result: { applicationId: string; expiresAt: number }) => void;
     vi.mocked(applicantRecovery.request).mockReturnValue(new Promise(resolve => { complete = resolve; }));

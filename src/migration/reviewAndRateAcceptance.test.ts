@@ -69,14 +69,14 @@ describe("captured review and rate participation acceptance", () => {
   });
   it("requires ABE acknowledgement with optional always-visible identity fields", () => {
     const s = site("abe");
-    expect(validateCapturedReview(s, "IL", selections, complete)).toMatchObject({ allowed: true, cleanedAnswers: complete });
-    expect(validateCapturedReview(s, "IL", selections, { "dividend-acknowledgement": true })).toMatchObject({ allowed: true });
-    expect(validateCapturedReview(s, "IL", selections, { ...complete, "dividend-opt-out": true }).cleanedAnswers).not.toHaveProperty("dividend-opt-out");
-    for (const id of ["dividend-acknowledgement"]) expect(validateCapturedReview(s, "IL", selections, { ...complete, [id]: "" }).allowed).toBe(false);
-    expect(validateCapturedReview(s, "IL", selections, { ...complete, "dividend-birth-date": "2026-02-30" }).allowed).toBe(false);
-    expect(validateCapturedReview(s, undefined, selections, complete).allowed).toBe(false);
-    expect(validateCapturedReview(s, "IL", [{ ...selections[0], applicants: ["spouse"] }], complete)).toMatchObject({ allowed: true, cleanedAnswers: {} });
-    expect(validateCapturedReview(site("asce"), "IL", selections, complete).cleanedAnswers).toEqual({});
+    expect(validateCapturedReview(s, "IL", selections, complete, true)).toMatchObject({ allowed: true, cleanedAnswers: complete });
+    expect(validateCapturedReview(s, "IL", selections, { "dividend-acknowledgement": true }, true)).toMatchObject({ allowed: true });
+    expect(validateCapturedReview(s, "IL", selections, { ...complete, "dividend-opt-out": true }, true).cleanedAnswers).not.toHaveProperty("dividend-opt-out");
+    for (const id of ["dividend-acknowledgement"]) expect(validateCapturedReview(s, "IL", selections, { ...complete, [id]: "" }, true).allowed).toBe(false);
+    expect(validateCapturedReview(s, "IL", selections, { ...complete, "dividend-birth-date": "2026-02-30" }, true).allowed).toBe(false);
+    expect(validateCapturedReview(s, undefined, selections, complete, true).allowed).toBe(false);
+    expect(validateCapturedReview(s, "IL", [{ ...selections[0], applicants: ["spouse"] }], complete, true)).toMatchObject({ allowed: true, cleanedAnswers: {} });
+    expect(validateCapturedReview(site("asce"), "IL", selections, complete, true).cleanedAnswers).toEqual({});
     const policy = s.configuration.reviewPolicies[0].value;
     if (!isReviewPolicy(policy)) throw new Error("Invalid fixture");
     expect(activeReviewBlocks(policy, selections).flatMap(block => block.fields)).toContain("dividend-birth-date");

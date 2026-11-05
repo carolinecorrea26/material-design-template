@@ -45569,37 +45569,37 @@
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/forms/CoverageCategorySelector.stories.tsx",
+      "file": "src/components/coverage/CoverageCategorySelector.stories.tsx",
       "bytes": 2234,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/forms/CoverageCategorySelector.tsx",
+      "file": "src/components/coverage/CoverageCategorySelector.tsx",
       "bytes": 2950,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/forms/CoverageNeedsCalculator.stories.tsx",
+      "file": "src/components/coverage/CoverageNeedsCalculator.stories.tsx",
       "bytes": 1138,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/forms/CoverageNeedsCalculator.tsx",
+      "file": "src/components/coverage/CoverageNeedsCalculator.tsx",
       "bytes": 3943,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/forms/CoverageQuestions.stories.tsx",
+      "file": "src/components/coverage/CoverageQuestions.stories.tsx",
       "bytes": 3143,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/forms/CoverageQuestions.tsx",
+      "file": "src/components/coverage/CoverageQuestions.tsx",
       "bytes": 3696,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
@@ -45641,13 +45641,13 @@
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/forms/EstimatorProductCard.stories.tsx",
+      "file": "src/components/coverage/EstimatorProductCard.stories.tsx",
       "bytes": 2783,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/forms/EstimatorProductCard.tsx",
+      "file": "src/components/coverage/EstimatorProductCard.tsx",
       "bytes": 5875,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
@@ -45677,31 +45677,31 @@
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/forms/ProductCatalog.stories.tsx",
+      "file": "src/components/coverage/ProductCatalog.stories.tsx",
       "bytes": 6089,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/forms/ProductCatalog.test.tsx",
+      "file": "src/components/coverage/ProductCatalog.test.tsx",
       "bytes": 11971,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/forms/ProductCatalog.tsx",
+      "file": "src/components/coverage/ProductCatalog.tsx",
       "bytes": 43760,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/forms/QuoteCalculator.stories.tsx",
+      "file": "src/components/coverage/QuoteCalculator.stories.tsx",
       "bytes": 2572,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/forms/QuoteCalculator.tsx",
+      "file": "src/components/coverage/QuoteCalculator.tsx",
       "bytes": 32373,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
@@ -46103,223 +46103,223 @@
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/ApplicantMockOutbox.tsx",
+      "file": "src/components/demo/ApplicantMockOutbox.tsx",
       "bytes": 1513,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/ApplyingStepIllustration.tsx",
+      "file": "src/components/home/ApplyingStepIllustration.tsx",
       "bytes": 883,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/ClientCategoryIcon.tsx",
+      "file": "src/components/content/ClientCategoryIcon.tsx",
       "bytes": 1599,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/ClientIconContext.ts",
+      "file": "src/components/content/ClientIconContext.ts",
       "bytes": 264,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/CoverageCart.stories.tsx",
+      "file": "src/components/coverage/CoverageCart.stories.tsx",
       "bytes": 3167,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/CoverageCart.tsx",
+      "file": "src/components/coverage/CoverageCart.tsx",
       "bytes": 32679,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/CoverageOptionsPanel.stories.tsx",
+      "file": "src/components/coverage/CoverageOptionsPanel.stories.tsx",
       "bytes": 1475,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/CoverageOptionsPanel.tsx",
+      "file": "src/components/coverage/CoverageOptionsPanel.tsx",
       "bytes": 10830,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/CoveragePortfolioDrawer.stories.tsx",
+      "file": "src/components/coverage/CoveragePortfolioDrawer.stories.tsx",
       "bytes": 1449,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/CoveragePortfolioDrawer.tsx",
+      "file": "src/components/coverage/CoveragePortfolioDrawer.tsx",
       "bytes": 4348,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/DemoApplicationActions.test.tsx",
+      "file": "src/components/demo/DemoApplicationActions.test.tsx",
       "bytes": 907,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/DemoApplicationActions.tsx",
+      "file": "src/components/demo/DemoApplicationActions.tsx",
       "bytes": 979,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/EstimatedRate.stories.tsx",
+      "file": "src/components/coverage/EstimatedRate.stories.tsx",
       "bytes": 1113,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/EstimatedRate.test.tsx",
+      "file": "src/components/coverage/EstimatedRate.test.tsx",
       "bytes": 971,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/EstimatedRate.tsx",
+      "file": "src/components/coverage/EstimatedRate.tsx",
       "bytes": 885,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/FeaturedBadge.tsx",
+      "file": "src/components/coverage/FeaturedBadge.tsx",
       "bytes": 548,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/HowApplyingWorksPanel.stories.tsx",
+      "file": "src/components/home/HowApplyingWorksPanel.stories.tsx",
       "bytes": 1613,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/HowApplyingWorksPanel.test.tsx",
+      "file": "src/components/home/HowApplyingWorksPanel.test.tsx",
       "bytes": 1645,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/HowApplyingWorksPanel.tsx",
+      "file": "src/components/home/HowApplyingWorksPanel.tsx",
       "bytes": 8365,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/MemberVerification.stories.tsx",
+      "file": "src/components/verification/MemberVerification.stories.tsx",
       "bytes": 1991,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/MemberVerification.tsx",
+      "file": "src/components/verification/MemberVerification.tsx",
       "bytes": 10247,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/MobilePreviewFrame.stories.tsx",
+      "file": "src/components/layout/MobilePreviewFrame.stories.tsx",
       "bytes": 799,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/MobilePreviewFrame.tsx",
+      "file": "src/components/layout/MobilePreviewFrame.tsx",
       "bytes": 1625,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/ProductAdornments.stories.tsx",
+      "file": "src/components/coverage/ProductAdornments.stories.tsx",
       "bytes": 1905,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/ProductCostBreakdown.stories.tsx",
+      "file": "src/components/coverage/ProductCostBreakdown.stories.tsx",
       "bytes": 2411,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/ProductCostBreakdown.tsx",
+      "file": "src/components/coverage/ProductCostBreakdown.tsx",
       "bytes": 2600,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/QuickDecisionIcon.tsx",
+      "file": "src/components/coverage/QuickDecisionIcon.tsx",
       "bytes": 1230,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/QuickDecisionIndicator.tsx",
+      "file": "src/components/coverage/QuickDecisionIndicator.tsx",
       "bytes": 278,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/RateFrequencyControl.stories.tsx",
+      "file": "src/components/coverage/RateFrequencyControl.stories.tsx",
       "bytes": 684,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/RateFrequencyControl.tsx",
+      "file": "src/components/coverage/RateFrequencyControl.tsx",
       "bytes": 1625,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/RateFrequencyToggle.stories.tsx",
+      "file": "src/components/coverage/RateFrequencyToggle.stories.tsx",
       "bytes": 980,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/RateFrequencyToggle.tsx",
+      "file": "src/components/coverage/RateFrequencyToggle.tsx",
       "bytes": 1843,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/ReferenceRateTableLink.test.tsx",
+      "file": "src/components/coverage/ReferenceRateTableLink.test.tsx",
       "bytes": 1490,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/ReferenceRateTableLink.tsx",
+      "file": "src/components/coverage/ReferenceRateTableLink.tsx",
       "bytes": 2328,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/TotalCostSummary.stories.tsx",
+      "file": "src/components/coverage/TotalCostSummary.stories.tsx",
       "bytes": 2755,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/TotalCostSummary.tsx",
+      "file": "src/components/coverage/TotalCostSummary.tsx",
       "bytes": 3538,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
     },
     {
-      "file": "src/components/ui/clientIcons.test.tsx",
+      "file": "src/components/content/clientIcons.test.tsx",
       "bytes": 1186,
       "disposition": "keep",
       "reason": "Maintained project source, tests, configuration or asset; no deletion authorized"
@@ -50173,7 +50173,7 @@
         "doubleAssertions": []
       },
       {
-        "file": "src/components/forms/ProductCatalog.tsx",
+        "file": "src/components/coverage/ProductCatalog.tsx",
         "sha256": "a0adf4e8df7eadfdede4b66b1064f5c539f9f0664afc72d36f0db9206f100e0d",
         "lines": 1082,
         "category": "implementation",
@@ -50236,7 +50236,7 @@
         "doubleAssertions": []
       },
       {
-        "file": "src/components/ui/CoverageCart.tsx",
+        "file": "src/components/coverage/CoverageCart.tsx",
         "sha256": "4842329bfb4386aedcc1eb67fcc80a19aee9bd89d99e93e796403144f6d91763",
         "lines": 834,
         "category": "implementation",
@@ -50250,7 +50250,7 @@
         "doubleAssertions": []
       },
       {
-        "file": "src/components/forms/QuoteCalculator.tsx",
+        "file": "src/components/coverage/QuoteCalculator.tsx",
         "sha256": "139744fe6ffa658e4c2e630f039e6144cd5a3315d39f4571adff04802b689e08",
         "lines": 801,
         "category": "implementation",

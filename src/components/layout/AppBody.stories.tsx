@@ -1,5 +1,6 @@
+// Preview notes are documentation only; the canvas contains application UI.
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Typography } from "@mui/material";
+import { Typography } from '@mui/material';
 import AppBody from "./AppBody";
 
 /**
@@ -10,9 +11,10 @@ import AppBody from "./AppBody";
  * useSyncExternalStore subscription, not react-router's own location).
  */
 const meta = {
-  title: "Layout/AppBody",
+  id: "layout-appbody",
+  title: "Components/Layout/Application body",
   component: AppBody,
-  parameters: { layout: "fullscreen" },
+  parameters: { docs: { description: { component: "Provides the main application content container and responsive spacing." } }, layout: "fullscreen" },
 } satisfies Meta<typeof AppBody>;
 
 export default meta;
@@ -20,10 +22,7 @@ export default meta;
 export const Default: StoryObj = {
   render: () => (
     <AppBody>
-      <Typography variant="body2" color="text.secondary">
-        Page content goes here. In the real app, AppShell renders
-        AppHeader above this and AppFooter below it.
-      </Typography>
+      <Typography>Choose the coverage you would like to apply for.</Typography>
     </AppBody>
   ),
 };

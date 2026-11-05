@@ -19,6 +19,10 @@ export function readStoryInventory(root = 'src') {
     const meta = assignment && ts.isIdentifier(assignment) ? variables.find(declaration => declaration.name.getText() === assignment.text)?.initializer : assignment;
     const title = literal(property(meta, 'title'));
     const id = literal(property(meta, 'id'));
+    const positionNode = property(property(property(meta, 'parameters'), 'catalog'), 'position');
+    const pagePosition = positionNode && ts.isNumericLiteral(positionNode) ? Number(positionNode.text) : undefined;
+    const pageStoriesNode = unwrap(property(property(property(meta, 'parameters'), 'catalog'), 'pages'));
+    const pageStories = Object.fromEntries((pageStoriesNode?.properties ?? []).filter(ts.isPropertyAssignment).map(item => [item.name.getText().replace(/^['"]|['"]$/g, ''), literal(item.initializer)]));
     if (!title) throw new Error(`Story title missing: ${file}`);
     const exports = ast.statements.flatMap(statement => {
       if (!statement.modifiers?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword) || statement.modifiers?.some(modifier => modifier.kind === ts.SyntaxKind.DefaultKeyword)) return [];
@@ -37,11 +41,18 @@ export function readStoryInventory(root = 'src') {
       if (!node.importClause || node.importClause.isTypeOnly || !node.moduleSpecifier.text.startsWith('.')) return [];
       const base = path.resolve(path.dirname(file), node.moduleSpecifier.text);
       const target = [base + '.tsx', base + '.ts', path.join(base, 'index.tsx')].find(file => fs.existsSync(file));
-      if (!target || !target.includes('/components/') || /\/(admin|docs)\//.test(target)) return [];
+      if (!target || !(target.includes('/components/') || target.includes('/app/workflows/')) || /\/(admin|docs)\//.test(target)) return [];
       const bindings = [node.importClause.name?.text, ...(node.importClause.namedBindings && ts.isNamedImports(node.importClause.namedBindings) ? node.importClause.namedBindings.elements.map(item => item.name.text) : [])].filter(Boolean);
       if (!bindings.some(name => used.has(name))) return [];
       return [{ name: path.basename(target).replace(/\.[jt]sx?$/, ''), source: path.relative(process.cwd(), target), ownsStory: path.basename(file).replace(/\.stories\.[jt]sx?$/, '') === path.basename(target).replace(/\.[jt]sx?$/, '') }];
     });
-    return { file, title, section: title.split('/')[0], storyIds: exports.map(name => toId(id ?? title, storyNameFromExport(name))), components };
+    const packageComponents = ast.statements.filter(ts.isImportDeclaration).flatMap(node => {
+      if (!component || !node.importClause || node.importClause.isTypeOnly || node.moduleSpecifier.text.startsWith('.')) return [];
+      const bindings = node.importClause.namedBindings;
+      const binding = bindings && ts.isNamedImports(bindings) ? bindings.elements.find(binding => binding.name.text === component && !binding.isTypeOnly) : undefined;
+      const symbol = binding?.propertyName?.text ?? binding?.name.text;
+      return symbol ? [{ name: symbol, source: `${node.moduleSpecifier.text}/${symbol}`, ownsStory: true, packageImport: { module: node.moduleSpecifier.text, symbol } }] : [];
+    });
+    return { file, title, pagePosition, pageStories, section: title.split('/').slice(0, -1).join(' / '), storyIds: exports.map(name => toId(id ?? title, storyNameFromExport(name))), components, packageComponents };
   }).sort((a, b) => a.file.localeCompare(b.file));
 }

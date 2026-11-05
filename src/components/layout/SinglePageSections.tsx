@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Box, Stack, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import StepEditButton from "../navigation/StepEditButton";
+import AppSnackbar from "../feedback/AppSnackbar";
 import { getResolvedFormFlow } from "../../config/formFlow";
 import { getActiveProgressSteps } from "../../config/progressSteps";
 import { useApplicationForm } from "../../app/ApplicationFormContext";
@@ -21,6 +22,7 @@ export default function SinglePageSections({ initialPageId = "membership", rende
   const [lastCompleted, setLastCompleted] = useState<Partial<Record<PageId, boolean>>>({});
   const sectionRefs = useRef(new Map<string, HTMLElement>());
   const [navigationPending, setNavigationPending] = useState(false);
+  const [showProgressSaved, setShowProgressSaved] = useState(false);
   const flow = getResolvedFormFlow();
   const furthestIndex = Math.max(flow.indexOf(pageId), flow.indexOf(furthestPageId));
   const steps = getActiveProgressSteps(values);
@@ -46,11 +48,13 @@ export default function SinglePageSections({ initialPageId = "membership", rende
   const completeSection = useCallback((completed: PageId, next: PageId) => {
     setNavigationPending(false);
     setLastCompleted(previous => ({ ...previous, [completed]: true }));
+    setShowProgressSaved(true);
     goToSection(next, completed);
   }, [goToSection]);
 
   return (
     <SinglePageFlowContext value={{ pageId, goToSection, completeSection, navigationPending, setNavigationPending }}>
+      <AppSnackbar open={showProgressSaved} onClose={() => setShowProgressSaved(false)} message="Progress saved" severity="success" />
       <Stepper orientation="vertical" activeStep={activeStepIndex} sx={{
         width: "100%", "& .MuiStepConnector-line": { display: "none" },
         "& .MuiStepLabel-root": { py: 2 },
@@ -71,7 +75,7 @@ export default function SinglePageSections({ initialPageId = "membership", rende
                 sx={{ scrollMarginTop: "120px", outline: "none" }}>
                 <StepLabel>
                   <Stack direction="row" alignItems="center" spacing={2}>
-                    <Typography variant="formVerticalStepLabel" sx={{
+                    <Typography variant="body1" component="span" sx={{
                       flex: 1, fontWeight: expanded ? 700 : 500,
                       color: expanded ? "text.primary" : completed ? "text.secondary" : "#94a3b8",
                     }}>{step.label}</Typography>

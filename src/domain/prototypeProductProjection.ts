@@ -1,4 +1,5 @@
 import { isBenefitPolicy } from "./benefitPolicy";
+import { isEligibilityFactRequirements } from "./eligibilityFacts";
 import type { ClientConfig } from "./configuration";
 import type { CoverageDefinition, CoverageAmountAssignment, CoverageApplicantId } from "./coverage";
 import type { EffectiveSite, EffectiveSiteData } from "./effectiveSite";
@@ -134,6 +135,10 @@ function buildPrototypeRequirements(data: EffectiveSiteData, siteKey: string, pr
         ...(row.studentMaximumAgeYears !== null ? { fullTimeStudentMaximumAgeYears: row.studentMaximumAgeYears } : {}),
         ...(row.unmarried !== null ? { unmarried: row.unmarried } : {}),
         ...(row.minimumWorkHours !== null ? { minimumWorkHoursPerWeek: row.minimumWorkHours } : {}),
+        factRequirements: product.eligibilityFacts.filter(rule => rule.applicantKey === row.applicantTypeKey).flatMap(rule => {
+          if (!isEligibilityFactRequirements(rule.value)) throw new Error(`Unsupported eligibility facts: ${rule.key}`);
+          return rule.value;
+        }),
       })),
     dependencies: product.dependencies.map(rule => ({
       applicantType: rule.value.applicantTypeKey as CoverageApplicantId,

@@ -56,15 +56,18 @@ describe("dependent and explicit aggregate migration", () => {
     ["nso", "li-add", 100000, true],
   ])("derives %s %s family amounts and cleans stale dependent amounts", (siteKey, productKey, memberAmount, provisional) => {
     const candidate = site(String(siteKey)), baseAmounts = { member: Number(memberAmount) };
-    expect(resolveDependentCoverage(candidate, String(productKey), "spouse", { baseAmounts, selectedApplicants: ["member", "spouse"] })).toMatchObject({ allowed: true, derivedAmount: Number(memberAmount) * .5, provisional });
-    expect(resolveDependentCoverage(candidate, String(productKey), "spouse", { baseAmounts, selectedApplicants: ["member", "spouse", "child"] })).toMatchObject({ allowed: true, derivedAmount: Number(memberAmount) * .4 });
-    expect(resolveDependentCoverage(candidate, String(productKey), "child", { baseAmounts, selectedApplicants: ["member", "child"] })).toMatchObject({ allowed: true, derivedAmount: Number(memberAmount) * .15 });
-    expect(reconcileDependentAmount(candidate, String(productKey), "child", { baseAmounts, selectedApplicants: ["member", "spouse", "child"], amount: Number(memberAmount) * .15 })).toMatchObject({ amount: Number(memberAmount) * .1, locked: true });
+    // These cases exercise the retained general Association, separately from
+    // the newly assigned ATPE amount patterns.
+    const association = siteKey === "isitrust" ? { associationKey: "akron-bar-association" } : {};
+    expect(resolveDependentCoverage(candidate, String(productKey), "spouse", { ...association, baseAmounts, selectedApplicants: ["member", "spouse"] })).toMatchObject({ allowed: true, derivedAmount: Number(memberAmount) * .5, provisional });
+    expect(resolveDependentCoverage(candidate, String(productKey), "spouse", { ...association, baseAmounts, selectedApplicants: ["member", "spouse", "child"] })).toMatchObject({ allowed: true, derivedAmount: Number(memberAmount) * .4 });
+    expect(resolveDependentCoverage(candidate, String(productKey), "child", { ...association, baseAmounts, selectedApplicants: ["member", "child"] })).toMatchObject({ allowed: true, derivedAmount: Number(memberAmount) * .15 });
+    expect(reconcileDependentAmount(candidate, String(productKey), "child", { ...association, baseAmounts, selectedApplicants: ["member", "spouse", "child"], amount: Number(memberAmount) * .15 })).toMatchObject({ amount: Number(memberAmount) * .1, locked: true });
     expect(reconcileDependentAmount(candidate, String(productKey), "child", { baseAmounts: { member: 0 }, selectedApplicants: ["member", "child"], amount: 10000 }).amount).toBeNull();
     expect(reconcileDependentAmount(candidate, String(productKey), "child", { baseAmounts: { member: 12345 }, selectedApplicants: ["member", "child"], amount: 10000 }).amount).toBeNull();
   });
   it("keeps ISI message-only caps as notices and blocks WAEPA dependent spouse over 50%", () => {
-    expect(resolveDependentCoverage(site("isitrust"), "sh-critical-illness", "spouse", { amount: 10000, baseAmounts: { member: 5000 } })).toMatchObject({ allowed: true, notices: ["Dependent amount exceeds primary coverage cap"] });
+    expect(resolveDependentCoverage(site("isitrust"), "sh-critical-illness", "spouse", { associationKey: "akron-bar-association", amount: 10000, baseAmounts: { member: 5000 } })).toMatchObject({ allowed: true, notices: ["Dependent amount exceeds primary coverage cap"] });
     expect(resolveDependentCoverage(site("waepa"), "li-group-term", "spouse", { amount: 200000, baseAmounts: { member: 200000 }, coveredApplicants: ["member"] }).errors).toContain("Dependent amount exceeds primary coverage cap");
   });
   it.each([

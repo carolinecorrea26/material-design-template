@@ -15,11 +15,13 @@ beforeAll(() => {
 function legacy() {
   const draft = structuredClone(baseline);
   const old = new Map(legacyPagePositions.map(([key, position]) => [key as string, position]));
+  // Later page additions are custom placements outside the frozen SQL mapping.
+  const additions = new Map(draft.data.pages.filter(page => !old.has(page.key)).map((page, index) => [page.key, Math.max(...old.values()) + 1 + index]));
   draft.data.pages = draft.data.pages.map(page => {
     const definition = { ...page.definition } as Partial<typeof page.definition>; delete definition.flow;
-    return { ...page, definition: definition as typeof page.definition, position: old.get(page.key) ?? page.position };
+    return { ...page, definition: definition as typeof page.definition, position: old.get(page.key) ?? additions.get(page.key)! };
   });
-  for (const row of draft.data.sitePages) row.position = old.get(row.pageKey) ?? row.position;
+  for (const row of draft.data.sitePages) row.position = old.get(row.pageKey) ?? additions.get(row.pageKey)!;
   draft.mockTransport = { id: 'old-draft', version: 4, baseReleaseId: 'old-release' };
   return draft;
 }
@@ -61,5 +63,8 @@ it('preserves existing flow labels and refuses malformed or ambiguous snapshots'
   expect(() => migratePageCatalogSnapshot(invalid)).toThrow();
   const ambiguous = legacy(); ambiguous.data.sitePages.find(row => row.siteKey === 'ama' && row.pageKey === 'membership')!.position = 0;
   expect(() => migratePageCatalogSnapshot(ambiguous)).toThrow();
+  const laterCollision = legacy();
+  laterCollision.data.pages.find(page => page.key === 'health-ci')!.position = 12;
+  expect(() => migratePageCatalogSnapshot(laterCollision)).toThrow('Ambiguous stored page order');
   expect(() => migratePageCatalogSnapshot({ formatVersion: 2 })).toThrow();
 });

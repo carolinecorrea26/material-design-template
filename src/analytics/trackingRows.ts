@@ -27,7 +27,7 @@ function family(tag: AnalyticsTag): string {
     if (detail) return `${tag.pageId}/health-details/${detail[2]}`;
   }
   if (tag.kind === "navigation" && ["next", "back"].includes(tag.elementKey)) return `page-navigation/${tag.elementKey}`;
-  if (tag.sourceFile === "src/components/forms/QuoteCalculator.tsx") return `quote-calculator/${tag.kind}/${tag.elementKey}`;
+  if (tag.sourceFile === "src/app/workflows/QuoteCalculator.tsx") return `quote-calculator/${tag.kind}/${tag.elementKey}`;
   return tag.id;
 }
 

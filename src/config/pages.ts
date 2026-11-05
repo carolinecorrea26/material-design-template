@@ -4,6 +4,13 @@ export { defaultPages as pages } from "./pageCatalog";
 import { defaultPages } from "./pageCatalog";
 import { getPrototypeLibrary } from "../domain/prototypeLibrary";
 import type { Page } from "../domain/pages";
+import { resolvePageCatalog } from "../domain/pageCatalog";
+
+/** Page inventories and reference views read the installed saved catalog. */
+export function getPageDefinitions(siteKey?: string): Page[] {
+  const library = getPrototypeLibrary();
+  return library ? resolvePageCatalog(library.pageData, siteKey).map(page => page.definition) : [...defaultPages];
+}
 
 /** Saved applicant routes; internal authoring tools retain their registered routes. */
 export function getConfiguredPages(): Page[] {
@@ -14,7 +21,7 @@ export function getConfiguredPages(): Page[] {
   ] : defaultPages;
 }
 
-export type PageType = "home" | "form" | "receipt" | "resume" | "internal";
+export type PageType = "home" | "form" | "receipt" | "resume" | "error" | "internal";
 
 export function getPagePath(id: Page["id"]) {
   const page = getConfiguredPages().find((page) => page.id === id);

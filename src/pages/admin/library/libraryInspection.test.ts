@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { orderedLibraryPages, ruleRelations, ruleDisplayType } from "./libraryInspection";
+import { getOrderedLibraryPages, ruleRelations, ruleDisplayType } from "./libraryInspection";
 import { libraryHref } from "./LibraryLink";
 import { templateStandards } from "../../../content/docs/templateStandards";
 import { libraryRepository } from "../../../repositories/libraryRepository";
@@ -9,6 +9,7 @@ import { formFlow } from "../../../config/formFlow";
 describe("Library inspection contracts", () => {
   it("derives applicant order without mutating catalog order", () => {
     const original = [...libraryRepository.read("pages")];
+    const orderedLibraryPages = getOrderedLibraryPages();
     expect(orderedLibraryPages.map(p => p.id)).toEqual(getSiteDetailsPageOrder().filter(id => { const p = original.find(p => p.id === id)!; return Boolean(p); }));
     expect(orderedLibraryPages.filter(p => formFlow.includes(p.id)).map(p => p.id)).toEqual(formFlow);
     expect(libraryRepository.read("pages")).toEqual(original);

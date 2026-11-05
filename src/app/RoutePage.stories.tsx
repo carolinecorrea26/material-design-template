@@ -17,9 +17,10 @@ import FieldRenderer from "../components/forms/FieldRenderer";
  * them together.
  */
 const meta = {
-  title: "Application Patterns/Application Page Template",
+  id: "application-patterns-application-page-template",
+  title: "Components/Layout/Application page template",
   component: FormRoutePage,
-  parameters: { layout: "fullscreen" },
+  parameters: { docs: { description: { component: "Application frame: shared page/form surfaces, steps and breadcrumbs, heading/Back, help slot, notices, validation, transitions, saved values and Next. Pages supply their sections and shared pieces through the content slot. The saved component catalog records this role, contained components and internal parts; it does not replace React composition." } },  layout: "fullscreen" },
 } satisfies Meta<typeof FormRoutePage>;
 
 export default meta;

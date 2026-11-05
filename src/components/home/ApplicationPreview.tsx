@@ -3,7 +3,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import { alpha, keyframes } from "@mui/material/styles";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
-import MobilePreviewFrame from "../ui/MobilePreviewFrame";
+import MobilePreviewFrame from "../layout/MobilePreviewFrame";
 
 export const APPLICATION_PREVIEW_STEPS = [
   "coverage",

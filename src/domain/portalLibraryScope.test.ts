@@ -22,7 +22,7 @@ describe('portal catalog scope', () => {
   it('removes fields, conditions, and rules owned only by internal pages while retaining shared fields', () => {
     const copy = structuredClone(db);
     const internal = copy.pages.find(page => page.definition.flow === 'internal')!;
-    const field = copy.fields[0];
+    const field = copy.fields.find(row => row.key === "first-name")!;
     const owned = { ...field, id: 'admin-only', key: 'admin-only', definition: { ...field.definition, id: 'admin-only' } } as typeof field;
     copy.fields.push(owned);
     copy.pageFields.push({ id: 'admin-placement', key: 'admin-placement', pageKey: internal.key, fieldKey: owned.key, position: 0 });

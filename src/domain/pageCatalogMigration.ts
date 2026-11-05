@@ -44,7 +44,7 @@ export function migratePageCatalogSnapshot(value: unknown) {
       changes.push({ table: 'pages', key: page.key, property: 'position', before: page.position, after: pair[1] }); page.position = pair[1];
     }
     if (missingFlow(page.key)) {
-      const flow = page.definition.type === 'internal' ? 'internal' : page.definition.type === 'resume' ? 'resume'
+      const flow = page.definition.type === 'internal' ? 'internal' : page.definition.type === 'error' ? 'utility' : page.definition.type === 'resume' ? 'resume'
         : ['advisor-login', 'advisor-send-confirmation', 'application-edit-confirmation'].includes(page.key) ? 'advisor' : 'application';
       changes.push({ table: 'pages', key: page.key, property: 'flow', before: null, after: flow }); page.definition.flow = flow;
     }
@@ -54,9 +54,9 @@ export function migratePageCatalogSnapshot(value: unknown) {
     const [table, key] = inserted.split(':') as ['fields' | 'configurationDefinitions' | 'configurationValues', string];
     changes.push({ table, key, property: 'insert', before: null, after: draft.data[table].find(row => row.key === key) });
   }
-  if (!isLibraryDraft(draft)) throw new Error('Converted snapshot is invalid; inspect routes, flow labels and page order before saving');
   resolvePageCatalog(draft.data);
   for (const siteKey of new Set(draft.data.sitePages.map(row => row.siteKey))) resolvePageCatalog(draft.data, siteKey);
   resolvePrototypeLibrary(draft.data, draft.siteKey, draft.baseRevision);
+  if (!isLibraryDraft(draft)) throw new Error('Converted snapshot is invalid; inspect routes, flow labels and page order before saving');
   return { draft, changes };
 }

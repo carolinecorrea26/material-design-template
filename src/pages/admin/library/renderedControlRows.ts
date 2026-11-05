@@ -16,9 +16,9 @@ const areas: Record<string, string> = {
   "src/components/layout/AppShell.tsx": "Top of page · skip link",
   "src/components/layout/CookieDialog.tsx": "Cookie notice",
   "src/components/layout/ClientHelpBanner.tsx": "Header · help banner",
-  "src/components/ui/CoverageOptionsPanel.tsx": "About Coverage drawer · category tabs",
-  "src/components/ui/CoverageCart.tsx": "Coverage summary · selected coverage",
-  "src/components/ui/MemberVerification.tsx": "Member verification modal",
+  "src/components/coverage/CoverageOptionsPanel.tsx": "About Coverage drawer · category tabs",
+  "src/components/coverage/CoverageCart.tsx": "Coverage summary · selected coverage",
+  "src/components/verification/MemberVerification.tsx": "Member verification modal",
   "src/components/forms/DynamicList.tsx": "Repeatable list · item controls / editor",
 };
 
@@ -51,14 +51,14 @@ export function renderedControlRows(catalog: LibraryCatalog, siteKey: string, fi
       if (definition.key === "help-drawer-estimate-cost") return [];
       return [definition];
     });
-    for (const product of library.products.filter(product => product.brochureUrl)) definitions.push({ page: "coverage", kind: "link", key: `product-brochure:${product.id}`, label: product.name, events: ["activate"], sourceFile: "src/components/forms/ProductCatalog.tsx", condition: "Product card displayed; brochure URL configured", surface: `Product card · ${product.name} · title link` });
+    for (const product of library.products.filter(product => product.brochureUrl)) definitions.push({ page: "coverage", kind: "link", key: `product-brochure:${product.id}`, label: product.name, events: ["activate"], sourceFile: "src/components/coverage/ProductCatalog.tsx", condition: "Product card displayed; brochure URL configured", surface: `Product card · ${product.name} · title link` });
     // These overlays use AppDrawer's titled header or AppModal's close icon.
     // The cart owns its close control because its enclosing AppDrawer has no title.
     for (const overlay of [...definitions]) {
       if (overlay.kind !== "drawer" && overlay.kind !== "modal") continue;
       if (overlay.key === "schedule-support") continue;
       const cart = ["cart", "coverage-summary"].includes(overlay.key);
-      const file = cart ? "src/components/ui/CoverageCart.tsx" : overlay.kind === "drawer" ? "src/components/layout/AppDrawer.tsx" : overlay.key === "member-verification" ? "src/components/ui/MemberVerification.tsx" : "src/components/layout/AppModal.tsx";
+      const file = cart ? "src/components/coverage/CoverageCart.tsx" : overlay.kind === "drawer" ? "src/components/layout/AppDrawer.tsx" : overlay.key === "member-verification" ? "src/components/verification/MemberVerification.tsx" : "src/components/layout/AppModal.tsx";
       definitions.push({ page: overlay.page, kind: "button", key: `dismiss-${overlay.key}`, label: cart ? "Close coverage requested" : overlay.kind === "drawer" ? "Close drawer" : "Close", events: ["activate"], sourceFile: file, condition: `${overlay.label} open`, surface: `${overlay.surface ?? `${overlay.label} ${overlay.kind}`} · close icon` });
     }
     for (const definition of definitions) {
@@ -74,7 +74,7 @@ export function renderedControlRows(catalog: LibraryCatalog, siteKey: string, fi
       if (control.key === "header-home") control.label = library.client.branding.logoAlt || library.client.branding.name;
       if (control.key === "quote-continue" && (control.page !== "home" || library.client.features?.homePageVariant !== "quoteFirst")) continue;
       if (control.page === "home" && ["quote-calculator", "dismiss-quote-calculator", "quote-get-estimates", "quote-apply"].includes(control.key) && library.client.features?.homePageVariant === "quoteFirst") continue;
-      if (control.page === "home" && ["start-application", "new-application", "how-applying-works-scroll", "resume-application"].includes(control.key) && library.client.features?.defaultTemplate === "single") continue;
+      if (control.page === "home" && ["start-application", "new-application", "resume-application"].includes(control.key) && library.client.features?.defaultTemplate === "single") continue;
       if (control.page === "beneficiary" && ["save-beneficiary", "cancel-beneficiary"].includes(control.key)) control.surface = "Add / Edit Beneficiary modal · actions";
       if (control.page === "beneficiary" && ["confirm-apply-to-others", "cancel-apply-to-others"].includes(control.key)) control.surface = "Apply to other coverages modal · actions";
       if (control.key.startsWith("child-")) control.surface = control.kind === "modal" || ["child-save", "child-cancel", "child-confirm-remove", "child-cancel-remove"].includes(control.key) ? "Child list · editor / removal confirmation" : "Child eligibility section · list actions";
@@ -110,8 +110,7 @@ export function renderedControlRows(catalog: LibraryCatalog, siteKey: string, fi
       if (control.page === "receipt" && control.key === "download-payment") control.label = library.content.receipt.documentDownloadLabels.payment;
       if (control.page === "home" && control.key === "start-application") control.label = library.client.features?.homePageVariant === "welcome-back" ? "Continue Application" : library.content.home.hero.ctaLabel;
       if (control.page === "home" && control.key === "new-application" && library.client.features?.homePageVariant !== "welcome-back") continue;
-      if (control.page === "home" && control.key === "how-applying-works-scroll") control.label = library.content.home.hero.secondaryCtaLabel;
-      if (control.page === "home" && control.key === "resume-application") control.label = library.content.home.hero.resumeLinkLabel;
+      if (control.page === "home" && control.key === "resume-application") control.label = library.content.home.hero.secondaryCtaLabel;
       const area = control.surface ?? areas[control.sourceFile];
       control.surface = control.page === "app-shell" ? area : `${getSiteDetailsPageLabel(control.page as PageId)} page${area ? ` · ${area}` : ""}`;
       if (!control.surface) continue;

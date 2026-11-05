@@ -156,6 +156,13 @@ export function getResolvedFieldsForSite(
     .map(({ field }) => field);
 }
 
+/** Standalone pages use the same saved Site/page field resolution as forms. */
+export function getPageFieldDefinition(pageId: PageId, siteId: SiteId, fieldId: string): FieldDefinition {
+  const field = getResolvedFieldsForSite(pageId, siteId).find(field => field.id === fieldId);
+  if (!field) throw new Error(`Missing configured field: ${pageId}/${fieldId}`);
+  return field;
+}
+
 /**
  * Canonical, effective Field-to-Site relationships used by documentation and
  * other registry consumers. It resolves every page and every Site through the

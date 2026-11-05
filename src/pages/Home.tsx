@@ -1,31 +1,29 @@
-import { useRef, useState, type ReactNode } from "react";
-// import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
+import { useState, type ReactNode, type MouseEvent } from "react";
 import { keyframes } from "@mui/material/styles";
-import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
+import VerifiedUserRoundedIcon from "@mui/icons-material/VerifiedUserRounded";
 import {
   Box,
   Button,
   Chip,
-  CircularProgress,
-  Link,
+  Dialog, DialogTitle, DialogContent, DialogActions,
   Stack,
   Typography,
 } from "@mui/material";
-import { Link as RouterLink, useSearchParams } from "react-router-dom";
-import QuoteCalculator from "../components/forms/QuoteCalculator";
-import type { QuoteCalculatorInitialValues } from "../components/forms/QuoteCalculator";
-import EligibilityFields, {
-  validateEligibility,
-} from "../components/forms/EligibilityFields";
+import { Link as RouterLink, useSearchParams, useNavigate } from "react-router-dom";
+import QuoteCalculator from "../app/workflows/QuoteCalculator";
+import type { QuoteCalculatorInitialValues } from "../app/workflows/QuoteCalculator";
 import AppDrawer from "../components/layout/AppDrawer";
-import CoverageOptionsPanel from "../components/ui/CoverageOptionsPanel";
+import HomeHero from "../app/sections/ConfiguredHomeHero";
+import HomeCoverageSection from "../app/sections/ConfiguredHomeCoverageSection";
+import AssociationIntroduction from "../components/home/AssociationIntroduction";
+import UnderwriterCredentials from "../components/home/UnderwriterCredentials";
 import { getApplyingWorksPresentation, showSinglePageArtwork } from "../config/homepagePresentation";
-import HowApplyingWorksPanel from "../components/ui/HowApplyingWorksPanel";
+import HowApplyingWorksPanel from "../components/home/HowApplyingWorksPanel";
 import QuickDecisionDrawerContent, {
   QuickDecisionMark,
 } from "../components/content/QuickDecisionExplainer";
 import { ApplicationReviewDrawerContent } from "../content/helpContent";
-import { buildContentForClientAlias, getContent, resolveTemplate } from "../content";
+import { buildContentForClientAlias, getContent } from "../content";
 import { getActiveClient } from "../config/client/getActiveClient";
 import { getPagePath } from "../config/pages";
 import type { ClientConfig, HomePageVariant } from "../config/clients/types";
@@ -36,7 +34,7 @@ import type { PageId } from "../types";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import { getActiveSite, resolveEffectiveBranding } from "../data";
 
-import { SURFACE_SX } from "../config/constants";
+import { homeQuoteSurfaceSx } from "../components/home/homeQuoteSurfaceSx";
 
 type DrawerId = "application-review" | "quick-decision" | null;
 const PAGE_MAX_WIDTH = 1200;
@@ -60,85 +58,6 @@ const FADE_IN_SECTION_SX = (delay: number) => ({
 });
 
 const activeContent = getContent();
-
-// ── Home page quote card ───────────────────────────────────────────────────
-// Collects DOB/ZIP/State, then opens the QuoteCalculator drawer pre-filled.
-type HomeQuoteSectionProps = {
-  onOpenQuote: (eligibility: QuoteCalculatorInitialValues) => void;
-};
-
-function HomeQuoteSection({ onOpenQuote }: HomeQuoteSectionProps) {
-  const [eligibilityValues, setEligibilityValues] = useState({
-    birthday: "",
-    zipCode: "",
-    state: "",
-  });
-  const [attempted, setAttempted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [ageError, setAgeError] = useState("");
-
-  function handleGetEstimate() {
-    setAttempted(true);
-    setAgeError("");
-    const { ageError: newAgeError, isValid } =
-      validateEligibility(eligibilityValues);
-    setAgeError(newAgeError);
-    if (!isValid) return;
-
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      onOpenQuote(eligibilityValues);
-    }, 600);
-  }
-
-  return (
-    <Box
-      sx={{
-        ...SURFACE_SX,
-        width: "100%",
-        borderColor: "rgba(7, 104, 255, 0.14)",
-        background:
-          "linear-gradient(135deg, #f4f8ff 0%, #ffffff 52%, #f7fbff 100%)",
-      }}
-    >
-      <Stack spacing={2.25} sx={{ p: { xs: 2.5, sm: 3 } }}>
-        <Box>
-          <Typography variant="h2" paddingBottom={0.5}>
-            {activeContent.home.quoteSection.title}
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            {activeContent.home.quoteSection.description}
-          </Typography>
-        </Box>
-
-        <EligibilityFields
-          values={eligibilityValues}
-          onChange={(next) =>
-            setEligibilityValues((prev) => ({ ...prev, ...next }))
-          }
-          attempted={attempted}
-          ageError={ageError}
-          idPrefix="home"
-        />
-
-        <Button
-          variant="outlined"
-          size="large"
-          sx={{ py: "16px" }}
-          onClick={handleGetEstimate}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <CircularProgress size={20} color="inherit" />
-          ) : (
-            "Get an instant quote"
-          )}
-        </Button>
-      </Stack>
-    </Box>
-  );
-}
 
 const VALID_VARIANTS: HomePageVariant[] = [
   "default",
@@ -172,18 +91,20 @@ export default function Home({
       ? urlVariant
       : (client.features?.homePageVariant ?? "default");
   const showArtwork = showSinglePageArtwork(isSingleTemplate ? "single" : "multi", client.features);
-  const showQuoteTool = !isSingleTemplate && variant === "default";
   const showQuoteFirst = !isSingleTemplate && variant === "quoteFirst";
-  const showHeroImage =
-    !isSingleTemplate &&
-    (variant === "hero-image" || variant === "welcome-back");
   const showHowApplyingWorks = variant !== "welcome-back";
   const showCoverageOptions = variant !== "welcome-back";
+  const navigate = useNavigate();
+  const [landingNoticeOpen, setLandingNoticeOpen] = useState(false);
+  const landingNotice = client.applicantExperience?.landingNotice;
+  function handleApplyClick(event: MouseEvent<HTMLElement>) {
+    if (!landingNotice) return;
+    event.preventDefault(); setLandingNoticeOpen(true);
+  }
   const [activeDrawer, setActiveDrawer] = useState<DrawerId>(null);
   const [quoteDrawerOpen, setQuoteDrawerOpen] = useState(false);
   const [quoteEligibility, setQuoteEligibility] =
     useState<QuoteCalculatorInitialValues | null>(null);
-  const howApplyingWorksRef = useRef<HTMLDivElement>(null);
 
   const DRAWER_CONFIG: Record<Exclude<DrawerId, null>, { title: ReactNode }> = {
     "application-review": {
@@ -218,6 +139,7 @@ export default function Home({
           pb: { xs: 4, md: 6 },
         }}
       >
+        {isSingleTemplate && landingNotice && <Button variant="outlined" onClick={() => setLandingNoticeOpen(true)}>View {landingNotice.title}</Button>}
         {showQuoteFirst ? (
           <Stack
             spacing={{ xs: 3, md: 4 }}
@@ -236,7 +158,7 @@ export default function Home({
             >
               <Chip
                 icon={
-                  <VerifiedUserOutlinedIcon
+                  <VerifiedUserRoundedIcon
                     sx={{ fontSize: "1rem !important" }}
                   />
                 }
@@ -259,13 +181,10 @@ export default function Home({
             </Stack>
 
             <Box
-              sx={{
-                ...SURFACE_SX,
+              sx={theme => ({
+                ...homeQuoteSurfaceSx(theme),
                 p: { xs: 2, sm: 3.5, md: 4 },
-                borderColor: "rgba(7, 104, 255, 0.18)",
-                background:
-                  "linear-gradient(135deg, #f4f8ff 0%, #ffffff 58%, #f7fbff 100%)",
-              }}
+              })}
             >
               <Box
                 sx={{
@@ -314,242 +233,31 @@ export default function Home({
               </Box>
             </Box>
 
-            <Stack spacing={1} alignItems="center" textAlign="center">
-              <Typography variant="body2" color="text.secondary">
-                Ready to begin your application?{" "}
-                <Link
-                  component={RouterLink}
-                  to={getPagePath("membership")}
-                  sx={{ fontWeight: 700 }}
-                >
-                  Start →
-                </Link>
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Already started an application?{" "}
-                <Link
-                  component={RouterLink}
-                  to={getPagePath("resume")}
-                  sx={{ fontWeight: 700 }}
-                >
-                  Continue →
-                </Link>
-              </Typography>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} justifyContent="center">
+              <Button component={RouterLink} to={getPagePath("membership")} onClick={handleApplyClick} variant="contained" size="large">
+                {content.home.hero.ctaLabel}
+              </Button>
+              <Button component={RouterLink} to={getPagePath("resume")} variant="outlined" size="large">
+                {content.home.hero.secondaryCtaLabel}
+              </Button>
             </Stack>
           </Stack>
         ) : (
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns:
-                showQuoteTool || showHeroImage
-                  ? { xs: "1fr", md: "minmax(0, 450px) minmax(0, 500px)" }
-                  : "1fr",
-              gap: { xs: 2.5, md: 3.5 },
-              alignItems: "start",
-              width: "100%",
-              maxWidth: isSingleTemplate
-                ? SINGLE_TEMPLATE_FORM_MAX_WIDTH
-                : undefined,
-              mx: isSingleTemplate ? "auto" : undefined,
-              ...FADE_IN_SECTION_SX(0),
+          <HomeHero
+            content={content}
+            client={client}
+            effectiveBranding={effectiveBranding}
+            variant={variant}
+            isSingleTemplate={isSingleTemplate}
+            previewClient={previewClient}
+            activeAssociationId={activeAssociationId}
+            animationSx={FADE_IN_SECTION_SX(0)}
+            onApply={handleApplyClick}
+            onOpenQuote={(eligibility) => {
+              setQuoteEligibility(eligibility);
+              setQuoteDrawerOpen(true);
             }}
-          >
-            <Stack
-              spacing={2}
-              sx={{
-                alignSelf: "flex-start",
-                width: isSingleTemplate ? "100%" : undefined,
-                maxWidth: isSingleTemplate ? "100%" : showQuoteTool || showHeroImage ? 800 : 760,
-                justifySelf:
-                  showQuoteTool || showHeroImage
-                    ? { xs: "center", md: "stretch" }
-                    : "center",
-                textAlign:
-                  showQuoteTool || showHeroImage
-                    ? "left"
-                    : { xs: "left", md: "center" },
-                alignItems:
-                  showQuoteTool || showHeroImage
-                    ? "flex-start"
-                    : { xs: "flex-start", md: "center" },
-                px: isSingleTemplate ? 0 : { xs: 1.5, sm: 3, md: 0 },
-                pb: 2,
-              }}
-            >
-              <Chip
-                icon={
-                  <VerifiedUserOutlinedIcon
-                    sx={{ fontSize: "1rem !important" }}
-                  />
-                }
-                label={content.home.hero.tagline}
-                variant="outlined"
-                sx={{
-                  borderColor: "divider",
-                  bgcolor: "background.default",
-                  fontSize: "0.75rem",
-                  height: "auto",
-                  py: 0.5,
-                  borderRadius: "999px",
-                  "& .MuiChip-label": { px: 1.5, py: 0.25 },
-                  "& .MuiChip-icon": { color: "primary.main" },
-                }}
-              />
-
-              <Stack spacing={1.5}>
-                <Typography
-                  variant="h1"
-                  sx={
-                    isSingleTemplate
-                      ? { fontSize: "2.5rem", lineHeight: 1.15 }
-                      : undefined
-                  }
-                >
-                  {isSingleTemplate
-                    ? `Coverage designed for ${effectiveBranding.acronym} members.`
-                    : variant === "welcome-back"
-                    ? content.home.hero.welcomeBackTitle
-                    : content.home.hero.title}
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                  {isSingleTemplate
-                    ? `Underwritten by New York Life Insurance Company and tailored exclusively for ${effectiveBranding.name} members. Get started below!`
-                    : variant === "welcome-back"
-                    ? content.home.hero.welcomeBackDescription
-                    : previewClient
-                      ? content.home.hero.description
-                          .replace(
-                            /\{\{clientName\}\}/g,
-                            previewClient.branding.name,
-                          )
-                          .replace(
-                            /\{\{clientAcronym\}\}/g,
-                            previewClient.branding.acronym,
-                          )
-                          .replace(
-                            /\{\{associationName\}\}/g,
-                            previewClient.branding.name,
-                          )
-                      : resolveTemplate(
-                          content.home.hero.description,
-                          activeAssociationId,
-                        )}
-                </Typography>
-              </Stack>
-
-              {!isSingleTemplate && (
-                <Stack
-                  direction="row"
-                  spacing={1.5}
-                  alignItems="center"
-                  useFlexGap
-                  sx={{ flexWrap: "wrap" }}
-                  mb={1.5}
-                >
-                  <Button
-                    component={RouterLink}
-                    to={getPagePath(
-                      variant === "welcome-back" ? "resume" : "membership",
-                    )}
-                    variant="contained"
-                    size="large"
-                    // endIcon={<ArrowRightAltRoundedIcon />}
-                    sx={{
-                      width: { xs: "100%", sm: "auto" },
-                      px: 3.5,
-                      py: "16px",
-                      fontWeight: 700,
-                      whiteSpace: "nowrap",
-                      flexShrink: 0,
-                    }}
-                  >
-                    {variant === "welcome-back"
-                      ? "Continue Application"
-                      : content.home.hero.ctaLabel}
-                  </Button>
-
-                  {variant === "welcome-back" ? (
-                    <Button
-                      component={RouterLink}
-                      to={getPagePath("membership")}
-                      variant="outlined"
-                      size="large"
-                      sx={{
-                        width: { xs: "100%", sm: "auto" },
-                        px: 3.5,
-                        py: "16px",
-                        whiteSpace: "nowrap",
-                        flexShrink: 0,
-                      }}
-                    >
-                      New Application
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="outlined"
-                      size="large"
-                      sx={{
-                        width: { xs: "100%", sm: "auto" },
-                        px: 3.5,
-                        py: "16px",
-                        whiteSpace: "nowrap",
-                        flexShrink: 0,
-                      }}
-                      onClick={() => {
-                        howApplyingWorksRef.current?.scrollIntoView({
-                          behavior: "smooth",
-                        });
-                      }}
-                    >
-                      {content.home.hero.secondaryCtaLabel}
-                    </Button>
-                  )}
-                </Stack>
-              )}
-
-              {!isSingleTemplate &&
-                (variant === "default" || variant === "hero-image") && (
-                  <Typography variant="body2" color="text.secondary">
-                    {content.home.hero.resumePrompt}{" "}
-                    <Link
-                      component={RouterLink}
-                      to={getPagePath("resume")}
-                      variant="body2"
-                      color="primary"
-                      sx={{ textDecoration: "none", fontWeight: 700 }}
-                    >
-                      {content.home.hero.resumeLinkLabel}
-                    </Link>
-                  </Typography>
-                )}
-            </Stack>
-
-            {showQuoteTool && (
-              <HomeQuoteSection
-                onOpenQuote={(eligibility) => {
-                  setQuoteEligibility(eligibility);
-                  setQuoteDrawerOpen(true);
-                }}
-              />
-            )}
-            {showHeroImage && (
-              <Box
-                component="img"
-                src={`/client/${client.id}/hero.png`}
-                alt={`${client.branding.name} hero`}
-                sx={{
-                  display: "block",
-                  width: "100%",
-                  maxWidth: 500,
-                  height: "auto",
-                  borderRadius: 4,
-                  objectFit: "cover",
-                  mx: { xs: "auto", md: 0 },
-                }}
-              />
-            )}
-          </Box>
+          />
         )}
 
         {isSingleTemplate && !isPreview && (
@@ -559,7 +267,7 @@ export default function Home({
         )}
 
         {!isSingleTemplate && showHowApplyingWorks && (
-          <Box ref={howApplyingWorksRef} sx={FADE_IN_SECTION_SX(0.15)}>
+          <Box sx={FADE_IN_SECTION_SX(0.15)}>
             <HowApplyingWorksPanel
               variant="page"
               presentation={getApplyingWorksPresentation(client.features)}
@@ -572,18 +280,7 @@ export default function Home({
         )}
 
         {!isSingleTemplate && showCoverageOptions && (
-          <Stack spacing={2.5} sx={FADE_IN_SECTION_SX(0.3)}>
-            <Stack spacing={1} sx={{ textAlign: { xs: "center", md: "left" } }}>
-              <Typography variant="h2">
-                {content.home.coverageOptions.title}
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                {content.home.coverageOptions.description}
-              </Typography>
-            </Stack>
-
-            <CoverageOptionsPanel variant="page" />
-          </Stack>
+          <HomeCoverageSection content={content} sx={FADE_IN_SECTION_SX(0.3)} />
         )}
 
         {!isSingleTemplate && (
@@ -597,110 +294,19 @@ export default function Home({
               }}
             >
               {content.home.clientSection && (
-                <Stack spacing={2}>
-                  <Stack direction="column" spacing={2} alignItems="start">
-                    <Box
-                      component="img"
-                      src={effectiveBranding.logo}
-                      alt={effectiveBranding.logoAlt}
-                      sx={{
-                        display: "block",
-                        height: 30,
-                        width: "auto",
-                        objectFit: "contain",
-                        flexShrink: 0,
-                      }}
-                    />
-                    <Typography variant="body1" color="text.secondary">
-                      {content.home.clientSection.tagline}
-                    </Typography>
-                  </Stack>
-
-                  <Stack spacing={1.25}>
-                    {content.home.clientSection.paragraphs.map(
-                      (paragraph, i) => (
-                        <Typography key={i} variant="body2">
-                          {paragraph}
-                        </Typography>
-                      ),
-                    )}
-                  </Stack>
-                </Stack>
+                <AssociationIntroduction content={content} effectiveBranding={effectiveBranding} />
               )}
-              <Stack spacing={2}>
-                <Stack direction="row" spacing={2} alignItems="center">
-                  <Box
-                    component="img"
-                    src="/logo.svg"
-                    alt="New York Life Logo"
-                    sx={{
-                      display: "block",
-                      height: 40,
-                      width: "auto",
-                      objectFit: "contain",
-                      flexShrink: 0,
-                    }}
-                  />
-                  <Stack spacing={0.25}>
-                    <Typography variant="h5">
-                      {content.home.nylCredentials.name}
-                    </Typography>
-                    <Typography variant="body1" color="text.secondary">
-                      {content.home.nylCredentials.tagline}
-                    </Typography>
-                  </Stack>
-                </Stack>
-
-                <Stack spacing={1.25}>
-                  <Typography variant="body2">
-                    {content.home.nylCredentials.description}
-                  </Typography>
-                </Stack>
-
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  flexWrap="wrap"
-                  useFlexGap
-                  sx={{ rowGap: 1 }}
-                >
-                  {content.home.nylCredentials.ratings.map(
-                    ({ grade, source }) => (
-                      <Stack
-                        key={grade + source}
-                        direction="row"
-                        spacing={0.75}
-                        alignItems="baseline"
-                      >
-                        <Typography
-                          variant="body2"
-                          sx={{ fontWeight: 700, color: "primary.main" }}
-                        >
-                          {grade}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {source}
-                        </Typography>
-                      </Stack>
-                    ),
-                  )}
-                </Stack>
-
-                <Typography variant="caption" color="text.secondary">
-                  <Box
-                    component="sup"
-                    sx={{ fontSize: "0.85em", lineHeight: 1 }}
-                  >
-                    1
-                  </Box>
-                  {content.home.nylCredentials.ratingsNote}
-                </Typography>
-              </Stack>
+              <UnderwriterCredentials content={content} />
             </Box>
           </Stack>
         )}
       </Stack>
 
+      {landingNotice && <Dialog open={landingNoticeOpen} onClose={() => setLandingNoticeOpen(false)} fullWidth maxWidth="md" aria-labelledby="landing-notice-title">
+        <DialogTitle id="landing-notice-title">{landingNotice.title}</DialogTitle>
+        <DialogContent dividers><Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>{landingNotice.text}</Typography></DialogContent>
+        <DialogActions><Button onClick={() => setLandingNoticeOpen(false)}>Cancel</Button><Button variant="contained" onClick={() => { setLandingNoticeOpen(false); if (!isPreview && !isSingleTemplate) navigate(getPagePath("membership")); }}>Continue</Button></DialogActions>
+      </Dialog>}
       <AppDrawer
         open={activeDrawer !== null}
         title={drawerTitle}

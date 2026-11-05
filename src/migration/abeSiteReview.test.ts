@@ -1,0 +1,37 @@
+import { beforeAll, expect, it } from "vitest";
+import capturedReport from "../../docs/project-review/step1-requirement-crosswalk.json";
+import { createReviewedMigrationDatabase } from "./fixtures";
+import { abeSiteReviewCodeMatches, buildAbeSiteReview } from "./requirementCrosswalkSites";
+import type { buildRequirementCrosswalk } from "./requirementCrosswalk";
+import type { DatabaseSchema } from "../persistence/types";
+let db: DatabaseSchema;
+const report = capturedReport as unknown as ReturnType<typeof buildRequirementCrosswalk>;
+beforeAll(() => { db = createReviewedMigrationDatabase(); }, 120000);
+it("records exact ABE source leaves without signing off unreviewed phases or other Sites", () => {
+  const review = buildAbeSiteReview(db, report);
+  expect(abeSiteReviewCodeMatches()).toBe(true);
+  expect(abeSiteReviewCodeMatches(() => Buffer.from("changed executor"))).toBe(false);
+  expect(review.reviewedDimensions.length).toBeGreaterThan(100);
+  expect(review.reviewedDimensions.every(row => row.status === "recorded-evidence" && row.owners.length > 0 && row.fullCellContext.includes(row.sourceText))).toBe(true);
+  expect(review.reviewedDimensions.find(row => row.requirementId === "requirement.mcr.main.S44.4")?.kind).toBe("approved-eligibility");
+  expect(review.reviewedDimensions.find(row => row.requirementId === "requirement.mcr.main.T39.1")?.finding).toContain("no new unmarried answer");
+  expect(review.reviewedDimensions.some(row => row.sourceReferences.includes("Main!L40"))).toBe(false);
+  const original = db.configurationValues.find(row => row.key === "global.field-collections")!.value as Record<string, unknown>;
+  const abe = db.configurationValues.find(row => row.key === "abe.field-collections")!.value as Record<string, unknown>;
+  expect(abe.selfDisabilityCompanies).toEqual(original.selfDisabilityCompanies);
+  expect(abe.spouseDisabilityCompanies).toEqual(original.spouseDisabilityCompanies);
+  expect(review.status).toBe("Complete for current mock prototype"); expect(review.phases.every(phase => phase.status === "Complete for current mock prototype")).toBe(true);
+  expect(review.reviewConclusion.status).toBe("Review and approved implementation complete; no unanswered questions");
+  expect(review.reviewConclusion.questions).toHaveLength(0);
+  expect(review.sourceAbsences.length).toBeGreaterThan(0);
+  expect(review.queue.some(row => row.area === "Health")).toBe(true);
+  const reviewedIds = new Set(review.reviewedDimensions.map(row => row.requirementId));
+  expect(review.queue.every(row => !reviewedIds.has(row.id))).toBe(true);
+});
+it("reopens the ABE batch after native owner edits and preserves the exact continuation queue", () => {
+  const edited = structuredClone(db);
+  edited.eligibilityConstraints.find(row => row.siteKey === "abe" && row.productKey === "li-10yr" && row.applicantTypeKey === "member")!.maximumAgeYears = 68;
+  const review = buildAbeSiteReview(edited, report);
+  expect(review.reviewedDimensions.every(row => row.status === "reverification-required")).toBe(true);
+  expect(review.queue.some(row => row.id === "requirement.mcr.main.O40.1")).toBe(true);
+});

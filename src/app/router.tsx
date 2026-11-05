@@ -1,3 +1,4 @@
+import HealthCi from "../pages/HealthCi";
 import ErrorPage from "../pages/ErrorPage";
 import IssueLogWorkspace from "../pages/admin/IssueLogWorkspace";
 import AdminPlaceholder from "../pages/admin/AdminPlaceholder";
@@ -5,7 +6,7 @@ import AccountSettings from "../pages/admin/AccountSettings";
 // src/app/router.tsx
 
 import type { ComponentType } from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, createHashRouter } from "react-router-dom";
 import AppShell, { type AppShellVariant } from "../components/layout/AppShell";
 import InternalPageShell from "../components/layout/InternalPageShell";
 import { getPagePath, getConfiguredPages } from "../config/pages";
@@ -73,12 +74,19 @@ const pageComponents: Record<PageId, ComponentType> = {
   "health-li": HealthLi,
   "health-qd": HealthQd,
   "health-di": HealthDi,
-  "health-cir": HealthCir,
+  "health-ci": HealthCi, "health-cir": HealthCir,
   payment: Payment,
   receipt: Receipt,
   resume: Resume,
   "resume-method": ResumeMethod,
   "resume-code": ResumeCode,
+  "error-404": () => <ErrorPage status={404} />,
+  "error-500": () => <ErrorPage status={500} />,
+  "session-expired": () => <ErrorPage status="session-expired" />,
+  "technical-error": () => <ErrorPage status="technical-error" />,
+  maintenance: () => <ErrorPage status="maintenance" />,
+  "application-unavailable": () => <ErrorPage status="application-unavailable" />,
+  "outcome-unknown": () => <ErrorPage status="outcome-unknown" />,
   "advisor-login": AdvisorLogin,
   "advisor-send-confirmation": AdvisorSendConfirmation,
   "application-edit-confirmation": ApplicationEditConfirmation,
@@ -100,17 +108,23 @@ const pageVariants: Partial<Record<PageId, AppShellVariant>> = {
   resume: "resumeEmailCode",
   "resume-method": "resumeEmailCode",
   "resume-code": "resumeEmailCode",
+  "error-404": "recovery",
+  "error-500": "recovery",
+  "session-expired": "recovery",
+  "technical-error": "recovery",
+  maintenance: "recovery",
+  "application-unavailable": "recovery",
+  "outcome-unknown": "recovery",
   "advisor-login": "advisorLogin",
   "advisor-send-confirmation": "advisorSend",
   "application-edit-confirmation": "advisorSend",
 };
 
-export const router = createBrowserRouter(
+const createRouter = import.meta.env.VITE_STANDALONE_HTML ? createHashRouter : createBrowserRouter;
+export const router = createRouter(
   [
-    { path: "/404", element: <AppShell variant="resumeEmailCode"><ErrorPage status={404} /></AppShell> },
-    { path: "/500", element: <AppShell variant="resumeEmailCode"><ErrorPage status={500} /></AppShell> },
-    { path: "*", element: <AppShell variant="resumeEmailCode"><ErrorPage status={404} /></AppShell> },
-    ...configuredPages.map(({ id: pageId }) => {
+    { path: "*", element: <AppShell variant="recovery"><ErrorPage status={404} /></AppShell> },
+    ...configuredPages.map(({ id: pageId, type, flow }) => {
     const PageComponent = pageComponents[pageId];
     if (!PageComponent) throw new Error(`No renderer registered for stored page: ${pageId}`);
     const variant = pageVariants[pageId] ?? "applicationForm";
@@ -118,14 +132,14 @@ export const router = createBrowserRouter(
 
     return {
       path: getPagePath(pageId),
-      errorElement: <AppShell variant="resumeEmailCode"><ErrorPage status={500} /></AppShell>,
+      errorElement: <AppShell variant="recovery"><ErrorPage status="technical-error" /></AppShell>,
       element:
         pageTypeById.get(pageId) === "internal" ? (
           <InternalPageShell pageId={pageId}>
             <PageComponent />
           </InternalPageShell>
         ) : (
-          <AppShell variant={isSingleApplication ? "homepage" : variant}>
+          <AppShell variant={isSingleApplication ? "homepage" : variant} sessionActive={flow === 'application' && (type === 'form' || pageId === 'home' && getFormTemplate() === 'single')}>
             {isSingleApplication ? <Home initialFormPageId={pageId} /> : <PageComponent />}
           </AppShell>
         ),
@@ -158,5 +172,5 @@ export const router = createBrowserRouter(
       ],
     },
   ],
-  { basename: import.meta.env.BASE_URL },
+  { basename: import.meta.env.VITE_STANDALONE_HTML ? '/' : import.meta.env.BASE_URL },
 );

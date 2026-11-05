@@ -25,6 +25,21 @@ afterEach(async () => {
   window.sessionStorage.clear();
 });
 
+it("renders NSO's required nurse-type dropdown after the membership Yes answer", async () => {
+  vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
+  window.history.replaceState(null, "", "/?site=nso");
+  form.values.membership = "yes";
+  installPrototypeLibrary(resolvePrototypeLibrary(db, "nso", "nurse-type-render"));
+  container = document.createElement("div"); document.body.append(container); root = createRoot(container);
+  await act(async () => root!.render(<MemoryRouter><Membership /></MemoryRouter>));
+  expect(container.textContent).toContain("Nurse Type");
+  expect(container.querySelector('[name="nurse-type"]')).not.toBeNull();
+  form.values.membership = "no";
+  await act(async () => root!.render(<MemoryRouter><Membership key="nonmember" /></MemoryRouter>));
+  expect(container.querySelector('[name="nurse-type"]')).toBeNull();
+  form.values.membership = "current";
+});
+
 it("stores one global question, places it only on WAEPA, and reuses its answer in Coverage", () => {
   expect(db.fields.filter(field => field.key === "active-military")).toHaveLength(1);
   const waepa = resolvePrototypeLibrary(db, "waepa", "test");
@@ -46,25 +61,38 @@ it("stores one global question, places it only on WAEPA, and reuses its answer i
   }
 });
 
-it.each(["new", "current"])("shows the stored question, notices and immediate blocking error for %s members", async membership => {
+it.each(["new", "current"])("shows active-duty ineligibility only after Next and keeps Next enabled for %s members", async membership => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   window.history.replaceState(null, "", "/?site=waepa");
   form.values.membership = membership;
-  installPrototypeLibrary(resolvePrototypeLibrary(db, "waepa", "test"));
+  // Isolate page-level eligibility validation from unrelated required answers.
+  const eligibilityDb = structuredClone(db);
+  for (const field of eligibilityDb.fields) field.definition.required = false;
+  for (const assignment of eligibilityDb.siteFieldConfigurations) {
+    if (assignment.siteKey === "waepa" && assignment.pageKey === "membership") {
+      assignment.values = { ...assignment.values, required: false };
+    }
+  }
+  installPrototypeLibrary(resolvePrototypeLibrary(eligibilityDb, "waepa", "test"));
   container = document.createElement("div"); document.body.append(container); root = createRoot(container);
   await act(async () => root!.render(<MemoryRouter><Membership /></MemoryRouter>));
   expect(container.textContent).toContain("Additional Membership Information");
-  expect(container.textContent).toContain("NOTICE: Receipt of Accelerated Death Benefits may affect eligibility for Public Assistance Programs and may be taxable.");
-  expect(container.textContent).toContain("NOTICE FOR NEW YORK RESIDENTS, THE POLICY CONTAINS A WAR RESTRICTION");
+  expect(container.textContent).not.toContain("NOTICE: Receipt of Accelerated Death Benefits may affect eligibility for Public Assistance Programs and may be taxable.");
+  expect(container.textContent).not.toContain("NOTICE FOR NEW YORK RESIDENTS, THE POLICY CONTAINS A WAR RESTRICTION");
   const militaryGroup = container.querySelector('[role="radiogroup"][aria-labelledby="active-military-label"]')!;
-  const [yes, no] = militaryGroup.querySelectorAll<HTMLElement>('[role="radio"]');
+  const [yes, no] = militaryGroup.querySelectorAll<HTMLElement>('label.SelectionGroup-root');
   expect(yes).not.toBeNull(); expect(no).not.toBeNull();
   await act(async () => yes.click());
-  expect(container.querySelector('.MuiAlert-standardError')?.textContent).toContain("not eligible to apply for WAEPA coverage");
-  expect(container.querySelector<HTMLButtonElement>('button[type="submit"]')?.disabled).toBe(true);
-  await act(async () => no.click());
-  expect(container.querySelector('.MuiAlert-standardError')).toBeNull();
+  expect(container.textContent).not.toContain("not eligible to apply for WAEPA coverage");
   expect(container.querySelector<HTMLButtonElement>('button[type="submit"]')?.disabled).toBe(false);
+  await act(async () => no.click());
+  expect(container.textContent).not.toContain("not eligible to apply for WAEPA coverage");
+  await act(async () => yes.click());
+  form.saveApplication.mockClear();
+  await act(async () => container!.querySelector('form')!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })));
+  expect(container.textContent).toContain("not eligible to apply for WAEPA coverage");
+  expect(container.querySelector<HTMLButtonElement>('button[type="submit"]')?.disabled).toBe(false);
+  expect(form.saveApplication).not.toHaveBeenCalled();
 });
 
 it("reads the blocking value and message from saved configuration and rejects malformed rules", () => {
@@ -80,4 +108,51 @@ it("reads the blocking value and message from saved configuration and rejects ma
     rule.value = rules;
     expect(() => resolvePrototypeLibrary(changed, "waepa", "invalid")).toThrow("Invalid applicant experience");
   }
+});
+
+it("renders the approved sibling Associate Member choice and member-information follow-ups", async () => {
+  vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
+  window.history.replaceState(null, "", "/?site=waepa");
+  Object.assign(form.values, { membership: "new", "waepa-attestation": "sibling-associate" });
+  installPrototypeLibrary(resolvePrototypeLibrary(db, "waepa", "qualification-review"));
+  container = document.createElement("div"); document.body.append(container); root = createRoot(container);
+  try {
+    await act(async () => root!.render(<MemoryRouter><Membership /></MemoryRouter>));
+    expect(container.textContent).toContain("I am a sibling of a WAEPA member and want to apply as an Associate Member");
+    expect(container.textContent).toContain("please include the current WAEPA member's membership information");
+    expect(container.querySelector('input[name="waepa-member-first-name"]')).not.toBeNull();
+    expect(container.querySelector('input[name="waepa-member-middle-initial"]')).not.toBeNull();
+    expect(container.querySelector('input[name="waepa-member-last-name"]')).not.toBeNull();
+    expect(container.querySelector('input[name="waepa-retirement-date"]')).toBeNull();
+  } finally {
+    form.values.membership = "current";
+    Reflect.deleteProperty(form.values, "waepa-attestation");
+  }
+});
+
+it.each(["waepa", "waepa-gi"])("renders TV, Radio and Newspaper only for new %s members", async site => {
+  vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
+  window.history.replaceState(null, "", `/?site=${site}`);
+  installPrototypeLibrary(resolvePrototypeLibrary(db, site, "referral-render"));
+  Object.assign(form.values, { membership: site === "waepa" ? "new" : "yes", "membership-status": "new" });
+  container = document.createElement("div"); document.body.append(container); root = createRoot(container);
+  await act(async () => root!.render(<MemoryRouter><Membership /></MemoryRouter>));
+  expect(container.textContent).toContain("How did you hear about WAEPA?");
+  const referral = container.querySelector<HTMLElement>('[role="combobox"][aria-labelledby="membership-referral-source-label"]');
+  expect(referral).not.toBeNull();
+  expect(referral!.getAttribute("aria-required")).toBe("true");
+  await act(async () => referral!.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, button: 0 })));
+  const listbox = document.querySelector('[role="listbox"]')!;
+  expect(listbox.getAttribute("aria-multiselectable")).toBe("true");
+  for (const label of ["TV", "Radio", "Newspaper"]) expect(listbox.textContent).toContain(label);
+  const options = listbox.querySelectorAll<HTMLElement>('[role="option"]');
+  await act(async () => options[0].click());
+  await act(async () => options[1].click());
+  expect(referral!.textContent).toContain("TV, Radio");
+  expect(!!container.querySelector('[role="radiogroup"][aria-labelledby="membership-status-label"]')).toBe(site === "waepa-gi");
+  Object.assign(form.values, site === "waepa" ? { membership: "current" } : { "membership-status": "current" });
+  await act(async () => root!.render(<MemoryRouter><Membership key="current" /></MemoryRouter>));
+  expect(container.textContent).not.toContain("How did you hear about WAEPA?");
+  form.values.membership = "current";
+  delete (form.values as Record<string, unknown>)["membership-status"];
 });

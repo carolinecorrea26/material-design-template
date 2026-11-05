@@ -8,6 +8,7 @@ import { resolveApplicationCoverage, applicationUnderwriting, validateApplicatio
 import { resolveCoverageJourneyPolicy } from "./coverageJourneyPolicy";
 import { resolveJourneyUnderwriting } from "./coverageJourney";
 import { isBenefitPolicy } from "./benefitPolicy";
+import { applicationUnderwritingContext } from "./quickDecisionPolicy";
 
 const db = JSON.parse(JSON.stringify(createReviewedMigrationDatabase()));
 afterEach(() => installPrototypeLibrary(null));
@@ -24,13 +25,16 @@ describe("client rules at the persisted applicant runtime boundary", () => {
         const { input } = createCoverageJourneyFixture(library.site, product.id, mapping.when);
         const age = input.eligibility.ageYears!;
         const values: Record<string, unknown> = {
-          association: input.associationKey,
+          association: input.associationKey, ...(key === "ama" ? { membership: "physician", "actively-at-work": "yes" } : {}),
           "birth-date": dayjs().subtract(age, "year").format("YYYY-MM-DD"),
           "state-province": input.jurisdiction!.replace(/^US-/, ""),
+          "has-other-life-insurance": "no",
           "hours-worked-per-week": input.eligibility.workHoursPerWeek,
+          "firm-member-count": input.eligibility.firmMemberCount,
           "average-monthly-income": input.benefit?.monthlyIncome,
           "is-self-employed": "no", "years-self-employed": 0,
           "monthly-business-expenses": input.benefit?.eligibleMonthlyExpenses,
+          "business-expense-responsibility": 100,
           coverageSelections: [product.id], productApplicants: { [product.id]: ["member"] }, coverageAmounts: { [`${product.id}:member`]: input.amount },
           coverageWaitingPeriods: { [`${product.id}:member`]: input.waitingPeriod }, coverageMaxBenefitPeriods: { [`${product.id}:member`]: input.benefitPeriod },
         };
@@ -43,7 +47,7 @@ describe("client rules at the persisted applicant runtime boundary", () => {
         const result = resolveApplicationCoverage(product, "member", values, library.products);
         expect(result.selectable, `${context}: ${result.messages.join("; ")}`).toBe(true);
         expect(result.amounts, context).toContain(input.amount);
-        const expected = resolveJourneyUnderwriting(library.site, product.id, "member", age, input.amount, applicantClass);
+        const expected = resolveJourneyUnderwriting(library.site, product.id, "member", age, input.amount, applicantClass, input.associationKey, applicationUnderwritingContext(library.site, product.id, "member", values));
         expect(applicationUnderwriting(product, "member", values).underwritingType, `${context}: underwriting`).toBe(expected.pathway);
         expect(validateApplicationCoverages(library.products, values), context).toBeUndefined();
         const underAge = { ...values, "birth-date": dayjs().subtract(1, "year").format("YYYY-MM-DD") };
@@ -60,7 +64,7 @@ it("does not let stale selections or unrelated life amounts inflate ABE spouse d
   const library = resolvePrototypeLibrary(db, "abe", "accuracy-check"); installPrototypeLibrary(library);
   const product = library.products.find(p => p.id === "di-ltd")!;
   const values = {
-    "birth-date": "1990-01-01", "spouse-birth-date": "1990-01-01", "state-province": "NY", "spouse-average-monthly-income": 10000,
+    "birth-date": "1990-01-01", "spouse-birth-date": "1990-01-01", "state-province": "NY", "spouse-average-monthly-income": 10000, "spouse-hours-worked-per-week": 30,
     coverageSelections: ["di-ltd", "li-term"], productApplicants: { "di-ltd": ["member", "spouse"], "li-term": ["member"] },
     coverageAmounts: { "di-ltd:member": 1000, "di-ltd:spouse": 1000, "li-term:member": 1000000, "di-mtd:member": 5000, "di-mtd:spouse": 4000 },
     "prototype-fact:di-ltd:spouse:existingMonthlyBenefit": 0,
@@ -115,7 +119,7 @@ it.each(activeSiteMigrationScope.sites)("$key preserves spouse and single-child 
     const mapping = resolveCoverageJourneyPolicy(library.site, product.id)!.mappings.find(mapping => mapping.when.applicantKey === applicant && mapping.when.mode === "new")!;
     const { input } = createCoverageJourneyFixture(library.site, product.id, mapping.when);
     const values: Record<string, unknown> = {
-      association: input.associationKey,
+      association: input.associationKey, ...(key === "waepa" && applicant === "spouse" ? { "spouse-membership": "no" } : {}), ...(key === "ama" ? { membership: "physician", "actively-at-work": "yes" } : {}),
       "birth-date": "1990-01-01", [`${applicant}-birth-date`]: dayjs().subtract(input.eligibility.ageYears!, "year").format("YYYY-MM-DD"),
       "state-province": input.jurisdiction!.replace(/^US-/, ""), [`${applicant}-unmarried`]: "yes", [`${applicant}-full-time-student`]: "yes",
       [`${applicant}-hours-worked-per-week`]: 40, [`${applicant}-average-monthly-income`]: 1000000,

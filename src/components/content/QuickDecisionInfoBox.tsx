@@ -1,7 +1,9 @@
 import { useId, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import QuickDecisionIcon from "../ui/QuickDecisionIcon";
+import { alpha } from "@mui/material/styles";
+import QuickDecisionIcon from "../coverage/QuickDecisionIcon";
 import QuickDecisionDrawerContent, {
+  InlineDrawerLink,
   QuickDecisionMark,
 } from "./QuickDecisionExplainer";
 
@@ -24,8 +26,7 @@ export default function QuickDecisionInfoBox() {
         p: 2,
         mb: 2,
         borderRadius: 2,
-        backgroundColor: "success.light",
-        bgcolor: (t) => `${t.palette.success.main}14`,
+        bgcolor: (t) => alpha(t.palette.success.main, 0.08),
       }}
     >
       <QuickDecisionIcon color="success" sx={{ mt: 0.25, flexShrink: 0 }} />
@@ -40,30 +41,13 @@ export default function QuickDecisionInfoBox() {
           </Typography>{" "}
           available! Get a decision instantly or within a few days without a
           medical exam.{" "}
-          <Typography
-            component="span"
-            role="button"
-            tabIndex={0}
+          <InlineDrawerLink
             aria-expanded={expanded}
             aria-controls={contentId}
             onClick={toggleExpanded}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                toggleExpanded();
-              }
-            }}
-            sx={{
-              color: "primary.main",
-              textDecoration: "underline",
-              textUnderlineOffset: "0.12em",
-              cursor: "pointer",
-              font: "inherit",
-              lineHeight: "inherit",
-            }}
           >
             {expanded ? "Show less" : "Show more"}
-          </Typography>
+          </InlineDrawerLink>
         </Typography>
 
         {expanded && (

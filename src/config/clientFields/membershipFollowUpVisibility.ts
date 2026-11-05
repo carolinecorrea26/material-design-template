@@ -2,15 +2,14 @@ import type {
   ActiveAssociationResolution,
   AssociationSelectionMode,
 } from "../../data";
-import type { ClientId } from "../../types";
 
 export function shouldShowMembershipFollowUpFields({
-  clientId,
+  membershipOptions,
   selectionMode,
   membershipValue,
   associationStatus,
 }: {
-  clientId: ClientId;
+  membershipOptions: string[];
   selectionMode?: AssociationSelectionMode;
   membershipValue: unknown;
   associationStatus: ActiveAssociationResolution["status"];
@@ -18,9 +17,9 @@ export function shouldShowMembershipFollowUpFields({
   if (selectionMode === "select") {
     return associationStatus === "resolved";
   }
-  if (clientId === "ama") return Boolean(membershipValue);
-  if (clientId === "waepa") {
-    return membershipValue === "current" || membershipValue === "new";
+  if (membershipOptions.includes("physician") || membershipOptions.includes("spouse")) return membershipOptions.includes(String(membershipValue));
+  if (membershipOptions.includes("current") || membershipOptions.includes("new")) {
+    return membershipValue === "current" || membershipValue === "new" || membershipValue === "yes";
   }
   return membershipValue === "yes";
 }

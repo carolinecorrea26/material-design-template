@@ -11,6 +11,7 @@ export function isConditionDefinition(value: unknown): value is ConditionDefinit
     && definition.conditions.every(clause => clause && typeof clause === "object" && !Array.isArray(clause)
       && Object.keys(clause).every(key => ["fieldId", "operator", "value"].includes(key))
       && typeof clause.fieldId === "string" && clause.fieldId.length > 0 && Object.hasOwn(clause, "value")
-      && ["equals", "notEquals", "includes"].includes(clause.operator)
-      && (clause.operator !== "includes" || typeof clause.value === "string"));
+      && ["equals", "notEquals", "includes", "oneOf"].includes(clause.operator)
+      && (clause.operator !== "includes" || typeof clause.value === "string")
+      && (clause.operator !== "oneOf" || Array.isArray(clause.value) && clause.value.length > 0 && clause.value.every((item: unknown) => typeof item === "string" && !!item.trim()) && new Set(clause.value).size === clause.value.length));
 }

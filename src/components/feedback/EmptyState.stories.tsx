@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
 import EmptyState from "./EmptyState";
 
 /**
@@ -8,9 +8,10 @@ import EmptyState from "./EmptyState";
  * QuoteCalculator, error states).
  */
 const meta = {
-  title: "Feedback/EmptyState",
+  id: "feedback-emptystate",
+  title: "Components/Feedback and overlays/Empty states",
   component: EmptyState,
-  parameters: { layout: "padded" },
+  parameters: { docs: { description: { component: "Explains why a section has no items and offers a next action." } }, layout: "padded" },
 } satisfies Meta<typeof EmptyState>;
 
 export default meta;
@@ -27,7 +28,7 @@ export const WithBody: StoryObj = {
 export const CustomIcon: StoryObj = {
   render: () => (
     <EmptyState
-      icon={ShoppingCartOutlinedIcon}
+      icon={ShoppingCartRoundedIcon}
       title="Your cart is empty."
       body="Select coverage to see your estimated cost here."
     />

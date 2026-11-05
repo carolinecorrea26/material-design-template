@@ -36,10 +36,13 @@ const frequencies = { monthly: 1, quarterly: 3, semiannual: 6, annual: 12 };
 const siteKeys = ['demo','abe','ama','asce','avma','csea','nso','isitrust','waepa','waepa-gi'];
 
 /** Local simulation only. It never calls PRASE, a payment processor or email. */
-export function createMockPlatform({ database, prototypeDatabase = database, libraryDatabase = prototypeDatabase, statePath, clock = Date.now, checkReadiness, analyticsTags = [], validatePayload, operationsDatabase, accountSignInEnabled = true } = {}) {
+export function createMockPlatform({ database, prototypeTables = Object.keys(database ?? {}), libraryTables = Object.keys(database ?? {}), statePath, clock = Date.now, checkReadiness, analyticsTags = [], validatePayload, operationsDatabase, accountSignInEnabled = true } = {}) {
   database = normalizeSiteReferences(database);
-  prototypeDatabase = normalizeSiteReferences(prototypeDatabase);
-  libraryDatabase = normalizeSiteReferences(libraryDatabase);
+  const prototypeData = Object.fromEntries([...new Set(prototypeTables)].map(table => {
+    if (!Array.isArray(database?.[table])) throw new Error(`Missing catalog table: ${table}`);
+    return [table, database[table]];
+  }));
+  const libraryTableSet = new Set(libraryTables);
   analyticsTags = normalizeSiteReferences(analyticsTags);
   operationsDatabase = normalizeSiteReferences(operationsDatabase);
   let state = { version: 1, admin: null, payments: {}, drafts: {}, releases: {}, heads: {}, audit: [], analytics: [] };
@@ -107,7 +110,7 @@ export function createMockPlatform({ database, prototypeDatabase = database, lib
     if (draft) return draft.payload;
     if (!seedPayloads.has(siteKey)) {
       seedBaseRevision ??= `local:v1:sha256:${sha(JSON.stringify(database))}`;
-      seedPayloads.set(siteKey, { formatVersion: 1, siteKey, baseRevision: seedBaseRevision, editVersion: 0, data: prototypeDatabase });
+      seedPayloads.set(siteKey, { formatVersion: 1, siteKey, baseRevision: seedBaseRevision, editVersion: 0, data: prototypeData });
     }
     return seedPayloads.get(siteKey);
   };
@@ -152,6 +155,17 @@ export function createMockPlatform({ database, prototypeDatabase = database, lib
       if (req.method === 'GET' && path === '/auth/status') return respond(200, { ...account(), mode: 'mock', setupNeeded: !state.admin, authenticated: !!session?.aal2 && hasFactor(admin) && !session?.recovery && !passwordExpired(admin), mfaVerified: !!session?.aal2 && hasFactor(admin) && !session?.recovery, passwordExpired: !!session && passwordExpired(admin), passwordExpiresAt: session && admin ? admin.passwordChangedAt + passwordLifetime : null, sessionExpiresAt: session?.expires ?? null, passwordAccepted: !!session, recoveryRequired: !!session?.recovery, enrollmentNeeded: !!session && !hasFactor(admin), totpEnrolled: !!admin?.totpVerified, passkeyCount: admin?.passkeys?.length ?? 0 });
       if (req.method !== 'POST' || req.headers['x-portal-mock'] !== '1') fail(405, 'Use the mock JSON API');
       const body = await requestBody(req);
+      if (path === '/membership/ama-lookup') {
+        if (body.siteKey !== 'ama' || !availableSite(body.siteKey)) fail(400, 'AMA mock lookup requires the AMA Site');
+        const firstName = typeof body.firstName === 'string' ? body.firstName.trim() : '', lastName = typeof body.lastName === 'string' ? body.lastName.trim() : '';
+        const birthDate = typeof body.birthDate === 'string' ? body.birthDate : '', date = new Date(`${birthDate}T00:00:00Z`);
+        if (!firstName || !lastName || firstName.length > 100 || lastName.length > 100 || !/^\d{4}-\d{2}-\d{2}$/.test(birthDate) || !Number.isFinite(date.getTime()) || date.toISOString().slice(0, 10) !== birthDate || date.getTime() > clock()) fail(400, 'Enter a valid name and date of birth');
+        const identity = { firstName, lastName, birthDate }, fixture = `${firstName} ${lastName}`.toLowerCase();
+        if (fixture === 'service error') fail(503, 'Mock lookup is temporarily unavailable. Please retry.');
+        const found = fixture !== 'no match';
+        const number = String(parseInt(createHash('sha256').update(JSON.stringify([firstName.toLowerCase(), lastName.toLowerCase(), birthDate])).digest('hex').slice(0, 12), 16) % 10000000000).padStart(10, '0');
+        return respond(200, { mode: 'mock', provider: 'ama-mock', identity, status: found ? 'matched' : 'not-found', medicalEducationNumber: found ? `MOCK-ME-${number}` : null, isMember: found ? firstName.toLowerCase() !== 'nonmember' : false });
+      }
       if (applicantSaves.handles(path)) return respond(200, applicantSaves.request(path, body));
       if (path.startsWith('/auth/')) {
         const key = req.socket.remoteAddress, recent = (attempts.get(key) ?? []).filter(t => clock() - t < 60000);
@@ -403,24 +417,28 @@ export function createMockPlatform({ database, prototypeDatabase = database, lib
         state.payments[body.idempotencyKey] = { requestHash, response }; persist(); return respond(200, response);
       }
       if (path === '/applications/submit') {
-        strictKeys(body, ['siteKey','revision','entries','paymentIds','idempotencyKey','environment']);
-        if (!availableSite(body.siteKey) || typeof body.revision !== 'string' || !body.revision.startsWith('prototype:') || typeof body.idempotencyKey !== 'string' || !/^[a-zA-Z0-9-]{8,100}$/.test(body.idempotencyKey) || !Array.isArray(body.entries) || !body.entries.length || !Array.isArray(body.paymentIds) || body.paymentIds.length !== body.entries.length) fail(400, 'Incomplete mock submission');
+        strictKeys(body, ['siteKey','revision','entries','paymentIds','idempotencyKey','environment','paymentDeferred']);
+        const paymentDeferred = body.paymentDeferred === true;
+        if (!availableSite(body.siteKey) || typeof body.revision !== 'string' || !body.revision.startsWith('prototype:') || typeof body.idempotencyKey !== 'string' || !/^[a-zA-Z0-9-]{8,100}$/.test(body.idempotencyKey) || !Array.isArray(body.entries) || !body.entries.length || !Array.isArray(body.paymentIds) || body.paymentIds.length !== (paymentDeferred ? 0 : body.entries.length) || body.paymentDeferred !== undefined && typeof body.paymentDeferred !== 'boolean') fail(400, 'Incomplete mock submission');
         const requestHash = sha(JSON.stringify(body));
         state.submissions ??= {};
         const previous = state.submissions[body.idempotencyKey];
         if (previous) { if (previous.requestHash !== requestHash) fail(409, 'Submission idempotency conflict'); return respond(200, previous.response); }
         if (body.revision !== prototypeRevision(body.siteKey, body.environment)) fail(409, 'Prototype Library changed; reload and reauthorize');
+        if (paymentDeferred && prototypePayload(body.siteKey, body.environment).data.sitePages?.find(page => page.siteKey === body.siteKey && page.pageKey === 'payment')?.requirement !== 'optional') fail(400, 'Payment collection is not optional for this Site');
         const payments = Object.values(state.payments).map(p => p.response);
         for (const [index, entry] of body.entries.entries()) {
           strictKeys(entry, ['productKey','applicant','amount']);
+          if (!requiredProducts(body.siteKey, body.environment).includes(entry.productKey) || !['member','spouse','child'].includes(entry.applicant) || !Number.isSafeInteger(entry.amount) || entry.amount <= 0) fail(400, 'Invalid mock submission entry');
+          if (paymentDeferred) continue;
           const payment = payments.find(p => p.paymentId === body.paymentIds[index]);
           const quote = payment && quotes.get(payment.quoteId);
-          if (!requiredProducts(body.siteKey, body.environment).includes(entry.productKey) || !['member','spouse','child'].includes(entry.applicant) || !Number.isSafeInteger(entry.amount) || entry.amount <= 0 || !payment || payment.status !== 'authorized' || !quote || quote.expiresAt <= clock() || quote.siteKey !== body.siteKey || quote.revision !== body.revision || quote.productKey !== entry.productKey || quote.amount !== entry.amount || (quote.dimensions?.applicant !== undefined && quote.dimensions.applicant !== entry.applicant)) fail(400, 'Valid fixture authorization required for every entry');
+          if (!payment || payment.status !== 'authorized' || !quote || quote.expiresAt <= clock() || quote.siteKey !== body.siteKey || quote.revision !== body.revision || quote.productKey !== entry.productKey || quote.amount !== entry.amount || (quote.dimensions?.applicant !== undefined && quote.dimensions.applicant !== entry.applicant)) fail(400, 'Valid fixture authorization required for every entry');
         }
         if (new Set(body.entries.map(e => `${e.productKey}:${e.applicant}`)).size !== body.entries.length || new Set(body.paymentIds).size !== body.paymentIds.length) fail(400, 'Duplicate mock entries or authorizations');
         if (Object.values(state.submissions).some(submission => submission.paymentIds?.some(id => body.paymentIds.includes(id)))) fail(409, 'Fixture authorization already used by another submission');
         const response = { mode: 'mock', contract: 'mock-applicant-v1', submissionId: `MOCK-${randomUUID()}`, status: 'submitted', insurerSubmitted: false, fundsMoved: false, entryCount: body.entries.length };
-        commit(() => { state.submissions[body.idempotencyKey] = { requestHash, response, siteKey: body.siteKey, revision: body.revision, entries: body.entries, paymentIds: body.paymentIds }; });
+        commit(() => { state.submissions[body.idempotencyKey] = { requestHash, response, siteKey: body.siteKey, revision: body.revision, entries: body.entries, paymentIds: body.paymentIds, ...(paymentDeferred ? { paymentDeferred: true } : {}) }; });
         return respond(200, response);
       }
       if (path === '/prototype/library') {
@@ -445,12 +463,12 @@ export function createMockPlatform({ database, prototypeDatabase = database, lib
       if (path.startsWith('/builder/')) return respond(200, await builderRelease({ path, body, state, commit, clock, drafts: state.drafts, quotes, analyticsTags, validatePayload, actor: account().username }));
       if (path === '/library/catalog') {
         strictKeys(body, ['siteKey', 'tables']);
-        if (!database || !Array.isArray(body.tables) || !body.tables.length || new Set(body.tables).size !== body.tables.length || body.tables.some(table => typeof table !== 'string' || !Object.hasOwn(libraryDatabase, table))) fail(400, 'Invalid Library catalog tables');
+        if (!database || !Array.isArray(body.tables) || !body.tables.length || new Set(body.tables).size !== body.tables.length || body.tables.some(table => typeof table !== 'string' || !libraryTableSet.has(table) || !Array.isArray(database[table]))) fail(400, 'Invalid Library catalog tables');
         if (body.siteKey !== 'all' && !availableSite(body.siteKey)) fail(404, 'Unavailable Library Site');
         const payload = body.siteKey === 'all' ? null : prototypeDraft(body.siteKey)?.payload;
         const data = Object.fromEntries(body.tables.map(table => {
           if (['organizations', 'organizationProfiles', 'clients', 'sites'].includes(table)) {
-            const records = new Map((libraryDatabase[table] ?? []).map(r => [r.id, r]));
+            const records = new Map((database[table] ?? []).map(r => [r.id, r]));
             for (const draft of Object.values(state.drafts)) for (const row of draft.payload.data[table] ?? []) if (!records.has(row.id) && (row.id.startsWith('build-') || table === 'organizationProfiles' && (draft.payload.data.organizations ?? []).some(o => o.id.startsWith('build-org-') && o.key === row.organizationKey))) records.set(row.id, row);
             if (table === 'clients' && payload) {
               const clientId = payload.data.sites.find(s => s.key === body.siteKey)?.clientId;
@@ -459,7 +477,7 @@ export function createMockPlatform({ database, prototypeDatabase = database, lib
             }
             return [table, [...records.values()]];
           }
-          return [table, payload?.data[table] ?? libraryDatabase[table]];
+          return [table, payload?.data[table] ?? database[table]];
         }));
         return respond(200, { revision: `library:${sha(JSON.stringify(data))}`, data, analyticsTags: database.analyticsTags ?? analyticsTags });
       }

@@ -14,7 +14,7 @@ import { editDraftExperience, editDraftRiders, editDraftBilling, editDraftField,
 import { resolveEffectiveSite } from "../../domain/effectiveSite";
 import { resolveRatePresentation, defaultRatePresentation, type ReferenceRateTable } from "../../domain/ratePresentation";
 import FieldRenderer from "../../components/forms/FieldRenderer";
-import ReferenceRateTableLink from "../../components/ui/ReferenceRateTableLink";
+import ReferenceRateTableLink from "../../components/coverage/ReferenceRateTableLink";
 
 export default function LibraryDraftEditor({ draft, onSave, onViewChange }: { draft: LibraryDraft; onViewChange?: (view: 'configure' | 'review') => void; onSave: (draft: LibraryDraft) => Promise<LibraryDraft> }) {
   const [current, setCurrent] = useState(draft);

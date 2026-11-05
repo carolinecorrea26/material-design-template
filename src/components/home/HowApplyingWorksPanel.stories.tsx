@@ -1,0 +1,48 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Box } from "@mui/material";
+import HowApplyingWorksPanel from "./HowApplyingWorksPanel";
+
+/**
+ * HowApplyingWorksPanel renders the step-by-step "how applying works"
+ * explainer in two shapes: full-width `page` variant (Home page) or a
+ * narrower `drawer` variant (AppMenu), which also manages its own
+ * QuickDecision/Application-Review sub-drawers when the step text contains
+ * a linked term. The page variant defaults to regular images; clients can select an animated
+ * application preview; the drawer keeps a compact text-only shape.
+ */
+const meta = {
+  id: "coverage-commerce-howapplyingworkspanel",
+  title: "Components/Pages/Home/Sections/How applying works/Panel variations",
+  component: HowApplyingWorksPanel,
+  parameters: { standalone: true, docs: { description: { component: "Explains the three application steps using images or a configured animated preview." } }, layout: "padded" },
+} satisfies Meta<typeof HowApplyingWorksPanel>;
+
+export default meta;
+
+export const PageVariant: StoryObj = {
+  name: 'variant="page" (Home page)',
+  render: () => (
+    <Box sx={{ maxWidth: 900 }}>
+      <HowApplyingWorksPanel variant="page" />
+    </Box>
+  ),
+};
+
+export const DrawerVariant: StoryObj = {
+  name: 'variant="drawer" (AppMenu, with sub-drawers)',
+  render: () => (
+    <Box sx={{ maxWidth: 420 }}>
+      <HowApplyingWorksPanel variant="drawer" />
+    </Box>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'In drawer variant, the "review your application" and QuickDecision℠ links inside step text open their own nested AppDrawer sub-panels — try clicking one.',
+      },
+    },
+  },
+};
+
+export const Animated: StoryObj = { render: () => <HowApplyingWorksPanel variant="page" presentation="animated" /> };

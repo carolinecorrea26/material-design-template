@@ -15,9 +15,10 @@ import { getActiveClient } from "../../config/client/getActiveClient";
  * AppDrawer.
  */
 const meta = {
-  title: "Layout/AppMenu",
+  id: "layout-appmenu",
+  title: "Components/Navigation/Application menu",
   component: AppMenu,
-  parameters: { layout: "fullscreen" },
+  parameters: { docs: { description: { component: "Provides application navigation and informational drawers." } }, layout: "fullscreen" },
 } satisfies Meta<typeof AppMenu>;
 
 export default meta;

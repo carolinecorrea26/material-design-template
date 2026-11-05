@@ -27,13 +27,12 @@ export type StoredRow = Record<string, unknown> & { id: string; key?: string };
 function orderedPages(catalog: LibraryCatalog, siteKey: string) {
   return resolvePageCatalog(catalog.data, siteKey === "all" ? undefined : siteKey).map((row, index) => ({ ...row, sequence: index + 1 }));
 }
-/** Disabled and unassigned definitions stay visible; availability comes from Site relationships. */
+/** All Sites shows the catalog; a selected Site shows only its enabled pages. */
 export function storedApplicationPageRows(catalog: LibraryCatalog, siteKey: string) {
   if (siteKey !== "all" && !catalog.data.sites.some(site => site.key === siteKey)) return [];
-  let applicationIndex = 0;
-  const labels = { application: "Application", resume: "Resume", advisor: "Advisor", internal: "Internal" };
-  return orderedPages(catalog, siteKey).filter(row => row.definition.flow !== "internal").map(row => ({
-    ...row, flow: labels[row.definition.flow], sequence: row.definition.flow === "application" ? String(++applicationIndex) : "—",
+  const labels = { application: "Application", resume: "Resume", advisor: "Advisor", utility: "Utility", internal: "Internal" };
+  return resolvePageCatalog(catalog.data, siteKey === "all" ? undefined : siteKey).filter(row => row.definition.flow !== "internal" && (siteKey === "all" || row.enabled)).map(row => ({
+    ...row, flow: labels[row.definition.flow],
     route: row.definition.path, requirement: siteKey === "all" || row.definition.flow !== "application" && row.enabled ? "—" : row.requirement ?? "Not configured",
   }));
 }
@@ -168,8 +167,8 @@ export function storedFieldVisibility(catalog: LibraryCatalog, field: StoredFiel
     if (!condition) return key;
     return condition.conditions.map(clause => {
       const source = fields.find(row => row.key === clause.fieldId && row.placements.some(row => row.page === placement?.page))?.definition ?? catalog.data.fields.find(row => row.key === clause.fieldId)?.definition;
-      const value = source?.options?.find(option => option.value === clause.value)?.label ?? String(clause.value);
-      return `${source?.label ?? clause.fieldId} ${clause.operator === "equals" ? "is" : clause.operator === "notEquals" ? "is not" : "includes"} ${value}`;
+      const value = Array.isArray(clause.value) ? clause.value.map(value => source?.options?.find(option => option.value === value)?.label ?? String(value)).join(", ") : source?.options?.find(option => option.value === clause.value)?.label ?? String(clause.value);
+      return `${source?.label ?? clause.fieldId} ${clause.operator === "equals" ? "is" : clause.operator === "notEquals" ? "is not" : clause.operator === "oneOf" ? "is one of" : "includes"} ${value}`;
     }).join(condition.match === "all" ? "; and " : "; or ");
   });
   if (placement?.collection) descriptions.push(`Repeated for each ${placement.collection === "children" ? "child" : placement.collection}`);

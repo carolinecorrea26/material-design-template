@@ -65,7 +65,7 @@ function SectionBlock({
         sx={{
           px: { xs: 2, md: 3 },
           py: 1,
-          backgroundColor: "background.subtle",
+          backgroundColor: "background.default",
           borderBottom: "1px solid",
           borderColor: "divider",
         }}

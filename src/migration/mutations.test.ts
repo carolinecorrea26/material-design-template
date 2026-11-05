@@ -55,6 +55,6 @@ it("URL association selection rejects missing, disabled and foreign associations
 it("new resolver runtime imports cannot read legacy registries or fixtures", () => {
   for (const file of ["src/migration/resolve.ts", "src/migration/values.ts"]) {
     const imports = readFileSync(file, "utf8").split("\n").filter((line) => line.startsWith("import ") && !line.startsWith("import type "));
-    expect(imports.every((line) => /from "\.\/values"/.test(line))).toBe(true);
+    expect(imports.every((line) => /from "(?:\.\/values|\.\.\/domain\/ruleDocumentation)"/.test(line))).toBe(true);
   }
 });

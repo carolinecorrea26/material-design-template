@@ -8,6 +8,8 @@ import { identity, globalScope } from "./values";
 
 export type SourceCell = { sheet: string; cell: string; value: Json; formula: string | null; comment: string | null; hyperlink: string | null };
 type Checklist = { sheet: string; cell: string; notes: string | null; displayedContent: Json };
+/** Historical compiler evidence. New requirement review uses currentMcr.ts;
+ * replacing this extract would rewrite the provenance of accepted migrations. */
 export const mcrSource = raw as unknown as { workbook: string; sha256: string; checklistSha256: string; sheets: Array<{ name: string; cells: number; mergedRanges: string[]; images: number }>; cells: SourceCell[]; checklist: Checklist[] };
 export const canonicalReference = reference;
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");

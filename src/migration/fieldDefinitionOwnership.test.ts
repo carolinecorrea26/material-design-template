@@ -7,10 +7,10 @@ import { validateMigrationDatabase } from "./integrity";
 
 const db = createReviewedMigrationDatabase();
 const preview = (data = db) => resolvePrototypeLibrary(data, "asce", "test:field-ownership");
-it("gives 186 controls and 37 formats one shared owner while preserving constraints and effective values", () => {
+it("gives 188 controls and 37 formats one shared owner while preserving constraints and effective values", () => {
   const evidence = db.semanticRequirements.find(row => row.predicate === "shared-field-control-format")!.value;
   if (!evidence || typeof evidence !== "object" || Array.isArray(evidence) || !Array.isArray(evidence.previousValidationRules)) throw new Error("Missing original validation rows");
-  expect(evidence.previousValidationRules).toHaveLength(186);
+  expect(evidence.previousValidationRules).toHaveLength(188);
   expect(db.validationRules.every(row => !Object.hasOwn(row.definition, "inputType") && !Object.hasOwn(row.definition, "format"))).toBe(true);
   expect(db.validationRules.filter(row => Object.hasOwn(row.definition, "required"))).toHaveLength(0);
   expect(JSON.stringify(evidence.previousValidationRules).match(/"format":/g)).toHaveLength(37);

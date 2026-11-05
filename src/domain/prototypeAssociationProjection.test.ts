@@ -22,7 +22,7 @@ it("uses captured membership definitions and enablement without a static read", 
   const installed = resolvePrototypeLibrary(changed, "isitrust", "captured");
   installPrototypeLibrary(installed);
   expect(getSite("isitrust")?.associationSelection?.mode).toBe("select");
-  expect(getAssociationsForSite("isitrust")).toHaveLength(24);
+  expect(getAssociationsForSite("isitrust")).toHaveLength(25);
   expect(resolveActiveAssociation("isitrust", { selectedAssociationId: association.key }).association?.name).toBe("Stored membership organization");
   expect(resolveActiveAssociation("isitrust", { selectedAssociationId: links[1].associationKey }).status).toBe("invalid");
   window.history.replaceState(null, "", "/membership?site=isitrust");

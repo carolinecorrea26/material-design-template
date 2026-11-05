@@ -8,9 +8,10 @@ import FormShell from "./FormShell";
  * now compose it with PageShell and PageHeader as well.
  */
 const meta = {
-  title: "Layout/FormShell",
+  id: "layout-formshell",
+  title: "Components/Layout/Containers/Form container",
   component: FormShell,
-  parameters: { layout: "padded" },
+  parameters: { docs: { description: { component: "Arranges the form content, navigation and application progress." } }, layout: "padded" },
 } satisfies Meta<typeof FormShell>;
 
 export default meta;

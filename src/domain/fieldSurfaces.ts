@@ -3,6 +3,9 @@ import type { EffectiveSiteData, resolveEffectiveSite } from './effectiveSite';
 import type { FieldDefinition } from './fields';
 export type FieldSurfaceDefinition = {
   pageKey: string; label: string; maxItems?: number;
+  inspectionLabel?: string;
+  inspectionOrder?: Record<string, number>;
+  libraryGroup?: { label: string; excludeFieldKeys?: string[] };
   fields: { fieldKey: string; valueKey: string; grid?: boolean }[];
 };
 
@@ -20,6 +23,10 @@ export function resolveStoredFieldSurfaces(data: EffectiveSiteData, site: Return
   for (const [name, definition] of Object.entries(definitions)) {
     if (!safeKey(name) || !definition || !data.pages.some(page => page.key === definition.pageKey) || typeof definition.label !== 'string' || !definition.label.trim() || !Array.isArray(definition.fields) || !definition.fields.length || definition.maxItems !== undefined && (!Number.isSafeInteger(definition.maxItems) || definition.maxItems < 1 || definition.maxItems > 100)) throw new Error(`Invalid stored field surface: ${name}`);
     if ((name.startsWith('health') || name === 'beneficiaryIndividual' || name === 'beneficiaryTrust') && definition.maxItems === undefined) throw new Error(`Missing field surface limit: ${name}`);
+    if (definition.libraryGroup && (typeof definition.libraryGroup.label !== 'string' || !definition.libraryGroup.label.trim()
+      || definition.libraryGroup.excludeFieldKeys?.some(key => !definition.fields.some(field => field.fieldKey === key)))) throw new Error(`Invalid field surface Library group: ${name}`);
+    if (definition.inspectionLabel !== undefined && (typeof definition.inspectionLabel !== 'string' || !definition.inspectionLabel.trim())) throw new Error(`Invalid field surface inspection label: ${name}`);
+    if (definition.inspectionOrder && Object.entries(definition.inspectionOrder).some(([key, order]) => !definition.fields.some(field => field.fieldKey === key) || !Number.isSafeInteger(order) || order < 0)) throw new Error(`Invalid field surface inspection order: ${name}`);
     const fields: FieldDefinition[] = [], fieldToKey: Record<string, string> = {}, gridFields: string[] = [];
     const seenFields = new Set<string>(), seenBindings = new Set<string>();
     for (const binding of definition.fields) {
@@ -61,7 +68,7 @@ export function resolveStoredFieldSurfaces(data: EffectiveSiteData, site: Return
     }
     if (['beneficiaryControls', 'verificationControls'].includes(name) && !fields.some(field => field.id === (name === 'beneficiaryControls' ? 'beneficiaryType' : 'verification-method'))) throw new Error(`Missing semantic surface control: ${name}`);
     if (name === 'beneficiaryIndividual' && !fields.some(field => field.id === 'beneficiary-share')) throw new Error('Missing semantic surface control: beneficiary share');
-    result[name] = { pageKey: definition.pageKey, label: definition.label, maxItems: definition.maxItems, mapping: { fields, fieldToKey, gridFields } };
+    result[name] = { pageKey: definition.pageKey, label: definition.label, maxItems: definition.maxItems, libraryGroup: definition.libraryGroup, inspectionLabel: definition.inspectionLabel, inspectionOrder: definition.inspectionOrder, mapping: { fields, fieldToKey, gridFields } };
   }
   return result;
 }

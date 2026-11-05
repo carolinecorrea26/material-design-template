@@ -84,7 +84,7 @@ describe("single-page transitions and breadcrumb navigation", () => {
       const breadcrumbLink = node.querySelector<HTMLButtonElement>('.MuiBreadcrumbs-root [aria-label="Go to Membership"]');
       expect(breadcrumbLink?.querySelector('[data-testid="CheckCircleRoundedIcon"]')).not.toBeNull();
       expect(breadcrumbLink?.disabled).toBe(false);
-      expect(node.querySelector('.MuiBreadcrumbs-root [data-testid="EditOutlinedIcon"]')).toBeNull();
+      expect(node.querySelector('.MuiBreadcrumbs-root [data-testid="EditRoundedIcon"]')).toBeNull();
 
       await click(node, '[aria-label="Go back"]');
       expect(node.querySelector('[role="status"]')).not.toBeNull();

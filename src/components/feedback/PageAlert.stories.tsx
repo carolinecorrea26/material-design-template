@@ -1,17 +1,22 @@
+// Preview notes are documentation only; the canvas contains application UI.
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Stack, Typography } from "@mui/material";
+import { Stack } from "@mui/material";
 import PageAlert from "./PageAlert";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Button } from '@mui/material';
+import FieldRenderer from '../forms/FieldRenderer';
+import { applicationRecovery } from '../../content/applicationRecovery';
 
 /**
  * PageAlert is the canonical full-width contextual alert rendered above form
- * content — it supersedes the now-deprecated PageErrorAlert (a 5-line
- * re-export kept only for old imports; see Guidelines/Dynamic Feedback &
- * Status). Renders nothing when `message` is falsy.
+ * content. Renders nothing when `message` is falsy.
  */
 const meta = {
-  title: "Feedback/PageAlert",
+  id: "feedback-pagealert",
+  title: "Components/Feedback and overlays/Alerts/Page alert",
   component: PageAlert,
-  parameters: { layout: "padded" },
+  parameters: { docs: { description: { component: "Displays page-level errors, warnings, or informational messages." } }, layout: "padded" },
 } satisfies Meta<typeof PageAlert>;
 
 export default meta;
@@ -41,11 +46,7 @@ export const NoMessage: StoryObj = {
   render: () => (
     <Stack spacing={1}>
       <PageAlert />
-      <Typography variant="caption" color="text.secondary">
-        Nothing rendered above this line — the component returns{" "}
-        <code>null</code> when <code>message</code> is undefined, so callers
-        don't need to conditionally render <code>PageAlert</code> themselves.
-      </Typography>
+
     </Stack>
   ),
 };
@@ -60,3 +61,13 @@ export const AllSeverities: StoryObj = {
     </Stack>
   ),
 };
+function ValidationOnNextDemo() {
+  const { control, handleSubmit, formState: { errors } } = useForm<Record<string, string | boolean | string[]>>({ defaultValues: { 'feedback-email': '' } });
+  const [showSummary, setShowSummary] = useState(false);
+  return <Stack component="form" spacing={2} noValidate onSubmit={handleSubmit(() => setShowSummary(false), () => setShowSummary(true))}>
+    {showSummary && <PageAlert message={applicationRecovery.validation.message} />}
+    <FieldRenderer field={{ id: 'feedback-email', label: 'Email address', inputType: 'text', format: 'email', required: true }} control={control} errors={errors} />
+    <Button type="submit" variant="contained">Next</Button>
+  </Stack>;
+}
+export const FieldValidationOnNext: StoryObj = { render: () => <ValidationOnNextDemo />, parameters: { docs: { description: { story: 'Local example: specific feedback stays on the field, and Next adds one page summary. No request is made.' } } } };

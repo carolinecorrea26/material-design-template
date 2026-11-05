@@ -5,9 +5,11 @@ import type { FieldDefinition } from './fields';
 
 export type FieldCollectionDefinition = {
   pageKey: string; sectionId: string; storageName: string; label: string; maxItems: number;
+  libraryGroup?: { label: string; applicant?: "self" | "spouse"; afterFieldKey?: string };
   fields: { fieldKey: string; valueKey: string; grid?: boolean; childConstraint?: 'unmarried' | 'studentMaximumAgeYears' }[];
 };
 export type ResolvedFieldCollection = { name: string; label: string; maxItems: number; pageKey: string; sectionId: string;
+  libraryGroup?: FieldCollectionDefinition['libraryGroup'];
   mapping: { fields: FieldDefinition[]; fieldToKey: Record<string, string>; gridFields: string[] } };
 const safeKey = (value: unknown): value is string => typeof value === 'string' && /^[a-zA-Z][a-zA-Z0-9]*$/.test(value) && !['constructor', 'prototype', '__proto__'].includes(value);
 
@@ -21,6 +23,9 @@ export function resolveStoredFieldCollections(data: EffectiveSiteData, site: Ret
   const result: Record<string, ResolvedFieldCollection> = {};
   for (const [key, definition] of Object.entries(definitions)) {
     if (!safeKey(key) || !definition || !safeKey(definition.storageName) || typeof definition.label !== 'string' || !definition.label.trim() || !Number.isSafeInteger(definition.maxItems) || definition.maxItems < 1 || definition.maxItems > 100 || !Array.isArray(definition.fields) || !definition.fields.length) throw new Error(`Invalid stored collection: ${key}`);
+    const group = definition.libraryGroup;
+    if (group && (typeof group.label !== 'string' || !group.label.trim() || group.applicant !== undefined && !['self', 'spouse'].includes(group.applicant)
+      || group.afterFieldKey !== undefined && !data.fields.some(field => field.key === group.afterFieldKey))) throw new Error(`Invalid collection Library group: ${key}`);
     const page = site.configuration.pages.find(page => page.key === definition.pageKey);
     const storedSection = !page ? data.pageSections.find(section => section.pageKey === definition.pageKey && section.definition.id === definition.sectionId) : undefined;
     const section = page?.sections.find(section => section.definition.value.id === definition.sectionId) ?? (storedSection ? { definition: { value: storedSection.definition }, fields: data.pageSectionFields.filter(field => field.sectionKey === storedSection.key).sort((a, b) => a.position - b.position).map(field => ({ value: field })) } : undefined);
@@ -54,7 +59,7 @@ export function resolveStoredFieldCollections(data: EffectiveSiteData, site: Ret
       if (binding.grid) gridFields.push(field.id);
     }
     if (section.definition.value.collectionName) fields.sort((a, b) => section.fields.findIndex(field => field.value.fieldKey === a.id) - section.fields.findIndex(field => field.value.fieldKey === b.id));
-    result[key] = { name: definition.storageName, label: definition.label, maxItems: definition.maxItems, pageKey: definition.pageKey, sectionId: definition.sectionId, mapping: { fields, fieldToKey, gridFields } };
+    result[key] = { name: definition.storageName, label: definition.label, maxItems: definition.maxItems, pageKey: definition.pageKey, sectionId: definition.sectionId, libraryGroup: definition.libraryGroup, mapping: { fields, fieldToKey, gridFields } };
   }
   return result;
 }

@@ -1,9 +1,11 @@
+import { eligibilityFactSatisfied, eligibilityAgeMaximumSatisfied } from "./eligibilityFacts";
 import type { CoverageApplicantId, CoverageDefinition, CoverageRequirements } from "./coverage";
 
 export type ApplicantFacts = {
-  ageYears?: number; ageDays?: number; unmarried?: boolean; fullTimeStudent?: boolean;
-  workHoursPerWeek?: number; averageMonthlyIncome?: number;
+  ageYears?: number; ageDays?: number; honorablyDischargedServiceMember?: boolean; unmarried?: boolean; fullTimeStudent?: boolean;
+  workHoursPerWeek?: number; averageMonthlyIncome?: number; activelyAtWork?: boolean; associationMember?: boolean; activeMilitary?: boolean;
   selfEmployed?: boolean; yearsSelfEmployed?: number;
+  associationKey?: string; firmMemberCount?: number;
 };
 export type RequirementResult = "eligible" | "ineligible" | "needs-information";
 /** Missing facts never silently establish eligibility. Ages are completed years/days. */
@@ -14,9 +16,10 @@ export function evaluateEligibility(requirements: CoverageRequirements | undefin
     if (rule.minimumAgeDays !== undefined) checks.push(facts.ageDays === undefined ? undefined : facts.ageDays >= rule.minimumAgeDays);
     if (rule.minimumAgeYears !== undefined) checks.push(facts.ageYears === undefined ? undefined : facts.ageYears >= rule.minimumAgeYears);
     if (rule.maximumAgeYears !== undefined) {
-      checks.push(facts.ageYears === undefined ? undefined : facts.ageYears <= rule.maximumAgeYears ? true : rule.fullTimeStudentMaximumAgeYears !== undefined && facts.ageYears <= rule.fullTimeStudentMaximumAgeYears ? facts.fullTimeStudent : false);
+      checks.push(rule.fullTimeStudentMaximumAgeYears !== undefined && facts.ageYears !== undefined && facts.ageYears > rule.maximumAgeYears && facts.ageYears <= rule.fullTimeStudentMaximumAgeYears ? facts.fullTimeStudent : eligibilityAgeMaximumSatisfied(facts.ageYears, rule.maximumAgeYears, rule.factRequirements ?? [], facts));
     }
     if (rule.minimumWorkHoursPerWeek !== undefined) checks.push(facts.workHoursPerWeek === undefined ? undefined : facts.workHoursPerWeek >= rule.minimumWorkHoursPerWeek);
+    for (const requirement of rule.factRequirements ?? []) if (!("extendsMaximumAgeTo" in requirement)) checks.push(eligibilityFactSatisfied(requirement, facts[requirement.fact]));
   }
   return checks.includes(false) ? "ineligible" : checks.includes(undefined) ? "needs-information" : "eligible";
 }

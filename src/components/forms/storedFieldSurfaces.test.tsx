@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { useForm } from 'react-hook-form';
 import { afterEach, beforeAll, expect, it, vi } from 'vitest';
 import DynamicList from './DynamicList';
-import CoverageNeedsCalculator from './CoverageNeedsCalculator';
+import CoverageNeedsCalculator from '../../app/sections/ConfiguredCoverageNeedsCalculator';
 import { createReviewedMigrationDatabase } from '../../migration/fixtures';
 import { installPrototypeLibrary, resolvePrototypeLibrary } from '../../domain/prototypeLibrary';
 import { getFieldSurface } from '../../config/fields/storedSurfaces';
@@ -65,7 +65,7 @@ it('uses authored verification method and question labels through the real dialo
   data.fields.find(row => row.key === 'verification-method')!.definition.label = 'Saved verification methods';
   data.fields.find(row => row.key === 'sq-1')!.definition.label = 'Saved security question';
   installPrototypeLibrary(resolvePrototypeLibrary(data, 'asce', 'test'));
-  const { default: MemberVerification } = await import('../ui/MemberVerification');
+  const { default: MemberVerification } = await import('../verification/MemberVerification');
   const container = document.createElement('div'); document.body.append(container); const root = createRoot(container);
   try {
     await act(async () => root.render(<MemberVerification open onClose={() => undefined} />));

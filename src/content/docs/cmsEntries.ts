@@ -214,7 +214,7 @@ const PAGE_COMPONENT_LABELS: Record<string, string> = {
 
 // Page content belongs in the CMS only when the experience actually renders it.
 // Home uses its hero content rather than pages.home, and navTitle is only read
-// by the multi-page vertical-stepper breadcrumbs for these routes.
+// by the multi-page application breadcrumbs for these routes.
 const DISPLAYED_NAV_TITLE_PAGE_IDS = new Set([
   "membership",
   "eligibility",
@@ -321,7 +321,7 @@ function componentTypeForPath(path: string): CmsComponentType {
       return "Welcome-back homepage variant";
     }
     if (
-      (section === "hero" && ["ctaLabel", "secondaryCtaLabel", "resumeLinkLabel"].includes(field)) ||
+      (section === "hero" && ["ctaLabel", "secondaryCtaLabel"].includes(field)) ||
       path === "home.reviewProcessLinkLabel"
     ) {
       return "Button";
@@ -403,7 +403,6 @@ function locationForPath(path: string): string {
     if (section === "hero") {
       if (field === "ctaLabel") return "Home - Primary Hero Button";
       if (field === "secondaryCtaLabel") return "Home - Secondary Hero Button";
-      if (field === "resumeLinkLabel") return "Home - Resume Application Link";
       return "Home - Hero Section";
     }
     if (section === "howApplyingWorks") return "Home - 'How does applying work?' Section";

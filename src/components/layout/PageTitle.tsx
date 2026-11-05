@@ -25,7 +25,7 @@ export default function PageTitle({
             <ArrowBackIosRoundedIcon sx={{ fontSize: "1rem" }} />
           </IconButton>
         )}
-        <Typography variant="formPageTitle">{title}</Typography>
+        <Typography variant="h6" component="h2">{title}</Typography>
       </Stack>
       {subhead ? (
         <Typography

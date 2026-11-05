@@ -67,6 +67,7 @@ export const pageFieldOrder: Partial<Record<PageId, FieldId[]>> = {
     "tobacco-products",
     "average-monthly-income",
     "hours-worked-per-week",
+    "actively-at-work",
     "monthly-business-expenses",
     "business-expense-responsibility",
     "average-employees-6-months",

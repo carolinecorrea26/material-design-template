@@ -1,3 +1,4 @@
+import { validatePhoneFieldBindings } from "./phoneFields";
 import { buildPrototypeClient, buildPrototypeContent } from "./prototypeConfigurationProjection";
 import { resolveStoredFieldSurfaces } from './fieldSurfaces';
 import { resolveStoredFieldCollections } from "./fieldCollections";
@@ -7,6 +8,7 @@ import { isLibraryDraft } from './libraryDraft';
 import { buildPrototypeProduct } from "./prototypeProductProjection";
 import { buildPrototypeAssociationContext } from "./prototypeAssociationProjection";
 import { canonicalSiteKey } from "./siteIdentity.mjs";
+import { resolveSharedFieldDefinition } from "./fieldDefinitionOwnership";
 
 export type PrototypeLibrary = ReturnType<typeof resolvePrototypeLibrary>;
 let active: PrototypeLibrary | null = null;
@@ -25,8 +27,19 @@ export function resolvePrototypeLibrary(data: EffectiveSiteData, siteKey: string
   const content = buildPrototypeContent(data, site);
   const identity = data.sites.find(row => row.key === siteKey);
   const sourceSiteKey = data.sites.find(row => row.legacyClientId === identity?.legacyClientId && !row.id.startsWith('build-site-'))?.key ?? siteKey;
+  const fields = data.fields.map(field => resolveSharedFieldDefinition(field, data.validationRules, site.configuration.fieldDefinitionOwnership).definition);
+  if (new Set(fields.map(field => field.id)).size !== fields.length) throw new Error("Duplicate field binding ID");
+  validatePhoneFieldBindings(fields);
+  for (const page of site.configuration.pages) {
+    const included = page.fields.filter(field => field.included);
+    if (new Set(included.map(field => field.definition.id)).size !== included.length) throw new Error(`Duplicate field binding ID on page: ${page.key}`);
+    const scoped = new Map(fields.map(field => [field.id, field]));
+    for (const field of page.fields) if (field.included) scoped.set(field.definition.id, field.definition);
+    validatePhoneFieldBindings([...scoped.values()]);
+  }
   return {
-    pages, fieldSurfaces, fieldCollections, clientIdentity, sourceSiteKey,
+    fields,
+    pages, pageData: { pages: data.pages, sitePages: data.sitePages }, fieldSurfaces, fieldCollections, clientIdentity, sourceSiteKey,
     site, client, products, settings, content, revision, associationContext,
   };
 }

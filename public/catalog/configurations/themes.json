@@ -1,0 +1,178 @@
+{
+  "brandingProfiles": [
+    {
+      "id": "client:demo",
+      "key": "client:demo",
+      "definition": {
+        "name": "Demo Client",
+        "acronym": "DEMO",
+        "logo": "/client/demo/logo.svg",
+        "logoAlt": "Demo Client logo"
+      },
+      "position": 0,
+      "scope": "client",
+      "clientKey": "demo",
+      "siteKey": null,
+      "displayId": 115642963028690,
+      "providedBy": null,
+      "sourceReference": "prototype:brandingProfiles/client:demo"
+    },
+    {
+      "id": "client:abe",
+      "key": "client:abe",
+      "definition": {
+        "name": "American Bar Endowment",
+        "acronym": "ABE",
+        "logo": "/client/abe/logo.png",
+        "logoAlt": "ABE Logo"
+      },
+      "position": 0,
+      "scope": "client",
+      "clientKey": "abe",
+      "siteKey": null,
+      "displayId": 153729455122985,
+      "providedBy": null,
+      "sourceReference": "prototype:brandingProfiles/client:abe"
+    },
+    {
+      "id": "client:ama",
+      "key": "client:ama",
+      "definition": {
+        "name": "American Medical Association",
+        "acronym": "AMA",
+        "logo": "/client/ama/logo.png",
+        "logoAlt": "AMA Logo"
+      },
+      "position": 0,
+      "scope": "client",
+      "clientKey": "ama",
+      "siteKey": null,
+      "displayId": 122943131683282,
+      "providedBy": null,
+      "sourceReference": "prototype:brandingProfiles/client:ama"
+    },
+    {
+      "id": "client:asce",
+      "key": "client:asce",
+      "definition": {
+        "name": "American Society of Civil Engineers",
+        "acronym": "ASCE",
+        "logo": "/client/asce/logo.png",
+        "logoAlt": "American Society of Civil Engineers logo"
+      },
+      "position": 0,
+      "scope": "client",
+      "clientKey": "asce",
+      "siteKey": null,
+      "displayId": 137453496738385,
+      "providedBy": null,
+      "sourceReference": "prototype:brandingProfiles/client:asce"
+    },
+    {
+      "id": "client:avma",
+      "key": "client:avma",
+      "definition": {
+        "name": "AVMA LIFE Trust",
+        "acronym": "AVMA",
+        "logo": "/client/avma/logo.png",
+        "logoAlt": "AVMA Logo"
+      },
+      "position": 0,
+      "scope": "client",
+      "clientKey": "avma",
+      "siteKey": null,
+      "displayId": 272693664026788,
+      "providedBy": null,
+      "sourceReference": "prototype:brandingProfiles/client:avma"
+    },
+    {
+      "id": "client:csea",
+      "key": "client:csea",
+      "definition": {
+        "name": "CSEA Group Sponsored Insurance Program",
+        "acronym": "CSEA",
+        "logo": "/client/csea/logo.png",
+        "logoAlt": "CSEA Logo"
+      },
+      "position": 0,
+      "scope": "client",
+      "clientKey": "csea",
+      "siteKey": null,
+      "displayId": 221092954454621,
+      "providedBy": null,
+      "sourceReference": "prototype:brandingProfiles/client:csea"
+    },
+    {
+      "id": "client:nso",
+      "key": "client:nso",
+      "definition": {
+        "name": "Nurses Services Organization",
+        "acronym": "NSO",
+        "logo": "/client/nso/logo.png",
+        "logoAlt": "NSO Logo"
+      },
+      "position": 0,
+      "scope": "client",
+      "clientKey": "nso",
+      "siteKey": null,
+      "displayId": 273577460109039,
+      "providedBy": null,
+      "sourceReference": "prototype:brandingProfiles/client:nso"
+    },
+    {
+      "id": "client:isitrust",
+      "key": "client:isitrust",
+      "definition": {
+        "name": "Insurance Specialists, Inc.",
+        "acronym": "ISITRUST",
+        "logo": "/client/isitrust/logo.png",
+        "logoAlt": "ISITRUST Logo"
+      },
+      "position": 0,
+      "scope": "client",
+      "clientKey": "isitrust",
+      "siteKey": null,
+      "displayId": 125011441419282,
+      "providedBy": null,
+      "sourceReference": "prototype:brandingProfiles/client:isitrust"
+    },
+    {
+      "id": "client:waepa",
+      "key": "client:waepa",
+      "definition": {
+        "name": "Worldwide Assurance for Employees of Public Agencies",
+        "acronym": "WAEPA",
+        "logo": "/client/waepa/logo.png",
+        "logoAlt": "WAEPA Logo",
+        "icons": {
+          "quickDecision": "/client/waepa/icons/quick-decision.svg",
+          "categories": {
+            "LI": "/client/waepa/icons/life.svg",
+            "DI": "/client/waepa/icons/disability.svg"
+          }
+        }
+      },
+      "position": 0,
+      "scope": "client",
+      "clientKey": "waepa",
+      "siteKey": null,
+      "displayId": 193029889117031,
+      "providedBy": null,
+      "sourceReference": "prototype:brandingProfiles/client:waepa"
+    },
+    {
+      "id": "site:waepa-gi",
+      "key": "site:waepa-gi",
+      "definition": {
+        "logo": "/client/waepagi/logo.png"
+      },
+      "position": 0,
+      "scope": "site",
+      "clientKey": null,
+      "siteKey": "waepa-gi",
+      "displayId": 196336469134662,
+      "providedBy": null,
+      "sourceReference": "prototype:brandingProfiles/site:waepa-gi"
+    }
+  ]
+}

@@ -1,7 +1,5 @@
 import type { LibraryCatalog } from "../../../services/libraryCatalogService";
-import { getSiteDetailsPageLabel } from "../../../config/resolvers/resolveClientPages";
 import { libraryApplicantLabel, libraryApplicantText } from "./libraryApplicants";
-import type { PageId } from "../../../types";
 import { storedSectionLabel } from "./storedLibraryModel";
 
 /** Follow configured section descriptions, applicant ownership and nesting. */
@@ -9,7 +7,7 @@ export function fieldSurfaceLabel(catalog: LibraryCatalog, pageId: string, secti
   const sections = catalog.data.pageSections.filter(row => row.pageKey === pageId).sort((a, b) => a.position - b.position);
   const index = sections.findIndex(row => row.definition.id === sectionId);
   const section = sections[index]?.definition;
-  const page = getSiteDetailsPageLabel(pageId as PageId);
+  const page = catalog.data.pages.find(page => page.key === pageId)?.definition.displayName ?? pageId;
   if (section?.applicant) {
     const applicant = libraryApplicantLabel(section.applicant) ?? section.applicant;
     // A conditional group without its own heading belongs to the preceding

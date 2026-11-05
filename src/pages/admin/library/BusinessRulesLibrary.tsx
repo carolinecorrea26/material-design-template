@@ -5,16 +5,20 @@ import LibraryTag from '../../../components/docs/LibraryTag';
 import { useLibraryCatalog } from './LibraryCatalogContext';
 
 import { libraryRequirementRows } from './libraryRequirementRows';
+import { ruleAuthority } from '../../../domain/ruleAuthority';
 
-export default function BusinessRulesLibrary({ siteKey }: { siteKey: string }) {
+export default function BusinessRulesLibrary({ siteKey, view = 'functional' }: { siteKey: string; view?: 'functional' | 'coverage' | 'applicants' }) {
   const catalog = useLibraryCatalog();
   const { data } = catalog;
-  const rows = libraryRequirementRows(catalog, siteKey);
+  const functionalKeys = new Set(data.rules.filter(row => !['source-pattern', 'source-reference'].includes(ruleAuthority(row).kind)).map(row => row.key));
+  const rows = libraryRequirementRows(catalog, siteKey).filter(row => view === 'functional' ? row.dataset === 'rules' && functionalKeys.has(row.key) : view === 'applicants' ? !!row.applicant || row.categories.includes('Eligibility') : row.dataset !== 'rules' || !functionalKeys.has(row.key));
+  const label = view === 'functional' ? 'Business rules' : view === 'applicants' ? 'Applicant eligibility' : 'Coverage settings';
   const names = new Map(data.rules.map(row => [row.key, row.definition.rule]));
   return <Stack spacing={2}>
-    <Typography variant="body2" color="text.secondary">Eligibility, availability, amounts, limits, underwriting and application behavior have one owning requirement. Amount bands and options are shown with their assignment. Sequence is documentation order; it does not determine execution. Stored and planned requirements still need verification against the portal.</Typography>
-    <BrowseTable label="Business rules" tableName="rules" hiddenColumns={["displayId"]} rows={rows} rowKey={row => row.id} columns={[
+    <Typography variant="body2" color="text.secondary">{view === 'functional' ? 'Functional rules describe navigation, conditional actions and application behavior. Configured eligibility, amounts and coverage policies are listed in Configurations.' : 'Configured eligibility, availability, amounts, limits and policy values use the existing saved requirements. Stored policies and source references retain their verification status.'} Sequence is documentation order; it does not determine execution.</Typography>
+    <BrowseTable label={label} tableName="rules" hiddenColumns={["displayId"]} rows={rows} rowKey={row => row.id} columns={[
       { id: 'sequence', label: 'Sequence', width: 120, value: row => String(row.sequence) },
+      { id: 'hierarchy', label: 'Hierarchy', width: 300, value: row => (row.hierarchy ?? ['application', ...row.categories]).join(' / '), filter: true },
       { id: 'rule', label: 'Rule', width: 280, value: row => `${row.name} ${row.key}`, render: row => <Typography variant="body2" fontWeight={700}>{row.name}</Typography> },
       { id: 'categories', label: 'Category', width: 200, value: row => row.categories.join(', '), filter: true, filterValues: row => row.categories, render: row => <Stack spacing={0.5}>{row.categories.map(category => <LibraryTag key={category} label={category} />)}</Stack> },
       { id: 'behavior', label: 'Behavior / criteria', width: 460, value: row => row.behavior, render: row => <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>{row.behavior}</Typography> },
@@ -23,6 +27,7 @@ export default function BusinessRulesLibrary({ siteKey }: { siteKey: string }) {
       { id: 'applicant', label: 'Applicant', width: 140, value: row => row.applicant || '—', filter: true },
       { id: 'dependsOn', label: 'Depends on', width: 260, value: row => row.dependsOn.map(key => names.get(key) ?? key).join('; ') || '—' },
       { id: 'status', label: 'Status', width: 200, value: row => row.status, filter: true },
+      { id: 'owner', label: 'Owning record / implementation', width: 340, value: row => row.implementation ?? `${row.dataset}/${row.key}` },
       { id: 'source', label: 'Source', width: 280, value: row => row.source },
     ]} />
   </Stack>;

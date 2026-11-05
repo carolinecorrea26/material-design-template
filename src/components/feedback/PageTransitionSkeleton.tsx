@@ -17,7 +17,7 @@ export default function PageTransitionSkeleton({
       <Box sx={{ padding: "0 0.5rem" }}>
         {message ? (
           <Typography
-            variant="formTransitionStatus"
+            variant="body2"
             sx={{ mt: 1.5, mb: 1.5, color: "text.secondary" }}
             aria-hidden="true"
           >

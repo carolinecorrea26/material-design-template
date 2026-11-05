@@ -1,0 +1,127 @@
+{
+  "reviewedOn": "2026-10-23",
+  "source": "https://abepreview.nylinsure2.com/#launchScreen",
+  "status": "observed-scenario-corrected-and-regression-verified",
+  "scope": "One fictional member-only 50+ Life scenario, followed through authorization without signing or submitting. This is observed preview behavior, not certification of every product, age, amount, applicant or jurisdiction. The local prototype correction and saved catalog are verified separately by regression tests.",
+  "scenario": {
+    "data": "fictional test inputs only",
+    "applicants": [
+      "member"
+    ],
+    "birthDate": "1960-01-01",
+    "state": "AL",
+    "product": "50+ Multi-Benefit Term Life Insurance",
+    "benefitAmount": 25000,
+    "beneficiaryCollection": "declined",
+    "paymentCollection": "declined"
+  },
+  "observedSteps": [
+    {
+      "title": "Eligibility",
+      "hash": "eligibility",
+      "observations": [
+        "Membership declaration, name, birth date, gender, state and email collected here",
+        "Coverage categories and nicotine question collected here"
+      ]
+    },
+    {
+      "title": "Coverage",
+      "hash": "coverageSelection",
+      "observations": [
+        "50+ Multi-Benefit Term Life selected for the member at $25,000"
+      ]
+    },
+    {
+      "title": "Contact",
+      "hash": "contact",
+      "observations": [
+        "Residential address, phone type and correspondence destination collected",
+        "Medical-provider follow-up described"
+      ]
+    },
+    {
+      "title": "Profile",
+      "hash": "applicantInfo",
+      "observations": [
+        "Height, weight, SSN, optional membership ID, marital status, foreign-residence intent and optional physician details",
+        "Existing and pending Life coverage questions",
+        "Beneficiary and payment collection are optional sections on Profile",
+        "No medical-history questionnaire displayed"
+      ]
+    },
+    {
+      "title": "Review",
+      "hash": "preview",
+      "observations": [
+        "Application details summarized",
+        "No medical-history questionnaire displayed"
+      ]
+    },
+    {
+      "title": "Authorize",
+      "hash": "signature",
+      "observations": [
+        "Reached directly from Review without an intervening online health questionnaire",
+        "Medical authorization and underwritten consent displayed",
+        "Electronic Consent and dividend acknowledgement remained unchecked",
+        "No DocuSign or final application submission performed"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "abe-preview-50plus-health",
+      "status": "implemented-and-regression-verified",
+      "observed": "This 50+ Life scenario reaches authorization without online medical-history questions.",
+      "implementationReferences": [
+        "src/config/clients/abe.ts",
+        "src/config/fields/healthLiFields.ts",
+        "configurationValues/abe.li-50plus.journey-policy"
+      ],
+      "previousPrototype": "The saved ABE li-50plus journey defaults to TELE and routes to health-li, which uses generic Life questions.",
+      "prototype": "The saved ABE li-50plus journey retains TELE processing but explicitly assigns no online health page. The tested case skips all health pages in next/Back navigation and progress.",
+      "reconciliation": "Reconcile the provisional TELE assignment with this observed behavior and MCR Main!AA42, which names GMA-AC-IR amended by GMA-JI-L and says EZ-4 is not implemented yet. Do not describe an unverified TELE assignment as a missing supplied questionnaire.",
+      "resolution": "User correction October 23, 2026: skip the generic online questionnaire for the tested 50+ Life path. An inherited TELE classification is not an online form assignment."
+    },
+    {
+      "id": "abe-preview-medical-authorization",
+      "status": "implemented-and-regression-verified",
+      "observed": "Medical authorization remains displayed even though no online medical-history questionnaire appeared in this scenario.",
+      "implementationReferences": [
+        "src/config/reviewExperience.ts",
+        "src/migration/abeApprovedReviewAdoption.ts"
+      ],
+      "reconciliation": "Review authorization and consent participation independently of whether an online health page is shown before changing the 50+ health route. Reconcile against MCR and existing approved template decisions.",
+      "resolution": "ABE authorization now follows participating health questions OR required adult FUW/TELE medical underwriting. Underwritten consent also remains selected without online questions. Accident-only, child-only and deselected coverage do not activate the new guard."
+    },
+    {
+      "id": "abe-preview-important-notice-document",
+      "status": "document-reference-verified-viewer-still-deferred",
+      "url": "https://abepreview.nylinsure2.com/content/Important%20Notice%20All%20except%20NM%202%2008.12.pdf",
+      "observed": "The consent link opens a rendered one-page Important Notice PDF.",
+      "nextCheck": "Use this document reference when the deferred viewer is implemented. Other jurisdiction variants have not been inspected; this does not lift the user-approved implementation deferral."
+    }
+  ],
+  "evidence": [
+    "evidence/abe-preview-2026-10-23/authorization.png",
+    "evidence/abe-preview-2026-10-23/authorization.txt",
+    "evidence/abe-preview-2026-10-23/important-notice.png"
+  ],
+  "unchanged": "Pages and Fields catalog records, other-Site forms, approved page placements and notice deferrals are unchanged by the correction.",
+  "verification": {
+    "suites": [
+      "src/migration/abeFiftyPlusFlow.test.ts",
+      "src/migration/abeProcessingAdoption.test.ts",
+      "src/migration/reviewAuthorizationAdoption.test.ts",
+      "src/pages/Review.consent.test.tsx"
+    ],
+    "verified": [
+      "Exact recorded AL/member/1960-01-01/$25,000 scenario against reviewed fixture and shipped catalog",
+      "No generic health page, Next/Back and progress omit health pages, stale health answers excluded",
+      "Medical authorization, introductory statement and underwritten consent rendered in Read and Sign",
+      "FUW authorization without online questions; accident-only, child-only and deselected coverage excluded",
+      "Explicit CI, external QD and supplemental DI collection preserved; other Sites effective configuration unchanged"
+    ],
+    "boundary": "Local prototype regression verification; no new live-preview scenario, signature, submission or production validation."
+  }
+}

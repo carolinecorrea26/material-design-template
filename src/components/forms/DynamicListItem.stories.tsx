@@ -9,9 +9,10 @@ import DynamicListItem from "./DynamicListItem";
  * dialog flow.
  */
 const meta = {
-  title: "Forms/DynamicListItem",
+  id: "forms-dynamiclistitem",
+  title: "Components/Forms/Repeated records/Record row",
   component: DynamicListItem,
-  parameters: { layout: "padded" },
+  parameters: { standalone: true, docs: { description: { component: "Displays one repeated record with its edit and remove controls." } }, layout: "padded" },
 } satisfies Meta<typeof DynamicListItem>;
 
 export default meta;

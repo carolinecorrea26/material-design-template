@@ -1,6 +1,6 @@
 import { normalizeSiteReferences } from '../domain/siteIdentity.mjs';
 import { portalLibraryData } from "../domain/portalLibraryScope";
-import { persistence } from "../persistence/client";
+import { readSharedCatalog } from '../persistence/sharedCatalog';
 import { normalizedSnapshotTables, validateSnapshotData, type SnapshotTable } from "../persistence/snapshot";
 import type { DatabaseSchema } from "../persistence/types";
 import type { AnalyticsTag } from "../domain/analytics";
@@ -16,16 +16,7 @@ export async function readLibraryCatalog(siteKey: string): Promise<LibraryCatalo
     if (!result.revision || !Array.isArray(result.analyticsTags)) throw new Error("Invalid Library catalog response");
     return scopedCatalog(result);
   }
-  if (import.meta.env.DEV && persistence.kind === "local") {
-    const response = await fetch("/api/local-library/catalog", { cache: "no-store" });
-    const result = await response.json();
-    if (!response.ok) throw new Error(result.error ?? "Stored Library catalog is unavailable");
-    validateSnapshotData(result.data, tables);
-    if (!Array.isArray(result.analyticsTags)) throw new Error("Invalid stored tracking records");
-    return scopedCatalog(result as LibraryCatalog);
-  }
-  const [snapshot, analyticsTags] = await Promise.all([persistence.readSnapshot!(tables), persistence.list("analyticsTags")]);
-  return scopedCatalog({ revision: snapshot.revision, data: snapshot.data, analyticsTags });
+  return scopedCatalog(await readSharedCatalog());
 }
 
 function scopedCatalog(catalog: LibraryCatalog): LibraryCatalog {

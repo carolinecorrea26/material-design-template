@@ -1,6 +1,6 @@
 import LibraryTag from "../../../components/docs/LibraryTag";
 import { useSearchParams } from "react-router-dom";
-import { orderedLibraryPages } from "./libraryInspection";
+import { getOrderedLibraryPages } from "./libraryInspection";
 import { siteFieldOverrides } from "../../../config/fields/fieldOverrides";
 import LibraryLink from "./LibraryLink";
 import { ruleRelations, getLibraryRules } from "./libraryInspection";
@@ -21,11 +21,11 @@ import { useLibraryScope } from "./LibraryScope";
 import { useLibrarySite } from "./LibrarySiteSelector";
 import { ValidationLibrary } from "./SiteDetailsLibraryDomains";
 
-const pages = orderedLibraryPages;
 const fieldCatalog = libraryRepository.read("fieldCatalog");
 
 type FieldRow = InspectedField & { key: string; field: FieldDefinition; pages: string[]; included: string; status: string; notes: string[]; area: string; condition: string; storage: string; sites: string[] };
 export default function FieldsLibrary() {
+  const pages = getOrderedLibraryPages();
   const scope = useLibraryScope();
   const [search, setSearch] = useSearchParams();
   const view = search.get("fieldView") === "tools" ? "tools" : search.get("fieldView") === "unplaced" ? "unplaced" : search.get("fieldView") === "all" || scope === "global" && !search.has("fieldView") ? "all" : "pages";

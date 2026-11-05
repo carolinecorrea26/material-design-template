@@ -1,4 +1,5 @@
 import { ruleAuthority } from "../../../domain/ruleAuthority";
+import { organizeRule } from "../../../domain/ruleOrganization";
 import type { LibraryCatalog } from '../../../services/libraryCatalogService';
 import type { ConfigurationDefinitionRow } from '../../../persistence/types';
 import type { SnapshotTable } from '../../../persistence/snapshot';
@@ -9,7 +10,7 @@ import { humanize, readableValue } from './libraryRecordColumns';
 
 export type LibraryRequirementRow = {
   id: string; key: string; dataset: SnapshotTable; name: string; behavior: string; categories: string[];
-  sequence: number; dependsOn: string[]; source: string; site: string; product: string; applicant: string; status: string;
+  sequence: number; dependsOn: string[]; source: string; site: string; product: string; applicant: string; status: string; implementation?: string; hierarchy?: string[];
 };
 
 export const businessDatasets = [
@@ -70,7 +71,7 @@ export function libraryRequirementRows(catalog: LibraryCatalog, siteKey: string)
     const actions = data.structuredRuleActions.filter(item => item.ruleKey === row.key);
     const conditions = data.ruleConditions.filter(item => item.ruleKey === row.key).map(item => item.conditionKey);
     const decisions = data.ruleFlags.filter(item => item.ruleKey === row.key).map(({ flagKey, operator, value }) => ({ condition: flagKey, operator, value }));
-    rows.push({ id: `rules:${row.key}`, key: row.key, dataset: 'rules', name: rule.rule,
+    rows.push({ id: `rules:${row.key}`, key: row.key, dataset: 'rules', name: rule.rule, implementation: rule.ref, hierarchy: (rule.organization ?? organizeRule(rule)).path,
       behavior: [rule.behavior, ...(rule.execution ? [`Routing definition:\n${requirementValue(rule.execution)}`] : []), ...(conditions.length ? [`Conditions: ${conditions.join(', ')}`] : []), ...(decisions.length ? [`Decision inputs:\n${requirementValue(decisions)}`] : []), ...(predicates.length ? [`Inputs / conditions:\n${requirementValue(predicates.map(({ fact, operator, value }) => ({ fact, operator, value })))}`] : []), ...(actions.length ? [`Recorded outcomes (${authority.kind === 'source-pattern' || authority.kind === 'source-reference' ? 'reference model; not a running rule' : 'documentation'}):\n${requirementValue(actions.map(({ actionType, value }) => ({ actionType, value })))}`] : [])].join('\n\n'),
       categories: rule.categories ?? [rule.area], sequence: rule.sequence ?? row.position + 9000, dependsOn: rule.dependsOn ?? [], source: source(row) === 'Source not recorded' || row.sourceReference?.startsWith('prototype:') ? rule.ref : source(row),
       site: assignments.map(item => item.siteKey ?? item.clientKey ?? 'Global').join(', ') || 'Unassigned', product: '', applicant: '', status: rule.documentationStatus === 'planned' ? 'Planned' : resolved?.configuration.routing?.ruleKeys.includes(row.key) ? 'Executable routing rule' : !resolved && rule.execution ? 'Routing definition; assignment required' : authority.kind === 'source-pattern' || authority.kind === 'source-reference' ? authority.label : 'Documented behavior',

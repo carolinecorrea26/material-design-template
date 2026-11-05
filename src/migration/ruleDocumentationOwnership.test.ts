@@ -70,12 +70,12 @@ it("accounts for every rule while distinguishing routing, planned behavior and n
   const rows = db.rules.map(row => {
     const refs = [...row.definition.ref.matchAll(/(?:src|scripts)\/[\w./-]+\.(?:tsx|ts|mjs)(?![\w])/g)].map(match => match[0]);
     return { key: row.key, name: row.definition.rule, area: row.definition.area, documentedIn: row.definition.documentedIn,
-      authority: ruleAuthority(row), behavior: row.definition.behavior, implementationReferences: refs.map(path => ({ path, exists: existsSync(path) })),
+      authority: ruleAuthority(row), behavior: row.definition.behavior, organization: row.definition.organization, implementationReferences: refs.map(path => ({ path, exists: existsSync(path) })),
       assignments: db.ruleAssignments.filter(assignment => assignment.ruleKey === row.key), conditionKeys: db.ruleConditions.filter(link => link.ruleKey === row.key).map(link => link.conditionKey),
       sourcePredicateKeys: db.rulePredicates.filter(predicate => predicate.ruleKey === row.key).map(predicate => predicate.key), sourceActionKeys: db.structuredRuleActions.filter(action => action.ruleKey === row.key).map(action => action.key) };
   });
-  expect(rows).toHaveLength(107);
-  expect(new Set(rows.map(row => row.key)).size).toBe(107);
+  expect(rows).toHaveLength(115);
+  expect(new Set(rows.map(row => row.key)).size).toBe(115);
   expect(rows.filter(row => row.authority.kind === "routing")).toHaveLength(5);
   expect(rows.filter(row => row.authority.kind === "planned")).toHaveLength(4);
   expect(rows.filter(row => row.authority.kind === "source-pattern")).toHaveLength(9);

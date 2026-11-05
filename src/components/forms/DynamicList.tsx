@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Box, Button, DialogContentText } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import {
   useFieldArray,
   useWatch,
@@ -10,13 +10,14 @@ import {
 } from "react-hook-form";
 import FieldRenderer from "./FieldRenderer";
 import DynamicListItem from "./DynamicListItem";
+import FieldGrid from "../layout/FieldGrid";
 import AppModal from "../layout/AppModal";
 import type { FieldDefinition } from "../../config/fields/types";
 
 export type DynamicListFieldMapping<T extends Record<string, string>> = {
   fields: FieldDefinition[];
   fieldToKey: T;
-  /** Field IDs to render side-by-side in a 2-column grid inside the dialog. */
+  /** Field IDs in the responsive first row, such as first and last name. */
   gridFields?: string[];
 };
 
@@ -171,7 +172,7 @@ export default function DynamicList<T extends Record<string, string>>({
           variant="outlined"
           size="medium"
           fullWidth
-          startIcon={<AddIcon />}
+          startIcon={<AddCircleOutlineRoundedIcon />}
         >
           Add {label}
         </Button>
@@ -225,13 +226,7 @@ export default function DynamicList<T extends Record<string, string>>({
           }}
         >
           {gridFields.length > 0 && (
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-                gap: { xs: 0, sm: 2 },
-              }}
-            >
+            <FieldGrid columns="equal">
               {gridFields.map((f) => (
                 <FieldRenderer
                   key={f.id}
@@ -248,7 +243,7 @@ export default function DynamicList<T extends Record<string, string>>({
                   }
                 />
               ))}
-            </Box>
+            </FieldGrid>
           )}
           {remainingFields.map((f) => (
             <FieldRenderer

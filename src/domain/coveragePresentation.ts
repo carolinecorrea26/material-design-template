@@ -25,14 +25,21 @@ function productRank(product: CoverageDefinition): number {
   return 1000;
 }
 
+export function isCoverageProductOrder(value: unknown, knownProducts?: readonly string[]): value is string[] {
+  return Array.isArray(value) && value.every(key => typeof key === "string" && key.trim() === key && key.length > 0 && (!knownProducts || knownProducts.includes(key))) && new Set(value).size === value.length;
+}
+
 /** URL feature selection explicitly overrides category and product presentation order. */
 export function orderCoveragePresentation<T extends CoverageDefinition>(products: readonly T[], config: ClientCoverages, featuredParam: string | null = null) {
+  if (config.productOrder !== undefined && !isCoverageProductOrder(config.productOrder)) throw new Error("Invalid configured product order");
+  const configuredProducts = new Map((config.productOrder ?? []).map((key, index) => [key, index]));
+  const configuredRank = (product: CoverageDefinition) => configuredProducts.get(product.id) ?? Number.MAX_SAFE_INTEGER;
   const identifiers = new Set((featuredParam ?? "").split(",").map(value => value.trim()).filter(Boolean));
   const featured = (product: CoverageDefinition) => identifiers.has(product.id) || !!product.gNumber && [product.gNumber.primary, ...(product.gNumber.scoped ?? []).map(row => row.value.primary)].some(id => !!id && identifiers.has(id));
   const configured = config.categoryOrder ?? config.categories ?? [];
   const categories = [...new Set([...configured, ...defaultCategoryOrder])];
   const featuredCategories = new Set(products.filter(featured).map(product => product.categoryId));
   categories.sort((a, b) => Number(featuredCategories.has(b)) - Number(featuredCategories.has(a)));
-  const ordered = products.map(product => ({ ...product, featured: featured(product) })).sort((a, b) => categories.indexOf(a.categoryId) - categories.indexOf(b.categoryId) || Number(b.featured) - Number(a.featured) || productRank(a) - productRank(b));
+  const ordered = products.map(product => ({ ...product, featured: featured(product) })).sort((a, b) => categories.indexOf(a.categoryId) - categories.indexOf(b.categoryId) || Number(b.featured) - Number(a.featured) || configuredRank(a) - configuredRank(b) || productRank(a) - productRank(b));
   return { categories, products: ordered };
 }

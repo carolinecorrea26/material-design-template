@@ -12,7 +12,7 @@ import {
   applicantIcons,
   type ApplicantSectionId,
 } from "../../config/formSectionTitle";
-import { getActiveClient } from "../../config/client/getActiveClient";
+import type { ClientApplicantLabels } from "../../config/clients/types";
 
 export function ApplicantSectionLabel({
   label,
@@ -32,7 +32,7 @@ export function ApplicantSectionLabel({
           justifyContent: "center",
           gap: 0.75,
           borderRadius: "8px",
-          backgroundColor: "background.surface",
+          backgroundColor: "action.hover",
           padding: "0.5rem",
         },
         ...(sx ? (Array.isArray(sx) ? sx : [sx]) : []),
@@ -43,7 +43,7 @@ export function ApplicantSectionLabel({
           sx={{
             fontSize: "1.25rem",
             color: "primary.dark",
-            backgroundColor: "background.iconBadge",
+            backgroundColor: "grey.200",
             borderRadius: "9999px",
             padding: "2px",
             width: "1.25rem",
@@ -64,6 +64,7 @@ type ApplicantSectionDividerProps = {
   applicant: ApplicantSectionId;
   children: ReactNode;
   showLabel?: boolean;
+  labels?: ClientApplicantLabels;
   /** Optional info note displayed below the section header and above the children. */
   note?: string;
 };
@@ -72,10 +73,11 @@ export default function ApplicantSectionDivider({
   applicant,
   children,
   showLabel = true,
+  labels,
   note,
 }: ApplicantSectionDividerProps) {
   const sectionTitles = getResolvedApplicantSectionTitles(
-    getActiveClient().applicantLabels,
+    labels,
   );
   const title = sectionTitles[applicant];
   const Icon = applicantIcons[applicant];

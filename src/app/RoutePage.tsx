@@ -1,4 +1,6 @@
+import ConfiguredApplicationEstimate from './sections/ConfiguredApplicationEstimate';
 import { getPrototypeLibrary } from "../domain/prototypeLibrary";
+import { configuredHealthQuestionnaire } from "../domain/configuredHealthQuestionnaire";
 import { attachPageAnalytics, emitPageAnalytics } from "../analytics/runtime";
 import { getAnalyticsInventory } from "../analytics/inventory";
 import { resolveSiteId } from "../data/activeSite";
@@ -35,7 +37,7 @@ import PageHeader from "../components/layout/PageHeader";
 import FormShell from "../components/layout/FormShell";
 import PageNav from "../components/navigation/PageNav";
 import ProgressStep, {
-  VerticalStepperBreadcrumbs,
+  Breadcrumbs,
 } from "../components/navigation/ProgressStep";
 import { getActiveProgressStepIndex } from "../config/progressSteps";
 import { generateFormDataUpToPage } from "../dev/utils/generateFormData";
@@ -51,6 +53,7 @@ import { useSinglePageFlow } from "./SinglePageFlowContext";
 import PageTransitionSkeleton from "../components/feedback/PageTransitionSkeleton";
 import ProgressSavedSnackbar from "../components/feedback/ProgressSavedSnackbar";
 import PageAlert from "../components/feedback/PageAlert";
+import { applicationRecovery } from '../content/applicationRecovery';
 
 type FormRouteFieldValue = string | boolean | string[];
 type FormRoutePageFormValues = Record<string, FormRouteFieldValue>;
@@ -86,6 +89,8 @@ type FormRoutePageProps = {
   title?: ReactNode;
   subhead?: ReactNode;
   formMaxWidth?: number | string;
+  /** Full-width presentation above the padded form body, within the shared surface. */
+  formHeader?: ReactNode;
   noTitle?: boolean;
   hideActions?: boolean;
   hideNextButton?: boolean | ((values: FormRoutePageValues) => boolean);
@@ -95,6 +100,8 @@ type FormRoutePageProps = {
   validate?: (values: FormRoutePageValues) => string | undefined;
   defaultValueOverrides?: FormRoutePageFormValues;
   devFillFields?: (currentValues: FormRoutePageValues) => FieldDefinition[];
+  /** Explicitly rendered policy fields participate in restoration, validation and dev fill. */
+  runtimeFields?: (currentValues: FormRoutePageValues) => FieldDefinition[];
   onDevFill?: (context: DevFillContext) => void;
   onBeforeNext?: (context: BeforeNextContext) => boolean;
   resolveNextPageId?: (values: FormRoutePageValues) => PageId | null;
@@ -103,14 +110,20 @@ type FormRoutePageProps = {
 
 /** Restore configured repeatable records alongside scalar field defaults. */
 export function getPageCollectionDefaults(pageId: PageId, values: Record<string, unknown>): FormRoutePageFormValues {
-  return Object.fromEntries(getPageSections(pageId).flatMap(section =>
-    section.collectionName && Array.isArray(values[section.collectionName])
-      ? [[section.collectionName, values[section.collectionName]]]
-      : [],
-  )) as FormRoutePageFormValues;
+  const library = getPrototypeLibrary();
+  const healthCollections = library && ["health-li", "health-di", "health-ci", "health-cir"].includes(pageId)
+    ? (["member", "spouse"] as const).flatMap(applicant => configuredHealthQuestionnaire(library.site, pageId, applicant, values).items.filter(item => item.repeated).map(item => item.collection))
+    : [];
+  const names = new Set([
+    ...getPageSections(pageId).flatMap(section => section.collectionName ? [section.collectionName] : []),
+    ...Object.values(getPrototypeLibrary()?.fieldCollections ?? {}).filter(collection => collection.pageKey === pageId).map(collection => collection.name),
+    ...healthCollections,
+  ]);
+  return Object.fromEntries([...names].flatMap(name => Array.isArray(values[name]) ? [[name, values[name]]] : [])) as FormRoutePageFormValues;
 }
 
 function getDefaultValueForField(field: FieldDefinition): FormRouteFieldValue {
+  if (field.defaultValue !== undefined) return field.defaultValue;
   if (field.inputType === "checkbox") {
     return false;
   }
@@ -143,9 +156,11 @@ function getMergedPageFields(
   pageId: PageId,
   values: FormRoutePageValues,
   devFillFields?: (currentValues: FormRoutePageValues) => FieldDefinition[],
+  runtimeFields?: (currentValues: FormRoutePageValues) => FieldDefinition[],
 ) {
   return [
     ...getClientPageFields(pageId, values),
+    ...(runtimeFields?.(values) ?? []),
     ...(devFillFields?.(values) ?? []).filter(f => { const library = getPrototypeLibrary(); if (!library) return true; const captured = library.site.configuration.pages.find(p => p.key === pageId)?.fields.find(field => field.key === f.id); return captured ? captured.included : f.id.startsWith("payment-method:") || f.id.startsWith("payment-frequency:"); }),
   ].filter(
     (field, index, fields) =>
@@ -237,6 +252,7 @@ export default function FormRoutePage({
   title,
   subhead,
   formMaxWidth,
+  formHeader,
   noTitle,
   hideActions,
   hideNextButton,
@@ -246,6 +262,7 @@ export default function FormRoutePage({
   validate,
   defaultValueOverrides,
   devFillFields,
+  runtimeFields,
   onDevFill,
   onBeforeNext,
   resolveNextPageId,
@@ -273,7 +290,7 @@ export default function FormRoutePage({
     }
   }, [location, navigate]);
 
-  const initialFields = getMergedPageFields(pageId, values, devFillFields);
+  const initialFields = getMergedPageFields(pageId, values, devFillFields, runtimeFields);
   const defaultValueOverridesRef = useRef(defaultValueOverrides);
   defaultValueOverridesRef.current = defaultValueOverrides;
 
@@ -317,13 +334,15 @@ export default function FormRoutePage({
     };
   }, []);
 
-  const allFields = getMergedPageFields(pageId, watchedValues, devFillFields);
+  const allFields = getMergedPageFields(pageId, watchedValues, devFillFields, runtimeFields);
+  const runtimeFieldsRef = useRef(runtimeFields);
+  runtimeFieldsRef.current = runtimeFields;
   const devFillFieldsRef = useRef(devFillFields);
   devFillFieldsRef.current = devFillFields;
   const pageSections = getPageSections(pageId);
 
   useEffect(() => {
-    const fields = getMergedPageFields(pageId, values, devFillFieldsRef.current);
+    const fields = getMergedPageFields(pageId, values, devFillFieldsRef.current, runtimeFieldsRef.current);
 
     const restoredValues = fields.reduce<FormRoutePageFormValues>(
       (acc, field) => {
@@ -352,6 +371,7 @@ export default function FormRoutePage({
         pageId,
         currentValues,
         devFillFields,
+        runtimeFields,
       );
 
       const devFilledValues = currentFields.reduce<FormRoutePageFormValues>(
@@ -390,7 +410,7 @@ export default function FormRoutePage({
 
     return () =>
       window.removeEventListener("devtools:fillform", handleDevFillForm);
-  }, [devFillFields, getValues, onDevFill, pageId, setValue]);
+  }, [devFillFields, getValues, onDevFill, pageId, runtimeFields, setValue]);
 
   const [pageError, setPageError] = useState<string | undefined>();
   const [isTransitioning, setIsTransitioning] = useState(
@@ -489,8 +509,8 @@ export default function FormRoutePage({
     setPageError(undefined);
     try {
       await saveApplication?.(nextNavigationValues, pageId === 'coverage' || pageId === 'review' ? pageId : undefined);
-    } catch (error) {
-      setPageError(error instanceof Error ? error.message : 'Progress could not be saved. Retry before continuing.');
+    } catch {
+      setPageError(`${applicationRecovery['save-failed'].message} ${applicationRecovery['save-failed'].guidance}`);
       return;
     }
     setPageValues(formValues);
@@ -520,7 +540,7 @@ export default function FormRoutePage({
 
   function onFormError(fieldErrors: FieldErrors<FormRoutePageValues>) {
     analyticsEvent("validation-failed");
-    setPageError("Please correct the errors below before continuing.");
+    setPageError(applicationRecovery.validation.message);
 
     if (Object.keys(fieldErrors).length > 0) {
       scrollToFirstError();
@@ -571,7 +591,7 @@ export default function FormRoutePage({
   const renderedHelp = typeof help === "function" ? help(renderProps) : help;
 
   const activeProgressStepIndex = getActiveProgressStepIndex(pageId, values);
-  const hasVerticalStepper = !isSinglePage && activeProgressStepIndex >= 0;
+  const hasMainSteps = !isSinglePage && activeProgressStepIndex >= 0;
 
   const resolvedTitle = title ?? getPageTitle(pageId);
   const resolvedSubhead = subhead ?? getPageSubhead(pageId);
@@ -587,21 +607,25 @@ export default function FormRoutePage({
   const formPageElement = (
     <PageShell
       title={resolvedTitle}
-      maxWidth={hasVerticalStepper || isSinglePage ? "100%" : formMaxWidth}
+      maxWidth={hasMainSteps || isSinglePage ? "100%" : formMaxWidth}
       noTitle
       actions={undefined}
     >
       <Box ref={analyticsRoot} data-analytics-page={pageId}>
         <FormShell
           sx={{
-            px: { xs: 2, sm: "48px" },
-            py: { xs: 2, sm: "32px" },
-            mb: hasVerticalStepper ? 1 : 0,
+            ...(formHeader ? { p: 0, overflow: "hidden" } : {
+              px: { xs: 2, sm: "48px" },
+              py: { xs: 2, sm: "32px" },
+            }),
+            mb: hasMainSteps ? 1 : 0,
           }}
         >
-          {(hasVerticalStepper || isSinglePage) && (
+          {formHeader}
+          <Box sx={formHeader ? { px: { xs: 2, sm: "48px" }, py: { xs: 2, sm: "32px" } } : undefined}>
+          {(hasMainSteps || isSinglePage) && (
             <Box sx={{ mb: 1.5 }}>
-              <VerticalStepperBreadcrumbs pageId={pageId} />
+              <Breadcrumbs pageId={pageId} />
             </Box>
           )}
           {isTransitioning ? (
@@ -644,6 +668,7 @@ export default function FormRoutePage({
             !(typeof hideNextButton === "function"
               ? hideNextButton(watchedValues)
               : hideNextButton) && (
+              (pageId === 'review' ? <ConfiguredApplicationEstimate values={watchedValues as ApplicationFormValues} actions={
               <PageNav
                 formId={`${pageId}-form`}
                 isTransitioning={isTransitioning}
@@ -653,7 +678,19 @@ export default function FormRoutePage({
                     : Boolean(disableNextButton))
                 }
               />
+              } /> : (
+              <PageNav
+                formId={`${pageId}-form`}
+                isTransitioning={isTransitioning}
+                disabled={
+                  isSubmitting || (typeof disableNextButton === "function"
+                    ? disableNextButton(watchedValues)
+                    : Boolean(disableNextButton))
+                }
+              />
+              ))
             )}
+          </Box>
         </FormShell>
       </Box>
     </PageShell>
@@ -666,7 +703,7 @@ export default function FormRoutePage({
         onClose={() => setShowProgressSaved(false)}
       />
 
-      {hasVerticalStepper ? (
+      {hasMainSteps ? (
         <ProgressStep pageId={pageId}>{formPageElement}</ProgressStep>
       ) : (
         formPageElement

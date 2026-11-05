@@ -8,15 +8,15 @@ import { readFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createMockPlatform, totp } from './mock-platform.mjs';
+import { effectiveSiteSnapshotTables, normalizedSnapshotTables } from '../src/persistence/catalogTables';
 
 it.each(['abe', 'asce'])('%s persists Library page, field, pricing and billing edits through save/reload/restart without catalog edits', async siteKey => {
-  const database = JSON.parse(readFileSync('migration-artifacts/mock/database.json', 'utf8'));
-  const prototypeDatabase = JSON.parse(readFileSync('migration-artifacts/mock/prototype-data.json', 'utf8'));
+  const database = JSON.parse(readFileSync('public/catalog/portal.json', 'utf8')).data;
   const directory = mkdtempSync(join(tmpdir(), 'prototype-cutover-'));
   const statePath = join(directory, 'state.json');
   let server;
   const start = async () => {
-    server = createMockPlatform({ database, prototypeDatabase, statePath });
+    server = createMockPlatform({ database, prototypeTables: effectiveSiteSnapshotTables, libraryTables: normalizedSnapshotTables, statePath });
     await new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve); });
   };
   let cookie = '';
@@ -53,6 +53,9 @@ it.each(['abe', 'asce'])('%s persists Library page, field, pricing and billing e
     assertPages(edited);
     const catalog = await request('/library/catalog', { siteKey, tables: ['pages', 'sitePages'] });
     expect(catalog.data.pages.find(page => page.key === 'eligibility').definition.path).toBe('/saved-eligibility');
+    const fieldTables = ['fields', 'pageFields', 'pageSectionFields', 'siteFieldConfigurations', 'validationRules'];
+    const fieldCatalog = await request('/library/catalog', { siteKey, tables: fieldTables });
+    for (const table of fieldTables) expect(fieldCatalog.data[table]).toEqual(edited.payload.data[table]);
     expect(resolveRatePresentation(validatePrototypeEnvelope(edited, siteKey).site, 'li-term').quoteToolEnabled).toBe(false);
     expect(resolveBilling(resolveCoverageJourneyPolicy(validatePrototypeEnvelope(edited, siteKey).site, 'li-term'), 'bill-me', frequency, 30).amount).toBe(expectedAmount);
     expect(validatePrototypeEnvelope(edited, siteKey).client.fields.eligibility.overrides['birth-date'].label).toBe('Persisted cutover DOB');
@@ -71,7 +74,6 @@ it.each(['abe', 'asce'])('%s persists Library page, field, pricing and billing e
     expect(restarted.revision).toBe(edited.revision);
     expect(restarted.draft.id).toBe(saved.id);
     expect(JSON.stringify(database)).not.toContain('Persisted cutover DOB');
-    expect(JSON.stringify(prototypeDatabase)).not.toContain('Persisted cutover DOB');
     expect(resolveBilling(resolveCoverageJourneyPolicy(validatePrototypeEnvelope(restarted, siteKey).site, 'li-term'), 'bill-me', frequency, 30).amount).toBe(expectedAmount);
   } finally {
     if (server) await new Promise(resolve => server.close(resolve));

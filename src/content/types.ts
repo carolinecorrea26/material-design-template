@@ -13,8 +13,6 @@ export type HomeContent = {
     welcomeBackDescription: string;
     ctaLabel: string;
     secondaryCtaLabel: string;
-    resumePrompt: string;
-    resumeLinkLabel: string;
   };
   howApplyingWorks: {
     title: string;
@@ -141,6 +139,9 @@ export type DecisionStatusContent = {
 };
 
 export type ReceiptContent = {
+  receivedMessage?: string;
+  paymentNotice?: string;
+  paymentNoticeTitle?: string;
   decisionSteps: string[];
   decisionStatuses: {
     fullyUnderwritten: DecisionStatusContent;

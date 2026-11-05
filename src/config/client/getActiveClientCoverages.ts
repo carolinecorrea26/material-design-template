@@ -1,3 +1,4 @@
+import { activeFeaturedProduct, activeCoverageProductRestriction, restrictCoverageProducts } from "./coverageProductScope";
 import { orderCoveragePresentation } from "../../domain/coveragePresentation";
 import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
 import { resolveSiteId } from "../../data/activeSite";
@@ -29,8 +30,11 @@ function mergeIdentifiers<T extends ProductIdentifierSet>(
 
 export function getActiveClientCoverages() {
   const client = getActiveClient();
-  const products = restrictCoverageCategories((getPrototypeLibrary(resolveSiteId())?.products ?? getClientCoverages(client)), activeCoverageCategoryRestriction(resolveSiteId()));
-  return orderCoveragePresentation(products, client.coverages, new URLSearchParams(window.location.search).get("featured_prod")).products;
+  const siteKey = resolveSiteId(), library = getPrototypeLibrary(siteKey);
+  const featured = activeFeaturedProduct(siteKey);
+  const categories = restrictCoverageCategories(library?.products ?? getClientCoverages(client), activeCoverageCategoryRestriction(siteKey));
+  const products = restrictCoverageProducts(categories, activeCoverageProductRestriction(siteKey), library?.site);
+  return orderCoveragePresentation(products, client.coverages, featured).products;
 }
 
 /** Same merging logic as {@link getActiveClientCoverages}, for an arbitrary client. */

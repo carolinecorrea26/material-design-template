@@ -11,9 +11,10 @@ import PageNav from "./PageNav";
  * wraps it in a real `<form>` with a matching id.
  */
 const meta = {
-  title: "Navigation/PageNav",
+  id: "navigation-pagenav",
+  title: "Components/Navigation/Page navigation",
   component: PageNav,
-  parameters: { layout: "padded" },
+  parameters: { docs: { description: { component: "Provides the application page's Next or submit action." } }, layout: "padded" },
   decorators: [
     (Story) => (
       <Box sx={{ maxWidth: 480 }}>

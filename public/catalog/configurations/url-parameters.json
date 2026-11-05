@@ -1,0 +1,539 @@
+{
+  "urlParameters": [
+    {
+      "id": "form",
+      "key": "form",
+      "displayId": 186506850744266,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "form",
+      "behavior": "advisor: Directs to advisor login page.\npageName: Directs to the specified page.",
+      "status": "Migrated"
+    },
+    {
+      "id": "apply",
+      "key": "apply",
+      "displayId": 215954095068160,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "apply",
+      "behavior": "Directs to the first page of the application and skips the Landing Page.",
+      "status": "Migrated"
+    },
+    {
+      "id": "applicant",
+      "key": "applicant",
+      "displayId": 207093415344802,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "applicant",
+      "behavior": "member: Only the member can apply. The Eligibility Page question “Would you like to add dependent coverage?” is hidden. Content that communicates dependent availability is also hidden, including the “Available for: You, Your Spouse, Your Child(ren)” sentence in the About Coverage component.\nmember,spouse: Only the member and/or spouse can apply. On the Eligibility Page, the “Child” option is hidden from the “Would you like to add dependent coverage?” question. Content that communicates child availability is also hidden, including the “Available for: You, Your Spouse, Your Child(ren)” sentence in the About Coverage component.",
+      "status": "Modified"
+    },
+    {
+      "id": "category",
+      "key": "category",
+      "displayId": 182663066127268,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "category",
+      "behavior": "Restricts the site to the listed coverage category or categories. Only the specified category/categories are displayed throughout the site and Quote Tool. Supports either a single category or multiple comma-separated categories. AD is supported as a separate coverage category.",
+      "status": "Modified"
+    },
+    {
+      "id": "categories",
+      "key": "categories",
+      "displayId": 139272639120656,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "categories",
+      "behavior": "Has the same functionality as the category parameter in the new template. Restricts the site to the listed coverage category or categories, using comma-separated values for multiple categories.",
+      "status": "Migrated"
+    },
+    {
+      "id": "prods",
+      "key": "prods",
+      "displayId": 139587300858718,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "prods",
+      "behavior": "Restricts product display to the listed product(s) throughout the site on pages/components that display products, including the Landing Page, Coverage Page, and application menu.",
+      "status": "Migrated"
+    },
+    {
+      "id": "dprods",
+      "key": "dprods",
+      "displayId": 178021570866978,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "dprods",
+      "behavior": "Disables the coverage amount dropdown for the listed product(s) on the Coverage Page.",
+      "status": "Migrated"
+    },
+    {
+      "id": "featured_prod",
+      "key": "featured_prod",
+      "displayId": 173621440327702,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "featured_prod",
+      "behavior": "Displays a “Featured” chip on the listed product on the Coverage Page. The featured product’s coverage category section is displayed first among the category sections, and the listed product is prioritized within that section.",
+      "status": "Modified"
+    },
+    {
+      "id": "preselect (TBD)",
+      "key": "preselect (TBD)",
+      "displayId": 159512586506588,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "preselect (TBD)",
+      "behavior": "TBD. Proposed behavior: the \"Add coverage\" checkbox would be preselected on the Coverage Page for all applicants/products.",
+      "status": "TBD"
+    },
+    {
+      "id": "qt",
+      "key": "qt",
+      "displayId": 1249304666665,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "qt",
+      "behavior": "Not supported in the new template.",
+      "status": "Removed"
+    },
+    {
+      "id": "pmt",
+      "key": "pmt",
+      "displayId": 42070168353309,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "pmt",
+      "behavior": "Not supported in the new template.",
+      "status": "Removed"
+    },
+    {
+      "id": "amt",
+      "key": "amt",
+      "displayId": 208095189030670,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "amt",
+      "behavior": "Sets the Coverage Page amount dropdown for the listed product(s) to the specified amount(s).",
+      "status": "Migrated"
+    },
+    {
+      "id": "mrate",
+      "key": "mrate",
+      "displayId": 280653052589881,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "mrate",
+      "behavior": "Not supported in the new template.",
+      "status": "Removed"
+    },
+    {
+      "id": "association",
+      "key": "association",
+      "displayId": 7898330249331,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "association",
+      "behavior": "Resolves the value against enabled SiteAssociation records for the active Site; arbitrary strings are rejected.\nThe resolved Association supplies the membership attestation name and can supply the displayed logo when the Site enables Association branding.\nA missing or invalid required value produces a blocking validation state instead of choosing an arbitrary Association.",
+      "status": "Migrated"
+    },
+    {
+      "id": "campaign",
+      "key": "campaign",
+      "displayId": 198300801237870,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "campaign",
+      "behavior": "Same behavior as current template: sends the campaign code to analytics and XML and prints the campaign code on the PDF.",
+      "status": "Migrated"
+    },
+    {
+      "id": "ctg",
+      "key": "ctg",
+      "displayId": 279563568773700,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "ctg",
+      "behavior": "The listed category is displayed first throughout the site wherever coverage categories are presented, including the Landing Page and Coverage Page.",
+      "status": "Modified"
+    },
+    {
+      "id": "nc",
+      "key": "nc",
+      "displayId": 266231601818111,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "nc",
+      "behavior": "Not supported in the new template.",
+      "status": "Removed"
+    },
+    {
+      "id": "URLClickedFrom",
+      "key": "URLClickedFrom",
+      "displayId": 197672447579978,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "URLClickedFrom",
+      "behavior": "Same behavior as current template: identifies/tracks users returning to the site through Auto Save automatic emails.",
+      "status": "Migrated"
+    },
+    {
+      "id": "app",
+      "key": "app",
+      "displayId": 192702022703951,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "parameter": "app",
+      "behavior": "TBD",
+      "status": "Migrated"
+    }
+  ],
+  "urlParameterValues": [
+    {
+      "id": "form.advisor",
+      "key": "form.advisor",
+      "displayId": 179493061591711,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "form",
+      "value": "advisor"
+    },
+    {
+      "id": "form.pageName",
+      "key": "form.pageName",
+      "displayId": 138595459710921,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "form",
+      "value": "pageName"
+    },
+    {
+      "id": "apply.form",
+      "key": "apply.form",
+      "displayId": 161522534429759,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "apply",
+      "value": "form"
+    },
+    {
+      "id": "applicant.member",
+      "key": "applicant.member",
+      "displayId": 20038037084721,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "applicant",
+      "value": "member"
+    },
+    {
+      "id": "applicant.member,spouse",
+      "key": "applicant.member,spouse",
+      "displayId": 244532883257816,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "applicant",
+      "value": "member,spouse"
+    },
+    {
+      "id": "category.li",
+      "key": "category.li",
+      "displayId": 144150724216216,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "category",
+      "value": "li"
+    },
+    {
+      "id": "category.di",
+      "key": "category.di",
+      "displayId": 144150722723296,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "category",
+      "value": "di"
+    },
+    {
+      "id": "category.oo",
+      "key": "category.oo",
+      "displayId": 150747793439557,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "category",
+      "value": "oo"
+    },
+    {
+      "id": "category.sh",
+      "key": "category.sh",
+      "displayId": 151847301279788,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "category",
+      "value": "sh"
+    },
+    {
+      "id": "category.ad",
+      "key": "category.ad",
+      "displayId": 143051211641010,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "category",
+      "value": "ad"
+    },
+    {
+      "id": "category.Comma-separated values supported, e.g. li,di",
+      "key": "category.Comma-separated values supported, e.g. li,di",
+      "displayId": 265152748634764,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "category",
+      "value": "Comma-separated values supported, e.g. li,di"
+    },
+    {
+      "id": "categories.li",
+      "key": "categories.li",
+      "displayId": 63138301447256,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "categories",
+      "value": "li"
+    },
+    {
+      "id": "categories.di",
+      "key": "categories.di",
+      "displayId": 63138299954336,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "categories",
+      "value": "di"
+    },
+    {
+      "id": "categories.oo",
+      "key": "categories.oo",
+      "displayId": 69735370670597,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "categories",
+      "value": "oo"
+    },
+    {
+      "id": "categories.sh",
+      "key": "categories.sh",
+      "displayId": 70834878510828,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "categories",
+      "value": "sh"
+    },
+    {
+      "id": "categories.ad",
+      "key": "categories.ad",
+      "displayId": 62038788872050,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "categories",
+      "value": "ad"
+    },
+    {
+      "id": "categories.Comma-separated values supported, e.g. li,di",
+      "key": "categories.Comma-separated values supported, e.g. li,di",
+      "displayId": 166771037567180,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "categories",
+      "value": "Comma-separated values supported, e.g. li,di"
+    },
+    {
+      "id": "prods.G-0000-0",
+      "key": "prods.G-0000-0",
+      "displayId": 277726395218590,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "prods",
+      "value": "G-0000-0"
+    },
+    {
+      "id": "prods.Multiple products: comma-separated G-numbers",
+      "key": "prods.Multiple products: comma-separated G-numbers",
+      "displayId": 105273919989590,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "prods",
+      "value": "Multiple products: comma-separated G-numbers"
+    },
+    {
+      "id": "dprods.G-0000-0",
+      "key": "dprods.G-0000-0",
+      "displayId": 46903164618892,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "dprods",
+      "value": "G-0000-0"
+    },
+    {
+      "id": "dprods.Multiple products: comma-separated G-numbers",
+      "key": "dprods.Multiple products: comma-separated G-numbers",
+      "displayId": 163471003374512,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "dprods",
+      "value": "Multiple products: comma-separated G-numbers"
+    },
+    {
+      "id": "featured_prod.G-0000-0",
+      "key": "featured_prod.G-0000-0",
+      "displayId": 237905755686282,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "featured_prod",
+      "value": "G-0000-0"
+    },
+    {
+      "id": "preselect (TBD).TBD",
+      "key": "preselect (TBD).TBD",
+      "displayId": 55235234992637,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "preselect (TBD)",
+      "value": "TBD"
+    },
+    {
+      "id": "qt.—",
+      "key": "qt.—",
+      "displayId": 205221196034376,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "qt",
+      "value": "—"
+    },
+    {
+      "id": "pmt.—",
+      "key": "pmt.—",
+      "displayId": 220633988712614,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "pmt",
+      "value": "—"
+    },
+    {
+      "id": "amt.G-0000-0_2000000",
+      "key": "amt.G-0000-0_2000000",
+      "displayId": 37885226661599,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "amt",
+      "value": "G-0000-0_2000000"
+    },
+    {
+      "id": "amt.Multiple product/amount pairs: comma-separated",
+      "key": "amt.Multiple product/amount pairs: comma-separated",
+      "displayId": 268260828440559,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "amt",
+      "value": "Multiple product/amount pairs: comma-separated"
+    },
+    {
+      "id": "mrate.—",
+      "key": "mrate.—",
+      "displayId": 209701170515326,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "mrate",
+      "value": "—"
+    },
+    {
+      "id": "association.A canonical Association ID assigned to the active Site (for example, akron-bar-association).",
+      "key": "association.A canonical Association ID assigned to the active Site (for example, akron-bar-association).",
+      "displayId": 41429813431609,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "association",
+      "value": "A canonical Association ID assigned to the active Site (for example, akron-bar-association)."
+    },
+    {
+      "id": "campaign.abc",
+      "key": "campaign.abc",
+      "displayId": 277825661024355,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "campaign",
+      "value": "abc"
+    },
+    {
+      "id": "ctg.firstCategory=ad",
+      "key": "ctg.firstCategory=ad",
+      "displayId": 187458992170289,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "ctg",
+      "value": "firstCategory=ad"
+    },
+    {
+      "id": "ctg.firstCategory=di",
+      "key": "ctg.firstCategory=di",
+      "displayId": 203951665646459,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "ctg",
+      "value": "firstCategory=di"
+    },
+    {
+      "id": "ctg.firstCategory=oo",
+      "key": "ctg.firstCategory=oo",
+      "displayId": 175364365463178,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "ctg",
+      "value": "firstCategory=oo"
+    },
+    {
+      "id": "ctg.firstCategory=sh",
+      "key": "ctg.firstCategory=sh",
+      "displayId": 178662896559831,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "ctg",
+      "value": "firstCategory=sh"
+    },
+    {
+      "id": "nc.—",
+      "key": "nc.—",
+      "displayId": 123908698067978,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "nc",
+      "value": "—"
+    },
+    {
+      "id": "URLClickedFrom.email",
+      "key": "URLClickedFrom.email",
+      "displayId": 162821545059991,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "URLClickedFrom",
+      "value": "email"
+    },
+    {
+      "id": "app.CIR",
+      "key": "app.CIR",
+      "displayId": 111896734770234,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "app",
+      "value": "CIR"
+    },
+    {
+      "id": "app.ABI",
+      "key": "app.ABI",
+      "displayId": 33831245885218,
+      "providedBy": null,
+      "sourceReference": "src/content/docs/urlParameters.ts",
+      "urlParameterKey": "app",
+      "value": "ABI"
+    }
+  ],
+  "siteUrlParameters": []
+}

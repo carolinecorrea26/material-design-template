@@ -5,8 +5,11 @@ import ExpiringCodeAlert from "./ExpiringCodeAlert";
 import ResendCountdownRow from "./ResendCountdownRow";
 
 const meta = {
-  title: "Feedback/Resume Expiration",
-  parameters: { layout: "padded" },
+  id: "feedback-resume-expiration",
+  title: "Components/Feedback and overlays/Alerts/Verification-code expiry",
+  component: ExpiringCodeAlert,
+  subcomponents: { ResendCountdownRow },
+  parameters: { docs: { description: { component: "Expiry alerts and resend controls for application recovery links and security codes." } }, layout: "padded" },
 } satisfies Meta;
 
 export default meta;

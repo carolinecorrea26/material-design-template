@@ -26,7 +26,7 @@ export const BrandingGuidelines = () => (
               justifyContent: "center",
               border: "1px dashed",
               borderColor: "divider",
-              bgcolor: "background.subtle",
+              bgcolor: "background.default",
             }}
           >
             <Typography variant="caption" sx={{ fontWeight: 800 }}>

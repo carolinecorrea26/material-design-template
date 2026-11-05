@@ -1,4 +1,6 @@
+import { tobaccoProductOptions } from "./tobaccoProductOptions";
 import type { FieldDefinition, FieldId } from "./types";
+import { waepaQualifications } from "../../domain/membershipQualifications";
 import { waepaFederalAgencyOptions } from "./waepaFederalAgencyOptions";
 
 const usStateOptions = [
@@ -94,6 +96,7 @@ const paymentFrequencyOptions = [
 ];
 
 export const fieldCatalog: Record<FieldId, FieldDefinition> = {
+  "membership-status": { id: "membership-status", label: "Membership status", inputType: "radio", required: true, options: [{ value: "new", label: "New Member" }, { value: "current", label: "Current Member" }] },
   "child-unmarried": { id: "child-unmarried", label: "Is the child unmarried?", inputType: "radio", options: yesNoOptions, required: true },
   "child-full-time-student": { id: "child-full-time-student", label: "Is the child a full-time student?", inputType: "radio", options: yesNoOptions, required: true },
   membership: {
@@ -185,31 +188,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
       "I hereby attest that I am a U.S. citizen and meet one of the following qualifications:",
     placeholder: "Select one",
     required: true,
-    options: [
-      {
-        label:
-          "I am a civilian federal employee of the U.S. government actively at work",
-        value: "federal-active",
-      },
-      {
-        label: "I am a retired civilian federal annuitant",
-        value: "federal-annuitant",
-      },
-      {
-        label: "I am a former federal employee",
-        value: "former-federal",
-      },
-      {
-        label:
-          "I am a spouse of a WAEPA member and want to apply as an Associate member",
-        value: "spouse-associate",
-      },
-      {
-        label:
-          "I am an adult child of a WAEPA member and want to apply as an Associate member",
-        value: "child-associate",
-      },
-    ],
+    options: waepaQualifications.map(option => ({ ...option })),
   },
 
   "waepa-employer": {
@@ -302,6 +281,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
 
   "phone-type": {
     id: "phone-type",
+    defaultValue: "mobile",
     label: "Phone Type",
     inputType: "dropdown",
     required: true,
@@ -439,16 +419,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "Product(s) Used",
     inputType: "multi-select",
     required: true,
-    options: [
-      { value: "Cigarettes", label: "Cigarettes" },
-      { value: "Cigars", label: "Cigars" },
-      { value: "Pipe", label: "Pipe" },
-      { value: "Chewing Tobacco", label: "Chewing Tobacco" },
-      { value: "Snuff", label: "Snuff" },
-      { value: "Nicotine Gum", label: "Nicotine Gum" },
-      { value: "Nicotine Patch", label: "Nicotine Patch" },
-      { value: "Other", label: "Other" },
-    ],
+    options: tobaccoProductOptions,
   },
 
   "average-monthly-income": {
@@ -458,6 +429,14 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     format: "currency",
     required: true,
     inputMode: "numeric",
+  },
+
+  "actively-at-work": {
+    id: "actively-at-work",
+    label: "Are you actively at work performing the normal duties of your occupation?",
+    inputType: "radio",
+    required: true,
+    options: [{ value: "yes", label: "Yes" }, { value: "no", label: "No" }],
   },
 
   "hours-worked-per-week": {
@@ -538,16 +517,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     label: "Product(s) Used",
     inputType: "multi-select",
     required: true,
-    options: [
-      { value: "Cigarettes", label: "Cigarettes" },
-      { value: "Cigars", label: "Cigars" },
-      { value: "Pipe", label: "Pipe" },
-      { value: "Chewing Tobacco", label: "Chewing Tobacco" },
-      { value: "Snuff", label: "Snuff" },
-      { value: "Nicotine Gum", label: "Nicotine Gum" },
-      { value: "Nicotine Patch", label: "Nicotine Patch" },
-      { value: "Other", label: "Other" },
-    ],
+    options: tobaccoProductOptions,
   },
 
   "spouse-average-monthly-income": {
@@ -580,6 +550,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
 
   "spouse-phone-type": {
     id: "spouse-phone-type",
+    defaultValue: "mobile",
     label: "Phone Type",
     inputType: "dropdown",
     required: true,
@@ -731,6 +702,20 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     format: "phone",
     inputMode: "tel",
     autoComplete: "tel",
+    phoneTypeFieldId: "business-phone-type",
+  },
+
+  "business-phone-type": {
+    id: "business-phone-type",
+    label: "Business Phone Type",
+    inputType: "dropdown",
+    required: true,
+    defaultValue: "mobile",
+    options: [
+      { value: "mobile", label: "Mobile" },
+      { value: "home", label: "Home" },
+      { value: "business", label: "Business" },
+    ],
   },
 
   "physician-first-name": {
@@ -1619,6 +1604,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
 
   "advisor-flow-type": {
     id: "advisor-flow-type",
+    defaultValue: "new",
     label: "Application Type",
     inputType: "text",
   },
@@ -1626,7 +1612,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
   "advisor-email": {
     id: "advisor-email",
 
-    label: "Email",
+    label: "Advisor email",
     inputType: "text",
     required: true,
     format: "email",
@@ -1639,7 +1625,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
   "advisor-phone": {
     id: "advisor-phone",
 
-    label: "Phone Number",
+    label: "Advisor phone number",
     inputType: "text",
     required: true,
     format: "phone",
@@ -1651,7 +1637,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
 
   "advisor-code": {
     id: "advisor-code",
-    label: "Code",
+    label: "Advisor code",
     inputType: "text",
     required: true,
     // helperText: "Your assigned advisor code.",
@@ -1659,7 +1645,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
 
   "applicant-email": {
     id: "applicant-email",
-    label: "Applicant Email",
+    label: "Applicant email",
     inputType: "text",
     required: true,
     format: "email",
@@ -1695,6 +1681,7 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     inputType: "text",
     required: true,
     inputMode: "numeric",
+    maxLength: 6,
   },
 
   "ama-physician-type": {

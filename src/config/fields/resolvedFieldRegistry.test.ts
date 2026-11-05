@@ -30,7 +30,10 @@ describe("resolved field registry architecture", () => {
         .map((fieldId) => `${pageId}:${fieldId}`),
     );
 
-    expect(missing).toEqual([]);
+    // This shared Home control is opted into by the reviewed AMA Site policy.
+    // It has no active placement in the historical static transport registry.
+    expect(missing).toEqual(["home:actively-at-work"]);
+    expect(fieldCatalog["actively-at-work"]).toBeDefined();
   });
 
   it("preserves canonical page field ordering", () => {

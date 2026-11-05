@@ -1,4 +1,4 @@
-import { pages } from "../config/pages";
+import { getPageDefinitions } from "../config/pages";
 import { fieldCatalog } from "../config/fields";
 import { pageFieldOrder } from "../config/fields/pageFieldOrder";
 import { coverages } from "../config/coverages";
@@ -12,7 +12,7 @@ import { featuresData } from "../content/docs/features";
 import { patternCatalog } from "../domain/libraryCatalog";
 import { flagCatalog } from "../domain/libraryCatalog";
 
-export const curatedLibrarySnapshot = { pages, fieldCatalog, pageFieldOrder, coverages, coverageCategories, allFlows, configurationsData, siteRules, urlParameters, cmsEntries, featuresData, patternCatalog, flagCatalog };
+export const curatedLibrarySnapshot = { get pages() { return getPageDefinitions(); }, fieldCatalog, pageFieldOrder, coverages, coverageCategories, allFlows, configurationsData, siteRules, urlParameters, cmsEntries, featuresData, patternCatalog, flagCatalog };
 export type LibrarySnapshot = { [K in keyof typeof curatedLibrarySnapshot]: typeof curatedLibrarySnapshot[K] extends unknown[] ? typeof curatedLibrarySnapshot[K] : typeof curatedLibrarySnapshot[K] extends readonly (infer Row)[] ? readonly Row[] : typeof curatedLibrarySnapshot[K] };
 export interface LibraryReadAdapter { read(): LibrarySnapshot }
 export function createLibraryRepository(adapter: LibraryReadAdapter) {

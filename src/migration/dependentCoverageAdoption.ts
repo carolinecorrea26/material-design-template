@@ -56,17 +56,23 @@ export function applyDependentCoverageAdoption(db: DatabaseSchema, cells: readon
   applyActiveSiteNumericAdoption(db, cells, dependentNumericSlices);
   const store = (siteKey: string, key: string, kind: "product-dependent-policy" | "site-life-aggregate", value: Json, references: string[], productKey?: string) => {
     const reference = references.join("; ");
-    db.configurationDefinitions = db.configurationDefinitions.filter(row => row.key !== key);
-    db.configurationDefinitions.push({ ...metadata("configurationDefinitions", key, reference), definition: { path: null, metadata: { version: 1, fullPolicyAcceptance: "pending" }, target: kind === "site-life-aggregate" ? { kind } : { kind, productKey: productKey! } }, position: 0 });
+    const previousRow = db.configurationValues.find(row => row.key === key);
+    const previous = previousRow?.value;
+    const configurationKey = previousRow?.configurationKey ?? key;
+    if (kind === "product-dependent-policy" && isDependentPolicy(previous) && previous.associationRules && isDependentPolicy(value)) value = { ...value, associationRules: previous.associationRules } as unknown as Json;
+    if (configurationKey === key) {
+      db.configurationDefinitions = db.configurationDefinitions.filter(row => row.key !== key);
+      db.configurationDefinitions.push({ ...metadata("configurationDefinitions", key, reference), definition: { path: null, metadata: { version: 1, fullPolicyAcceptance: "pending" }, target: kind === "site-life-aggregate" ? { kind } : { kind, productKey: productKey! } }, position: 0 });
+    }
     db.configurationValues = db.configurationValues.filter(row => row.key !== key);
-    db.configurationValues.push({ ...metadata("configurationValues", key, reference), scope: "site", clientKey: null, siteKey, configurationKey: key, value, position: 0 });
+    db.configurationValues.push({ ...metadata("configurationValues", key, reference), scope: "site", clientKey: null, siteKey, configurationKey, value, position: 0 });
     const decisionKey = `migration-decision.${key}`;
     db.semanticRequirements = db.semanticRequirements.filter(row => row.key !== decisionKey);
     db.semanticRequirements.push({ ...metadata("semanticRequirements", decisionKey, reference), domain: "reviewed-site-adoption", subjectTable: "sites", subjectKey: siteKey, predicate: kind, status: "partial", value: { productKey: productKey ?? null, runtimeActivation: "pending", fullPolicyAcceptance: "pending", destinations: [{ table: "configurationValues", key, column: "value" }] } });
     for (const sourceReference of references) {
       const requirement = db.sourceRequirements.find(row => row.sheetKey === "main" && `Main!${row.cell}` === sourceReference)!;
       requirement.promotionState = "SITE_CONFIGURATION";
-      if (!requirement.promotionReason.startsWith("Provisional working decision")) requirement.promotionReason = "Dependent or aggregate dimension is executable; full product acceptance remains separate.";
+      if (!requirement.promotionReason.startsWith("Provisional working decision") && !requirement.promotionReason.startsWith("User-confirmed")) requirement.promotionReason = "Dependent or aggregate dimension is executable; full product acceptance remains separate.";
       requirement.activeSiteKeys = [...new Set([...(Array.isArray(requirement.activeSiteKeys) ? requirement.activeSiteKeys as string[] : []), siteKey])];
       const targetKey = `${decisionKey}.${requirement.key}`;
       db.requirementTargets = db.requirementTargets.filter(row => row.key !== targetKey);

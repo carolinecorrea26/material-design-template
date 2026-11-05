@@ -19,3 +19,8 @@ it('preserves the source albumin condition in the existing SI question', () => {
   expect(createAnswerFields('self')[1].label).toContain('albumin, blood, pus or sugar');
   expect(createAnswerFields('self')[1].label).not.toContain('blood disorder, allergies');
 });
+
+it('rejects impossible months and malformed restored details before advancing', () => {
+  expect(validateHealthFollowUps([question], { 'health-si-q1': 'yes', 'health-si-q1-details': [{ onset: '13/2020', conditionsDetails: 'Medication', physicianAddress: 'Local physician' }] })).toContain('valid month');
+  expect(validateHealthFollowUps([question], { 'health-si-q1': 'yes', 'health-si-q1-details': [{ onset: '01/2020', conditionsDetails: '   ', physicianAddress: 'Local physician' }] })).toContain('required');
+});

@@ -1,0 +1,32 @@
+import { afterEach, beforeAll, expect, it } from "vitest";
+import { createReviewedMigrationDatabase } from "./fixtures";
+import { installPrototypeLibrary, resolvePrototypeLibrary } from "../domain/prototypeLibrary";
+import { applicationUnderwriting } from "../domain/coverageRuntime";
+import { composeReadAndSign, resolveReviewExperience } from "../config/reviewExperience";
+import { reviewDefaults } from "../content/defaults/review";
+import { externalQdQuestionnaireDecisionKey } from "./externalQdQuestionnaireDecision";
+import type { DatabaseSchema } from "../persistence/types";
+let db: DatabaseSchema;
+beforeAll(() => { db = createReviewedMigrationDatabase(); }, 120000);
+afterEach(() => installPrototypeLibrary(null));
+it.each([["nso", "li-term"], ["asce", "li-10yr"], ["waepa", "di-short-term"]])("counts the assigned external QD questionnaire for %s/%s without hosting its answers", (site, productKey) => {
+  const library = resolvePrototypeLibrary(db, site, "external-qd"); installPrototypeLibrary(library);
+  const values = { membership: site === "waepa" ? "current" : "yes", state: "CT", "birth-date": "1990-01-01", coverageSelections: [productKey], productApplicants: { [productKey]: ["member"] }, coverageAmounts: { [`${productKey}:member`]: productKey.startsWith("di-") ? 1000 : 100000 } };
+  const product = library.products.find(row => row.id === productKey)!;
+  expect(applicationUnderwriting(product, "member", values)).toMatchObject({ underwritingType: "QD", healthPage: "health-qd" });
+  const result = resolveReviewExperience(library.client, site, library.products, values);
+  expect(result.authorizationVisible).toBe(true);
+  expect(result.blocks.some(block => block.key === "connecticut-underwritten-notice")).toBe(true);
+  const text = composeReadAndSign(reviewDefaults.readAndSignContent, result.fraudNotice, result.consent.text, result.authorizationVisible, result.medicalAuthorization);
+  expect(text).toContain("AUTHORIZATION:"); expect(text).toContain("right to require additional information");
+  if (site !== "waepa") expect(result.consent.text).toContain("MIB");
+  expect(Object.keys(values).some(key => key.startsWith("health-qd-q"))).toBe(false);
+});
+it("records intended loading-state ownership and preserves ABE and no-health requests", () => {
+  expect(db.semanticRequirements.find(row => row.key === externalQdQuestionnaireDecisionKey)?.value).toMatchObject({ selected: { questionnaireHost: "external-iframe", prototypePresentation: "intentional-loading-state", prototypeHostsQuestions: false, countsForReviewParticipation: true, preserveAbeReview: true } });
+  const decision = db.semanticRequirements.find(row => row.key === externalQdQuestionnaireDecisionKey)!.value as { destinations: Array<{ key: string }> };
+  expect(decision.destinations).toHaveLength(8); expect(decision.destinations.some(row => row.key === "demo.review-policy" || row.key === "abe.review-policy")).toBe(false);
+  const abe = resolvePrototypeLibrary(db, "abe", "accepted"); expect(abe.client.reviewPolicy?.authorization?.pageIds).toContain("health-qd");
+  const gi = resolvePrototypeLibrary(db, "waepa-gi", "no-health"); installPrototypeLibrary(gi);
+  expect(resolveReviewExperience(gi.client, "waepa-gi", gi.products, { membership: "yes", state: "CT", "birth-date": "1990-01-01", coverageSelections: ["li-group-term"], productApplicants: { "li-group-term": ["member"] }, coverageAmounts: { "li-group-term:member": 100000 } }).authorizationVisible).toBe(false);
+});

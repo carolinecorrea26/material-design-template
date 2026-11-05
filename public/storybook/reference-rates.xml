@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<referenceRates title="Fictional component review data" currency="USD">
+  <rate ageBand="30-39" monthlyPerThousand="0.10" />
+  <rate ageBand="40-49" monthlyPerThousand="0.20" />
+</referenceRates>

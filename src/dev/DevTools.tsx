@@ -11,7 +11,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { Check, Settings, SwapHoriz } from "@mui/icons-material";
+import { CheckRounded, SettingsRounded, SwapHorizRounded } from "@mui/icons-material";
 import {
   getActiveSite,
   getClientForSite,
@@ -184,7 +184,7 @@ export default function DevTools() {
           "&:hover": { bgcolor: "grey.200" },
         }}
       >
-        <Settings />
+        <SettingsRounded />
       </IconButton>
 
       <Drawer
@@ -223,7 +223,7 @@ export default function DevTools() {
                 size="small"
                 color={hasUrlOverride ? "primary" : "default"}
                 variant={hasUrlOverride ? "filled" : "outlined"}
-                icon={<SwapHoriz />}
+                icon={<SwapHorizRounded />}
                 onClick={(event) => setAnchorEl(event.currentTarget)}
                 sx={{ cursor: "pointer" }}
               />
@@ -273,7 +273,7 @@ export default function DevTools() {
                         </Typography>
                       </Box>
                       {currentSite.id === site.id ? (
-                        <Check fontSize="small" color="primary" />
+                        <CheckRounded fontSize="small" color="primary" />
                       ) : null}
                     </Box>
                   </MenuItem>

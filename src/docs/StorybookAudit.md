@@ -1,5 +1,37 @@
 > Current ownership: Storybook contains component examples only. Design foundations, implementation guidance and requirements belong to Portal Library. See [Portal Library ownership and schema review](../../docs/portal-library-model-review.md) and the generated schema inventory. The migration narrative below is historical where it differs from that model.
 
+## Payment review — October 28, 2026
+
+The [Payment component review](../../docs/project-review/payment-component-review.md) supersedes the missing SharedPaymentControls example below. Nine whole-page scenarios use production Payment, and PaymentSections and SharedPaymentControls have standalone examples with explicit inputs. The current built source audit resolves all 476 non-admin examples with zero errors and no missing component modules. This establishes source/example coverage; visual, accessibility and full journey acceptance remain separate.
+
+## Health review — October 28, 2026
+
+The [Health component review](../../docs/project-review/health-component-review.md) supersedes the Health gaps recorded below. Six production routes and all 18 supplied form sections have page examples. HealthQuestion and HealthQuestionList have standalone examples and explicit view inputs; configured adapters retain Site policy and applicant labels. The old generic ABE layout fixtures were corrected to use current participating configurations. QuickDecision remains a loader for unavailable external questions. Source previews and production assignments are separate; the review records missing source attachments and external integration boundaries.
+
+## Current verification — October 23, 2026
+
+The [current source audit](../../docs/project-review/storybook-component-audit.json) supersedes the historical completeness statement below. It excludes Admin Center. Component files, stories, and tests are colocated by responsibility; the catch-all `ui` directory has been replaced by feature and reusable UI folders.
+
+The 64 non-admin story modules export **216 real component examples**. Commentary-only sidebar stories were removed. Storybook uses the actual application components and the shared `createAppTheme`, ThemeProvider, and CssBaseline. Local sample values, callbacks, and form providers supply isolated state.
+
+The sidebar separates **Components / category / name**, **Patterns / feature / name**, and **Pages / name**. Stable CSF IDs preserve existing story links. Each entry declares its component and a short description, with args and meaningful state examples; grouped entries identify their real subcomponents. See the component conventions in the root README.
+
+Applicant input controls now use FieldRenderer, including member verification methods and security questions, quote eligibility and category selection, product amounts and riders, beneficiary type and copy targets. RadioSelectionGroup is the renderer's shared native radio primitive; ControlledFieldRenderer adapts parent-owned values without duplicating input rendering. Layout stories also compose the actual renderer.
+
+The official `@storybook/addon-docs` 10.5 installation was blocked by an HTTP 403 registry response. Conventional CSF descriptions and the Controls prop table work; generated Docs pages remain unavailable until that addon can be installed. No custom documentation renderer was added.
+
+Focused behavior checks pass, including verification results, quote prefill, product and rider changes, beneficiary editing, recovery, and Review medical authorization without online health questions. Separate older HealthQuestionLayout fixtures still expect generic ABE questions, and a membership review check still pins previous source fingerprints; those broader checks remain unresolved and were not relabeled as passing.
+
+Coverage remains **incomplete**: `ConfiguredHealthQuestions`, `HealthQuestionList`, `ReviewStatement`, `SharedPaymentControls`, `SinglePageSections`, and `StepEditButton` still lack dedicated examples. A structural source audit does not certify every responsive, accessibility, or business state.
+
+Additional gaps include the 404/500 page composition, two AppShell variants, custom category artwork/fallback states and the full embedded single-page flow. The page matrix now includes Health CI, describes the actual CIR form rather than a placeholder, and marks affected rows as partial. Primitive/package/native JSX references and the actual page sources are included in the audit.
+
+Two catalog links incorrectly selected another component's first story: QuickDecisionIndicator and ProgressSavedSnackbar. The generator now selects an example that actually renders the component; QuickDecisionExplainer and ApplicationPreview also point directly to their default component examples.
+
+Reproduce the source audit with `node scripts/audit-storybook-components.mjs --write --verify-built` after `npm run build-storybook`. Detect drift with `node scripts/audit-storybook-components.mjs --check --verify-built`. Static render tracing and a matching build index are not exhaustive runtime, accessibility or business-journey verification.
+
+---
+
 # Storybook Audit & Implementation Plan
 
 > Historical migration record. Storybook is now the visual source of truth,

@@ -24,4 +24,10 @@ export const pageHelpChips: Record<string, readonly { id: string; label: string 
   payment: [helpChipDefinitions.payment],
   "health-si": [helpChipDefinitions.health],
   "health-di": [helpChipDefinitions.health],
+  "health-li": [helpChipDefinitions.health],
+  "health-ci": [helpChipDefinitions.health],
+  "health-cir": [helpChipDefinitions.health],
+  "health-qd": [helpChipDefinitions.health],
 };
+
+export const coverageLinkUnavailableMessage = "No coverage is available through this link. Please contact your plan administrator for help.";

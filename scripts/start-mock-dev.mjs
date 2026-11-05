@@ -2,13 +2,15 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createServer as createViteServer } from 'vite';
 import { createMockPlatform } from './mock-platform.mjs';
+import { effectiveSiteSnapshotTables, normalizedSnapshotTables } from '../src/persistence/catalogTables.ts';
+import { validateIdentityCatalog } from '../src/persistence/identityCatalog.ts';
 
-const database = JSON.parse(readFileSync(resolve('migration-artifacts/mock/database.json'), 'utf8'));
-const analyticsTags = JSON.parse(readFileSync(resolve('migration-artifacts/mock/analytics-tags.json'), 'utf8'));
-const prototypeDatabase = JSON.parse(readFileSync(resolve("migration-artifacts/mock/prototype-data.json"), "utf8"));
-const libraryDatabase = JSON.parse(readFileSync(resolve("migration-artifacts/mock/library-data.json"), "utf8"));
+const catalog = JSON.parse(readFileSync(resolve('public/catalog/portal.json'), 'utf8'));
+validateIdentityCatalog(catalog.data);
+const database = catalog.data;
+const analyticsTags = catalog.analyticsTags;
 const operationsDatabase = JSON.parse(readFileSync(resolve("migration-artifacts/mock/operations-data.json"), "utf8"));
-const mock = createMockPlatform({ accountSignInEnabled: false, operationsDatabase, database, prototypeDatabase, libraryDatabase, analyticsTags, validatePayload: async payload => { const { isLibraryDraft } = await vite.ssrLoadModule('/src/domain/libraryDraft.ts'); const { resolvePrototypeLibrary } = await vite.ssrLoadModule('/src/domain/prototypeLibrary.ts'); if (!isLibraryDraft(payload)) throw new Error('Invalid Library snapshot'); resolvePrototypeLibrary(payload.data, payload.siteKey, payload.baseRevision); }, statePath: resolve('.mock-platform/server-state.json') });
+const mock = createMockPlatform({ accountSignInEnabled: false, operationsDatabase, database, prototypeTables: effectiveSiteSnapshotTables, libraryTables: normalizedSnapshotTables, analyticsTags, validatePayload: async payload => { const { isLibraryDraft } = await vite.ssrLoadModule('/src/domain/libraryDraft.ts'); const { resolvePrototypeLibrary } = await vite.ssrLoadModule('/src/domain/prototypeLibrary.ts'); if (!isLibraryDraft(payload)) throw new Error('Invalid Library snapshot'); resolvePrototypeLibrary(payload.data, payload.siteKey, payload.baseRevision); }, statePath: resolve('.mock-platform/server-state.json') });
 await new Promise((resolve, reject) => { mock.once('error', reject); mock.listen(8787, '127.0.0.1', resolve); });
 const vite = await createViteServer({ plugins: [{ name: 'admin-passkey-domain', configureServer(server) { server.middlewares.use((req, res, next) => {
   const host = req.headers.host;

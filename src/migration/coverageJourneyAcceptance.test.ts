@@ -12,6 +12,8 @@ import { createMockPolicyVerificationService, type VerifiedPolicy } from "../dom
 import { validateMigrationDatabase } from "./integrity";
 import { resolveRatePresentation } from "../domain/ratePresentation";
 import { resolveNormalizedResidency } from "../domain/residencyPolicy";
+import { atpeAssociationKey } from "./atpeAssociationAdoption";
+import { completeSourceHealthFixture } from "./sourceQuestionnaireFixture";
 
 const db = createReviewedMigrationDatabase();
 const now = () => Date.parse("2026-10-02T12:00:00Z");
@@ -22,7 +24,9 @@ function answers(s: EffectiveSite, input: CoverageJourneyInput): CoverageJourney
   const q = p.questions.find(q => q.applicantKey === input.applicantKey && q.modes.includes(input.mode))!;
   const healthPage = input.election.riders.some(key => s.configuration.products.find(p => p.productKey === input.productKey)!.riders.find(r => r.key === key)?.definition?.value.id === "cir") ? "health-li" : q.healthPage;
   const fields = s.configuration.pages.flatMap(p => p.fields).filter(f => q.financialFields.includes(f.key) || q.tobaccoFields.includes(f.key) || healthPage && f.key.startsWith(`${healthPage}-q`) && f.key.endsWith("-spouse") === (input.applicantKey === "spouse"));
-  return { ...input, answers: Object.fromEntries(fields.map(f => [f.key, f.definition.options?.find(o => o.value === "no")?.value ?? f.definition.options?.[0]?.value ?? (f.definition.inputType === "number" ? 100000 : "mock-answer")])), attestations: [q.attestationKey] };
+  const result: CoverageJourneyInput = { ...input, answers: Object.fromEntries(fields.map(f => [f.key, f.definition.options?.find(o => o.value === "no")?.value ?? f.definition.options?.[0]?.value ?? (f.definition.inputType === "number" ? 100000 : "mock-answer")])), attestations: [q.attestationKey] };
+  result.answers = completeSourceHealthFixture(s, result);
+  return result;
 }
 const inputForRider = (s: EffectiveSite, productKey: string, key: string, applicantKey = "member") => answers(s, { productKey, applicantKey, mode: "rider-only", amount: 0, membershipConfirmed: true, eligibility: { ageYears: 40, workHoursPerWeek: 40, activeMilitary: false, selectedPlans: [{ productKey, categoryKey: "LI", applicantKey: "member" }] }, jurisdiction: "US-PA", election: { riders: [key], riderAmounts: { [key]: 50000 } }, existingPolicy: { policyId: "mock-existing-1", ownerReference: "mock-owner" } });
 
@@ -138,10 +142,13 @@ describe("Step 3 candidate acceptance after persistence", () => {
   });
   it("requires an enabled ISI association and maps every retained association explicitly", () => {
     const s = site("isitrust"), p = resolveCoverageJourneyPolicy(s, "li-group-term")!;
-    expect(p.associationChoices).toHaveLength(25);
+    expect(p.associationChoices).toHaveLength(26);
     expect(resolveSubmissionMapping(p, { applicantKey: "member", mode: "new" }).status).toBe("needs-information");
     expect(resolveSubmissionMapping(p, { applicantKey: "member", mode: "new", associationKey: "ATPE" }).status).toBe("unresolved");
-    for (const choice of p.associationChoices) expect(resolveSubmissionMapping(p, { applicantKey: "member", mode: "new", associationKey: choice.key })).toMatchObject({ status: "resolved", mapping: { identifiers: { gNumber: { issue: "G-31136-0", xml: "G-31136-0" }, planCode: { issue: "101" } } } });
+    for (const choice of p.associationChoices) {
+      const gNumber = choice.key === atpeAssociationKey ? "G-31139-0" : "G-31136-0";
+      expect(resolveSubmissionMapping(p, { applicantKey: "member", mode: "new", associationKey: choice.key })).toMatchObject({ status: "resolved", mapping: { identifiers: { gNumber: { issue: gNumber, xml: gNumber }, planCode: { issue: "101" } } } });
+    }
     const avma = resolveCoverageJourneyPolicy(site("avma"), "di-ltd")!;
     expect(avma.mappings[0].identifiers.gNumber).toMatchObject({ portalDummy: "G-14884-11", issue: "G-14884-0" });
     expect(resolveSubmissionMapping(resolveCoverageJourneyPolicy(site("csea"), "di-ltd")!, { applicantKey: "member", mode: "new", applicantClass: "unknown" }).status).toBe("unresolved");

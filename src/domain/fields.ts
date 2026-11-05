@@ -23,12 +23,14 @@ export type FieldId =
   | "dividend-last-name"
   | "dividend-birth-date"
   | "membership"
+  | "membership-status"
   | "title"
   | "first-name"
   | "last-name"
   | "email"
   | "phone"
   | "active-military"
+  | "actively-at-work"
   | "phone-type"
   | "zip-postal-code"
   | "state-province"
@@ -75,6 +77,7 @@ export type FieldId =
   | "business-state"
   | "business-zip-code"
   | "business-phone"
+  | "business-phone-type"
   | "spouse-email"
   | "physician-first-name"
   | "physician-last-name"
@@ -207,6 +210,9 @@ export type FieldId =
 
 export type FieldDefinition = {
   id: string;
+  /** Stable catalog name, separate from applicant-facing input copy. */
+  displayName?: string;
+  defaultValue?: string | boolean | string[];
   label: string;
   tooltip?: string;
   inputType: FieldInputType;
@@ -226,7 +232,7 @@ export type FieldDefinition = {
   multiline?: boolean;
   minRows?: number;
   disabled?: boolean;
-  /** Override the companion phone-type field name (default: "phone-type") */
+  /** Override the companion field ID (default: "<number-field-id>-type"); distinct answers must not share it */
   phoneTypeFieldId?: string;
   /** Whether to show the companion phone type selector (default: true) */
   showPhoneTypeSelector?: boolean;

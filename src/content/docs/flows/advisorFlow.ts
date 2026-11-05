@@ -113,7 +113,8 @@ export const advisorFlow: FlowDefinition = {
     {
       id: "advisor-health-summary",
       kind: "summary",
-      label: "Health (SI → LI → QD → DI → CIR)",
+      pageGroupId: "health",
+      label: "Health Routing",
       description:
         "Applicable health forms as separate routes grouped under one Health progress stage — see Health Routing below for per-condition detail.",
     },

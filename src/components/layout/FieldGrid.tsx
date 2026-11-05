@@ -18,11 +18,11 @@ type FieldGridProps = {
   gap?: number | { xs: number; sm: number };
 };
 
-/** Responsive form row that collapses to one column below the sm breakpoint. */
+/** Fields stack by default. Address, name and other intentionally grouped fields can opt into responsive columns. */
 export default function FieldGrid({
   children,
-  columns = "equal",
-  gap = { xs: 0, sm: 2 },
+  columns = "1fr",
+  gap,
 }: FieldGridProps) {
   const smColumns =
     columns in columnTemplates
@@ -33,7 +33,8 @@ export default function FieldGrid({
       sx={{
         display: "grid",
         gridTemplateColumns: { xs: "1fr", sm: smColumns },
-        gap,
+        columnGap: gap ?? 2,
+        rowGap: gap ?? 0,
       }}
     >
       {children}

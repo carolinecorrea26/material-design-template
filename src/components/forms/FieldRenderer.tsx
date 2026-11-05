@@ -1,6 +1,11 @@
+import { TextLikeField } from "./TextLikeField";
+import PhoneField from "./PhoneField";
+import { getPhoneTypeFieldId } from "../../domain/phoneFields";
+import { getLabelVariant, isZipOrPostalField, isFieldComplete, isFieldInError, renderCompletedIcon, renderErrorIcon, renderCompletedAdornment, renderErrorAdornment, renderCompletedSelectIcon, renderErrorSelectIcon, renderFieldLabel, type FieldStatusState } from "./fieldInputPresentation";
 import { getFieldValidationRules } from "../../utils/fieldValidation";
 import {
   useRef,
+  useContext,
   useState,
   type ChangeEvent,
   type ReactElement,
@@ -17,21 +22,20 @@ import {
   FormLabel,
   InputLabel,
   MenuItem,
-  Radio,
   Select,
   Stack,
   TextField,
-  Tooltip,
   Typography,
   type TextFieldProps,
 } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
-import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
+import LockRoundedIcon from "@mui/icons-material/LockRounded";
 import type { FieldDefinition, FieldOption } from "../../config/fields/types";
+import { fieldCatalog } from "../../config/fields";
+import { FieldDefinitionsContext } from "./FieldDefinitionsContext";
 import SelectionGroup from "./SelectionGroup";
+import RadioSelectionGroup from "./RadioSelectionGroup";
+import { formatZipOrPostalCode } from "../../utils/zipToStateProvince";
 import {
   parseStoredDate,
   formatDateForStorage,
@@ -50,11 +54,11 @@ type FieldRendererProps = {
   hideLabel?: boolean;
   margin?: "none" | "dense" | "normal";
   onValueChange?: (value?: string | boolean | string[]) => void;
+  /** Keep a compact helper line so routine feedback does not move the next input. */
+  reserveFeedbackSpace?: boolean;
+  feedback?: ReactNode;
 };
 
-type FieldStatusState = {
-  hasError?: boolean;
-};
 
 const SSN_HELPER_TEXT =
   "We protect your personal information using industry-standard security measures and only use it as described in our";
@@ -101,30 +105,12 @@ function getEffectiveInputType(field: FieldDefinition) {
   return field.inputType;
 }
 
-function isZipOrPostalField(field: FieldDefinition) {
-  return field.autoComplete === "postal-code";
-}
-
 function sanitizeDigits(value: string, maxDigits?: number) {
   const digits = value.replace(/\D/g, "");
   if (typeof maxDigits === "number") {
     return digits.slice(0, maxDigits);
   }
   return digits;
-}
-
-function formatPhone(value: string) {
-  const digits = value.replace(/\D/g, "").slice(0, 10);
-
-  if (digits.length <= 3) {
-    return digits;
-  }
-
-  if (digits.length <= 6) {
-    return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
-  }
-
-  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 }
 
 function formatSsn(value: string) {
@@ -179,171 +165,6 @@ function formatPercent(value: string) {
   return sanitizeDigits(value, 3);
 }
 
-function getLabelVariant(field: FieldDefinition) {
-  if (field.labelVariant) return field.labelVariant;
-  // Auto-switch to standard (external) label for long labels to prevent clipping
-  if (field.label && field.label.length >= 40) return "standard";
-  return "floating";
-}
-
-function hasCompletedValue(field: FieldDefinition, value: unknown) {
-  if (Array.isArray(value)) {
-    return value.length > 0;
-  }
-
-  if (typeof value === "boolean") {
-    return value;
-  }
-
-  const stringValue = String(value ?? "").trim();
-
-  if (!stringValue) {
-    return false;
-  }
-
-  if (isZipOrPostalField(field)) {
-    return stringValue.length >= 5;
-  }
-
-  if (field.format === "email") {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(stringValue);
-  }
-
-  if (field.format === "phone") {
-    return stringValue.replace(/\D/g, "").length === 10;
-  }
-
-  if (field.format === "ssn") {
-    return stringValue.replace(/\D/g, "").length === 9;
-  }
-
-  if (field.format === "percent") {
-    return stringValue.replace(/\D/g, "").length > 0;
-  }
-
-  if (field.inputType === "number") {
-    return (field.allowDecimal ? /^\d+(\.\d+)?$/ : /^\d+$/).test(stringValue);
-  }
-
-  if (field.inputType === "date") {
-    return (
-      /^\d{2}\/\d{2}\/\d{4}$/.test(stringValue) ||
-      /^\d{4}-\d{2}-\d{2}$/.test(stringValue)
-    );
-  }
-
-  if (field.format === "month-year") {
-    return (
-      /^\d{2}\/\d{4}$/.test(stringValue) || /^\d{4}-\d{2}$/.test(stringValue)
-    );
-  }
-
-  return stringValue.length >= 2;
-}
-
-function inputChecksEnabled() {
-  return new URLSearchParams(window.location.search).has("inputChecks");
-}
-
-function isFieldComplete(
-  field: FieldDefinition,
-  value: unknown,
-  statusState?: FieldStatusState,
-) {
-  if (!inputChecksEnabled()) return false;
-  if (statusState?.hasError) return false;
-  return hasCompletedValue(field, value);
-}
-
-function isFieldInError(statusState?: FieldStatusState) {
-  if (!inputChecksEnabled()) return false;
-  return Boolean(statusState?.hasError);
-}
-
-function renderCompletedIcon(sx = {}) {
-  return (
-    <CheckCircleRoundedIcon
-      aria-label="Completed"
-      sx={{
-        color: "success.main",
-        fontSize: { xs: "1rem", md: "1.25rem" },
-        flexShrink: 0,
-        ...sx,
-      }}
-    />
-  );
-}
-
-function renderErrorIcon(sx = {}) {
-  return (
-    <HighlightOffRoundedIcon
-      aria-label="Error"
-      sx={{
-        color: "error.main",
-        fontSize: { xs: "1rem", md: "1.25rem" },
-        flexShrink: 0,
-        ...sx,
-      }}
-    />
-  );
-}
-
-function renderCompletedAdornment(existingAdornment?: ReactNode) {
-  return (
-    <>
-      {existingAdornment}
-      <InputAdornment position="end">{renderCompletedIcon()}</InputAdornment>
-    </>
-  );
-}
-
-function renderErrorAdornment(existingAdornment?: ReactNode) {
-  return (
-    <>
-      {existingAdornment}
-      <InputAdornment position="end">{renderErrorIcon()}</InputAdornment>
-    </>
-  );
-}
-
-function renderCompletedSelectIcon() {
-  return renderCompletedIcon({
-    position: "absolute",
-    right: 40,
-    top: "50%",
-    transform: "translateY(-50%)",
-    pointerEvents: "none",
-    zIndex: 1,
-  });
-}
-
-function renderErrorSelectIcon() {
-  return renderErrorIcon({
-    position: "absolute",
-    right: 40,
-    top: "50%",
-    transform: "translateY(-50%)",
-    pointerEvents: "none",
-    zIndex: 1,
-  });
-}
-
-function renderFieldLabel(field: FieldDefinition) {
-  return (
-    <Box
-      component="span"
-      sx={{ display: "inline", alignItems: "center", gap: 0.5 }}
-    >
-      <span>{field.label}</span>
-      {field.tooltip ? (
-        <Tooltip title={field.tooltip} arrow>
-          <InfoOutlinedIcon sx={{ fontSize: "1rem", color: "action.active" }} />
-        </Tooltip>
-      ) : null}
-    </Box>
-  );
-}
-
 const controlSx = {
   p: 0,
   pointerEvents: "none",
@@ -364,10 +185,12 @@ function SsnField({
   control,
   validationRules,
   renderTextLikeField,
+  onValueChange,
 }: {
   field: FieldDefinition;
   control: Control<any>;
   validationRules: Record<string, unknown>;
+  onValueChange?: FieldRendererProps["onValueChange"];
   renderTextLikeField: (
     controllerField: any,
     fieldState: any,
@@ -417,6 +240,7 @@ function SsnField({
             }
 
             controllerField.onChange(formatSsn(nextDigits));
+            onValueChange?.();
 
             if (nextDigits.length > existingDigits.length) {
               setShowLastDigit(true);
@@ -431,7 +255,7 @@ function SsnField({
           inputAdornmentProps: {
             startAdornment: (
               <InputAdornment position="start">
-                <LockOutlinedIcon
+                <LockRoundedIcon
                   sx={{ color: "action.active", fontSize: "1rem" }}
                 />
               </InputAdornment>
@@ -454,13 +278,18 @@ function FieldRendererInput({
   hideLabel = false,
   margin = "normal",
   onValueChange,
+  reserveFeedbackSpace,
+  feedback,
 }: FieldRendererProps) {
+  const relatedFields = useContext(FieldDefinitionsContext);
   const validationRules = getFieldValidationRules(field);
   const effectiveInputType = getEffectiveInputType(field);
   const fieldError = errors[field.id]?.message as string | undefined;
   const resolvedHelperText =
     fieldError ??
-    (field.format === "ssn" ? renderSsnHelperText() : field.helperText);
+    feedback ??
+    (field.format === "ssn" ? renderSsnHelperText() : field.helperText) ??
+    (reserveFeedbackSpace ? " " : undefined);
 
   const hasError = Boolean(errors[field.id]);
   const statusState: FieldStatusState = { hasError };
@@ -483,73 +312,14 @@ function FieldRendererInput({
       inputAdornmentProps?: TextFieldProps["InputProps"];
     } = {},
   ) {
-    const labelVariant = getLabelVariant(field);
-    const value = options.value ?? (controllerField.value as string) ?? "";
-    const hasCustomEndAdornment = Boolean(
-      options.inputAdornmentProps?.endAdornment,
-    );
-    const isComplete =
-      !field.multiline && isFieldComplete(field, value, statusState);
-    const showError = !field.multiline && isFieldInError(statusState);
-    const inputPropsWithCompletion = {
-      ...options.inputAdornmentProps,
-      endAdornment: hasCustomEndAdornment
-        ? options.inputAdornmentProps?.endAdornment
-        : isComplete
-          ? renderCompletedAdornment()
-          : showError
-            ? renderErrorAdornment()
-            : undefined,
-    };
-    const handleChange =
-      options.onChange ??
-      ((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        controllerField.onChange(event.target.value);
-        onValueChange?.();
-      });
-
-    const textField = (
-      <TextField
-        name={field.id}
-        label={
-          labelVariant === "floating" ? renderFieldLabel(field) : undefined
-        }
-        required={field.required}
-        type={options.type ?? "text"}
-        fullWidth
-        margin={labelVariant === "floating" ? "normal" : "none"}
-        placeholder={options.placeholder ?? field.placeholder}
-        autoComplete={field.autoComplete}
-        inputProps={{ inputMode: field.inputMode, maxLength: field.format === "currency" ? undefined : field.maxLength, ...options.inputProps }}
-        value={value}
-        onChange={handleChange}
-        onBlur={controllerField.onBlur}
-        disabled={field.disabled}
-        error={Boolean(errors[field.id])}
-        helperText={
-          labelVariant === "floating" ? resolvedHelperText : undefined
-        }
-        multiline={field.multiline}
-        minRows={field.multiline ? (field.minRows ?? 3) : undefined}
-        InputProps={inputPropsWithCompletion}
-      />
-    );
-
-    if (labelVariant === "floating") {
-      return textField;
-    }
-
-    return (
-      <FormControl fullWidth margin={margin} error={Boolean(errors[field.id])}>
-        {!hideLabel ? (
-          <FormLabel required={field.required} sx={{ mb: 1 }}>
-            {renderFieldLabel(field)}
-          </FormLabel>
-        ) : null}
-        {textField}
-        <FormHelperText>{resolvedHelperText}</FormHelperText>
-      </FormControl>
-    );
+    const handleChange = options.onChange ?? ((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const value = isZipOrPostalField(field) ? formatZipOrPostalCode(event.target.value) : event.target.value;
+      controllerField.onChange(value);
+      onValueChange?.(value);
+    });
+    return <TextLikeField {...options} field={field} value={options.value ?? String(controllerField.value ?? "")}
+      onChange={handleChange} onBlur={controllerField.onBlur} hideLabel={hideLabel} margin={margin}
+      hasError={Boolean(errors[field.id])} helperText={resolvedHelperText} />;
   }
 
   if (field.inputType === "radio") {
@@ -568,85 +338,30 @@ function FieldRendererInput({
           const showError = isFieldInError(statusState);
 
           return (
-            <FormControl
-              fullWidth
-              margin={margin}
+            <RadioSelectionGroup
+              name={field.id}
+              label={hideLabel ? undefined : renderFieldLabel(field)}
+              options={field.options ?? []}
+              value={String(controllerField.value ?? "")}
+              required={field.required}
+              disabled={field.disabled}
               error={Boolean(errors[field.id])}
-            >
-              {!hideLabel ? (
-                <FormLabel
-                  required={field.required}
-                  sx={{ display: "block", mb: 1 }}
-                  id={`${field.id}-label`}
-                >
-                  {renderFieldLabel(field)}
-                </FormLabel>
-              ) : null}
-
-              <Box
-                role="radiogroup"
-                aria-labelledby={`${field.id}-label`}
-                aria-describedby={
-                  resolvedHelperText ? `${field.id}-helper` : undefined
-                }
-                onBlur={controllerField.onBlur}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%",
-                  gap: 1,
-                  mt: hideLabel ? 0 : 1,
-                }}
-              >
-                {(field.options ?? []).map((option) => {
-                  const checked = controllerField.value === option.value;
-
-                  return (
-                    <SelectionGroup
-                      key={option.value}
-                      role="radio"
-                      aria-checked={checked}
-                      tabIndex={checked ? 0 : -1}
-                      onClick={() => {
-                        controllerField.onChange(option.value);
-                        onValueChange?.(option.value);
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === " " || e.key === "Enter") {
-                          e.preventDefault();
-                          controllerField.onChange(option.value);
-                          onValueChange?.(option.value);
-                        }
-                      }}
-                    >
-                      <Radio
-                        checked={checked}
-                        size="small"
-                        sx={controlSx}
-                        tabIndex={-1}
-                        aria-hidden
-                      />
-                      <Box
-                        component="span"
-                        className="SelectionGroup-label"
-                        sx={{ fontSize: "0.875rem", flex: 1 }}
-                      >
-                        {option.label}
-                      </Box>
-                      {isComplete && checked
-                        ? renderCompletedIcon({ ml: "auto" })
-                        : showError && checked
-                          ? renderErrorIcon({ ml: "auto" })
-                          : null}
-                    </SelectionGroup>
-                  );
-                })}
-              </Box>
-
-              <FormHelperText id={`${field.id}-helper`}>
-                {resolvedHelperText}
-              </FormHelperText>
-            </FormControl>
+              helperText={resolvedHelperText}
+              margin={margin}
+              onBlur={controllerField.onBlur}
+              inputRef={controllerField.ref}
+              onChange={(value) => {
+                controllerField.onChange(value);
+                onValueChange?.(value);
+              }}
+              renderOptionEnd={(value) =>
+                controllerField.value === value
+                  ? isComplete
+                    ? renderCompletedIcon({ ml: "auto" })
+                    : showError ? renderErrorIcon({ ml: "auto" }) : null
+                  : null
+              }
+            />
           );
         }}
       />
@@ -678,7 +393,7 @@ function FieldRendererInput({
               {labelVariant === "standard" ? (
                 <>
                   {!hideLabel ? (
-                    <FormLabel required={field.required} sx={{ mb: 1 }}>
+                    <FormLabel id={`${field.id}-label`} required={field.required} sx={{ mb: 1 }}>
                       {renderFieldLabel(field)}
                     </FormLabel>
                   ) : null}
@@ -686,6 +401,7 @@ function FieldRendererInput({
                     <Select
                       fullWidth
                       name={field.id}
+                      labelId={labelId}
                       value={value}
                       onChange={(event) => {
                         controllerField.onChange(event.target.value);
@@ -792,6 +508,7 @@ function FieldRendererInput({
 
           const autocomplete = (
             <Autocomplete<FieldOption, false, false, false>
+              id={field.id}
               fullWidth
               options={field.options ?? []}
               value={selectedOption}
@@ -815,7 +532,7 @@ function FieldRendererInput({
                       : undefined
                   }
                   required={field.required}
-                  margin={labelVariant === "floating" ? "normal" : "none"}
+                  margin={labelVariant === "floating" ? margin : "none"}
                   placeholder={field.placeholder}
                   error={Boolean(errors[field.id])}
                   helperText={
@@ -824,6 +541,7 @@ function FieldRendererInput({
                   inputProps={{
                     ...params.inputProps,
                     autoComplete: field.autoComplete ?? "off",
+                    "aria-labelledby": labelVariant === "standard" ? `${field.id}-label` : params.inputProps["aria-labelledby"],
                   }}
                   InputProps={{
                     ...params.InputProps,
@@ -850,7 +568,7 @@ function FieldRendererInput({
               error={Boolean(errors[field.id])}
             >
               {!hideLabel ? (
-                <FormLabel required={field.required} sx={{ mb: 1 }}>
+                <FormLabel id={`${field.id}-label`} required={field.required} sx={{ mb: 1 }}>
                   {renderFieldLabel(field)}
                 </FormLabel>
               ) : null}
@@ -887,7 +605,7 @@ function FieldRendererInput({
           return (
             <FormControl
               fullWidth
-              margin="normal"
+              margin={margin}
               error={Boolean(errors[field.id])}
               required={field.required}
             >
@@ -910,7 +628,7 @@ function FieldRendererInput({
                     onValueChange?.();
                   }}
                   onBlur={controllerField.onBlur}
-                  renderValue={(selected) => selected.join(", ")}
+                  renderValue={(selected) => selected.map(value => field.options?.find(option => option.value === value)?.label ?? value).join(", ")}
                   sx={{
                     "& .MuiSelect-select": {
                       pr: hasIcon ? "64px !important" : undefined,
@@ -959,16 +677,20 @@ function FieldRendererInput({
           return (
             <FormControl
               fullWidth
-              margin="normal"
+              margin={margin}
               error={Boolean(errors[field.id])}
             >
-              <SelectionGroup>
+              <SelectionGroup disabled={field.disabled}>
                 <Checkbox
+                  name={field.id}
+                  inputProps={{ "aria-label": field.label }}
+                  disabled={field.disabled}
                   checked={Boolean(controllerField.value)}
                   required={field.required}
                   onChange={(event) => {
                     controllerField.onChange(event.target.checked);
                     controllerField.onBlur();
+                    onValueChange?.(event.target.checked);
                   }}
                   onBlur={controllerField.onBlur}
                   sx={controlSx}
@@ -1024,7 +746,7 @@ function FieldRendererInput({
           return (
             <FormControl
               fullWidth
-              margin="normal"
+              margin={margin}
               error={Boolean(errors[field.id])}
             >
               <FormLabel
@@ -1048,8 +770,11 @@ function FieldRendererInput({
                   const checked = selectedValues.includes(option.value);
 
                   return (
-                    <SelectionGroup key={option.value}>
+                    <SelectionGroup key={option.value} disabled={field.disabled}>
                       <Checkbox
+                        name={field.id}
+                        value={option.value}
+                        disabled={field.disabled}
                         checked={checked}
                         onChange={(event) => {
                           const nextValues = event.target.checked
@@ -1060,6 +785,7 @@ function FieldRendererInput({
 
                           controllerField.onChange(nextValues);
                           controllerField.onBlur();
+                          onValueChange?.(nextValues);
                         }}
                         onBlur={controllerField.onBlur}
                         sx={controlSx}
@@ -1114,7 +840,7 @@ function FieldRendererInput({
               }
               required={field.required}
               fullWidth
-              margin={labelVariant === "floating" ? "normal" : "none"}
+              margin={labelVariant === "floating" ? margin : "none"}
               autoComplete={field.autoComplete}
               inputProps={{ inputMode: "numeric" }}
               value={displayValue}
@@ -1155,7 +881,7 @@ function FieldRendererInput({
               error={Boolean(errors[field.id])}
             >
               {!hideLabel ? (
-                <FormLabel required={field.required} sx={{ mb: 1 }}>
+                <FormLabel id={`${field.id}-label`} required={field.required} sx={{ mb: 1 }}>
                   {renderFieldLabel(field)}
                 </FormLabel>
               ) : null}
@@ -1192,7 +918,7 @@ function FieldRendererInput({
               }
               required={field.required}
               fullWidth
-              margin={labelVariant === "floating" ? "normal" : "none"}
+              margin={labelVariant === "floating" ? margin : "none"}
               inputProps={{ inputMode: "numeric" }}
               value={displayValue}
               onChange={(event) => {
@@ -1234,7 +960,7 @@ function FieldRendererInput({
               error={Boolean(errors[field.id])}
             >
               {!hideLabel ? (
-                <FormLabel required={field.required} sx={{ mb: 1 }}>
+                <FormLabel id={`${field.id}-label`} required={field.required} sx={{ mb: 1 }}>
                   {renderFieldLabel(field)}
                 </FormLabel>
               ) : null}
@@ -1326,104 +1052,18 @@ function FieldRendererInput({
   }
 
   if (field.format === "phone") {
-    const showPhoneTypeSelector = field.showPhoneTypeSelector ?? true;
-    const phoneTypeFieldName = field.phoneTypeFieldId ?? "phone-type";
-
-    if (!showPhoneTypeSelector) {
-      return (
-        <Controller
-          key={field.id}
-          name={field.id}
-          control={control}
-          rules={validationRules}
-          render={({ field: controllerField, fieldState }) =>
-            renderTextLikeField(controllerField, fieldState, {
-              type: htmlInputType,
-              value: (controllerField.value as string) ?? "",
-              onChange: (event) => {
-                controllerField.onChange(formatPhone(event.target.value));
-              },
-            })
-          }
-        />
-      );
-    }
-
-    return (
-      <Controller
-        key={field.id}
-        name={field.id}
-        control={control}
-        rules={validationRules}
-        render={({ field: controllerField }) => {
-          const phoneValue = (controllerField.value as string) ?? "";
-          const isComplete = isFieldComplete(field, phoneValue, statusState);
-          const showError = isFieldInError(statusState);
-
-          return (
-            <Controller
-              name={phoneTypeFieldName}
-              control={control}
-              defaultValue="mobile"
-              rules={{ required: "Phone Type is required" }}
-              render={({ field: phoneTypeField }) =>
-                renderTextLikeField(controllerField, undefined, {
-                  type: htmlInputType,
-                  value: phoneValue,
-                  onChange: (event) => {
-                    controllerField.onChange(formatPhone(event.target.value));
-                  },
-                  inputAdornmentProps: {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Box sx={{ position: "relative" }}>
-                          {isComplete
-                            ? renderCompletedIcon({
-                                position: "absolute",
-                                left: -28,
-                                top: "50%",
-                                transform: "translateY(-50%)",
-                                pointerEvents: "none",
-                              })
-                            : showError
-                              ? renderErrorIcon({
-                                  position: "absolute",
-                                  left: -28,
-                                  top: "50%",
-                                  transform: "translateY(-50%)",
-                                  pointerEvents: "none",
-                                })
-                              : null}
-                          <Select
-                            value={(phoneTypeField.value as string) ?? "mobile"}
-                            onChange={(event) =>
-                              phoneTypeField.onChange(event.target.value)
-                            }
-                            variant="standard"
-                            disableUnderline
-                            sx={{
-                              minWidth: 92,
-                              ml: 1,
-                              "& .MuiSelect-select": {
-                                py: 0.5,
-                              },
-                            }}
-                          >
-                            <MenuItem value="mobile">Mobile</MenuItem>
-                            <MenuItem value="home">Home</MenuItem>
-                            <MenuItem value="business">Business</MenuItem>
-                          </Select>
-                        </Box>
-                      </InputAdornment>
-                    ),
-                  },
-                })
-              }
-            />
-          );
-        }}
-      />
-    );
+    const typeId = getPhoneTypeFieldId(field);
+    const typeField = field.showPhoneTypeSelector === false ? undefined : (relatedFields ?? Object.values(fieldCatalog)).find(definition => definition.id === typeId);
+    if (field.showPhoneTypeSelector !== false && !typeField) throw new Error(`Missing configured phone type field: ${typeId}`);
+    const common = { field, hideLabel, margin, hasError: Boolean(errors[field.id]), helperText: resolvedHelperText };
+    return <Controller name={field.id} control={control} rules={validationRules} render={({ field: number }) => {
+      const numberProps = { ...common, value: String(number.value ?? ""), onChange: (value: string) => { number.onChange(value); onValueChange?.(); }, onBlur: number.onBlur };
+      return typeField ? <Controller name={typeField.id} control={control} defaultValue={typeField.defaultValue ?? ""}
+        rules={getFieldValidationRules(typeField)} render={({ field: type, fieldState }) => <PhoneField {...numberProps}
+          typeField={typeField} typeValue={String(type.value ?? typeField.defaultValue ?? "")}
+          onTypeChange={type.onChange} onTypeBlur={type.onBlur} typeError={fieldState.error?.message} />}
+      /> : <PhoneField {...numberProps} />;
+    }} />;
   }
 
   if (field.format === "ssn") {
@@ -1434,6 +1074,7 @@ function FieldRendererInput({
         control={control}
         validationRules={validationRules}
         renderTextLikeField={renderTextLikeField}
+        onValueChange={onValueChange}
       />
     );
   }
@@ -1455,5 +1096,5 @@ function FieldRendererInput({
 }
 
 export default function FieldRenderer(props: FieldRendererProps) {
-  return <Box data-analytics-field={props.field.id} sx={{ display: "contents" }}><FieldRendererInput {...props} /></Box>;
+  return <Box data-analytics-field={props.field.id} sx={{ display: "contents", ...(props.reserveFeedbackSpace && { "& .MuiFormHelperText-root": { minHeight: "1.66em" }, "& .MuiFormControl-root": { mt: 0, mb: 0 } }) }}><FieldRendererInput {...props} /></Box>;
 }

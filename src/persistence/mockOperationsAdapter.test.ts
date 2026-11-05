@@ -42,7 +42,7 @@ describe('mock persistence routing', () => {
     try {
       await expect(adapter.list('organizations')).rejects.toThrow('Catalog unavailable');
       network.mockResolvedValue(Response.json({ data: {} }));
-      await expect(adapter.list('clients')).rejects.toThrow('Missing stored identity table');
+      await expect(adapter.list('clients')).rejects.toThrow('Missing stored catalog table');
       await expect(adapter.readSnapshot!(['clients'])).rejects.toThrow();
       await expect(adapter.update('clients', seed.clients[0].id, { name: 'Browser edit' })).rejects.toThrow('stored Library');
       await expect(adapter.insert('organizations', seed.organizations[0])).rejects.toThrow('stored Library');

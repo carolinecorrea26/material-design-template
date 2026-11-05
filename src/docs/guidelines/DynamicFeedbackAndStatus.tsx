@@ -1,4 +1,4 @@
-import { Alert, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { DocsPage, DocsSection, DocsTable, TableRow, TableCell, SourceNote } from "../shared/DocsBlocks";
 import PageAlert from "../../components/feedback/PageAlert";
 
@@ -53,28 +53,18 @@ export const DynamicFeedbackAndStatus = () => (
       </DocsTable>
       <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5, maxWidth: 720 }}>
         The same mapping applies to <code>DynamicList</code>'s add/edit/remove
-        announcements, <code>LoadingOverlay</code>/<code>PageTransitionSkeleton</code>'s
+        announcements, <code>PageTransitionSkeleton</code>'s
         loading announcements (always polite — a loading state is never
         urgent enough to interrupt), and every other live region in the app.
       </Typography>
     </DocsSection>
 
-    <DocsSection title="Loading & processing states" description="Four LoadingOverlay sizes cover four different contexts; PageTransitionSkeleton is specifically for route transitions between application pages.">
+    <DocsSection title="Loading & processing states" description="PageTransitionSkeleton preserves form layout during navigation; ProcessingStatusPage presents a bounded operation status.">
       <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 720, mb: 1 }}>
-        <code>LoadingOverlay</code> — <code>sm</code> inline (e.g. inside a
-        button), <code>md</code> section-level, <code>lg</code> page-level,{" "}
-        <code>fullscreen</code> blocks the whole viewport for
-        external-redirect or global-submission flows.{" "}
-        <code>PageTransitionSkeleton</code> — shown by <code>FormRoutePage</code>{" "}
-        while the next application page resolves; not a general-purpose
-        loading indicator.
+        <code>PageTransitionSkeleton</code> is shown by <code>FormRoutePage</code> while a page transition completes.
+        <code>ProcessingStatusPage</code> supplies the shared spinner, optional mark, heading and explanatory body for DocuSign and QuickDecision.
+        Every pending state must lead to completion or timeout feedback. Use the existing amount reservation for inline cost calculation.
       </Typography>
-      <Alert severity="info" sx={{ maxWidth: 720 }}>
-        <code>ProcessingStatusPage</code> is the canonical richer processing
-        surface for DocuSign and QuickDecision: spinner, optional mark,
-        heading, and explanatory body. Use <code>LoadingOverlay</code> when an
-        existing surface should remain visible behind a blocking overlay.
-      </Alert>
     </DocsSection>
 
     <DocsSection title="Empty states" description="EmptyState is the one shared pattern for a section or panel with nothing to show — no page currently reinvents this inline.">
@@ -85,15 +75,5 @@ export const DynamicFeedbackAndStatus = () => (
       </Typography>
     </DocsSection>
 
-    <DocsSection title="Known deviation from this system">
-      <Alert severity="warning" sx={{ maxWidth: 760 }}>
-        Roughly 13 pages (Beneficiary, Membership, Payment, Review, Resume,
-        ResumeCode, Eligibility, Profile, Receipt, and others) render a raw
-        MUI <code>Alert</code> directly instead of <code>PageAlert</code>,
-        bypassing this severity system's single point of maintenance. Flagged
-        in the Phase 1 audit as a recommended (not required) migration; not
-        fixed in this pass.
-      </Alert>
-    </DocsSection>
   </DocsPage>
 );

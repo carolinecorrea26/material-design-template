@@ -17,9 +17,10 @@ import {
  * behavior some other way.
  */
 const meta = {
-  title: "Layout/AppHeader",
+  id: "layout-appheader",
+  title: "Components/Layout/Header",
   component: AppHeader,
-  parameters: { layout: "fullscreen" },
+  parameters: { docs: { description: { component: "Displays the portal brand, help actions, application menu, cart, and progress." } }, layout: "fullscreen" },
 } satisfies Meta<typeof AppHeader>;
 
 export default meta;
@@ -64,6 +65,10 @@ export const HomepageVariant: StoryObj = {
       </LocalFormProvider>
     );
   },
+};
+export const RecoveryVariant: StoryObj = {
+  name: 'Recovery header — logo only',
+  render: () => <LocalFormProvider><AppHeader client={getActiveClient()} variant="recovery" /></LocalFormProvider>,
 };
 
 export const ApplicationFormVariant: StoryObj = {

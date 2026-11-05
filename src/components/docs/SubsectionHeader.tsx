@@ -6,8 +6,7 @@ type HeaderVariant = "h6" | "subtitle1" | "subtitle2";
 /**
  * Shared non-collapsible subsection header — title + optional count chip +
  * optional override-count chip. Centralizes a Stack/Typography/Chip block
- * that used to be hand-duplicated at every subsection that isn't its own
- * SectionAccordion, so headers read consistently and no caller re-renders a
+ * across subsections, so headers read consistently and no caller re-renders a
  * title a nested list/table component already owns (or vice versa).
  */
 export default function SubsectionHeader({

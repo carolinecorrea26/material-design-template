@@ -19,7 +19,7 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import PaletteRoundedIcon from "@mui/icons-material/PaletteRounded";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
+import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import ArticleRoundedIcon from "@mui/icons-material/ArticleRounded";
 import ExtensionRoundedIcon from "@mui/icons-material/ExtensionRounded";
 import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
@@ -83,7 +83,7 @@ const portalInfoCards: PortalInfoCard[] = [
     id: "email-templates",
     title: "Email Templates",
     description: "Consumer and advisor email templates, flows, and configuration.",
-    Icon: EmailOutlinedIcon,
+    Icon: EmailRoundedIcon,
     path: getPagePath("mock-email-preview"),
   },
 ];

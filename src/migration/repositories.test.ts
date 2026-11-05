@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createMigrationDatabase, migrationSiteKeys } from "./fixtures";
+import { migrationSiteKeys } from "./fixtures";
 import { LocalStorageAdapter } from "../persistence/localAdapter";
 import { loadPersistedSiteAdapter } from "../repositories/persistedSiteAdapter";
 import { createSiteRepository } from "../repositories/siteRepository";
@@ -9,8 +9,9 @@ import { mcrCoverageReport } from "./mcr";
 import { resolveClientCoverage, resolveClientFields, resolveClientPages, resolveClientFlows } from "../config/resolvers";
 import type { PersistenceAdapter } from "../persistence/adapter";
 import type { TableName } from "../persistence/types";
+import { createLegacyCompatibilityFixture } from "./legacyCompatibilityFixture";
 
-const db = createMigrationDatabase();
+const db = createLegacyCompatibilityFixture();
 const adapter = new LocalStorageAdapter(db);
 const persisted = createSiteRepository(await loadPersistedSiteAdapter(adapter));
 const original = createSiteRepository(staticSiteAdapter);

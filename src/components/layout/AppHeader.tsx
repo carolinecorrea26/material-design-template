@@ -18,8 +18,8 @@ import {
   Typography,
   useScrollTrigger,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
 import AppMenu from "./AppMenu";
 import AppDrawer from "../layout/AppDrawer";
 import { getConfiguredPages, getPagePath } from "../../config/pages";
@@ -30,7 +30,7 @@ import type { PageId } from "../../types";
 import { useApplicationForm } from "../../app/ApplicationFormContext";
 import { useApplicationSession } from "../../app/ApplicationSessionContext";
 import { router } from "../../app/router";
-import CoverageCart, { useCoverageCartBadge } from "../ui/CoverageCart";
+import CoverageCart, { useCoverageCartBadge } from "../../app/sections/ConfiguredCoverageCart";
 import type { AppShellVariant } from "./AppShell";
 import ClientHelpBanner from "./ClientHelpBanner";
 import { getContent } from "../../content";
@@ -180,7 +180,7 @@ export default function AppHeader({
 
   return (
     <>
-      <ClientHelpBanner client={client} />
+      {variant !== 'recovery' && <ClientHelpBanner client={client} />}
       <Slide appear={false} direction="down" in={!trigger}>
         <AppBar
           position="sticky"
@@ -219,8 +219,8 @@ export default function AppHeader({
                   <Typography
                     variant="h6"
                     noWrap
-                    sx={{ cursor: "pointer" }}
-                    onClick={() => void router.navigate(getPagePath("home"))}
+                    sx={{ cursor: variant === 'recovery' ? 'default' : 'pointer' }}
+                    onClick={variant === 'recovery' ? undefined : () => void router.navigate(getPagePath("home"))}
                   >
                     {effectiveBranding.name}
                   </Typography>
@@ -230,14 +230,14 @@ export default function AppHeader({
                     src={effectiveBranding.logo}
                     alt={effectiveBranding.logoAlt}
                     onError={() => setImageError(true)}
-                    onClick={() => void router.navigate(getPagePath("home"))}
+                    onClick={variant === 'recovery' ? undefined : () => void router.navigate(getPagePath("home"))}
                     sx={{
                       height: "auto",
                       width: "auto",
                       maxWidth: { xs: 200, sm: 250 },
                       maxHeight: 35,
                       display: "block",
-                      cursor: "pointer",
+                      cursor: variant === 'recovery' ? 'default' : 'pointer',
                     }}
                   />
                 )}
@@ -266,7 +266,7 @@ export default function AppHeader({
                         color="error"
                         max={99}
                       >
-                        <ShoppingCartIcon sx={{ color: "primary.main" }} />
+                        <ShoppingCartRoundedIcon sx={{ color: "primary.main" }} />
                       </Badge>
                     </IconButton>
                   )}
@@ -277,7 +277,7 @@ export default function AppHeader({
                       onClick={() => setIsMenuOpen(true)}
                       size="small"
                     >
-                      <MenuIcon />
+                      <MenuRoundedIcon />
                     </IconButton>
                   )}
                 </Stack>
@@ -417,7 +417,6 @@ export default function AppHeader({
             <Link
               component="button"
               type="button"
-              underline="hover"
               color="primary"
               sx={{ alignSelf: "flex-start", fontWeight: 700 }}
             >

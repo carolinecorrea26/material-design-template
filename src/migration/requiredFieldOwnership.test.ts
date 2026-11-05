@@ -6,10 +6,10 @@ import { resolvePrototypeLibrary } from "../domain/prototypeLibrary";
 import { resolveSharedFieldDefinition } from "../domain/fieldDefinitionOwnership";
 
 const db = createReviewedMigrationDatabase();
-it("reconciles all 159 copied required values without changing global definitions or scoped placements", () => {
+it("reconciles all 161 copied required values without changing global definitions or scoped placements", () => {
   const original = createMigrationDatabase();
   expect(db.semanticRequirements.find(row => row.predicate === "shared-field-required")?.value).toMatchObject({ previousValidationRules: expect.arrayContaining([expect.objectContaining({ definition: { required: true } })]) });
-  expect(original.validationRules.filter(row => Object.hasOwn(row.definition, "required"))).toHaveLength(159);
+  expect(original.validationRules.filter(row => Object.hasOwn(row.definition, "required"))).toHaveLength(161);
   expect(db.validationRules.every(row => !Object.hasOwn(row.definition, "required"))).toBe(true);
   for (const field of db.fields) expect(resolveSharedFieldDefinition(field, db.validationRules, "fields-required").definition.required)
     .toEqual(resolveSharedFieldDefinition(field, original.validationRules, "legacy").definition.required);

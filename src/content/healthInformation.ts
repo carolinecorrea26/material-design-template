@@ -1,0 +1,2 @@
+/** Existing prototype explanation, shared by every Health page. */
+export const healthInformationText = 'Some insurance products require health information as part of the application process. Your health information is only used to review your application and is handled securely in accordance with our privacy practices. This information helps when providing a decision for your requested coverage.';

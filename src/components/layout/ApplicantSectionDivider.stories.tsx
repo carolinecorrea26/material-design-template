@@ -1,3 +1,4 @@
+// Preview notes are documentation only; the canvas contains application UI.
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Typography } from "@mui/material";
 import ApplicantSectionDivider, { ApplicantSectionLabel } from "./ApplicantSectionDivider";
@@ -12,9 +13,10 @@ import SupervisorAccountRoundedIcon from "@mui/icons-material/SupervisorAccountR
  * is also applying.
  */
 const meta = {
-  title: "Layout/ApplicantSectionDivider",
+  id: "layout-applicantsectiondivider",
+  title: "Components/Layout/Headings and dividers/Applicant heading",
   component: ApplicantSectionDivider,
-  parameters: { layout: "padded" },
+  parameters: { docs: { description: { component: "Labels an applicant section with an optional supporting note." } }, layout: "padded" },
 } satisfies Meta<typeof ApplicantSectionDivider>;
 
 export default meta;
@@ -47,11 +49,7 @@ export const LabelHiddenMemberOnlyFlow: StoryObj = {
   name: "showLabel=false (member-only flow)",
   render: () => (
     <ApplicantSectionDivider applicant="self" showLabel={false}>
-      <Typography variant="body2">
-        No header renders — used when the member is the only applicant, per
-        the applicant-display rule ("member section title hidden for
-        member-only flow").
-      </Typography>
+      <Typography variant="body2">Member information</Typography>
     </ApplicantSectionDivider>
   ),
 };

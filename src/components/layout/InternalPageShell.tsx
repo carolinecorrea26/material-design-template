@@ -52,7 +52,6 @@ export default function InternalPageShell({ pageId, children }: InternalPageShel
                 key={crumb.id}
                 component={RouterLink}
                 to={getPagePath(crumb.id)}
-                underline="hover"
                 color="text.secondary"
                 sx={{ fontSize: "0.8125rem" }}
               >

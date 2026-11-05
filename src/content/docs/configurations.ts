@@ -140,7 +140,7 @@ const CONFIGURATION_DEFAULT_DISPLAY: Partial<Record<string, string>> = {
   "ClientConfig.features.scheduleUrl": "None",
   "ClientConfig.features.linkUrl / linkLabel": "None",
   "content.home.hero.*":
-    'Tagline: “Simple • Secure • Member-only rates”; title: “Safeguard your financial future.”; subtext: “Coverage designed exclusively for {client name} members. Get started today!”; primary CTA: “Begin application”; secondary CTA: “Learn more”; resume prompt/link: “Already started an application?” / “Continue here”',
+    'Tagline: “Simple • Secure • Member-only rates”; title: “Safeguard your financial future.”; subtext: “Coverage designed exclusively for {client name} members. Get started today!”; primary CTA: “Start my application”; secondary CTA: “Continue application”',
   "content.home.clientSection": "None — section is hidden",
   "content.home.howApplyingWorks / applyingSteps":
     '“How does applying work?” / “Three simple steps from application to coverage.”; steps: Apply online in minutes, Answer health questions, Get your decision',
@@ -193,14 +193,14 @@ export function getConfigurationDefaultDisplay(config: Pick<ConfigRow, "name">):
  * choices and structured configuration objects.
  */
 const CONFIGURATION_AVAILABLE_OPTIONS: Partial<Record<string, string>> = {
-  "ClientConfig.applicantExperience.contact": "hideBusinessAddress: true/false; hideCorrespondence: true/false. Omitted flags default to false.",
-  "ClientConfig.reviewPolicy": "Ordered blocks with canonical field IDs, paragraphs, optional unordered lists, after-list content and source references; optional applicant/product/mode predicates; jurisdiction fraud text and Site overrides",
+  "ClientConfig.applicantExperience.contact": "hideBusinessAddress: true/false; hideCorrespondence: true/false. Optional businessAddressProducts explicitly limits business collection to selected product keys and takes precedence over hideBusinessAddress. Omitted flags default to false.",
+  "ClientConfig.reviewPolicy": "Ordered blocks with canonical field IDs, paragraphs, optional unordered lists, after-list content and source references; applicant/product/mode/association/jurisdiction predicates; conditional consent; health-question participation and optional adult medical-underwriting guards for medical authorization and its introductory statement; source wording variants by jurisdiction and underwriting; optional point-size and before-signature placement; jurisdiction fraud text and Site overrides",
   "overrides[].requirements.exclusiveProducts": "Array of enabled product keys that cannot coexist across applicants",
   "overrides[].rateInputs": "version 1; dimensions required / ignored / provisional; authority source / provisional; source references; jurisdiction dimension/class overrides; rateClass catalog with single / fixed / tobacco / unresolved selection",
   "ClientConfig.tpaIntegration": "mode: coverage-verification or membership-auto-approval; lookupFields: field IDs (ASCE adds asce-member-id); prototypeRecords: facts and activeCoverage boolean",
   "ClientConfig.branding": "name; acronym; logo asset path; logo alt text; optional icons.quickDecision asset path",
   "ClientConfig.theme":
-    "Preset: default, teal, purple, dark-blue; or custom primary plus full palette overrides (brand, semantic, backgrounds, text and surfaces)",
+    "Preset: default, teal, purple, dark-blue; or one custom primary color. Optional primaryAction: { main: hex, tone: light or dark } overrides filled primary buttons; otherwise buttons inherit the theme color. buttonShape: pill (default) or standard.",
   "ClientConfig.applicantLabels":
     "member, spouse, child — custom text up to 20 characters each",
   "ClientConfig.support.phone / phoneDisplay / phoneHours":
@@ -268,7 +268,7 @@ type ConfigRowSource = Omit<ConfigRow, "id">;
 
 const configurationInventory: ConfigRowSource[] = [
   { group: "Field configuration", label: "Contact section visibility", name: "ClientConfig.applicantExperience.contact", description: "Reusable Site contact policy. Hide the whole business/employer section regardless of selected products, and independently hide the correspondence destination question. WAEPA uses both flags; other Sites retain their template defaults.", sourcePath: "src/domain/applicantExperience.ts / src/pages/Contact.tsx", scope: "Client Configurable", usedIn: "Contact rendering, field collection and validation" },
-  { group: "Branding", label: "Custom icons", name: "ClientConfig.branding.icons", description: "Optional client artwork for QuickDecision and coverage categories (LI, AD, DI, OO, SH). Shared icons remain the fallback when an override is absent or cannot load.", sourcePath: "src/domain/configuration.ts / src/components/ui/ClientCategoryIcon.tsx", scope: "Client Configurable", usedIn: "QuickDecision, category headers, selectors, quote tools, coverage, beneficiary and payment" },
+  { group: "Branding", label: "Custom icons", name: "ClientConfig.branding.icons", description: "Optional client artwork for QuickDecision and coverage categories (LI, AD, DI, OO, SH). Shared icons remain the fallback when an override is absent or cannot load.", sourcePath: "src/domain/configuration.ts / src/components/content/ClientCategoryIcon.tsx", scope: "Client Configurable", usedIn: "QuickDecision, category headers, selectors, quote tools, coverage, beneficiary and payment" },
   { group: "Landing Page", label: "Single-page artwork display", name: "ClientConfig.features.singlePageArtwork", description: "Single-page only: defaults to hero text with no decorative images. Opt into the animated clouds, cat and umbrella together. The primary cloud sits above the 800px hero; artwork uses the primary theme palette, is hidden from assistive technology and pauses for reduced motion. Multi-page ignores this setting.", sourcePath: "src/config/homepagePresentation.ts / src/pages/Home.tsx / src/components/layout/AppShell.tsx", scope: "Client Configurable", usedIn: "Single-page Home, HeroClouds, FormUmbrella" },
   { group: "Landing Page", label: "Homepage applying-steps presentation", name: "ClientConfig.features.applyingStepsPresentation", description: "Client selects regular images (default) or the animated application preview, independently of homepage variant. Welcome-back hides the section; drawer explanations remain static and reduced-motion preferences pause animation.", sourcePath: "src/config/homepagePresentation.ts", scope: "Client Configurable", usedIn: "Home, HowApplyingWorksPanel" },
 
@@ -293,7 +293,7 @@ const configurationInventory: ConfigRowSource[] = [
     label: "Site theme",
     name: "ClientConfig.theme",
     description:
-      "Sets the full site color palette. Custom themes support primary, secondary, success, error, warning, info, backgrounds, text, divider, action and portal surface colors; omitted tokens inherit template defaults.",
+      "Sets one theme color and an optional filled-primary-button color override, plus standard or pill button shape. Links, controls and supporting accents use the theme color. Other palette roles use the shared template defaults.",
     sourcePath: "src/config/clients/*.ts / src/app/theme.ts",
     scope: "Client Configurable",
     usedIn: "ThemeProvider (global)",
@@ -739,7 +739,7 @@ const configurationInventory: ConfigRowSource[] = [
     sourcePath:
       "src/content/defaults/navigation.ts / src/config/transitionMessages.ts",
     scope: "Global",
-    usedIn: "LoadingOverlay, ProgressStep",
+    usedIn: "PageTransitionSkeleton, ProgressStep",
   },
   // ── M. Footer, legal & compliance ─────────────────────────────────────────
   {
@@ -768,7 +768,7 @@ const configurationInventory: ConfigRowSource[] = [
     label: "Shared constants",
     name: "constants / coverageConstants",
     description:
-      "Shared UI constants (YES_NO_OPTIONS, SURFACE_SX, CARD_RADIUS) and coverage-specific constants for amount calculations.",
+      "Shared UI constants (YES_NO_OPTIONS, SURFACE_SX) and coverage-specific constants for amount calculations.",
     sourcePath: "src/config/constants.ts / src/config/coverageConstants.ts",
     scope: "Global",
     usedIn: "FieldRenderer options, layout styles, coverage amount logic",
@@ -793,7 +793,7 @@ const configurationInventory: ConfigRowSource[] = [
     scope: "Global",
     usedIn: "All content-consuming components",
   },
-  { group: "Review", label: "Notices and additional fields", name: "ClientConfig.reviewPolicy", description: "Ordered Review blocks with source references, applicant/product/mode applicability and canonical field IDs. Acknowledgement and identity inputs use standard field components with configurable required status before Next. Fraud notices vary by residence and coverage.", sourcePath: "src/domain/reviewPolicy.ts", scope: "Client Configurable", usedIn: "Review / Read and sign" },
+  { group: "Review", label: "Notices and additional fields", name: "ClientConfig.reviewPolicy", description: "Ordered Review blocks with source references, applicant/product/mode applicability and canonical field IDs. Acknowledgement and identity inputs use standard field components with configurable required status before Next. Fraud notices vary by residence and coverage. Assigned medical-authorization guards follow configured health-question participation or explicit adult medical-underwriting requirements. ABE requires authorization for FUW/TELE even without online questions.", sourcePath: "src/domain/reviewPolicy.ts", scope: "Client Configurable", usedIn: "Review / Read and sign" },
   { group: "Coverage", label: "Mutually exclusive products", name: "overrides[].requirements.exclusiveProducts", description: "Product keys that cannot coexist anywhere in the application. Enforced during selection and validation.", sourcePath: "src/domain/coverageRequirements.ts", scope: "Client Configurable", usedIn: "Coverage / Review" },
   { group: "Coverage", label: "Rate input participation", name: "overrides[].rateInputs", description: "Product pricing dimensions: required, ignored or provisional. Includes gender, tobacco, age, jurisdiction, applicant, amount, periods, association, riders and client-specific rate classes. Fixed quote assumptions and tobacco-based class mappings are separate from field visibility. Independent from page field visibility; persisted reviewed policies retain source references and assumption authority.", sourcePath: "src/domain/rateInputPolicy.ts", scope: "Client Configurable", usedIn: "Mock rating / Quote" },
 ];

@@ -1,27 +1,24 @@
+import { coverageLinkUnavailableMessage } from "../content/interactionLabels";
 import { resolveApplicationCoverage } from "../domain/coverageRuntime";
-import FieldRenderer from "../components/forms/FieldRenderer";
-import { coverageFactFieldIds } from "../config/fields/coverageFactFields";
 import { useRef, useState } from "react";
 import { Box, Button, Divider, Stack } from "@mui/material";
 import PageAlert from "../components/feedback/PageAlert";
-import CoverageCategorySelector from "../components/forms/CoverageCategorySelector";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 import FormRoutePage from "../app/RoutePage";
 
 import AppDrawer from "../components/layout/AppDrawer";
 import FormHelpChips from "../components/content/HelpChips";
-import CoverageCart from "../components/ui/CoverageCart";
-import CoverageQuestions from "../components/forms/CoverageQuestions";
-import ProductCatalog from "../components/forms/ProductCatalog";
+import CoverageQuestions from "../app/sections/ConfiguredCoverageQuestions";
+import ProductCatalog from "../app/sections/ConfiguredProductCatalog";
 import { useCoverageState } from "../app/useCoverageState";
-import CoveragePortfolioDrawer from "../components/ui/CoveragePortfolioDrawer";
+import CoveragePortfolioDrawer from "../components/coverage/CoveragePortfolioDrawer";
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import type { CoverageApplicantId } from "../config/coverages/types";
 import type { BeforeNextContext } from "../app/RoutePage";
 import ConfirmationDialog from "../components/layout/ConfirmationDialog";
 import { getContent } from "../content";
-import AppSnackbar from "../components/feedback/AppSnackbar";
+import CoverageSelectionFeedback from "../components/coverage/CoverageSelectionFeedback";
 
 const content = getContent();
 
@@ -184,11 +181,11 @@ export default function Coverage() {
             onConfirm={handleDependentCoverageContinue}
           />
 
-          <AppSnackbar
-            open={state.addedSnackbarOpen}
-            onClose={() => state.setAddedSnackbarOpen(false)}
-            message="Added"
-            severity="success"
+          <CoverageSelectionFeedback
+            summaryOpen={state.summaryDrawerOpen}
+            onCloseSummary={() => state.setSummaryDrawerOpen(false)}
+            addedOpen={state.addedSnackbarOpen}
+            onCloseAdded={() => state.setAddedSnackbarOpen(false)}
           />
         </>
       )}
@@ -242,46 +239,41 @@ function CoveragePageContent({
         </Box>
       )}
 
-      {/* Section 1: Category chips + coverage questions */}
+      {state.coverages.length === 0 && <PageAlert severity="info" message={coverageLinkUnavailableMessage} />}
+      {state.selectedCoverageIds.some(id => !state.coverages.some(product => product.id === id)) && <PageAlert severity="warning" message={<Stack spacing={1}>
+        <span>Some previously selected coverage is not available through this link. Remove those selections to continue, or return to the original application link.</span>
+        <Button sx={{ alignSelf: "flex-start" }} onClick={() => state.setPageValues({ coverageSelections: state.selectedCoverageIds.filter(id => state.coverages.some(product => product.id === id)) })}>Remove unavailable selections</Button>
+      </Stack>} />}
+      {/* Coverage questions: category question and its follow-ups */}
       <PageAlert severity="error" message={pageError ?? undefined} />
-      <Stack spacing={3}>
-        {/* Category selection (multi-select) */}
-        {state.availableCategories.length > 1 && <CoverageCategorySelector
-          categories={state.availableCategories}
-          selectedIds={state.selectedCategories}
-          onToggle={state.handleCategoryToggle}
-          error={state.selectedCategories.length === 0 && !!pageError}
-          errorMessage={content.coverage.selectAtLeastOneCategoryError}
-        />}
-
-        {/* Category-level question fields */}
-        <CoverageQuestions
-          control={control}
-          errors={errors}
-          watchedValues={watchedValues}
-          allFields={allFields}
-          pageSections={pageSections}
-          selectedCategories={state.selectedCategories}
-          hasSpouse={state.hasSpouse}
-          onFieldChange={handleCoverageQuestionChange}
-          coverageQuestions={state.clientCoverageQuestions}
-        />
-        {coverageFactFieldIds(state.categoryProducts, watchedValues).map(id => {
-          const field = allFields.find(field => field.id === id);
-          return field ? <FieldRenderer key={id} field={field} control={control} errors={errors} onValueChange={handleCoverageQuestionChange} /> : null;
-        })}
-      </Stack>
+      <CoverageQuestions
+        control={control}
+        errors={errors}
+        watchedValues={watchedValues}
+        allFields={allFields}
+        pageSections={pageSections}
+        selectedCategories={state.selectedCategories}
+        hasSpouse={state.hasSpouse}
+        onFieldChange={handleCoverageQuestionChange}
+        coverageQuestions={state.clientCoverageQuestions}
+        availableCategories={state.availableCategories}
+        categoryProducts={state.categoryProducts}
+        onCategoryToggle={state.handleCategoryToggle}
+        categoryError={state.selectedCategories.length === 0 && !!pageError}
+        categoryErrorMessage={content.coverage.selectAtLeastOneCategoryError}
+      />
 
       {/* Divider between coverage questions and products */}
       {state.selectedCategories.length > 0 && state.showProducts && (
         <Divider sx={{ my: 4 }} />
       )}
 
-      {/* Section 2: Product catalog with estimated cost sidebar */}
+      {/* Product reveal: product boxes and the combined selected-product cost */}
       {state.selectedCategories.length > 0 && state.showProducts && (
         <Box>
           <ProductCatalog
-          getCoverageBehavior={(product, applicant) => resolveApplicationCoverage(product, applicant, watchedValues, state.coverages)}
+            getRateDisplay={state.getRateDisplay}
+            getCoverageBehavior={(product, applicant) => resolveApplicationCoverage(product, applicant, watchedValues, state.coverages)}
             availableCategories={state.availableCategories}
             selectedCategories={state.selectedCategories}
             categoryProducts={state.categoryProducts}
@@ -359,17 +351,7 @@ function CoveragePageContent({
           </Box>
         )}
 
-      <AppDrawer
-        open={state.summaryDrawerOpen}
-        onClose={() => state.setSummaryDrawerOpen(false)}
-        swipeable
-      >
-        <CoverageCart
-          variant="drawer"
-          source="coverage-page"
-          onClose={() => state.setSummaryDrawerOpen(false)}
-        />
-      </AppDrawer>
+
     </>
   );
 }

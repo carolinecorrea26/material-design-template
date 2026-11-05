@@ -15,8 +15,7 @@ export const waepaContentOverrides: DeepPartial<SiteContent> = {
   },
   pages: {
     membership: {
-      infoNote:
-        "NOTICE: Receipt of Accelerated Death Benefits may affect eligibility for Public Assistance Programs and may be taxable.\nNOTICE FOR NEW YORK RESIDENTS, THE POLICY CONTAINS A WAR RESTRICTION",
+      infoNote: "",
       //   sectionNotes: {
       //     membershipInformation:
       //       "Please provide the following information to complete your membership.",

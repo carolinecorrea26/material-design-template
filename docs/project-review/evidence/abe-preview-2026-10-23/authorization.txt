@@ -1,0 +1,7 @@
+Observed ABE preview step: Authorize Application
+URL: https://abepreview.nylinsure2.com/#signature
+Scenario: fictional member only; birth date 1960-01-01; Alabama; 50+ Multi-Benefit Term Life; $25,000.
+No online medical-history questionnaire appeared before authorization.
+Medical authorization and underwritten consent wording were displayed.
+Electronic Consent and dividend acknowledgement controls remained unchecked. No final submission or signature was performed.
+Important Notice opened as a one-page PDF: https://abepreview.nylinsure2.com/content/Important%20Notice%20All%20except%20NM%202%2008.12.pdf

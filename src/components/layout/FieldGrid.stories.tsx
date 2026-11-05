@@ -1,33 +1,48 @@
+import { useState } from "react";
+import ControlledFieldRenderer from "../forms/ControlledFieldRenderer";
 import type { Meta } from "@storybook/react-vite";
-import { TextField } from "@mui/material";
+
 import FieldGrid from "./FieldGrid";
 
 const meta = {
-  title: "Layout/FieldGrid",
+  id: "layout-fieldgrid",
+  title: "Components/Forms/Field groups/Layout",
   component: FieldGrid,
-  parameters: { layout: "padded" },
+  parameters: { docs: { description: { component: "Fields stack by default. Address and name groups may share a row on larger screens and stack on mobile." } }, layout: "padded" },
 } satisfies Meta<typeof FieldGrid>;
 
 export default meta;
 
-export const EqualColumns = () => (
+export const StackedFields = () => (
   <FieldGrid>
-    <TextField label="First name" />
-    <TextField label="Last name" />
+    <ExampleField field={{ id: "first-name", label: "First name", inputType: "text" }} />
+    <ExampleField field={{ id: "last-name", label: "Last name", inputType: "text" }} />
   </FieldGrid>
 );
 
-export const WideAndNarrow = () => (
+export const NameFields = () => (
+  <FieldGrid columns="equal">
+    <ExampleField field={{ id: "first-name", label: "First name", inputType: "text" }} />
+    <ExampleField field={{ id: "last-name", label: "Last name", inputType: "text" }} />
+  </FieldGrid>
+);
+
+export const StreetAndApartment = () => (
   <FieldGrid columns="wide-narrow">
-    <TextField label="Street address" />
-    <TextField label="Apt / Suite" />
+    <ExampleField field={{ id: "street-address", label: "Street address", inputType: "text" }} />
+    <ExampleField field={{ id: "apt--suite", label: "Apt / Suite", inputType: "text" }} />
   </FieldGrid>
 );
 
-export const WideAndTwoNarrow = () => (
+export const CityStateAndZip = () => (
   <FieldGrid columns="wide-two-narrow">
-    <TextField label="City" />
-    <TextField label="State" />
-    <TextField label="ZIP" />
+    <ExampleField field={{ id: "city", label: "City", inputType: "text" }} />
+    <ExampleField field={{ id: "state", label: "State", inputType: "text" }} />
+    <ExampleField field={{ id: "zip", label: "ZIP", inputType: "text" }} />
   </FieldGrid>
 );
+
+function ExampleField(props: Omit<React.ComponentProps<typeof ControlledFieldRenderer>, "value" | "onChange">) {
+  const [value, setValue] = useState<string | boolean | string[]>("");
+  return <ControlledFieldRenderer {...props} value={value} onChange={setValue} />;
+}

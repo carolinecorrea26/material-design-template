@@ -9,10 +9,10 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import PhoneIcon from "@mui/icons-material/Phone";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import CloseIcon from "@mui/icons-material/Close";
+import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
+import ChatBubbleOutlineRoundedIcon from "@mui/icons-material/ChatBubbleOutlineRounded";
+import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import type { ClientConfig } from "../../config/clients/types";
 
 type ClientHelpBannerProps = {
@@ -74,7 +74,7 @@ export default function ClientHelpBanner({ client }: ClientHelpBannerProps) {
               variant="outlined"
               size="small"
               href={`tel:${phone}`}
-              startIcon={<PhoneIcon />}
+              startIcon={<PhoneRoundedIcon />}
               sx={{
                 color: "#fff",
                 borderColor: "rgba(255,255,255,0.6)",
@@ -110,7 +110,7 @@ export default function ClientHelpBanner({ client }: ClientHelpBannerProps) {
                 variant="outlined"
                 size="small"
                 onClick={handleChat}
-                startIcon={<ChatBubbleOutlineIcon />}
+                startIcon={<ChatBubbleOutlineRoundedIcon />}
                 sx={{
                   color: "#fff",
                   borderColor: "rgba(255,255,255,0.6)",
@@ -169,7 +169,7 @@ export default function ClientHelpBanner({ client }: ClientHelpBannerProps) {
                 variant="outlined"
                 size="small"
                 onClick={() => setScheduleOpen(true)}
-                startIcon={<CalendarMonthIcon />}
+                startIcon={<CalendarMonthRoundedIcon />}
                 sx={{
                   color: "#fff",
                   borderColor: "rgba(255,255,255,0.6)",
@@ -209,7 +209,7 @@ export default function ClientHelpBanner({ client }: ClientHelpBannerProps) {
             aria-label="Close schedule a call dialog"
             size="small"
           >
-            <CloseIcon />
+            <CloseRoundedIcon />
           </IconButton>
         </DialogTitle>
         <DialogContent>

@@ -1,0 +1,201 @@
+{
+  "date": "2026-10-28",
+  "scope": "Health component and documentation review for the current prototype",
+  "status": "complete",
+  "userAcceptance": "not recorded",
+  "sourceForms": {
+    "sections": 18,
+    "examples": 41,
+    "workbookSha256": "039c0dd361e76f8c224e8320cef506f0d7d6e956a02f1017055bd8dcde2488a2"
+  },
+  "canonicalHealthExamples": 6,
+  "productionHealthPageExamples": 14,
+  "verification": {
+    "passedTests": 165,
+    "testFiles": 26,
+    "checks": [
+      {
+        "file": "scripts/storybook-component-analysis.test.mjs",
+        "tests": 11,
+        "passed": true
+      },
+      {
+        "file": "src/components/feedback/RecoveryAlert.test.tsx",
+        "tests": 5,
+        "passed": true
+      },
+      {
+        "file": "src/components/forms/HealthComponents.test.tsx",
+        "tests": 5,
+        "passed": true
+      },
+      {
+        "file": "src/components/forms/storedFieldSurfaces.test.tsx",
+        "tests": 3,
+        "passed": true
+      },
+      {
+        "file": "src/dev/storybook/capabilityInventory.test.ts",
+        "tests": 12,
+        "passed": true
+      },
+      {
+        "file": "src/dev/storybook/healthCatalogConsistency.test.ts",
+        "tests": 1,
+        "passed": true
+      },
+      {
+        "file": "src/dev/storybook/healthStories.test.tsx",
+        "tests": 14,
+        "passed": true
+      },
+      {
+        "file": "src/dev/storybook/sourceHealthForms.test.tsx",
+        "tests": 25,
+        "passed": true
+      },
+      {
+        "file": "src/domain/componentCatalog.test.ts",
+        "tests": 5,
+        "passed": true
+      },
+      {
+        "file": "src/domain/healthQuestionnaire.test.ts",
+        "tests": 4,
+        "passed": true
+      },
+      {
+        "file": "src/migration/abeApprovedDecisions.test.ts",
+        "tests": 6,
+        "passed": true
+      },
+      {
+        "file": "src/migration/abeCirQuestionnaireAdoption.test.ts",
+        "tests": 4,
+        "passed": true
+      },
+      {
+        "file": "src/migration/atpeQuestionnaireAdoption.test.tsx",
+        "tests": 6,
+        "passed": true
+      },
+      {
+        "file": "src/migration/combinedDisabilityQuestionnaireAdoption.test.tsx",
+        "tests": 5,
+        "passed": true
+      },
+      {
+        "file": "src/migration/externalQdQuestionnaireDecision.test.ts",
+        "tests": 4,
+        "passed": true
+      },
+      {
+        "file": "src/migration/isitrustQuestionnaireAdoption.test.ts",
+        "tests": 3,
+        "passed": true
+      },
+      {
+        "file": "src/migration/legacyHealthCatalog.test.ts",
+        "tests": 2,
+        "passed": true
+      },
+      {
+        "file": "src/migration/nsoCombinedLifeQuestionnaireAdoption.test.ts",
+        "tests": 3,
+        "passed": true
+      },
+      {
+        "file": "src/migration/sharedLifeQuestionnaireAdoption.test.ts",
+        "tests": 4,
+        "passed": true
+      },
+      {
+        "file": "src/pages/Health.restoration.test.tsx",
+        "tests": 2,
+        "passed": true
+      },
+      {
+        "file": "src/pages/HealthCi.test.tsx",
+        "tests": 1,
+        "passed": true
+      },
+      {
+        "file": "src/pages/HealthCir.test.tsx",
+        "tests": 1,
+        "passed": true
+      },
+      {
+        "file": "src/pages/HealthQuestionLayout.test.tsx",
+        "tests": 7,
+        "passed": true
+      },
+      {
+        "file": "src/pages/admin/library/ComponentsLibrary.test.tsx",
+        "tests": 8,
+        "passed": true
+      },
+      {
+        "file": "src/pages/admin/library/pageCatalogRows.test.ts",
+        "tests": 6,
+        "passed": true
+      },
+      {
+        "file": "src/utils/fieldValidation.test.ts",
+        "tests": 18,
+        "passed": true
+      }
+    ],
+    "typescript": "passed",
+    "scopedEslint": "passed",
+    "catalogCheck": "passed",
+    "storybookBuild": "passed",
+    "applicationBuild": "passed",
+    "sourceAuditErrors": 0,
+    "builtStoryIds": "all-non-admin-story-ids-present"
+  },
+  "browserSmokeChecks": [
+    "Restored member Yes/detail record and independent spouse No render in the built canonical example.",
+    "Edit opens the shared detail dialog with the restored value. Cancel preserves the record and returns focus to Edit.",
+    "The built QD page renders its external-question loader with no questionnaire or Next action."
+  ],
+  "remainingBoundaries": [
+    "Missing PRS1 attached AIDS wording.",
+    "Missing inserted QD tobacco wording for the amended GMA-EZ1 form.",
+    "Original TELE-SUPP notes retain conflicting general-detail versus structured-detail instructions.",
+    "Externally hosted QD service/questions and live integration.",
+    "Existing incomplete dedicated WAEPA CIR source and carrier-form/PDF/signature integration scope."
+  ],
+  "sourceSha256": {
+    "src/components/forms/HealthQuestion.tsx": "0c1f889c2c7a7657ca5a50db698a99a6e35ca915a738ab52b8456835a2cd7364",
+    "src/components/forms/HealthQuestionList.tsx": "b856c52abd0396830111204ddf4c203f64ad9b12aab4f8df0f1bce2c85f56c4c",
+    "src/components/forms/YesNoDetailList.tsx": "f3e713ef6468fa58228fe23b21cf579cebc752a2bf8122dcbd7be5ed9248ee6c",
+    "src/app/RoutePage.tsx": "a3d2ac0a2dbdc89afd10e1d166dc544c1e6c2054d22751768b7af9707f676059",
+    "src/app/sections/ConfiguredHealthQuestionList.tsx": "ffd2f1ddb20f52ccf1ff63128811657bb27531ab62c08a3784f4166ff75e9fc0",
+    "src/app/sections/ConfiguredHealthQuestions.tsx": "6ac88a7f65bffa95917edc07b58faaef2f8e434562de230110a68d741274f8b6",
+    "src/domain/healthQuestionnaire.ts": "d38eef3b4e7168e28afa7a9c62c103add9762a961d2231ea310297f17f46b225",
+    "src/domain/configuredHealthQuestionnaire.ts": "d7594868a9717af562e18d0ed26bbb16e8e09281718c2ab51c82e15d350c114b",
+    "src/utils/fieldValidation.ts": "35459b7e6e7710a2338d49ddbea17e1c6d1fedecd7649f10b3c95d2b1a61f443",
+    "src/migration/abeHealthQuestionnairesAdoption.ts": "e4dad15e2f2d28753c83a7c887d93fbc5de3dbcf27b04e44aba3f883aeed33ca",
+    ".storybook/healthForms/SourceHealthFormPage.tsx": "af6f49f9161f77add59a4819cf17b63e106bdc8396c6f3e1918bdd0b48df23d8",
+    ".storybook/healthForms/catalog.ts": "312899bf0684122820fa8614ef2516eed66dc41af3a8c1cd52155e12cc54071b",
+    ".storybook/healthForms/validation.ts": "4abf1e82a95b949fc9deda2591aead44d7a6ccbb634bda5c6c18b2837f325b6a",
+    "public/catalog/components/components.json": "466008237bf99831b78ad506d043e611cae2a455fe21a26332e7b0a12f17e5bb",
+    "public/catalog/portal.json": "737b8443df56f5f63870c720c646c461a99bc3295c9a4e66e7dee6f64522223e"
+  },
+  "sharedInformationHelpFollowUp": {
+    "date": "2026-10-28",
+    "scope": "Same approved prototype chip and explanation on all six routes and all 18 form previews",
+    "verification": {
+      "pageAndSourceFormChecks": 39,
+      "typescript": "passed",
+      "scopedEslint": "passed",
+      "storybookBuild": "passed",
+      "catalogCheck": "passed"
+    },
+    "sourceSha256": {
+      "src/components/health/HealthInformationHelp.tsx": "9cd373ea6c740365cba1d6641e1a3696b3f3e3eea8c269c490fcdc5f30bea7a5",
+      "src/content/healthInformation.ts": "8d1d876f35c2c074c9eb7cb89ce87c50ebf8a49f66ae392ef36f5f2ca257717f",
+      "src/content/interactionLabels.ts": "b5a363a56cc1a79a8b1ff0343a437e1ca75a57227de1b8cfdf2c25e0c336023e"
+    }
+  }
+}

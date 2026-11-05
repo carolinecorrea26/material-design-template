@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Alert, Stack, Typography } from "@mui/material";
-import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
+import { Stack } from "@mui/material";
+import BusinessRoundedIcon from "@mui/icons-material/BusinessRounded";
 import SectionDivider from "./SectionDivider";
 
 /**
@@ -17,9 +17,10 @@ import SectionDivider from "./SectionDivider";
  * sites, since they all go through the `subsection` preset either way.
  */
 const meta = {
-  title: "Layout/SectionDivider",
+  id: "layout-sectiondivider",
+  title: "Components/Layout/Headings and dividers/Section divider",
   component: SectionDivider,
-  parameters: { layout: "padded" },
+  parameters: { docs: { description: { component: "Separates and labels groups of related form content." } }, layout: "padded" },
 } satisfies Meta<typeof SectionDivider>;
 
 export default meta;
@@ -30,7 +31,7 @@ export const SubsectionPreset: StoryObj = {
 };
 
 export const SubsectionWithIcon: StoryObj = {
-  render: () => <SectionDivider label="Business Information" icon={BusinessOutlinedIcon} variant="subsection" />,
+  render: () => <SectionDivider label="Business Information" icon={BusinessRoundedIcon} variant="subsection" />,
 };
 
 export const ChipFilled: StoryObj = {
@@ -59,20 +60,5 @@ export const SizeComparison: StoryObj = {
       <SectionDivider label="size=&quot;default&quot; (applicant + category headers)" size="default" />
       <SectionDivider label="size=&quot;small&quot; (sub-sections + standalone)" size="small" />
     </Stack>
-  ),
-};
-
-export const FixedNote: StoryObj = {
-  name: "What was fixed",
-  render: () => (
-    <>
-      <Alert severity="success" sx={{ maxWidth: 700 }}>
-        <Typography variant="body2">
-          Before this fix, <code>chipVariant="filled"</code> rendered an MUI{" "}
-          <em>outlined</em> chip. Now it renders an actual filled chip — see{" "}
-          <strong>Chip filled</strong> above for the corrected appearance.
-        </Typography>
-      </Alert>
-    </>
   ),
 };

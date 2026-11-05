@@ -267,7 +267,7 @@ export default function GlobalSiteDetailsPanel({
           application logic, every customer- and advisor-facing page, the abstract field model,
           the coverage catalog, supported configuration and defaults, and globally owned rules.
           For per-client configuration, see{" "}
-          <Link component="button" underline="hover" onClick={onNavigateToClientTab}>
+          <Link component="button" onClick={onNavigateToClientTab}>
             Client Site Details
           </Link>
           . For Storybook and client theme previews, see{" "}

@@ -5,9 +5,10 @@ import YesNoDetailList from "./YesNoDetailList";
 import type { FieldDefinition } from "../../config/fields/types";
 
 const meta = {
-  title: "Application Patterns/YesNoDetailList",
+  id: "application-patterns-yesnodetaillist",
+  title: "Components/Pages/Health/Sections/Question and follow-up layouts/Yes-no details",
   component: YesNoDetailList,
-  parameters: { layout: "padded" },
+  parameters: { standalone: true, docs: { description: { component: "Numbered yes/no questions that reveal a canonical DynamicList on “Yes”." } }, layout: "padded" },
 } satisfies Meta<typeof YesNoDetailList>;
 
 export default meta;

@@ -9,10 +9,8 @@ export const homeDefaults: HomeContent = {
     welcomeBackTitle: "Welcome!",
     welcomeBackDescription:
       "Continue your saved application or begin a new one below.",
-    ctaLabel: "Begin application",
-    secondaryCtaLabel: "Learn more",
-    resumePrompt: "Already started an application?",
-    resumeLinkLabel: "Continue here",
+    ctaLabel: "Start my application",
+    secondaryCtaLabel: "Continue application",
   },
   howApplyingWorks: {
     title: "How does applying work?",

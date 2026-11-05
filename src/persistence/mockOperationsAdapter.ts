@@ -4,6 +4,8 @@ import type { PersistenceAdapter } from './adapter';
 import type { RowFor, TableName } from './types';
 import { queryRows, type RowQuery } from './query';
 import { localSnapshotRevision, validateSnapshotData, validateSnapshotRequest } from './snapshot';
+import { normalizedSnapshotTables } from './catalogTables';
+const catalogTables = new Set<TableName>(normalizedSnapshotTables);
 const tables = new Set<TableName>(['sites', 'applications', 'applicationParticipants', 'applicationEvents', 'changeRequests', 'changeItems', 'releases', 'releaseChanges', 'siteBuilderDrafts', 'auditEvents', 'migrationSchedules']);
 const identityTables = new Set<TableName>(['organizations', 'organizationProfiles', 'clients', 'associations', 'siteAssociations', 'sitePolicies', 'associationEntities', 'associationAliases', 'associationAffiliations', 'siteAssociationContexts', 'supportProfiles', 'brandingProfiles']);
 /** Operational edits live on the mock server, which enforces the current account. */
@@ -23,9 +25,14 @@ export class MockOperationsAdapter implements PersistenceAdapter {
   }
   constructor(base: PersistenceAdapter) { this.base = base; }
   async list<T extends TableName>(table: T): Promise<RowFor<T>[]> {
-    if (identityTables.has(table)) {
+    if (table === 'analyticsTags') {
+      const result = await mockRequest<{ analyticsTags: import('../domain/analytics').AnalyticsTag[] }>('/library/catalog', { siteKey: 'all', tables: ['sites'] });
+      if (!Array.isArray(result.analyticsTags)) throw new Error('Missing stored tracking records');
+      return structuredClone(result.analyticsTags) as RowFor<T>[];
+    }
+    if (catalogTables.has(table)) {
       const result = await mockRequest<{ data: Pick<import('./types').DatabaseSchema, T> }>('/library/catalog', { siteKey: 'all', tables: [table] });
-      if (!Array.isArray(result.data?.[table])) throw new Error(`Missing stored identity table: ${table}`);
+      if (!Array.isArray(result.data?.[table])) throw new Error(`Missing stored catalog table: ${table}`);
       return structuredClone(result.data[table]);
     }
     if (tables.has(table)) await this.migrateExistingEdits();
@@ -34,19 +41,19 @@ export class MockOperationsAdapter implements PersistenceAdapter {
   async query<T extends TableName>(table: T, query: RowQuery<T> = {}) { return queryRows<T>(await this.list(table), query); }
   async get<T extends TableName>(table: T, id: string): Promise<RowFor<T> | null> { return (await this.list(table)).find(row => row.id === id) ?? null; }
   async insert<T extends TableName>(table: T, row: RowFor<T>): Promise<RowFor<T>> {
-    if (identityTables.has(table)) throw new Error('Identity records are owned by the stored Library. Browser-only identity edits are unavailable.');
+    if (catalogTables.has(table) && !tables.has(table) || identityTables.has(table) || table === 'analyticsTags') throw new Error('Records are owned by the stored Library. Browser-only catalog edits are unavailable.');
     if (!tables.has(table)) return this.base.insert(table, row);
     await this.migrateExistingEdits();
     return mockRequest<RowFor<T>>('/operations/write', { table, action: 'insert', row });
   }
   async update<T extends TableName>(table: T, id: string, patch: Partial<RowFor<T>>): Promise<RowFor<T>> {
-    if (identityTables.has(table)) throw new Error('Identity records are owned by the stored Library. Browser-only identity edits are unavailable.');
+    if (catalogTables.has(table) && !tables.has(table) || identityTables.has(table) || table === 'analyticsTags') throw new Error('Records are owned by the stored Library. Browser-only catalog edits are unavailable.');
     if (!tables.has(table)) return this.base.update(table, id, patch);
     await this.migrateExistingEdits();
     return mockRequest<RowFor<T>>('/operations/write', { table, action: 'update', id, patch });
   }
   async remove<T extends TableName>(table: T, id: string): Promise<void> {
-    if (identityTables.has(table)) throw new Error('Identity records are owned by the stored Library. Browser-only identity edits are unavailable.');
+    if (catalogTables.has(table) && !tables.has(table) || identityTables.has(table) || table === 'analyticsTags') throw new Error('Records are owned by the stored Library. Browser-only catalog edits are unavailable.');
     if (!tables.has(table)) return this.base.remove(table, id);
     await mockRequest('/operations/write', { table, action: 'remove', id });
   }

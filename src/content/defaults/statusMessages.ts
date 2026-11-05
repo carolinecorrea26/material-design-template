@@ -4,7 +4,7 @@ export const statusMessagesDefaults: StatusMessagesContent = {
   // ─── DocuSign ─────────────────────────────────────────────────────────────────
   docusign: {
     heading: "DocuSign",
-    body: "You are about to be taken to a new page to securely review and sign your application with DocuSign. Please do not close this window.",
+    body: "Waiting for the signing step to complete. In this prototype, use Simulate signing completion to preview the next step.",
   },
 
   // ─── Health QD ────────────────────────────────────────────────────────────────

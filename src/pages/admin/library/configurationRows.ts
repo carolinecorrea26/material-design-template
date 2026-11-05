@@ -2,6 +2,7 @@ import type { LibraryCatalog } from '../../../services/libraryCatalogService';
 import { resolveEffectiveSite } from '../../../domain/effectiveSite';
 import { configurationOwner, configurationPath, flagOwner, primaryConfigurationDefinitions, type LibraryOwner } from '../../../domain/libraryOwnership';
 import { humanize, readableValue } from './libraryRecordColumns';
+import { isPageParticipationPath } from '../../../domain/pageParticipation';
 
 export type ConfigurationInspectionRow = { key: string; name: string; description: string; group: string; values: string; options: string; scope: string; usedIn: string; source: string; owner: LibraryOwner; referenceKey: string };
 
@@ -11,7 +12,8 @@ export function configurationRows(catalog: LibraryCatalog, siteKey: string): Con
   if (siteKey !== 'all' && !site) return [];
   const resolved = site ? resolveEffectiveSite(data, siteKey) : null;
   const effective = resolved?.configuration.configurations ?? [];
-  const rows: ConfigurationInspectionRow[] = primaryConfigurationDefinitions(data.configurationDefinitions).map(row => {
+  const rows: ConfigurationInspectionRow[] = primaryConfigurationDefinitions(data.configurationDefinitions)
+    .filter(row => row.definition.target?.kind !== 'site-page-participation' && !isPageParticipationPath(configurationPath(row).split('.'))).map(row => {
     const alias = data.configurationDefinitions.find(item => !item.definition.path && configurationPath(item) === configurationPath(row));
     const raw = alias?.definition.metadata ?? row.definition.metadata;
     const metadata = raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
@@ -27,6 +29,13 @@ export function configurationRows(catalog: LibraryCatalog, siteKey: string): Con
       referenceKey: owner === 'products' ? product : owner === 'pages' ? configurationPath(row).split('.')[2] ?? '' : owner === 'fields' ? /^fields\.[^.]+\.overrides\.([^.]+)/.exec(configurationPath(row))?.[1] ?? '' : ['themes', 'client-information', 'flows'].includes(owner) ? '' : row.key,
     };
   }).filter((row): row is ConfigurationInspectionRow => row !== null);
+  for (const [pageKey, label] of [['payment', 'Payment'], ['beneficiary', 'Beneficiary']] as const) {
+    const modeLabel = (value: string | undefined) => value === 'none' ? 'Not used' : value === 'required' ? 'Required' : value === 'optional' ? 'Optional' : 'Not configured';
+    const values = site ? modeLabel(data.sitePages.find(row => row.siteKey === siteKey && row.pageKey === pageKey)?.requirement)
+      : data.sites.map(site => `${site.key}: ${modeLabel(data.sitePages.find(row => row.siteKey === site.key && row.pageKey === pageKey)?.requirement)}`).join('\n');
+    rows.unshift({ key: `pages.requirements.${pageKey}`, name: `${label} collection`, description: `Set whether ${label.toLowerCase()} information is required, optional or not collected.`, group: 'Page settings', values,
+      options: 'Required\nOptional\nNot used', scope: site ? siteKey : 'Site', usedIn: `${label} page`, source: 'site_pages.requirement', owner: 'configurations', referenceKey: pageKey });
+  }
   rows.unshift({ key: 'site.templateType', name: 'Application template', description: 'Select the single-page or multi-step application layout.', group: 'Application layout', values: site ? site.templateType : data.sites.map(site => `${site.name}: ${site.templateType}`).join('\n'), options: 'single — Single-page\nmulti — Multi-step', scope: site ? siteKey : 'Site', usedIn: 'Application layout and page previews', source: 'Site.templateType', owner: 'configurations', referenceKey: 'site.templateType' });
   for (const flag of data.flagDefinitions.filter(row => flagOwner(row.persistence) === 'configurations')) {
     const assignments = data.flagAssignments.filter(row => row.flagKey === flag.key && (!site || (!row.siteKey || row.siteKey === siteKey) && (!row.clientKey || row.clientKey === resolved?.clientKey)));

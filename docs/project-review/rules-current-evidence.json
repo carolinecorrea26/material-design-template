@@ -2,7 +2,7 @@
   "scope": "Rules only; field/rider decisions stay settled. Pages/flows and presentation ownership are deferred from this pass.",
   "boundary": "Complete catalog classification with implementation references and bounded corrections; not a claim that all described behavior is executed by a generic rule engine or has received exhaustive semantic review.",
   "counts": {
-    "documented-behavior": 86,
+    "documented-behavior": 94,
     "routing": 5,
     "planned": 4,
     "source-reference": 3,
@@ -367,7 +367,8 @@
       "fieldKeys": [],
       "scopedFieldKeys": [
         "site:waepa.membership.waepa-declaration.override",
-        "site:waepa.membership.waepa-attestation.override"
+        "site:waepa.membership.waepa-attestation.override",
+        "site:waepa.membership.membership-referral-source.include"
       ]
     },
     {
@@ -432,17 +433,22 @@
         "id": "condition-waepa-associated-member",
         "conditions": [
           {
-            "fieldId": "waepa-attestation",
+            "fieldId": "membership",
             "operator": "equals",
-            "value": "spouse-associate"
+            "value": "new"
           },
           {
             "fieldId": "waepa-attestation",
-            "operator": "equals",
-            "value": "child-associate"
+            "operator": "oneOf",
+            "value": [
+              "spouse-associate",
+              "child-associate",
+              "parent-associate",
+              "sibling-associate"
+            ]
           }
         ],
-        "match": "any"
+        "match": "all"
       },
       "ruleKeys": [
         "rule-membership-waepa-associate-member-information"
@@ -452,7 +458,54 @@
       "scopedFieldKeys": [
         "site:waepa.membership.waepa-member-first-name.override",
         "site:waepa.membership.waepa-member-last-name.override",
-        "site:waepa.membership.waepa-member-id.override"
+        "site:waepa.membership.waepa-member-id.override",
+        "site:waepa.membership.waepa-member-middle-initial.include"
+      ]
+    },
+    {
+      "key": "condition-membership-confirmed",
+      "definition": {
+        "id": "condition-membership-confirmed",
+        "conditions": [
+          {
+            "fieldId": "membership",
+            "operator": "equals",
+            "value": "yes"
+          }
+        ],
+        "match": "all"
+      },
+      "ruleKeys": [],
+      "sectionKeys": [],
+      "fieldKeys": [
+        "membership-status",
+        "nurse-type"
+      ],
+      "scopedFieldKeys": []
+    },
+    {
+      "key": "condition-membership-confirmed-new",
+      "definition": {
+        "id": "condition-membership-confirmed-new",
+        "match": "all",
+        "conditions": [
+          {
+            "fieldId": "membership",
+            "operator": "equals",
+            "value": "yes"
+          },
+          {
+            "fieldId": "membership-status",
+            "operator": "equals",
+            "value": "new"
+          }
+        ]
+      },
+      "ruleKeys": [],
+      "sectionKeys": [],
+      "fieldKeys": [],
+      "scopedFieldKeys": [
+        "site:waepa-gi.membership.membership-referral-source.include"
       ]
     }
   ],
@@ -469,6 +522,16 @@
         "owner": "src/config/formFlow.ts; src/app/RoutePage.tsx"
       },
       "behavior": "Next and Back use the form-flow resolver and skip pages whose display conditions evaluate to false.",
+      "organization": {
+        "path": [
+          "application",
+          "application-flow",
+          "page-participation"
+        ],
+        "familyKey": "rules.application-flow.page-participation",
+        "effect": "routing",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/formFlow.ts",
@@ -508,6 +571,16 @@
         "owner": "src/app/RoutePage.tsx; src/pages/Profile.tsx; src/pages/Coverage.tsx"
       },
       "behavior": "Pages can register an onBeforeNext hook that pauses forward navigation, shows an intermediate step (e.g. a confirmation dialog or send dialog), and resumes navigation only when the page calls the provided continueNavigation callback. Used by Coverage (dependent-only confirmation) and Profile (advisor send dialog).",
+      "organization": {
+        "path": [
+          "application",
+          "application-flow",
+          "page-participation"
+        ],
+        "familyKey": "rules.application-flow.page-participation",
+        "effect": "routing",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/app/RoutePage.tsx",
@@ -551,6 +624,16 @@
         "owner": "src/config/flowGates.ts; src/config/client/getClientPageRequirement.ts"
       },
       "behavior": "If Beneficiary or Payment is configured as none, the page is skipped from the active form flow.",
+      "organization": {
+        "path": [
+          "application",
+          "application-flow",
+          "page-participation"
+        ],
+        "familyKey": "rules.application-flow.page-participation",
+        "effect": "routing",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/flowGates.ts",
@@ -590,6 +673,16 @@
         "owner": "rules/rule-application-flow-beneficiary-routing"
       },
       "behavior": "Beneficiary is shown only when selected coverage includes Life (LI) or Accidental Death (AD), unless the page is configured as none.",
+      "organization": {
+        "path": [
+          "application",
+          "application-flow",
+          "page-participation"
+        ],
+        "familyKey": "rules.application-flow.page-participation",
+        "effect": "routing",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/flowGates.ts",
@@ -625,6 +718,16 @@
         "owner": "rules/rule-application-flow-health-si-routing"
       },
       "behavior": "Shown when a selected coverage has SI underwriting.",
+      "organization": {
+        "path": [
+          "application",
+          "application-flow",
+          "page-participation"
+        ],
+        "familyKey": "rules.application-flow.page-participation",
+        "effect": "routing",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/flowGates.ts",
@@ -660,6 +763,16 @@
         "owner": "src/config/formFlow.ts"
       },
       "behavior": "Shown when a Whole Life product with SI and UW flow is selected. (Page not yet implemented in prototype.)",
+      "organization": {
+        "path": [
+          "application",
+          "application-flow",
+          "page-participation"
+        ],
+        "familyKey": "rules.application-flow.page-participation",
+        "effect": "routing",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/formFlow.ts",
@@ -695,6 +808,16 @@
         "owner": "rules/rule-application-flow-health-tele-supp-routing"
       },
       "behavior": "health-li is shown for selected LI + TELE coverage; health-di is shown for selected DI + TELE coverage.",
+      "organization": {
+        "path": [
+          "application",
+          "application-flow",
+          "page-participation"
+        ],
+        "familyKey": "rules.application-flow.page-participation",
+        "effect": "routing",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/flowGates.ts",
@@ -730,6 +853,16 @@
         "owner": "src/content/docs/siteRules.ts (documented future rule; page not implemented)"
       },
       "behavior": "Shown when a Critical Illness product is selected. (Page not yet implemented in prototype.)",
+      "organization": {
+        "path": [
+          "application",
+          "application-flow",
+          "page-participation"
+        ],
+        "familyKey": "rules.application-flow.page-participation",
+        "effect": "routing",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/content/docs/siteRules.ts",
@@ -765,6 +898,16 @@
         "owner": "rules/rule-application-flow-health-uw-cir-routing"
       },
       "behavior": "Shown when a CIR rider is selected.",
+      "organization": {
+        "path": [
+          "application",
+          "application-flow",
+          "page-participation"
+        ],
+        "familyKey": "rules.application-flow.page-participation",
+        "effect": "routing",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/flowGates.ts",
@@ -800,6 +943,16 @@
         "owner": "rules/rule-application-flow-health-qd-routing"
       },
       "behavior": "Shown when a selected coverage has QD underwriting. Renders as QD LI, QD DI, or a combined QD LI+DI page depending on which products are selected.",
+      "organization": {
+        "path": [
+          "application",
+          "application-flow",
+          "page-participation"
+        ],
+        "familyKey": "rules.application-flow.page-participation",
+        "effect": "routing",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/flowGates.ts",
@@ -835,6 +988,16 @@
         "owner": "src/config/formFlow.ts"
       },
       "behavior": "Shown when LI (QD) is selected with a CIR rider. (Page not yet implemented in prototype.)",
+      "organization": {
+        "path": [
+          "application",
+          "application-flow",
+          "page-participation"
+        ],
+        "familyKey": "rules.application-flow.page-participation",
+        "effect": "routing",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/formFlow.ts",
@@ -870,6 +1033,16 @@
         "owner": "src/config/formFlow.ts"
       },
       "behavior": "Shown when LI (QD) and DI (UW) are both selected. (Page not yet implemented in prototype.)",
+      "organization": {
+        "path": [
+          "application",
+          "application-flow",
+          "page-participation"
+        ],
+        "familyKey": "rules.application-flow.page-participation",
+        "effect": "routing",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/formFlow.ts",
@@ -905,6 +1078,16 @@
         "owner": "src/config/progressSteps.ts"
       },
       "behavior": "Multiple routed health pages are presented within the consolidated application-review/progress experience rather than as separate major progress stages.",
+      "organization": {
+        "path": [
+          "application",
+          "progress-navigation",
+          "progress-navigation"
+        ],
+        "familyKey": "rules.progress-navigation.progress-navigation",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/progressSteps.ts",
@@ -940,6 +1123,16 @@
         "owner": "src/config/progressSteps.ts"
       },
       "behavior": "If every page in a progress stage is skipped, the stage is removed from the active progress steps.",
+      "organization": {
+        "path": [
+          "application",
+          "progress-navigation",
+          "progress-navigation"
+        ],
+        "familyKey": "rules.progress-navigation.progress-navigation",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/progressSteps.ts",
@@ -975,6 +1168,16 @@
         "owner": "src/app/RoutePage.tsx"
       },
       "behavior": "After Review is submitted, Back navigation is disabled on pages after Review.",
+      "organization": {
+        "path": [
+          "application",
+          "progress-navigation",
+          "progress-navigation"
+        ],
+        "familyKey": "rules.progress-navigation.progress-navigation",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/app/RoutePage.tsx",
@@ -1010,6 +1213,16 @@
         "owner": "src/app/RoutePage.tsx; src/components/layout/PageHeader.tsx; src/components/layout/PageTitle.tsx"
       },
       "behavior": "The PageHeader/PageTitle back arrow is rendered only when getPreviousFormPageId resolves a previous page for the current values and the page is not after a submitted review; otherwise no back control is shown at all (distinct from it being disabled post-review).",
+      "organization": {
+        "path": [
+          "application",
+          "progress-navigation",
+          "progress-navigation"
+        ],
+        "familyKey": "rules.progress-navigation.progress-navigation",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/app/RoutePage.tsx",
@@ -1053,6 +1266,16 @@
         "owner": "src/app/SinglePageApplication.tsx; src/components/layout/SinglePageSections.tsx; src/app/RoutePage.tsx; src/app/theme.ts"
       },
       "behavior": "template=single embeds SinglePageApplication below the landing content. SinglePageSections renders the active applicant page within a vertical progress layout; completing a page advances to the next applicable section, and permitted edits reopen earlier sections. Shared page participation, validation and routing rules still apply. The theme also forces narrow-screen layout for md/lg/xl responsive styles.",
+      "organization": {
+        "path": [
+          "application",
+          "form-template",
+          "form-template"
+        ],
+        "familyKey": "rules.form-template.form-template",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/app/SinglePageApplication.tsx",
@@ -1100,6 +1323,16 @@
         "owner": "src/app/theme.ts"
       },
       "behavior": "forceMobileLayout only overrides md/lg/xl — sm (600px) is left at its default. Components that only bump padding/spacing at sm (e.g. FormRoutePage's FormShell, which uses px: { xs: 2, sm: \"48px\" }) still receive that breathing room once the real browser viewport is 600px or wider, instead of staying pinned to their tightest xs padding on an actual desktop screen.",
+      "organization": {
+        "path": [
+          "application",
+          "form-template",
+          "form-template"
+        ],
+        "familyKey": "rules.form-template.form-template",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/app/theme.ts",
@@ -1135,6 +1368,16 @@
         "owner": "src/pages/Home.tsx; src/app/SinglePageApplication.tsx; src/components/layout/SinglePageSections.tsx; src/config/homepagePresentation.ts"
       },
       "behavior": "In single template, Home renders the configured landing content followed by SinglePageApplication. The application reuses the existing applicant page components within one vertical section layout. Artwork follows the configured single-page artwork setting; a fixed hero/form width is not an independent business rule.",
+      "organization": {
+        "path": [
+          "application",
+          "form-template",
+          "form-template"
+        ],
+        "familyKey": "rules.form-template.form-template",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Home.tsx",
@@ -1182,6 +1425,16 @@
         "owner": "src/app/RoutePage.tsx"
       },
       "behavior": "The user cannot advance when field validation or page-level validation fails; the page shows an error and moves focus/scroll toward the first error.",
+      "organization": {
+        "path": [
+          "application",
+          "validation",
+          "advancement-gates"
+        ],
+        "familyKey": "rules.validation.advancement-gates",
+        "effect": "validation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/app/RoutePage.tsx",
@@ -1217,6 +1470,16 @@
         "owner": "src/app/RoutePage.tsx; ApplicationFormContext.tsx"
       },
       "behavior": "Current page values are written to shared application state on submit, Back, and unmount when the page was not explicitly saved.",
+      "organization": {
+        "path": [
+          "application",
+          "persistence",
+          "application-recovery"
+        ],
+        "familyKey": "rules.persistence.application-recovery",
+        "effect": "persistence",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/app/RoutePage.tsx",
@@ -1252,6 +1515,16 @@
         "owner": "src/app/RoutePage.tsx; src/components/feedback/AppSnackbar.tsx"
       },
       "behavior": "After forward navigation, the destination page displays a Progress Saved snackbar (AppSnackbar, severity=success). The snackbar appears at top-center on large screens and bottom-center on small screens.",
+      "organization": {
+        "path": [
+          "application",
+          "persistence",
+          "application-recovery"
+        ],
+        "familyKey": "rules.persistence.application-recovery",
+        "effect": "persistence",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/app/RoutePage.tsx",
@@ -1291,6 +1564,16 @@
         "owner": "src/app/RoutePage.tsx"
       },
       "behavior": "Submitting Membership triggers the current prototype autosave mock-email behavior.",
+      "organization": {
+        "path": [
+          "application",
+          "persistence",
+          "application-recovery"
+        ],
+        "familyKey": "rules.persistence.application-recovery",
+        "effect": "persistence",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/app/RoutePage.tsx",
@@ -1326,6 +1609,16 @@
         "owner": "src/utils/applicantVisibility.ts"
       },
       "behavior": "The Member/Self applicant section label is hidden when no spouse/child is actually selected for any product. It is shown when another applicant is applying.",
+      "organization": {
+        "path": [
+          "application",
+          "applicant-display",
+          "applicant-participation"
+        ],
+        "familyKey": "rules.applicant-display.applicant-participation",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/utils/applicantVisibility.ts",
@@ -1361,6 +1654,16 @@
         "owner": "src/utils/applicantVisibility.ts; src/app/RoutePage.tsx"
       },
       "behavior": "Spouse/child applicant labels and post-Coverage applicant sections are shown only when that applicant is actually selected for an applicable product.",
+      "organization": {
+        "path": [
+          "application",
+          "applicant-display",
+          "applicant-participation"
+        ],
+        "familyKey": "rules.applicant-display.applicant-participation",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/utils/applicantVisibility.ts",
@@ -1400,6 +1703,16 @@
         "owner": "src/utils/applicantVisibility.ts"
       },
       "behavior": "A spouse/child selected on Eligibility does not count as applying if that dependent is not selected for any product on Coverage.",
+      "organization": {
+        "path": [
+          "application",
+          "applicant-display",
+          "applicant-participation"
+        ],
+        "familyKey": "rules.applicant-display.applicant-participation",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/utils/applicantVisibility.ts",
@@ -1435,6 +1748,16 @@
         "owner": "src/utils/applicantsApplying.ts"
       },
       "behavior": "When no dependents are selected, the member is treated as the applicant by default.",
+      "organization": {
+        "path": [
+          "application",
+          "applicant-display",
+          "applicant-participation"
+        ],
+        "familyKey": "rules.applicant-display.applicant-participation",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/utils/applicantsApplying.ts",
@@ -1470,6 +1793,16 @@
         "owner": "src/pages/Eligibility.tsx; src/components/forms/DynamicList.tsx"
       },
       "behavior": "When Child is selected and applicantExperience.childEligibility.mode is details (the default), DynamicList collects children[].firstName, lastName, birthDate and gender using the effective field definitions. Unmarried and full-time-student questions are added when applicable product eligibility rules require them. Records support Add, Edit and Remove; at least one child is required to continue. Client or Site configuration can choose notice-only instead, showing the configured note without collecting or requiring records. CSEA uses notice-only.",
+      "organization": {
+        "path": [
+          "application",
+          "eligibility",
+          "applicant-participation"
+        ],
+        "familyKey": "rules.eligibility.applicant-participation",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Eligibility.tsx",
@@ -1509,6 +1842,16 @@
         "owner": "src/pages/Eligibility.tsx"
       },
       "behavior": "If Spouse is selected, spouse name details must be provided before continuing.",
+      "organization": {
+        "path": [
+          "application",
+          "eligibility",
+          "applicant-participation"
+        ],
+        "familyKey": "rules.eligibility.applicant-participation",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Eligibility.tsx",
@@ -1544,6 +1887,16 @@
         "owner": "src/pages/Eligibility.tsx"
       },
       "behavior": "When the Child dependent section is visible, an info alert under the section header states that only unmarried children are eligible for coverage.",
+      "organization": {
+        "path": [
+          "application",
+          "eligibility",
+          "applicant-participation"
+        ],
+        "familyKey": "rules.eligibility.applicant-participation",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Eligibility.tsx",
@@ -1581,6 +1934,16 @@
         "owner": "src/components/forms/EligibilityFields.tsx; src/utils/zipToStateProvince.ts"
       },
       "behavior": "When a recognizable ZIP/postal code is entered, the state/province field is automatically derived when a matching configured option exists. The user may manually override the derived state at any time; a subsequent ZIP change will re-derive state from the new ZIP.",
+      "organization": {
+        "path": [
+          "application",
+          "eligibility",
+          "applicant-participation"
+        ],
+        "familyKey": "rules.eligibility.applicant-participation",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/forms/EligibilityFields.tsx",
@@ -1620,6 +1983,16 @@
         "owner": "src/pages/Eligibility.tsx"
       },
       "behavior": "Dependent options on Eligibility can be suppressed based on membership attestation. When a membership type implies a specific relationship (e.g. the member is a spouse/dependent of the primary member), the corresponding dependent option is removed to prevent duplicate applicant entry. Section visibility, labels, and suppression rules are client-configurable.",
+      "organization": {
+        "path": [
+          "application",
+          "eligibility",
+          "applicant-participation"
+        ],
+        "familyKey": "rules.eligibility.applicant-participation",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Eligibility.tsx",
@@ -1652,9 +2025,19 @@
       "authority": {
         "kind": "documented-behavior",
         "label": "Documented behavior; implementation owns execution",
-        "owner": "src/pages/Coverage.tsx; src/app/useCoverageState.ts; src/components/forms/CoverageCategorySelector.tsx"
+        "owner": "src/pages/Coverage.tsx; src/app/useCoverageState.ts; src/components/coverage/CoverageCategorySelector.tsx"
       },
       "behavior": "The user first selects one or more coverage categories via a multi-select chip list. Selecting a category may surface additional required questions (tobacco use, income, hours). When all required questions are answered, a 'See my coverage options' button appears. Clicking it validates the form and, if valid, reveals the product catalog. Changing a category selection or question answer after products are shown collapses the catalog and requires another click.",
+      "organization": {
+        "path": [
+          "application",
+          "coverage",
+          "selection-and-quote"
+        ],
+        "familyKey": "rules.coverage.selection-and-quote",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Coverage.tsx",
@@ -1665,7 +2048,7 @@
           "exists": true
         },
         {
-          "path": "src/components/forms/CoverageCategorySelector.tsx",
+          "path": "src/components/coverage/CoverageCategorySelector.tsx",
           "exists": true
         }
       ],
@@ -1698,12 +2081,22 @@
       "authority": {
         "kind": "documented-behavior",
         "label": "Documented behavior; implementation owns execution",
-        "owner": "src/components/forms/ProductCatalog.tsx; src/app/useCoverageState.ts"
+        "owner": "src/components/coverage/ProductCatalog.tsx; src/app/useCoverageState.ts"
       },
       "behavior": "Each product card lists eligible applicants (member, spouse, child) as checkboxes. Checking an applicant reveals a benefit amount dropdown. DI/OO products also show waiting period and max benefit period dropdowns. Optional riders appear as checkboxes; selecting a rider with an amount range reveals a rider amount dropdown. Coverage selections and amounts are stored per product/applicant key.",
+      "organization": {
+        "path": [
+          "application",
+          "coverage",
+          "selection-and-quote"
+        ],
+        "familyKey": "rules.coverage.selection-and-quote",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
-          "path": "src/components/forms/ProductCatalog.tsx",
+          "path": "src/components/coverage/ProductCatalog.tsx",
           "exists": true
         },
         {
@@ -1740,6 +2133,16 @@
         "owner": "src/pages/Coverage.tsx; src/components/layout/ConfirmationDialog.tsx"
       },
       "behavior": "If only spouse and/or child are selected for all chosen products (no member selection), clicking Next triggers the onBeforeNext hook and opens a ConfirmationDialog. The user must click Continue to proceed or Cancel to stay on Coverage.",
+      "organization": {
+        "path": [
+          "application",
+          "coverage",
+          "selection-and-quote"
+        ],
+        "familyKey": "rules.coverage.selection-and-quote",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Coverage.tsx",
@@ -1776,12 +2179,22 @@
       "authority": {
         "kind": "documented-behavior",
         "label": "Documented behavior; implementation owns execution",
-        "owner": "src/components/forms/ProductCatalog.tsx"
+        "owner": "src/components/coverage/ProductCatalog.tsx"
       },
       "behavior": "The site can present either 'additional coverage' or 'total coverage' guidance based on the active client configuration.",
+      "organization": {
+        "path": [
+          "application",
+          "coverage",
+          "selection-and-quote"
+        ],
+        "familyKey": "rules.coverage.selection-and-quote",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
-          "path": "src/components/forms/ProductCatalog.tsx",
+          "path": "src/components/coverage/ProductCatalog.tsx",
           "exists": true
         }
       ],
@@ -1814,6 +2227,16 @@
         "owner": "src/config/clients/types.ts; client configs"
       },
       "behavior": "Coverage categories may start expanded for clients configured with allCategoriesExpanded.",
+      "organization": {
+        "path": [
+          "application",
+          "coverage",
+          "selection-and-quote"
+        ],
+        "familyKey": "rules.coverage.selection-and-quote",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/clients/types.ts",
@@ -1849,6 +2272,16 @@
         "owner": "src/app/useCoverageState.ts; src/pages/Coverage.tsx; src/components/feedback/AppSnackbar.tsx"
       },
       "behavior": "When the user selects their very first product from a state of no selections, the Coverage added AppDrawer opens to show the full cart. For all subsequent product or applicant additions, a compact 'Added' success AppSnackbar appears instead of re-opening the drawer.",
+      "organization": {
+        "path": [
+          "application",
+          "coverage-cart",
+          "selection-and-quote"
+        ],
+        "familyKey": "rules.coverage-cart.selection-and-quote",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/app/useCoverageState.ts",
@@ -1892,6 +2325,16 @@
         "owner": "src/components/layout/AppHeader.tsx"
       },
       "behavior": "The application header shows the coverage cart on application pages except Home and Receipt, and hides it after Review has been submitted.",
+      "organization": {
+        "path": [
+          "application",
+          "coverage-cart",
+          "selection-and-quote"
+        ],
+        "familyKey": "rules.coverage-cart.selection-and-quote",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/layout/AppHeader.tsx",
@@ -1927,6 +2370,16 @@
         "owner": "src/components/layout/AppHeader.tsx; CoverageCart.tsx"
       },
       "behavior": "The cart icon displays a badge count derived from current coverage selections.",
+      "organization": {
+        "path": [
+          "application",
+          "coverage-cart",
+          "selection-and-quote"
+        ],
+        "familyKey": "rules.coverage-cart.selection-and-quote",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/layout/AppHeader.tsx",
@@ -1959,12 +2412,22 @@
       "authority": {
         "kind": "documented-behavior",
         "label": "Documented behavior; implementation owns execution",
-        "owner": "src/components/ui/CoverageCart.tsx (CoverageCartInline)"
+        "owner": "src/components/coverage/CoverageCart.tsx (CoverageCartInline)"
       },
       "behavior": "The 'Your requested coverage' inline panel below the Coverage page product catalog shows nothing at all — no section title and no empty-state placeholder — until at least one applicant has an amount selected for a product (grandTotal > 0). The full-drawer cart variant (opened from the header cart icon or the Coverage page's own summary drawer) is unaffected and still shows its 'No coverage selected yet.' empty state.",
+      "organization": {
+        "path": [
+          "application",
+          "coverage-cart",
+          "selection-and-quote"
+        ],
+        "familyKey": "rules.coverage-cart.selection-and-quote",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
-          "path": "src/components/ui/CoverageCart.tsx",
+          "path": "src/components/coverage/CoverageCart.tsx",
           "exists": true
         }
       ],
@@ -1994,12 +2457,22 @@
       "authority": {
         "kind": "documented-behavior",
         "label": "Documented behavior; implementation owns execution",
-        "owner": "src/components/forms/QuoteCalculator.tsx (handleGetEstimates, handleQuoteFieldChange, handleCategoryToggle)"
+        "owner": "src/components/coverage/QuoteCalculator.tsx (handleGetEstimates, handleQuoteFieldChange, handleCategoryToggle)"
       },
       "behavior": "Clicking 'See my quote' validates the category-level fields, reveals the matching product cards, and scrolls the drawer so the revealed products land at the top. The 'See my quote' button then hides and reappears only if the user edits a coverage question (gender, tobacco use, income, hours, business expenses/responsibility) or toggles a coverage category selection — the same show/hide contract as the Coverage page's 'See my coverage options' button.",
+      "organization": {
+        "path": [
+          "application",
+          "home-quote-tool",
+          "selection-and-quote"
+        ],
+        "familyKey": "rules.home-quote-tool.selection-and-quote",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
-          "path": "src/components/forms/QuoteCalculator.tsx",
+          "path": "src/components/coverage/QuoteCalculator.tsx",
           "exists": true
         }
       ],
@@ -2029,16 +2502,26 @@
       "authority": {
         "kind": "documented-behavior",
         "label": "Documented behavior; implementation owns execution",
-        "owner": "src/components/forms/QuoteCalculator.tsx; src/components/ui/TotalCostSummary.tsx"
+        "owner": "src/components/coverage/QuoteCalculator.tsx; src/components/coverage/TotalCostSummary.tsx"
       },
       "behavior": "The quote drawer's estimated cost panel now renders via the same TotalCostSummary component used on the Coverage page and in the coverage cart drawer, instead of a bespoke box. Like the Coverage page's inline cart, the panel is hidden entirely until at least one product/applicant has been added (no 'Added coverage will appear here' placeholder); the rate-frequency toggle and Apply button remain visible whenever products are shown.",
+      "organization": {
+        "path": [
+          "application",
+          "home-quote-tool",
+          "selection-and-quote"
+        ],
+        "familyKey": "rules.home-quote-tool.selection-and-quote",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
-          "path": "src/components/forms/QuoteCalculator.tsx",
+          "path": "src/components/coverage/QuoteCalculator.tsx",
           "exists": true
         },
         {
-          "path": "src/components/ui/TotalCostSummary.tsx",
+          "path": "src/components/coverage/TotalCostSummary.tsx",
           "exists": true
         }
       ],
@@ -2071,6 +2554,16 @@
         "owner": "src/config/applicationTransitions/applicationTransitions.ts (quoteApplyTransition)"
       },
       "behavior": "When a user applies from a quote, collected quote information and selected coverage initialize the application through the canonical quote.apply transition. Targets: birth-date, zip-postal-code, state-province, gender, smoker, average-monthly-income, hours-worked-per-week, monthly-business-expenses, business-expense-responsibility, coverageSelections, selectedCategoryChips, productApplicants, coverageAmounts.",
+      "organization": {
+        "path": [
+          "application",
+          "home-quote-tool",
+          "selection-and-quote"
+        ],
+        "familyKey": "rules.home-quote-tool.selection-and-quote",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/applicationTransitions/applicationTransitions.ts",
@@ -2106,6 +2599,16 @@
         "owner": "src/config/applicationTransitions/applicationTransitions.ts (contactCarryForwardTransition)"
       },
       "behavior": "When Contact is entered, existing Eligibility location values preset empty Contact location fields without overwriting user-entered Contact values. Targets: state, zip-code.",
+      "organization": {
+        "path": [
+          "application",
+          "contact",
+          "contact"
+        ],
+        "familyKey": "rules.contact.contact",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/applicationTransitions/applicationTransitions.ts",
@@ -2141,6 +2644,16 @@
         "owner": "src/components/feedback/AppSnackbar.tsx"
       },
       "behavior": "AppSnackbar appears at top-center on large screens and bottom-center on small screens. Used for Progress Saved and Coverage Added feedback.",
+      "organization": {
+        "path": [
+          "application",
+          "feedback",
+          "feedback"
+        ],
+        "familyKey": "rules.feedback.feedback",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/feedback/AppSnackbar.tsx",
@@ -2176,6 +2689,16 @@
         "owner": "src/pages/Beneficiary.tsx"
       },
       "behavior": "Beneficiary records are created only for selected member/spouse LI/AD products with a positive coverage amount and selected applicant.",
+      "organization": {
+        "path": [
+          "application",
+          "beneficiary",
+          "beneficiary"
+        ],
+        "familyKey": "rules.beneficiary.beneficiary",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Beneficiary.tsx",
@@ -2211,6 +2734,16 @@
         "owner": "src/pages/Beneficiary.tsx"
       },
       "behavior": "When Beneficiary mode is optional, the page first asks whether the user wants to add beneficiary information. No skips the beneficiary questions and permits continuation.",
+      "organization": {
+        "path": [
+          "application",
+          "beneficiary",
+          "beneficiary"
+        ],
+        "familyKey": "rules.beneficiary.beneficiary",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Beneficiary.tsx",
@@ -2246,6 +2779,16 @@
         "owner": "src/pages/Beneficiary.tsx"
       },
       "behavior": "When beneficiary questions are active, each applicable product must have at least one beneficiary before continuing.",
+      "organization": {
+        "path": [
+          "application",
+          "beneficiary",
+          "beneficiary"
+        ],
+        "familyKey": "rules.beneficiary.beneficiary",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Beneficiary.tsx",
@@ -2281,6 +2824,16 @@
         "owner": "src/pages/Beneficiary.tsx; src/components/layout/AppModal.tsx"
       },
       "behavior": "Clicking 'Add Beneficiary' on a product card opens an AppModal. The modal shows: designation tabs (Primary / Contingent) with a remaining-slot counter; beneficiary type selector (Individual or Trust); and type-specific fields. Individual fields: First Name, Last Name, Relationship, % Share with 25/50/75/100% quick-fill buttons and a live 'X% unassigned remaining' display. Trust fields: Name of Trust and Date of Trust. Clicking Edit pre-populates the modal with the existing record. The 'Add Beneficiary' button is replaced by an info alert when both designations are fully maxed.",
+      "organization": {
+        "path": [
+          "application",
+          "beneficiary",
+          "beneficiary"
+        ],
+        "familyKey": "rules.beneficiary.beneficiary",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Beneficiary.tsx",
@@ -2320,6 +2873,16 @@
         "owner": "src/pages/Beneficiary.tsx"
       },
       "behavior": "Each beneficiary is designated as Primary or Contingent, selected via tabs in the add/edit modal.",
+      "organization": {
+        "path": [
+          "application",
+          "beneficiary",
+          "beneficiary"
+        ],
+        "familyKey": "rules.beneficiary.beneficiary",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Beneficiary.tsx",
@@ -2355,6 +2918,16 @@
         "owner": "src/pages/Beneficiary.tsx"
       },
       "behavior": "A beneficiary can be an Individual or Trust. Within the same Primary/Contingent designation, trust and individual beneficiary types cannot be mixed.",
+      "organization": {
+        "path": [
+          "application",
+          "beneficiary",
+          "beneficiary"
+        ],
+        "familyKey": "rules.beneficiary.beneficiary",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Beneficiary.tsx",
@@ -2390,6 +2963,16 @@
         "owner": "src/pages/Beneficiary.tsx"
       },
       "behavior": "Up to 10 Primary and 10 Contingent beneficiaries may be added per product; reaching 10 prevents additional entries for that designation.",
+      "organization": {
+        "path": [
+          "application",
+          "beneficiary",
+          "beneficiary"
+        ],
+        "familyKey": "rules.beneficiary.beneficiary",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Beneficiary.tsx",
@@ -2425,6 +3008,16 @@
         "owner": "src/pages/Beneficiary.tsx"
       },
       "behavior": "Individual beneficiary share must be greater than 0 and cannot exceed the unassigned percentage remaining for that designation.",
+      "organization": {
+        "path": [
+          "application",
+          "beneficiary",
+          "beneficiary"
+        ],
+        "familyKey": "rules.beneficiary.beneficiary",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Beneficiary.tsx",
@@ -2460,6 +3053,16 @@
         "owner": "src/pages/Beneficiary.tsx"
       },
       "behavior": "Once the assigned individual share reaches 100% for a designation, no more individual beneficiaries can be added for that designation.",
+      "organization": {
+        "path": [
+          "application",
+          "beneficiary",
+          "beneficiary"
+        ],
+        "familyKey": "rules.beneficiary.beneficiary",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Beneficiary.tsx",
@@ -2495,6 +3098,16 @@
         "owner": "src/pages/Beneficiary.tsx"
       },
       "behavior": "Only one Trust may be added per Primary/Contingent designation; if a Trust exists, additional individuals or trusts are blocked for that designation.",
+      "organization": {
+        "path": [
+          "application",
+          "beneficiary",
+          "beneficiary"
+        ],
+        "familyKey": "rules.beneficiary.beneficiary",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Beneficiary.tsx",
@@ -2530,6 +3143,16 @@
         "owner": "src/pages/Beneficiary.tsx"
       },
       "behavior": "After saving a new (not edited) beneficiary, if the same applicant has other eligible products, a second AppModal opens listing those products as checkboxes. The user can select one or more and click 'Apply to Selected', or click Skip. When applied, each target product receives a separate beneficiary record with a new unique ID — not a shared reference.",
+      "organization": {
+        "path": [
+          "application",
+          "beneficiary",
+          "beneficiary"
+        ],
+        "familyKey": "rules.beneficiary.beneficiary",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Beneficiary.tsx",
@@ -2564,7 +3187,17 @@
         "label": "Documented behavior; implementation owns execution",
         "owner": "src/pages/Contact.tsx"
       },
-      "behavior": "The Contact page conditionally hides/reuses business-address inputs when the business address is marked the same as the home address; DI/OO-related contact fields drive additional display rules.",
+      "behavior": "The captured Contact configuration scopes business fields to selected products when a product list is assigned. Standard WAEPA shows the Business/Employer section with STD and hides it for Life-only; GI retains its separate hiding policy. For visible business addresses, marking the address the same as home reuses the home address. Other DI/OO and correspondence rules retain their configured behavior.",
+      "organization": {
+        "path": [
+          "application",
+          "contact",
+          "contact"
+        ],
+        "familyKey": "rules.contact.contact",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Contact.tsx",
@@ -2600,6 +3233,16 @@
         "owner": "src/pages/Profile.tsx; src/components/forms/ConditionalGroup.tsx"
       },
       "behavior": "Answers to controlling fields reveal follow-up fields inline within a left-bordered ConditionalGroup container. Changing the controlling answer back collapses the group. Examples: driver license Yes reveals license number/state; is-self-employed Yes reveals self-employment sub-questions; existing life insurance Yes reveals amount and replacement fields. Some follow-ups are themselves controls for deeper nested groups.",
+      "organization": {
+        "path": [
+          "application",
+          "profile",
+          "profile"
+        ],
+        "familyKey": "rules.profile.profile",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Profile.tsx",
@@ -2642,6 +3285,16 @@
         "owner": "src/pages/Profile.tsx; src/components/forms/DynamicList.tsx"
       },
       "behavior": "When the user indicates existing disability coverage, insurance company records are added through the DynamicList pattern: existing records show as bordered cards; Add opens an AppModal with company name, monthly benefit amount, benefit period, and waiting period fields; Edit pre-populates the modal; Remove requires a confirmation modal.",
+      "organization": {
+        "path": [
+          "application",
+          "profile",
+          "profile"
+        ],
+        "familyKey": "rules.profile.profile",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Profile.tsx",
@@ -2681,6 +3334,16 @@
         "owner": "src/pages/Profile.tsx"
       },
       "behavior": "Member and spouse outside-U.S. residence/travel questions reveal country/month follow-ups only for affirmative responses.",
+      "organization": {
+        "path": [
+          "application",
+          "profile",
+          "profile"
+        ],
+        "familyKey": "rules.profile.profile",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Profile.tsx",
@@ -2721,6 +3384,16 @@
         "owner": "src/pages/Profile.tsx; src/config/pageSections/pageSections.ts"
       },
       "behavior": "Financial questionnaire visibility follows the active site’s MCR product-question-set assignments (Main column Y), for a selected member product with a positive amount. Sites without an assigned financial questionnaire omit this section. The former DI amount greater than $2,000 trigger was prototype demo behavior, not a general rule. Self-employment details appear when is-self-employed = Yes.",
+      "organization": {
+        "path": [
+          "application",
+          "profile",
+          "profile"
+        ],
+        "familyKey": "rules.profile.profile",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Profile.tsx",
@@ -2760,6 +3433,16 @@
         "owner": "src/pages/Health*.tsx; src/utils/applicantVisibility.ts"
       },
       "behavior": "Member/spouse health sections follow applicant-applying visibility; the member section label is hidden for member-only flow.",
+      "organization": {
+        "path": [
+          "application",
+          "health",
+          "health"
+        ],
+        "familyKey": "rules.health.health",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/utils/applicantVisibility.ts",
@@ -2795,6 +3478,16 @@
         "owner": "src/pages/HealthLi.tsx; src/pages/HealthDi.tsx; src/pages/HealthSi.tsx; src/components/forms/DynamicList.tsx"
       },
       "behavior": "Each health question is a required Yes/No radio. Selecting Yes reveals a DynamicList inline below that question where the user can add one or more detail records (onset date, condition/medication details, physician/hospital address) via the standard Add/Edit/Remove modal pattern. Selecting No collapses and clears the list for that question.",
+      "organization": {
+        "path": [
+          "application",
+          "health",
+          "health"
+        ],
+        "familyKey": "rules.health.health",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/HealthLi.tsx",
@@ -2842,6 +3535,16 @@
         "owner": "src/pages/Payment.tsx"
       },
       "behavior": "When Payment mode is optional, the page first asks whether the user wants to add payment information; No permits continuation without payment questions.",
+      "organization": {
+        "path": [
+          "application",
+          "payment",
+          "payment"
+        ],
+        "familyKey": "rules.payment.payment",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Payment.tsx",
@@ -2877,6 +3580,16 @@
         "owner": "src/pages/Payment.tsx"
       },
       "behavior": "When payment questions are active, each applicable product requires a payment method and payment frequency before continuing.",
+      "organization": {
+        "path": [
+          "application",
+          "payment",
+          "payment"
+        ],
+        "familyKey": "rules.payment.payment",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Payment.tsx",
@@ -2912,6 +3625,16 @@
         "owner": "src/pages/Payment.tsx"
       },
       "behavior": "Bank-account details (name on account, institution, routing number, account number, authorization checkbox) are displayed when Bank account is selected as the payment method for any product.",
+      "organization": {
+        "path": [
+          "application",
+          "payment",
+          "payment"
+        ],
+        "familyKey": "rules.payment.payment",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Payment.tsx",
@@ -2947,6 +3670,16 @@
         "owner": "src/pages/Review.tsx; src/components/layout/ConfirmationDialog.tsx; src/components/layout/SendApplicationDialog.tsx"
       },
       "behavior": "Clicking an edit icon opens a ConfirmationDialog. Confirming navigates back to the page that owns that information. In advisor-applicant flow the same action instead opens a SendApplicationDialog ('Request edit to application') showing the advisor email; sending navigates to Application Edit Confirmation.",
+      "organization": {
+        "path": [
+          "application",
+          "review",
+          "consent-and-disclosures"
+        ],
+        "familyKey": "rules.review.consent-and-disclosures",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Review.tsx",
@@ -2987,16 +3720,26 @@
       "authority": {
         "kind": "documented-behavior",
         "label": "Documented behavior; implementation owns execution",
-        "owner": "src/components/layout/AppDrawer.tsx; src/components/ui/CoveragePortfolioDrawer.tsx; src/components/layout/AppMenu.tsx"
+        "owner": "src/components/layout/AppDrawer.tsx; src/components/coverage/CoveragePortfolioDrawer.tsx; src/components/layout/AppMenu.tsx"
       },
       "behavior": "AppDrawer slides in from the right on desktop (420–480px wide) or up from the bottom on mobile (75vh). Used for contextual help topics (HelpChips → AppDrawer), the QuickDecision℠ explainer, the Coverage Portfolio (TPA-verified users on Coverage), and the application menu sub-drawers (coverage options, needs calculator, QD explainer). Drawers are read-only and do not block page submission.",
+      "organization": {
+        "path": [
+          "application",
+          "drawers",
+          "drawers"
+        ],
+        "familyKey": "rules.drawers.drawers",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/layout/AppDrawer.tsx",
           "exists": true
         },
         {
-          "path": "src/components/ui/CoveragePortfolioDrawer.tsx",
+          "path": "src/components/coverage/CoveragePortfolioDrawer.tsx",
           "exists": true
         },
         {
@@ -3033,6 +3776,16 @@
         "owner": "src/components/layout/AppDrawer.tsx"
       },
       "behavior": "The swipeable prop enables SwipeableDrawer on mobile for user-initiated drawers (e.g. the Coverage cart drawer). Non-swipeable drawers use a standard Drawer.",
+      "organization": {
+        "path": [
+          "application",
+          "drawers",
+          "drawers"
+        ],
+        "familyKey": "rules.drawers.drawers",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/layout/AppDrawer.tsx",
@@ -3068,6 +3821,16 @@
         "owner": "src/components/forms/DynamicList.tsx; src/components/forms/DynamicListItem.tsx"
       },
       "behavior": "DynamicList is the shared component for any repeatable record set (children, insurance companies, health detail records). Existing records render as bordered DynamicListItem cards with Edit and Remove buttons. Add opens an AppModal titled 'Add [Label]' with a blank form. Edit opens the same modal pre-filled with the selected record. Save appends or updates the record. Remove shows a confirmation AppModal ('Remove [Label]?') and deletes on confirm. Fields inside the modal are defined per record type via a mapping prop and rendered by FieldRenderer. The Add button is hidden once maxItems is reached (default 10).",
+      "organization": {
+        "path": [
+          "application",
+          "dynamiclist",
+          "dynamiclist"
+        ],
+        "familyKey": "rules.dynamiclist.dynamiclist",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/forms/DynamicList.tsx",
@@ -3107,6 +3870,16 @@
         "owner": "src/pages/AdvisorLogin.tsx; src/pages/Profile.tsx; src/components/layout/SendApplicationDialog.tsx"
       },
       "behavior": "New Application mode displays advisor credential fields on Advisor Login. When the advisor later clicks Next on Profile, the onBeforeNext hook opens a SendApplicationDialog titled 'Send to applicant for review' showing the applicant name and email. Clicking Send navigates to Advisor Send Confirmation; Cancel stays on Profile.",
+      "organization": {
+        "path": [
+          "application",
+          "advisor-flow",
+          "advisor-flow"
+        ],
+        "familyKey": "rules.advisor-flow.advisor-flow",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/AdvisorLogin.tsx",
@@ -3152,6 +3925,16 @@
         "owner": "src/pages/AdvisorLogin.tsx; src/pages/Review.tsx; src/components/layout/SendApplicationDialog.tsx"
       },
       "behavior": "Saved Application mode displays applicant email on Advisor Login. In advisor-applicant flow, clicking an edit icon on Review opens a SendApplicationDialog titled 'Request edit to application' showing the advisor email only. Clicking Send navigates to Application Edit Confirmation; Cancel stays on Review.",
+      "organization": {
+        "path": [
+          "application",
+          "advisor-flow",
+          "advisor-flow"
+        ],
+        "familyKey": "rules.advisor-flow.advisor-flow",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/AdvisorLogin.tsx",
@@ -3197,6 +3980,16 @@
         "owner": "src/pages/Home.tsx"
       },
       "behavior": "default = inline Quote Tool and no hero image; hero-image = hero image, no inline Quote Tool; welcome-back = hero image, Continue/New Application actions, and hides How Applying Works and Coverage Options.",
+      "organization": {
+        "path": [
+          "application",
+          "landing-page",
+          "landing-page"
+        ],
+        "familyKey": "rules.landing-page.landing-page",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Home.tsx",
@@ -3232,6 +4025,16 @@
         "owner": "src/pages/Home.tsx"
       },
       "behavior": "Default and hero-image variants display the saved-application resume prompt/link; welcome-back uses Continue Application as the primary action instead.",
+      "organization": {
+        "path": [
+          "application",
+          "landing-page",
+          "landing-page"
+        ],
+        "familyKey": "rules.landing-page.landing-page",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/pages/Home.tsx",
@@ -3267,6 +4070,16 @@
         "owner": "src/components/layout/AppHeader.tsx"
       },
       "behavior": "The app header hides when the user scrolls down (threshold: 8px) and reappears immediately on any upward scroll. Implemented via MUI useScrollTrigger + Slide direction='down'. The header uses position='sticky' so it participates in document layout rather than overlapping content.",
+      "organization": {
+        "path": [
+          "application",
+          "header",
+          "header"
+        ],
+        "familyKey": "rules.header.header",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/layout/AppHeader.tsx",
@@ -3302,6 +4115,16 @@
         "owner": "src/components/layout/AppHeader.tsx"
       },
       "behavior": "Application header supports Chat (when enabled and eligible), Coverage Cart and Menu. It does not contain a Quote action in the latest source.",
+      "organization": {
+        "path": [
+          "application",
+          "header",
+          "header"
+        ],
+        "familyKey": "rules.header.header",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/layout/AppHeader.tsx",
@@ -3337,6 +4160,16 @@
         "owner": "src/components/layout/AppHeader.tsx"
       },
       "behavior": "The Chat and Coverage Cart header actions are hidden once ApplicationSessionContext reports that review was submitted, in addition to being hidden on the Home and Receipt pages.",
+      "organization": {
+        "path": [
+          "application",
+          "header",
+          "header"
+        ],
+        "familyKey": "rules.header.header",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/layout/AppHeader.tsx",
@@ -3372,6 +4205,16 @@
         "owner": "src/components/layout/AppShell.tsx; src/components/layout/CookieDialog.tsx"
       },
       "behavior": "CookieDialog is shown as a fixed bottom banner on first visit. AppShell checks localStorage.cookieConsent !== 'accepted' to decide whether to render it; dismissing sets localStorage.cookieConsent = 'accepted' so it never reappears.",
+      "organization": {
+        "path": [
+          "application",
+          "header",
+          "header"
+        ],
+        "familyKey": "rules.header.header",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/layout/AppShell.tsx",
@@ -3411,6 +4254,16 @@
         "owner": "src/components/layout/AppBody.tsx"
       },
       "behavior": "AppBody patches window.history.pushState/replaceState and listens for popstate to track the current pathname, then scrolls the window to top on every route change.",
+      "organization": {
+        "path": [
+          "application",
+          "application-flow",
+          "page-participation"
+        ],
+        "familyKey": "rules.application-flow.page-participation",
+        "effect": "routing",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/layout/AppBody.tsx",
@@ -3446,6 +4299,16 @@
         "owner": "src/components/navigation/ProgressStep.tsx"
       },
       "behavior": "When ApplicationSessionContext is in advisor-applicant mode (the applicant entered via resume?flow=advisor), the stepper/breadcrumb progress UI locks navigation to all steps except application-review and esign-submit, regardless of completed state.",
+      "organization": {
+        "path": [
+          "application",
+          "progress-navigation",
+          "progress-navigation"
+        ],
+        "familyKey": "rules.progress-navigation.progress-navigation",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/navigation/ProgressStep.tsx",
@@ -3481,6 +4344,16 @@
         "owner": "src/components/forms/FieldRenderer.tsx"
       },
       "behavior": "FieldRenderer live-formats input as the user types based on field.format: currency ('$1,234'), percent, phone (parenthesized area code), ssn (dashes, with all but the most-recently-typed digit masked for ~800ms), and month-year. The date input type is also formatted inline.",
+      "organization": {
+        "path": [
+          "application",
+          "fields",
+          "fields"
+        ],
+        "familyKey": "rules.fields.fields",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/forms/FieldRenderer.tsx",
@@ -3516,6 +4389,16 @@
         "owner": "src/components/forms/FieldRenderer.tsx"
       },
       "behavior": "FieldRenderer auto-selects a 'standard' (external) label instead of the default 'floating' label when field.label is 40+ characters, to avoid clipping, unless field.labelVariant is explicitly set.",
+      "organization": {
+        "path": [
+          "application",
+          "fields",
+          "fields"
+        ],
+        "familyKey": "rules.fields.fields",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/forms/FieldRenderer.tsx",
@@ -3551,6 +4434,16 @@
         "owner": "src/components/forms/FieldRenderer.tsx"
       },
       "behavior": "Phone-format fields render an inline Mobile/Home/Business type selector tied to a sibling field (field.phoneTypeFieldId, default '<field.id>-type'), unless field.showPhoneTypeSelector is false.",
+      "organization": {
+        "path": [
+          "application",
+          "fields",
+          "fields"
+        ],
+        "familyKey": "rules.fields.fields",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/forms/FieldRenderer.tsx",
@@ -3586,6 +4479,16 @@
         "owner": "src/components/forms/FieldRenderer.tsx"
       },
       "behavior": "FieldRenderer renders a field configured as inputType: 'dropdown' using the searchable-select (MUI Autocomplete) component instead of a plain Select once field.options has 10 or more entries, so long lists (e.g. US states) are searchable rather than requiring a long scroll. Fields already explicitly set to 'searchable-select' are unaffected.",
+      "organization": {
+        "path": [
+          "application",
+          "fields",
+          "fields"
+        ],
+        "familyKey": "rules.fields.fields",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/forms/FieldRenderer.tsx",
@@ -3618,16 +4521,26 @@
       "authority": {
         "kind": "documented-behavior",
         "label": "Documented behavior; implementation owns execution",
-        "owner": "src/components/ui/HowApplyingWorksPanel.tsx; src/components/ui/CoverageOptionsPanel.tsx"
+        "owner": "src/components/home/HowApplyingWorksPanel.tsx; src/components/coverage/CoverageOptionsPanel.tsx"
       },
       "behavior": "HowApplyingWorksPanel and CoverageOptionsPanel accept a variant: 'page' | 'drawer' prop rendering the same content as a full page section or a compact drawer layout. In 'drawer' variant, HowApplyingWorksPanel manages its own nested sub-drawer state (Application Review / QuickDecision℠) stacked above the parent drawer; in 'page' variant those links call parent-supplied handlers instead.",
+      "organization": {
+        "path": [
+          "application",
+          "drawers",
+          "drawers"
+        ],
+        "familyKey": "rules.drawers.drawers",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
-          "path": "src/components/ui/HowApplyingWorksPanel.tsx",
+          "path": "src/components/home/HowApplyingWorksPanel.tsx",
           "exists": true
         },
         {
-          "path": "src/components/ui/CoverageOptionsPanel.tsx",
+          "path": "src/components/coverage/CoverageOptionsPanel.tsx",
           "exists": true
         }
       ],
@@ -3657,12 +4570,34 @@
       "authority": {
         "kind": "documented-behavior",
         "label": "Documented behavior; implementation owns execution",
-        "owner": "src/components/ui/CoverageOptionsPanel.tsx"
+        "owner": "src/domain/coveragePresentation.ts; src/config/client/getActiveClientCoverages.ts; src/components/coverage/CoverageOptionsPanel.tsx; src/components/coverage/QuoteCalculator.tsx"
       },
-      "behavior": "Default category order is LI, AD, DI, OO, SH. A client coverages.categoryOrder (or categories array) configuration overrides it; URL parameter featured_prod moves the identified product’s category first and that product first within it. Default products are Term Life, ascending level-term durations; Long-Term, Long-Term Plus, Mid-Term, Short-Term Disability; Critical Illness, Hospital Indemnity. Remaining products retain catalog order. An unavailable active category falls back to the first available category in the resolved order.",
+      "behavior": "Default category order is LI, AD, DI, OO, SH. A client coverages.categoryOrder (or categories array) configuration overrides it. A client coverages.productOrder optionally overrides product order within categories; omitted products retain the default order. AMA uses its source 20/15/10-year, Pure Term, Preferred Term, Premier Accident order; URL parameter featured_prod moves the identified product’s category first and that product first within it. Default products are Term Life, ascending level-term durations; Long-Term, Long-Term Plus, Mid-Term, Short-Term Disability; Critical Illness, Hospital Indemnity. Remaining products retain catalog order. An unavailable active category falls back to the first available category in the resolved order.",
+      "organization": {
+        "path": [
+          "application",
+          "coverage",
+          "selection-and-quote"
+        ],
+        "familyKey": "rules.coverage.selection-and-quote",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
-          "path": "src/components/ui/CoverageOptionsPanel.tsx",
+          "path": "src/domain/coveragePresentation.ts",
+          "exists": true
+        },
+        {
+          "path": "src/config/client/getActiveClientCoverages.ts",
+          "exists": true
+        },
+        {
+          "path": "src/components/coverage/CoverageOptionsPanel.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/components/coverage/QuoteCalculator.tsx",
           "exists": true
         }
       ],
@@ -3692,20 +4627,30 @@
       "authority": {
         "kind": "documented-behavior",
         "label": "Documented behavior; implementation owns execution",
-        "owner": "src/components/layout/AppMenu.tsx; src/components/ui/HowApplyingWorksPanel.tsx; src/components/ui/CoverageOptionsPanel.tsx"
+        "owner": "src/components/layout/AppMenu.tsx; src/components/home/HowApplyingWorksPanel.tsx; src/components/coverage/CoverageOptionsPanel.tsx"
       },
       "behavior": "Menu provides Continue Saved Application, How Applying Works, About Coverage, Needs Calculator, About QuickDecision and client Contact information. Each tool closes the main menu drawer and opens a standalone AppDrawer (How Applying Works and About Coverage render HowApplyingWorksPanel / CoverageOptionsPanel in 'drawer' variant).",
+      "organization": {
+        "path": [
+          "application",
+          "application-menu",
+          "application-menu"
+        ],
+        "familyKey": "rules.application-menu.application-menu",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/components/layout/AppMenu.tsx",
           "exists": true
         },
         {
-          "path": "src/components/ui/HowApplyingWorksPanel.tsx",
+          "path": "src/components/home/HowApplyingWorksPanel.tsx",
           "exists": true
         },
         {
-          "path": "src/components/ui/CoverageOptionsPanel.tsx",
+          "path": "src/components/coverage/CoverageOptionsPanel.tsx",
           "exists": true
         }
       ],
@@ -3738,6 +4683,16 @@
         "owner": "src/config/pageSections/pageSections.ts; src/config/conditions/conditions.ts"
       },
       "behavior": "When Spouse is selected as a dependent, display the applicant-specific spouse sections and fields; post-Coverage applicant selection gates still apply separately.",
+      "organization": {
+        "path": [
+          "application",
+          "eligibility",
+          "applicant-participation"
+        ],
+        "familyKey": "rules.eligibility.applicant-participation",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/pageSections/pageSections.ts",
@@ -3779,6 +4734,16 @@
         "owner": "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts"
       },
       "behavior": "When AMA membership is Spouse of Physician, display the physician information section.",
+      "organization": {
+        "path": [
+          "application",
+          "membership",
+          "qualifications-and-follow-ups"
+        ],
+        "familyKey": "rules.membership.qualifications-and-follow-ups",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/conditions/conditions.ts",
@@ -3821,20 +4786,30 @@
       "authority": {
         "kind": "documented-behavior",
         "label": "Documented behavior; implementation owns execution",
-        "owner": "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts"
+        "owner": "fields/waepa-attestation; conditions/condition-membership-waepa-new; src/domain/membershipQualifications.ts; src/pages/Membership.tsx; src/config/fields/fieldOverrides.ts"
       },
-      "behavior": "When WAEPA membership is New Member, display the declaration and member qualification information.",
+      "behavior": "When WAEPA membership is New Member, display the required declaration and qualification dropdown. Approved choices: I am a civilian federal employee of the U.S. government actively at work; I am a former federal employee; I am a spouse of a WAEPA member and want to apply as an Associate member; I am an Adult Child/Step-Child of a WAEPA member and want to apply as an Associate member; I am a parent/parent-in-law of a WAEPA member and want to apply as an Associate Member; I am a sibling of a WAEPA member and want to apply as an Associate Member. Former federal employee has no employer/date follow-ups. Adult Child/Step-Child Associate Member entry is allowed; the old MCR entry block is superseded by the October 20 decision. Product-specific eligibility remains separate.",
+      "organization": {
+        "path": [
+          "application",
+          "membership",
+          "qualifications-and-follow-ups"
+        ],
+        "familyKey": "rules.membership.qualifications-and-follow-ups",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
-          "path": "src/config/conditions/conditions.ts",
+          "path": "src/domain/membershipQualifications.ts",
+          "exists": true
+        },
+        {
+          "path": "src/pages/Membership.tsx",
           "exists": true
         },
         {
           "path": "src/config/fields/fieldOverrides.ts",
-          "exists": true
-        },
-        {
-          "path": "src/config/pageSections/pageSections.ts",
           "exists": true
         }
       ],
@@ -3869,6 +4844,16 @@
         "owner": "src/domain/applicantExperience.ts; src/pages/Membership.tsx; src/data/waepa.ts"
       },
       "behavior": "New and current WAEPA members answer the global Armed Forces active-duty question in Additional Membership Information. Yes displays a page error and blocks continuation for every product; No clears this restriction. The installed Site membership disqualification configuration owns the blocking value and message.",
+      "organization": {
+        "path": [
+          "application",
+          "membership",
+          "participation-gates"
+        ],
+        "familyKey": "rules.membership.participation-gates",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/domain/applicantExperience.ts",
@@ -3926,6 +4911,16 @@
         "owner": "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts"
       },
       "behavior": "When the WAEPA qualification is active federal employee, display employer and start-date fields.",
+      "organization": {
+        "path": [
+          "application",
+          "membership",
+          "qualifications-and-follow-ups"
+        ],
+        "familyKey": "rules.membership.qualifications-and-follow-ups",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/conditions/conditions.ts",
@@ -3970,7 +4965,17 @@
         "label": "Documented behavior; implementation owns execution",
         "owner": "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts"
       },
-      "behavior": "When the WAEPA qualification is federal annuitant, display retired-employer and retirement-date fields.",
+      "behavior": "Retained historical qualification condition: captured revisions with federal-annuitant may display retired-employer and retirement-date fields. The October 20 approved six-choice dropdown omits this separate option; current applicants choose Former Federal Employee, with no such follow-ups.",
+      "organization": {
+        "path": [
+          "application",
+          "membership",
+          "qualifications-and-follow-ups"
+        ],
+        "familyKey": "rules.membership.qualifications-and-follow-ups",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
         {
           "path": "src/config/conditions/conditions.ts",
@@ -4013,20 +5018,34 @@
       "authority": {
         "kind": "documented-behavior",
         "label": "Documented behavior; implementation owns execution",
-        "owner": "src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts; src/config/pageSections/pageSections.ts"
+        "owner": "conditions/condition-waepa-associated-member; fields/waepa-member-first-name; fields/waepa-member-last-name; fields/waepa-member-id; src/domain/membershipQualifications.ts; src/pages/Membership.tsx; src/config/conditions/conditions.ts; src/config/fields/fieldOverrides.ts"
       },
-      "behavior": "When the WAEPA qualification is spouse-associate or child-associate, display associated-member information.",
+      "behavior": "For spouse, Adult Child/Step-Child, parent/parent-in-law and sibling Associate Member qualifications, display the reusable associated-member information fields. First and last name are required; membership number is optional. The global qualification definition and condition are explicitly placed on Standard WAEPA; GI retains its accepted separate entry. This does not confer blanket product eligibility.",
+      "organization": {
+        "path": [
+          "application",
+          "membership",
+          "qualifications-and-follow-ups"
+        ],
+        "familyKey": "rules.membership.qualifications-and-follow-ups",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
       "implementationReferences": [
+        {
+          "path": "src/domain/membershipQualifications.ts",
+          "exists": true
+        },
+        {
+          "path": "src/pages/Membership.tsx",
+          "exists": true
+        },
         {
           "path": "src/config/conditions/conditions.ts",
           "exists": true
         },
         {
           "path": "src/config/fields/fieldOverrides.ts",
-          "exists": true
-        },
-        {
-          "path": "src/config/pageSections/pageSections.ts",
           "exists": true
         }
       ],
@@ -4061,6 +5080,16 @@
         "owner": "canonical:seedFlags/site.has-product-rates"
       },
       "behavior": "Hide rate displays when site.has-product-rates is false",
+      "organization": {
+        "path": [
+          "application",
+          "rates",
+          "source-models"
+        ],
+        "familyKey": "rules.rates.source-models",
+        "effect": "reference",
+        "ordering": "review-only"
+      },
       "implementationReferences": [],
       "assignments": [],
       "conditionKeys": [],
@@ -4080,6 +5109,16 @@
         "owner": "canonical:seedPatterns/tpa-integration"
       },
       "behavior": "tpa-integration",
+      "organization": {
+        "path": [
+          "application",
+          "patterns",
+          "source-models"
+        ],
+        "familyKey": "rules.patterns.source-models",
+        "effect": "reference",
+        "ordering": "review-only"
+      },
       "implementationReferences": [],
       "assignments": [],
       "conditionKeys": [],
@@ -4102,6 +5141,16 @@
         "owner": "canonical:seedPatterns/tpa-coverage-based-verification"
       },
       "behavior": "tpa-coverage-based-verification",
+      "organization": {
+        "path": [
+          "application",
+          "patterns",
+          "source-models"
+        ],
+        "familyKey": "rules.patterns.source-models",
+        "effect": "reference",
+        "ordering": "review-only"
+      },
       "implementationReferences": [],
       "assignments": [],
       "conditionKeys": [],
@@ -4124,6 +5173,16 @@
         "owner": "canonical:seedPatterns/tpa-coverage-based-verification"
       },
       "behavior": "tpa-coverage-based-verification",
+      "organization": {
+        "path": [
+          "application",
+          "patterns",
+          "source-models"
+        ],
+        "familyKey": "rules.patterns.source-models",
+        "effect": "reference",
+        "ordering": "review-only"
+      },
       "implementationReferences": [],
       "assignments": [],
       "conditionKeys": [],
@@ -4148,6 +5207,16 @@
         "owner": "canonical:seedPatterns/tpa-coverage-based-verification"
       },
       "behavior": "tpa-coverage-based-verification",
+      "organization": {
+        "path": [
+          "application",
+          "patterns",
+          "source-models"
+        ],
+        "familyKey": "rules.patterns.source-models",
+        "effect": "reference",
+        "ordering": "review-only"
+      },
       "implementationReferences": [],
       "assignments": [],
       "conditionKeys": [],
@@ -4170,6 +5239,16 @@
         "owner": "canonical:seedPatterns/tpa-coverage-based-verification"
       },
       "behavior": "tpa-coverage-based-verification",
+      "organization": {
+        "path": [
+          "application",
+          "patterns",
+          "source-models"
+        ],
+        "familyKey": "rules.patterns.source-models",
+        "effect": "reference",
+        "ordering": "review-only"
+      },
       "implementationReferences": [],
       "assignments": [],
       "conditionKeys": [],
@@ -4192,6 +5271,16 @@
         "owner": "canonical:seedPatterns/tpa-coverage-based-verification"
       },
       "behavior": "tpa-coverage-based-verification",
+      "organization": {
+        "path": [
+          "application",
+          "patterns",
+          "source-models"
+        ],
+        "familyKey": "rules.patterns.source-models",
+        "effect": "reference",
+        "ordering": "review-only"
+      },
       "implementationReferences": [],
       "assignments": [],
       "conditionKeys": [],
@@ -4214,6 +5303,16 @@
         "owner": "canonical:seedPatterns/tpa-membership-based-auto-approval"
       },
       "behavior": "tpa-membership-based-auto-approval",
+      "organization": {
+        "path": [
+          "application",
+          "patterns",
+          "source-models"
+        ],
+        "familyKey": "rules.patterns.source-models",
+        "effect": "reference",
+        "ordering": "review-only"
+      },
       "implementationReferences": [],
       "assignments": [],
       "conditionKeys": [],
@@ -4236,6 +5335,16 @@
         "owner": "canonical:seedPatterns/tpa-membership-based-auto-approval"
       },
       "behavior": "tpa-membership-based-auto-approval",
+      "organization": {
+        "path": [
+          "application",
+          "patterns",
+          "source-models"
+        ],
+        "familyKey": "rules.patterns.source-models",
+        "effect": "reference",
+        "ordering": "review-only"
+      },
       "implementationReferences": [],
       "assignments": [],
       "conditionKeys": [],
@@ -4258,6 +5367,16 @@
         "owner": "canonical:seedPatterns/di-income-replacement"
       },
       "behavior": "di-income-replacement",
+      "organization": {
+        "path": [
+          "application",
+          "patterns",
+          "source-models"
+        ],
+        "familyKey": "rules.patterns.source-models",
+        "effect": "reference",
+        "ordering": "review-only"
+      },
       "implementationReferences": [],
       "assignments": [],
       "conditionKeys": [],
@@ -4279,6 +5398,16 @@
         "owner": "Legal Disclosures!B3"
       },
       "behavior": "Underwriting = true",
+      "organization": {
+        "path": [
+          "application",
+          "read-sign",
+          "source-models"
+        ],
+        "familyKey": "rules.read-sign.source-models",
+        "effect": "reference",
+        "ordering": "review-only"
+      },
       "implementationReferences": [],
       "assignments": [],
       "conditionKeys": [],
@@ -4296,8 +5425,486 @@
         "owner": "Legal Disclosures!B5"
       },
       "behavior": "Underwriting = False",
+      "organization": {
+        "path": [
+          "application",
+          "read-sign",
+          "source-models"
+        ],
+        "familyKey": "rules.read-sign.source-models",
+        "effect": "reference",
+        "ordering": "review-only"
+      },
       "implementationReferences": [],
       "assignments": [],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-coverage-ama-active-work",
+      "name": "AMA disability requires actively performing occupation",
+      "area": "Coverage",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/migration/amaActiveWorkAdoption.ts; src/domain/effectiveSite.ts; src/domain/coverageRequirements.ts; src/components/coverage/ProductCatalog.tsx"
+      },
+      "behavior": "When DI is selected, ask: Are you actively at work performing the normal duties of your occupation? Yes/No replaces the DI work-hours question. No makes both AMA DI products ineligible; the standard category eligibility alert applies for one or multiple selected categories. No specific hours threshold. Stored product eligibility facts own execution; this record documents that owner.",
+      "organization": {
+        "path": [
+          "application",
+          "coverage",
+          "selection-and-quote"
+        ],
+        "familyKey": "rules.coverage.selection-and-quote",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
+      "implementationReferences": [
+        {
+          "path": "src/migration/amaActiveWorkAdoption.ts",
+          "exists": true
+        },
+        {
+          "path": "src/domain/effectiveSite.ts",
+          "exists": true
+        },
+        {
+          "path": "src/domain/coverageRequirements.ts",
+          "exists": true
+        },
+        {
+          "path": "src/components/coverage/ProductCatalog.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-coverage-ama-active-work.ama",
+          "key": "rule-coverage-ama-active-work.ama",
+          "displayId": 158459462650080,
+          "providedBy": null,
+          "sourceReference": "Main!R118/R119; User decision October 20, 2026",
+          "ruleKey": "rule-coverage-ama-active-work",
+          "position": 0,
+          "scope": "site",
+          "siteKey": "ama",
+          "clientKey": null
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-persistence-resume-verification",
+      "name": "Saved application recovery controls",
+      "area": "Persistence",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "scripts/applicant-saves.mjs; scripts/applicant-saves.test.mjs; src/services/applicantSaveService.ts"
+      },
+      "behavior": "The applicant recovery service owns save retention, link and code expiry, incorrect-attempt and issue/request limits, revocation, single-use verification and write-capability rotation. Values and enforcement remain in the mock service; delivery is simulated. This catalog reference does not configure a production service.",
+      "organization": {
+        "path": [
+          "application",
+          "persistence",
+          "application-recovery"
+        ],
+        "familyKey": "rules.persistence.application-recovery",
+        "effect": "persistence",
+        "ordering": "review-only"
+      },
+      "implementationReferences": [
+        {
+          "path": "scripts/applicant-saves.mjs",
+          "exists": true
+        },
+        {
+          "path": "scripts/applicant-saves.test.mjs",
+          "exists": true
+        },
+        {
+          "path": "src/services/applicantSaveService.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-persistence-resume-verification.global",
+          "key": "rule-persistence-resume-verification.global",
+          "displayId": 117423544648744,
+          "providedBy": null,
+          "sourceReference": "Rules owner crosswalk October 20, 2026; existing implemented behavior",
+          "ruleKey": "rule-persistence-resume-verification",
+          "position": 0,
+          "scope": "global",
+          "siteKey": null,
+          "clientKey": null
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-persistence-revision-revalidation",
+      "name": "Revalidate saved applications after Library revision changes",
+      "area": "Persistence",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "scripts/applicant-saves.mjs; src/services/applicantSaveService.ts; src/app/RoutePage.tsx; src/pages/Payment.tsx"
+      },
+      "behavior": "A recovered or locally remembered save whose Library revision differs requires explicit Coverage or Review completion before mock submission. Ordinary autosaves do not clear that state. The save service and applicant submission check own this client-assisted mock behavior; no warning banner is required.",
+      "organization": {
+        "path": [
+          "application",
+          "persistence",
+          "application-recovery"
+        ],
+        "familyKey": "rules.persistence.application-recovery",
+        "effect": "persistence",
+        "ordering": "review-only"
+      },
+      "implementationReferences": [
+        {
+          "path": "scripts/applicant-saves.mjs",
+          "exists": true
+        },
+        {
+          "path": "src/services/applicantSaveService.ts",
+          "exists": true
+        },
+        {
+          "path": "src/app/RoutePage.tsx",
+          "exists": true
+        },
+        {
+          "path": "src/pages/Payment.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-persistence-revision-revalidation.global",
+          "key": "rule-persistence-revision-revalidation.global",
+          "displayId": 181188667964769,
+          "providedBy": null,
+          "sourceReference": "Rules owner crosswalk October 20, 2026; existing implemented behavior",
+          "ruleKey": "rule-persistence-revision-revalidation",
+          "position": 1,
+          "scope": "global",
+          "siteKey": null,
+          "clientKey": null
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-coverage-product-policy-owners",
+      "name": "Product eligibility and benefit limits use captured policies",
+      "area": "Coverage",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/domain/effectiveSite.ts; src/domain/associationEligibilityPolicy.ts; src/domain/associationAmountPolicy.ts; src/domain/residencyPolicy.ts; src/domain/coverageJourneyPolicy.ts; src/domain/coveragePolicyValidation.ts; src/domain/structuredBenefitPolicy.ts; src/domain/benefitPolicy.ts; src/domain/coverageSelectionPolicy.ts; src/domain/coverageRuntime.ts"
+      },
+      "behavior": "Product eligibility constraints, scoped Association eligibility, additional eligibility facts, structured amount assignments, benefit policies and selection/dependent policies own their respective decisions. Explicit Site/product/Association/applicant assignments determine applicability. Association residency lists and identifier roles use their dedicated captured policies. This record references those owners; individual requirements still need semantic coverage verification.",
+      "organization": {
+        "path": [
+          "application",
+          "coverage",
+          "product-policies"
+        ],
+        "familyKey": "rules.coverage.product-policies",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
+      "implementationReferences": [
+        {
+          "path": "src/domain/effectiveSite.ts",
+          "exists": true
+        },
+        {
+          "path": "src/domain/associationEligibilityPolicy.ts",
+          "exists": true
+        },
+        {
+          "path": "src/domain/associationAmountPolicy.ts",
+          "exists": true
+        },
+        {
+          "path": "src/domain/residencyPolicy.ts",
+          "exists": true
+        },
+        {
+          "path": "src/domain/coverageJourneyPolicy.ts",
+          "exists": true
+        },
+        {
+          "path": "src/domain/coveragePolicyValidation.ts",
+          "exists": true
+        },
+        {
+          "path": "src/domain/structuredBenefitPolicy.ts",
+          "exists": true
+        },
+        {
+          "path": "src/domain/benefitPolicy.ts",
+          "exists": true
+        },
+        {
+          "path": "src/domain/coverageSelectionPolicy.ts",
+          "exists": true
+        },
+        {
+          "path": "src/domain/coverageRuntime.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-coverage-product-policy-owners.global",
+          "key": "rule-coverage-product-policy-owners.global",
+          "displayId": 44579911381753,
+          "providedBy": null,
+          "sourceReference": "Rules owner crosswalk October 20, 2026; existing implemented behavior",
+          "ruleKey": "rule-coverage-product-policy-owners",
+          "position": 2,
+          "scope": "global",
+          "siteKey": null,
+          "clientKey": null
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-rates-billing-modifier-owners",
+      "name": "Billing and premium modifiers use captured product policies",
+      "area": "Rates",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/domain/mockRating.ts; src/domain/rateModifiers.ts; src/domain/coverageJourneyPolicy.ts"
+      },
+      "behavior": "Captured product rate modifier policies and journey billing policies own membership adjustments, billing factors and applicable fees. The rating and billing resolvers execute them; rule prose does not supply competing values.",
+      "organization": {
+        "path": [
+          "application",
+          "rates",
+          "rating-and-billing"
+        ],
+        "familyKey": "rules.rates.rating-and-billing",
+        "effect": "calculation",
+        "ordering": "review-only"
+      },
+      "implementationReferences": [
+        {
+          "path": "src/domain/mockRating.ts",
+          "exists": true
+        },
+        {
+          "path": "src/domain/rateModifiers.ts",
+          "exists": true
+        },
+        {
+          "path": "src/domain/coverageJourneyPolicy.ts",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-rates-billing-modifier-owners.global",
+          "key": "rule-rates-billing-modifier-owners.global",
+          "displayId": 173053939577685,
+          "providedBy": null,
+          "sourceReference": "Rules owner crosswalk October 20, 2026; existing implemented behavior",
+          "ruleKey": "rule-rates-billing-modifier-owners",
+          "position": 3,
+          "scope": "global",
+          "siteKey": null,
+          "clientKey": null
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-review-jurisdiction-fraud-notices",
+      "name": "Fraud notice follows the captured Review policy",
+      "area": "Review",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/domain/reviewPolicy.ts; src/content/reviewPolicies.ts; src/pages/Review.tsx"
+      },
+      "behavior": "The Site Review policy owns jurisdiction text and scoped product exceptions. resolveFraudNotice selects the applicable notice using residence and selected products; missing residence is not silently assigned a jurisdiction.",
+      "organization": {
+        "path": [
+          "application",
+          "review",
+          "consent-and-disclosures"
+        ],
+        "familyKey": "rules.review.consent-and-disclosures",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
+      "implementationReferences": [
+        {
+          "path": "src/domain/reviewPolicy.ts",
+          "exists": true
+        },
+        {
+          "path": "src/content/reviewPolicies.ts",
+          "exists": true
+        },
+        {
+          "path": "src/pages/Review.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-review-jurisdiction-fraud-notices.global",
+          "key": "rule-review-jurisdiction-fraud-notices.global",
+          "displayId": 232474238247306,
+          "providedBy": null,
+          "sourceReference": "Rules owner crosswalk October 20, 2026; existing implemented behavior",
+          "ruleKey": "rule-review-jurisdiction-fraud-notices",
+          "position": 4,
+          "scope": "global",
+          "siteKey": null,
+          "clientKey": null
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-review-conditional-consent-blocks",
+      "name": "Consent blocks follow captured applicability and fields",
+      "area": "Review",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/domain/reviewPolicy.ts; src/content/reviewPolicies.ts; src/pages/Review.tsx"
+      },
+      "behavior": "The captured Review policy owns applicant, product and application-mode conditions for consent blocks, source consent selection and role-specific openings. Active block field definitions own required acknowledgements; the Review resolver and page execute applicability and validation.",
+      "organization": {
+        "path": [
+          "application",
+          "review",
+          "consent-and-disclosures"
+        ],
+        "familyKey": "rules.review.consent-and-disclosures",
+        "effect": "presentation",
+        "ordering": "review-only"
+      },
+      "implementationReferences": [
+        {
+          "path": "src/domain/reviewPolicy.ts",
+          "exists": true
+        },
+        {
+          "path": "src/content/reviewPolicies.ts",
+          "exists": true
+        },
+        {
+          "path": "src/pages/Review.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-review-conditional-consent-blocks.global",
+          "key": "rule-review-conditional-consent-blocks.global",
+          "displayId": 83555235465168,
+          "providedBy": null,
+          "sourceReference": "Rules owner crosswalk October 20, 2026; existing implemented behavior",
+          "ruleKey": "rule-review-conditional-consent-blocks",
+          "position": 5,
+          "scope": "global",
+          "siteKey": null,
+          "clientKey": null
+        }
+      ],
+      "conditionKeys": [],
+      "sourcePredicateKeys": [],
+      "sourceActionKeys": []
+    },
+    {
+      "key": "rule-membership-ama-category-eligibility",
+      "name": "AMA applicant type determines category eligibility",
+      "area": "Membership",
+      "documentedIn": "rules",
+      "authority": {
+        "kind": "documented-behavior",
+        "label": "Documented behavior; implementation owns execution",
+        "owner": "src/domain/categoryEligibilityPolicy.ts; src/domain/effectiveSite.ts; src/domain/coverageRuntime.ts; src/app/useCoverageState.ts; src/components/coverage/QuoteCalculator.tsx"
+      },
+      "behavior": "The Site category eligibility policy owns the available categories for each AMA membership/applicant type. Category controls, product eligibility and saved-election reconciliation use that policy. An unanswered pre-membership quote defers this gate; the application and captured eligibility API require an answer. Changing applicant type removes incompatible coverage elections.",
+      "organization": {
+        "path": [
+          "application",
+          "membership",
+          "qualifications-and-follow-ups"
+        ],
+        "familyKey": "rules.membership.qualifications-and-follow-ups",
+        "effect": "eligibility",
+        "ordering": "review-only"
+      },
+      "implementationReferences": [
+        {
+          "path": "src/domain/categoryEligibilityPolicy.ts",
+          "exists": true
+        },
+        {
+          "path": "src/domain/effectiveSite.ts",
+          "exists": true
+        },
+        {
+          "path": "src/domain/coverageRuntime.ts",
+          "exists": true
+        },
+        {
+          "path": "src/app/useCoverageState.ts",
+          "exists": true
+        },
+        {
+          "path": "src/components/coverage/QuoteCalculator.tsx",
+          "exists": true
+        }
+      ],
+      "assignments": [
+        {
+          "id": "rule-membership-ama-category-eligibility.ama",
+          "key": "rule-membership-ama-category-eligibility.ama",
+          "displayId": 85794659745396,
+          "providedBy": null,
+          "sourceReference": "Attestation Online and PDF!C3; User decision October 20, 2026",
+          "ruleKey": "rule-membership-ama-category-eligibility",
+          "scope": "site",
+          "siteKey": "ama",
+          "clientKey": null,
+          "position": 0
+        }
+      ],
       "conditionKeys": [],
       "sourcePredicateKeys": [],
       "sourceActionKeys": []

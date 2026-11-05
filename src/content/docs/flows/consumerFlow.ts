@@ -70,6 +70,7 @@ export const consumerFlow: FlowDefinition = {
     {
       id: "consumer-health-summary",
       kind: "summary",
+      pageGroupId: "health",
       label: "Health Routing",
       description:
         "Applicable health forms are resolved independently from selected coverage and underwriting type. See Health Routing below for the condition-to-page mapping.",

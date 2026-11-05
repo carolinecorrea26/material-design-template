@@ -1,24 +1,25 @@
+import BeneficiaryProductRecords from "../components/beneficiary/BeneficiaryProductRecords";
+import { type BeneficiaryDesignation, type BeneficiaryType, type BeneficiaryItem } from "../components/beneficiary/beneficiaryRecords";
+import { collectsBeneficiaries } from "../domain/beneficiaryParticipation";
+import { beneficiaryDesignationNote } from "../domain/beneficiaryNotes";
+import { getPrototypeLibrary } from "../domain/prototypeLibrary";
 import { validateBeneficiaryRecords } from '../domain/beneficiaryValidation';
 import { getFieldSurface, getSurfaceFields, getSurfaceField, surfaceSemanticValues, beneficiarySemanticValues } from '../config/fields/storedSurfaces';
 import { BENEFICIARY_INFO_OPT_IN_FIELD_ID } from "../config/fields/beneficiaryFields";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import ProductCard from "../components/layout/ProductCard";
 import {
   Alert,
   Box,
   Button,
-  Checkbox,
   Divider,
   Stack,
   Tab,
   Tabs,
   Typography,
 } from "@mui/material";
-import RadioSelectionGroup from "../components/forms/RadioSelectionGroup";
-import AddIcon from "@mui/icons-material/Add";
+import ControlledFieldRenderer from "../components/forms/ControlledFieldRenderer";
 import { useForm, type Control, type FieldErrors } from "react-hook-form";
-import DynamicListItem from "../components/forms/DynamicListItem";
-import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
+import ApplicantSectionDivider from "../app/sections/ConfiguredApplicantSectionDivider";
 import CategoryCard from "../components/layout/CategoryCard";
 import AppModal from "../components/layout/AppModal";
 import FieldRenderer from "../components/forms/FieldRenderer";
@@ -41,21 +42,6 @@ import FieldGrid from "../components/layout/FieldGrid";
 
 const content = getContent();
 
-type BeneficiaryDesignation = "primary" | "contingent";
-type BeneficiaryType = "individual" | "trust";
-
-type BeneficiaryItem = {
-  id: string;
-  designation: BeneficiaryDesignation;
-  beneficiaryType: BeneficiaryType;
-  firstName: string;
-  lastName: string;
-  relationship: string;
-  trustName: string;
-  trustDate: string;
-  share: number;
-};
-
 type ProductContext = {
   productKey: string;
   coverageId: string;
@@ -63,7 +49,6 @@ type ProductContext = {
   applicantId: CoverageApplicantId;
 };
 
-const ELIGIBLE_CATEGORY_IDS = new Set(["LI", "AD"]);
 
 function shouldShowBeneficiaryQuestions(
   pageRequirement: "required" | "optional" | "none",
@@ -119,28 +104,6 @@ function getBeneficiaryPageError(
   return undefined;
 }
 
-function getBeneficiaryDisplayName(item: BeneficiaryItem) {
-  const formatDisplay = (value: string) => value.trim().toUpperCase();
-
-  if (item.beneficiaryType === "trust") {
-    return formatDisplay(item.trustName);
-  }
-
-  return formatDisplay(`${item.firstName} ${item.lastName}`);
-}
-
-function getDesignationLabel(designation: BeneficiaryDesignation) {
-  return designation === "primary" ? "Primary" : "Contingent";
-}
-
-function getRelationshipLabel(item: BeneficiaryItem) {
-  if (item.beneficiaryType === "trust") {
-    return "Trust";
-  }
-
-  return item.relationship || "Relationship not provided";
-}
-
 export default function Beneficiary() {
   const { values, setPageValues } = useApplicationForm();
   const individualFields = getSurfaceFields("beneficiaryIndividual");
@@ -190,8 +153,7 @@ export default function Beneficiary() {
 
   const selectedCoverages = coverages.filter(
     (coverage) =>
-      selectedCoverageIds.includes(coverage.id) &&
-      ELIGIBLE_CATEGORY_IDS.has(coverage.categoryId),
+      selectedCoverageIds.includes(coverage.id),
   );
 
   const selectedDependents = useMemo(
@@ -234,7 +196,7 @@ export default function Beneficiary() {
       const memberKey = `${coverage.id}:member`;
       if (
         (storedAmounts[memberKey] ?? 0) > 0 &&
-        isApplicantSelectedForProduct(coverage.id, "member")
+        isApplicantSelectedForProduct(coverage.id, "member") && collectsBeneficiaries(getPrototypeLibrary()?.site, coverage.id, coverage.categoryId, "member", typeof values.membership === "string" ? values.membership : undefined)
       ) {
         byApplicant.member.push({
           productKey: memberKey,
@@ -247,7 +209,7 @@ export default function Beneficiary() {
       const spouseKey = `${coverage.id}:spouse`;
       if (
         (storedAmounts[spouseKey] ?? 0) > 0 &&
-        isApplicantSelectedForProduct(coverage.id, "spouse")
+        isApplicantSelectedForProduct(coverage.id, "spouse") && collectsBeneficiaries(getPrototypeLibrary()?.site, coverage.id, coverage.categoryId, "spouse", typeof values.membership === "string" ? values.membership : undefined)
       ) {
         byApplicant.spouse.push({
           productKey: spouseKey,
@@ -259,7 +221,7 @@ export default function Beneficiary() {
     }
 
     return byApplicant;
-  }, [selectedCoverages, storedAmounts, isApplicantSelectedForProduct]);
+  }, [selectedCoverages, storedAmounts, isApplicantSelectedForProduct, values.membership]);
 
   const [activeProduct, setActiveProduct] = useState<ProductContext | null>(
     null,
@@ -297,6 +259,7 @@ export default function Beneficiary() {
 
   // "Apply to other coverages" dialog state
   const [applyToOthersOpen, setApplyToOthersOpen] = useState(false);
+  const [applyToOthersError, setApplyToOthersError] = useState<string | null>(null);
   const [applyToOthersItem, setApplyToOthersItem] =
     useState<BeneficiaryItem | null>(null);
   const [applyToOthersSource, setApplyToOthersSource] =
@@ -501,6 +464,7 @@ export default function Beneficiary() {
         setApplyToOthersItem(nextItem);
         setApplyToOthersSource(activeProduct);
         setApplyToOthersSelected([]);
+        setApplyToOthersError(null);
         setApplyToOthersOpen(true);
         closeModal();
         return;
@@ -514,6 +478,11 @@ export default function Beneficiary() {
     if (!applyToOthersItem || !applyToOthersSource) return;
 
     const nextBeneficiaries = { ...beneficiariesByProduct };
+
+    for (const productKey of applyToOthersSelected) {
+      const invalid = validateBeneficiaryRecords([...(Array.isArray(nextBeneficiaries[productKey]) ? nextBeneficiaries[productKey] : []), applyToOthersItem], getFieldSurface("beneficiaryIndividual"), getFieldSurface("beneficiaryTrust"));
+      if (invalid) { setApplyToOthersError(invalid); return; }
+    }
 
     for (const productKey of applyToOthersSelected) {
       const existing = Array.isArray(nextBeneficiaries[productKey])
@@ -531,6 +500,7 @@ export default function Beneficiary() {
     setApplyToOthersItem(null);
     setApplyToOthersSource(null);
     setApplyToOthersSelected([]);
+    setApplyToOthersError(null);
   }
 
   function closeApplyToOthers() {
@@ -538,81 +508,18 @@ export default function Beneficiary() {
     setApplyToOthersItem(null);
     setApplyToOthersSource(null);
     setApplyToOthersSelected([]);
+    setApplyToOthersError(null);
   }
 
   function renderProductCard(product: ProductContext) {
-    const items = getProductBeneficiaries(product.productKey);
-
-    return (
-      <ProductCard
-        key={product.productKey}
-        sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}
-      >
-        <Stack spacing={1.5}>
-          <Stack spacing={1}>
-            <Typography variant="productNameLabel">
-              {product.coverageName}
-            </Typography>
-          </Stack>
-
-          {(["primary", "contingent"] as const).map((designation) => {
-            const designationItems = items.filter(
-              (item) => item.designation === designation,
-            );
-            if (designationItems.length === 0) return null;
-            return (
-              <Stack spacing={0.75} key={designation}>
-                <Typography variant="overline" color="text.secondary">
-                  {getDesignationLabel(designation)}
-                </Typography>
-                {designationItems.map((item) => (
-                  <DynamicListItem
-                    key={item.id}
-                    onEdit={() => openEditModal(product, item)}
-                    onRemove={() =>
-                      removeBeneficiary(product.productKey, item.id)
-                    }
-                    itemLabel={`${getBeneficiaryDisplayName(item)}${
-                      item.beneficiaryType === "individual"
-                        ? ` (${item.share}%)`
-                        : ""
-                    }`}
-                  >
-                    <Typography variant="subtitle2">
-                      {getBeneficiaryDisplayName(item)}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {getRelationshipLabel(item)}
-                      {item.beneficiaryType === "individual"
-                        ? ` | ${item.share}%`
-                        : ""}
-                    </Typography>
-                  </DynamicListItem>
-                ))}
-              </Stack>
-            );
-          })}
-
-          {isProductFullyMaxed(product.productKey) ? (
-            <Alert severity="info" sx={{ mt: 1 }}>
-              {content.beneficiary.noMoreOnlineMessage}
-            </Alert>
-          ) : (
-            <Button
-              ref={(el) => {
-                addBeneficiaryButtonRefs.current[product.productKey] = el;
-              }}
-              variant="outlined"
-              fullWidth
-              startIcon={<AddIcon />}
-              onClick={() => openAddModal(product)}
-            >
-              Add Beneficiary
-            </Button>
-          )}
-        </Stack>
-      </ProductCard>
-    );
+    const library = getPrototypeLibrary();
+    return <BeneficiaryProductRecords key={product.productKey} productName={product.coverageName}
+      items={getProductBeneficiaries(product.productKey)}
+      note={library ? beneficiaryDesignationNote(library.site, product.coverageId, product.applicantId) ?? undefined : undefined}
+      quickDecision={coverages.some(coverage => coverage.id === product.coverageId && !coverage.underwritingBands?.length && coverage.underwritingType === "QD")}
+      capacityMessage={isProductFullyMaxed(product.productKey) ? content.beneficiary.noMoreOnlineMessage : undefined}
+      onEdit={item => openEditModal(product, item)} onRemove={id => removeBeneficiary(product.productKey, id)} onAdd={() => openAddModal(product)}
+      addButtonRef={element => { addBeneficiaryButtonRefs.current[product.productKey] = element; }} />;
   }
 
   function renderApplicantSection(applicant: "member" | "spouse") {
@@ -620,7 +527,7 @@ export default function Beneficiary() {
     if (!products.length) return null;
 
     const groupedByCategory = coverageCategories
-      .filter((category) => ELIGIBLE_CATEGORY_IDS.has(category.id))
+      .filter((category) => products.some(product => coverages.some(coverage => coverage.id === product.coverageId && coverage.categoryId === category.id)))
       .map((category) => ({
         category,
         products: products.filter((product) => {
@@ -883,15 +790,10 @@ export default function Beneficiary() {
                     </Alert>
                   )}
 
-                  <RadioSelectionGroup
-                    name="beneficiary-type"
-                    label={getSurfaceField("beneficiaryControls", "beneficiaryType")!.label}
-                    options={getSurfaceField("beneficiaryControls", "beneficiaryType")!.options ?? []}
+                  <ControlledFieldRenderer
+                    field={{ ...getSurfaceField("beneficiaryControls", "beneficiaryType")!, disabled: remainingDesignationSlots === 0 && !editingId }}
                     value={modalBeneficiaryType}
-                    onChange={(value) =>
-                      setModalBeneficiaryType(value as BeneficiaryType)
-                    }
-                    disabled={remainingDesignationSlots === 0 && !editingId}
+                    onChange={value => setModalBeneficiaryType(value as BeneficiaryType)}
                   />
 
                   {modalBeneficiaryType === "individual" &&
@@ -923,7 +825,7 @@ export default function Beneficiary() {
                         for (let cursor = index - 1; cursor >= 0 && gridIds.includes(getFieldSurface("beneficiaryIndividual").mapping.fields[cursor].id); cursor--) consecutive++;
                         if (inGrid && previous && gridIds.includes(previous.id) && consecutive % 2 === 1) return null;
                         const next = getFieldSurface("beneficiaryIndividual").mapping.fields[index + 1];
-                        return inGrid ? <FieldGrid key={field.id}>{render(field)}{next && gridIds.includes(next.id) && render(individualFields[index + 1])}</FieldGrid> : render(field);
+                        return inGrid ? <FieldGrid key={field.id} columns="equal">{render(field)}{next && gridIds.includes(next.id) && render(individualFields[index + 1])}</FieldGrid> : render(field);
                       })}
 
                       <Stack direction="row" spacing={1}>
@@ -1019,6 +921,7 @@ export default function Beneficiary() {
               ]}
             >
               <Stack spacing={2} sx={{ pt: 0.5 }}>
+                {applyToOthersError && <Alert severity="error">{applyToOthersError}</Alert>}
                 <Typography variant="body2" color="text.secondary">
                   {content.dialogs.beneficiary.applyToOthersPrompt}
                 </Typography>
@@ -1042,23 +945,16 @@ export default function Beneficiary() {
                             gap: 1,
                           }}
                         >
-                          <Checkbox
-                            checked={applyToOthersSelected.includes(
-                              product.productKey,
-                            )}
-                            onChange={(_, checked) => {
-                              setApplyToOthersSelected((prev) =>
-                                checked
-                                  ? [...prev, product.productKey]
-                                  : prev.filter(
-                                      (k) => k !== product.productKey,
-                                    ),
-                              );
+                          <ControlledFieldRenderer
+                            field={{
+                              id: `apply-beneficiary-${product.productKey}`,
+                              label: product.coverageName,
+                              inputType: "checkbox",
+                              disabled: !!applyToOthersItem && !!validateBeneficiaryRecords([...(Array.isArray(beneficiariesByProduct[product.productKey]) ? beneficiariesByProduct[product.productKey] : []), applyToOthersItem], getFieldSurface("beneficiaryIndividual"), getFieldSurface("beneficiaryTrust")),
                             }}
+                            value={applyToOthersSelected.includes(product.productKey)}
+                            onChange={checked => setApplyToOthersSelected(prev => checked ? [...prev, product.productKey] : prev.filter(key => key !== product.productKey))}
                           />
-                          <Typography variant="body2">
-                            {product.coverageName}
-                          </Typography>
                         </Box>
                       ))}
                     </Stack>

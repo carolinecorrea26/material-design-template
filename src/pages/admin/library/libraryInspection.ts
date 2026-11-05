@@ -2,6 +2,8 @@ import { getFieldInventory } from "../../../config/fields/inspectionInventory";
 import { getApplicableSiteRules } from "../../../content/docs/siteRules";
 import { resolveSiteCoverage, resolveSitePages } from "../../../data";
 import { getFlowGateDefinition, coverageUnlocksPage } from "../../../config/flowGates";
+import { getPrototypeLibrary } from "../../../domain/prototypeLibrary";
+import { resolvePageCatalog } from "../../../domain/pageCatalog";
 import { getPageCategory } from "../../../config/resolvers/resolveClientPages";
 import { getClientForSite } from "../../../data";
 import type { LibraryScope } from "./LibraryScope";
@@ -11,7 +13,7 @@ import { conditionDefinitions } from "../../../config/conditions";
 import { getConditionVisibilityTargets } from "../../../config/conditions/conditionTargets";
 import type { RuleDefinition } from "../../../domain/rules";
 
-export const orderedLibraryPages = getSiteDetailsPageOrder().flatMap(id => {
+export const getOrderedLibraryPages = () => getSiteDetailsPageOrder().flatMap(id => {
   const page = libraryRepository.read("pages").find(p => p.id === id);
   return page ? [page] : [];
 });
@@ -54,6 +56,10 @@ export function getLibraryFieldIds(scope: LibraryScope, siteId: string): Set<str
 
 /** A Site cannot reach a gated page when none of its enabled products unlock it. */
 export function getLibraryPages(scope: LibraryScope, siteId: string) {
+  const library = getPrototypeLibrary();
+  if (library) return resolvePageCatalog(library.pageData, scope === "global" ? undefined : siteId)
+    .filter(page => page.definition.flow !== "internal" && (scope === "global" || page.enabled)).map(page => page.definition);
+  const orderedLibraryPages = getOrderedLibraryPages();
   if (scope === "global") return orderedLibraryPages;
   const resolutions = resolveSitePages(siteId);
   const products = resolveSiteCoverage(siteId).filter(row => row.status !== "disabled").map(row => row.effective);

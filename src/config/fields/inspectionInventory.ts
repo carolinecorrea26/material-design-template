@@ -1,3 +1,4 @@
+import { getPhoneTypeFieldId } from "../../domain/phoneFields";
 import type { ResolvedFieldSurface } from "../../domain/fieldSurfaces";
 /** Inspection-only inventory: never feeds page rendering, validation, or persistence.
  * Includes conditional and repeated inputs in addition to the flat runtime registry.
@@ -37,6 +38,8 @@ export type FieldPlacement = {
 export type FieldGroup = { id: string; label: string };
 export type InspectedField = {
   field: FieldDefinition;
+  /** Saved definition reused by a generated product/applicant control. */
+  definitionKey?: string;
   pageId: PageId | null;
   group?: FieldGroup;
   placements?: FieldPlacement[];
@@ -56,17 +59,20 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
   const pageSections = library ? Object.fromEntries(library.site.configuration.pages.map(page => [page.key, page.sections.map(section => section.definition.value)])) as typeof defaultPageSections : defaultPageSections;
   const requirement = (page: PageId) => library ? library.site.configuration.pages.find(row => row.key === page)?.requirement ?? "none" : getClientPageRequirement(page, client);
   const result: InspectedField[] = [];
+  const definitions = library ? Object.fromEntries(library.fields.map(field => [field.id, field])) : catalog;
   const surfaceFields = (name: string, fallback: FieldDefinition[]) => library ? library.fieldSurfaces[name].mapping.fields : fallback;
   const surface = (name: string): ResolvedFieldSurface | undefined => library?.fieldSurfaces[name];
   const coverageFields = new Set<string>([
     ...resolveCoverageQuestionSections({sections:pageSections.coverage ?? [],selectedCategories:products.map(p=>p.categoryId),coverageQuestions:client.coverageQuestions}).flatMap(s=>s.fieldIds),
     ...coverageFactFieldIds(products),
   ]);
-  const enabled = (page: PageId) => requirement(page) !== "none" && (!getFlowGateDefinition(page) || products.some(p => coverageUnlocksPage(page, p)));
-  const add = (pageId: PageId, field: FieldDefinition, area: string, condition: string, storage = field.id, status = "page-defined", notes: string[] = []) => {
-    if (enabled(pageId)) result.push({ field, pageId, area, condition, storage, status, notes, sites: [siteId] });
+  // Saved assignments include conditional portfolio routes as well as simple
+  // product gates. Inventory all possible inputs without evaluating a journey.
+  const enabled = (page: PageId) => requirement(page) !== "none" && (!!library || !getFlowGateDefinition(page) || products.some(p => coverageUnlocksPage(page, p)));
+  const add = (pageId: PageId, field: FieldDefinition, area: string, condition: string, storage = field.id, status = "page-defined", notes: string[] = [], definitionKey?: string) => {
+    if (enabled(pageId)) result.push({ field, definitionKey, pageId, area, condition, storage, status, notes, sites: [siteId] });
   };
-  for (const page of pages) {
+  for (const page of library ? library.pages.map(row => row.definition) : pages) {
     if (page.type === "internal" || !enabled(page.id)) continue;
     const resolutions = library ? (library.site.configuration.pages.find(row => row.key === page.id)?.fields ?? []).map(field => ({ fieldId: field.key, field: field.definition, included: field.included, status: "site-configured", notes: [] })) : getResolvedFieldResolutionsForSite(page.id, siteId);
     for (const row of resolutions) {
@@ -80,12 +86,14 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
       }
       add(page.id, row.field, section?.id ?? "Page", [section?.visibilityConditionId, row.field.visibilityConditionId].filter(Boolean).join("; ") || "Page and field visibility rules apply", row.field.id, row.status, row.notes);
       if (row.field.format === "phone" && row.field.showPhoneTypeSelector !== false) {
-        const id = row.field.phoneTypeFieldId ?? "phone-type";
-        add(page.id, { id, label: "Phone Type", inputType: "dropdown", required: true, options: ["mobile", "home", "business"].map(value => ({value,label: value})) }, section?.id ?? "Page", `Shown with ${row.field.id}`, id, "component-defined");
+        const id = getPhoneTypeFieldId(row.field);
+        const companion = definitions[id];
+        if (!companion) throw new Error(`Missing configured phone type field: ${id}`);
+        add(page.id, companion, section?.id ?? "Page", `Shown with ${row.field.id}`, id, "component-defined");
       }
     }
   }
-  const childKeys: Record<string,string> = {...childMapping.fieldToKey,"child-unmarried":"unmarried","child-full-time-student":"fullTimeStudent"};
+  const childKeys: Record<string,string> = {...childMapping.fieldToKey,"child-unmarried":"unmarried","child-full-time-student":"fullTimeStudent","child-honorably-discharged-service-member":"honorablyDischargedServiceMember"};
   if (library) for (const field of library.fieldCollections.children.mapping.fields) {
     const key = library.fieldCollections.children.mapping.fieldToKey[field.id];
     const registered = result.find(row => row.pageId === "eligibility" && row.field.id === field.id);
@@ -94,7 +102,7 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
   }
   else for (const [id,key] of Object.entries(childKeys)) {
     const registered = result.find(r => r.pageId === "eligibility" && r.field.id === id);
-    if (id === "child-unmarried" || id === "child-full-time-student") {
+    if (id === "child-unmarried" || id === "child-full-time-student" || id === "child-honorably-discharged-service-member") {
       if (registered) Object.assign(registered, {area:"childSection",storage:`children[].${key}`,condition:"Child selected; repeated for each child"});
     } else add("eligibility", catalog[id], "childSection", "Child selected; repeated for each child", `children[].${key}`);
   }
@@ -117,9 +125,9 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
     for (const field of products.some(p=>p.categoryId === "DI" && p.applicants.includes(applicantType)) ? companyMapping.fields : []) {
       const key = companyMapping.fieldToKey[field.id as keyof typeof companyMapping.fieldToKey];
       const storage = `${applicant}DisabilityCompanies[].${key}`;
-      add("profile", {...field,id:`${applicant}-${field.id}`}, `${applicant} / existing disability insurance`, "Applicant has existing disability insurance and applicable coverage", storage);
+      add("profile", {...field,id:`${applicant}-${field.id}`}, `${applicant} / existing disability insurance`, "Applicant has existing disability insurance and applicable coverage", storage, "page-defined", [], field.id);
     }
-    add("review", catalog[`review-${applicant}-consent`], applicant, applicant === "self" ? "Review page" : "Spouse applying");
+    add("review", definitions[`review-${applicant}-consent`], applicant, applicant === "self" ? "Review page" : "Spouse applying");
   }
   if (requirement("beneficiary") === "optional") for (const field of surfaceFields("beneficiaryControls", [beneficiaryInfoOptInField]).filter(field => field.id === beneficiaryInfoOptInField.id)) add("beneficiary", field, "Page", "Optional beneficiary page");
   for (const name of ["beneficiaryIndividual", "beneficiaryTrust", "beneficiaryControls"]) {
@@ -131,7 +139,7 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
     for (const [kind,label,inputType,options] of [["method","Payment Method","radio",paymentMethodOptions],["frequency","Payment Frequency","dropdown",paymentFrequencyOptions]] as const) {
       const stored = surface("paymentControls")?.mapping.fields.find(field => field.id === `payment-${kind}`);
       if (library && !stored) continue;
-      add("payment", {...(stored ?? {label,inputType,options:options.map(o=>({value:o.value,label:o.label}))}), id:`payment-${kind}:${product.id}`},product.name,"Selected product with nonzero amount; payment information enabled");
+      add("payment", {...(stored ?? {label,inputType,options:options.map(o=>({value:o.value,label:o.label}))}), id:`payment-${kind}:${product.id}`},product.name,"Selected product with nonzero amount; payment information enabled", undefined, "page-defined", [], stored?.id);
     }
     for (const applicant of product.applicants) {
       const key = `${product.id}:${applicant}`;
@@ -159,9 +167,9 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
   }
   for (const block of client.reviewPolicy?.blocks ?? []) for (const id of block.fields) {
     if (client.fields.review?.hidden?.includes(id)) continue;
-    add("review", { ...catalog[id], ...client.fields.review?.overrides?.[id] }, block.title, block.when?.applicant ? `${block.when.applicant} applying` : "Review page", id, "site-configured", block.sourceReferences);
+    add("review", { ...definitions[id], ...client.fields.review?.overrides?.[id] }, block.title, block.when?.applicant ? `${block.when.applicant} applying` : "Review page", id, "site-configured", block.sourceReferences);
   }
-  const quoteGroup = { id: "quote-calculator", label: "Quote calculator" };
+  const quoteGroup = { id: "quote-calculator", label: surface("quoteInputs")?.inspectionLabel ?? "Quote calculator" };
   const quotePlacements: FieldPlacement[] = [];
   if (enabled("membership")) quotePlacements.push({
     pageId: "membership", accessPath: 'Help chip → How much does it cost?',
@@ -174,8 +182,8 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
     presentation: homeVariant === "quoteFirst" ? "inline" : "drawer",
     condition: homeVariant === "quoteFirst" ? "Quote step shown" : "Quote drawer open",
   });
-  const addTool = (group: FieldGroup, placements: FieldPlacement[], field: FieldDefinition, condition: string, storage: string) => {
-    if (placements.length) result.push({field, pageId: null, group, placements, area: group.label, condition, storage, status: "component-defined", notes: [], sites: [siteId]});
+  const addTool = (group: FieldGroup, placements: FieldPlacement[], field: FieldDefinition, condition: string, storage: string, definitionKey?: string) => {
+    if (placements.length) result.push({field, definitionKey, pageId: null, group, placements, area: group.label, condition, storage, status: "component-defined", notes: [], sites: [siteId]});
   };
   // Home's default card collects eligibility before opening the tool. Other
   // inputs belong to the calculator, including its inline Home placement.
@@ -196,19 +204,20 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
   for (const product of products.filter(p => p.applicants.includes("member"))) {
     const selectedField = surface("quoteInputs")?.mapping.fields.find(field => field.id === "quote-selection");
     const amountField = surface("quoteInputs")?.mapping.fields.find(field => field.id === (["DI", "OO"].includes(product.categoryId) ? "quote-monthly-amount" : "quote-amount"));
-    if (!library || selectedField) addTool(quoteGroup, quotePlacements, {...(selectedField ?? {label:`${product.name} selection`,inputType:"checkbox" as const}), id:`quote-selection:${product.id}`}, "Quote results shown", "Local quote state");
-    if (!library || amountField) addTool(quoteGroup, quotePlacements, {...(amountField ?? {label:`${product.name} amount`,inputType:"dropdown" as const}), id:`quote-amount:${product.id}`}, "Quote product selected", "Local quote state");
+    if (!library || selectedField) addTool(quoteGroup, quotePlacements, {...(selectedField ?? {label:`${product.name} selection`,inputType:"checkbox" as const}), id:`quote-selection:${product.id}`}, "Quote results shown", "Local quote state", selectedField?.id);
+    if (!library || amountField) addTool(quoteGroup, quotePlacements, {...(amountField ?? {label:`${product.name} amount`,inputType:"dropdown" as const}), id:`quote-amount:${product.id}`}, "Quote product selected", "Local quote state", amountField?.id);
   }
   if (new Set(products.map(p => p.categoryId)).size > 1 && (!library || surface("quoteInputs")?.mapping.fields.some(field => field.id === "quote-categories"))) addTool(quoteGroup, quotePlacements, (surface("quoteInputs")?.mapping.fields.find(field => field.id === "quote-categories") ?? {id:"quote-categories",label:"Coverage categories",inputType:"checkbox-group"}), "Multiple coverage categories available", "Local quote state");
   if (client.coverages.estimatedRateDisplay?.showFrequencyToggle) {
     add("coverage",{id:"coverage-rate-frequency",label:"Rate display frequency",inputType:"radio"},"Estimated rates","Frequency toggle enabled","Local display state","component-defined");
     if (!library || surface("quoteInputs")?.mapping.fields.some(field => field.id === "quote-rate-frequency")) addTool(quoteGroup, quotePlacements, (surface("quoteInputs")?.mapping.fields.find(field => field.id === "quote-rate-frequency") ?? {id:"quote-rate-frequency",label:"Rate display frequency",inputType:"radio"}), "Quote results shown; frequency toggle enabled", "Local display state");
   }
-  const needsPlacements: FieldPlacement[] = pages
+  const needsPages = library ? library.pages.filter(page => page.enabled && page.definition.flow === "application").map(page => page.definition) : pages;
+  const needsPlacements: FieldPlacement[] = needsPages
     .filter(page => (getPageCategory(page) === "application" || page.id === "home") && enabled(page.id))
     .map(page => ({pageId: page.id, accessPath: "Application menu → How much coverage do I need?", presentation: "drawer", condition: "Needs calculator drawer open"}));
   for (const field of surfaceFields("needsCalculator", needsCalculatorFields)) addTool(
-    {id: "needs-calculator", label: "Needs calculator"}, needsPlacements,
+    {id: "needs-calculator", label: surface("needsCalculator")?.inspectionLabel ?? "Needs calculator"}, needsPlacements,
     field, "Needs calculator drawer open", "Local calculator state (not saved)",
   );
   // Bank fields are rendered only when a product uses a bank account.

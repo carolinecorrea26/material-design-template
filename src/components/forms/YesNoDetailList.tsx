@@ -1,4 +1,4 @@
-import { Box, FormLabel, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import type { ReactNode } from "react";
 import type { FormRouteRenderProps } from "../../app/RoutePage";
 import type { FieldDefinition } from "../../config/fields/types";
@@ -22,6 +22,16 @@ type YesNoDetailListProps = Pick<
   questions: YesNoDetailQuestion[];
 };
 
+export function YesNoDetailQuestionFields({ question, control, errors, watchedValues }: Omit<YesNoDetailListProps, "questions"> & { question: YesNoDetailQuestion }) {
+  return <Stack spacing={2}>
+    <FieldRenderer field={{ ...question.field, labelVariant: 'standard' }} control={control} errors={errors} margin="none" />
+    {watchedValues[question.field.id] === "yes" && question.mapping.fields.length > 0 && <DynamicList
+      control={control} name={question.listName} label={question.label ?? "details"} maxItems={question.maxItems}
+      mapping={question.mapping} renderItem={question.renderItem}
+    />}
+  </Stack>;
+}
+
 /** Numbered yes/no questions that reveal a canonical DynamicList on “Yes”. */
 export default function YesNoDetailList({
   questions,
@@ -33,34 +43,7 @@ export default function YesNoDetailList({
     <Stack component="ol" spacing={3} sx={{ listStyle: "none", pl: 0 }}>
       {questions.map((question, index) => (
         <IconListItem key={question.field.id} icon={`${index + 1}.`}>
-          <Stack spacing={2}>
-            <Box>
-              <FormLabel
-                required={question.field.required}
-                id={`${question.field.id}-label`}
-                sx={{ display: "inline-block", mb: 1 }}
-              >
-                {question.field.label}
-              </FormLabel>
-              <FieldRenderer
-                field={question.field}
-                control={control}
-                errors={errors}
-                hideLabel
-                margin="none"
-              />
-            </Box>
-            {watchedValues[question.field.id] === "yes" && question.mapping.fields.length > 0 && (
-              <DynamicList
-                control={control}
-                name={question.listName}
-                label={question.label ?? "details"}
-                maxItems={question.maxItems}
-                mapping={question.mapping}
-                renderItem={question.renderItem}
-              />
-            )}
-          </Stack>
+          <YesNoDetailQuestionFields question={question} control={control} errors={errors} watchedValues={watchedValues} />
         </IconListItem>
       ))}
     </Stack>

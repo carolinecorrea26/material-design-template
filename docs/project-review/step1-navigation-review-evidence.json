@@ -1,0 +1,76 @@
+{
+  "reviewedOn": "2026-10-22",
+  "scope": "Shared current mock routing and validation; planned pages and unrelated UI behavior remain separate.",
+  "files": {
+    "src/config/formFlow.ts": "6a65a446d66e741bd885ae534664eaf9287a0702327efbaabb3d19c1fa4ace8b",
+    "src/config/flowGates.ts": "5512a8cfd8c173dc3c9611023f23c804ab8cee2d3444e6154e9a9c45882a2933",
+    "src/config/progressSteps.ts": "79a94ce34f4cba4c460e15ba5e49561dfa16edb64f19c3feaa237a7923be4dd2",
+    "src/config/client/getClientPageRequirement.ts": "ca0cd544d79eb023a636af3bfdbf922cd74aecd9bcfe81bddf64833e08295d5f",
+    "src/domain/pageCatalog.ts": "06ccfd4d98af23fc4400b3bb7ec96f2c1a9cb44265bb5d1883d3809316b36b92",
+    "src/domain/routingRules.ts": "51c0f6a8ad0f5da223b5057d909e84cf5ecdc3a821a37969d5985ea8e972d80e",
+    "src/domain/coverageRuntime.ts": "76382b6aab9ef6a233bbadf266458e6ffdc0db63cb18d0d7854bb31e2efb304c",
+    "src/domain/configuredHealthQuestionnaire.ts": "38a5128a8c046da6ddfbd4467d587cdaa7ff1d4acf7a542bd77732b5951a6d1b",
+    "src/utils/coverageDecisions.ts": "92caf2efdc2c67475c7f1a8fa581faa0447ad28be23f9b6217a0f5f0a6da986c",
+    "src/domain/beneficiaryParticipation.ts": "e9787e063de7247e0c8cff3c08fc4dbe4ec8d2e957634a9385fbc3ec1c76ab22",
+    "src/app/RoutePage.tsx": "0758c408d2246da3e4cb59a0c5370c913a047c4c110792ec1bcd3a13fd555ae3",
+    "src/pages/HealthQd.tsx": "065aaa30db2e466e4ce70d0cf6eaed952470166815c9e92ef62ab4b7f1d08838",
+    "src/components/layout/PageHeader.tsx": "ee0790dd2125aa4cc137f8e4e0c3266dee8c7ae8664180d61052b385ad66876a",
+    "src/components/layout/PageTitle.tsx": "42047bea69cb2cc27a16060d1aee0860805c5c007643f9f86deed8144d16d096",
+    "src/components/layout/SinglePageSections.tsx": "85eb91654952b83a96284b092994b08cf60192d029ee86082b85bcd0deef8f40",
+    "src/content/docs/siteRules.ts": "99f9c3dacfccbc8337504d8f27a0f6eb9734f903aab73e573100a1ce0739e356",
+    "src/migration/navigationReview.test.ts": "b25a1868963c0d3aff8248a73b2ae33fe332d53db891a8bada5b802dd9f9a9dd",
+    "src/config/flowGates.test.ts": "d29c8ea362df1746fcee6fbe1b0a4ec663318558ed85e1ed4e413e33be463c04",
+    "src/migration/routingRuleOwnership.test.ts": "ee5d07581614e9564e8f0c63680867341a2adfa799f1889b21f963b2f6fa010e",
+    "src/app/RoutePage.navigation.test.tsx": "e667640ad119e2d52fdf52731c7ebece841eb6dcdf488cd7884ca45ff745c1f9",
+    "src/app/RoutePage.persistence.test.tsx": "ac452c633f02bc37208d00d6c05b011afd4ffaafa68ef6dca619286c7dca0abe",
+    "src/migration/requirementCrosswalkNavigationReview.ts": "2d5f8558ed849d6641f9bd2af270474769f3d588b28be3196e81d1375fb8e2cc",
+    "src/domain/effectiveSite.ts": "de9dc7ce0f98622b45147ac4a6ebac62e948176d8eccc7bc86d6515dc4055f60",
+    "src/domain/quickDecisionPolicy.ts": "b12c6e46237b4eccea1407a6e683a4fccd7a38ddc95648ebba0f58f211b8d274",
+    "src/domain/coverageJourneyUnderwriting.ts": "4c157dfeaece2d1290a0301f265a3ad3a2e36be36b042f9681f481925beb8df1",
+    "src/domain/coverageJourneyPolicy.ts": "73d308f7aa0654d8ef03e5c8960c37dd1679b9908387e7659096bb3a863a5862",
+    "src/domain/portfolioHealthParticipation.ts": "e587df2a1a6cdfb9dab8a6237a6de3014720bb99a0f6a9aa70d476dc05120c01",
+    "src/migration/abeProcessingAdoption.ts": "8e2b4aac77609652b47da3c306a9fd95bdddf06fd1b6bbc2ba8fbb1399fa237d",
+    "src/migration/abeProcessingAdoption.test.ts": "5305eaf90e0a3097f839053de0c2a64e99538ded24e4dc0a4f2a18e63f5e1ac0",
+    "src/app/useCoverageState.ts": "9f2abe5d4b1a54d8dccf5855cf558eada9dcfddb2bc586f9a743eba340af20c7",
+    "src/pages/HealthCir.tsx": "434c5d0c633fbbc74b8d6a829939124d5cb84286e0718fecf87ab22714eb8589",
+    "src/pages/HealthCir.test.tsx": "105723c268b0bd42fe83ce9225679ce5e30a395e9316ad71ba0d9d01b7327a6d",
+    "src/migration/abeCirQuestionnaireAdoption.ts": "b816b1da66fa2f4edd5d7d411439c2cb3d196eef959ece15cf9705674962af49",
+    "src/migration/abeCirQuestionnaireAdoption.test.ts": "dfb7a6bcb8114327eff1e113a9f96b7e23e1ce33d225e16e0a45a27147f94c9d"
+  },
+  "nativeHash": "ddaf3a2f907690d2cb2c381af5319e45bdbd2341fd877f83c044ed333c1a82e3",
+  "pagesFollowUp": "User-approved October 22 Pages update: question-first health layout, standard applicant headings/visibility, explicit CI question grouping and unused ABE SI assignment disabled. Existing medical wording, answer identities and business limits preserved.",
+  "pageSourceFollowUp": "October 22, 2026: Library diagrams read saved flows, steps and transitions; their page references and health summary use the saved page catalog and Site assignments. Existing node identities and edges are preserved. Legacy page-reference helpers read the installed catalog. Saved routes, order, participation, conversion and persistence were verified; no ABE business policy changed.",
+  "paymentFollowUp": "October 22, 2026 user-approved correction: MCR v78 New UX Multi-page Requirements!AS51 confirms optional beneficiary and AT51 confirms optional payment with the standard footnote retained. ABE Payment is optional in its saved assignment and derived product collection policies. No hides payment fields and defers authorization; the mock submission permits deferral only when the saved Site assignment is optional. Yes retains payment validation and authorization; revision revalidation remains required. Payment.policy and isolated mock submission tests verify both paths.",
+  "cirQuestionnaireFollowUp": {
+    "reviewedOn": "2026-10-23",
+    "status": "implemented-and-verified",
+    "authority": "User clarification: one shared CIR questionnaire; show it only for a Site configured for CIR health questions and an adult selecting CIR. ABE does not enable that page. Preserve existing Life-health routing and updated health forms.",
+    "separateCirPage": false,
+    "questions": 0,
+    "sharedQuestionnaireQuestions": 12,
+    "sourceReferences": [
+      "Main!L39",
+      "Riders!C32:D32",
+      "Riders!M32:N32",
+      "health_forms_questions.xlsx#Health questions!A98:D109"
+    ],
+    "sourceInterpretation": "Underwriting Yes is preserved as literal source evidence; it does not independently assign a separate online CIR questionnaire.",
+    "supersedes": "The earlier CHR-to-ABE activation based solely on underwriting flags is withdrawn.",
+    "verification": "37 focused checks passed, including Site off/on, adult CIR selection, shared form follow-ups, stale-answer cleanup, native Life routing and all-Site journey acceptance. Final review/crosswalk/build checks follow this capture."
+  },
+  "fuwQuestionnaireFollowUp": {
+    "reviewedOn": "2026-10-23",
+    "authority": "User clarification: FUW is post-submission underwriting, not an online questionnaire. Preserve independently configured TELE and other supplied health forms.",
+    "nativeChange": "Eight ABE journey policies now skip generic health pages for FUW alone; existing TELE, QD and explicit CI/supplemental DI routes are retained. The exact catalog diff and all nine other Sites were checked; no shared routing executor changed.",
+    "verification": "Passed ABE FUW routing and explicit-form preservation checks, all ten Sites\u2019 next/Back/progress checks, shared flow gates and route rendering. Navigation edits still invalidate the reviewed evidence."
+  },
+  "fiftyPlusFlowFollowUp": {
+    "reviewedOn": "2026-10-23",
+    "scope": "Tested AL member-only 50+ Life, born 1960-01-01, $25,000; no generic online health questionnaire, required medical authorization and underwritten consent retained.",
+    "verification": [
+      "src/migration/abeFiftyPlusFlow.test.ts",
+      "src/pages/Review.consent.test.tsx"
+    ],
+    "boundary": "Local prototype and shipped catalog verification. Other live-preview scenarios were not observed. Pages and Fields records remain unchanged."
+  }
+}

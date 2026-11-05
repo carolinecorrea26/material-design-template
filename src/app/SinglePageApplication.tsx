@@ -1,3 +1,4 @@
+import HealthCi from "../pages/HealthCi";
 import SinglePageSections from "../components/layout/SinglePageSections";
 import Membership from "../pages/Membership";
 import Eligibility from "../pages/Eligibility";
@@ -20,7 +21,7 @@ const sectionComponents = {
   membership: Membership, eligibility: Eligibility, coverage: Coverage,
   beneficiary: Beneficiary, contact: Contact, profile: Profile, review: Review,
   "health-si": HealthSi, "health-li": HealthLi, "health-qd": HealthQd,
-  "health-di": HealthDi, "health-cir": HealthCir, payment: Payment,
+  "health-di": HealthDi, "health-ci": HealthCi, "health-cir": HealthCir, payment: Payment,
   docusign: DocuSign, receipt: Receipt,
 };
 

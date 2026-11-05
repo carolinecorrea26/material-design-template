@@ -89,9 +89,9 @@ describe("application transitions", () => {
   });
 
   it("keeps business mappings and storage access out of React components", () => {
-    const quote = readFileSync("src/components/forms/QuoteCalculator.tsx", "utf8");
+    const quote = readFileSync("src/app/workflows/QuoteCalculator.tsx", "utf8");
     const contact = readFileSync("src/pages/Contact.tsx", "utf8");
-    const questions = readFileSync("src/components/forms/CoverageQuestions.tsx", "utf8");
+    const questions = readFileSync("src/components/coverage/CoverageQuestions.tsx", "utf8");
     const renderer = readFileSync("src/components/forms/FieldRenderer.tsx", "utf8");
     expect(quote).not.toMatch(/sessionStorage|STORAGE_KEY|applicationFormValues/);
     expect(contact).not.toMatch(/state-province|zip-postal-code/);

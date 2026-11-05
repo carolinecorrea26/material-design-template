@@ -1,3 +1,4 @@
+import { associateQualificationValues } from "../../domain/membershipQualifications";
 import type { ConditionDefinition } from "./types";
 
 export const conditionDefinitions: ConditionDefinition[] = [
@@ -106,10 +107,7 @@ export const conditionDefinitions: ConditionDefinition[] = [
   },
   {
     id: "condition-waepa-associated-member",
-    conditions: [
-      { fieldId: "waepa-attestation", operator: "equals", value: "spouse-associate" },
-      { fieldId: "waepa-attestation", operator: "equals", value: "child-associate" },
-    ],
-    match: "any",
+    conditions: [{ fieldId: "membership", operator: "equals", value: "new" }, { fieldId: "waepa-attestation", operator: "oneOf", value: [...associateQualificationValues] }],
+    match: "all",
   },
 ];

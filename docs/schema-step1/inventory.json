@@ -32727,7 +32727,7 @@
           "samples": [
             {
               "rowId": "database:config-branding-icons",
-              "value": "src/domain/configuration.ts / src/components/ui/ClientCategoryIcon.tsx"
+              "value": "src/domain/configuration.ts / src/components/content/ClientCategoryIcon.tsx"
             },
             {
               "rowId": "database:config-features-singlepageartwork",
@@ -36691,7 +36691,7 @@
             },
             {
               "rowId": "database:component-estimated-rate",
-              "value": "src/components/ui/EstimatedRate.tsx"
+              "value": "src/components/coverage/EstimatedRate.tsx"
             }
           ]
         },

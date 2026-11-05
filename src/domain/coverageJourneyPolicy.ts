@@ -1,11 +1,18 @@
 import type { EffectiveSite } from "./effectiveSite";
 import type { ApplicationMode } from "./coverageSelectionPolicy";
 import { validatePaymentPolicy, type PaymentFrequency, type PaymentMethod, type PaymentPolicy } from "./paymentPolicy";
+import { isAssociationUnderwriting, type AssociationUnderwriting } from "./associationUnderwriting";
+import { isQuickDecisionPolicy, type QuickDecisionPolicy } from "./quickDecisionPolicy";
 
 export type IdentifierRoles = { display: string; rating: string; issue: string; xml: string; pdf: string; portalDummy: string | null };
 export type MappingDimensions = { applicantKey: string; mode: ApplicationMode; associationKey?: string; applicantClass?: string; waitingPeriod?: string; benefitPeriod?: string };
 export type CoverageJourneyPolicy = {
   version: 1; applicants: string[]; associationChoices: Array<{ key: string; label: string }>;
+  associationDisplayNames?: Record<string, string>;
+  associationUnderwriting?: AssociationUnderwriting[];
+  quickDecision?: QuickDecisionPolicy;
+  healthPageByUnderwriting?: Partial<Record<CoverageJourneyPolicy["defaultUnderwritingPathway"], "health-qd" | "health-li" | "health-di" | "health-si" | "health-ci" | null>>;
+  healthPageForPortfolio?: { when: "qd-life-with-fuw-disability"; pageId: "health-li" } | { when: "qd-life-with-disability"; pageId: "health-di" };
   defaultUnderwritingPathway: "QD" | "FUW" | "GI" | "SI" | "NA" | "NCGI" | "TELE";
   underwritingByApplicant?: Record<string, "NA">;
   membershipRequired: boolean; ageBasis: "age-last-birthday-on-application-date";
@@ -23,13 +30,19 @@ const finite = (v: unknown): v is number => typeof v === "number" && Number.isFi
 const modes = ["new", "increase", "rider-only"];
 function roles(v: unknown): v is IdentifierRoles { return object(v) && ["display", "rating", "issue", "xml", "pdf"].every(k => string(v[k])) && (v.portalDummy === null || string(v.portalDummy)); }
 export function isCoverageJourneyPolicy(v: unknown): v is CoverageJourneyPolicy {
+  if (object(v) && v.quickDecision !== undefined && !isQuickDecisionPolicy(v.quickDecision)) return false;
+  if (object(v) && v.healthPageByUnderwriting !== undefined && (!object(v.healthPageByUnderwriting) || !Object.keys(v.healthPageByUnderwriting).length || Object.entries(v.healthPageByUnderwriting).some(([key, value]) => !["QD", "FUW", "GI", "SI", "NA", "NCGI", "TELE"].includes(key) || value !== null && !["health-qd", "health-li", "health-di", "health-si", "health-ci"].includes(String(value))))) return false;
+  if (object(v) && v.healthPageForPortfolio !== undefined && (!object(v.healthPageForPortfolio) || !(v.healthPageForPortfolio.when === "qd-life-with-fuw-disability" && v.healthPageForPortfolio.pageId === "health-li" || v.healthPageForPortfolio.when === "qd-life-with-disability" && v.healthPageForPortfolio.pageId === "health-di"))) return false;
   if (object(v) && v.underwritingByApplicant !== undefined && (!object(v.underwritingByApplicant) || Object.entries(v.underwritingByApplicant).some(([key, value]) => !['member', 'spouse', 'child'].includes(key) || value !== 'NA'))) return false;
   if (!object(v) || v.version !== 1 || !strings(v.applicants) || !v.applicants.length || !v.applicants.every(a => ["member", "spouse", "child"].includes(a)) || !["QD", "FUW", "GI", "SI", "NA", "NCGI", "TELE"].includes(String(v.defaultUnderwritingPathway)) || v.ageBasis !== "age-last-birthday-on-application-date" || typeof v.membershipRequired !== "boolean" || typeof v.provisional !== "boolean" || !strings(v.revisit) || !Array.isArray(v.associationChoices) || !v.associationChoices.every(a => object(a) && string(a.key) && string(a.label)) || new Set(v.associationChoices.map(a => (a as { key: string }).key)).size !== v.associationChoices.length) return false;
+  const associationChoices = v.associationChoices as Array<{ key: string }>;
+  if (v.associationUnderwriting !== undefined && (!isAssociationUnderwriting(v.associationUnderwriting) || v.associationUnderwriting.some(rule => !associationChoices.some(choice => choice.key === rule.associationKey) || !(v.applicants as string[]).includes(rule.applicantKey)))) return false;
+  if (v.associationDisplayNames !== undefined && (!object(v.associationDisplayNames) || Object.entries(v.associationDisplayNames).some(([key, label]) => !associationChoices.some(choice => choice.key === key) || !string(label)))) return false;
   try { if (!object(v.payment) || typeof v.payment.frequencyLocked !== "boolean" || typeof v.payment.synchronizeAcrossProducts !== "boolean") return false; validatePaymentPolicy(v.payment as PaymentPolicy); } catch { return false; }
   if (!object(v.billing) || v.billing.currency !== "USD" || !finite(v.billing.annualCredit) || !object(v.billing.annualFactors) || !["monthly", "quarterly", "semiannual", "annual"].every(k => finite((v.billing as Record<string, Record<string, unknown>>).annualFactors[k]) && Number((v.billing as Record<string, Record<string, unknown>>).annualFactors[k]) > 0) || !object(v.billing.feePerCollection) || !["bank-account", "credit-card", "bill-me"].every(k => finite((v.billing as Record<string, Record<string, unknown>>).feePerCollection[k]))) return false;
   if (!Array.isArray(v.dependentElections) || !v.dependentElections.every(d => object(d) && string(d.key) && ["spouse", "child"].includes(String(d.applicantKey)) && typeof d.defaultSelected === "boolean" && typeof d.signatureRequired === "boolean" && string(d.attestation) && Array.isArray(d.amountChoices) && d.amountChoices.every(finite) && new Set(d.amountChoices).size === d.amountChoices.length && (d.fixedAmount === null ? d.amountChoices.length > 0 : finite(d.fixedAmount) && d.amountChoices.length === 0) && (d.maximumAgeYears === null || finite(d.maximumAgeYears) && Number.isInteger(d.maximumAgeYears)) && (d.visitsPerYear === null || finite(d.visitsPerYear) && Number.isInteger(d.visitsPerYear)))) return false;
   if (new Set(v.dependentElections.map(d => (d as { key: string }).key)).size !== v.dependentElections.length) return false;
-  if (!Array.isArray(v.questions) || !v.questions.every(q => object(q) && (v.applicants as string[]).includes(String(q.applicantKey)) && strings(q.modes) && q.modes.length > 0 && q.modes.every(m => modes.includes(m)) && (q.healthPage === null || ["health-qd", "health-li", "health-si", "health-di"].includes(String(q.healthPage))) && strings(q.financialFields) && strings(q.tobaccoFields) && string(q.attestationKey) && string(q.attestationText))) return false;
+  if (!Array.isArray(v.questions) || !v.questions.every(q => object(q) && (v.applicants as string[]).includes(String(q.applicantKey)) && strings(q.modes) && q.modes.length > 0 && q.modes.every(m => modes.includes(m)) && (q.healthPage === null || ["health-qd", "health-li", "health-si", "health-di", "health-ci"].includes(String(q.healthPage))) && strings(q.financialFields) && strings(q.tobaccoFields) && string(q.attestationKey) && string(q.attestationText))) return false;
   if (!Array.isArray(v.mappings) || !v.mappings.length || !v.mappings.every(m => object(m) && object(m.when) && (v.applicants as string[]).includes(String(m.when.applicantKey)) && modes.includes(String(m.when.mode)) && Object.entries(m.when).every(([k, value]) => ["applicantKey", "mode", "associationKey", "applicantClass", "waitingPeriod", "benefitPeriod"].includes(k) && string(value)) && object(m.identifiers) && roles(m.identifiers.gNumber) && roles(m.identifiers.planCode) && object(m.riderCodes) && Object.entries(m.riderCodes).every(([k, c]) => string(k) && string(c)))) return false;
   return new Set(v.mappings.map(m => JSON.stringify(Object.entries((m as { when: MappingDimensions }).when).sort()))).size === v.mappings.length;
 }

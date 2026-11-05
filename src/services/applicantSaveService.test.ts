@@ -1,11 +1,18 @@
 import { afterEach, expect, it, vi } from 'vitest';
-import { createApplicantSaveClient, readSavedApplication, recoveryFromSearch } from './applicantSaveService';
+import { createApplicantSaveClient, readSavedApplication, rememberSavedApplication, recoveryFromSearch } from './applicantSaveService';
 import { mockRequest } from '../mock/client';
 
 vi.mock('../mock/client', () => ({ mockRequest: vi.fn() }));
 vi.mock('../domain/prototypeLibrary', () => ({ getPrototypeLibrary: () => ({ revision: 'revision-2' }) }));
 afterEach(() => { sessionStorage.clear(); vi.unstubAllEnvs(); vi.mocked(mockRequest).mockReset(); });
 const saved = { mode: 'mock' as const, applicationId: 'household-1', siteKey: 'asce', recipient: 'member@example.invalid', revision: 'revision-2', expiresAt: Date.now() + 10000, writeCapability: 'write-1', requiresRevalidation: false };
+
+it('marks a remembered household from an earlier Library revision for revalidation without changing the stored record', () => {
+  rememberSavedApplication({ ...saved, revision: 'revision-1' });
+  expect(readSavedApplication(saved.siteKey)).toMatchObject({ revision: 'revision-1', requiresRevalidation: true });
+  expect(readSavedApplication('ama')).toBeNull();
+  expect(JSON.parse(sessionStorage.getItem(`applicantSave:${saved.siteKey}`)!)).toMatchObject({ revision: 'revision-1', requiresRevalidation: false });
+});
 
 it('serializes initial saves and binds the second write to the first household', async () => {
   vi.stubEnv('VITE_MOCK_PLATFORM_ENABLED', 'true');

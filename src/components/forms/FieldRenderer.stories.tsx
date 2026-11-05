@@ -1,22 +1,29 @@
+// Preview notes are documentation only; the canvas contains application UI.
+import { getPhoneTypeFieldId } from "../../domain/phoneFields";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import FieldRenderer from "./FieldRenderer";
+import { fieldCatalog } from "../../config/fields";
 import type { FieldDefinition, FieldInputType } from "../../config/fields/types";
 
 /**
  * FieldRenderer is the single dispatcher every application page routes its
  * fields through — it owns validation rules, error/helper-text wiring, and
  * accessibility association (aria-describedby, radiogroup/group roles,
- * labelId) for every field type in the app. There is no per-type wrapper
- * component; this file demonstrates the real component with a real
+ * labelId) for every field type in the app. Phone rendering composes the shared controlled PhoneField; this file demonstrates the real component with a real
  * react-hook-form context, not a mock.
  */
 const meta = {
-  title: "Forms/FieldRenderer",
+  id: "forms-fieldrenderer",
+  title: "Components/Forms/Individual fields",
   component: FieldRenderer,
-  parameters: { layout: "padded" },
+  argTypes: {
+    control: { table: { disable: true } },
+    errors: { table: { disable: true } },
+  },
+  parameters: { standalone: true, docs: { description: { component: "Renders a configured field with its input, validation and conditional behavior." } }, layout: "padded" },
 } satisfies Meta<typeof FieldRenderer>;
 
 export default meta;
@@ -65,7 +72,7 @@ function FieldHarness({
     mode: "onChange",
     defaultValues: {
       [field.id]: field.inputType === "checkbox" ? false : field.inputType === "checkbox-group" || field.inputType === "multi-select" ? [] : "",
-      "phone-type": "mobile",
+      [getPhoneTypeFieldId(field)]: "mobile",
     },
   });
 
@@ -138,7 +145,7 @@ export const TextStandardLabel: StoryObj = {
   name: "Text — standard label",
   render: () => (
     <FieldHarness
-      field={{ id: "text-standard", label: "Last name", inputType: "text", labelVariant: "standard", required: true, autoComplete: "family-name" }}
+      field={fieldCatalog["total-net-worth"]}
     />
   ),
 };
@@ -190,11 +197,7 @@ export const MonthYear: StoryObj = {
   render: () => (
     <>
       <FieldHarness field={{ id: "month-year", label: "Coverage start", inputType: "text", format: "month-year" }} />
-      <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-        Fully implemented but not currently used by any real field config in{" "}
-        <code>src/config/fields/index.ts</code> — kept documented so the code
-        path stays covered.
-      </Typography>
+
     </>
   ),
 };
@@ -231,7 +234,7 @@ export const SearchableSelect: StoryObj = {
       <FieldHarness
         field={{
           id: "searchable-select",
-          label: "AVMA graduation year",
+          label: "Graduation year",
           inputType: "searchable-select",
           options: Array.from({ length: 6 }, (_, i) => {
             const year = String(2024 - i);
@@ -239,11 +242,7 @@ export const SearchableSelect: StoryObj = {
           }),
         }}
       />
-      <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-        Any <code>dropdown</code> field is automatically promoted to a
-        searchable select once it has 10+ options (e.g. the WAEPA federal
-        agency list), unless it opts out.
-      </Typography>
+
     </>
   ),
 };
@@ -293,10 +292,7 @@ export const Disabled: StoryObj = {
   render: () => (
     <>
       <FieldHarness field={{ id: "disabled-text", label: "Locked field", inputType: "text", disabled: true }} />
-      <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-        Not previously demonstrated anywhere in the app's own documentation —
-        added in this pass.
-      </Typography>
+
     </>
   ),
 };
@@ -358,20 +354,12 @@ export const CompletionIconsDebugMode: StoryObj = {
     };
     return (
       <Box sx={{ maxWidth: 480 }}>
-        <Typography variant="body2" sx={{ mb: 1.5 }}>
-          FieldRenderer shows a green check / red X end-adornment per field
-          only when the URL contains <code>?inputChecks</code>. It is off by
-          default and not exposed anywhere in the UI — this is the only place
-          it's documented as a toggle.
-        </Typography>
+
         <button onClick={toggle} type="button" style={{ marginBottom: 16 }}>
           {hasParam ? "Disable" : "Enable"} completion icons (reloads the preview)
         </button>
         <FieldHarness field={{ id: "completion-demo", label: "First name", inputType: "text", required: true }} />
-        <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-          Currently: {hasParam ? "enabled" : "disabled"}. Type a value to see
-          the completed-state icon when enabled.
-        </Typography>
+
       </Box>
     );
   },

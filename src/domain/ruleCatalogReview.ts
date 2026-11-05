@@ -1,5 +1,6 @@
 import type { DatabaseSchema } from '../persistence/types';
 import type { RuleDefinition } from './rules';
+import { organizeRule } from './ruleOrganization';
 
 // Reviewed catalog organization. Sequence describes dependencies; it is not a new rule engine.
 const areas: Record<string, { category: string; phase: number; documentedIn?: RuleDefinition['documentedIn'] }> = {
@@ -65,7 +66,7 @@ const dependencies: Record<string, RuleDefinition['id'][]> = {
 };
 export function reviewedRule(rule: RuleDefinition, ordinal: number): RuleDefinition {
   const review = areas[rule.area];
-  return { ...rule, documentationStatus: planned.has(rule.id) ? "planned" : "current", categories: rule.categories ?? [review?.category ?? 'Needs classification'], sequence: rule.sequence ?? sequenceOverrides[rule.id] ?? (review?.phase ?? 9) * 1000 + ordinal, dependsOn: rule.dependsOn ?? dependencies[rule.id] ?? [], documentedIn: rule.documentedIn ?? documentedInOverrides[rule.id] ?? review?.documentedIn ?? 'rules' };
+  return { ...rule, organization: organizeRule(rule), documentationStatus: planned.has(rule.id) ? "planned" : "current", categories: rule.categories ?? [review?.category ?? 'Needs classification'], sequence: rule.sequence ?? sequenceOverrides[rule.id] ?? (review?.phase ?? 9) * 1000 + ordinal, dependsOn: rule.dependsOn ?? dependencies[rule.id] ?? [], documentedIn: rule.documentedIn ?? documentedInOverrides[rule.id] ?? review?.documentedIn ?? 'rules' };
 }
 export function reviewStoredRules(data: DatabaseSchema) {
   data.rules = data.rules.map((row, ordinal) => ({ ...row, definition: reviewedRule(row.definition, ordinal) }));

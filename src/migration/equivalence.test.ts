@@ -2,7 +2,7 @@ import { coverageCategories } from "../config/coverageCategories";
 import { getMaxAggregateNotes, categoryMaxAggregate } from "../config/coverageConstants";
 import { getCategoryQuestionFieldIds } from "../config/coverageQuestionRequirements";
 import { describe, expect, it } from "vitest";
-import { createMigrationDatabase, migrationSiteKeys } from "./fixtures";
+import { migrationSiteKeys } from "./fixtures";
 import { resolveDatabaseSite, evaluateDatabaseCondition, resolveDatabaseBranding, databaseCoverageUnlocksPage, resolveDatabaseAssociation, databaseQuestionFields } from "./resolve";
 import { jsonValue } from "./values";
 import { LocalStorageAdapter } from "../persistence/localAdapter";
@@ -19,14 +19,15 @@ import { getApplicableSiteRules } from "../content/docs/siteRules";
 import { conditionDefinitions } from "../config/conditions/conditions";
 import { evaluateCondition } from "../config/conditions/evaluateConditions";
 import type { DatabaseSchema } from "../persistence/types";
+import { createLegacyCompatibilityFixture } from "./legacyCompatibilityFixture";
 
-const db = createMigrationDatabase();
+const db = createLegacyCompatibilityFixture();
 const clean = (value: unknown) => value === undefined ? null : jsonValue(value);
 
 describe("phase 1–4 migration gate — independently resolved database behavior", () => {
   it("covers the exact ten sites, with deterministic JSON-safe seeds", () => {
     expect(siteEntities.map((s) => s.id).sort()).toEqual([...migrationSiteKeys].sort());
-    expect(createMigrationDatabase()).toEqual(db);
+    expect(createLegacyCompatibilityFixture()).toEqual(db);
     expect(JSON.parse(JSON.stringify(db))).toEqual(db);
     for (const [table, rows] of Object.entries(db)) {
       expect(new Set(rows.map((r: { id: string }) => r.id)).size, `${table} IDs`).toBe(rows.length);

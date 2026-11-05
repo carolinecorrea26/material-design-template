@@ -38,6 +38,8 @@ Close Step 1 only when each in-scope subject has an explicit owner and its relev
 
 ### October 19 continuation: rules-only review
 
+October 20 continuation: the [application rules coverage and Library rollout plan](rules-coverage-plan.md) governs the complete requirement review, explicit business-question format and demo propagation. The approved AMA DI attestation, applicant-type category policy and six references to existing execution owners extend the reviewed catalog to 115 records. [The first atomic crosswalk](rules-requirement-crosswalk.json) covers work eligibility, AMA's approved behaviors and the accepted WAEPA GI exception; it is available in Rules → Coverage review. The 107-record numbers below describe the October 19 baseline. Requirement coverage and area-by-area semantic verification remain open.
+
 The user narrowed this continuation to **rules only**. Proposed flow-graph and presentation ownership changes were removed from this pass. Fields/riders remain settled; page/flow and settings/content/branding work is not being advanced here.
 
 The [current rules inventory](rules-current-evidence.json) accounts for **107 rule records** and their scopes, condition links, implementation references and source-model relationships:
@@ -553,3 +555,48 @@ Copies within the same host retain their stored Association context. Copies into
 Older saved payloads without the three Association tables cannot activate this stored-mode contract. Regeneration supplies the current reviewed seed, while existing drafts and immutable releases require an explicit migrated/new draft and release. No saved applicant records, private mock state or historical release payloads were rewritten. Restart an already-running mock service to load regenerated seed exports.
 
 Verification passed: 103 distinct focused tests covering Association selection/branding, same-host and cross-host copies, effective Site reads, snapshots, draft edits, page migration, applicant coverage and mock save/reload/restart. Reviewed seed export regeneration passed separately. Build, TypeScript and targeted lint passed. Mock server tests required unsandboxed execution because the sandbox denied temporary localhost listeners. Canonical identity/lifecycle and backend parity gates remain open.
+
+## October 21: finish one Site at a time — ABE first
+
+The user replaced the area-wide continuation order with **all phases for one Site**, starting with ABE. Do not start another Site while ABE remains open. The [ABE review](step1-abe-review.md) and [exact Site queue](step1-abe-review.json) retain source applicability, owner links, verified dimensions and remaining phases independently of global sign-off.
+
+Approved ABE changes: adopt the later effective 10-year Life entry ages 17–69 and 20-year Life ages 17–59 for member and spouse; Life children from 14 days through 26; AD&D children from birth through 26; Hospital Money through 25, extended through 29 with honorable-discharge evidence from active/reserve service. Retain the DI spouse 30-hour minimum. The child unmarried requirement stays as the existing child-section **note**, with **no additional unmarried question or answer**. The user explicitly corrected that collection interpretation and clarified that the spouse minimum should stay.
+
+Any further proposed prototype additions or behavior changes must be presented to the user before implementation. Continue read-only review, tests and exact source/owner mapping independently. Do not treat a newly discovered discrepancy as authorization to add a field or change behavior. Preserve previously accepted field placements, ABE dividend Review, mock-rate boundaries, provisional calculations and explicit nonblocking deferrals at their exact scopes.
+
+### ABE continuation: source mappings and shared tobacco answers
+
+The ABE continuation reconciles repeated collection, optional-ID, SSN, email-placement, dividend-mode, state-exclusion, unavailable-applicant, rider and medical-participation source spans against their exact current owners. R28/CIR ages 17–64, adult applicants, base coverage and state exclusions are verified. Other named riders remain explicitly source-only under the existing provisional selection decisions; no new riders were enabled. The PDF-only American Bar Association membership statement does not replace the online State/Local/Specialty Bar questions. Supporting QD rows now join ABE products by exact G-number and retain their own clause queue; applicability is not processing acceptance.
+
+The user explicitly selected **exactly twelve source tobacco products, removing Other**, then clarified that answers must be **standardized across Sites**, not ABE-specific. Shared member/spouse field definitions now use the same twelve options from Smoker Question C5/C20. Existing supported stored values remain compatible, including the value `Cigars` displayed as the source's `Cigar`. Old Other answers are retained in saved data but must be changed to a current option to pass existing validation. Question wording, Yes-only followup visibility, date collection, rate classification and lookback policies keep their existing owners. This approved shared-field change does not sign off another Site's review.
+
+### ABE clarification: v78 processing and inline CI notice
+
+The user corrected the suggestion that the three identified questions were an exhaustive unresolved list. Continue the remaining ABE review before claiming a complete decision inventory. Use the named **Master Client Requirements_09_28_2026_v78 (1)** for limits and amounts, with FUW for otherwise eligible requests outside QD limits. The workbook hash and 38 directly inspected processing/attestation cells match the extracted v78 source.
+
+The [approved processing adoption](../../src/migration/abeProcessingAdoption.ts) replaces the six provisional QD/FUW defaults with the source processing bands and preserves Main coverage eligibility/amount owners. Fixed-term QD aggregate facts collected on Profile are deferred only at Coverage; final validation requires them. The CI notice is appended inside the existing Read and Sign content at 14pt, without a separate section or answer. Removing only that appended block restores the exact previously accepted ABE Review policy hash, including its dividend behavior.
+
+Validation passed: rendered Review and approved ABE eligibility/coverage checks; all-Site applicant runtime, navigation and named-owner checks; complete member journeys and all 1,868 persisted applicant/class/association/period/mode scenarios; crosswalk conservation/owner invalidation and deterministic generation; build, targeted lint and whitespace checks. The mock seed was regenerated. At this checkpoint ABE remained **Open** with 560 scoped review rows, 192 supporting-source clauses still pending, 138 absent Main coordinates and 264 unassigned applicability candidates. These are overlapping review inventories, not counts of unanswered business questions. The completed October 22 assessment below supersedes this unfinished-review checkpoint.
+
+### October 22 — ABE review completed; seven explicit answers pending
+
+[The complete question list](abe-review-questions.md) states the exact current behavior, proposed correction and MCR cells for each decision. [The assessment](abe-final-review.json) records an explicit disposition for all 606 remaining scoped rows, 192 supporting clauses, 264 shared candidates, 138 blank Main coordinates and 97 additional ABE/form-specific source cells. No inventory classification is left for the user to interpret. These inventories overlap and are not question counts.
+
+The final pass found SUP DI Health questions U50, which the earlier Main-only financial review missed. The crosswalk now exposes its explicit ABE $7,000 trigger and its conflicting QD-Life condition; the 46 Financial questions clauses are scoped to ABE pending ABE-07. Profile’s source-completeness gate is reopened for that addition, while its verified existing collection behavior stays preserved. NYL-12342 is referenced but absent; the workbook’s embedded objects were checked and belong to CAT/AVMA, not this ABE form.
+
+The remaining questions cover medical authorization/consent, state signature warnings, Hospital Money’s Read and Sign attestation, CI-2014 medical questions, Hospital Money tobacco-question removal, NYL-12342 supply/deferral and the financial trigger. Existing approvals and explicit deferrals are not re-requested. This pass changed review evidence and reports only; it added no prototype fields, pages, copy or behavior. Current application regression checks passed (89 tests/16 suites), as did the assessment/source checks, crosswalk conservation/owner gates, build and targeted lint. Site sign-off awaits answers and verification of approved corrections; no other Site starts yet.
+
+
+### October 22 — ABE answers applied and verified
+
+This entry supersedes the preceding answers-pending checkpoint. All seven user answers and the optional Membership ID decision are implemented. ABE now collects optional `abe-member-id` on Membership. MCR authorization and conditional consent, CT/VA warnings, fraud notices, CI/Hospital Money attestation and the existing dividend controls render within Read and Sign; the only other legal section is Electronic Consent.
+
+The supplied `health_forms_questions.xlsx` is captured with its SHA-256 and exact source cells. ABE CI has a separate Health CI page using CI-only/combined CI-2014 variants, excluding the already-collected smoker item and non-answer headings. The shared Coverage smoker location and twelve choices remain. Source supplemental DI answers and conditional details use Health DI for the same adult requesting QD Life and DI. Existing generic FUW-only forms retain their accepted provisional scope.
+
+The existing Profile Financial questionnaire stays below Other coverage and is member-only. Explicit ABE configuration activates it at combined selected DI **$7,000 or more**, excluding OO, without a QD Life or Health-completion prerequisite. Site, product list, threshold and enable/disable behavior are captured configuration. No financial page was added.
+
+[The completed decisions](abe-review-questions.md), [full source assessment](abe-final-review.json), [native adoption checks](../../src/migration/abeApprovedDecisions.test.ts) and rendered Membership/Profile/CI/Review checks replace the earlier open questions. Migration reapplication preserves the approved changes. Production services, authoritative prices, detailed PDF/XML, source-gap provisional choices and previously approved asset/notice deferrals remain explicit. No other Site was started.
+
+WAEPA referral clarification — October 26, 2026: "How did you hear about WAEPA?" uses a required multiselect dropdown with TV, Radio and Newspaper. Require at least one selection when shown for new members on Standard and GI. This supersedes the prior optional checkbox presentation; existing field identity, array answer storage and new-member visibility remain in place.
+
+WAEPA active-duty feedback clarification — October 26, 2026: display the ineligibility error only when Next is clicked with Yes selected. Keep Next enabled; submission validation prevents continuation. This supersedes immediate feedback and answer-based button disabling.

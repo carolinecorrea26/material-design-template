@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import type { SiteId } from "../../data";
-import MobilePreviewFrame from "../ui/MobilePreviewFrame";
+import MobilePreviewFrame from "../layout/MobilePreviewFrame";
 
 export { getSitePrototypeUrl } from "../../config/sitePrototype";
 import { getSitePrototypeUrl } from "../../config/sitePrototype";

@@ -4,10 +4,42 @@ import type { LibraryCatalog } from "../../../services/libraryCatalogService";
 import { fieldSurfaceLabel } from "./fieldSurfaceLabel";
 import { fieldSurfaceRows } from "./fieldSurfaceRows";
 import { storedApplicationPageRows } from "./storedLibraryModel";
+import { resolvePrototypeLibrary } from "../../../domain/prototypeLibrary";
+import { configuredHealthQuestionnaire, healthQuestionnaireFieldKeys, isHealthQuestionnairePolicy } from "../../../domain/configuredHealthQuestionnaire";
 
 const catalog: LibraryCatalog = { data: JSON.parse(JSON.stringify(createReviewedMigrationDatabase())), revision: "test", analyticsTags: [] };
 
 describe("field component placements", () => {
+  it("includes ABE's saved questionnaire definitions and follows the same field edits as the prototype", () => {
+    const changed = structuredClone(catalog);
+    const saved = changed.data.fields.find(field => field.key === "health-abe-form-197")!;
+    saved.definition.label = "Updated saved CI question";
+    saved.definition.options = [{ value: "yes", label: "Updated Yes" }, { value: "no", label: "Updated No" }];
+    const library = resolvePrototypeLibrary(changed.data, "abe", "test");
+    const rows = fieldSurfaceRows(changed, "abe");
+    for (const { value } of library.site.configuration.healthQuestionnairePolicies) {
+      if (!isHealthQuestionnairePolicy(value)) throw new Error("Invalid questionnaire");
+      if (!library.site.configuration.pages.some(page => page.key === value.pageId && page.requirement !== "none")) {
+        expect(rows.some(row => row.pages.includes(value.pageId))).toBe(false);
+        continue;
+      }
+      for (const key of healthQuestionnaireFieldKeys(value)) {
+        expect(rows.some(row => row.field.id === key && row.pages.includes(value.pageId)), `${value.pageId}/${key}`).toBe(true);
+      }
+    }
+    for (const applicant of ["member", "spouse"]) {
+      const questionnaire = configuredHealthQuestionnaire(library.site, "health-ci", applicant, {
+        coverageSelections: ["sh-critical-illness"], productApplicants: { "sh-critical-illness": [applicant] },
+      });
+      expect(questionnaire.status).toBe("resolved");
+      const listed = rows.find(row => row.field.id === saved.key && row.pages.includes("health-ci"))!;
+      expect(questionnaire.items[0].question).toEqual({ ...listed.field, id: `${saved.key}-${applicant}` });
+    }
+    expect(rows.some(row => row.pages.includes("health-si"))).toBe(false);
+    const disabled = structuredClone(changed);
+    disabled.data.sitePages.find(page => page.siteKey === "abe" && page.pageKey === "health-ci")!.requirement = "none";
+    expect(fieldSurfaceRows(disabled, "abe").some(row => row.pages.includes("health-ci"))).toBe(false);
+  });
   it.each(["all", "asce"])("follows saved page order in %s without changing other scopes", (siteKey) => {
     const changed = structuredClone(catalog);
     const pages = siteKey === "all" ? changed.data.pages : changed.data.sitePages.filter(page => page.siteKey === siteKey);
@@ -55,7 +87,7 @@ describe("field component placements", () => {
       expect(personal.map(row => row.field.id)).toEqual([`${prefix}gender`, `${prefix}smoker`, `${prefix}tobacco-last-used`, `${prefix}tobacco-products`]);
       expect(personal.map(row => row.order)).toEqual([1, 2, 3, 4]);
       const work = rows.filter(row => row.surface === `Coverage page · ${label} · Work & Income`);
-      expect(work.map(row => row.field.id)).toEqual([`${prefix}hours-worked-per-week`, `${prefix}average-monthly-income`]);
+      expect(work.map(row => row.field.id)).toEqual([`${prefix}hours-worked-per-week`, ...(applicant === "self" ? ["actively-at-work"] : []), `${prefix}average-monthly-income`]);
     }
     expect(rows.find(row => row.field.id === "monthly-business-expenses" && row.pages.includes("coverage"))?.surface).toBe("Coverage page · Member · Business Details");
   });
@@ -66,7 +98,7 @@ describe("field component placements", () => {
     const placements = changed.data.pageSectionFields.filter(row => row.sectionKey === section.key);
     placements.forEach((placement, index) => { placement.position = placements.length - index; });
     const rows = fieldSurfaceRows(changed, "asce").filter(row => row.surface === "Coverage page · Member · Updated project heading");
-    expect(rows.map(row => row.field.id)).toEqual(["average-monthly-income", "hours-worked-per-week"]);
+    expect(rows.map(row => row.field.id)).toEqual(["average-monthly-income", "actively-at-work", "hours-worked-per-week"]);
     const parent = changed.data.pageSections.find(section => section.definition.id === "selfCoverageQuestions")!;
     parent.definition.description = "Updated personal heading";
     expect(fieldSurfaceLabel(changed, "coverage", "selfCoverageTobacco", "tobacco-products")).toBe("Coverage page · Member · Updated personal heading");

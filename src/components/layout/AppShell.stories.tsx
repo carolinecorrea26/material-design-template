@@ -17,9 +17,10 @@ import {
  * localStorage.cookieConsent is already "accepted" in this browser.
  */
 const meta = {
-  title: "Layout/AppShell",
+  id: "layout-appshell",
+  title: "Components/Layout/Application shell",
   component: AppShell,
-  parameters: { layout: "fullscreen" },
+  parameters: { docs: { description: { component: "Controls which chrome elements AppLayout renders: - \"applicationForm\" Full chrome: header with hamburger menu + cart icon + progress bar, footer. Used for all application form pages. - \"homepage\" Marketing chrome: header with hamburger menu (no progress bar), footer. Used for the Home/Landing page. - \"advisorLogin\" | \"advisorSend\" Utility chrome: header with logo only, no menu, no progress bar. Used for advisor flow pages. - \"resumeEmailCode\" Utility chrome: header with logo only, no menu, no progress bar. Used for the resume magic-link / phone-code pages." } }, layout: "fullscreen" },
 } satisfies Meta<typeof AppShell>;
 
 export default meta;

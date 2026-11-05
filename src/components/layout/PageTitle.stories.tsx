@@ -9,9 +9,10 @@ import PageTitle from "./PageTitle";
  * ResumeMethod, Receipt, AdvisorLogin.
  */
 const meta = {
-  title: "Layout/PageTitle",
+  id: "layout-pagetitle",
+  title: "Components/Layout/Headings and dividers/Page title",
   component: PageTitle,
-  parameters: { layout: "padded" },
+  parameters: { docs: { description: { component: "Displays the page heading, subtitle and supporting actions." } }, layout: "padded" },
 } satisfies Meta<typeof PageTitle>;
 
 export default meta;

@@ -1,16 +1,19 @@
 import type { EffectiveSite } from "./effectiveSite";
 import { isLifeAggregatePolicy } from "./lifeAggregatePolicy";
+import { resolveAssociationAmounts } from "./associationAmountPolicy";
 
 /** Checks amounts against the captured normalized Library, without prototype fallback.
  * This validates the amount dimension only; eligibility/other policy remain separate.
  */
-export function validateNormalizedCoverageAmount(site: EffectiveSite, productKey: string, applicantKey: string, amount: number, applicantClass?: string) {
+export function validateNormalizedCoverageAmount(site: EffectiveSite, productKey: string, applicantKey: string, amount: number, applicantClass?: string, associationKey?: string) {
   const product = site.configuration.products.find(product => product.productKey === productKey);
   const applicant = site.products.find(product => product.productKey === productKey)?.applicants.find(applicant => applicant.applicantKey === applicantKey);
   if (!product || !applicant) return { status: "resolved" as const, allowed: false, reason: "Product or applicant is unavailable" };
   if (!Number.isFinite(amount) || amount <= 0) return { status: "resolved" as const, allowed: false, reason: "Amount must be finite and positive" };
-  const applicantRules = product.amounts.filter(rule => rule.value.applicantTypeKey === applicantKey);
-  const applicable = applicantRules.length ? applicantRules : product.amounts.filter(rule => rule.value.applicantTypeKey === null);
+  const assignment = resolveAssociationAmounts(site, productKey, associationKey);
+  if (assignment.status !== "resolved") return { status: assignment.status, allowed: false, reason: assignment.reason! };
+  const applicantRules = assignment.rules.filter(rule => rule.value.applicantTypeKey === applicantKey);
+  const applicable = applicantRules.length ? applicantRules : assignment.rules.filter(rule => rule.value.applicantTypeKey === null);
   if (applicable.some(rule => rule.value.applicantClass !== null) && applicantClass === undefined) return { status: "needs-information" as const, allowed: false, reason: "Applicant class is required" };
   const classRules = applicantClass === undefined ? [] : applicable.filter(rule => rule.value.applicantClass === applicantClass);
   const rules = classRules.length ? classRules : applicable.filter(rule => rule.value.applicantClass === null);

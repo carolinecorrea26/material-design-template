@@ -1,3 +1,6 @@
+import { isBeneficiaryParticipationPolicy } from "../domain/beneficiaryParticipation";
+import { isBeneficiaryNotePolicy } from "../domain/beneficiaryNotes";
+import { healthQuestionnaireFieldKeys, isHealthQuestionnairePolicy } from "../domain/configuredHealthQuestionnaire";
 import { isConditionDefinition } from "../domain/conditionValidation";
 import { materializeRuleDocumentation } from "../domain/ruleDocumentation";
 import { isReviewPolicy } from "../domain/reviewPolicy";
@@ -18,6 +21,8 @@ import { isLifeAggregatePolicy } from "../domain/lifeAggregatePolicy";
 import { resolveEffectiveConfiguration } from "../domain/effectiveConfiguration";
 import { isAmountCapPolicy, resolveNormalizedAmountCap } from "../domain/amountCapPolicy";
 import { riderOverrideProperties } from "../domain/riderOverrides";
+import { isAssociationEligibilityPolicy } from "../domain/associationEligibilityPolicy";
+import { associationAmountKeys, isAssociationAmountPolicy } from "../domain/associationAmountPolicy";
 
 const snake = (s: string) => s.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
 export function validateMigrationDatabase(db: DatabaseSchema): string[] {
@@ -142,8 +147,35 @@ export function validateMigrationDatabase(db: DatabaseSchema): string[] {
       if (!valid) errors.push(`Invalid executable routing policy ${row.key}`);
       continue;
     }
+    if (target?.kind === "site-beneficiary-participation") {
+      const site = db.sites.find(site => site.key === row.siteKey);
+      const products = new Set(db.siteProducts.filter(product => product.siteId === site?.id).map(product => product.productKey));
+      if (row.scope !== "site" || !site || !isBeneficiaryParticipationPolicy(row.value)) errors.push(`Invalid beneficiary participation policy ${row.key}`);
+      else if (row.value.rules.some(rule => !products.has(rule.productKey) || rule.associationKeys?.some(key => !db.siteAssociations.some(link => link.siteKey === row.siteKey && link.associationKey === key)))) errors.push(`Orphan beneficiary participation scope ${row.key}`);
+      continue;
+    }
+    if (target?.kind === "site-beneficiary-notes") {
+      const site = db.sites.find(site => site.key === row.siteKey);
+      const products = new Set(db.siteProducts.filter(product => product.siteId === site?.id).map(product => product.productKey));
+      if (row.scope !== "site" || !site || !isBeneficiaryNotePolicy(row.value)) errors.push(`Invalid beneficiary note policy ${row.key}`);
+      else if (row.value.notes.some(note => note.productKeys.some(key => !products.has(key)))) errors.push(`Orphan beneficiary note product ${row.key}`);
+      continue;
+    }
+    if (target?.kind === "site-health-questionnaires") {
+      if (row.scope !== "site" || !isHealthQuestionnairePolicy(row.value)) errors.push(`Invalid health questionnaire policy ${row.key}`);
+      else {
+        if (healthQuestionnaireFieldKeys(row.value).some(key => !db.fields.some(field => field.key === key))) errors.push(`Orphan health questionnaire field ${row.key}`);
+        if (row.value.associationKeys.some(key => !db.siteAssociations.some(link => link.siteKey === row.siteKey && link.associationKey === key))) errors.push(`Orphan health questionnaire association ${row.key}`);
+        const site = db.sites.find(site => site.key === row.siteKey);
+        const products = new Set(db.siteProducts.filter(link => link.siteId === site?.id).map(link => link.productKey));
+        if (row.value.variants.some(variant => Object.values(variant.when).some(keys => keys?.some(key => !products.has(key))))) errors.push(`Orphan health questionnaire product ${row.key}`);
+        if (row.value.variants.some(variant => variant.items.some((item, index) => item.when?.answerKey && !variant.items.slice(0, index).some(previous => previous.questionFieldKey === item.when!.answerKey)))) errors.push(`Invalid health questionnaire answer dependency ${row.key}`);
+      }
+      continue;
+    }
     if (target?.kind === "site-rate-presentation") {
       if (!isRatePresentationPolicy(row.value)) errors.push(`Invalid rate presentation policy ${row.key}`);
+      else if (row.value.suppressedAssociationKeys?.some(key => !db.siteAssociations.some(link => link.siteKey === row.siteKey && link.associationKey === key))) errors.push(`Orphan rate suppression association ${row.key}`);
       continue;
     }
     if (target?.kind === "product-reference-rate-table") {
@@ -151,15 +183,20 @@ export function validateMigrationDatabase(db: DatabaseSchema): string[] {
       if (!db.products.some(product => product.key === target.productKey)) errors.push(`Orphan reference rate product ${row.key}`);
       continue;
     }
-    if (!target || !["product-rate-input-policy", "product-rate-modifier-policy", "site-review-policy", "site-life-aggregate-participation", "product-journey-policy", "product-selection-policy", "product-benefit-policy", "product-amount-cap-policy", "product-dependent-policy", "site-life-aggregate", "product-residency-policy", "product-reference-rate-table"].includes(target.kind)) continue;
+    if (!target || !["product-rate-input-policy", "product-rate-modifier-policy", "site-review-policy", "site-life-aggregate-participation", "product-journey-policy", "product-selection-policy", "product-benefit-policy", "product-amount-cap-policy", "product-dependent-policy", "site-life-aggregate", "product-residency-policy", "product-reference-rate-table", "product-association-eligibility", "product-association-amounts"].includes(target.kind)) continue;
     const site = db.sites.find(site => site.key === row.siteKey);
-    const products = new Set(db.siteProducts.filter(product => product.siteId === site?.id && product.enabled).map(product => product.productKey));
+    const products = new Set(db.siteProducts.filter(product => product.siteId === site?.id).map(product => product.productKey));
     if (row.scope !== "site" || !site || "productKey" in target && !products.has(target.productKey)) errors.push(`Invalid executable policy scope ${row.key}`);
     if (target.kind === "site-review-policy") {
       if (!isReviewPolicy(row.value)) errors.push(`Invalid Review policy ${row.key}`);
       else if (row.value.blocks.some(block => block.fields.some(key => !db.fields.some(field => field.key === key)))) errors.push(`Orphan Review field ${row.key}`);
+      else {
+        const consent = row.value.consent;
+        if (consent && (consent.underwrittenWhen.some(rule => !products.has(rule.productKey) || rule.applicants.some(key => !db.applicantTypes.some(applicant => applicant.key === key))) || consent.otherOpening && !db.fields.some(field => field.key === consent.otherOpening!.fieldId))) errors.push(`Orphan Review consent scope ${row.key}`);
+      }
     } else if (target.kind === "product-rate-input-policy") {
       if (!isRateInputPolicy(row.value)) errors.push(`Invalid rate input policy ${row.key}`);
+      else if (row.value.tobaccoLookback?.associationOverrides?.some(override => override.associationKeys.some(key => !db.siteAssociations.some(link => link.siteKey === row.siteKey && link.associationKey === key)))) errors.push(`Orphan tobacco lookback Association ${row.key}`);
     } else if (target.kind === "product-rate-modifier-policy") {
       if (!isRateModifierPolicy(row.value)) errors.push(`Invalid rate modifier policy ${row.key}`);
     } else if (target.kind === "site-life-aggregate-participation") {
@@ -167,7 +204,7 @@ export function validateMigrationDatabase(db: DatabaseSchema): string[] {
     } else if (target.kind === "product-journey-policy") {
       if (!isCoverageJourneyPolicy(row.value)) errors.push(`Invalid executable journey policy ${row.key}`);
       else {
-        if (row.value.associationChoices.some(a => !db.siteAssociations.some(link => link.siteKey === row.siteKey && link.associationKey === a.key && link.enabled))) errors.push(`Orphan journey association ${row.key}`);
+        if (row.value.associationChoices.some(a => !db.siteAssociations.some(link => link.siteKey === row.siteKey && link.associationKey === a.key))) errors.push(`Orphan journey association ${row.key}`);
         if (row.value.questions.some(q => [...q.financialFields, ...q.tobaccoFields].some(key => !db.fields.some(f => f.key === key)))) errors.push(`Orphan journey question field ${row.key}`);
         if (row.value.mappings.some(m => Object.keys(m.riderCodes).some(key => !db.riders.some(r => r.key === key)))) errors.push(`Orphan journey rider mapping ${row.key}`);
       }
@@ -178,8 +215,23 @@ export function validateMigrationDatabase(db: DatabaseSchema): string[] {
         catch { policy = undefined; }
       }
       if (!isSelectionPolicy(policy)) errors.push(`Invalid executable selection policy ${row.key}`);
+    } else if (target.kind === "product-association-eligibility") {
+      if (!isAssociationEligibilityPolicy(row.value)) errors.push(`Invalid association eligibility policy ${row.key}`);
+      else if (row.value.rules.some(rule => !db.siteAssociations.some(link => link.siteKey === row.siteKey && link.associationKey === rule.associationKey) || !db.siteProductApplicants.some(applicant => applicant.siteKey === row.siteKey && applicant.productKey === target.productKey && applicant.applicantKey === rule.applicantKey))) errors.push(`Orphan association eligibility scope ${row.key}`);
+    } else if (target.kind === "product-association-amounts") {
+      const policy = row.value;
+      if (!isAssociationAmountPolicy(policy)) errors.push(`Invalid association amount policy ${row.key}`);
+      else if (associationAmountKeys(policy).some(key => !db.siteAssociations.some(link => link.siteKey === row.siteKey && link.associationKey === key)) || policy.amounts.some(assignment => !db.coverageAmountPatterns.some(pattern => pattern.key === assignment.amountPatternKey) || !db.siteProductApplicants.some(applicant => applicant.siteKey === row.siteKey && applicant.productKey === target.productKey && applicant.applicantKey === assignment.applicantKey))) errors.push(`Orphan association amount scope ${row.key}`);
     } else if (target.kind === "product-residency-policy") {
       if (!isResidencyPolicy(row.value)) errors.push(`Invalid executable residency policy ${row.key}`);
+      else if (row.value.associationAllowedJurisdictions) {
+        const journey = db.configurationValues.filter(value => {
+          const definition = db.configurationDefinitions.find(definition => definition.key === value.configurationKey)?.definition.target;
+          return value.siteKey === row.siteKey && definition?.kind === "product-journey-policy" && definition.productKey === target.productKey;
+        });
+        const policy = journey.length === 1 && isCoverageJourneyPolicy(journey[0].value) ? journey[0].value : null;
+        if (!policy || Object.keys(row.value.associationAllowedJurisdictions).some(key => !policy.associationChoices.some(choice => choice.key === key))) errors.push(`Orphan residency association ${row.key}`);
+      }
     } else if (target.kind === "product-benefit-policy") {
       let policy: unknown = row.value;
       if (policy !== null && typeof policy === "object" && !Array.isArray(policy) && "version" in policy && policy.version === 2 && site) {
@@ -196,8 +248,14 @@ export function validateMigrationDatabase(db: DatabaseSchema): string[] {
       } catch { valid = false; }
       if (!valid) errors.push(`Invalid executable amount-cap policy ${row.key}`);
     } else if (target.kind === "product-dependent-policy") {
-      if (!isDependentPolicy(row.value)) errors.push(`Invalid executable dependent policy ${row.key}`);
-      else if (row.value.rules.some(rule => rule.maximumPlans?.productKeys.some(key => !products.has(key)))) errors.push(`Orphan dependent policy product ${row.key}`);
+      const policy = row.value;
+      if (!isDependentPolicy(policy)) errors.push(`Invalid executable dependent policy ${row.key}`);
+      else {
+        const rules = [...policy.rules, ...Object.values(policy.associationRules ?? {}).flat()];
+        if (rules.some(rule => rule.maximumPlans?.productKeys.some(key => !products.has(key)))) errors.push(`Orphan dependent policy product ${row.key}`);
+        if (Object.keys(policy.associationRules ?? {}).some(key => !db.siteAssociations.some(link => link.siteKey === row.siteKey && link.associationKey === key))) errors.push(`Orphan dependent association ${row.key}`);
+        if (rules.some(rule => rule.noticeContentKey && !db.contentEntries.some(content => content.key === rule.noticeContentKey))) errors.push(`Orphan dependent notice ${row.key}`);
+      }
     } else if (target.kind === "site-life-aggregate") {
       if (!isLifeAggregatePolicy(row.value)) errors.push(`Invalid executable life aggregate ${row.key}`);
       else if (row.value.groups.some(group => group.productKeys.some(key => !products.has(key)))) errors.push(`Orphan life aggregate product ${row.key}`);

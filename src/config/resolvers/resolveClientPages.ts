@@ -1,16 +1,19 @@
 import type { PageId } from "../../types";
 import type { ClientConfig, ClientPageRequirement } from "../clients/types";
-import { pages, getPageTitle, getPageNavTitle } from "../pages";
+import { getPageDefinitions, getPageTitle, getPageNavTitle } from "../pages";
+import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
+import { resolvePageCatalog } from "../../domain/pageCatalog";
+import { canonicalSiteKey } from "../../domain/siteIdentity.mjs";
 import { formFlow } from "../formFlow";
 import { progressSteps, HEALTH_PAGE_IDS } from "../progressSteps";
 import { getClientPageRequirement } from "../client/getClientPageRequirement";
 import type { ResolutionStatus } from "./types";
 
-export type PageCategory = "application" | "resume" | "advisor" | "internal";
+export type PageCategory = import('../pageCatalog').PageFlow;
 
 /** Application-flow page order, derived from the runtime form flow rather than re-authored. */
 export const applicationPageOrder: PageId[] = ["home", ...formFlow];
-const siteDetailsCategoryOrder: PageCategory[] = ["application", "resume", "advisor", "internal"];
+const siteDetailsCategoryOrder: PageCategory[] = ["application", "resume", "advisor", "utility", "internal"];
 
 /**
  * Compact labels for the docs "Sequence" column, keyed by progress-step id
@@ -40,7 +43,7 @@ export function resolvePageStepLabel(pageId: PageId): string {
 
 /**
  * Individual breadcrumb label for a page, or "N/A" when the page isn't part
- * of the applicant progress bar (matches VerticalStepperBreadcrumbs, which
+ * of the applicant progress bar (matches Breadcrumbs, which
  * only renders for pages within a progress step). Reuses the same content
  * source (getPageNavTitle) the real breadcrumb component reads from, so this
  * never drifts from what the applicant actually sees.
@@ -50,8 +53,10 @@ export function resolvePageBreadcrumbLabel(pageId: PageId): string {
   return getPageNavTitle(pageId);
 }
 
-export function getPageCategory(page: { id: string; type: string }): PageCategory {
+export function getPageCategory(page: { id: string; type: string; flow?: PageCategory }): PageCategory {
+  if (page.flow) return page.flow;
   if (page.type === "internal") return "internal";
+  if (page.type === "error") return "utility";
   if (page.id === "mock-email-preview") return "internal";
   if (page.id.startsWith("advisor") || page.id === "application-edit-confirmation")
     return "advisor";
@@ -61,7 +66,9 @@ export function getPageCategory(page: { id: string; type: string }): PageCategor
 
 /** Canonical page order used by the Site Details Pages table and related admin references. */
 export function getSiteDetailsPageOrder(): PageId[] {
-  return [...pages]
+  const library = getPrototypeLibrary();
+  if (library) return library.pages.map(page => page.definition.id);
+  return getPageDefinitions()
     .sort((a, b) => {
       const categoryA = getPageCategory(a);
       const categoryB = getPageCategory(b);
@@ -82,7 +89,7 @@ export function getSiteDetailsPageOrder(): PageId[] {
 
 /** Stable admin label for a page; unlike page title/nav copy, this is not client-editable. */
 export function getSiteDetailsPageLabel(pageId: PageId): string {
-  const uppercaseTokens = new Set(["si", "li", "qd", "di", "cir"]);
+  const uppercaseTokens = new Set(["si", "li", "qd", "di", "ci", "cir"]);
   return pageId
     .split("-")
     .map((part) =>
@@ -108,7 +115,7 @@ export type GlobalPageInfo = {
  * which must never need an active client to render its baseline.
  */
 export function getGlobalPages(): GlobalPageInfo[] {
-  return pages.map((page) => {
+  return getPageDefinitions().map((page) => {
     const id = page.id as PageId;
     // Home's doc title is its hero copy, a distinct content field from content.pages.home.title.
     const title = id === "home" ? "Safeguard your financial future." : getPageTitle(id);
@@ -235,9 +242,14 @@ export function resolvePageVisibility(
 }
 
 /** Resolves every registered page's Global → Override → Effective state for the given client. */
-export function resolveClientPages(client: ClientConfig): ResolvedPage[] {
-  return getGlobalPages().map((global) => {
-    const { override, effective, status } = resolvePageVisibility(global.id, client);
+export function resolveClientPages(client: ClientConfig, siteKey?: string): ResolvedPage[] {
+  const library = getPrototypeLibrary();
+  const saved = library ? resolvePageCatalog(library.pageData, siteKey ?? (client.id === library.client.id ? library.site.siteKey : canonicalSiteKey(client.id))) : null;
+  const pageClient = saved ? { ...client, pages: { participationSource: "sitePages" as const, requirements: Object.fromEntries(saved.map(page => [page.key, page.requirement ?? "none"])) } } : client;
+  const globalPages = getGlobalPages();
+  const byId = new Map(globalPages.map(page => [page.id, page]));
+  return (saved ? saved.map(page => byId.get(page.definition.id)!) : globalPages).map((global) => {
+    const { override, effective, status } = resolvePageVisibility(global.id, pageClient);
     return { id: global.id, global, override, effective, status };
   });
 }

@@ -1,39 +1,32 @@
-import type { ReactNode } from "react";
-import { Box, Stack, Typography } from "@mui/material";
-import QuickDecisionIcon from "../ui/QuickDecisionIcon";
-import { getContent } from "../../content";
+import { Box, ButtonBase, Stack, Typography, type ButtonBaseProps } from "@mui/material";
+import QuickDecisionIcon from "../coverage/QuickDecisionIcon";
+import { useComponentContent } from "./ComponentContentContext";
 
 function InlineDrawerLink({
   children,
   onClick,
-}: {
-  children: ReactNode;
-  onClick: () => void;
-}) {
+  ...props
+}: Pick<ButtonBaseProps, "children" | "onClick" | "aria-expanded" | "aria-controls">) {
   return (
-    <Typography
-      component="span"
-      role="button"
-      tabIndex={0}
+    <ButtonBase
+      {...props}
       onClick={onClick}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          onClick();
-        }
-      }}
       sx={{
         display: "inline",
+        verticalAlign: "baseline",
         color: "primary.main",
         font: "inherit",
         lineHeight: "inherit",
         textDecoration: "underline",
         textUnderlineOffset: "0.12em",
-        cursor: "pointer",
+        "&.Mui-focusVisible": {
+          outline: "2px solid currentColor",
+          outlineOffset: 2,
+        },
       }}
     >
       {children}
-    </Typography>
+    </ButtonBase>
   );
 }
 
@@ -91,7 +84,7 @@ export default function QuickDecisionDrawerContent({
 }: {
   plainMark?: boolean;
 }) {
-  const content = getContent().help.quickDecision;
+  const content = useComponentContent().help.quickDecision;
   return (
     <Stack spacing={2}>
       <Typography variant="body2" color="text.secondary">

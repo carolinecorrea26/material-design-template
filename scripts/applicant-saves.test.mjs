@@ -95,6 +95,16 @@ it('requires explicit Coverage/Review revalidation when the Library revision cha
   expect(client.save({ ...scope(restored), writeCapability: restored.writeCapability }).requiresRevalidation).toBe(true);
   expect(client.save({ ...scope(restored), writeCapability: restored.writeCapability, validatedPage: 'coverage' }).requiresRevalidation).toBe(false);
 });
+
+it.each(['coverage', 'review'])('only an explicit current %s completion clears revalidation and persists it across restart', validatedPage => {
+  const client = setup(), saved = client.save(); client.revise();
+  const update = { ...scope(saved), writeCapability: saved.writeCapability };
+  expect(client.save(update).requiresRevalidation).toBe(true);
+  expect(() => client.save({ ...update, validatedPage: 'payment' })).toThrow('Unsupported revalidation page');
+  expect(client.save({ ...update, validatedPage }).requiresRevalidation).toBe(false);
+  client.restart();
+  expect(client.save(update).requiresRevalidation).toBe(false);
+});
 it('stores hashed capabilities/challenges and rolls back failed storage writes', () => {
   const client = setup(), saved = client.save(), details = recovery(client, saved), challenge = code(client, details);
   const stored = JSON.parse(readFileSync(client.statePath, 'utf8'));
@@ -114,4 +124,45 @@ it('requests recovery by email without exposing an application-reference input',
   expect(requested.applicationId).toBe(saved.applicationId);
   expect(client.request('/applicant/outbox', scope(saved)).messages.at(-1).kind).toBe('link');
   expect(() => client.request('/applicant/resume/request', { applicationId: '', siteKey: 'ama', recipient: saved.recipient })).toThrow('unavailable');
+});
+
+it('enforces the five-challenge limit across restart without invalidating the fifth issued code', () => {
+  const client = setup(), saved = client.save(), details = recovery(client, saved);
+  let last;
+  for (let issued = 0; issued < 5; issued++) last = code(client, details);
+  client.restart();
+  expect(() => code(client, details)).toThrow('new resume link');
+  expect(client.request('/applicant/resume/verify', { ...details, code: last }).applicationId).toBe(saved.applicationId);
+});
+
+it('enforces five resume requests per rolling minute independently for each saved application', () => {
+  const client = setup(), saved = client.save(), other = client.save();
+  for (let requested = 0; requested < 5; requested++) recovery(client, saved);
+  client.restart(); client.advance(59999);
+  expect(() => recovery(client, saved)).toThrow('Too many resume requests');
+  expect(() => recovery(client, other)).not.toThrow();
+  client.advance(1);
+  expect(() => recovery(client, saved)).not.toThrow();
+});
+
+it('keeps the original ten-day retention deadline through updates and rejects writes at expiry', () => {
+  const client = setup(), saved = client.save();
+  client.advance(10 * 24 * 60 * 60000 - 1);
+  const updated = client.save({ ...scope(saved), writeCapability: saved.writeCapability });
+  expect(updated.expiresAt).toBe(saved.expiresAt);
+  client.advance(1); client.restart();
+  expect(() => client.save({ ...scope(saved), writeCapability: saved.writeCapability })).toThrow('unavailable');
+  expect(() => recovery(client, saved)).toThrow('unavailable');
+});
+
+it('normalizes recipients, isolates write environments and expires codes at the exact deadline', () => {
+  const client = setup(), saved = client.save({ recipient: ' MEMBER@EXAMPLE.INVALID ', environment: 'preview' });
+  expect(saved.recipient).toBe('member@example.invalid');
+  expect(() => client.save({ ...scope(saved), writeCapability: saved.writeCapability, environment: 'production' })).toThrow('capability');
+  const details = recovery(client, saved), challenge = code(client, details);
+  client.advance(5 * 60000 - 1); client.restart();
+  expect(client.request('/applicant/resume/verify', { ...details, code: challenge }).applicationId).toBe(saved.applicationId);
+  const next = recovery(client, saved), expired = code(client, next);
+  client.advance(5 * 60000);
+  expect(() => client.request('/applicant/resume/verify', { ...next, code: expired })).toThrow('code expired');
 });

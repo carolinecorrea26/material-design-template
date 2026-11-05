@@ -9,9 +9,10 @@ import CategoryCard from "./CategoryCard";
  * Beneficiary, and ProductCatalog.
  */
 const meta = {
-  title: "Layout/CategoryCard",
+  id: "layout-categorycard",
+  title: "Components/Content and data display/Cards/Category card",
   component: CategoryCard,
-  parameters: { layout: "padded" },
+  parameters: { docs: { description: { component: "Surface card wrapping a category header + content stack. Used on Payment, Beneficiary, and ProductCatalog pages." } }, layout: "padded" },
 } satisfies Meta<typeof CategoryCard>;
 
 export default meta;

@@ -11,7 +11,7 @@ export const pageGroups = [
   { id: "review", pages: ["review", "docusign"] },
   {
     id: "health",
-    pages: ["health-si", "health-qd", "health-di", "health-cir"],
+    pages: ["health-si", "health-qd", "health-di", "health-ci", "health-cir"],
   },
   { id: "payment", pages: ["payment"] },
 ] satisfies { id: PageGroupId; pages: PageId[] }[];

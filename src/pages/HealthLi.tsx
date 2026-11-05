@@ -1,17 +1,19 @@
+import HealthInformationHelp from "../components/health/HealthInformationHelp";
 import { getHealthDetailSurface, getHealthDetailSurfaceName, surfaceSemanticValues } from '../config/fields/storedSurfaces';
 import { createQuestionFields } from "../config/fields/healthLiFields";
 import { validateHealthPage } from '../config/healthFollowUps';
 import { applicantParticipatesInPage } from "../config/flowGates";
 import { Stack } from "@mui/material";
 import FormRoutePage, { type FormRouteRenderProps } from "../app/RoutePage";
-import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
-import {
-  shouldShowApplicantLabel,
-} from "../utils/applicantVisibility";
-import YesNoDetailList, {
+import HealthQuestionList from "../app/sections/ConfiguredHealthQuestionList";
+import type { HealthQuestionEntry } from "../components/forms/HealthQuestionList";
+import { YesNoDetailQuestionFields,
   type YesNoDetailQuestion,
 } from "../components/forms/YesNoDetailList";
 import type { FieldDefinition } from "../config/fields/types";
+import { getPrototypeLibrary } from "../domain/prototypeLibrary";
+import { configuredHealthQuestionnaire } from "../domain/configuredHealthQuestionnaire";
+import { configuredHealthQuestionEntries } from "../app/sections/ConfiguredHealthQuestions";
 
 function renderDetailsItem(item: Record<string, string>) {
   return (
@@ -36,13 +38,16 @@ interface QuestionSetProps {
   allFields: FieldDefinition[];
 }
 
-function QuestionSet({
+function questionEntries({
   applicant,
   control,
   errors,
   watchedValues,
   allFields,
-}: QuestionSetProps) {
+}: QuestionSetProps): HealthQuestionEntry[] {
+  const library = getPrototypeLibrary();
+  const questionnaire = library ? configuredHealthQuestionnaire(library.site, "health-li", applicant, watchedValues) : null;
+  if (questionnaire && questionnaire.status !== "unassigned") return configuredHealthQuestionEntries({ questionnaire, applicant, control, errors });
   const questions: YesNoDetailQuestion[] = allFields.filter(field => field.id.startsWith("health-li-q") && field.id.endsWith("-spouse") === (applicant === "spouse")).map(field => {
     const answerId = field.id;
     const surface = getHealthDetailSurface("health-li", answerId);
@@ -50,66 +55,39 @@ function QuestionSet({
       renderItem: item => renderDetailsItem(surfaceSemanticValues(getHealthDetailSurfaceName("health-li", answerId), item) as Record<string, string>) };
   });
 
-  return (
-    <YesNoDetailList
-      questions={questions}
-      control={control}
-      errors={errors}
-      watchedValues={watchedValues}
-    />
-  );
+  return questions.map((question, order) => ({
+    key: question.field.id.replace(/-spouse$/, ""), order, applicant,
+    content: <YesNoDetailQuestionFields question={question} control={control} errors={errors} watchedValues={watchedValues} />,
+  }));
 }
 
 export default function HealthLi() {
   return (
     <FormRoutePage
-      pageId="health-li"
+      pageId="health-li" help={<HealthInformationHelp />}
       validate={values => validateHealthPage('health-li', values)}
-      devFillFields={(currentValues) => [
+      devFillFields={(currentValues) => {
+        const library = getPrototypeLibrary();
+        const configured = library ? (["self", "spouse"] as const).map(applicant => ({ applicant, result: configuredHealthQuestionnaire(library.site, "health-li", applicant, currentValues) })) : [];
+        if (configured.some(({ result }) => result.status !== "unassigned")) return configured.flatMap(({ applicant, result }) => applicantParticipatesInPage("health-li", applicant, currentValues) ? result.fields : []);
+        return [
         ...(applicantParticipatesInPage("health-li", "self", currentValues)
           ? createQuestionFields("self")
           : []),
         ...(applicantParticipatesInPage("health-li", "spouse", currentValues)
           ? createQuestionFields("spouse")
           : []),
-      ]}
+        ];
+      }}
     >
       {({ control, errors, watchedValues, allFields }) => {
         const hasSelf = applicantParticipatesInPage("health-li", "self", watchedValues);
         const hasSpouse = applicantParticipatesInPage("health-li", "spouse", watchedValues);
 
-        return (
-          <Stack spacing={3}>
-            {hasSelf && (
-              <ApplicantSectionDivider
-                applicant="self"
-                showLabel={shouldShowApplicantLabel("self", watchedValues)}
-              >
-                <QuestionSet
-                  applicant="self"
-                  control={control}
-                  errors={errors}
-                  watchedValues={watchedValues}
-                  allFields={allFields}
-                />
-              </ApplicantSectionDivider>
-            )}
-            {hasSpouse && (
-              <ApplicantSectionDivider
-                applicant="spouse"
-                showLabel={shouldShowApplicantLabel("spouse", watchedValues)}
-              >
-                <QuestionSet
-                  applicant="spouse"
-                  control={control}
-                  errors={errors}
-                  watchedValues={watchedValues}
-                  allFields={allFields}
-                />
-              </ApplicantSectionDivider>
-            )}
-          </Stack>
-        );
+        return <HealthQuestionList values={watchedValues} entries={[
+          ...(hasSelf ? questionEntries({ applicant: "self", control, errors, watchedValues, allFields }) : []),
+          ...(hasSpouse ? questionEntries({ applicant: "spouse", control, errors, watchedValues, allFields }) : []),
+        ]} />;
       }}
     </FormRoutePage>
   );

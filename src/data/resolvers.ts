@@ -101,7 +101,7 @@ export function resolveSiteFlows(siteId: SiteId) {
 }
 
 export function resolveSitePages(siteId: SiteId) {
-  return resolveClientPages(resolveSite(siteId).effective);
+  return resolveClientPages(resolveSite(siteId).effective, siteId);
 }
 
 export function resolveSiteSupport(siteId: SiteId): ClientSupport {

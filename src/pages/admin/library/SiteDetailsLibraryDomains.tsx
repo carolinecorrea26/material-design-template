@@ -3,7 +3,7 @@ import { formatConditionVisibilityTargets } from "../../../config/conditions/con
 import { riderEntityKey } from "../../../domain/riderIdentity";
 import { coverageQuestionRequirements } from "../../../config/coverageQuestionRequirements";
 import LibraryLink from "./LibraryLink";
-import { ruleDisplayType, ruleRelations, getLibraryRules, getLibraryFieldIds, getLibraryPages, orderedLibraryPages } from "./libraryInspection";
+import { ruleDisplayType, ruleRelations, getLibraryRules, getLibraryFieldIds, getLibraryPages } from "./libraryInspection";
 import { useSearchParams } from "react-router-dom";
 import { formatConditionDefinition } from "../../../config/conditions";
 import { libraryRepository } from "../../../repositories/libraryRepository";
@@ -16,7 +16,7 @@ import { formatCoverageAmounts } from "../../../utils/coverageAmounts";
 import { formatProductIdentifiers } from "../../../utils/coverageIdentifiers";
 import TruncatedString from "../../../components/docs/TruncatedString";
 import { lazy, Suspense, type ReactNode } from "react";
-import { Tabs, Tab, Box,  Paper, Stack,  Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import { Box,  Paper, Stack,  Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 const CoverageAggregateLibrary = lazy(() => import("./CoverageAggregateLibrary"));
 
 
@@ -24,17 +24,15 @@ const CoverageAggregateLibrary = lazy(() => import("./CoverageAggregateLibrary")
 
 
 
-import { getAssociationsForSite, getClientForSite, getSite, getTpaForClient, resolveEffectiveBranding, resolveSite, resolveSiteConfigurations, resolveSiteCoverage, resolveSiteFlows } from "../../../data";
+import { getAssociationsForSite, getClientForSite, getSite, getTpaForClient, resolveEffectiveBranding, resolveSite, resolveSiteConfigurations, resolveSiteCoverage } from "../../../data";
 import ResponsiveTableContainer from "../../../components/docs/ResponsiveTableContainer";
 import ResolvedConfigurationList from "../../../components/docs/ResolvedConfigurationList";
 
 import ValidationReferenceList from "../../../components/docs/ValidationReferenceList";
-import FlowDiagram from "../../../components/docs/flows/FlowDiagram";
 import { useLibrarySite } from "./LibrarySiteSelector";
 
 const coverages = libraryRepository.read("coverages");
 const coverageCategories = libraryRepository.read("coverageCategories");
-const allFlows = libraryRepository.read("allFlows");
 const urlParameters = libraryRepository.read("urlParameters");
 
 
@@ -124,21 +122,6 @@ function CoverageTable({ rows }: { rows: Array<{ coverage: (typeof coverages)[nu
   const fieldIds = getLibraryFieldIds(scope, siteId);
   const effective = scope === "effective";
   return <ResponsiveTableContainer libraryTable="products"><Table size="small" aria-label="Coverage products" sx={{ tableLayout: "fixed", minWidth: effective ? 2020 : 1660 }}><colgroup>{[220, 120, 220, 300, 340, 300, 160, ...(effective ? [140, 220] : [])].map((width, index) => <col key={index} style={{ width }} />)}</colgroup><TableHead><TableRow><TableCell>Product / category sequence</TableCell><TableCell>Category</TableCell><TableCell>Identifiers / situs</TableCell><TableCell>Amounts</TableCell><TableCell>Underwriting / requirements</TableCell><TableCell>Notes / options</TableCell><TableCell>Applicants</TableCell>{effective && <TableCell>Resolution</TableCell>}{effective && <TableCell>Differences</TableCell>}</TableRow></TableHead><TableBody>{rows.map(({ coverage, status, diffs }) => <TableRow key={coverage.id} id={`product-${coverage.id}`} sx={status === "disabled" ? { opacity: 0.55 } : undefined}><TableCell><Typography variant="body2" sx={{ fontWeight: 700 }}>{coverage.name}</Typography><div>Category position: {rows.filter(r => r.coverage.categoryId === coverage.categoryId).findIndex(r => r.coverage.id === coverage.id) + 1}</div><Typography variant="caption" sx={{ fontFamily: "monospace" }}>{coverage.id}</Typography><details><summary>Riders</summary>{coverage.riders?.map(r => <div key={r.id}><a href={`#${riderEntityKey(coverage.id, r)}`}>{r.name}</a></div>)}</details></TableCell><TableCell><a href={`#category-${coverage.categoryId}`}>{coverage.categoryId}</a><details><summary>Related questions</summary>{Object.values(coverageQuestionRequirements[coverage.categoryId]).flat().map(field => <div key={field}>{fieldIds.has(field) ? <LibraryLink domain="fields" filters={{ q: field }}>{field}</LibraryLink> : <span>{field} (not in this Library scope)</span>}</div>)}</details></TableCell><TableCell sx={{ minWidth: 160, whiteSpace: "pre-line", bgcolor: diffs.some((key) => ["gNumber", "planCode", "groupPolicySitus"].includes(key)) ? CLIENT_HIGHLIGHT_BG : undefined }}><TruncatedString value={`Code: ${coverage.code}\nG-number: ${formatProductIdentifiers(coverage.gNumber)}\nPlan: ${formatProductIdentifiers(coverage.planCode)}\nSitus: ${coverage.groupPolicySitus ?? "—"}`} threshold={180} /></TableCell><TableCell sx={{ minWidth: 240, whiteSpace: "pre-line", bgcolor: diffs.some((key) => ["coverageAmounts", "riders"].includes(key)) ? CLIENT_HIGHLIGHT_BG : undefined }}><TruncatedString value={`${formatCoverageAmounts(coverage)}`} threshold={220} /></TableCell><TableCell sx={{ minWidth: 280, whiteSpace: "pre-line", bgcolor: diffs.some((key) => ["underwritingType", "underwritingBands", "requirements"].includes(key)) ? CLIENT_HIGHLIGHT_BG : undefined }}><TruncatedString value={`${coverage.underwritingType}\n${(coverage.underwritingBands ?? []).map((band) => `${band.scope.applicantType}: ${band.label}; ages ${band.minimumAgeYears}–${band.maximumAgeYears}; ${band.minimumAmountExclusive ? ">" : ""}${band.minimumAmount}–${band.maximumAmount}`).join("\n")}\n${formatCoverageRequirements(coverage.requirements)}`} threshold={260} /></TableCell><TableCell sx={{ minWidth: 240 }}><TruncatedString value={formatCoverageDetails(coverage)} threshold={220} />{coverage.brochureUrl && <a href={coverage.brochureUrl} target="_blank" rel="noopener noreferrer">Brochure</a>}</TableCell><TableCell>{coverage.applicants.join(", ")}</TableCell>{effective && <TableCell><Chip size="small" label={status} /></TableCell>}{effective && <TableCell>{diffs.join(", ") || "—"}</TableCell>}</TableRow>)}</TableBody></Table></ResponsiveTableContainer>;
-}
-
-export function FlowsLibrary() {
-  return <ScopedSiteContent>{(siteId) => <FlowScope globalFlows={allFlows} effectiveFlows={resolveSiteFlows(siteId)} />}</ScopedSiteContent>;
-}
-
-function FlowScope({ globalFlows, effectiveFlows }: { globalFlows: typeof allFlows; effectiveFlows: ReturnType<typeof resolveSiteFlows> }) {
-  const scope = useLibraryScope();
-  const definitions = scope === "global" ? globalFlows : effectiveFlows.map((entry) => entry.effective);
-  const [search, setSearch] = useSearchParams();
-  const flowId = search.get("flow") ?? definitions[0].id;
-  const setFlowId = (id: string) => { const next = new URLSearchParams(search); next.set("flow", id); setSearch(next, { replace: true }); };
-  const definition = definitions.find((entry) => entry.id === flowId) ?? definitions[0];
-  const resolution = effectiveFlows.find((entry) => entry.id === definition.id);
-  return <Box><Tabs aria-label="Flow views" value={definition.id} onChange={(_, id: string) => setFlowId(id)} variant="scrollable" scrollButtons="auto" sx={{ my: 2 }}>{definitions.map(flow => <Tab key={flow.id} value={flow.id} label={flow.title} id={`flow-tab-${flow.id}`} aria-controls={`flow-panel-${flow.id}`} />)}</Tabs>{scope === "effective" && resolution && <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>Resolution: {resolution.status}{resolution.clientDiffs.length ? ` · ${resolution.clientDiffs.join(", ")}` : ""}</Typography>}<Box role="tabpanel" id={`flow-panel-${definition.id}`} aria-labelledby={`flow-tab-${definition.id}`}><FlowDiagram definition={definition} /></Box><details><summary>Flow nodes and modeled page references (authoring order; branches follow edges)</summary>{definition.nodes.map((node, index) => <div key={node.id}>{index + 1}. {node.id}: {node.pageId && orderedLibraryPages.some(page => page.id === node.pageId) ? <LibraryLink domain="pages" filters={{ q: node.pageId }}>{node.label}</LibraryLink> : node.label}</div>)}</details></Box>;
 }
 
 export function UrlParametersLibrary() {

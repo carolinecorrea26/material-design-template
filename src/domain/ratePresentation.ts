@@ -1,6 +1,6 @@
 import type { EffectiveSite } from "./effectiveSite";
 
-export type RatePresentationPolicy = { version: 1; praseConfigured: boolean; quoteToolEnabled: boolean; coverageQuoteEnabled: boolean };
+export type RatePresentationPolicy = { version: 1; praseConfigured: boolean; quoteToolEnabled: boolean; coverageQuoteEnabled: boolean; suppressedAssociationKeys?: string[] };
 export type ReferenceRateTable = { version: 1; title: string; notes?: string[]; sources?: Array<{ kind: "pdf" | "image" | "xml" | "link"; url: string; label: string }> } & (
   { kind: "pdf" | "image" | "link" | "xml"; url: string } |
   { kind: "html-table"; columns: string[]; rows: string[][] }
@@ -8,7 +8,11 @@ export type ReferenceRateTable = { version: 1; title: string; notes?: string[]; 
 const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
 const text = (value: unknown): value is string => typeof value === "string" && value.trim().length > 0;
 export function isRatePresentationPolicy(value: unknown): value is RatePresentationPolicy {
-  return object(value) && value.version === 1 && ["praseConfigured", "quoteToolEnabled", "coverageQuoteEnabled"].every(key => typeof value[key] === "boolean");
+  return object(value) && value.version === 1 && ["praseConfigured", "quoteToolEnabled", "coverageQuoteEnabled"].every(key => typeof value[key] === "boolean") && (value.suppressedAssociationKeys === undefined || Array.isArray(value.suppressedAssociationKeys) && new Set(value.suppressedAssociationKeys).size === value.suppressedAssociationKeys.length && value.suppressedAssociationKeys.every(text));
+}
+export function associationRatesSuppressed(site: EffectiveSite, values: Record<string, unknown>) {
+  const key = values.association ?? values.membership;
+  return site.configuration.ratePresentationPolicies.some(row => isRatePresentationPolicy(row.value) && typeof key === "string" && row.value.suppressedAssociationKeys?.includes(key));
 }
 export function safeRateUrl(value: unknown): value is string {
   if (!text(value)) return false;
@@ -28,15 +32,16 @@ export const defaultRatePresentation: RatePresentationPolicy = { version: 1, pra
 
 /** Capability is separate from actual premium availability. This does not price
  * coverage or assert that the PRASE integration has been validated. */
-export function resolveRatePresentation(site: EffectiveSite, productKey: string) {
+export function resolveRatePresentation(site: EffectiveSite, productKey: string, associationKey?: string) {
   const product = site.configuration.products.find(product => product.productKey === productKey);
   const policies = site.configuration.ratePresentationPolicies;
   const invalid = !product || policies.length > 1 || policies.length === 1 && !isRatePresentationPolicy(policies[0].value) || product.referenceRateTables.length > 1 || product.referenceRateTables.some(table => !isReferenceRateTable(table.value));
   if (invalid) return { status: "unresolved" as const, praseConfigured: false, quoteToolEnabled: false, coverageQuoteEnabled: false, hideCalculatedRates: true, homePageVariant: "hero-image" as const, referenceTable: null, rateArea: "hidden" as const, reason: "Invalid or ambiguous rate presentation policy" };
   const policy = policies.length ? policies[0].value as RatePresentationPolicy : defaultRatePresentation;
+  const suppressed = !!associationKey && !!policy.suppressedAssociationKeys?.includes(associationKey);
   const referenceTable = !policy.praseConfigured && product.referenceRateTables.length ? product.referenceRateTables[0].value as ReferenceRateTable : null;
-  return { status: "resolved" as const, praseConfigured: policy.praseConfigured, quoteToolEnabled: policy.praseConfigured && policy.quoteToolEnabled, coverageQuoteEnabled: policy.praseConfigured && policy.coverageQuoteEnabled,
-    hideCalculatedRates: !policy.praseConfigured, homePageVariant: policy.praseConfigured ? null : "hero-image" as const, referenceTable,
-    rateArea: referenceTable ? "reference-link" as const : policy.praseConfigured && policy.coverageQuoteEnabled ? "quote-capable" as const : "hidden" as const,
-    reason: policy.praseConfigured ? "Calculated estimates require a verified rate response" : "Calculated rates disabled; optional reference table only" };
+  return { status: "resolved" as const, praseConfigured: policy.praseConfigured, quoteToolEnabled: !suppressed && policy.praseConfigured && policy.quoteToolEnabled, coverageQuoteEnabled: !suppressed && policy.praseConfigured && policy.coverageQuoteEnabled,
+    hideCalculatedRates: suppressed || !policy.praseConfigured, homePageVariant: policy.praseConfigured ? null : "hero-image" as const, referenceTable: suppressed ? null : referenceTable,
+    rateArea: suppressed ? "hidden" as const : referenceTable ? "reference-link" as const : policy.praseConfigured && policy.coverageQuoteEnabled ? "quote-capable" as const : "hidden" as const,
+    reason: suppressed ? "Premium estimates are suppressed for the selected Association" : policy.praseConfigured ? "Calculated estimates require a verified rate response" : "Calculated rates disabled; optional reference table only" };
 }

@@ -1,0 +1,1725 @@
+{
+  "scope": "All explicit MUI icon imports under src and .storybook, separated by applicant, admin, development/reference and examples/tests. Import references are source evidence, not exhaustive runtime reachability. MUI internal default glyphs are owned by their controls.",
+  "summary": {
+    "applicantIcons": 49,
+    "allImportedIcons": 97,
+    "unusedImports": 0
+  },
+  "icons": [
+    {
+      "icon": "AccessTimeRounded",
+      "usages": [
+        {
+          "icon": "AccessTimeRounded",
+          "file": "src/components/feedback/recoveryIcons.ts",
+          "line": 2,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "AccessTimeRounded",
+          "file": "src/components/layout/AppFooter.tsx",
+          "line": 6,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "AccessTimeRounded",
+          "file": "src/components/layout/AppMenu.tsx",
+          "line": 19,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "AccessibilityNewRounded",
+      "usages": [
+        {
+          "icon": "AccessibilityNewRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 19,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "AccessibleRounded",
+      "usages": [
+        {
+          "icon": "AccessibleRounded",
+          "file": "src/config/coverageCategories.ts",
+          "line": 3,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "AccountBalanceWalletRounded",
+      "usages": [
+        {
+          "icon": "AccountBalanceWalletRounded",
+          "file": "src/pages/Coverage.tsx",
+          "line": 7,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "AccountCircleRounded",
+      "usages": [
+        {
+          "icon": "AccountCircleRounded",
+          "file": "src/components/admin/AdminCenterShell.tsx",
+          "line": 26,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "AccountTreeRounded",
+      "usages": [
+        {
+          "icon": "AccountTreeRounded",
+          "file": "src/pages/PortalAdmin.tsx",
+          "line": 20,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "AddCircleOutlineRounded",
+      "usages": [
+        {
+          "icon": "AddCircleOutlineRounded",
+          "file": "src/components/beneficiary/BeneficiaryProductRecords.tsx",
+          "line": 2,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "AddCircleOutlineRounded",
+          "file": "src/components/forms/DynamicList.tsx",
+          "line": 3,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "AddCircleOutlineRounded",
+          "file": "src/pages/AdvisorSendConfirmation.tsx",
+          "line": 9,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ArrowBackIosRounded",
+      "usages": [
+        {
+          "icon": "ArrowBackIosRounded",
+          "file": "src/components/layout/PageTitle.tsx",
+          "line": 2,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ArrowForwardRounded",
+      "usages": [
+        {
+          "icon": "ArrowForwardRounded",
+          "file": "src/app/workflows/QuoteCalculator.tsx",
+          "line": 19,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "ArrowForwardRounded",
+          "file": "src/components/docs/GlobalSiteDetailsPanel.tsx",
+          "line": 17,
+          "scope": "development-and-reference",
+          "used": true
+        },
+        {
+          "icon": "ArrowForwardRounded",
+          "file": "src/components/forms/Button.stories.tsx",
+          "line": 4,
+          "scope": "examples-and-tests",
+          "used": true
+        },
+        {
+          "icon": "ArrowForwardRounded",
+          "file": "src/components/navigation/PageNav.tsx",
+          "line": 2,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "ArrowForwardRounded",
+          "file": "src/pages/Coverage.tsx",
+          "line": 6,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "ArrowForwardRounded",
+          "file": "src/pages/PortalAdmin.tsx",
+          "line": 26,
+          "scope": "admin",
+          "used": true
+        },
+        {
+          "icon": "ArrowForwardRounded",
+          "file": "src/pages/admin/AdminHome.tsx",
+          "line": 5,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ArrowRightRounded",
+      "usages": [
+        {
+          "icon": "ArrowRightRounded",
+          "file": "src/components/navigation/ProgressStep.tsx",
+          "line": 16,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ArticleRounded",
+      "usages": [
+        {
+          "icon": "ArticleRounded",
+          "file": "src/pages/PortalAdmin.tsx",
+          "line": 23,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "AutoStoriesRounded",
+      "usages": [
+        {
+          "icon": "AutoStoriesRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 12,
+          "scope": "admin",
+          "used": true
+        },
+        {
+          "icon": "AutoStoriesRounded",
+          "file": "src/pages/DesignSystem.tsx",
+          "line": 2,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "BarChartRounded",
+      "usages": [
+        {
+          "icon": "BarChartRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 17,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "BugReportRounded",
+      "usages": [
+        {
+          "icon": "BugReportRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 3,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "BuildRounded",
+      "usages": [
+        {
+          "icon": "BuildRounded",
+          "file": "src/components/feedback/recoveryIcons.ts",
+          "line": 3,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "BusinessRounded",
+      "usages": [
+        {
+          "icon": "BusinessRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 8,
+          "scope": "admin",
+          "used": true
+        },
+        {
+          "icon": "BusinessRounded",
+          "file": "src/components/layout/SectionDivider.stories.tsx",
+          "line": 3,
+          "scope": "examples-and-tests",
+          "used": true
+        },
+        {
+          "icon": "BusinessRounded",
+          "file": "src/config/coverageCategories.ts",
+          "line": 4,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "CalculateRounded",
+      "usages": [
+        {
+          "icon": "CalculateRounded",
+          "file": "src/components/layout/AppMenu.tsx",
+          "line": 15,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CalculateRounded",
+          "file": "src/content/helpContent.tsx",
+          "line": 4,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "CalendarMonthRounded",
+      "usages": [
+        {
+          "icon": "CalendarMonthRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 16,
+          "scope": "admin",
+          "used": true
+        },
+        {
+          "icon": "CalendarMonthRounded",
+          "file": "src/components/layout/ClientHelpBanner.tsx",
+          "line": 14,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CalendarMonthRounded",
+          "file": "src/pages/admin/AdminHome.tsx",
+          "line": 6,
+          "scope": "admin",
+          "used": true
+        },
+        {
+          "icon": "CalendarMonthRounded",
+          "file": "src/pages/admin/ReleasesWorkspace.tsx",
+          "line": 6,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "CallSplitRounded",
+      "usages": [
+        {
+          "icon": "CallSplitRounded",
+          "file": "src/components/docs/flows/nodes/DecisionFlowNode.tsx",
+          "line": 1,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "CancelRounded",
+      "usages": [
+        {
+          "icon": "CancelRounded",
+          "file": "src/components/docs/ProjectStatusChip.tsx",
+          "line": 6,
+          "scope": "development-and-reference",
+          "used": true
+        },
+        {
+          "icon": "CancelRounded",
+          "file": "src/components/forms/fieldInputPresentation.tsx",
+          "line": 5,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CancelRounded",
+          "file": "src/components/verification/MemberVerification.tsx",
+          "line": 7,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ChangeCircleRounded",
+      "usages": [
+        {
+          "icon": "ChangeCircleRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 15,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ChatBubbleOutlineRounded",
+      "usages": [
+        {
+          "icon": "ChatBubbleOutlineRounded",
+          "file": "src/components/layout/ClientHelpBanner.tsx",
+          "line": 13,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "CheckCircleRounded",
+      "usages": [
+        {
+          "icon": "CheckCircleRounded",
+          "file": "src/components/coverage/CoverageCart.tsx",
+          "line": 8,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CheckCircleRounded",
+          "file": "src/components/docs/MilestoneStatusChip.tsx",
+          "line": 2,
+          "scope": "development-and-reference",
+          "used": true
+        },
+        {
+          "icon": "CheckCircleRounded",
+          "file": "src/components/docs/ProjectStatusChip.tsx",
+          "line": 2,
+          "scope": "development-and-reference",
+          "used": true
+        },
+        {
+          "icon": "CheckCircleRounded",
+          "file": "src/components/feedback/ProcessingStatusPage.tsx",
+          "line": 3,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CheckCircleRounded",
+          "file": "src/components/feedback/recoveryIcons.ts",
+          "line": 4,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CheckCircleRounded",
+          "file": "src/components/forms/fieldInputPresentation.tsx",
+          "line": 4,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CheckCircleRounded",
+          "file": "src/components/navigation/ProgressStep.tsx",
+          "line": 17,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CheckCircleRounded",
+          "file": "src/components/receipt/ReceiptCoverageDecision.tsx",
+          "line": 3,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CheckCircleRounded",
+          "file": "src/components/verification/MemberVerification.tsx",
+          "line": 6,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "CheckRounded",
+      "usages": [
+        {
+          "icon": "CheckRounded",
+          "file": "src/components/forms/EligibilityFields.tsx",
+          "line": 4,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CheckRounded",
+          "file": "src/components/home/ApplicationPreview.tsx",
+          "line": 4,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CheckRounded",
+          "file": "src/dev/DevTools.tsx",
+          "line": 14,
+          "scope": "development-and-reference",
+          "used": true
+        },
+        {
+          "icon": "CheckRounded",
+          "file": "src/pages/ResumeCode.tsx",
+          "line": 6,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ChevronLeftRounded",
+      "usages": [
+        {
+          "icon": "ChevronLeftRounded",
+          "file": "src/pages/admin/ReleasesWorkspace.tsx",
+          "line": 7,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ChevronRightRounded",
+      "usages": [
+        {
+          "icon": "ChevronRightRounded",
+          "file": "src/pages/admin/ReleasesWorkspace.tsx",
+          "line": 8,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "CloseRounded",
+      "usages": [
+        {
+          "icon": "CloseRounded",
+          "file": "src/components/coverage/CoverageCart.tsx",
+          "line": 4,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CloseRounded",
+          "file": "src/components/layout/AppDrawer.tsx",
+          "line": 1,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CloseRounded",
+          "file": "src/components/layout/AppMenu.tsx",
+          "line": 12,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CloseRounded",
+          "file": "src/components/layout/AppModal.tsx",
+          "line": 1,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CloseRounded",
+          "file": "src/components/layout/ClientHelpBanner.tsx",
+          "line": 15,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CloseRounded",
+          "file": "src/components/layout/CookieDialog.tsx",
+          "line": 2,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CloseRounded",
+          "file": "src/components/verification/MemberVerification.tsx",
+          "line": 5,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "CloseRounded",
+          "file": "src/pages/admin/ReleasesWorkspace.tsx",
+          "line": 9,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "CloudRounded",
+      "usages": [
+        {
+          "icon": "CloudRounded",
+          "file": "src/components/docs/flows/nodes/ExternalFlowNode.tsx",
+          "line": 1,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ConstructionRounded",
+      "usages": [
+        {
+          "icon": "ConstructionRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 13,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "CreditCardOffRounded",
+      "usages": [
+        {
+          "icon": "CreditCardOffRounded",
+          "file": "src/content/helpContent.tsx",
+          "line": 7,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "DashboardRounded",
+      "usages": [
+        {
+          "icon": "DashboardRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 4,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "DeleteOutlineRounded",
+      "usages": [
+        {
+          "icon": "DeleteOutlineRounded",
+          "file": "src/components/coverage/CoverageCart.tsx",
+          "line": 5,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "DeleteOutlineRounded",
+          "file": "src/content/helpContent.tsx",
+          "line": 9,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "DescriptionRounded",
+      "usages": [
+        {
+          "icon": "DescriptionRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 6,
+          "scope": "admin",
+          "used": true
+        },
+        {
+          "icon": "DescriptionRounded",
+          "file": "src/components/docs/flows/nodes/PageFlowNode.tsx",
+          "line": 1,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "DesktopWindowsRounded",
+      "usages": [
+        {
+          "icon": "DesktopWindowsRounded",
+          "file": "src/components/docs/SitePreview.tsx",
+          "line": 5,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "Diversity1Rounded",
+      "usages": [
+        {
+          "icon": "Diversity1Rounded",
+          "file": "src/components/layout/CategoryCard.stories.tsx",
+          "line": 3,
+          "scope": "examples-and-tests",
+          "used": true
+        },
+        {
+          "icon": "Diversity1Rounded",
+          "file": "src/components/layout/CategoryHeader.stories.tsx",
+          "line": 2,
+          "scope": "examples-and-tests",
+          "used": true
+        },
+        {
+          "icon": "Diversity1Rounded",
+          "file": "src/config/coverageCategories.ts",
+          "line": 6,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "EditRounded",
+      "usages": [
+        {
+          "icon": "EditRounded",
+          "file": "src/components/content/ApplicationDocumentPreview.tsx",
+          "line": 2,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "EditRounded",
+          "file": "src/components/coverage/CoverageCart.tsx",
+          "line": 6,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "EditRounded",
+          "file": "src/components/navigation/StepEditButton.tsx",
+          "line": 1,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "EmailRounded",
+      "usages": [
+        {
+          "icon": "EmailRounded",
+          "file": "src/components/layout/AppFooter.tsx",
+          "line": 5,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "EmailRounded",
+          "file": "src/components/layout/AppMenu.tsx",
+          "line": 18,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "EmailRounded",
+          "file": "src/pages/PortalAdmin.tsx",
+          "line": 22,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ErrorOutlineRounded",
+      "usages": [
+        {
+          "icon": "ErrorOutlineRounded",
+          "file": "src/components/feedback/recoveryIcons.ts",
+          "line": 1,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "ErrorOutlineRounded",
+          "file": "src/pages/admin/AdminHome.tsx",
+          "line": 7,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "EscalatorWarningRounded",
+      "usages": [
+        {
+          "icon": "EscalatorWarningRounded",
+          "file": "src/config/formSectionTitle.ts",
+          "line": 3,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ExpandMoreRounded",
+      "usages": [
+        {
+          "icon": "ExpandMoreRounded",
+          "file": "src/components/docs/ChangeLogList.tsx",
+          "line": 15,
+          "scope": "development-and-reference",
+          "used": true
+        },
+        {
+          "icon": "ExpandMoreRounded",
+          "file": "src/components/docs/ProjectDetailPage.tsx",
+          "line": 15,
+          "scope": "development-and-reference",
+          "used": true
+        },
+        {
+          "icon": "ExpandMoreRounded",
+          "file": "src/components/docs/RuleReferenceList.tsx",
+          "line": 15,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ExtensionRounded",
+      "usages": [
+        {
+          "icon": "ExtensionRounded",
+          "file": "src/pages/PortalAdmin.tsx",
+          "line": 24,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "FavoriteBorderRounded",
+      "usages": [
+        {
+          "icon": "FavoriteBorderRounded",
+          "file": "src/components/home/ApplicationPreview.tsx",
+          "line": 5,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "FileDownloadRounded",
+      "usages": [
+        {
+          "icon": "FileDownloadRounded",
+          "file": "src/components/receipt/ReceiptConfirmation.tsx",
+          "line": 2,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "FindInPageRounded",
+      "usages": [
+        {
+          "icon": "FindInPageRounded",
+          "file": "src/components/receipt/ReceiptCoverageDecision.tsx",
+          "line": 5,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "FlagRounded",
+      "usages": [
+        {
+          "icon": "FlagRounded",
+          "file": "src/components/docs/flows/nodes/StartEndFlowNode.tsx",
+          "line": 2,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "FolderRounded",
+      "usages": [
+        {
+          "icon": "FolderRounded",
+          "file": "src/components/docs/ProjectDetailPage.tsx",
+          "line": 16,
+          "scope": "development-and-reference",
+          "used": true
+        },
+        {
+          "icon": "FolderRounded",
+          "file": "src/pages/PortalAdmin.tsx",
+          "line": 25,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "FormatListBulletedRounded",
+      "usages": [
+        {
+          "icon": "FormatListBulletedRounded",
+          "file": "src/pages/admin/ReleasesWorkspace.tsx",
+          "line": 10,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "GroupsRounded",
+      "usages": [
+        {
+          "icon": "GroupsRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 9,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "HealthAndSafetyRounded",
+      "usages": [
+        {
+          "icon": "HealthAndSafetyRounded",
+          "file": "src/components/payment/PaymentSections.stories.tsx",
+          "line": 2,
+          "scope": "examples-and-tests",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "HelpOutlineRounded",
+      "usages": [
+        {
+          "icon": "HelpOutlineRounded",
+          "file": "src/components/content/HelpChips.tsx",
+          "line": 3,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "HomeRounded",
+      "usages": [
+        {
+          "icon": "HomeRounded",
+          "file": "src/pages/ApplicationEditConfirmation.tsx",
+          "line": 9,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "InfoRounded",
+      "usages": [
+        {
+          "icon": "InfoRounded",
+          "file": "src/components/coverage/CoverageCart.tsx",
+          "line": 9,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "InfoRounded",
+          "file": "src/components/coverage/EstimatedRate.tsx",
+          "line": 1,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "InfoRounded",
+          "file": "src/components/forms/fieldInputPresentation.tsx",
+          "line": 3,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "InfoRounded",
+          "file": "src/components/payment/PaymentSections.tsx",
+          "line": 3,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "InfoRounded",
+          "file": "src/components/receipt/ReceiptCoverageDecision.tsx",
+          "line": 4,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "InfoRounded",
+          "file": "src/components/review/ReviewSections.tsx",
+          "line": 4,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "InfoRounded",
+          "file": "src/content/helpContent.tsx",
+          "line": 3,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "LanguageRounded",
+      "usages": [
+        {
+          "icon": "LanguageRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 5,
+          "scope": "admin",
+          "used": true
+        },
+        {
+          "icon": "LanguageRounded",
+          "file": "src/components/layout/AppFooter.tsx",
+          "line": 3,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "LanguageRounded",
+          "file": "src/components/layout/AppMenu.tsx",
+          "line": 20,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "LaunchRounded",
+      "usages": [
+        {
+          "icon": "LaunchRounded",
+          "file": "src/pages/DesignSystem.tsx",
+          "line": 3,
+          "scope": "development-and-reference",
+          "used": true
+        },
+        {
+          "icon": "LaunchRounded",
+          "file": "src/pages/PortalAdmin.tsx",
+          "line": 27,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "LayersRounded",
+      "usages": [
+        {
+          "icon": "LayersRounded",
+          "file": "src/components/docs/flows/nodes/SummaryFlowNode.tsx",
+          "line": 1,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "LibraryBooksRounded",
+      "usages": [
+        {
+          "icon": "LibraryBooksRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 11,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ListAltRounded",
+      "usages": [
+        {
+          "icon": "ListAltRounded",
+          "file": "src/components/layout/AppMenu.tsx",
+          "line": 14,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "LocalHospitalRounded",
+      "usages": [
+        {
+          "icon": "LocalHospitalRounded",
+          "file": "src/config/coverageCategories.ts",
+          "line": 2,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "LockRounded",
+      "usages": [
+        {
+          "icon": "LockRounded",
+          "file": "src/components/forms/FieldRenderer.tsx",
+          "line": 32,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "LockRounded",
+          "file": "src/content/helpContent.tsx",
+          "line": 6,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "LoopRounded",
+      "usages": [
+        {
+          "icon": "LoopRounded",
+          "file": "src/components/feedback/ResendCountdownRow.tsx",
+          "line": 2,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "LoopRounded",
+          "file": "src/content/helpContent.tsx",
+          "line": 8,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "MailLockRounded",
+      "usages": [
+        {
+          "icon": "MailLockRounded",
+          "file": "src/components/feedback/ResumeFeedback.stories.tsx",
+          "line": 3,
+          "scope": "examples-and-tests",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ManageAccountsRounded",
+      "usages": [
+        {
+          "icon": "ManageAccountsRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 7,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "MenuRounded",
+      "usages": [
+        {
+          "icon": "MenuRounded",
+          "file": "src/components/layout/AppHeader.tsx",
+          "line": 21,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "NotificationsNoneRounded",
+      "usages": [
+        {
+          "icon": "NotificationsNoneRounded",
+          "file": "src/components/admin/AdminCenterShell.tsx",
+          "line": 25,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "OfflineBoltRounded",
+      "usages": [
+        {
+          "icon": "OfflineBoltRounded",
+          "file": "src/components/coverage/QuickDecisionIcon.tsx",
+          "line": 2,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "OfflineBoltRounded",
+          "file": "src/components/feedback/ProcessingStatusPage.stories.tsx",
+          "line": 2,
+          "scope": "examples-and-tests",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "OpenInNewRounded",
+      "usages": [
+        {
+          "icon": "OpenInNewRounded",
+          "file": "src/components/docs/ClientSiteDetailsPanel.tsx",
+          "line": 4,
+          "scope": "development-and-reference",
+          "used": true
+        },
+        {
+          "icon": "OpenInNewRounded",
+          "file": "src/components/forms/Links.stories.tsx",
+          "line": 3,
+          "scope": "examples-and-tests",
+          "used": true
+        },
+        {
+          "icon": "OpenInNewRounded",
+          "file": "src/pages/SiteFeatures.tsx",
+          "line": 18,
+          "scope": "development-and-reference",
+          "used": true
+        },
+        {
+          "icon": "OpenInNewRounded",
+          "file": "src/pages/admin/SitesWorkspace.tsx",
+          "line": 5,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "PaletteRounded",
+      "usages": [
+        {
+          "icon": "PaletteRounded",
+          "file": "src/pages/PortalAdmin.tsx",
+          "line": 21,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "PauseCircleOutlineRounded",
+      "usages": [
+        {
+          "icon": "PauseCircleOutlineRounded",
+          "file": "src/components/docs/ProjectStatusChip.tsx",
+          "line": 5,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "PendingRounded",
+      "usages": [
+        {
+          "icon": "PendingRounded",
+          "file": "src/components/docs/MilestoneStatusChip.tsx",
+          "line": 3,
+          "scope": "development-and-reference",
+          "used": true
+        },
+        {
+          "icon": "PendingRounded",
+          "file": "src/components/docs/ProjectStatusChip.tsx",
+          "line": 3,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "PersonRounded",
+      "usages": [
+        {
+          "icon": "PersonRounded",
+          "file": "src/config/formSectionTitle.ts",
+          "line": 1,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "PersonalInjuryRounded",
+      "usages": [
+        {
+          "icon": "PersonalInjuryRounded",
+          "file": "src/config/coverageCategories.ts",
+          "line": 5,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "PhoneIphoneRounded",
+      "usages": [
+        {
+          "icon": "PhoneIphoneRounded",
+          "file": "src/components/docs/SitePreview.tsx",
+          "line": 3,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "PhoneRounded",
+      "usages": [
+        {
+          "icon": "PhoneRounded",
+          "file": "src/components/layout/AppFooter.tsx",
+          "line": 4,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "PhoneRounded",
+          "file": "src/components/layout/AppMenu.tsx",
+          "line": 17,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "PhoneRounded",
+          "file": "src/components/layout/ClientHelpBanner.tsx",
+          "line": 12,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "PlayArrowRounded",
+      "usages": [
+        {
+          "icon": "PlayArrowRounded",
+          "file": "src/components/docs/flows/nodes/StartEndFlowNode.tsx",
+          "line": 1,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "PrintRounded",
+      "usages": [
+        {
+          "icon": "PrintRounded",
+          "file": "src/components/content/LegalReviewSection.tsx",
+          "line": 3,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "PrivacyTipRounded",
+      "usages": [
+        {
+          "icon": "PrivacyTipRounded",
+          "file": "src/components/feedback/EmptyState.tsx",
+          "line": 1,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "PrivacyTipRounded",
+          "file": "src/components/layout/AppMenu.tsx",
+          "line": 13,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "RadioButtonUncheckedRounded",
+      "usages": [
+        {
+          "icon": "RadioButtonUncheckedRounded",
+          "file": "src/components/docs/ProjectStatusChip.tsx",
+          "line": 4,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ReportProblemRounded",
+      "usages": [
+        {
+          "icon": "ReportProblemRounded",
+          "file": "src/components/docs/ProjectStatusChip.tsx",
+          "line": 7,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ReportRounded",
+      "usages": [
+        {
+          "icon": "ReportRounded",
+          "file": "src/components/review/ReviewSections.tsx",
+          "line": 3,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "RocketLaunchRounded",
+      "usages": [
+        {
+          "icon": "RocketLaunchRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 14,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ScheduleRounded",
+      "usages": [
+        {
+          "icon": "ScheduleRounded",
+          "file": "src/components/docs/MilestoneStatusChip.tsx",
+          "line": 4,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "SearchRounded",
+      "usages": [
+        {
+          "icon": "SearchRounded",
+          "file": "src/components/admin/AdminCenterShell.tsx",
+          "line": 24,
+          "scope": "admin",
+          "used": true
+        },
+        {
+          "icon": "SearchRounded",
+          "file": "src/components/docs/IconsGuidelines.tsx",
+          "line": 3,
+          "scope": "development-and-reference",
+          "used": true
+        },
+        {
+          "icon": "SearchRounded",
+          "file": "src/components/docs/SearchField.tsx",
+          "line": 2,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "SendRounded",
+      "usages": [
+        {
+          "icon": "SendRounded",
+          "file": "src/components/layout/SendApplicationDialog.tsx",
+          "line": 2,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "SendRounded",
+          "file": "src/pages/AdvisorSendConfirmation.tsx",
+          "line": 8,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "SettingsRounded",
+      "usages": [
+        {
+          "icon": "SettingsRounded",
+          "file": "src/dev/DevTools.tsx",
+          "line": 14,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "ShoppingCartRounded",
+      "usages": [
+        {
+          "icon": "ShoppingCartRounded",
+          "file": "src/components/coverage/CoverageCart.tsx",
+          "line": 7,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "ShoppingCartRounded",
+          "file": "src/components/feedback/EmptyState.stories.tsx",
+          "line": 2,
+          "scope": "examples-and-tests",
+          "used": true
+        },
+        {
+          "icon": "ShoppingCartRounded",
+          "file": "src/components/layout/AppHeader.tsx",
+          "line": 22,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "StarsRounded",
+      "usages": [
+        {
+          "icon": "StarsRounded",
+          "file": "src/components/coverage/FeaturedBadge.tsx",
+          "line": 1,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "StarsRounded",
+          "file": "src/components/forms/SelectionGroup.stories.tsx",
+          "line": 5,
+          "scope": "examples-and-tests",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "SupervisorAccountRounded",
+      "usages": [
+        {
+          "icon": "SupervisorAccountRounded",
+          "file": "src/components/layout/ApplicantSectionDivider.stories.tsx",
+          "line": 5,
+          "scope": "examples-and-tests",
+          "used": true
+        },
+        {
+          "icon": "SupervisorAccountRounded",
+          "file": "src/config/formSectionTitle.ts",
+          "line": 2,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "SupportAgentRounded",
+      "usages": [
+        {
+          "icon": "SupportAgentRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 10,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "SwapHorizRounded",
+      "usages": [
+        {
+          "icon": "SwapHorizRounded",
+          "file": "src/dev/DevTools.tsx",
+          "line": 14,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "TabletMacRounded",
+      "usages": [
+        {
+          "icon": "TabletMacRounded",
+          "file": "src/components/docs/SitePreview.tsx",
+          "line": 4,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "TouchAppRounded",
+      "usages": [
+        {
+          "icon": "TouchAppRounded",
+          "file": "src/components/docs/flows/nodes/ActionFlowNode.tsx",
+          "line": 1,
+          "scope": "development-and-reference",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "TrackChangesRounded",
+      "usages": [
+        {
+          "icon": "TrackChangesRounded",
+          "file": "src/admin/navigation.ts",
+          "line": 18,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "TrendingDownRounded",
+      "usages": [
+        {
+          "icon": "TrendingDownRounded",
+          "file": "src/pages/admin/AnalyticsWorkspace.tsx",
+          "line": 3,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "TrendingUpRounded",
+      "usages": [
+        {
+          "icon": "TrendingUpRounded",
+          "file": "src/pages/admin/AnalyticsWorkspace.tsx",
+          "line": 4,
+          "scope": "admin",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "TuneRounded",
+      "usages": [
+        {
+          "icon": "TuneRounded",
+          "file": "src/content/helpContent.tsx",
+          "line": 5,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "UndoRounded",
+      "usages": [
+        {
+          "icon": "UndoRounded",
+          "file": "src/pages/ApplicationEditConfirmation.tsx",
+          "line": 8,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    },
+    {
+      "icon": "VerifiedUserRounded",
+      "usages": [
+        {
+          "icon": "VerifiedUserRounded",
+          "file": "src/components/home/HomeHero.tsx",
+          "line": 3,
+          "scope": "applicant",
+          "used": true
+        },
+        {
+          "icon": "VerifiedUserRounded",
+          "file": "src/pages/Home.tsx",
+          "line": 3,
+          "scope": "applicant",
+          "used": true
+        }
+      ]
+    }
+  ],
+  "customIcons": [
+    {
+      "source": "src/components/content/ClientCategoryIcon.tsx",
+      "purpose": "Configured category artwork with the stock fallback and shared badge treatment."
+    },
+    {
+      "source": "src/components/coverage/QuickDecisionIcon.tsx",
+      "purpose": "Configured QuickDecision artwork with the stock fallback."
+    },
+    {
+      "source": "src/components/coverage/RateFrequencyToggle.tsx",
+      "purpose": "Two small calendar drawings embedded in the existing frequency selector, not additional MUI icon choices."
+    }
+  ],
+  "configuredArtwork": [
+    "/client/waepa/icons/disability.svg",
+    "/client/waepa/icons/life.svg",
+    "/client/waepa/icons/quick-decision.svg"
+  ]
+}

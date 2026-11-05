@@ -1,5 +1,8 @@
+import { collectsBeneficiaries } from "../domain/beneficiaryParticipation";
+import { configuredHealthQuestionnaire } from "../domain/configuredHealthQuestionnaire";
 import { getPrototypeLibrary } from "../domain/prototypeLibrary";
-import { buildSelectedCoverageEntries } from "../utils/coverageDecisions";
+import { applicationCoverageName } from "../domain/coverageRuntime";
+import { buildSelectedCoverageEntries, getCoverageAmountRequested } from "../utils/coverageDecisions";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import type { PageId } from "../types";
 import { getActiveClientCoverages } from "./client/getActiveClientCoverages";
@@ -43,6 +46,7 @@ export const flowGateDefinitions: FlowGateDefinition[] = [
       underwritingType: "TELE",
     },
   },
+  { pageId: "health-ci", gate: { kind: "selected-coverage", categoryId: "SH", underwritingType: "FUW" } },
   {
     pageId: "health-cir",
     gate: { kind: "selected-rider", riderId: "cir" },
@@ -66,7 +70,7 @@ export function getSelectedCoverages(
   );
   return selectedIds.size === 0
     ? []
-    : coverages.filter((coverage) => selectedIds.has(coverage.id));
+    : coverages.filter((coverage) => selectedIds.has(coverage.id)).map(coverage => ({ ...coverage, name: applicationCoverageName(coverage, values) }));
 }
 
 export function getSelectedCategoryIds(
@@ -82,7 +86,7 @@ export function getSelectedCategoryIds(
   ];
 }
 
-function getSelectedRiderIds(values: ApplicationFormValues): Set<string> {
+function riderIsSelected(values: Record<string, unknown>, coverageId: string, applicant: string, riderId: string): boolean {
   const riderSelections =
     values.coverageRiders != null &&
     typeof values.coverageRiders === "object" &&
@@ -90,12 +94,7 @@ function getSelectedRiderIds(values: ApplicationFormValues): Set<string> {
       ? (values.coverageRiders as Record<string, boolean>)
       : {};
 
-  return new Set(
-    Object.entries(riderSelections)
-      .filter(([, enabled]) => enabled)
-      .map(([key]) => key.split(":")[1])
-      .filter(Boolean),
-  );
+  return riderSelections[`${coverageId}:${riderId}:${applicant}`] === true;
 }
 
 export function coverageSatisfiesFlowGate(
@@ -123,12 +122,14 @@ export function resolveFlowGate(
   coverages: CoverageDefinition[] = getActiveClientCoverages(),
 ): boolean {
   const definition = getFlowGateDefinition(pageId);
+  if (pageId === "beneficiary") return buildSelectedCoverageEntries(values, coverages).some(({ coverage, applicant }) => getCoverageAmountRequested(values, coverage.id, applicant) !== null && collectsBeneficiaries(getPrototypeLibrary()?.site, coverage.id, coverage.categoryId, applicant, typeof values.membership === "string" ? values.membership : undefined, definition ? coverageSatisfiesFlowGate(coverage, definition.gate) : true));
   if (!definition) return true;
   if (definition.gate.kind === "selected-rider") {
-    return getSelectedRiderIds(values).has(definition.gate.riderId);
+    const gate = definition.gate;
+    return buildSelectedCoverageEntries(values, coverages).some(entry => coverageSatisfiesFlowGate(entry.coverage, gate) && riderIsSelected(values, entry.coverageId, entry.applicant, gate.riderId));
   }
-  return buildSelectedCoverageEntries(values, coverages).some(({ coverage }) =>
-    coverageSatisfiesFlowGate(coverage, definition.gate),
+  return buildSelectedCoverageEntries(values, coverages).some(({ coverage, underwriting, applicant }) =>
+    !questionnaireSuppressesPage(pageId, applicant, values) && (["health-li", "health-di", "health-si", "health-qd", "health-ci"].includes(pageId) && underwriting.healthPage !== undefined ? underwriting.healthPage === pageId : coverageSatisfiesFlowGate(coverage, definition.gate)),
   );
 }
 
@@ -159,8 +160,18 @@ export function resolvePageParticipation(
 }
 
 /** Applicant participation uses the same resolved outcome as page participation. */
-export function applicantParticipatesInPage(pageId: PageId, applicant: "self" | "member" | "spouse" | "child", values: Record<string, unknown>, coverages = getActiveClientCoverages()): boolean {
+export function applicantParticipatesInPage(pageId: PageId, applicant: "self" | "member" | "spouse" | "child", values: Record<string, unknown>, coverages: CoverageDefinition[] = getActiveClientCoverages()): boolean {
+  if (pageId === "health-cir" && getClientPageRequirement(pageId) === "none") return false;
   const gate = getFlowGateDefinition(pageId)?.gate;
   const type = applicant === "self" ? "member" : applicant;
-  return buildSelectedCoverageEntries(values as ApplicationFormValues, coverages).some(entry => entry.applicant === type && (!gate || coverageSatisfiesFlowGate(entry.coverage, gate)));
+  if (pageId === "beneficiary") return buildSelectedCoverageEntries(values as ApplicationFormValues, coverages).some(entry => entry.applicant === type && getCoverageAmountRequested(values as ApplicationFormValues, entry.coverageId, entry.applicant) !== null && collectsBeneficiaries(getPrototypeLibrary()?.site, entry.coverage.id, entry.coverage.categoryId, type, typeof values.membership === "string" ? values.membership : undefined, !gate || coverageSatisfiesFlowGate(entry.coverage, gate)));
+  if (gate?.kind === "selected-rider") return buildSelectedCoverageEntries(values as ApplicationFormValues, coverages).some(entry => entry.applicant === type && coverageSatisfiesFlowGate(entry.coverage, gate) && riderIsSelected(values, entry.coverageId, type, gate.riderId));
+  return buildSelectedCoverageEntries(values as ApplicationFormValues, coverages).some(entry => entry.applicant === type && !questionnaireSuppressesPage(pageId, type, values) && (["health-li", "health-di", "health-si", "health-qd", "health-ci"].includes(pageId) && entry.underwriting.healthPage !== undefined ? entry.underwriting.healthPage === pageId : !gate || coverageSatisfiesFlowGate(entry.coverage, gate)));
+}
+
+function questionnaireSuppressesPage(pageId: string, applicant: string, values: Record<string, unknown>) {
+  if (pageId !== "health-si" && pageId !== "health-qd" && pageId !== "health-di") return false;
+  const library = getPrototypeLibrary();
+  const result = library ? configuredHealthQuestionnaire(library.site, "health-li", applicant, values) : null;
+  return result?.status === "resolved" && result.supersededPages.includes(pageId);
 }

@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { Link as RouterLink, Outlet, useLocation } from "react-router-dom";
 import {
   AppBar,
+  Alert,
   Box,
   Divider,
   IconButton,
@@ -22,7 +23,7 @@ import {
 } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import { visibleAdminNavigation } from "../../admin/navigation";
 import { internalPersonas, type Persona } from "../../admin/access";
 import { ThemeProvider } from "@mui/material/styles";
@@ -67,7 +68,7 @@ function AdminCenterContent() {
           <Box sx={{ flex: 1, display: { xs: "none", sm: "block" } }} />
           <Stack direction="row" spacing={1.5} alignItems="center" sx={{ ml: "auto" }}>
             <Tooltip title="Notifications (future)"><Box component="span" sx={{ display: { xs: "none", sm: "inline-flex" } }}><IconButton disabled aria-label="Notifications"><NotificationsNoneRoundedIcon /></IconButton></Box></Tooltip>
-            <Tooltip title="Account"><IconButton onClick={event => setMenuAnchor(event.currentTarget)} aria-label="Account menu" aria-controls={menuAnchor ? 'account-menu' : undefined} aria-haspopup="true" aria-expanded={!!menuAnchor}><AccountCircleOutlinedIcon /></IconButton></Tooltip>
+            <Tooltip title="Account"><IconButton onClick={event => setMenuAnchor(event.currentTarget)} aria-label="Account menu" aria-controls={menuAnchor ? 'account-menu' : undefined} aria-haspopup="true" aria-expanded={!!menuAnchor}><AccountCircleRoundedIcon /></IconButton></Tooltip>
             <Menu id="account-menu" anchorEl={menuAnchor} open={!!menuAnchor} onClose={() => setMenuAnchor(null)}>
               <Box sx={{ px: 2, py: 1 }}><Typography fontWeight={700}>{account?.status.displayName ?? 'Your account'}</Typography><Typography variant="caption" color="text.secondary">{account?.status.email}</Typography></Box>
               <Divider />
@@ -133,6 +134,7 @@ function AdminCenterContent() {
         </Box>
 
         <Box component="main" sx={{ minWidth: 0, flex: 1 }}>
+          {import.meta.env.VITE_STANDALONE_HTML && <Alert severity="info">Local prototype. Demo changes stay in this browser. Shared accounts, publishing, and external resources require their online services.</Alert>}
           <Box sx={{ display: { xs: "flex", md: "none" }, overflowX: "auto", bgcolor: "background.paper", borderBottom: "1px solid", borderColor: "divider", px: 1 }}>
             {adminNavigation.flatMap((group) => group.items).map((item) => (
               <ListItemButton key={item.path} component={item.external ? "a" : RouterLink} {...(item.external ? { href: item.path, target: "_blank", rel: "noopener noreferrer" } : { to: item.path })} selected={location.pathname === item.path} sx={{ minWidth: "max-content" }}>

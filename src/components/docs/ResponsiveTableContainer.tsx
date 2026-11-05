@@ -17,7 +17,7 @@ export default function ResponsiveTableContainer({
         "& td, & th": { fontSize: { xs: "0.75rem", md: "0.8125rem" }, minWidth: 120 },
         "& td": { whiteSpace: "normal", overflowWrap: "break-word", wordBreak: "normal", verticalAlign: "top", maxWidth: 400 },
         "& td .MuiTypography-root, & td a": { overflowWrap: "break-word" },
-        "& td a:not(.MuiLink-root)": { color: "primary.main", textDecoration: "underline" },
+        "& td a:not(.MuiLink-root)": { color: "primary.main", textDecoration: "underline", textUnderlineOffset: "0.12em" },
         "& td .MuiChip-root": { width: "fit-content", maxWidth: "100%", minWidth: 0, minHeight: 24, height: "auto" },
         "& td .MuiChip-label": { whiteSpace: "normal", overflowWrap: "anywhere", lineHeight: 1.4, py: "3px" },
         "& th": { whiteSpace: "nowrap", overflowWrap: "normal", fontWeight: 700 },

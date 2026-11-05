@@ -1,17 +1,8 @@
-import { effectiveConfigurationTables } from "../domain/effectiveConfiguration";
+import { normalizedSnapshotTables } from "./catalogTables";
+export { normalizedSnapshotTables } from "./catalogTables";
 import type { DatabaseSchema } from "./types";
 
-/** Read boundary only. Raw extraction, compatibility blobs and operational data are excluded. */
-export const normalizedSnapshotTables = [
-  'associationEntities', 'associationAliases', 'associationAffiliations', 'siteAssociationContexts',
-  ...effectiveConfigurationTables, "components",
-  "sites", "clients", "siteProducts", "siteProductApplicants", "eligibilityConstraints", "semanticRequirements",
-  "organizations", "organizationProfiles", "associations", "siteAssociations", "sitePolicies", "siteEnvironmentLinks",
-  "emailTemplates", "siteEmailTemplates", "documentDefinitions", "siteDocuments",
-  "urlParameters", "urlParameterValues", "siteUrlParameters",
-  "patterns", "patternAssignments", "patternRules", "patternConditions", "patternFlagDefinitions", "patternFlows", "patternProducts", "patternCoverageCategories", "patternConfigurationDefinitions",
-  "flagDefinitions", "flagValues", "flagAssignments", "flagRules", "ruleFlags", "rulePredicates", "structuredRuleActions", "provenanceTags",
-] as const;
+
 export type SnapshotTable = typeof normalizedSnapshotTables[number];
 export type RevisionSnapshot<T extends SnapshotTable = SnapshotTable> = {
   formatVersion: 1;

@@ -1,0 +1,40 @@
+{
+  "reviewedOn": "2026-10-22",
+  "scope": "Named owner review for the current mock prototype; runtime configuration is not changed by this evidence.",
+  "files": {
+    "src/migration/sources/mcr-v78.json": "a93cb29e6ed20aa05b67e3bf22bb4554baf3a58ebf5d1df7b539a5466a49471a",
+    "src/pages/Membership.tsx": "e96e704925285686029caaed412f26d6e5490eeb21e3bc08a419fce676cc820c",
+    "src/pages/Eligibility.tsx": "6b211e2ee348fc3f380240dd8538bbbd31cecdd05e30d08e30d723d69ff32935",
+    "src/config/clientFields/getClientPageFields.ts": "e5ec338bf8203e8fd6e8862f96107ef66e383667316a56c5b89a1305191592d1",
+    "src/domain/prototypeAssociationProjection.ts": "5ec7ed4f2a92d22ba7e548543f9865131a1e477906d92d4e11e690935be9a31e",
+    "src/domain/prototypeConfigurationProjection.ts": "2487ab68310e6b9ff65b76e9cc4bdf4feb8814e5d36c98dd19a2e5794d5022db",
+    "src/domain/effectiveConfiguration.ts": "643059204c92644dadf272c5a061355cd04199356ff0b52f311dcb6c7fe88efe",
+    "src/config/fields/resolvedFieldRegistry.ts": "39be0361bffcaf25aadc474948efd2da7005a759444c0d84e8d4fbb9d45c3cc3",
+    "src/data/associationSelection.ts": "3a284b899ad600d69ee94949b5e12f2ee87ba84a1d4cfbd0fd7003aeee8608cd",
+    "src/repositories/sites.ts": "40b264e5be6b57f9bc84268ceb734432f717e53798e3cde79ab6ebb8bdb3d5fa",
+    "src/config/pages.ts": "deb69b8d7727cc6aa83647f81ef5bbed5b07401886c6268e708f3dfbdab576a5",
+    "src/content/index.ts": "e93c217ec9ffe4950cbbdccdd1326fbf69f1496a1e380442c445bd486d46cf64",
+    "src/components/forms/FieldRenderer.tsx": "bae6eef8ef7d0e1d42fec6c45da4fceaa2317e410f06dfb6fb871ae0ba2fe2c6",
+    "src/utils/fieldValidation.ts": "e482e3b197dcfc2354e436b386e4d99ef67fba90380be0ed3d69759324dbdb75",
+    "src/migration/namedOwnerReview.test.tsx": "cafa16ea0d612f86a132068ab249c41112e17ccbb109e26aec36ed6b25f32ed6",
+    "src/migration/requirementCrosswalkOwnerReview.ts": "986c5a21c98375a5f7cd5942eecd308672c4b0f9f1b65a03577c55858926f1e7",
+    "src/domain/effectiveSite.ts": "de9dc7ce0f98622b45147ac4a6ebac62e948176d8eccc7bc86d6515dc4055f60",
+    "src/migration/requirementCrosswalkAbeReview.ts": "51079036c118a420a5a2056934c642b65db5e926e7516030e5278812971b873c"
+  },
+  "native": {
+    "association": "ee7eb25a124f37b0f32144fefdedab87b447b9d796177cd26e3cc40cb34fe7b5",
+    "ama-notice": "959f1b147fb7d8a410c851cb50ac65cbe0e7e6b99417a79f50a7fb3fed926c03",
+    "abe-dividend": "eecb01e1daefc2f387aa6d73426be689fbc3315e79be1c37c44ac11c2b65d439"
+  },
+  "fieldCatalogFollowUp": "October 22, 2026: all three named-owner snapshots are byte-for-byte unchanged. Reverified the shared field/configuration resolution, saved catalog page lookup and standalone Resume field lookup against 41 field ownership, catalog, Membership, tobacco and Resume checks, plus saved-route/page tests. Refresh only the three shared infrastructure file fingerprints; no Association, AMA notice or ABE dividend business values changed.",
+  "cirQuestionnaireFollowUp": "October 23: named native owner snapshots are unchanged; shared field lookup now includes the supplied CIR form. Shared field/catalog and rendered regression checks passed.",
+  "fiftyPlusFlowFollowUp": {
+    "reviewedOn": "2026-10-23",
+    "scope": "Tested AL member-only 50+ Life, born 1960-01-01, $25,000; no generic online health questionnaire, required medical authorization and underwritten consent retained.",
+    "verification": [
+      "src/migration/abeFiftyPlusFlow.test.ts",
+      "src/pages/Review.consent.test.tsx"
+    ],
+    "boundary": "Local prototype and shipped catalog verification. Other live-preview scenarios were not observed. Pages and Fields records remain unchanged."
+  }
+}

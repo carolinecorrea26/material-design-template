@@ -1,26 +1,17 @@
+// Preview notes are documentation only; the canvas contains application UI.
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box, Checkbox, Radio, Stack, Typography } from "@mui/material";
 import StarsRoundedIcon from "@mui/icons-material/StarsRounded";
 import SelectionGroup from "./SelectionGroup";
 
-/**
- * SelectionGroup is the shared bordered, clickable row underneath every
- * radio, checkbox, and icon-toggle option in the app (FieldRenderer's
- * radio/checkbox branches, CoverageCategorySelector, ResumeMethod, and
- * Beneficiary's hand-rolled radiogroup all build on it). It never renders a
- * label itself — callers place a native input (or nothing, for icon-toggle
- * rows) plus a `.SelectionGroup-label`-classed text node as children, and
- * the shared theme override (see Foundations/MUI Theme Overrides) styles
- * that label's weight/size globally.
- *
- * Selected-state styling comes from two different mechanisms depending on
- * whether a native input is present — see the two variants below.
- */
+/** Shared option-row surface used by the renderer's radio and checkbox primitives.
+ * These examples exercise the primitive itself; application fields use FieldRenderer. */
 const meta = {
-  title: "Forms/SelectionGroup",
+  id: "forms-selectiongroup",
+  title: "Components/Forms/Selection rows/Checkbox and toggle rows",
   component: SelectionGroup,
-  parameters: { layout: "padded" },
+  parameters: { standalone: true, docs: { description: { component: "Provides a selectable row or card with the shared selection styling." } }, layout: "padded" },
 } satisfies Meta<typeof SelectionGroup>;
 
 export default meta;
@@ -49,10 +40,7 @@ export const CheckboxRowSelected: StoryObj = {
           I authorize this bank account for premium payments.
         </Typography>
       </SelectionGroup>
-      <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-        Selected via the theme's <code>&:has(:checked)</code> CSS — no
-        JavaScript state needed for rows with a native input.
-      </Typography>
+
     </Box>
   ),
 };
@@ -102,13 +90,7 @@ export const IconToggleRowUnselected: StoryObj = {
           Life Insurance
         </Typography>
       </SelectionGroup>
-      <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-        Used by <code>CoverageCategorySelector</code>. Selected state is
-        driven by the explicit <code>checked</code> prop (rendered as{" "}
-        <code>data-checked="true"</code>) since there's no native input to
-        key CSS off of — the caller owns Space/Enter activation via{" "}
-        <code>onKeyDown</code>.
-      </Typography>
+
     </Box>
   ),
 };
@@ -131,11 +113,7 @@ export const FocusVisible: StoryObj = {
   name: "Keyboard focus",
   render: () => (
     <Box sx={{ maxWidth: 420 }}>
-      <Typography variant="body2" sx={{ mb: 1.5 }}>
-        Tab to the row below to see the focus-visible outline (
-        <code>2px solid primary.main</code>, offset 2px) — this applies to
-        every SelectionGroup row, native-input or icon-toggle alike.
-      </Typography>
+
       <SelectionGroup component="div" role="checkbox" aria-checked={false} tabIndex={0} checked={false} onClick={() => {}}>
         <StarsRoundedIcon className="SelectionGroup-icon" />
         <Typography className="SelectionGroup-label" component="span">

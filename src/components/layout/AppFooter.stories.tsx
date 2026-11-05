@@ -11,9 +11,10 @@ import { getActiveClient } from "../../config/client/getActiveClient";
  * text) to open the Privacy Notice modal on demand.
  */
 const meta = {
-  title: "Layout/AppFooter",
+  id: "layout-appfooter",
+  title: "Components/Layout/Footer",
   component: AppFooter,
-  parameters: { layout: "fullscreen" },
+  parameters: { docs: { description: { component: "Displays administrator, insurer, support and legal details." } }, layout: "fullscreen" },
 } satisfies Meta<typeof AppFooter>;
 
 export default meta;

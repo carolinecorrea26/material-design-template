@@ -138,7 +138,7 @@ export default function ClientCmsPanel({ siteId: controlledSiteId, hideSelector 
           sx={{
             px: { xs: 2, md: 3 },
             py: 1.5,
-            backgroundColor: "background.subtle",
+            backgroundColor: "background.default",
             borderBottom: "1px solid",
             borderColor: "divider",
           }}

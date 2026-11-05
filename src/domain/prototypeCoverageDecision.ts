@@ -10,6 +10,9 @@ import { resolveNormalizedBenefit, isBenefitPolicy } from './benefitPolicy';
 import { resolveDependentCoverage } from './dependentPolicy';
 import { applicationApplicantFacts, numericFact } from '../utils/applicantFacts';
 import { resolveNormalizedAmountCap } from './amountCapPolicy';
+import { resolveAssociationAmounts } from "./associationAmountPolicy";
+import { buildPrototypeAmounts } from "./prototypeProductProjection";
+import { getCoverageAmountChoices } from "../utils/coverageAmounts";
 
 export function prototypeCoverageDecision(productKey: string, applicant: CoverageApplicantId, values: Record<string, unknown>, choices: number[]) {
   const library = getPrototypeLibrary();
@@ -33,8 +36,16 @@ export function prototypeCoverageDecision(productKey: string, applicant: Coverag
   const prefix = applicant === 'member' ? '' : `${applicant}-`;
   const operand = (name: string) => prototypeApplicantOperand(library, productKey, applicant, values, name);
   const messages: string[] = [];
+  const notices: string[] = [];
   const jurisdiction = String(values['state-province'] ?? values.state ?? '');
-  const residency = resolveNormalizedResidency(library.site, productKey, applicant, { jurisdiction: jurisdiction ? jurisdiction.includes('-') ? jurisdiction : `US-${jurisdiction}` : undefined, activeMilitary: (values['active-military'] ?? values[`prototype-fact:${productKey}:member:activeMilitary`]) === 'yes' ? true : (values['active-military'] ?? values[`prototype-fact:${productKey}:member:activeMilitary`]) === 'no' ? false : undefined });
+  const association = values.association ?? values.membership;
+  const assignedAmounts = resolveAssociationAmounts(library.site, productKey, typeof association === "string" ? association : undefined);
+  if (assignedAmounts.status !== "resolved") return { amounts: [], messages: [assignedAmounts.reason!], waitingPeriods: undefined, benefitPeriods: undefined };
+  if (assignedAmounts.overridden) {
+    const definition = library.products.find(product => product.id === productKey)!;
+    choices = getCoverageAmountChoices({ ...definition, coverageAmounts: buildPrototypeAmounts({ ...product, amounts: assignedAmounts.rules }) }, applicant);
+  }
+  const residency = resolveNormalizedResidency(library.site, productKey, applicant, { jurisdiction: jurisdiction ? jurisdiction.includes('-') ? jurisdiction : `US-${jurisdiction}` : undefined, associationKey: typeof association === 'string' ? association : undefined, activeMilitary: (values['active-military'] ?? values[`prototype-fact:${productKey}:member:activeMilitary`]) === 'yes' ? true : (values['active-military'] ?? values[`prototype-fact:${productKey}:member:activeMilitary`]) === 'no' ? false : undefined });
   if (!residency.allowed) messages.push(residency.reason);
   const amountCap = resolveNormalizedAmountCap(library.site, productKey, applicant, facts.ageYears);
   if (amountCap.status !== 'resolved') return { amounts: [], messages: [...messages, amountCap.reason ?? 'Coverage amount cap is unresolved.'], waitingPeriods: undefined, benefitPeriods: undefined };
@@ -57,7 +68,7 @@ export function prototypeCoverageDecision(productKey: string, applicant: Coverag
       existingMonthlyBenefit: numericFact(operand('existingMonthlyBenefit')), retirement: operand('retirement') === 'yes' ? true : operand('retirement') === 'no' ? false : undefined,
       monthlyLoanPayment: numericFact(operand('monthlyLoanPayment')), eligibleMonthlyExpenses: numericFact(values[`${prefix}monthly-business-expenses`]), eligibleExpenseFraction: numericFact(operand('eligibleExpenseFraction')),
       selectedProducts, memberCoverage: selectedApplicants.includes('member'), memberRequestedBenefit: selectedAmount(productKey, 'member'), memberTotalMonthlyBenefit: (isBenefitPolicy(policy) ? policy.aggregate?.productKeys ?? [productKey] : [productKey]).reduce((sum, key) => sum + selectedAmount(key, 'member'), 0),
-      otherMonthlyBenefits: isBenefitPolicy(policy) ? Object.fromEntries((policy.aggregate?.productKeys ?? []).filter(key => key !== productKey).map(key => [key, selectedAmount(key, applicant) + (numericFact(values[`prototype-fact:${key}:${applicant}:existingMonthlyBenefit`]) ?? 0)])) : undefined,
+      otherMonthlyBenefits: isBenefitPolicy(policy) ? Object.fromEntries((policy.aggregate?.productKeys ?? []).filter(key => key !== productKey).map(key => [key, selectedAmount(key, applicant) + (numericFact(prototypeApplicantOperand(library, key, applicant, values, 'existingMonthlyBenefit')) ?? 0)])) : undefined,
     });
     if (!benefit.allowed) messages.push(...benefit.errors, ...benefit.missingFacts.map(key => `Complete ${key} to determine available benefits.`));
     const benefitChoices: number[] = [];
@@ -65,9 +76,10 @@ export function prototypeCoverageDecision(productKey: string, applicant: Coverag
     return { amounts: capped(benefitChoices.filter(amount => !benefit.amountChoices || benefit.amountChoices.includes(amount))), messages, waitingPeriods: benefit.waitingPeriods, benefitPeriods: benefit.benefitPeriods };
   }
   if (applicant !== 'member' && product.dependentPolicies.length) {
-    const dependent = resolveDependentCoverage(library.site, productKey, applicant, { amount: choices[0], selectedApplicants, coveredApplicants: selectedApplicants, baseAmounts: Object.fromEntries(['member', 'spouse'].map(a => [a, selectedAmount(productKey, a as CoverageApplicantId)])), selectedProductKeys: selectedProducts.filter(key => selections[key]?.includes(applicant)) });
+    const dependent = resolveDependentCoverage(library.site, productKey, applicant, { associationKey: typeof association === "string" ? association : undefined, amount: numericFact(amounts[`${productKey}:${applicant}`]) ?? choices[0], selectedApplicants, coveredApplicants: selectedApplicants, baseAmounts: Object.fromEntries(['member', 'spouse'].map(a => [a, selectedAmount(productKey, a as CoverageApplicantId)])), selectedProductKeys: selectedProducts.filter(key => selections[key]?.includes(applicant)) });
     messages.push(...dependent.errors.filter(error => error !== 'Derived amount must recalculate from primary coverage'), ...dependent.missingFacts.filter(key => key !== 'amount').map(key => `Complete ${key} to determine dependent benefits.`));
-    choices = dependent.derivedAmount !== null ? [dependent.derivedAmount] : choices.filter(amount => dependent.maximum === null || amount <= dependent.maximum);
+    notices.push(...dependent.notices);
+    choices = dependent.derivedAmount !== null ? [dependent.derivedAmount] : choices.filter(amount => dependent.maximumAdvisory || dependent.maximum === null || amount <= dependent.maximum);
   }
-  return { amounts: capped(choices), messages, waitingPeriods: undefined, benefitPeriods: undefined };
+  return { amounts: capped(choices), messages, notices, waitingPeriods: undefined, benefitPeriods: undefined };
 }

@@ -27,7 +27,14 @@ export type ConfigurationTarget =
   | { kind: "product-amount-cap-policy"; productKey: string }
   | { kind: "product-dependent-policy"; productKey: string }
   | { kind: "site-life-aggregate" }
-  | { kind: "product-eligibility-facts"; productKey: string; applicantKey: string };
+  | { kind: "product-eligibility-facts"; productKey: string; applicantKey: string }
+  | { kind: "product-association-eligibility"; productKey: string }
+  | { kind: "product-association-amounts"; productKey: string }
+  | { kind: "site-category-eligibility" }
+  | { kind: "site-health-questionnaires" }
+  | { kind: "site-financial-questionnaire" }
+  | { kind: "site-beneficiary-notes" }
+  | { kind: "site-beneficiary-participation" };
 export type ConfigurationDefinitionRow = LibraryRow<{ path: string[] | null; metadata: Json; target?: ConfigurationTarget | null }>;
 export type ContentEntryRow = LibraryRow<{ path: string[] | null }>;
 export type EmailTemplateRow = LibraryRow<{ rendererKey: string; source: string }>;

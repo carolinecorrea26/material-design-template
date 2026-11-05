@@ -1,9 +1,9 @@
 import { getSurfaceField, getSurfaceFields, paymentControlField } from "../config/fields/storedSurfaces";
 import SharedPaymentControls from "../components/forms/SharedPaymentControls";
 import { sharedPaymentState, SHARED_METHOD_FIELD, SHARED_FREQUENCY_FIELD } from "../domain/sharedPaymentChoices";
-import EstimatedRate from "../components/ui/EstimatedRate";
-import TotalCostSummary from "../components/ui/TotalCostSummary";
-import ReferenceRateTableLink from "../components/ui/ReferenceRateTableLink";
+import EstimatedRate from "../app/sections/ConfiguredEstimatedRate";
+import TotalCostSummary from "../app/sections/ConfiguredTotalCostSummary";
+import ReferenceRateTableLink from "../components/coverage/ReferenceRateTableLink";
 import { resolveRatePresentation } from "../domain/ratePresentation";
 import { mockRequest, type MockPayment, type MockQuote } from "../mock/client";
 import { validateApplicationCoverages } from "../domain/coverageRuntime";
@@ -14,16 +14,12 @@ import { getPrototypeLibrary } from "../domain/prototypeLibrary";
 import { resolveCoverageJourneyPolicy } from "../domain/coverageJourneyPolicy";
 import { paymentSelectionAllowed } from "../domain/paymentPolicy";
 import { paymentMethodOptions, paymentFrequencyOptions, PAYMENT_INFO_OPT_IN_FIELD_ID } from "../config/fields/paymentFields";
-import { useState } from "react";
-import { Alert, Box, Button, Divider, Stack, Typography } from "@mui/material";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import ProductCard from "../components/layout/ProductCard";
+import { useRef, useState } from "react";
+import { Alert, Box, Button, Stack, Typography } from "@mui/material";
+import PaymentSections from "../components/payment/PaymentSections";
 import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
 import FormRoutePage from "../app/RoutePage";
-import SectionDivider from "../components/layout/SectionDivider";
-import CategoryCard from "../components/layout/CategoryCard";
 
-import FieldRenderer from "../components/forms/FieldRenderer";
 import { getCoverageCategorySectionLabel } from "../config/coverageCategories";
 import type { CoverageCategoryId } from "../config/coverages/types";
 import { groupCoveragesByCategory } from "../utils/groupCoveragesByCategory";
@@ -39,6 +35,7 @@ type AppliedProduct = {
   coverageId: string;
   categoryId: CoverageCategoryId;
   coverageName: string;
+  quickDecision: boolean;
   applicants: Array<{
     key: string;
     applicant: string;
@@ -177,6 +174,7 @@ function getAppliedProducts(values: Record<string, unknown>): AppliedProduct[] {
           amount,
           categoryId: coverage.categoryId,
           coverageName: coverage.name,
+          quickDecision: !coverage.underwritingBands?.length && coverage.underwritingType === "QD",
         },
       ];
     })
@@ -210,6 +208,7 @@ function getAppliedProducts(values: Record<string, unknown>): AppliedProduct[] {
       coverageId: entry.coverageId,
       categoryId: entry.categoryId,
       coverageName: entry.coverageName,
+      quickDecision: entry.quickDecision,
       applicants: [
         {
           key: entry.key,
@@ -274,6 +273,7 @@ export default function Payment() {
   const [mockError, setMockError] = useState("");
   const [mockBusy, setMockBusy] = useState(false);
   const [authorization, setAuthorization] = useState<{ input: string; paymentIds: string[]; status: string } | null>(null);
+  const deferredSubmission = useRef<{ input: string; key: string } | null>(null);
   const entriesFor = (values: Record<string, unknown>) => getAppliedProducts(values).flatMap(p => p.applicants.map(a => ({ productKey: p.coverageId, applicant: a.applicant, amount: a.amount })));
   const inputFor = (values: Record<string, unknown>) => JSON.stringify({ entries: entriesFor(values), choices: getAppliedProducts(values).map(p => [values[`payment-method:${p.coverageId}`], values[`payment-frequency:${p.coverageId}`]]) });
   const authorize = async (values: Record<string, unknown>, paymentToken: string) => {
@@ -296,12 +296,17 @@ export default function Payment() {
       onBeforeNext={({ values, continueNavigation }) => {
         if (!import.meta.env.VITE_MOCK_PLATFORM_ENABLED) return true;
         if (requiresRevalidation) { setMockError('Complete Coverage or Review against the current Library before submitting.'); return false; }
-        if (!authorization || authorization.status !== "authorized" || authorization.input !== inputFor(values)) { setMockError("Authorize payment for your current selections before submitting."); return false; }
+        const paymentDeferred = pageRequirement === "optional" && values[PAYMENT_INFO_OPT_IN_FIELD_ID] === "no";
+        if (!paymentDeferred && (!authorization || authorization.status !== "authorized" || authorization.input !== inputFor(values))) { setMockError("Authorize payment for your current selections before submitting."); return false; }
+        if (paymentDeferred && deferredSubmission.current?.input !== inputFor(values)) deferredSubmission.current = { input: inputFor(values), key: crypto.randomUUID() };
+        const paymentIds = paymentDeferred ? [] : authorization!.paymentIds;
+        const idempotencyKey = paymentDeferred ? deferredSubmission.current!.key : paymentIds[0];
         setMockBusy(true);
-        void mockRequest<{ submissionId: string }>("/applications/submit", { siteKey: getPrototypeLibrary()!.site.siteKey, revision: getPrototypeLibrary()!.revision, entries: entriesFor(values), paymentIds: authorization.paymentIds, idempotencyKey: authorization.paymentIds[0] }).then(result => { setPageValues({ "mock-submission-id": result.submissionId }); continueNavigation(); }).catch(error => setMockError(error.message)).finally(() => setMockBusy(false));
+        void mockRequest<{ submissionId: string }>("/applications/submit", { siteKey: getPrototypeLibrary()!.site.siteKey, revision: getPrototypeLibrary()!.revision, entries: entriesFor(values), paymentIds, idempotencyKey, ...(paymentDeferred ? { paymentDeferred: true } : {}) }).then(result => { setPageValues({ "mock-submission-id": result.submissionId }); continueNavigation(); }).catch(error => setMockError(error.message)).finally(() => setMockBusy(false));
         return false;
       }}
       disableNextButton={mockBusy}
+      runtimeFields={(values) => getPaymentDevFields(values, pageRequirement)}
       devFillFields={(values) => getPaymentDevFields(values, pageRequirement)}
       validate={(values) =>
         getPaymentPageError(pageRequirement, values as Record<string, unknown>) ?? prototypePaymentError(values)
@@ -337,222 +342,132 @@ export default function Payment() {
           return watchedValues[fieldId] === "bank-account";
         });
 
-        return (
-          <Stack spacing={2}>
-            {import.meta.env.VITE_MOCK_PLATFORM_ENABLED && <Stack spacing={1}>
+        return <PaymentSections control={control} errors={errors}
+          showPaymentQuestions={showPaymentQuestions}
+          optInField={pageRequirement === "optional" ? getSurfaceField("paymentControls", PAYMENT_INFO_OPT_IN_FIELD_ID) : undefined}
+          feedback={<>
+            {import.meta.env.VITE_MOCK_PLATFORM_ENABLED && showPaymentQuestions && <Stack spacing={1}>
               <Stack direction="row" spacing={1}><Button disabled={mockBusy} onClick={() => void authorize(values, "mock-approved")}>Authorize payment</Button><Button disabled={mockBusy} onClick={() => void authorize(values, "mock-declined")}>Try declined payment</Button></Stack>
               {authorization && <Alert severity={authorization.status === "authorized" ? "success" : "warning"}>Payment: {authorization.status}. {authorization.input !== inputFor(values) ? "Elections changed; authorize again." : ""}</Alert>}
               {mockError && <Alert severity="error">{mockError}</Alert>}
             </Stack>}
-            {pageRequirement === "optional" && getSurfaceField("paymentControls", PAYMENT_INFO_OPT_IN_FIELD_ID) && (
-              <FieldRenderer
-                field={getSurfaceField("paymentControls", PAYMENT_INFO_OPT_IN_FIELD_ID)!}
-                control={control}
-                errors={errors}
-              />
-            )}
+            {!showPaymentQuestions && mockError && <Alert severity="error">{mockError}</Alert>}
+          </>}
+          sharedControls={appliedProducts.length > 0 && (sharing.shareMethod || sharing.shareFrequency) ? <SharedPaymentControls state={sharing} control={control} errors={errors} setValue={setValue}
+            methodField={paymentControlField("payment-shared-method", SHARED_METHOD_FIELD, sharing.methodOptions)}
+            frequencyField={paymentControlField("payment-shared-frequency", SHARED_FREQUENCY_FIELD, sharing.frequencyOptions)} /> : null}
+          categories={groupedCategories.map(({ category, products }) => ({
+            id: category.id, label: getCoverageCategorySectionLabel(category.id, categorySectionLabelOverrides), icon: category.icon,
+            products: products.map(product => {
+              const paymentMethodFieldId = `payment-method:${product.coverageId}`;
+              const paymentFrequencyFieldId = `payment-frequency:${product.coverageId}`;
+              const selectedPaymentMethod = values[paymentMethodFieldId];
+              const frequencyField = paymentControlField("payment-frequency", paymentFrequencyFieldId, prototypePaymentFrequencies(product.coverageId, selectedPaymentMethod));
+              const selectedFrequency =
+                (values[paymentFrequencyFieldId] as string) ||
+                "monthly";
+              const frequencyMultiplier =
+                getFrequencyMultiplier(selectedFrequency);
+              const frequencyLabel =
+                getFrequencyLabel(selectedFrequency);
 
-            {pageRequirement === "optional" && showPaymentQuestions && (
-              <Divider sx={{ my: 2 }} />
-            )}
+              const applicantPremiums = product.applicants.map(
+                (applicantEntry) => ({
+                  applicant: applicantEntry.applicant,
+                  monthlyPremium: estimateMonthlyPremium(
+                    product.categoryId,
+                    applicantEntry.amount,
+                  ),
+                }),
+              );
 
-            {showPaymentQuestions && (
-              <>
-                <Alert
-                  severity="warning"
-                  icon={<InfoOutlinedIcon fontSize="inherit" />}
-                  sx={{ alignItems: "flex-start" }}
-                >
-                  <Typography variant="subtitle2" fontWeight={700}>
-                    You will not be charged yet.
-                  </Typography>
-                  <Typography variant="body2" sx={{ mt: 0.5 }}>
-                    Your payment information is collected as part of the
-                    application but you will not be charged until and unless you
-                    are approved for coverage. No money leaves your account
-                    during the application process.
-                  </Typography>
-                </Alert>
+              const totalMonthly = applicantPremiums.reduce(
+                (sum, entry) => sum + entry.monthlyPremium,
+                0,
+              );
 
-                {appliedProducts.length > 0 && (sharing.shareMethod || sharing.shareFrequency) && <SharedPaymentControls state={sharing} control={control} errors={errors} setValue={setValue} />}
+              const totalForFrequency =
+                totalMonthly * frequencyMultiplier;
 
-                {groupedCategories.length === 0 ? (
-                  <Alert severity="info">
-                    No applied-for products were found. Return to coverage
-                    options to choose coverage and continue.
-                  </Alert>
-                ) : (
-                  groupedCategories.map(({ category, products }) => {
-                    return (
-                      <Stack key={category.id} spacing={1.5}>
-                        <CategoryCard
-                          label={getCoverageCategorySectionLabel(
-                            category.id,
-                            categorySectionLabelOverrides,
-                          )}
-                          icon={category.icon}
-                        >
-                          {products.map((product) => {
-                            const paymentMethodFieldId = `payment-method:${product.coverageId}`;
-                            const paymentFrequencyFieldId = `payment-frequency:${product.coverageId}`;
-                            const selectedPaymentMethod = values[
-                              paymentMethodFieldId
-                            ] as string | undefined;
+              const hasDependentBreakdown =
+                applicantPremiums.some(
+                  (entry) => entry.applicant !== "member",
+                );
 
-                            const selectedFrequency =
-                              (values[paymentFrequencyFieldId] as string) ||
-                              "monthly";
-                            const frequencyMultiplier =
-                              getFrequencyMultiplier(selectedFrequency);
-                            const frequencyLabel =
-                              getFrequencyLabel(selectedFrequency);
-
-                            const applicantPremiums = product.applicants.map(
-                              (applicantEntry) => ({
-                                applicant: applicantEntry.applicant,
-                                monthlyPremium: estimateMonthlyPremium(
-                                  product.categoryId,
-                                  applicantEntry.amount,
-                                ),
-                              }),
-                            );
-
-                            const totalMonthly = applicantPremiums.reduce(
-                              (sum, entry) => sum + entry.monthlyPremium,
-                              0,
-                            );
-
-                            const totalForFrequency =
-                              totalMonthly * frequencyMultiplier;
-
-                            const hasDependentBreakdown =
-                              applicantPremiums.some(
-                                (entry) => entry.applicant !== "member",
-                              );
-
-                            return (
-                              <ProductCard key={product.coverageId}>
-                                <Stack spacing={2}>
-                                  <Typography variant="productNameLabel">
-                                    {product.coverageName}
-                                  </Typography>
-
-                                  {!sharing.shareMethod && paymentControlField("payment-method", paymentMethodFieldId, prototypePaymentMethods(product.coverageId)) && <FieldRenderer field={paymentControlField("payment-method", paymentMethodFieldId, prototypePaymentMethods(product.coverageId))!} control={control} errors={errors} />}
-                                  {!sharing.shareFrequency && sharing.updates[paymentFrequencyFieldId] === undefined && paymentControlField("payment-frequency", paymentFrequencyFieldId, prototypePaymentFrequencies(product.coverageId, selectedPaymentMethod)) && <FieldRenderer field={{ ...paymentControlField("payment-frequency", paymentFrequencyFieldId, prototypePaymentFrequencies(product.coverageId, selectedPaymentMethod))!, disabled: !selectedPaymentMethod }} control={control} errors={errors} />}
-
-                                  {getPrototypeLibrary() ? <PrototypePaymentCosts product={product} values={values} /> : (
-                                  <Box
-                                    sx={{
-                                      mt: 0.5,
-                                      pt: 1.5,
-                                      borderTop: "1px solid",
-                                      borderColor: "divider",
-                                    }}
-                                  >
-                                    <Stack spacing={1.25}>
-                                      {hasDependentBreakdown && (
-                                        <Typography
-                                          variant="body2"
-                                          color="text.secondary"
-                                        >
-                                          Estimated{" "}
-                                          {frequencyLabel.toLowerCase()} cost
-                                        </Typography>
-                                      )}
-
-                                      {hasDependentBreakdown &&
-                                        applicantPremiums.map((entry) => (
-                                          <Stack
-                                            key={entry.applicant}
-                                            direction="row"
-                                            justifyContent="space-between"
-                                            alignItems="center"
-                                            spacing={1}
-                                          >
-                                            <Typography
-                                              variant="subtitle2"
-                                              color="text.secondary"
-                                            >
-                                              {getApplicantLabel(
-                                                entry.applicant,
-                                              )}
-                                            </Typography>
-                                            <EstimatedRate amount={entry.monthlyPremium * frequencyMultiplier} variant="subtitle2" fontWeight={700} />
-                                          </Stack>
-                                        ))}
-
-                                      <Box
-                                        sx={{
-                                          borderTop: hasDependentBreakdown
-                                            ? "1px solid"
-                                            : "none",
-                                          borderColor: "divider",
-                                          pt: hasDependentBreakdown ? 1.25 : 0,
-                                        }}
-                                      >
-                                        <Stack
-                                          direction="row"
-                                          justifyContent="space-between"
-                                          alignItems="baseline"
-                                        >
-                                          <Typography variant="subtitle2">
-                                            {hasDependentBreakdown
-                                              ? "Total estimated cost"
-                                              : `Estimated ${frequencyLabel.toLowerCase()} cost`}
-                                            <sup>1</sup>
-                                          </Typography>
-                                          <EstimatedRate amount={totalForFrequency} variant="subtitle2" sx={{ fontWeight: 700, color: "primary.main", fontSize: "1.25rem" }} />
-                                        </Stack>
-                                      </Box>
-                                    </Stack>
-                                  </Box>
-                                  )}
-                                </Stack>
-                              </ProductCard>
-                            );
-                          })}
-                        </CategoryCard>
-                      </Stack>
-                    );
-                  })
-                )}
-
-                {hasAnyBankAccountSelected && (
-                  <Stack spacing={1.5} sx={{ pt: 1 }}>
-                    <SectionDivider
-                      label="Banking Information"
-                      variant="subsection"
-                    />
-
-                    {getSurfaceFields("paymentBank").map((field) => (
-                      <FieldRenderer
-                        key={field.id}
-                        field={field}
-                        control={control}
-                        errors={errors}
-                      />
-                    ))}
-                  </Stack>
-                )}
-
-                <Box sx={{ mt: 3, color: "text.secondary" }}>
-                  <Typography
-                    variant="caption"
+              return { id: product.coverageId, name: product.coverageName, quickDecision: product.quickDecision,
+                methodField: !sharing.shareMethod ? paymentControlField("payment-method", paymentMethodFieldId, prototypePaymentMethods(product.coverageId)) : undefined,
+                frequencyField: !sharing.shareFrequency && sharing.updates[paymentFrequencyFieldId] === undefined && frequencyField ? { ...frequencyField, disabled: !selectedPaymentMethod } : undefined,
+                costs: (getPrototypeLibrary() ? <PrototypePaymentCosts product={product} values={values} /> : (
+                  <Box
                     sx={{
-                      display: "block",
-                      lineHeight: 1.6,
+                      mt: 0.5,
+                      pt: 1.5,
+                      borderTop: "1px solid",
+                      borderColor: "divider",
                     }}
                   >
-                    <Box component="sup" sx={{ fontSize: "0.8em", mr: 0.5 }}>
-                      1
-                    </Box>
-                    Quoted cost is the best rate available based on the information you provided. Final cost may be based upon factors such as gender, health status, and use of tobacco/nicotine. Rates current as of 2026.
-                  </Typography>
-                </Box>
-              </>
-            )}
-          </Stack>
-        );
+                    <Stack spacing={1.25}>
+                      {hasDependentBreakdown && (
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                        >
+                          Estimated{" "}
+                          {frequencyLabel.toLowerCase().replace('annually', 'annual')} cost
+                        </Typography>
+                      )}
+
+                      {hasDependentBreakdown &&
+                        applicantPremiums.map((entry) => (
+                          <Stack
+                            key={entry.applicant}
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            spacing={1}
+                          >
+                            <Typography
+                              variant="subtitle2"
+                              color="text.secondary"
+                            >
+                              {getApplicantLabel(
+                                entry.applicant,
+                              )}
+                            </Typography>
+                            <EstimatedRate amount={entry.monthlyPremium * frequencyMultiplier} />
+                          </Stack>
+                        ))}
+
+                      <Box
+                        sx={{
+                          borderTop: hasDependentBreakdown
+                            ? "1px solid"
+                            : "none",
+                          borderColor: "divider",
+                          pt: hasDependentBreakdown ? 1.25 : 0,
+                        }}
+                      >
+                        <Stack
+                          direction="row"
+                          justifyContent="space-between"
+                          alignItems="baseline"
+                        >
+                          <Typography variant="subtitle2">
+                            {hasDependentBreakdown
+                              ? "Total estimated cost"
+                              : `Estimated ${frequencyLabel.toLowerCase().replace('annually', 'annual')} cost`}
+                            <sup>1</sup>
+                          </Typography>
+                          <EstimatedRate amount={totalForFrequency} />
+                        </Stack>
+                      </Box>
+                    </Stack>
+                  </Box>
+                )),
+              };
+            }),
+          }))}
+          bankFields={hasAnyBankAccountSelected ? getSurfaceFields("paymentBank") : []} />;
       }}
     </FormRoutePage>
   );
@@ -591,11 +506,11 @@ function PrototypePaymentCosts({ product, values }: { product: AppliedProduct; v
   const rates = usePrototypeRates(product.applicants.map(a => ({ productKey: product.coverageId, applicant: a.applicant as CoverageApplicantId, amount: a.amount })), values, "monthly", "coverage");
   const library = getPrototypeLibrary();
   const table = library ? resolveRatePresentation(library.site, product.coverageId).referenceTable : null;
-  const prices = product.applicants.map(a => ({ label: getApplicantLabel(a.applicant), amount: rates.premium(`${product.coverageId}:${a.applicant}`) }));
+  const prices = product.applicants.map(a => ({ label: getApplicantLabel(a.applicant), amount: rates.premium(`${product.coverageId}:${a.applicant}`), display: rates.display(`${product.coverageId}:${a.applicant}`) }));
   const total = prices.reduce((sum, p) => sum + p.amount, 0);
   const frequency = getFrequencyLabel(String(values[`payment-frequency:${product.coverageId}`] ?? "monthly"));
   if (table) return <ReferenceRateTableLink table={table} />;
-  return <TotalCostSummary title={`Estimated ${frequency.toLowerCase()} cost`} items={prices.map((price, index) => ({ id: `${product.coverageId}:${product.applicants[index].applicant}`, name: price.label, amount: price.amount }))} total={total} totalSuffix="" />;
+  return <TotalCostSummary title={`Estimated ${frequency.toLowerCase().replace('annually', 'annual')} cost`} items={prices.map((price, index) => ({ id: `${product.coverageId}:${product.applicants[index].applicant}`, name: price.label, amount: price.amount, display: price.display }))} total={total} totalSuffix="" />;
 }
 
 function getSharedPaymentState(values: Record<string, unknown>) {

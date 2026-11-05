@@ -51,6 +51,7 @@ export function applyProvisionalSourceDecisions(db: DatabaseSchema, cells: reado
     const key = previous?.key ?? `${siteKey}.${productKey}.provisional-age.${applicantTypeKey}`;
     db.eligibilityConstraints = db.eligibilityConstraints.filter(row => row.siteKey !== siteKey || row.productKey !== productKey || row.applicantTypeKey !== applicantTypeKey);
     db.eligibilityConstraints.push({ ...metadata("eligibilityConstraints", key), siteKey, productKey, applicantTypeKey,
+      ...(previous && db.semanticRequirements.some(row => row.domain === "reviewed-work-eligibility" && row.subjectKey === key) ? { sourceReference: previous.sourceReference } : {}),
       minimumAgeDays: previous?.minimumAgeDays ?? null, minimumAgeYears, maximumAgeYears,
       studentMaximumAgeYears: previous?.studentMaximumAgeYears ?? null, unmarried: previous?.unmarried ?? null,
       minimumWorkHours: previous?.minimumWorkHours ?? null, ...overrides,

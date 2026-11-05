@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import CookieDialog from "./CookieDialog";
 
 /**
@@ -11,9 +11,10 @@ import CookieDialog from "./CookieDialog";
  * clarification of that naming mismatch, not a bug to fix.
  */
 const meta = {
-  title: "Overlays/CookieDialog",
+  id: "overlays-cookiedialog",
+  title: "Components/Feedback and overlays/Banners/Cookie notice",
   component: CookieDialog,
-  parameters: { layout: "fullscreen" },
+  parameters: { docs: { description: { component: "Informational cookie banner with Learn more and Close actions. The story demonstrates local dismissal; AppShell owns the saved dismissal flag." } }, layout: "fullscreen" },
 } satisfies Meta<typeof CookieDialog>;
 
 export default meta;
@@ -24,11 +25,6 @@ export const Default: StoryObj = {
       const [visible, setVisible] = useState(true);
       return (
         <Box sx={{ position: "relative", height: 320 }}>
-          <Typography variant="body2" color="text.secondary" sx={{ p: 2 }}>
-            Page content behind the banner. The banner is fixed to the
-            viewport corner (bottom-left on desktop, full-width bottom on
-            mobile), not positioned relative to this box.
-          </Typography>
           {!visible && (
             <Button sx={{ position: "absolute", top: 8, right: 8 }} onClick={() => setVisible(true)}>
               Show again

@@ -9,26 +9,25 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import PrivacyTipRoundedIcon from "@mui/icons-material/PrivacyTipRounded";
 import ListAltRoundedIcon from "@mui/icons-material/ListAltRounded";
 import CalculateRoundedIcon from "@mui/icons-material/CalculateRounded";
-import QuickDecisionIcon from "../ui/QuickDecisionIcon";
-import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
-import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
+import QuickDecisionIcon from "../coverage/QuickDecisionIcon";
+import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
+import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
+import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
+import LanguageRoundedIcon from "@mui/icons-material/LanguageRounded";
 import AppDrawer from "../layout/AppDrawer";
-import HowApplyingWorksPanel from "../ui/HowApplyingWorksPanel";
-import CoverageOptionsPanel from "../ui/CoverageOptionsPanel";
-import CoverageNeedsCalculator from "../forms/CoverageNeedsCalculator";
+import HowApplyingWorksPanel from "../home/HowApplyingWorksPanel";
+import CoverageOptionsPanel from "../../app/sections/ConfiguredCoverageOptionsPanel";
+import CoverageNeedsCalculator from "../../app/sections/ConfiguredCoverageNeedsCalculator";
 import QuickDecisionDrawerContent, {
   QuickDecisionMark,
 } from "../content/QuickDecisionExplainer";
 import { useId, useState } from "react";
 import type { ClientConfig } from "../../config/clients/types";
 import { router } from "../../app/router";
-import { APP_MENU_SECTION_TITLE_SX } from "../../app/theme";
 
 type AppMenuProps = {
   open: boolean;
@@ -81,14 +80,14 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
               aria-label="Close application navigation menu"
               onClick={onClose}
             >
-              <CloseIcon />
+              <CloseRoundedIcon />
             </IconButton>
           </Box>
 
           {/* Continue saved application */}
-          <Box sx={{ p: 2, borderRadius: 1, bgcolor: "background.subtle" }}>
+          <Box sx={{ p: 2, borderRadius: 1, bgcolor: "background.default" }}>
             <Stack spacing={1}>
-              <Typography variant="subtitle1" sx={APP_MENU_SECTION_TITLE_SX}>
+              <Typography variant="subtitle2" color="text.primary">
                 Continue Saved Application
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
@@ -108,9 +107,9 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
           </Box>
 
           {/* Application tools */}
-          <Box sx={{ p: 2, borderRadius: 1, bgcolor: "background.subtle" }}>
+          <Box sx={{ p: 2, borderRadius: 1, bgcolor: "background.default" }}>
             <Stack spacing={2}>
-              <Typography variant="subtitle1" sx={APP_MENU_SECTION_TITLE_SX}>
+              <Typography variant="subtitle2" color="text.primary">
                 Application Tools
               </Typography>
               <Stack spacing={1.5}>
@@ -154,7 +153,7 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
                     justifyContent: "flex-start",
                   }}
                 >
-                  <PrivacyTipIcon />
+                  <PrivacyTipRoundedIcon />
                   <Typography variant="body2" fontWeight={600}>
                     {menuTools["about-coverage"].label}
                   </Typography>
@@ -210,23 +209,22 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
           </Box>
 
           {/* Contact */}
-          <Box sx={{ p: 2, borderRadius: 1, bgcolor: "background.subtle" }}>
+          <Box sx={{ p: 2, borderRadius: 1, bgcolor: "background.default" }}>
             <Stack spacing={1.5}>
-              <Typography variant="subtitle1" sx={APP_MENU_SECTION_TITLE_SX}>
+              <Typography variant="subtitle2" color="text.primary">
                 Contact Us
               </Typography>
               <Stack spacing={1}>
                 <Typography variant="body2">{client.branding.name}</Typography>
                 {client.support.website && (
                   <Stack direction="row" spacing={1} alignItems="center">
-                    <LanguageOutlinedIcon
+                    <LanguageRoundedIcon
                       sx={{ fontSize: 18, color: "text.secondary" }}
                     />
                     <Link
                       href={`https://${client.support.website}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      underline="hover"
                       variant="body2"
                     >
                       {client.support.website}
@@ -235,12 +233,11 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
                 )}
                 {client.support.email && (
                   <Stack direction="row" spacing={1} alignItems="center">
-                    <EmailOutlinedIcon
+                    <EmailRoundedIcon
                       sx={{ fontSize: 18, color: "text.secondary" }}
                     />
                     <Link
                       href={`mailto:${client.support.email}`}
-                      underline="hover"
                       variant="body2"
                     >
                       {client.support.email}
@@ -249,12 +246,11 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
                 )}
                 {phone && (
                   <Stack direction="row" spacing={1} alignItems="center">
-                    <PhoneOutlinedIcon
+                    <PhoneRoundedIcon
                       sx={{ fontSize: 18, color: "text.secondary" }}
                     />
                     <Link
                       href={`tel:${phone}`}
-                      underline="hover"
                       variant="body2"
                     >
                       {client.support.phoneDisplay ?? phone}
@@ -263,7 +259,7 @@ export default function AppMenu({ open, onClose, client }: AppMenuProps) {
                 )}
                 {client.support.phoneHours && (
                   <Stack direction="row" spacing={1} alignItems="center">
-                    <AccessTimeOutlinedIcon
+                    <AccessTimeRoundedIcon
                       sx={{ fontSize: 18, color: "text.secondary" }}
                     />
                     <Typography variant="body2" color="text.secondary">

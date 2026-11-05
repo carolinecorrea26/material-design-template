@@ -1,5 +1,5 @@
 import { Alert, Box, IconButton, Link, Typography } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { getContent } from "../../content";
 
 type CookieDialogProps = {
@@ -76,7 +76,6 @@ export default function CookieDialog({ onClose }: CookieDialogProps) {
               href={learnMoreHref}
               target="_blank"
               rel="noreferrer"
-              underline="always"
               color="inherit"
               sx={{ fontWeight: 500 }}
             >
@@ -94,7 +93,7 @@ export default function CookieDialog({ onClose }: CookieDialogProps) {
               flexShrink: 0,
             }}
           >
-            <CloseIcon fontSize="small" />
+            <CloseRoundedIcon fontSize="small" />
           </IconButton>
         </Box>
       </Box>

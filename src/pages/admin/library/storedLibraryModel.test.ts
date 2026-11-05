@@ -3,6 +3,7 @@ import { createReviewedMigrationDatabase } from "../../../migration/fixtures";
 import { childCollection, storedApplicationPageRows, storedFieldRows, storedLibraryRows, storedPageFieldGroups, storedFieldVisibility } from "./storedLibraryModel";
 import { resolveEffectiveSite } from "../../../domain/effectiveSite";
 import type { LibraryCatalog } from "../../../services/libraryCatalogService";
+import { readFileSync } from "node:fs";
 const data = JSON.parse(JSON.stringify(createReviewedMigrationDatabase()));
 const catalog: LibraryCatalog = { data, revision: "test", analyticsTags: [] };
 describe("stored Library collection and scope", () => {
@@ -12,20 +13,32 @@ describe("stored Library collection and scope", () => {
     expect(rows.map(row => row.key)).toEqual(expect.arrayContaining(["receipt", "resume", "resume-method", "resume-code", "advisor-login", "advisor-send-confirmation", "application-edit-confirmation"]));
     expect(rows.some(row => /portal-|site-details|design-system|mock-email|cms/.test(String(row.key)))).toBe(false);
   });
-  it("keeps disabled pages visible and shared resume/advisor pages available for every Site", () => {
+  it("excludes disabled pages from selected Sites and keeps applicable resume/advisor pages", () => {
     const keys = storedApplicationPageRows(catalog, "all").map(row => row.key);
     for (const site of catalog.data.sites.filter(site => site.status === "active")) {
       const rows = storedApplicationPageRows(catalog, site.key);
-      expect(rows.map(row => row.key)).toEqual(keys);
       for (const key of ["resume", "resume-method", "resume-code", "advisor-login", "advisor-send-confirmation", "application-edit-confirmation"]) {
-        expect(rows.find(row => row.key === key)).toMatchObject({ enabled: true, requirement: "—", sequence: "—", flow: key.startsWith("resume") ? "Resume" : "Advisor" });
+        expect(rows.find(row => row.key === key)).toMatchObject({ enabled: true, requirement: "—", flow: key.startsWith("resume") ? "Resume" : "Advisor" });
       }
       const resolved = resolveEffectiveSite(catalog.data, site.key);
       for (const page of resolved.configuration.pages.filter(page => page.requirement === "none" && keys.includes(page.key))) {
-        if (page.key.startsWith("advisor") || page.key.startsWith("resume") || page.key === "application-edit-confirmation") continue;
-        expect(rows.find(row => row.key === page.key)).toMatchObject({ enabled: false, requirement: "none" });
+        expect(rows.find(row => row.key === page.key)).toBeUndefined();
       }
     }
+  });
+  it("lists only ABE's applicable pages in both the Library and requirements document", () => {
+    const rows = storedApplicationPageRows(catalog, "abe");
+    expect(rows).toHaveLength(28);
+    expect(rows.filter(page => page.flow === "Utility").map(page => page.key)).toEqual(["error-404", "error-500", "session-expired", "technical-error", "maintenance", "application-unavailable", "outcome-unknown"]);
+    expect(rows.filter(page => page.key.startsWith("health-")).map(page => page.key)).toEqual(["health-li", "health-qd", "health-di", "health-ci"]);
+    expect(storedApplicationPageRows(catalog, "all").some(page => page.key === "health-si")).toBe(true);
+    const doc = readFileSync("docs/project-review/abe-template-requirements.md", "utf8");
+    const pageSection = doc.split("## Pages\n")[1].split("### Health page layout")[0];
+    const ids = [...pageSection.matchAll(/^\| `([^`]+)` \|/gm)].map(match => match[1]);
+    expect(ids).toEqual(rows.map(page => page.key));
+    const documentRows = pageSection.split('\n').filter(line => line.startsWith('| `')).map(line => line.split('|').map(cell => cell.trim()));
+    expect(documentRows.map(row => row[4])).toEqual(rows.map(page => page.flow));
+    expect(documentRows.every(row => row.length === 6)).toBe(true);
   });
   it("shows only configured categories and enabled effective riders, respecting scoped replacement", () => {
     for (const site of catalog.data.sites.filter(s => s.status === 'active')) {

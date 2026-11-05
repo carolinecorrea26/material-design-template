@@ -27,7 +27,7 @@ export async function evaluateCoveragePortfolio(
     // Missing existing facts remain missing; selected totals cannot imply zero
     // in-force coverage. This also enforces mutually exclusive product selections.
     const otherMonthlyBenefits = group && others ? Object.fromEntries(Object.entries(others).map(([key, existing]) => [key, existing + (inputs.find(i => i.productKey === key)?.amount ?? 0)])) : others;
-    return evaluateCoverageJourney(site, { ...input, benefit: { ...input.benefit, selectedProducts, otherMonthlyBenefits } }, services);
+    return evaluateCoverageJourney(site, { ...input, benefit: { ...input.benefit, selectedProducts, otherMonthlyBenefits } }, { ...services, portfolio: inputs, existingLifeAmount });
   }));
   results.forEach((result, index) => {
     errors.push(...result.errors.map(e => `${inputs[index].productKey}: ${e}`));

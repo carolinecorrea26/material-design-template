@@ -16,11 +16,13 @@ it('renders section membership and order from relationships rather than embedded
   [placements[0].position, placements[1].position] = [placements[1].position, placements[0].position];
   const library = resolvePrototypeLibrary(data, 'asce', 'test');
   installPrototypeLibrary(library);
-  expect(getPageSections('coverage').find(row => row.id === section.definition.id)?.fieldIds).toEqual([...originalIds].reverse());
+  const expected = [...originalIds];
+  [expected[0], expected[1]] = [expected[1], expected[0]];
+  expect(getPageSections('coverage').find(row => row.id === section.definition.id)?.fieldIds).toEqual(expected);
   expect(section.definition.fieldIds).toEqual(originalIds);
   data.pageSectionFields = data.pageSectionFields.filter(row => row.key !== placements[0].key);
   installPrototypeLibrary(resolvePrototypeLibrary(data, 'asce', 'test'));
-  expect(getPageSections('coverage').find(row => row.id === section.definition.id)?.fieldIds).toEqual([placements[1].fieldKey]);
+  expect(getPageSections('coverage').find(row => row.id === section.definition.id)?.fieldIds).toEqual(expected.filter(id => id !== placements[0].fieldKey));
 });
 
 it('resolves a new ordinary section placement with saved field values and Site overrides', () => {

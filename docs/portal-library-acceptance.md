@@ -1,6 +1,12 @@
 # Portal Library acceptance criteria
 
-Updated October 5, 2026 from the user's explicit corrections in this chat.
+Updated October 22, 2026 from the user's explicit corrections in this chat.
+
+## Fields catalog decision — October 22, 2026
+
+The user approved a catalog table with usage and rules separate. This supersedes the October 9 Fields columns below. Fields shows one saved definition per ID: ID, label, input type, format and options. Labels retain their Storybook links, and long option lists remain collapsed. Page and section usage is a separate expandable table. Required status and visibility belong under Business rules and Validation; neither requirement nor order is a field catalog column.
+
+Generated product/applicant control IDs are usage instances, not extra database field records. Repeated payment, quote and collection controls reference their saved definition. Coverage controls generated from product configuration remain in usage. ABE's CI and supplemental DI questionnaire references must also appear. The ABE document uses these same projections; regenerate its field and usage tables with `node scripts/build-abe-fields-document.mjs` and verify parity with `fieldCatalogRows.test.ts`.
 
 ## Change boundary
 

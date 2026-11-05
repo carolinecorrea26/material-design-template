@@ -15,6 +15,7 @@ function evaluateClause(clause: ConditionClause, values: ApplicationFormValues):
   const actual = values[clause.fieldId];
   if (clause.operator === "equals") return actual === clause.value;
   if (clause.operator === "notEquals") return actual !== clause.value;
+    if (clause.operator === "oneOf") return Array.isArray(clause.value) && clause.value.includes(actual);
   return Array.isArray(actual) && typeof clause.value === "string" && actual.includes(clause.value);
 }
 

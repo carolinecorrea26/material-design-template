@@ -10,7 +10,11 @@ export function applyRatePresentationAdoption(db: DatabaseSchema) {
   db.configurationDefinitions = db.configurationDefinitions.filter(row => row.key !== key);
   db.configurationDefinitions.push({ ...metadata("configurationDefinitions", key), definition: { path: null, metadata: { authority: "User clarification, October 2, 2026", runtimeActivation: "pending" }, target: { kind: "site-rate-presentation" } }, position: 0 });
   const clientKeys = [...new Set(activeSiteMigrationScope.sites.filter(site => site.mcrRequired).map(site => site.clientKey))];
-  db.configurationValues = db.configurationValues.filter(row => row.configurationKey !== key);
+  const reviewedAssignments = new Set(db.semanticRequirements.filter(row => row.domain === "approved-business-decision").flatMap(row => {
+    const value = row.value as { destinations?: Array<{ table: string; key: string }> } | null;
+    return value?.destinations?.filter(destination => destination.table === "configurationValues").map(destination => destination.key) ?? [];
+  }));
+  db.configurationValues = db.configurationValues.filter(row => row.configurationKey !== key || row.scope === "site" && reviewedAssignments.has(row.key));
   db.configurationValues.push({ ...metadata("configurationValues", `${key}.global`), scope: "global", clientKey: null, siteKey: null, configurationKey: key, value: defaultRatePresentation as unknown as Json, position: 0 });
   for (const clientKey of clientKeys) {
     const configured = clientKey !== "csea";

@@ -17,7 +17,7 @@ describe("resolveClientConfigurations", () => {
     expect(theme?.kind).toBe("client");
     expect(theme?.liveValueAvailable).toBe(true);
     expect(theme?.status).toBe("overridden");
-    expect(theme?.effective).toEqual({ type: "custom", primary: "#001F5F" });
+    expect(theme?.effective).toEqual({ type: "custom", primary: "#002c85", primaryAction: { main: "#f1b435", tone: "light" }, buttonShape: "standard" });
   });
 
   it("inherited: a client-configurable row this client leaves at its default", () => {

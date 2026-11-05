@@ -1,3 +1,4 @@
+import { isCoverageProductOrder } from "./coveragePresentation";
 import { isApplicantExperience } from "./applicantExperience";
 import { buildPrototypeAmounts, buildPrototypeRiders } from "./prototypeProductProjection";
 import type { ClientConfig } from "./configuration";
@@ -34,12 +35,14 @@ export function buildPrototypeClient(data: EffectiveSiteData, site: EffectiveSit
   root.branding = structuredClone(Object.fromEntries(site.configuration.branding.map(row => [row.key, row.value])));
   root.support = structuredClone(Object.fromEntries(site.configuration.support.map(row => [row.key, row.value])));
   const client = root as unknown as ClientConfig;
+  if (client.coverages.productOrder !== undefined && !isCoverageProductOrder(client.coverages.productOrder, data.products.map(product => product.key))) throw new Error("Invalid configured product order");
   const identity = data.sites.find(s => s.key === siteKey);
   if (!identity) throw new Error(`Unavailable Site: ${siteKey}`);
   const clientIdentity = data.clients.find(c => c.id === identity.clientId);
   if (!clientIdentity) throw new Error(`Unavailable Client: ${identity.clientId}`);
   client.features = { ...client.features, defaultTemplate: identity.templateType };
   if (client.applicantExperience !== undefined && !isApplicantExperience(client.applicantExperience)) throw new Error("Invalid applicant experience configuration");
+  if (client.applicantExperience?.contact?.businessAddressProducts?.some(key => !site.products.some(product => product.productKey === key))) throw new Error("Invalid business-address product scope");
   if (site.configuration.pageParticipation.source === "sitePages") {
     const modes = data.pages.map(page => ({ id: page.definition.id, requirement: site.configuration.pages.find(assignment => assignment.key === page.key)?.requirement ?? "none" as const }));
     client.pages = { participationSource: "sitePages", requirements: Object.fromEntries(modes.map(page => [page.id, page.requirement])),

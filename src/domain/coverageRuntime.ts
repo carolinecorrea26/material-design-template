@@ -1,3 +1,4 @@
+import { applicantPortfolioProcessing, applicantPortfolioProducts, portfolioLifeHealthPage } from "./portfolioHealthParticipation";
 import { getPrototypeLibrary } from "./prototypeLibrary";
 import { resolveJourneyUnderwriting } from "./coverageJourney";
 import { prototypeApplicantOperand } from "./prototypeApplicantOperands";
@@ -8,9 +9,20 @@ import { applicationApplicantFacts, applicationApplicantFactSet } from "../utils
 import { getCoverageAmountChoices } from "../utils/coverageAmounts";
 import { selectedRiderOnly } from "./coverageRiderOnly";
 import { isSelectionPolicy } from "./coverageSelectionPolicy";
+import { categoryEligibility, readCategoryEligibilityPolicy } from "./categoryEligibilityPolicy";
+import { resolveAssociationEligibility } from "./associationEligibilityPolicy";
+import { resolveCoverageJourneyPolicy } from "./coverageJourneyPolicy";
+import { applicationUnderwritingContext } from "./quickDecisionPolicy";
+
+export function applicationCoverageName(product: CoverageDefinition, values: Record<string, unknown>) {
+  const library = getPrototypeLibrary();
+  const association = values.association ?? values.membership;
+  const policy = library ? resolveCoverageJourneyPolicy(library.site, product.id) : null;
+  return typeof association === "string" ? policy?.associationDisplayNames?.[association] ?? product.name : product.name;
+}
 
 export type ResolutionStatus = "no-rule" | "resolved" | "needs-information" | "unresolved";
-export type UnderwritingOutcome = { status: ResolutionStatus; underwritingType?: CoverageUnderwritingType };
+export type UnderwritingOutcome = { status: ResolutionStatus; underwritingType?: CoverageUnderwritingType; healthPage?: "health-li" | "health-di" | "health-si" | "health-qd" | "health-ci" | null; missingFacts?: string[] };
 export function applicationUnderwriting(product: CoverageDefinition, applicant: CoverageApplicantId, values: Record<string, unknown>): UnderwritingOutcome {
   const library = getPrototypeLibrary();
   if (selectedRiderOnly(product, applicant, values)) {
@@ -23,11 +35,14 @@ export function applicationUnderwriting(product: CoverageDefinition, applicant: 
   if (library) {
     const applicantClass = prototypeApplicantOperand(library, product.id, applicant, values, "applicantClass");
     const amount = (values.coverageAmounts as Record<string, number> | undefined)?.[`${product.id}:${applicant}`];
-    const outcomes = applicationApplicantFactSet(values, applicant).map(facts => resolveJourneyUnderwriting(library.site, product.id, applicant, facts.ageYears, amount, typeof applicantClass === "string" ? applicantClass : undefined));
+    const outcomes = applicationApplicantFactSet(values, applicant).map(facts => resolveJourneyUnderwriting(library.site, product.id, applicant, facts.ageYears, amount, typeof applicantClass === "string" ? applicantClass : undefined, facts.associationKey, applicationUnderwritingContext(library.site, product.id, applicant, values)));
     if (outcomes.some(outcome => outcome.status === "unresolved")) return { status: "unresolved" };
-    if (outcomes.some(outcome => outcome.status === "needs-information")) return { status: "needs-information" };
+    if (outcomes.some(outcome => outcome.status === "needs-information")) return { status: "needs-information", missingFacts: [...new Set(outcomes.flatMap(outcome => "missingFacts" in outcome ? outcome.missingFacts : ["applicant-information"]))] };
     const pathways = [...new Set(outcomes.map(outcome => outcome.pathway))];
-    return pathways.length === 1 && pathways[0] ? { status: "resolved", underwritingType: pathways[0] as CoverageUnderwritingType } : { status: "unresolved" };
+    const portfolioPage = resolveCoverageJourneyPolicy(library.site, product.id)?.healthPageForPortfolio ? portfolioLifeHealthPage(library.site, product.id, applicant, pathways[0], applicantPortfolioProducts(applicant, values), applicantPortfolioProcessing(library.site, applicant, values)) : { status: "unmatched" as const };
+    if (portfolioPage.status === "needs-information") return { status: "needs-information" };
+    const healthPages = portfolioPage.status === "matched" ? [portfolioPage.healthPage] : [...new Set(outcomes.flatMap(outcome => "healthPage" in outcome ? [outcome.healthPage] : []))];
+    return pathways.length === 1 && pathways[0] && healthPages.length <= 1 ? { status: "resolved", underwritingType: pathways[0] as CoverageUnderwritingType, ...(healthPages.length ? { healthPage: healthPages[0] } : {}) } : { status: "unresolved" };
   }
   if (!product.underwritingBands?.length) return { status: "no-rule", underwritingType: product.underwritingType };
   if (!product.underwritingBands.some(band => !band.scope.applicantType || band.scope.applicantType === applicant)) return { status: "unresolved" };
@@ -40,9 +55,17 @@ export function applicationUnderwriting(product: CoverageDefinition, applicant: 
     : { status: "unresolved" };
 }
 
-export function resolveApplicationCoverage(product: CoverageDefinition, applicant: CoverageApplicantId, values: Record<string, unknown>, products: CoverageDefinition[] = [product]) {
+export function resolveApplicationCoverage(product: CoverageDefinition, applicant: CoverageApplicantId, values: Record<string, unknown>, products: CoverageDefinition[] = [product], options?: { deferUnansweredMembership?: boolean }) {
   const facts = applicationApplicantFacts(values, applicant);
-  const eligibilityResults = applicationApplicantFactSet(values, applicant).map(fact => evaluateEligibility(product.requirements, applicant, fact));
+  const library = getPrototypeLibrary();
+  const eligibilityResults = applicationApplicantFactSet(values, applicant, product.id).flatMap(fact => {
+    const scoped = library ? resolveAssociationEligibility(library.site, product.id, applicant, fact) : null;
+    if (scoped && scoped.result !== "eligible") return [scoped.result];
+    const requirements = scoped?.replacesAgeBounds ? { ...product.requirements, eligibility: product.requirements?.eligibility?.map(rule => rule.applicantType !== applicant ? rule : { ...rule, minimumAgeDays: undefined, minimumAgeYears: undefined, maximumAgeYears: undefined, fullTimeStudentMaximumAgeYears: undefined }) } : product.requirements;
+    return [evaluateEligibility(requirements, applicant, fact)];
+  });
+  const categoryPolicy = readCategoryEligibilityPolicy(getPrototypeLibrary()?.site.configuration.categoryEligibilityPolicies ?? []);
+  eligibilityResults.push(categoryEligibility(categoryPolicy, categoryPolicy ? values[categoryPolicy.fieldId] : undefined, product.categoryId, options?.deferUnansweredMembership));
   const eligibility = eligibilityResults.includes("ineligible") ? "ineligible" : eligibilityResults.includes("needs-information") ? "needs-information" : "eligible";
   const limit = resolveBenefitLimit(product.requirements, applicant, facts);
   let amounts = getCoverageAmountChoices(product, applicant).filter(amount => amount > 0 && (!limit || (limit.maximum !== undefined && amount <= limit.maximum)));
@@ -63,14 +86,14 @@ export function resolveApplicationCoverage(product: CoverageDefinition, applican
     ...(eligibility === "needs-information" ? [applicant === "child" ? "Complete each child’s birth date, unmarried and student information on Eligibility before adding coverage." : "Complete the applicant eligibility information before adding coverage."] : []),
     ...(eligibility === "ineligible" ? ["This applicant does not meet the coverage eligibility requirements."] : []),
     ...(limit && limit.maximum === undefined ? ["Complete income and employment information to determine available benefits."] : []),
-    ...(amounts.length === 0 && (!limit || limit.maximum !== undefined) ? ["No benefit amount is available for these applicant facts."] : []),
     ...relationshipErrors,
+    ...(amounts.length === 0 && (!limit || limit.maximum !== undefined) ? ["No benefit amount is available for these applicant facts."] : []),
     ...(normalized?.messages ?? []),
   ];
   const waitingOptions = normalized?.waitingPeriods?.map(p => ({ value: p.key, label: p.accidentDays === p.sicknessDays ? `${p.sicknessDays} days` : `${p.accidentDays}-day Accident / ${p.sicknessDays}-day Sickness`, days: p.sicknessDays })) ?? product.waitingPeriodOptionsByApplicant?.[applicant] ?? product.waitingPeriodOptions;
   const benefitOptions = normalized?.benefitPeriods ? (normalized.benefitPeriods.length ? normalized.benefitPeriods.map(value => ({ value, label: value.replaceAll("-", " ") })) : undefined) : product.maxBenefitPeriodOptionsByApplicant?.[applicant] ?? product.maxBenefitPeriodOptions;
   return {
-    eligibility, limit, amounts, messages, selectable: messages.length === 0,
+    eligibility, limit, amounts, messages, notices: normalized?.notices ?? [], selectable: messages.length === 0,
     eligibilityStatus: (!product.requirements?.eligibility?.some(rule => rule.applicantType === applicant) ? "no-rule" : eligibility === "needs-information" ? "needs-information" : "resolved") as ResolutionStatus,
     benefitLimitStatus: (!limit ? "no-rule" : limit.maximum === undefined ? "needs-information" : "resolved") as ResolutionStatus,
     requirementsStatus: (product.requirements?.unresolved?.length ? "unresolved" : !product.requirements ? "no-rule" : eligibility === "needs-information" || (limit && limit.maximum === undefined) ? "needs-information" : "resolved") as ResolutionStatus,
@@ -81,7 +104,7 @@ export function resolveApplicationCoverage(product: CoverageDefinition, applican
   };
 }
 
-export function validateApplicationCoverages(products: CoverageDefinition[], values: Record<string, unknown>): string | undefined {
+export function validateApplicationCoverages(products: CoverageDefinition[], values: Record<string, unknown>, options?: { deferProfileUnderwriting?: boolean }): string | undefined {
   const selected = Array.isArray(values.coverageSelections) ? values.coverageSelections : [];
   const applicants = (values.productApplicants ?? {}) as Record<string, CoverageApplicantId[]>;
   if (!selected.length) return "Please select at least one coverage to continue.";
@@ -109,7 +132,7 @@ export function validateApplicationCoverages(products: CoverageDefinition[], val
         if ((constraint.requiredValue && value !== constraint.requiredValue) || (constraint.options && !constraint.options.some(o => o.value === value))) return `${product.name}: update the required coverage options for ${applicant}.`;
       }
       if (result.underwriting.status === "unresolved") return `${product.name}: underwriting requirements are unresolved for this applicant and benefit amount. Please contact support.`;
-      if (result.underwriting.status === "needs-information") return `${product.name}: complete applicant age and benefit information.`;
+      if (result.underwriting.status === "needs-information" && !(options?.deferProfileUnderwriting && result.underwriting.missingFacts?.length && result.underwriting.missingFacts.every(fact => fact === "existingLifeAmount"))) return `${product.name}: complete ${result.underwriting.missingFacts?.includes("existingLifeAmount") ? "existing Life coverage information on Profile" : "applicant age and benefit information"}.`;
     }
   }
 }

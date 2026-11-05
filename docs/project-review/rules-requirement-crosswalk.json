@@ -1,0 +1,970 @@
+{
+  "reviewedOn": "2026-10-20",
+  "boundary": "Atomic requirements reviewed in this batch only; other rules and instructions remain open.",
+  "requirements": [
+    {
+      "id": "coverage-review.abe.di-ltd-plus.work-hours",
+      "area": "Eligibility",
+      "siteKey": "abe",
+      "productKey": "di-ltd-plus",
+      "applicantKey": "member",
+      "title": "Minimum work requirement of 30 hours per week",
+      "expectedBehavior": "Below 30 hours is ineligible; 30 or more satisfies this requirement. A missing answer does not establish eligibility. Other eligibility requirements still apply.",
+      "finding": "Reconciled the inherited 40 hour value to 30 in the owning eligibility constraint.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R44"
+      ],
+      "ruleKeys": [
+        "rule-coverage-product-policy-owners"
+      ],
+      "owners": [
+        {
+          "table": "eligibilityConstraints",
+          "key": "abe.di-ltd-plus.0",
+          "column": "minimumWorkHours",
+          "reviewedValue": 30
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/domain/coverageRequirements.ts",
+        "src/domain/coverageRuntime.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/workEligibilityAdoption.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.abe.di-ltd.work-hours",
+      "area": "Eligibility",
+      "siteKey": "abe",
+      "productKey": "di-ltd",
+      "applicantKey": "member",
+      "title": "Minimum work requirement of 30 hours per week",
+      "expectedBehavior": "Below 30 hours is ineligible; 30 or more satisfies this requirement. A missing answer does not establish eligibility. Other eligibility requirements still apply.",
+      "finding": "Reconciled the inherited 40 hour value to 30 in the owning eligibility constraint.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R45"
+      ],
+      "ruleKeys": [
+        "rule-coverage-product-policy-owners"
+      ],
+      "owners": [
+        {
+          "table": "eligibilityConstraints",
+          "key": "abe.di-ltd.0",
+          "column": "minimumWorkHours",
+          "reviewedValue": 30
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/domain/coverageRequirements.ts",
+        "src/domain/coverageRuntime.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/workEligibilityAdoption.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.abe.di-mtd.work-hours",
+      "area": "Eligibility",
+      "siteKey": "abe",
+      "productKey": "di-mtd",
+      "applicantKey": "member",
+      "title": "Minimum work requirement of 30 hours per week",
+      "expectedBehavior": "Below 30 hours is ineligible; 30 or more satisfies this requirement. A missing answer does not establish eligibility. Other eligibility requirements still apply.",
+      "finding": "Reconciled the inherited 40 hour value to 30 in the owning eligibility constraint.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R46"
+      ],
+      "ruleKeys": [
+        "rule-coverage-product-policy-owners"
+      ],
+      "owners": [
+        {
+          "table": "eligibilityConstraints",
+          "key": "abe.di-mtd.0",
+          "column": "minimumWorkHours",
+          "reviewedValue": 30
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/domain/coverageRequirements.ts",
+        "src/domain/coverageRuntime.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/workEligibilityAdoption.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.abe.oo-professional.work-hours",
+      "area": "Eligibility",
+      "siteKey": "abe",
+      "productKey": "oo-professional",
+      "applicantKey": "member",
+      "title": "Minimum work requirement of 30 hours per week",
+      "expectedBehavior": "Below 30 hours is ineligible; 30 or more satisfies this requirement. A missing answer does not establish eligibility. Other eligibility requirements still apply.",
+      "finding": "Reconciled the inherited 40 hour value to 30 in the owning eligibility constraint.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R48"
+      ],
+      "ruleKeys": [
+        "rule-coverage-product-policy-owners"
+      ],
+      "owners": [
+        {
+          "table": "eligibilityConstraints",
+          "key": "abe.oo-professional.0",
+          "column": "minimumWorkHours",
+          "reviewedValue": 30
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/domain/coverageRequirements.ts",
+        "src/domain/coverageRuntime.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/workEligibilityAdoption.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.ama.di-level-rated.active-work",
+      "area": "Eligibility",
+      "siteKey": "ama",
+      "productKey": "di-level-rated",
+      "applicantKey": "member",
+      "title": "Actively performing occupation",
+      "expectedBehavior": "When DI is selected, ask the approved Yes/No active-work question instead of DI work hours. No makes this DI product ineligible, using the standard category alert. No numeric hours threshold.",
+      "finding": "Approved October 20 question and eligibility policy execute from stored data; single and mixed category alerts are tested.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R119",
+        "User decision October 20, 2026"
+      ],
+      "ruleKeys": [
+        "rule-coverage-ama-active-work"
+      ],
+      "owners": [
+        {
+          "table": "configurationValues",
+          "key": "ama.di-level-rated.active-work",
+          "reviewedValue": {
+            "id": "ama.di-level-rated.active-work",
+            "key": "ama.di-level-rated.active-work",
+            "displayId": 122821360467295,
+            "providedBy": null,
+            "sourceReference": "Main!R118/R119; User decision October 20, 2026",
+            "position": 0,
+            "scope": "site",
+            "siteKey": "ama",
+            "clientKey": null,
+            "configurationKey": "ama.di-level-rated.active-work",
+            "value": [
+              {
+                "fact": "activelyAtWork",
+                "equals": true
+              }
+            ]
+          }
+        },
+        {
+          "table": "configurationValues",
+          "key": "ama.coverage-question-overrides",
+          "reviewedValue": {
+            "id": "ama.coverage-question-overrides",
+            "key": "ama.coverage-question-overrides",
+            "displayId": 5226844499527,
+            "providedBy": null,
+            "sourceReference": "Main!R118/R119; User decision October 20, 2026",
+            "position": 0,
+            "scope": "site",
+            "siteKey": "ama",
+            "clientKey": null,
+            "configurationKey": "ama.coverage-question-overrides",
+            "value": {
+              "DI": {
+                "self": [
+                  "gender",
+                  "actively-at-work",
+                  "average-monthly-income"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "table": "fields",
+          "key": "actively-at-work",
+          "reviewedValue": {
+            "id": "actively-at-work",
+            "key": "actively-at-work",
+            "definition": {
+              "id": "actively-at-work",
+              "label": "Are you actively at work performing the normal duties of your occupation?",
+              "inputType": "radio",
+              "required": true,
+              "options": [
+                {
+                  "value": "yes",
+                  "label": "Yes"
+                },
+                {
+                  "value": "no",
+                  "label": "No"
+                }
+              ]
+            },
+            "position": 39,
+            "displayId": 179974048560731,
+            "providedBy": null,
+            "sourceReference": "prototype:fields/actively-at-work"
+          }
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/config/coverageQuestionRequirements.ts",
+        "src/pages/Coverage.tsx"
+      ],
+      "verificationReferences": [
+        "src/migration/amaActiveWorkAdoption.test.tsx"
+      ]
+    },
+    {
+      "id": "coverage-review.ama.di-step-rated.active-work",
+      "area": "Eligibility",
+      "siteKey": "ama",
+      "productKey": "di-step-rated",
+      "applicantKey": "member",
+      "title": "Actively performing occupation",
+      "expectedBehavior": "When DI is selected, ask the approved Yes/No active-work question instead of DI work hours. No makes this DI product ineligible, using the standard category alert. No numeric hours threshold.",
+      "finding": "Approved October 20 question and eligibility policy execute from stored data; single and mixed category alerts are tested.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R118",
+        "User decision October 20, 2026"
+      ],
+      "ruleKeys": [
+        "rule-coverage-ama-active-work"
+      ],
+      "owners": [
+        {
+          "table": "configurationValues",
+          "key": "ama.di-step-rated.active-work",
+          "reviewedValue": {
+            "id": "ama.di-step-rated.active-work",
+            "key": "ama.di-step-rated.active-work",
+            "displayId": 110050714617187,
+            "providedBy": null,
+            "sourceReference": "Main!R118/R119; User decision October 20, 2026",
+            "position": 0,
+            "scope": "site",
+            "siteKey": "ama",
+            "clientKey": null,
+            "configurationKey": "ama.di-step-rated.active-work",
+            "value": [
+              {
+                "fact": "activelyAtWork",
+                "equals": true
+              }
+            ]
+          }
+        },
+        {
+          "table": "configurationValues",
+          "key": "ama.coverage-question-overrides",
+          "reviewedValue": {
+            "id": "ama.coverage-question-overrides",
+            "key": "ama.coverage-question-overrides",
+            "displayId": 5226844499527,
+            "providedBy": null,
+            "sourceReference": "Main!R118/R119; User decision October 20, 2026",
+            "position": 0,
+            "scope": "site",
+            "siteKey": "ama",
+            "clientKey": null,
+            "configurationKey": "ama.coverage-question-overrides",
+            "value": {
+              "DI": {
+                "self": [
+                  "gender",
+                  "actively-at-work",
+                  "average-monthly-income"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "table": "fields",
+          "key": "actively-at-work",
+          "reviewedValue": {
+            "id": "actively-at-work",
+            "key": "actively-at-work",
+            "definition": {
+              "id": "actively-at-work",
+              "label": "Are you actively at work performing the normal duties of your occupation?",
+              "inputType": "radio",
+              "required": true,
+              "options": [
+                {
+                  "value": "yes",
+                  "label": "Yes"
+                },
+                {
+                  "value": "no",
+                  "label": "No"
+                }
+              ]
+            },
+            "position": 39,
+            "displayId": 179974048560731,
+            "providedBy": null,
+            "sourceReference": "prototype:fields/actively-at-work"
+          }
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/config/coverageQuestionRequirements.ts",
+        "src/pages/Coverage.tsx"
+      ],
+      "verificationReferences": [
+        "src/migration/amaActiveWorkAdoption.test.tsx"
+      ]
+    },
+    {
+      "id": "coverage-review.asce.di-ltd.work-hours",
+      "area": "Eligibility",
+      "siteKey": "asce",
+      "productKey": "di-ltd",
+      "applicantKey": "member",
+      "title": "Minimum work requirement of 30 hours per week",
+      "expectedBehavior": "Below 30 hours is ineligible; 30 or more satisfies this requirement. A missing answer does not establish eligibility. Other eligibility requirements still apply.",
+      "finding": "Existing threshold matches the source; boundary and missing-answer checks cover both runtime paths.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R169"
+      ],
+      "ruleKeys": [
+        "rule-coverage-product-policy-owners"
+      ],
+      "owners": [
+        {
+          "table": "eligibilityConstraints",
+          "key": "asce.di-ltd.0",
+          "column": "minimumWorkHours",
+          "reviewedValue": 30
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/domain/coverageRequirements.ts",
+        "src/domain/coverageRuntime.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/workEligibilityAdoption.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.avma.di-ltd-plus.work-hours",
+      "area": "Eligibility",
+      "siteKey": "avma",
+      "productKey": "di-ltd-plus",
+      "applicantKey": "member",
+      "title": "No full-time-work threshold",
+      "expectedBehavior": "Do not disqualify this applicant based on hours worked.",
+      "finding": "Reconciled the inherited 40 hour value to no threshold in the owning eligibility constraint.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R193"
+      ],
+      "ruleKeys": [
+        "rule-coverage-product-policy-owners"
+      ],
+      "owners": [
+        {
+          "table": "eligibilityConstraints",
+          "key": "avma.di-ltd-plus.0",
+          "column": "minimumWorkHours",
+          "reviewedValue": null
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/domain/coverageRequirements.ts",
+        "src/domain/coverageRuntime.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/workEligibilityAdoption.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.avma.di-ltd.work-hours",
+      "area": "Eligibility",
+      "siteKey": "avma",
+      "productKey": "di-ltd",
+      "applicantKey": "member",
+      "title": "Minimum work requirement of 20 hours per week",
+      "expectedBehavior": "Below 20 hours is ineligible; 20 or more satisfies this requirement. A missing answer does not establish eligibility. Other eligibility requirements still apply.",
+      "finding": "Reconciled the inherited 40 hour value to 20 in the owning eligibility constraint.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R192"
+      ],
+      "ruleKeys": [
+        "rule-coverage-product-policy-owners"
+      ],
+      "owners": [
+        {
+          "table": "eligibilityConstraints",
+          "key": "avma.di-ltd.0",
+          "column": "minimumWorkHours",
+          "reviewedValue": 20
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/domain/coverageRequirements.ts",
+        "src/domain/coverageRuntime.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/workEligibilityAdoption.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.avma.di-short-term.work-hours",
+      "area": "Eligibility",
+      "siteKey": "avma",
+      "productKey": "di-short-term",
+      "applicantKey": "member",
+      "title": "Minimum work requirement of 20 hours per week",
+      "expectedBehavior": "Below 20 hours is ineligible; 20 or more satisfies this requirement. A missing answer does not establish eligibility. Other eligibility requirements still apply.",
+      "finding": "Reconciled the inherited 40 hour value to 20 in the owning eligibility constraint.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R194"
+      ],
+      "ruleKeys": [
+        "rule-coverage-product-policy-owners"
+      ],
+      "owners": [
+        {
+          "table": "eligibilityConstraints",
+          "key": "avma.di-short-term.0",
+          "column": "minimumWorkHours",
+          "reviewedValue": 20
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/domain/coverageRequirements.ts",
+        "src/domain/coverageRuntime.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/workEligibilityAdoption.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.avma.li-term.work-hours",
+      "area": "Eligibility",
+      "siteKey": "avma",
+      "productKey": "li-term",
+      "applicantKey": "member",
+      "title": "Minimum work requirement of 20 hours per week",
+      "expectedBehavior": "Below 20 hours is ineligible; 20 or more satisfies this requirement. A missing answer does not establish eligibility. Other eligibility requirements still apply.",
+      "finding": "Reconciled the inherited unspecified hour value to 20 in the owning eligibility constraint.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R197"
+      ],
+      "ruleKeys": [
+        "rule-coverage-product-policy-owners"
+      ],
+      "owners": [
+        {
+          "table": "eligibilityConstraints",
+          "key": "avma.li-term.reviewed-age.member",
+          "column": "minimumWorkHours",
+          "reviewedValue": 20
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/domain/coverageRequirements.ts",
+        "src/domain/coverageRuntime.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/workEligibilityAdoption.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.avma.oo-professional.work-hours",
+      "area": "Eligibility",
+      "siteKey": "avma",
+      "productKey": "oo-professional",
+      "applicantKey": "member",
+      "title": "Minimum work requirement of 20 hours per week",
+      "expectedBehavior": "Below 20 hours is ineligible; 20 or more satisfies this requirement. A missing answer does not establish eligibility. Other eligibility requirements still apply.",
+      "finding": "Reconciled the inherited 40 hour value to 20 in the owning eligibility constraint.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R196"
+      ],
+      "ruleKeys": [
+        "rule-coverage-product-policy-owners"
+      ],
+      "owners": [
+        {
+          "table": "eligibilityConstraints",
+          "key": "avma.oo-professional.0",
+          "column": "minimumWorkHours",
+          "reviewedValue": 20
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/domain/coverageRequirements.ts",
+        "src/domain/coverageRuntime.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/workEligibilityAdoption.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.isitrust.di-ltd.work-hours",
+      "area": "Eligibility",
+      "siteKey": "isitrust",
+      "productKey": "di-ltd",
+      "applicantKey": "member",
+      "title": "Minimum work requirement of 20 hours per week",
+      "expectedBehavior": "Below 20 hours is ineligible; 20 or more satisfies this requirement. A missing answer does not establish eligibility. Other eligibility requirements still apply.",
+      "finding": "Reconciled the inherited 40 hour value to 20 in the owning eligibility constraint.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R279"
+      ],
+      "ruleKeys": [
+        "rule-coverage-product-policy-owners"
+      ],
+      "owners": [
+        {
+          "table": "eligibilityConstraints",
+          "key": "isitrust.di-ltd.0",
+          "column": "minimumWorkHours",
+          "reviewedValue": 20
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/domain/coverageRequirements.ts",
+        "src/domain/coverageRuntime.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/workEligibilityAdoption.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.isitrust.di-short-term.work-hours",
+      "area": "Eligibility",
+      "siteKey": "isitrust",
+      "productKey": "di-short-term",
+      "applicantKey": "member",
+      "title": "Minimum work requirement of 20 hours per week",
+      "expectedBehavior": "Below 20 hours is ineligible; 20 or more satisfies this requirement. A missing answer does not establish eligibility. Other eligibility requirements still apply.",
+      "finding": "Reconciled the inherited 40 hour value to 20 in the owning eligibility constraint.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R281"
+      ],
+      "ruleKeys": [
+        "rule-coverage-product-policy-owners"
+      ],
+      "owners": [
+        {
+          "table": "eligibilityConstraints",
+          "key": "isitrust.di-short-term.0",
+          "column": "minimumWorkHours",
+          "reviewedValue": 20
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/domain/coverageRequirements.ts",
+        "src/domain/coverageRuntime.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/workEligibilityAdoption.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.isitrust.oo-professional.work-hours",
+      "area": "Eligibility",
+      "siteKey": "isitrust",
+      "productKey": "oo-professional",
+      "applicantKey": "member",
+      "title": "Minimum work requirement of 20 hours per week",
+      "expectedBehavior": "Below 20 hours is ineligible; 20 or more satisfies this requirement. A missing answer does not establish eligibility. Other eligibility requirements still apply.",
+      "finding": "Reconciled the inherited 40 hour value to 20 in the owning eligibility constraint.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R280"
+      ],
+      "ruleKeys": [
+        "rule-coverage-product-policy-owners"
+      ],
+      "owners": [
+        {
+          "table": "eligibilityConstraints",
+          "key": "isitrust.oo-professional.0",
+          "column": "minimumWorkHours",
+          "reviewedValue": 20
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/domain/coverageRequirements.ts",
+        "src/domain/coverageRuntime.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/workEligibilityAdoption.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.nso.di-ltd.work-hours",
+      "area": "Eligibility",
+      "siteKey": "nso",
+      "productKey": "di-ltd",
+      "applicantKey": "member",
+      "title": "Minimum work requirement of 20 hours per week",
+      "expectedBehavior": "Below 20 hours is ineligible; 20 or more satisfies this requirement. A missing answer does not establish eligibility. Other eligibility requirements still apply.",
+      "finding": "Existing threshold matches the source; boundary and missing-answer checks cover both runtime paths.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R321"
+      ],
+      "ruleKeys": [
+        "rule-coverage-product-policy-owners"
+      ],
+      "owners": [
+        {
+          "table": "eligibilityConstraints",
+          "key": "nso.di-ltd.0",
+          "column": "minimumWorkHours",
+          "reviewedValue": 20
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/domain/coverageRequirements.ts",
+        "src/domain/coverageRuntime.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/workEligibilityAdoption.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.waepa.di-short-term.work-hours",
+      "area": "Eligibility",
+      "siteKey": "waepa",
+      "productKey": "di-short-term",
+      "applicantKey": "member",
+      "title": "Minimum work requirement of 30 hours per week",
+      "expectedBehavior": "Below 30 hours is ineligible; 30 or more satisfies this requirement. A missing answer does not establish eligibility. Other eligibility requirements still apply.",
+      "finding": "Reconciled the inherited 40 hour value to 30 in the owning eligibility constraint.",
+      "status": "verified",
+      "sourceReferences": [
+        "Main!R380"
+      ],
+      "ruleKeys": [
+        "rule-coverage-product-policy-owners"
+      ],
+      "owners": [
+        {
+          "table": "eligibilityConstraints",
+          "key": "waepa.di-short-term.0",
+          "column": "minimumWorkHours",
+          "reviewedValue": 30
+        }
+      ],
+      "implementationReferences": [
+        "src/domain/effectiveSite.ts",
+        "src/domain/coverageRequirements.ts",
+        "src/domain/coverageRuntime.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/workEligibilityAdoption.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.waepa-gi.military-answer",
+      "area": "Eligibility",
+      "siteKey": "waepa-gi",
+      "productKey": "li-group-term",
+      "applicantKey": "member",
+      "title": "GI military restriction uses the collected answer",
+      "expectedBehavior": "The existing GI military question's Yes disqualifies; No satisfies this restriction. A missing answer requires information.",
+      "finding": "The coverage adapter now reads GI's existing product-scoped answer. It previously required an uncollected global field after additional eligibility facts were projected.",
+      "status": "verified",
+      "sourceReferences": [
+        "Attestation Online and PDF!C125",
+        "Main!O386"
+      ],
+      "ruleKeys": [
+        "rule-membership-waepa-active-duty-prevents-application"
+      ],
+      "owners": [
+        {
+          "table": "configurationValues",
+          "key": "waepa-gi.li-group-term.military-exclusion",
+          "reviewedValue": {
+            "id": "waepa-gi.li-group-term.military-exclusion",
+            "key": "waepa-gi.li-group-term.military-exclusion",
+            "displayId": 133869939742608,
+            "providedBy": null,
+            "sourceReference": "Main!O386",
+            "scope": "site",
+            "siteKey": "waepa-gi",
+            "clientKey": null,
+            "configurationKey": "waepa-gi.li-group-term.military-exclusion",
+            "value": [
+              {
+                "fact": "activeMilitary",
+                "equals": false
+              }
+            ],
+            "position": 0
+          }
+        }
+      ],
+      "implementationReferences": [
+        "src/utils/applicantFacts.ts",
+        "src/domain/coverageRuntime.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/workEligibilityAdoption.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.ama.membership-category-eligibility",
+      "area": "Membership",
+      "siteKey": "ama",
+      "productKey": null,
+      "applicantKey": "member",
+      "title": "Applicant type restricts available coverage categories",
+      "expectedBehavior": "Physician: all offered categories. Resident: Life, Disability and Supplemental Health. Student/Retired Physician: Life and Supplemental Health. Spouse of Physician: Life only.",
+      "finding": "User confirmed the MCR category restrictions on October 20. The captured Site policy controls category presentation and eligibility, and removes incompatible saved elections after applicant type changes.",
+      "status": "verified",
+      "sourceReferences": [
+        "Attestation Online and PDF!C3",
+        "User decision October 20, 2026"
+      ],
+      "ruleKeys": [
+        "rule-membership-ama-category-eligibility"
+      ],
+      "owners": [
+        {
+          "table": "configurationValues",
+          "key": "ama.applicant-category-eligibility",
+          "reviewedValue": {
+            "id": "ama.applicant-category-eligibility",
+            "key": "ama.applicant-category-eligibility",
+            "displayId": 163344308280583,
+            "providedBy": null,
+            "sourceReference": "Attestation Online and PDF!C3; User decision October 20, 2026",
+            "configurationKey": "ama.applicant-category-eligibility",
+            "scope": "site",
+            "siteKey": "ama",
+            "clientKey": null,
+            "position": 0,
+            "value": {
+              "version": 1,
+              "fieldId": "membership",
+              "allowedByAnswer": {
+                "physician": [
+                  "LI",
+                  "AD",
+                  "DI",
+                  "OO",
+                  "SH"
+                ],
+                "resident": [
+                  "LI",
+                  "DI",
+                  "SH"
+                ],
+                "student": [
+                  "LI",
+                  "SH"
+                ],
+                "retired": [
+                  "LI",
+                  "SH"
+                ],
+                "spouse": [
+                  "LI"
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "implementationReferences": [
+        "src/app/useCoverageState.ts",
+        "src/domain/categoryEligibilityPolicy.ts",
+        "src/domain/effectiveSite.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/amaCategoryEligibilityAdoption.test.tsx"
+      ]
+    },
+    {
+      "id": "coverage-review.waepa-gi.active-uninsured-employee",
+      "area": "Membership",
+      "siteKey": "waepa-gi",
+      "productKey": "li-group-term",
+      "applicantKey": "member",
+      "title": "Active civilian federal employee not currently insured",
+      "expectedBehavior": "Keep the existing generic GI membership question and separate military restriction. Do not add the C125 employer/start-date/acknowledgement entry flow.",
+      "finding": "User retained the current generic GI entry on October 20, superseding this source instruction for the template: Require affirmation of active civilian federal employment and no current WAEPA insurance before GI application entry.",
+      "status": "accepted-exception",
+      "sourceReferences": [
+        "Attestation Online and PDF!C125",
+        "User decision October 20, 2026"
+      ],
+      "ruleKeys": [],
+      "owners": [
+        {
+          "table": "sites",
+          "key": "waepa-gi",
+          "reviewedValue": {
+            "id": "waepa-gi",
+            "clientId": "waepa",
+            "key": "waepa-gi",
+            "name": "Guaranteed Issue Application",
+            "displayName": "Guaranteed Issue Application",
+            "status": "active",
+            "environment": "demo",
+            "templateType": "single",
+            "legacyClientId": "waepagi",
+            "createdAt": "2026-09-01T12:00:00.000Z",
+            "updatedAt": "2026-09-01T12:00:00.000Z",
+            "deletedAt": null,
+            "hostingAssociationId": "waepa",
+            "displayId": 86187489577260,
+            "providedBy": null,
+            "sourceReference": "prototype:sites/waepa-gi"
+          }
+        }
+      ],
+      "implementationReferences": [
+        "src/pages/Membership.tsx",
+        "src/domain/applicantExperience.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/rulesCoverageReview.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.waepa-gi.employer-details",
+      "area": "Membership",
+      "siteKey": "waepa-gi",
+      "productKey": "li-group-term",
+      "applicantKey": "member",
+      "title": "GI employer and employment start date",
+      "expectedBehavior": "Keep the existing generic GI membership question and separate military restriction. Do not add the C125 employer/start-date/acknowledgement entry flow.",
+      "finding": "User retained the current generic GI entry on October 20, superseding this source instruction for the template: Collect employer and employment start date for the eligible GI applicant.",
+      "status": "accepted-exception",
+      "sourceReferences": [
+        "Attestation Online and PDF!C125",
+        "User decision October 20, 2026"
+      ],
+      "ruleKeys": [],
+      "owners": [
+        {
+          "table": "sites",
+          "key": "waepa-gi",
+          "reviewedValue": {
+            "id": "waepa-gi",
+            "clientId": "waepa",
+            "key": "waepa-gi",
+            "name": "Guaranteed Issue Application",
+            "displayName": "Guaranteed Issue Application",
+            "status": "active",
+            "environment": "demo",
+            "templateType": "single",
+            "legacyClientId": "waepagi",
+            "createdAt": "2026-09-01T12:00:00.000Z",
+            "updatedAt": "2026-09-01T12:00:00.000Z",
+            "deletedAt": null,
+            "hostingAssociationId": "waepa",
+            "displayId": 86187489577260,
+            "providedBy": null,
+            "sourceReference": "prototype:sites/waepa-gi"
+          }
+        }
+      ],
+      "implementationReferences": [
+        "src/pages/Membership.tsx",
+        "src/domain/applicantExperience.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/rulesCoverageReview.test.ts"
+      ]
+    },
+    {
+      "id": "coverage-review.waepa-gi.required-acknowledgement",
+      "area": "Membership",
+      "siteKey": "waepa-gi",
+      "productKey": "li-group-term",
+      "applicantKey": "member",
+      "title": "GI membership acknowledgement",
+      "expectedBehavior": "Keep the existing generic GI membership question and separate military restriction. Do not add the C125 employer/start-date/acknowledgement entry flow.",
+      "finding": "User retained the current generic GI entry on October 20, superseding this source instruction for the template: Require the GI membership truthfulness acknowledgement before continuing.",
+      "status": "accepted-exception",
+      "sourceReferences": [
+        "Attestation Online and PDF!C125",
+        "User decision October 20, 2026"
+      ],
+      "ruleKeys": [],
+      "owners": [
+        {
+          "table": "sites",
+          "key": "waepa-gi",
+          "reviewedValue": {
+            "id": "waepa-gi",
+            "clientId": "waepa",
+            "key": "waepa-gi",
+            "name": "Guaranteed Issue Application",
+            "displayName": "Guaranteed Issue Application",
+            "status": "active",
+            "environment": "demo",
+            "templateType": "single",
+            "legacyClientId": "waepagi",
+            "createdAt": "2026-09-01T12:00:00.000Z",
+            "updatedAt": "2026-09-01T12:00:00.000Z",
+            "deletedAt": null,
+            "hostingAssociationId": "waepa",
+            "displayId": 86187489577260,
+            "providedBy": null,
+            "sourceReference": "prototype:sites/waepa-gi"
+          }
+        }
+      ],
+      "implementationReferences": [
+        "src/pages/Membership.tsx",
+        "src/domain/applicantExperience.ts"
+      ],
+      "verificationReferences": [
+        "src/migration/rulesCoverageReview.test.ts"
+      ]
+    }
+  ]
+}

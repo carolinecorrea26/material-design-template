@@ -1,77 +1,33 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box } from "@mui/material";
-import ApplicationDocumentPreview from "./ApplicationDocumentPreview";
-import { generateFormDataUpToPage } from "../../dev/utils/generateFormData";
+import { useState } from 'react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Box, Typography } from '@mui/material';
+import ApplicationDocumentPreview, { type ApplicationDocumentSection } from './ApplicationDocumentPreview';
 
-/**
- * ApplicationDocumentPreview is the Review page's full paginated
- * print-style application readout — heavy formatting/section-building
- * logic (914 lines), tightly coupled to the application's real field/page
- * config, so it's documented as a page-specific pattern rather than a
- * general-purpose component per the Phase 1 audit. Real dummy data comes
- * from the app's own generateFormDataUpToPage() autofill helper (the same
- * one every other stateful story in this instance uses), not hand-typed
- * placeholder values.
- */
 const meta = {
-  title: "Content/ApplicationDocumentPreview",
-  component: ApplicationDocumentPreview,
-  parameters: { layout: "padded" },
-} satisfies Meta<typeof ApplicationDocumentPreview>;
-
-export default meta;
-
-const values = generateFormDataUpToPage("review");
-
-export const Default: StoryObj = {
-  render: () => (
-    <Box sx={{ maxWidth: 800 }}>
-      <ApplicationDocumentPreview
-        values={values}
-        signatureName="Jordan Rivera"
-        signedDate="2026-09-14"
-        currentDate="2026-09-14"
-      />
-    </Box>
-  ),
-};
-
-export const HiddenSignature: StoryObj = {
-  name: "hideSignature=true",
-  render: () => (
-    <Box sx={{ maxWidth: 800 }}>
-      <ApplicationDocumentPreview
-        values={values}
-        signatureName="Jordan Rivera"
-        signedDate="2026-09-14"
-        currentDate="2026-09-14"
-        hideSignature
-      />
-    </Box>
-  ),
+  id: 'content-applicationdocumentpreview', title: "Components/Content and data display/Document preview", component: ApplicationDocumentPreview,
   parameters: {
-    docs: {
-      description: {
-        story:
-          "Used for the advisor-facing edit-review flow, where the e-sign block hasn't happened yet and shouldn't be implied.",
-      },
-    },
+    standalone: true, layout: 'padded',
+    review: { scope: 'shared-component', focus: 'Review document pagination, placeholders, signatures and edit callbacks using explicit display sections. The application adapter owns field/page resolution.', references: [{ label: 'Review page composition', storyId: 'pages-review-whole-page--empty' }] },
+    docs: { description: { component: 'Application readout from supplied display sections, association name, dates and edit targets. No Site or application provider is required.' } },
   },
-};
-
-export const WithEditButtons: StoryObj = {
-  name: "onEditSection (per-section edit buttons)",
-  render: () => (
-    <Box sx={{ maxWidth: 800 }}>
-      <ApplicationDocumentPreview
-        values={values}
-        signatureName="Jordan Rivera"
-        signedDate="2026-09-14"
-        currentDate="2026-09-14"
-        onEditSection={(pageId) => {
-          console.log("Edit section:", pageId);
-        }}
-      />
-    </Box>
-  ),
-};
+} satisfies Meta<typeof ApplicationDocumentPreview>;
+export default meta;
+const exampleDocumentSections: ApplicationDocumentSection[] = [
+  { title: 'Membership', groups: [{ entries: [{ label: 'Name', value: 'Jordan Morgan' }, { label: 'Email', value: 'jordan@example.org' }] }] },
+  { title: 'Coverage', groups: [{ title: 'Example Term Life', entries: [{ label: 'Member coverage', value: '$100,000' }] }] },
+  { title: 'Contact', groups: [{ entries: [{ label: 'Street address', value: '100 Example Street' }] }] },
+  { title: 'Profile', groups: [{ entries: [{ label: 'Physician', value: '' }] }] },
+];
+function PreviewExample({ hideSignature = false, editable = false }: { hideSignature?: boolean; editable?: boolean }) {
+  const [edited, setEdited] = useState('');
+  return <Box sx={{ maxWidth: 800 }}>
+    <ApplicationDocumentPreview sections={exampleDocumentSections} associationName="Example Association"
+      sectionPages={[{ title: 'Membership', pageId: 'membership' }, { title: 'Coverage', pageId: 'coverage' }, { title: 'Contact', pageId: 'contact' }, { title: 'Profile', pageId: 'profile' }]}
+      signatureName="Jordan Morgan" signedDate="2026-10-28" currentDate="10/28/2026" hideSignature={hideSignature}
+      onEditSection={editable ? pageId => setEdited(pageId) : undefined} />
+    <Typography role="status">{edited ? `Edit requested: ${edited}` : ''}</Typography>
+  </Box>;
+}
+export const Default: StoryObj = { render: () => <PreviewExample /> };
+export const HiddenSignature: StoryObj = { name: 'hideSignature=true', render: () => <PreviewExample hideSignature /> };
+export const WithEditButtons: StoryObj = { name: 'onEditSection (per-section edit buttons)', render: () => <PreviewExample editable hideSignature /> };

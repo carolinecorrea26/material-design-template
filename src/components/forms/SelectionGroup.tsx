@@ -1,6 +1,6 @@
 import type { ReactNode, MouseEventHandler, KeyboardEventHandler } from "react";
 import { Box } from "@mui/material";
-import { CARD_RADIUS } from "../../app/theme";
+import { alpha } from "@mui/material/styles";
 
 type SelectionGroupProps = {
   children: ReactNode;
@@ -27,7 +27,7 @@ type SelectionGroupProps = {
  *
  * Pass `checked` to drive selected visual state when there is no native
  * checked input inside (e.g. icon category toggles). For native-input rows
- * the :has(:checked) CSS in the theme handles the selected state.
+ * the :has(:checked) selector below handles the selected state.
  */
 export default function SelectionGroup({
   children,
@@ -60,35 +60,25 @@ export default function SelectionGroup({
         padding: "16.5px 14px",
         width: "100%",
         border: "1px solid",
-        borderColor: "rgba(52, 59, 72, 0.23)",
-        borderRadius: CARD_RADIUS,
+        borderColor: "divider",
+        borderRadius: 1,
         bgcolor: "background.paper",
         cursor: disabled ? "default" : "pointer",
-        opacity: disabled ? 0.6 : 1,
+        opacity: disabled ? theme.palette.action.disabledOpacity : 1,
         pointerEvents: disabled ? "none" : undefined,
-        transition: "background-color 0.2s ease, border-color 0.2s ease",
-        // Selected state via data-checked (icon rows with no native input)
-        "&[data-checked='true']": {
+        transition: theme.transitions.create(["background-color", "border-color"]),
+        "& .SelectionGroup-label": { fontWeight: 700, fontSize: "0.875rem" },
+        // Share selected styles for explicit state and native checkbox/radio inputs.
+        "&[data-checked='true'], &:has(:checked)": {
           borderColor: theme.palette.primary.main,
-          bgcolor: `${theme.palette.primary.main}1A`,
-          "& .SelectionGroup-label": { fontWeight: 700, color: "#353b48" },
-          "& .SelectionGroup-icon": { color: theme.palette.primary.main },
-        },
-        // Selected state via :has(:checked) (native checkbox/radio rows) — also
-        // uses theme here so the correct primary is applied regardless of client.
-        "&:has(:checked)": {
-          borderColor: theme.palette.primary.main,
-          bgcolor: `${theme.palette.primary.main}1A`,
-          "& .SelectionGroup-label": { fontWeight: 700, color: "#353b48" },
+          bgcolor: alpha(theme.palette.primary.main, 0.1),
+          "& .SelectionGroup-label": { fontWeight: 700, color: "text.primary" },
           "& .SelectionGroup-icon": { color: theme.palette.primary.main },
         },
         "@media (hover: hover)": disabled ? undefined : {
           "&:hover": { bgcolor: "action.hover" },
-          "&[data-checked='true']:hover": {
-            bgcolor: `${theme.palette.primary.main}33`,
-          },
-          "&:has(:checked):hover": {
-            bgcolor: `${theme.palette.primary.main}33`,
+          "&[data-checked='true']:hover, &:has(:checked):hover": {
+            bgcolor: alpha(theme.palette.primary.main, 0.2),
           },
         },
         "&:focus-visible": {

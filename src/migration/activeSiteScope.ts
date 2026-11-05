@@ -25,13 +25,21 @@ export const activeSiteMigrationScope = {
     { key: "waepa-gi", clientKey: "waepa", mcrRequired: true },
   ],
   sources: {
+    currentMcr: {
+      name: "Master Client Requirements_09_28_2026_v78 (1).xlsx",
+      snapshotPath: "src/migration/sources/mcr-v78.json",
+      snapshotSha256: "a93cb29e6ed20aa05b67e3bf22bb4554baf3a58ebf5d1df7b539a5466a49471a",
+      sha256: "70071168a401dc3b7182f3769f6631cdae5178878495315f58ee920e2b9651ce",
+      authority: "Latest MCR supplied and confirmed by the user October 20, 2026. Review current Library Sites only; user decisions and reviewed new-template interpretations take precedence over legacy workarounds.",
+      currency: "Confirmed current by the user, October 20, 2026.",
+    },
     mcr: {
       name: "04-MCR-new-version-full.xlsx",
       snapshotPath: "src/migration/sources/mcr.json",
       snapshotSha256: "8092f32013e2f74b2996da44cd3621a8ad40c7491f1e0a99a2dbbe525ceb9fe5",
       sha256: "4ff085ca5c52102010e9ea061a630eda41c3347d28f2e3e7a8dba44ef9d8617e",
       authority: "Coverage evidence for the scoped clients; explicit reviewed adoption is required.",
-      currency: "Awaiting confirmation that this is the current authoritative workbook.",
+      currency: "Historical compiler baseline; superseded for new review by sources.currentMcr. Retained for captured migration evidence and original source addresses.",
     },
     checklist: {
       name: "05-requirements-to-fill-out-checklist.xlsx",

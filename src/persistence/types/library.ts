@@ -13,7 +13,25 @@ import type { FeatureRow, ConfigurationDefinitionRow, ContentEntryRow, EmailTemp
 export * from "./content";
 export interface AssociationRow extends LibraryRow<{ name: string; acronym?: string; logo?: string; logoAlt?: string }> { clientKey: string }
 
-export type ComponentRow = LibraryRow<{ name: string; description: string; section: string; storyId: string; storybookPath: string; source: string }>;
+export type ComponentUsage = { source: string; label: string; pageKey?: string };
+export type ComponentRole = 'application-frame' | 'page-section' | 'shared-piece';
+export type ComponentPart = {
+  name: string;
+  kind: 'export' | 'native-element' | 'action' | 'slot';
+  sourceSymbol: string;
+  description: string;
+};
+export type ComponentRow = LibraryRow<{ name: string; description: string; section: string; storyId: string; storybookPath: string; source: string;
+  /** Primary ownership, separate from Storybook category and reuse count. */
+  role: ComponentRole;
+  /** Direct registered source dependencies by component key, including conditional paths. */
+  contains: string[];
+  /** Exports, native elements, actions and caller-supplied slots kept inside this owner. */
+  parts: ComponentPart[];
+  packageImport?: { module: string; symbol: string };
+  usages?: ComponentUsage[];
+  examples?: { label: string; storyId: string; section: string; pageKey?: string; position?: number }[];
+}>;
 
 export interface LibrarySchema {
   components: ComponentRow[];

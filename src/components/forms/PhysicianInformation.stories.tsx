@@ -2,36 +2,30 @@ import { useForm } from "react-hook-form";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box } from "@mui/material";
 import PhysicianInformation from "./PhysicianInformation";
-import { getPageSections } from "../../config/pageSections";
-import { getClientPageFields } from "../../config/clientFields/getClientPageFields";
+import { pageSections } from "../../config/pageSections/pageSections";
+import { fieldCatalog } from "../../config/fields";
 
-/**
- * PhysicianInformation is a pure layout helper — it arranges physician
- * name/street/city-state-zip fields into responsive rows and delegates
- * every field to FieldRenderer, with no validation or state of its own.
- * Real Profile-page config (getPageSections("profile")'s
- * profilePersonalSelfPhysician section) drives which fields render, so this
- * story uses that config directly rather than a hand-built field list.
- */
 const meta = {
-  title: "Coverage & Commerce/PhysicianInformation",
+  id: "coverage-commerce-physicianinformation",
+  title: "Components/Pages/Profile/Sections/Physician information",
   component: PhysicianInformation,
-  parameters: { layout: "padded" },
+  parameters: { standalone: true,
+    review: { scope: 'shared-component', focus: 'Review physician name/address rows and local field interactions once. Member and spouse use separate supplied definitions.', references: [{ label: 'Review Profile composition', storyId: 'pages-profile-whole-page--member-and-spouse' }] },
+    docs: { description: { component: "Shared physician name, phone and facility fields for member and spouse Profile sections. The caller supplies independent field definitions and explicit address mappings; AddressFields owns the shared address layout." } }, layout: "padded" },
 } satisfies Meta<typeof PhysicianInformation>;
 
 export default meta;
 
-const section = getPageSections("profile").find(
+const section = (pageSections.profile ?? []).find(
   (s) => s.id === "profilePersonalSelfPhysician",
 )!;
-const allFields = getClientPageFields("profile", {});
+const allFields = Object.values(fieldCatalog);
 
 const nameRow = new Set(["physician-first-name", "physician-last-name"]);
-const streetRow = new Set([
-  "medical-facility-street-address",
-  "medical-facility-apt-suite",
-]);
-const cityStateZipRow = new Set(["medical-city", "medical-state", "medical-zip-code"]);
+const addressFieldIds = {
+  'street-address': 'medical-facility-street-address', 'apt-suite': 'medical-facility-apt-suite',
+  city: 'medical-city', state: 'medical-state', 'zip-code': 'medical-zip-code',
+};
 
 function PhysicianInformationDemo() {
   const { control, formState } = useForm({ mode: "onChange" });
@@ -43,8 +37,7 @@ function PhysicianInformationDemo() {
         control={control}
         errors={formState.errors}
         nameRow={nameRow}
-        streetRow={streetRow}
-        cityStateZipRow={cityStateZipRow}
+        addressFieldIds={addressFieldIds}
       />
     </Box>
   );
@@ -52,7 +45,7 @@ function PhysicianInformationDemo() {
 
 export const Default: StoryObj = {
   render: () => <PhysicianInformationDemo />,
-  parameters: {
+  parameters: { standalone: true,
     docs: {
       description: {
         story:

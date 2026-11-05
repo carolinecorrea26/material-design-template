@@ -24,7 +24,7 @@ export default function ProjectCompletionRing({
         value={100}
         size={size}
         thickness={4}
-        sx={{ color: "background.surface" }}
+        sx={{ color: "action.hover" }}
       />
       <CircularProgress
         aria-hidden

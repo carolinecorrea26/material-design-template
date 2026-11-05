@@ -1,3 +1,7 @@
+import { isFinancialQuestionnairePolicy } from "./financialQuestionnaire";
+import { isBeneficiaryParticipationPolicy } from "./beneficiaryParticipation";
+import { isBeneficiaryNotePolicy } from "./beneficiaryNotes";
+import { healthQuestionnaireFieldKeys, isHealthQuestionnairePolicy } from "./configuredHealthQuestionnaire";
 import { materializeRuleDocumentation } from "./ruleDocumentation";
 import { resolveSiteStructureOwnership } from "./siteStructureOwnership";
 import { resolveProductAvailabilityOwnership } from "./productAvailabilityOwnership";
@@ -8,24 +12,15 @@ import { isSelectionPolicy } from "./coverageSelectionPolicy";
 import type { CoverageAmountAssignment } from "./coverage";
 import { materializeSelectionPolicy } from "./structuredSelectionPolicy";
 import { isSupportedAmountPattern } from "./coveragePolicyValidation";
+import { isAssociationAmountPolicy, resolveConfiguredAssociationAmounts } from "./associationAmountPolicy";
 import { materializeBenefitPolicy } from "./structuredBenefitPolicy";
 import { applyRiderOverrides, isRelationalRiderSet } from "./riderOverrides";
 import type { DatabaseSchema, Scope } from "../persistence/types";
 import type { LibraryMetadata } from "./provenance";
 import type { ResolvedValue, RuleProvenance } from "./effectiveSite";
 
-/** Explicit allowlist: compatibility blobs and extraction tables cannot enter resolution. */
-export const effectiveConfigurationTables = [
-  "coveragePlanDefinitions", "coveragePlanVariants", "productCoveragePlans", "planAmountRules", "planBenefitPeriods",
-  "pageSections", "pageSectionFields", "questionSets", "questionDefinitions", "questionSetQuestions", "questionSetFields", "productQuestionSets",
-  "products", "coverageCategories", "productConfigurationValues", "productIdentifiers",
-  "underwritingBands", "residencyRules", "residencyJurisdictions", "productApplicantEligibility", "coverageDependencies", "maximumPlanRules", "aggregateLimits", "benefitCaps", "benefitPeriodOptions",
-  "productAmountRules", "coverageAmountPatterns", "amountBands", "amountOptions",
-  "riders", "productRiders", "siteRiders", "riderAmountRules", "rateTables", "productRateTables", "rateTablePresentations",
-  "pages", "sitePages", "fields", "pageFields", "siteFieldConfigurations", "validationRules",
-  "flows", "siteFlows", "flowSteps", "flowTransitions", "conditions", "rules", "ruleAssignments", "ruleConditions", "ruleActions",
-  "configurationDefinitions", "configurationValues", "contentEntries", "contentValues", "brandingProfiles", "supportProfiles", "features", "siteFeatures",
-] as const;
+import { effectiveConfigurationTables } from "../persistence/catalogTables";
+export { effectiveConfigurationTables } from "../persistence/catalogTables";
 export type EffectiveConfigurationData = Pick<DatabaseSchema, typeof effectiveConfigurationTables[number]>;
 export type DomainIssue = { domain: string; key: string; reason: string; provenance: RuleProvenance[] };
 type Source = { id: string; key?: string } & Partial<LibraryMetadata>;
@@ -260,6 +255,19 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
       const target = db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target;
       return target?.kind === "product-amount-cap-policy" && target.productKey === productKey;
     });
+    const associationEligibilityPolicies = configurations.filter(configuration => {
+      const target = db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target;
+      return target?.kind === "product-association-eligibility" && target.productKey === productKey;
+    });
+    const associationAmounts = configurations.filter(configuration => {
+      const target = db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target;
+      return target?.kind === "product-association-amounts" && target.productKey === productKey;
+    }).map(policy => ({ ...policy, amounts: isAssociationAmountPolicy(policy.value) ? policy.value.amounts.map(assignment => {
+      const base = amountRules.find(rule => rule.value.applicantTypeKey === assignment.applicantKey) ?? amountRules.find(rule => rule.value.applicantTypeKey === null);
+      if (!base) throw new Error(`Unavailable association amount applicant: ${productKey}/${assignment.applicantKey}`);
+      return { ...base, key: `${policy.key}.${assignment.applicantKey}`, provenance: policy.provenance,
+        value: { ...base.value, applicantTypeKey: assignment.applicantKey, applicantClass: null, amountPatternKey: assignment.amountPatternKey }, amount: amounts(assignment.amountPatternKey) };
+    }) : [] }));
     const referenceRateTables = configurations.filter(configuration => {
       const target = db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target;
       return target?.kind === "product-reference-rate-table" && target.productKey === productKey;
@@ -281,7 +289,7 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
       return target?.kind === "product-eligibility-facts" && target.productKey === productKey
         ? [{ ...configuration, applicantKey: target.applicantKey }] : [];
     });
-    return { productKey, presentation, plans, questionSets, eligibilityFacts, benefitPolicies, dependentPolicies, residencyPolicies, referenceRateTables, underwritingRules: wrap("underwritingBands", selected(db.underwritingBands)), residency: order(db.residencyRules.filter(r => (r.siteKey === siteKey || r.siteKey === null) && r.productKey === productKey)).map(r => { issue("residency", r.key, "Residency policy is represented but not evaluated", [source("residencyRules", r)]); return { ...wrap("residencyRules", [r])[0], jurisdictions: wrap("residencyJurisdictions", order(db.residencyJurisdictions.filter(j => j.residencyRuleKey === r.key))) }; }), catalog: row ? { value: { name: row.definition.name, code: row.definition.code, categoryKey: row.categoryKey, definition: row.definition.definition }, provenance: [source("products", row)] } : null, category: category ? definition("coverageCategories", category) : null,
+    return { productKey, presentation, plans, questionSets, eligibilityFacts, associationEligibilityPolicies, associationAmounts, benefitPolicies, dependentPolicies, residencyPolicies, referenceRateTables, underwritingRules: wrap("underwritingBands", selected(db.underwritingBands)), residency: order(db.residencyRules.filter(r => (r.siteKey === siteKey || r.siteKey === null) && r.productKey === productKey)).map(r => { issue("residency", r.key, "Residency policy is represented but not evaluated", [source("residencyRules", r)]); return { ...wrap("residencyRules", [r])[0], jurisdictions: wrap("residencyJurisdictions", order(db.residencyJurisdictions.filter(j => j.residencyRuleKey === r.key))) }; }), catalog: row ? { value: { name: row.definition.name, code: row.definition.code, categoryKey: row.categoryKey, definition: row.definition.definition }, provenance: [source("products", row)] } : null, category: category ? definition("coverageCategories", category) : null,
       configurations: wrap("productConfigurationValues", order(db.productConfigurationValues.filter(r => r.productKey === productKey))),
       identifiers: wrap("productIdentifiers", scoped(db.productIdentifiers.filter(r => r.productKey === productKey))),
       applicantRules: wrap("productApplicantEligibility", selected(db.productApplicantEligibility)), dependencies: wrap("coverageDependencies", selected(db.coverageDependencies)), maximumPlans: wrap("maximumPlanRules", selected(db.maximumPlanRules)),
@@ -372,19 +380,40 @@ export function resolveEffectiveConfiguration(db: EffectiveConfigurationData, si
   const lifeAggregates = configurations.filter(configuration => db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target?.kind === "site-life-aggregate");
   const ratePresentationPolicies = configurations.filter(configuration => db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target?.kind === "site-rate-presentation");
   const lifeAggregateParticipation = configurations.filter(configuration => db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target?.kind === "site-life-aggregate-participation");
+  const beneficiaryParticipationPolicies = configurations.filter(configuration => db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target?.kind === "site-beneficiary-participation");
+  if (beneficiaryParticipationPolicies.length > 1) throw new Error("Ambiguous beneficiary participation policy");
+  for (const policy of beneficiaryParticipationPolicies) {
+    if (!isBeneficiaryParticipationPolicy(policy.value) || policy.value.rules.some(rule => !db.products.some(product => product.key === rule.productKey))) throw new Error("Invalid beneficiary participation policy or scope");
+  }
+  const beneficiaryNotePolicies = configurations.filter(configuration => db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target?.kind === "site-beneficiary-notes");
+  if (beneficiaryNotePolicies.length > 1) throw new Error("Ambiguous beneficiary note policy");
+  for (const policy of beneficiaryNotePolicies) {
+    if (!isBeneficiaryNotePolicy(policy.value) || policy.value.notes.some(note => note.productKeys.some(key => !db.products.some(product => product.key === key)))) throw new Error("Invalid beneficiary note policy or product scope");
+  }
   const reviewPolicies = configurations.filter(configuration => db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target?.kind === "site-review-policy");
-  return { siteStructureOwnership, productAvailabilityOwnership, fieldDefinitionOwnership, pageParticipation, routing, lifeAggregateParticipation, reviewPolicies, products, pages, flows, rules, conditions: wrap("conditions", order(db.conditions)), content, configurations, lifeAggregates, ratePresentationPolicies, branding, support, features, issues };
+  const financialQuestionnairePolicies = configurations.filter(configuration => db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target?.kind === "site-financial-questionnaire");
+  if (financialQuestionnairePolicies.length > 1 || financialQuestionnairePolicies.some(row => !isFinancialQuestionnairePolicy(row.value) || row.value.rules.some(rule => rule.productKeys.some(key => !productKeys.includes(key))))) throw new Error("Invalid financial questionnaire policy or product scope");
+  const categoryEligibilityPolicies = configurations.filter(configuration => db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target?.kind === "site-category-eligibility");
+  const healthQuestionnairePolicies = configurations.filter(configuration => db.configurationDefinitions.find(definition => definition.key === configuration.key)?.definition.target?.kind === "site-health-questionnaires").map(configuration => ({ ...configuration, fields: isHealthQuestionnairePolicy(configuration.value) ? healthQuestionnaireFieldKeys(configuration.value).flatMap(key => {
+    const row = one(db.fields, key, "fields");
+    if (!row) return [];
+    const resolved = resolveSharedFieldDefinition(row, db.validationRules, fieldDefinitionOwnership);
+    return [{ key, definition: resolved.definition, provenance: resolved.provenance }];
+  }) : [] }));
+  return { financialQuestionnairePolicies, beneficiaryParticipationPolicies, beneficiaryNotePolicies, healthQuestionnairePolicies, siteStructureOwnership, productAvailabilityOwnership, fieldDefinitionOwnership, pageParticipation, routing, lifeAggregateParticipation, reviewPolicies, categoryEligibilityPolicies, products, pages, flows, rules, conditions: wrap("conditions", order(db.conditions)), content, configurations, lifeAggregates, ratePresentationPolicies, branding, support, features, issues };
 }
 export type EffectiveConfiguration = ReturnType<typeof resolveEffectiveConfiguration>;
 
-export type AmountFacts = { applicantKey: string; applicantClass?: string; amount?: number | string; baseAmount?: number };
+export type AmountFacts = { applicantKey: string; applicantClass?: string; associationKey?: string; amount?: number | string; baseAmount?: number };
 export type EffectiveAmountDecision = { status: "resolved" | "needs-information" | "unresolved"; allowed?: boolean; derivedAmount?: number; provenance: RuleProvenance[] };
 /** Evaluates one explicit Site/applicant amount assignment. Overlapping scopes never win implicitly. */
 export function resolveEffectiveAmount(configuration: EffectiveConfiguration, productKey: string, facts: AmountFacts): EffectiveAmountDecision {
   const product = configuration.products.find(p => p.productKey === productKey);
   const applicantRules = product?.applicantRules.filter(r => r.value.applicantTypeKey === facts.applicantKey) ?? [];
   if (applicantRules.length !== 1 || !applicantRules[0].value.eligible || applicantRules[0].value.conditionKey !== null) return { status: "unresolved", provenance: applicantRules.flatMap(r => r.provenance) };
-  const rules = product?.amounts.filter(r => (r.value.applicantTypeKey === null || r.value.applicantTypeKey === facts.applicantKey) && (r.value.applicantClass === null || r.value.applicantClass === facts.applicantClass)) ?? [];
+  const assignment = resolveConfiguredAssociationAmounts(configuration, productKey, facts.associationKey);
+  if (assignment.status !== "resolved") return { status: assignment.status, provenance: product?.associationAmounts.flatMap(rule => rule.provenance) ?? [] };
+  const rules = assignment.rules.filter(r => (r.value.applicantTypeKey === null || r.value.applicantTypeKey === facts.applicantKey) && (r.value.applicantClass === null || r.value.applicantClass === facts.applicantClass));
   const provenance = [...applicantRules.flatMap(r => r.provenance), ...rules.flatMap(r => [...r.provenance, ...(r.amount ? [...r.amount.pattern.provenance, ...r.amount.bands.flatMap(b => b.provenance), ...r.amount.options.flatMap(o => o.provenance)] : [])])];
   if (rules.length !== 1 || rules[0].status !== "resolved" || rules[0].amount?.status !== "resolved") return { status: "unresolved", provenance };
   const amount = rules[0].amount, pattern = amount.pattern.value;

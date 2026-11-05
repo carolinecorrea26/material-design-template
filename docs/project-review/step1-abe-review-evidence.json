@@ -1,0 +1,66 @@
+{
+  "reviewedOn": "2026-10-23",
+  "scope": "ABE approved age and spouse-work adoption, note-only unmarried collection and source-dimension review; other ABE phases remain open",
+  "files": {
+    "src/migration/sources/mcr-v78.json": "a93cb29e6ed20aa05b67e3bf22bb4554baf3a58ebf5d1df7b539a5466a49471a",
+    "src/migration/abeEligibilityAdoption.ts": "537e8206190802822723c7328b7915c0722aca68b7b5cad5b8b2cde5f3fbc62e",
+    "src/migration/abeEligibilityAdoption.test.ts": "f93e21c5de9d97dd25391ba604b62311f493acd3e6aca218fa1264b0411b234f",
+    "src/migration/abeCoverageReview.test.ts": "9afc47bffbe0b92a4a145f305425e9de4ff323d27ce5c748a2ef8217ada0f077",
+    "src/migration/abeSiteReview.test.ts": "abda0a985880eb6073c5913e5c05cbe37182dc421983fb9ca6c60d19d1f5d9b0",
+    "src/migration/requirementCrosswalkSites.ts": "7fd36f8851dc7a03db7cdcb989610d1ce7fd023afca0c2491046751897a5ecb3",
+    "src/domain/effectiveSite.ts": "de9dc7ce0f98622b45147ac4a6ebac62e948176d8eccc7bc86d6515dc4055f60",
+    "src/domain/eligibilityFacts.ts": "73a09d0e241061854fe5aba5cd56f2eaf5a0bc49a537a95189fdb7884cd89e5c",
+    "src/domain/coverageRequirements.ts": "17890d0e2034b614f58173ca67c9d4a1317455fbd770bddddc20057f4649ecb5",
+    "src/domain/coverageRuntime.ts": "76382b6aab9ef6a233bbadf266458e6ffdc0db63cb18d0d7854bb31e2efb304c",
+    "src/domain/prototypeProductProjection.ts": "6118cf19f2c13f1426a6e3dfc6d676eb7fb1b60bd3442abdd376c7c75c57380b",
+    "src/utils/applicantFacts.ts": "f052270a1977a6e47c49c5da8345edfbd0967ed1ddd67d32b5e41f8cac0a1e63",
+    "src/domain/fieldCollections.ts": "3100997a191634bc6b81a117158fdcdca6d518fb94256bd36d6b1912a746bdb5",
+    "src/pages/Eligibility.tsx": "6b211e2ee348fc3f380240dd8538bbbd31cecdd05e30d08e30d723d69ff32935",
+    "src/domain/normalizedCoverageAmounts.ts": "ab0fe4e47455b0e46295685ac498fe5bb0cf636716bb62560e68dcdda38280cb",
+    "src/domain/dependentPolicy.ts": "880778c18493f0a6350819e0f377f9516be78f3d2c20aa49cf7871f2caec5e61",
+    "src/domain/benefitPolicy.ts": "9b1a82d7184157155991d67935dc28a65866e9e2dd79cb3e2a9d3958e87d0bb4"
+  },
+  "native": "2d74ab67cc368362de3ad3045e4e670acf8d05fa6e088761460c84c3ec3b9990",
+  "finalNativeHash": "e97969b60946daae8d01e0e7b346400b4a3ed176dfd993bc83c5103d228e26c7",
+  "pagesFollowUp": "User-approved October 22 Pages update: question-first health layout, standard applicant headings/visibility, explicit CI question grouping and unused ABE SI assignment disabled. Existing medical wording, answer identities and business limits preserved.",
+  "pageSourceFollowUp": "October 22, 2026: Library diagrams read saved flows, steps and transitions; their page references and health summary use the saved page catalog and Site assignments. Existing node identities and edges are preserved. Legacy page-reference helpers read the installed catalog. Saved routes, order, participation, conversion and persistence were verified; no ABE business policy changed.",
+  "paymentFollowUp": "October 22, 2026 user-approved correction: MCR v78 New UX Multi-page Requirements!AS51 confirms optional beneficiary and AT51 confirms optional payment with the standard footnote retained. ABE Payment is optional in its saved assignment and derived product collection policies. No hides payment fields and defers authorization; the mock submission permits deferral only when the saved Site assignment is optional. Yes retains payment validation and authorization; revision revalidation remains required. Payment.policy and isolated mock submission tests verify both paths.",
+  "fieldCatalogFollowUp": "October 22, 2026: reverified Pages/Fields follow-through. The standalone Resume pages read the saved Site/page field definitions; resume-security-code now carries the existing six-character control limit in its shared definition. Removing that maxLength in a temporary reviewed database exactly reproduces the prior final fingerprint. ABE source-owner and eligibility/coverage snapshots are unchanged. Shared requiredness/control/format ownership, all-Site tobacco options, Membership, saved-catalog resolution and Resume rendering passed 41 checks before refreshing these fingerprints. Accepted business decisions and deferrals are unchanged.",
+  "cirQuestionnaireFollowUp": {
+    "reviewedOn": "2026-10-23",
+    "status": "implemented-and-verified",
+    "authority": "User clarification: one shared CIR questionnaire; show it only for a Site configured for CIR health questions and an adult selecting CIR. ABE does not enable that page. Preserve existing Life-health routing and updated health forms.",
+    "separateCirPage": false,
+    "questions": 0,
+    "sharedQuestionnaireQuestions": 12,
+    "sourceReferences": [
+      "Main!L39",
+      "Riders!C32:D32",
+      "Riders!M32:N32",
+      "health_forms_questions.xlsx#Health questions!A98:D109"
+    ],
+    "sourceInterpretation": "Underwriting Yes is preserved as literal source evidence; it does not independently assign a separate online CIR questionnaire.",
+    "supersedes": "The earlier CHR-to-ABE activation based solely on underwriting flags is withdrawn.",
+    "verification": "37 focused checks passed, including Site off/on, adult CIR selection, shared form follow-ups, stale-answer cleanup, native Life routing and all-Site journey acceptance. Final review/crosswalk/build checks follow this capture."
+  },
+  "fuwQuestionnaireFollowUp": {
+    "reviewedOn": "2026-10-23",
+    "status": "implemented-and-verified",
+    "authority": "User clarification: FUW means post-submission underwriting for health checks. FUW itself is not an online questionnaire. Only explicitly configured TELE health questions are moved online.",
+    "previousFindingWithdrawn": "A missing FUW Life/DI questionnaire is not a valid completeness gap.",
+    "implementation": "ABE Life, Disability and Overhead FUW processing maps to no generic online health page. The 50+ Life TELE route and its existing form are preserved, as are the external QD step, CI forms, QD Life plus supplemental DI collection, shared CIR form and all other Sites\u2019 updated health forms.",
+    "remainingScope": "This correction does not certify the source wording of an independently configured TELE form. Existing notice/content and other recorded deferrals remain separate.",
+    "verification": "Passed focused ABE FUW/TELE routing, adult isolation, stale-answer cleanup, CI/supplemental DI and CIR checks; all-Site next/Back/progress and navigation-evidence invalidation; ABE source and final-review checks against the shipped catalog; deterministic crosswalk generation; TypeScript, build, targeted ESLint and diff checks. The exact native diff changes eight ABE journey policies and two ABE decision records. Eligibility and all nine other Sites are unchanged.",
+    "previousNativeFingerprint": "0342c58b75cde1fe55d78ccfedc536a118b1302a8f1813ca1e39c7e4a1591471",
+    "nativeFingerprint": "74a13b1c69710fc2b5e9f75bc378bbf7fac120a9b8892c49cc4434a8a8cb5ce1"
+  },
+  "fiftyPlusFlowFollowUp": {
+    "reviewedOn": "2026-10-23",
+    "scope": "Tested AL member-only 50+ Life, born 1960-01-01, $25,000; no generic online health questionnaire, required medical authorization and underwritten consent retained.",
+    "verification": [
+      "src/migration/abeFiftyPlusFlow.test.ts",
+      "src/pages/Review.consent.test.tsx"
+    ],
+    "boundary": "Local prototype and shipped catalog verification. Other live-preview scenarios were not observed. Pages and Fields records remain unchanged."
+  }
+}

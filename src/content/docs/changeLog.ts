@@ -125,7 +125,7 @@ export const changeLog: ChangeLogEntry[] = [
       "matching the pattern already used for AVMA's LI category. Quote tool smoker question " +
       "(new ClientConfig.coverages.hideSmokerQuestion flag, set true for waepa; consumed by " +
       "getCategoryRequirements in src/config/coverageConstants.ts and passed from src/components/layout/" +
-      "QuoteModal.tsx and src/components/forms/QuoteCalculator.tsx): WAEPA's quote tool no longer asks or " +
+      "QuoteModal.tsx and src/app/workflows/QuoteCalculator.tsx): WAEPA's quote tool no longer asks or " +
       "requires the 'Do you use nicotine products?' question for LI/SH categories. Scoped to the quote " +
       "tool only — the real Coverage page application flow (src/app/useCoverageState.ts) is untouched and " +
       "still asks the smoker question for LI/SH, since underwriting still requires it there. DI estimate " +
@@ -138,7 +138,7 @@ export const changeLog: ChangeLogEntry[] = [
       "amountStep and clamped to its min/max — affects all clients' dummy data, not just WAEPA. Payment " +
       "page est. cost font size (src/pages/Payment.tsx): the per-product 'Total estimated cost' amount was " +
       "variant='subtitle2' with no explicit size (~0.875rem); added fontSize: '1.25rem' to match the " +
-      "Coverage page's per-applicant 'Est. cost' amount styling (src/components/forms/ProductCatalog.tsx), " +
+      "Coverage page's per-applicant 'Est. cost' amount styling (src/components/coverage/ProductCatalog.tsx), " +
       "so the same figure reads at a consistent size across Coverage and Payment.",
   },
   {
@@ -149,10 +149,10 @@ export const changeLog: ChangeLogEntry[] = [
       "Made est. cost rate typography, product-reveal behavior, and the estimated-cost panel consistent between the Coverage page and the quote drawer; trimmed redundant/empty states from the Coverage page's inline cart",
     details:
       "Est. cost rate font size: the '$X.XX/mo' rate span shown below the benefit-amount dropdown is now " +
-      "1.25rem in both places it previously differed — src/components/forms/ProductCatalog.tsx (Coverage " +
+      "1.25rem in both places it previously differed — src/components/coverage/ProductCatalog.tsx (Coverage " +
       "page product cards, was subtitle2 with no explicit size) and src/components/forms/" +
       "EstimatorProductCard.tsx (quote drawer product cards, was the smaller 'caption' size). " +
-      "Coverage page inline cart (src/components/ui/CoverageCart.tsx, CoverageCartInline — the 'Your " +
+      "Coverage page inline cart (src/components/coverage/CoverageCart.tsx, CoverageCartInline — the 'Your " +
       "requested coverage' panel below the product catalog, NOT the full-drawer cart variant): the section " +
       "title and all of its content are now wrapped in a single grandTotal > 0 check, so nothing renders " +
       "(no title, no 'No coverage selected yet.' placeholder) until an amount is selected for at least one " +

@@ -26,6 +26,36 @@ function pickSampleAmount(
   return Math.min(maxAmount, Math.max(minAmount, Math.round(snapped)));
 }
 
+/** Evaluate complete sample portfolios: routing can depend on amounts,
+ * applicants and combinations of products rather than a single product. */
+function previewCoverageValues(
+  targetPageId: PageId,
+  values: ApplicationFormValues,
+  coverages: ReturnType<typeof getActiveClientCoverages>,
+): ApplicationFormValues {
+  const defaults = coverages.slice(0, 2);
+  const selections = [
+    defaults,
+    ...coverages.map(coverage => [coverage]),
+    ...coverages.flatMap((coverage, index) => coverages.slice(index + 1).map(other => [coverage, other])),
+  ];
+  const sample = (selection: typeof coverages, minimum = false): ApplicationFormValues => ({
+    coverageSelections: selection.map(coverage => coverage.id),
+    productApplicants: Object.fromEntries(selection.map(coverage => [coverage.id, ["member"]])),
+    coverageAmounts: Object.fromEntries(selection.map(coverage => [
+      `${coverage.id}:member`,
+      minimum ? getCoverageAmountRange(coverage, "member").minAmount ?? pickSampleAmount(coverage, "member") : pickSampleAmount(coverage, "member"),
+    ])),
+  });
+  for (const selection of selections) {
+    for (const minimum of [false, true]) {
+      const candidate = sample(selection, minimum);
+      if (!shouldSkipPage(targetPageId, { ...values, ...candidate })) return candidate;
+    }
+  }
+  return sample(defaults);
+}
+
 /**
  * Generate default/sample values for all fields up to and including a specific page
  */
@@ -61,32 +91,10 @@ export function generateFormDataUpToPage(
   if (shouldSeedCoverageData) {
     const coverages = getActiveClientCoverages();
 
-    // Ensure coverage selections exist. Prefer a selection that actually
-    // unlocks the target page (e.g. an "SI" coverage for health-si) instead
-    // of always grabbing the first two coverages, which may leave gated
-    // pages (health-si/qd/li/di) looking empty because their required
-    // underwriting type was never selected.
+    // Seed applicants and amounts before checking the target page's routing.
+    // Some questionnaires require a combined Life and Disability portfolio.
     if (!values.coverageSelections) {
-      const defaultSelection = coverages.slice(0, 2).map((c) => c.id);
-      const defaultSelectionUnlocksPage = !shouldSkipPage(targetPageId, {
-        ...values,
-        coverageSelections: defaultSelection,
-      });
-
-      if (defaultSelectionUnlocksPage) {
-        values.coverageSelections = defaultSelection;
-      } else {
-        const unlockingCoverage = coverages.find(
-          (c) =>
-            !shouldSkipPage(targetPageId, {
-              ...values,
-              coverageSelections: [c.id],
-            }),
-        );
-        values.coverageSelections = unlockingCoverage
-          ? [unlockingCoverage.id]
-          : defaultSelection;
-      }
+      Object.assign(values, previewCoverageValues(targetPageId, values, coverages));
     }
 
     // Generate coverage amounts and payment methods/frequencies

@@ -1,5 +1,6 @@
 export type PageCoverageDisposition =
   | "Covered"
+  | "Partial — examples missing"
   | "Internal docs — explicitly excluded";
 
 export type PageCoverageRow = {
@@ -25,9 +26,8 @@ export const pageCoverageRows: PageCoverageRow[] = [
     composition: "Standalone marketing/quote page",
     storyCoverage:
       "QuoteCalculator, EligibilityFields, CoverageOptionsPanel, HowApplyingWorksPanel, AppDrawer, QuickDecision",
-    pageSpecific:
-      "Hero/CTA composition, quote-entry loading handoff, and query-selected homepage variants.",
-    disposition: "Covered",
+    pageSpecific: "Hero/CTA composition, quote-entry loading handoff and query-selected variants. Missing examples: HeroClouds and embedded SinglePageSections/StepEditButton.",
+    disposition: "Partial — examples missing",
   },
   {
     page: "Membership",
@@ -35,18 +35,17 @@ export const pageCoverageRows: PageCoverageRow[] = [
     composition: "FormRoutePage",
     storyCoverage:
       "Application Page Template, FieldRenderer, HelpChips, AppDrawer, QuoteCalculator, SectionDivider",
-    pageSpecific:
-      "Client-specific membership eligibility branches and informational alerts.",
-    disposition: "Covered",
+    pageSpecific: "Client-specific membership, member information and conditional additional-information sections. Applicant-facing AMA lookup dialog removed after review.",
+    disposition: "Partial — examples missing",
   },
   {
     page: "Eligibility",
     route: "/eligibility",
     composition: "FormRoutePage",
     storyCoverage:
-      "Application Page Template, FieldRenderer, DynamicList, ApplicantSectionDivider, MemberVerification",
+      "Pages / Eligibility sections, Application Page Template, FieldRenderer, DynamicList, ApplicantSectionDivider, MemberVerification",
     pageSpecific:
-      "ZIP-to-state auto-fill message, resume-loaded notification, and verification-submit bridge.",
+      "Section examples cover ZIP-to-state feedback and dependent/spouse/child rendering. Resume-loaded feedback and the continuation bridge remain page-level behavior.",
     disposition: "Covered",
   },
   {
@@ -95,9 +94,8 @@ export const pageCoverageRows: PageCoverageRow[] = [
     composition: "FormRoutePage",
     storyCoverage:
       "ApplicationDocumentPreview, FieldRenderer, ConfirmationDialog, SendApplicationDialog, ApplicantSectionDivider",
-    pageSpecific:
-      "Print actions and advisor/applicant edit-request branching.",
-    disposition: "Covered",
+    pageSpecific: "Print actions and advisor/applicant edit-request branching. Missing example: ReviewStatement and its before-consent notice placement.",
+    disposition: "Partial — examples missing",
   },
   {
     page: "DocuSign",
@@ -112,16 +110,16 @@ export const pageCoverageRows: PageCoverageRow[] = [
     route: "/health-si",
     composition: "FormRoutePage",
     storyCoverage:
-      "FieldRenderer, DynamicList, ApplicantSectionDivider, HelpChips, AppDrawer",
-    pageSpecific: "Applicant-scoped conditional medical question sets.",
+      "Whole-page Health scenarios; HealthQuestion, HealthQuestionList, FieldRenderer, DynamicList, help and drawer",
+    pageSpecific: "Applicant-scoped SI questions, separate adult records, help and validation; standalone HealthQuestionList and HealthQuestion examples cover shared behavior.",
     disposition: "Covered",
   },
   {
     page: "Health — Life",
     route: "/health-li",
     composition: "FormRoutePage",
-    storyCoverage: "FieldRenderer, DynamicList, ApplicantSectionDivider",
-    pageSpecific: "Life-insurance medical question set and conditional detail lists.",
+    storyCoverage: "Whole-page Life scenarios; HealthQuestion, HealthQuestionList, FieldRenderer and DynamicList",
+    pageSpecific: "Default and configured source Life question sets, direct/repeated follow-ups and restored adult records. Shared HealthQuestion and HealthQuestionList have standalone examples.",
     disposition: "Covered",
   },
   {
@@ -129,7 +127,7 @@ export const pageCoverageRows: PageCoverageRow[] = [
     route: "/health-qd",
     composition: "FormRoutePage",
     storyCoverage: "QuickDecision and loading/status primitives",
-    pageSpecific: "Timed QuickDecision processing simulation.",
+    pageSpecific: "Loader while externally hosted QD questions load. Storybook remains pending; no external questions or Next action are simulated.",
     disposition: "Covered",
   },
   {
@@ -137,25 +135,41 @@ export const pageCoverageRows: PageCoverageRow[] = [
     route: "/health-di",
     composition: "FormRoutePage",
     storyCoverage:
-      "FieldRenderer, DynamicList, ApplicantSectionDivider, HelpChips, AppDrawer",
-    pageSpecific: "Disability medical question set and conditional detail lists.",
+      "Whole-page Health scenarios; HealthQuestion, HealthQuestionList, FieldRenderer, DynamicList, help and drawer",
+    pageSpecific: "Default and configured supplemental DI questions with independent applicant records and required detail validation.",
     disposition: "Covered",
   },
   {
     page: "Health — CIR",
     route: "/health-cir",
     composition: "FormRoutePage",
-    storyCoverage: "Application Page Template and typography foundations",
-    pageSpecific: "CIR placeholder copy; no unique interaction exists yet.",
+    storyCoverage: "Whole-page Health scenarios; HealthQuestion, HealthQuestionList and shared field/layout primitives",
+    pageSpecific: "The shared CHR/CIR form and direct follow-ups, with rider and Site enablement gates; ABE disables this separate page. An explicitly enabled detached fixture supplies the page example.",
     disposition: "Covered",
+  },
+  {
+    page: "Health — Critical Illness",
+    route: "/health-ci",
+    composition: "FormRoutePage",
+    storyCoverage: "Whole-page Health scenarios; HealthQuestion, HealthQuestionList and shared field/layout primitives",
+    pageSpecific: "CI-only/combined source forms, independent adult answers and California wording; application tobacco collection remains on Coverage.",
+    disposition: "Covered",
+  },
+  {
+    page: "Error pages",
+    route: "/404, /500 and unmatched paths",
+    composition: "AppShell / PageShell / FormShell",
+    storyCoverage: "Shared page, form, typography and action primitives",
+    pageSpecific: "The real ErrorPage owns the 404/500 composition and recovery links. These two states have no dedicated page example.",
+    disposition: "Partial — examples missing",
   },
   {
     page: "Payment",
     route: "/payment",
     composition: "FormRoutePage",
     storyCoverage:
-      "ProductCard, CategoryCard, FieldRenderer, SectionDivider, HelpChips, AppDrawer",
-    pageSpecific: "Selected-product premium summary and payment requirement branches.",
+      "Payment whole-page scenarios, PaymentSections, SharedPaymentControls and canonical product/field/help/cost surfaces",
+    pageSpecific: "Required/optional collection, restored bank and Bill me, member/spouse, multiple products, shared choices and no-products guidance.",
     disposition: "Covered",
   },
   {
@@ -172,8 +186,8 @@ export const pageCoverageRows: PageCoverageRow[] = [
     route: "/resume",
     composition: "Standalone resume form",
     storyCoverage: "FormShell, PageTitle, field and feedback primitives",
-    pageSpecific: "Magic-link send/resend/expiry flow.",
-    disposition: "Covered",
+    pageSpecific: "Magic-link send/resend/expiry flow. The Demo-only ApplicantMockOutbox has no example.",
+    disposition: "Partial — examples missing",
   },
   {
     page: "Resume Method",
@@ -188,8 +202,8 @@ export const pageCoverageRows: PageCoverageRow[] = [
     route: "/resume-code",
     composition: "Standalone resume form",
     storyCoverage: "FormShell, PageTitle, field and feedback primitives",
-    pageSpecific: "Security-code verify/resend/expiry flow and advisor-flow restoration.",
-    disposition: "Covered",
+    pageSpecific: "Security-code verify/resend/expiry and advisor restoration. The Demo-only ApplicantMockOutbox has no example.",
+    disposition: "Partial — examples missing",
   },
   {
     page: "Advisor Login",

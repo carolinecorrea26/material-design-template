@@ -4,10 +4,24 @@ import { generateFormDataUpToPage } from '../dev/utils/generateFormData';
 import { getActiveProgressStepIndex } from './progressSteps';
 import { getNextFormPageId, getPreviousFormPageId } from './formFlow';
 import { resolveFormTemplate } from './template/resolveTemplate';
+import { createReviewedMigrationDatabase } from '../migration/fixtures';
+import { installPrototypeLibrary, resolvePrototypeLibrary } from '../domain/prototypeLibrary';
+import { applicantParticipatesInPage } from './flowGates';
+import { configuredHealthQuestionnaire } from '../domain/configuredHealthQuestionnaire';
 
-afterEach(() => { window.history.replaceState({}, '', '/'); window.sessionStorage.clear(); });
+afterEach(() => { installPrototypeLibrary(null); window.history.replaceState({}, '', '/'); window.sessionStorage.clear(); });
 
 describe('Library page previews', () => {
+  it('prefills an ABE Health DI preview with coverage that activates its questions', () => {
+    window.history.replaceState({}, '', '/health-di?site=abe');
+    const library = resolvePrototypeLibrary(createReviewedMigrationDatabase(), 'abe', 'preview-test');
+    installPrototypeLibrary(library);
+    const values = generateFormDataUpToPage('health-di');
+    expect(applicantParticipatesInPage('health-di', 'self', values), JSON.stringify({ selections: values.coverageSelections, amounts: values.coverageAmounts, applicants: values.productApplicants })).toBe(true);
+    const questionnaire = configuredHealthQuestionnaire(library.site, 'health-di', 'self', values);
+    expect(questionnaire.status).toBe('resolved');
+    expect(questionnaire.items.length).toBeGreaterThan(0);
+  });
   it('opens health pages with full navigation despite a remembered single-page template', () => {
     window.sessionStorage.setItem('activeFormTemplate', 'single');
     const url = new URL(getSitePagePrototypeUrl('demo', 'health-li'));

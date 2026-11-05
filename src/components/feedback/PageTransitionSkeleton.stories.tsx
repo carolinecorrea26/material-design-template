@@ -9,9 +9,10 @@ import PageTransitionSkeleton from "./PageTransitionSkeleton";
  * message text and the decorative bars both.
  */
 const meta = {
-  title: "Feedback/PageTransitionSkeleton",
+  id: "feedback-pagetransitionskeleton",
+  title: "Components/Feedback and overlays/Loading and processing/Page loading",
   component: PageTransitionSkeleton,
-  parameters: { layout: "padded" },
+  parameters: { docs: { description: { component: "Shows loading placeholders while the next application page opens." } }, layout: "padded" },
 } satisfies Meta<typeof PageTransitionSkeleton>;
 
 export default meta;

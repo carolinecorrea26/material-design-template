@@ -8,7 +8,7 @@ import { getTpaForClient } from "../../repositories/sites";
 import { readMockEmailPreviews } from "../../utils/mockEmail";
 import AppFooter from "./AppFooter";
 import ClientHelpBanner from "./ClientHelpBanner";
-import ProductCostBreakdown from "../ui/ProductCostBreakdown";
+import ProductCostBreakdown from "../coverage/ProductCostBreakdown";
 
 let database: DatabaseSchema;
 beforeAll(() => { database = createReviewedMigrationDatabase(); }, 120000);

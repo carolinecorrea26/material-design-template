@@ -19,7 +19,7 @@ describe("Home quote placements", () => {
   });
   it.each(["default", "quoteFirst"] as const)("includes eligibility and category questions for %s", (homePageVariant) => {
     const placements = homeQuotePlacements({ ...base, coverages: { ...base.coverages, enabled: coverages.map((p) => p.id), hideSmokerQuestion: false }, features: { ...base.features, defaultTemplate: "multi", homePageVariant } });
-    expect(placements.filter((p) => !p.hidden).map((p) => p.fieldId)).toEqual(homeQuoteFieldIds);
+    expect(placements.filter((p) => !p.hidden).map((p) => p.fieldId)).toEqual(homeQuoteFieldIds.filter(id => id !== "actively-at-work"));
   });
   it.each(["hero-image", "welcome-back"] as const)("has no quote placements for %s", (homePageVariant) => {
     expect(homeQuotePlacements({ ...base, features: { ...base.features, homePageVariant } }).every((p) => p.hidden)).toBe(true);

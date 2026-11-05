@@ -4,7 +4,8 @@ const config: StorybookConfig = {
   "stories": [
     "../src/components/!(admin|docs)/**/*.stories.@(js|jsx|mjs|ts|tsx)",
     "../src/app/RoutePage.stories.tsx",
-    "../src/pages/admin/Accounts.stories.tsx"
+    "../src/docs/ReusableComponents.stories.tsx",
+    "../src/docs/foundations/*.stories.tsx"
   ],
   "addons": [
     "@storybook/addon-a11y"

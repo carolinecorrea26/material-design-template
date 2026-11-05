@@ -1,5 +1,3 @@
-import { TemplateChangeReference } from "../../docs/ProjectOverview";
-import ApplicationStateLibrary from "./library/ApplicationStateLibrary";
 import { Link as RouterLink, useParams, useSearchParams } from "react-router-dom";
 import { Box, Stack, Tab, Tabs, useMediaQuery, Typography } from "@mui/material";
 import { Workspace } from "../../components/admin/AdminPrimitives";
@@ -7,57 +5,70 @@ import SitePreview from "../../components/docs/SitePreview";
 import LibrarySiteSelector, { useLibrarySelection } from "./library/LibrarySiteSelector";
 import { LibraryScopeContext, type LibraryScope } from "./library/LibraryScope";
 import { libraryHref } from "./library/LibraryLink";
-import { LibraryCatalogProvider } from "./library/LibraryCatalogContext";
+import { LibraryCatalogProvider, useLibraryCatalog } from "./library/LibraryCatalogContext";
+import { resolvePageCatalog } from "../../domain/pageCatalog";
 import StoredLibraryDomain from "./library/StoredLibraryDomain";
 import StoredPagesLibrary from "./library/StoredPagesLibrary";
 import StoredFieldsLibrary from "./library/StoredFieldsLibrary";
-import { FlowsLibrary } from "./library/SiteDetailsLibraryDomains";
-import ThemesBrandingLibrary from "./library/ThemesBrandingLibrary";
-import ComponentsLibrary from "./library/ComponentsLibrary";
+import StoredFlowsLibrary from "./library/StoredFlowsLibrary";
 import AnalyticsLibrary from "./library/AnalyticsLibrary";
-import CommunicationsLibrary from "./library/CommunicationsLibrary";
+import ContentLibrary from "./library/ContentLibrary";
 import ClientInformationLibrary from "./library/ClientInformationLibrary";
-import RulesLibrary, { ruleDomains } from "./library/RulesLibrary";
+import RulesLibrary from "./library/RulesLibrary";
+import ConfigurationsLibrary from "./library/ConfigurationsLibrary";
 import ValidationLibrary from "./library/ValidationLibrary";
 import AccessibilityLibrary from "./library/AccessibilityLibrary";
 
 export const libraryTabs = [
-  { id: "client-information", label: "Client information" },
-  { id: "components", label: "Components" },
+  { id: "overview", label: "Overview" },
   { id: "pages", label: "Pages" },
-  { id: "flows", label: "Flows" },
   { id: "fields", label: "Fields" },
-  { id: "rules", label: "Rules & configuration" },
-
-  { id: "features", label: "Features" },
+  { id: "flows", label: "Flows" },
+  { id: "rules", label: "Rules" },
+  { id: "validation", label: "Validations" },
+  { id: "configurations", label: "Configurations" },
   { id: "content", label: "Content" },
-  { id: "communications", label: "Emails" },
-  { id: "themes", label: "Branding & Design" },
   { id: "accessibility", label: "Accessibility" },
   { id: "analytics", label: "Analytics" },
 ];
 const domainDescriptions: Record<string, string> = {
-  "client-information": "Client identity, logo, contacts and its TPA record from MCR.",
-  components: "Reusable applicant portal components, descriptions, and Storybook examples.",
-  pages: "Browse pages by application, resume, or advisor flow. Application order shows the main flow order; conditional pages may be skipped. Select a Site to inspect page availability and requirements.",
-  fields: "Browse field labels, input types, placement and order within pages or shared tools, requirements and options. Field labels link to their Storybook controls.",
-  validation: "Inspect field validation and effective requirements by page for the selected Site.",
+  overview: "Client, association and TPA information, with an interactive Site preview.",
+  pages: "Browse pages by flow, requirement and available fields, grouped by page, modal and drawer. Select a Site to see its configured requirements, including pages set to none. Page sequence is defined by the navigation rules for each flow.",
+  fields: "Browse field IDs, input labels, types, Storybook components, keyboards, options, defaults and helper text. Page and section usage is listed below the field catalog.",
+  validation: "Page errors, field errors, and application recovery and processing states.",
   analytics: "Review the pages, fields, controls, overlays, and tools that need analytics tags, including event triggers, Site applicability, and tagging gaps.",
-  accessibility: "WCAG 2.2 AA requirements and acceptance checks for prototype sites, with Siteimprove reporting in Insights.",
+  accessibility: "Accessibility tracking setup, prototype concerns and WCAG 2.2 AA review.",
   coverage: "Inspect products, amounts, underwriting requirements, and coverage categories.",
   patterns: "Review reusable integration, calculation, and coverage patterns.",
   flags: "Review configured and derived flags, scopes, and decision values.",
-  rules: "Inspect business rules, products and riders, portal settings, URL parameters and validations. Conditions and decision outputs belong to their related requirements.",
-  flows: "Explore application journeys and their branching paths.",
+  rules: "Functional rules describing how the Site behaves, including navigation and conditional actions.",
+  flows: "Review application journeys and their decisions in table format.",
   features: "Browse documented portal capabilities and impacted areas. Site-specific settings are listed in Configurations.",
-  configurations: "Inspect configuration definitions and resolved settings for the selected scope.",
+  configurations: "Applicant, coverage, theme and portal settings for the selected scope.",
   "url-parameters": "Review supported URL parameters, their behavior, and recorded Site usage.",
-  content: "Browse managed copy, images, links, and documents for the selected scope.",
+  content: "CMS content, images, links, documents and email templates for the selected scope.",
   communications: "Inspect transactional email templates and their contact configuration.",
   themes: "Inspect branding, icons and design foundations, with interactive theme previews for the selected scope.",
-  "site-preview": "Interact with the selected Site using mobile, tablet, or desktop viewports.",
 };
-const aliases: Record<string, string> = { templates: "configurations", emails: "communications", "pages-fields": "pages", "site-details": "pages", "site-overview": "pages", documents: "content", patterns: "rules", flags: "rules" };
+const aliases: Record<string, string> = { components: "pages", "client-information": "overview", "site-preview": "overview", templates: "configurations", themes: "configurations", products: "configurations", coverage: "configurations", "coverage-review": "configurations", "url-parameters": "configurations", features: "configurations", emails: "content", communications: "content", documents: "content", "pages-fields": "pages", "site-details": "pages", "site-overview": "pages", patterns: "rules", flags: "rules", validations: "validation" };
+
+function StoredSitePreview({ siteKey }: { siteKey: string }) {
+  const catalog = useLibraryCatalog();
+  if (siteKey === "all") return <Typography>Select a Site to open its interactive preview.</Typography>;
+  const home = resolvePageCatalog(catalog.data, siteKey).find(page => page.enabled && page.definition.type === "home");
+  return home ? <SitePreview siteId={siteKey} clientName={siteKey} homePath={home.definition.path} /> : <Typography>No Home page is enabled for this Site.</Typography>;
+}
+
+function LibraryOverview({ siteKey, legacyPreview }: { siteKey: string; legacyPreview: boolean }) {
+  const [search, setSearch] = useSearchParams();
+  const view = search.get("view") === "site-preview" || legacyPreview && !search.has("view") ? "site-preview" : "client-information";
+  return <Stack spacing={3}>
+    <Tabs value={view} aria-label="Overview views" onChange={(_, next: string) => setSearch({ site: siteKey, view: next })}>
+      <Tab value="client-information" label="Client information" /><Tab value="site-preview" label="Site preview" />
+    </Tabs>
+    {view === "site-preview" ? <StoredSitePreview siteKey={siteKey} /> : <ClientInformationLibrary siteKey={siteKey} />}
+  </Stack>;
+}
 
 export default function PortalLibrary() {
   const { domainId } = useParams();
@@ -65,10 +76,9 @@ export default function PortalLibrary() {
   const [search] = useSearchParams();
   const [selection, setSelection] = useLibrarySelection();
   const scope: LibraryScope = selection === "all" ? "global" : "effective";
-  const siteId = selection;
-  const domains = scope === "effective" ? [...libraryTabs.slice(0, -1), { id: "site-preview", label: "Site Preview" }, libraryTabs.at(-1)!] : libraryTabs;
+  const domains = libraryTabs;
   const requested = aliases[domainId ?? ""] ?? domainId;
-  const domain = domains.find(entry => entry.id === (ruleDomains.includes(requested ?? "") ? "rules" : requested)) ?? libraryTabs[0];
+  const domain = domains.find(entry => entry.id === requested) ?? libraryTabs[0];
   return <Workspace>
     <Typography component="h1" variant="h5" sx={{ fontWeight: 800 }}>Portal Library</Typography>
     <LibraryScopeContext.Provider value={scope}>
@@ -82,8 +92,8 @@ export default function PortalLibrary() {
           <Typography component="h2" variant="h5" sx={{ fontWeight: 800 }}>{domain.label}</Typography>
           <Typography variant="body2" color="text.secondary">{domainDescriptions[domain.id]}</Typography>
         </Stack>
-        {domain.id === "accessibility" ? <AccessibilityLibrary siteKey={selection} /> : domain.id === "flows" ? <Stack spacing={3}><FlowsLibrary /><LibraryCatalogProvider siteKey={selection}><ApplicationStateLibrary /></LibraryCatalogProvider></Stack> : domain.id === "themes" ? <ThemesBrandingLibrary /> : domain.id === "site-preview" ? <SitePreview siteId={siteId} clientName={siteId} /> : <LibraryCatalogProvider siteKey={selection}>
-          {domain.id === "pages" ? <StoredPagesLibrary siteKey={selection} /> : domain.id === "fields" ? <StoredFieldsLibrary siteKey={selection} /> : domain.id === "client-information" ? <ClientInformationLibrary siteKey={selection} /> : domain.id === "rules" ? <RulesLibrary domain={requested ?? "rules"} siteKey={selection} /> : domain.id === "components" ? <ComponentsLibrary /> : domain.id === "analytics" ? <AnalyticsLibrary siteKey={selection} /> : domain.id === "communications" ? <CommunicationsLibrary siteKey={selection} /> : domain.id === "features" ? <Stack spacing={3}><StoredLibraryDomain domain="features" siteKey={selection} /><details><summary>Template change reference</summary><TemplateChangeReference /></details></Stack> : domain.id === "validation" ? <ValidationLibrary siteKey={selection} /> : <StoredLibraryDomain domain={domain.id} siteKey={selection} />}
+        {domain.id === "accessibility" ? <AccessibilityLibrary siteKey={selection} /> : <LibraryCatalogProvider siteKey={selection}>
+          {domain.id === "pages" ? <StoredPagesLibrary siteKey={selection} /> : domain.id === "fields" ? <StoredFieldsLibrary siteKey={selection} /> : domain.id === "overview" ? <LibraryOverview siteKey={selection} legacyPreview={domainId === "site-preview"} /> : domain.id === "rules" ? <RulesLibrary siteKey={selection} /> : domain.id === "configurations" ? <ConfigurationsLibrary domain={domainId} siteKey={selection} /> : domain.id === "flows" ? <StoredFlowsLibrary siteKey={selection} /> : domain.id === "analytics" ? <AnalyticsLibrary siteKey={selection} /> : domain.id === "content" ? <ContentLibrary domain={domainId} siteKey={selection} /> : domain.id === "validation" ? <ValidationLibrary siteKey={selection} /> : <StoredLibraryDomain domain={domain.id} siteKey={selection} />}
         </LibraryCatalogProvider>}
       </Stack>
       </Box>

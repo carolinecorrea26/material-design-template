@@ -1,14 +1,15 @@
+import { getContent } from "../content";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
 import { applicantRecovery, readSavedApplication } from '../services/applicantSaveService';
+import { applicationSupportReference } from '../domain/applicationSupportReference';
+import { resolveSiteSupportContact, resolveApplicationSupportReference, siteSupportCopy, supportPhoneHref, supportWebsiteHref } from '../data/siteSupport';
 import theme from "../app/theme";
 import {
   getActiveSite,
   getClientForSite,
-  getTpaForClient,
   getSiteIdForClientAlias,
   resolveActiveAssociationFromApplication,
   resolveEffectiveBranding,
-  resolveSiteEmailConfiguration,
   resolveSiteSupport,
   resolveSiteCoverage,
   type SiteId,
@@ -20,7 +21,6 @@ import {
   getOrderedDecisionEntries,
   getQdDecisionResult,
   formatCurrencyAmount,
-  APPLICANT_LABELS,
   type SelectedCoverageEntry,
 } from "./coverageDecisions";
 
@@ -138,7 +138,7 @@ function getClientEmailPayload(
   });
   const support = resolveSiteSupport(siteId);
   const startUrl = getNormalizedWebsiteUrl(support.website);
-  const emailSupport = resolveSiteEmailConfiguration(siteId);
+  const contact = resolveSiteSupportContact(siteId);
 
   return {
     clientId: client.id,
@@ -146,16 +146,13 @@ function getClientEmailPayload(
     associationId: association?.id,
     associationName: association?.name ?? client.name,
     clientAcronym: client.acronym,
-    tpaName: emailSupport?.contactOverride?.name || getTpaForClient(client.id)?.name || client.name,
-    tpaAcronym: emailSupport?.contactOverride?.acronym || getTpaForClient(client.id)?.acronym || client.acronym,
-    tpaPhone:
-      emailSupport?.supportOverride?.phone ||
-      support.phoneDisplay ||
-      support.phone ||
-      "",
-    tpaEmail: emailSupport?.supportOverride?.email || support.email || "",
-    tpaWebsite: emailSupport?.supportOverride?.website || support.website || "",
-    hideSupportContact: Boolean(emailSupport?.hideContactBox),
+    tpaName: contact.name,
+    tpaAcronym: contact.acronym,
+    tpaPhone: contact.phone,
+    tpaEmail: contact.email,
+    tpaWebsite: contact.website,
+    hideSupportContact: contact.hideInEmail,
+    supportReference: resolveApplicationSupportReference(siteId, { confirmationId: getStringValue(values, 'mock-submission-id') }),
     clientLogo: branding.logo,
     clientLogoAlt: branding.logoAlt,
     startUrl,
@@ -282,10 +279,6 @@ function getButtonHtml(label: string, href: string) {
   </table>`;
 }
 
-function getTelHref(phone: string) {
-  return phone.replace(/\D/g, "");
-}
-
 function getVerifyIdentityNoticeHtml() {
   return `<p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 16px; font-size:16px; line-height:1.55; color:#374151;">
     To access your application information, you will be asked to verify your identity using the email and phone number provided in your application.
@@ -322,7 +315,7 @@ function getDecisionBoxHtml(
   });
 
   const colors = getDecisionStatusColors(status.label);
-  const applicantLabel = APPLICANT_LABELS[entry.applicant];
+  const applicantLabel = getContent().shared.applicantLabels[entry.applicant];
 
   const amountRequested = getCoverageAmountRequested(
     values,
@@ -377,39 +370,41 @@ function getDecisionBoxesHtml(values: ApplicationFormValues, siteId: SiteId) {
     ${entries.map((entry, index) => getDecisionBoxHtml(entry, index, values)).join("")}`;
 }
 
-function getSupportHtml(tpaName: string, tpaPhone: string, tpaEmail: string, tpaWebsite?: string) {
-  const phoneHref = getTelHref(tpaPhone);
+function getSupportHtml(tpaName: string, tpaPhone: string, tpaEmail: string, tpaWebsite?: string, reference?: ReturnType<typeof applicationSupportReference>) {
+  if (!tpaPhone && !tpaEmail && !tpaWebsite && !reference) return '';
 
-  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; margin:28px 0 0; background-color:${theme.palette.support.main}; border:1px solid ${theme.palette.support.border}; border-radius:16px;">
+  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; margin:28px 0 0; background-color:${theme.palette.background.paper}; border:1px solid ${theme.palette.divider}; border-radius:16px;">
     <tr>
       <td style="font-family:Arial, Helvetica, sans-serif; padding:22px 22px 20px; color:#12233d;">
         <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 18px; color:#071b3a; font-size:18px; line-height:1.25; font-weight:700;">
-          Questions? We’re here to help.
+          ${escapeHtml(siteSupportCopy.title)}
         </p>
+
+        ${reference ? `<p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 14px; color:#12233d; font-size:16px; line-height:1.45;">${escapeHtml(reference.instruction)} <strong>${escapeHtml(reference.id)}</strong></p>` : ''}
 
         <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 14px; color:#12233d; font-size:16px; line-height:1.45; font-weight:400;">
-          ${escapeHtml(tpaName)} Insurance Administrator
+          ${escapeHtml(tpaName)} ${escapeHtml(siteSupportCopy.administratorSuffix)}
         </p>
 
-        <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 12px; color:#12233d; font-size:16px; line-height:1.45; font-weight:700;">
-          Call:
-          <a href="tel:${escapeHtml(phoneHref)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; font-weight:700; text-decoration:none;">
+        ${tpaPhone ? `<p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 12px; color:#12233d; font-size:16px; line-height:1.45; font-weight:700;">
+          ${escapeHtml(siteSupportCopy.callLabel)}
+          <a href="${escapeHtml(supportPhoneHref(tpaPhone))}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; font-weight:700; text-decoration:underline;">
             ${escapeHtml(tpaPhone)}
           </a>
-        </p>
+        </p>` : ''}
 
-        <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 ${tpaWebsite ? "12px" : "0"}; color:#12233d; font-size:16px; line-height:1.45; font-weight:700;">
-          Email:
-          <a href="mailto:${escapeHtml(tpaEmail)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; font-weight:700; text-decoration:none;">
+        ${tpaEmail ? `<p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 ${tpaWebsite ? "12px" : "0"}; color:#12233d; font-size:16px; line-height:1.45; font-weight:700;">
+          ${escapeHtml(siteSupportCopy.emailLabel)}
+          <a href="mailto:${escapeHtml(tpaEmail)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; font-weight:700; text-decoration:underline;">
             ${escapeHtml(tpaEmail)}
           </a>
-        </p>
+        </p>` : ''}
 
         ${
           tpaWebsite
             ? `<p style="font-family:Arial, Helvetica, sans-serif; margin:0; color:#12233d; font-size:16px; line-height:1.45; font-weight:700;">
-          Website:
-          <a href="${escapeHtml(getNormalizedWebsiteUrl(tpaWebsite))}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; font-weight:700; text-decoration:none;">
+          ${escapeHtml(siteSupportCopy.websiteLabel)}
+          <a href="${escapeHtml(supportWebsiteHref(tpaWebsite))}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; font-weight:700; text-decoration:underline;">
             ${escapeHtml(tpaWebsite)}
           </a>
         </p>`
@@ -421,7 +416,7 @@ function getSupportHtml(tpaName: string, tpaPhone: string, tpaEmail: string, tpa
 }
 
 function getNoticeHtml(title: string, body: string) {
-  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; margin:20px 0 0; background-color:${theme.palette.notice.main}; border:1px solid ${theme.palette.notice.border}; border-radius:16px;">
+  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-family:Arial, Helvetica, sans-serif; margin:20px 0 0; background-color:${theme.palette.background.paper}; border:1px solid ${theme.palette.divider}; border-radius:16px;">
     <tr>
       <td style="font-family:Arial, Helvetica, sans-serif; padding:22px 22px 20px; color:#7a2e0c;">
         <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 18px; color:#7a2e0c; font-size:18px; line-height:1.25; font-weight:700;">
@@ -539,7 +534,7 @@ function buildAutosaveEmailHtml(
       </p>
 
       <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 28px; font-size:15px; line-height:1.5; color:#006fff; word-break:break-all;">
-        <a href="${escapeHtml(payload.resumeUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:none;">
+        <a href="${escapeHtml(payload.resumeUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:underline;">
           ${escapeHtml(payload.resumeDisplayUrl)}
         </a>
       </p>
@@ -548,7 +543,7 @@ function buildAutosaveEmailHtml(
         We look forward to serving your insurance needs.
       </p>
 
-      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite)}
+      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite, payload.supportReference)}
       ${getNoticeHtml(
         "Your application will be saved for 10 days.",
         `For your security, your saved application will be deleted on ${formatMockDate(purgeDate)} . After that, you’ll need to begin a new application.`,
@@ -593,7 +588,7 @@ function buildApplicationSentToApplicantEmailHtml(
       </p>
 
       <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 28px; font-size:15px; line-height:1.5; color:#006fff; word-break:break-all;">
-        <a href="${escapeHtml(payload.resumeUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:none;">
+        <a href="${escapeHtml(payload.resumeUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:underline;">
           ${escapeHtml(payload.resumeDisplayUrl)}
         </a>
       </p>
@@ -602,7 +597,7 @@ function buildApplicationSentToApplicantEmailHtml(
         We look forward to serving your insurance needs.
       </p>
 
-      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, advisorEmail, payload.tpaWebsite)}
+      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, advisorEmail, payload.tpaWebsite, payload.supportReference)}
       ${getNoticeHtml(
         "Your application will be saved for 10 days.",
         `For your security, your saved application will be deleted on ${formatMockDate(purgeDate)} . After that, you’ll need to begin a new application.`,
@@ -639,7 +634,7 @@ function buildReceiptEmailHtml(
 
       ${getDecisionBoxesHtml(values, payload.siteId)}
 
-      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite)}
+      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite, applicationSupportReference({ confirmationId: confirmationNumber }) ?? payload.supportReference)}
       ${getNoReplyHtml()}
     `,
   });
@@ -703,7 +698,7 @@ function buildPendingReminderEmailHtml(siteId?: SiteId) {
       </p>
 
       <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 28px; font-size:15px; line-height:1.5; color:#006fff; word-break:break-all;">
-        <a href="${escapeHtml(payload.resumeUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:none;">
+        <a href="${escapeHtml(payload.resumeUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:underline;">
           ${escapeHtml(payload.resumeDisplayUrl)}
         </a>
       </p>
@@ -712,7 +707,7 @@ function buildPendingReminderEmailHtml(siteId?: SiteId) {
         We look forward to serving your insurance needs.
       </p>
 
-      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite)}
+      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite, payload.supportReference)}
       ${getNoticeHtml(
         "Your application will be saved for 10 days.",
         `For your security, your saved application will be deleted on ${formatMockDate(
@@ -752,7 +747,7 @@ function buildPurgeReminderEmailHtml(siteId?: SiteId) {
       </p>
 
       <p style="font-family:Arial, Helvetica, sans-serif; margin:0 0 28px; font-size:15px; line-height:1.5; color:#006fff; word-break:break-all;">
-        <a href="${escapeHtml(payload.startUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:none;">
+        <a href="${escapeHtml(payload.startUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:underline;">
           ${escapeHtml(payload.startUrl)}
         </a>
       </p>
@@ -765,7 +760,7 @@ function buildPurgeReminderEmailHtml(siteId?: SiteId) {
         We look forward to serving your insurance needs.
       </p>
 
-      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite)}
+      ${payload.hideSupportContact ? "" : getSupportHtml(payload.tpaName, payload.tpaPhone, payload.tpaEmail, payload.tpaWebsite, payload.supportReference)}
 
       <div style="font-family:Arial, Helvetica, sans-serif; margin:20px 0; border-top:1px dashed #d1d5db;"></div>
 
@@ -836,7 +831,7 @@ function buildAdvisorEmailHtml(options: {
 
       <p style="font-family:Arial, Helvetica, sans-serif; margin:20px 0 0; font-size:16px; line-height:1.55; color:#111827;">
         Access the ${escapeHtml(options.payload.clientAcronym)} Advisor Portal to start a new application or take action on an application in progress:
-        <a href="${escapeHtml(options.payload.resumeUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:none;">
+        <a href="${escapeHtml(options.payload.resumeUrl)}" style="font-family:Arial, Helvetica, sans-serif; color:#006fff; text-decoration:underline;">
           ${escapeHtml(options.payload.resumeDisplayUrl)}
         </a>
       </p>

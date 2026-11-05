@@ -11,9 +11,10 @@ import AppModal from "./AppModal";
  * "alertdialog" semantics.
  */
 const meta = {
-  title: "Overlays/AppModal",
+  id: "overlays-appmodal",
+  title: "Components/Feedback and overlays/Dialogs and drawers/Containers/Modal",
   component: AppModal,
-  parameters: { layout: "centered" },
+  parameters: { docs: { description: { component: "Displays a focused dialog with primary and secondary actions." } }, layout: "centered" },
 } satisfies Meta<typeof AppModal>;
 
 export default meta;
@@ -24,12 +25,10 @@ function ModalDemo({
 }: Omit<React.ComponentProps<typeof AppModal>, "open" | "onClose" | "children"> & {
   children?: React.ReactNode;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   return (
     <>
-      <Button variant="outlined" onClick={() => setOpen(true)}>
-        Open modal
-      </Button>
+      {!open && <Button variant="outlined" onClick={() => setOpen(true)}>Reopen dialog</Button>}
       <AppModal {...props} open={open} onClose={() => setOpen(false)}>
         {children ?? (
           <Typography variant="body2" color="text.secondary">

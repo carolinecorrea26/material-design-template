@@ -28,7 +28,6 @@ export default function ExpiringCodeAlert({
         expired. {" "}
         <Link
           href="#"
-          underline="hover"
           onClick={(event) => {
             event.preventDefault();
             onResend();

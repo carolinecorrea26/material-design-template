@@ -1,7 +1,7 @@
 /**
  * Scrolls to a page's row in the Pages table, expanding the containing
- * SectionAccordion first if it's currently collapsed. SectionAccordion keeps
- * its children mounted (MUI Collapse, not unmountOnExit) even when collapsed,
+ * MUI accordion first if it's currently collapsed. Accordions that keep
+ * their children mounted remain in the DOM even when collapsed,
  * so the anchor always resolves — but a collapsed section renders at zero
  * height, so scrollIntoView alone would land on an invisible target.
  */

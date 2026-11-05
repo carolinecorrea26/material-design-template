@@ -25,7 +25,7 @@ describe("user-authorized provisional source choices", () => {
       if (siteKey === "nso") expect(resolveEffectiveEligibility(site, productKey, applicantKey, { ...facts, workHoursPerWeek: 19 })).toMatchObject({ eligible: false });
     }
     const ama = resolveEffectiveSite(db, "ama");
-    const child = { ageYears: 26, ageDays: 9500, unmarried: true, selectedPlans: [{ applicantKey: "member", categoryKey: "life", productKey: "li-preferred" }] };
+    const child = { membershipType: "physician", ageYears: 26, ageDays: 9500, unmarried: true, selectedPlans: [{ applicantKey: "member", categoryKey: "life", productKey: "li-preferred" }] };
     expect(resolveEffectiveEligibility(ama, "li-preferred", "child", child)).toMatchObject({ status: "resolved", eligible: true });
     expect(resolveEffectiveEligibility(ama, "li-preferred", "child", { ...child, ageYears: 27, fullTimeStudent: true })).toMatchObject({ eligible: false });
     expect(resolveEffectiveEligibility(ama, "li-preferred", "child", { ...child, ageYears: 0, ageDays: 13 })).toMatchObject({ eligible: false });
@@ -34,8 +34,8 @@ describe("user-authorized provisional source choices", () => {
   it("uses ISI recorded ranges and excludes child coverage", () => {
     const site = resolveEffectiveSite(db, "isitrust");
     for (const applicant of ["member", "spouse"]) {
-      for (const amount of [5000, 10000, 100000]) expect(validateNormalizedCoverageAmount(site, "sh-critical-illness", applicant, amount).allowed).toBe(true);
-      for (const amount of [4999, 5001, 105000]) expect(validateNormalizedCoverageAmount(site, "sh-critical-illness", applicant, amount).allowed).toBe(false);
+      for (const amount of [5000, 10000, 100000]) expect(validateNormalizedCoverageAmount(site, "sh-critical-illness", applicant, amount, undefined, "akron-bar-association").allowed).toBe(true);
+      for (const amount of [4999, 5001, 105000]) expect(validateNormalizedCoverageAmount(site, "sh-critical-illness", applicant, amount, undefined, "akron-bar-association").allowed).toBe(false);
     }
     expect(validateNormalizedCoverageAmount(site, "sh-critical-illness", "child", 5000).allowed).toBe(false);
   });
@@ -47,7 +47,11 @@ describe("user-authorized provisional source choices", () => {
       expect(site).toEqual(resolveEffectiveSite(db, siteRow.key));
       if (siteRow.key === "demo") { expect(site.provisionalDecisions).toEqual([]); continue; }
       expect(site.provisionalDecisions.length).toBeGreaterThan(0);
-      for (const decision of site.provisionalDecisions) expect(decision.value).toMatchObject({ revisit: true, sourceReconciliation: "deferred", runtimeActivation: "pending" });
+      for (const decision of site.provisionalDecisions) {
+        if (decision.key === "provisional-decision.isitrust.st-louis-affiliation") expect(decision.value).toMatchObject({ revisit: true, sourceReconciliation: "pending", selected: "Preserve existing assignment provisionally" });
+        else if ((decision.value as { sourceReconciliation?: string }).sourceReconciliation === "superseded") expect(decision.value).toMatchObject({ sourceReconciliation: "superseded", runtimeActivation: "superseded", supersededBy: expect.any(String) });
+        else expect(decision.value).toMatchObject({ revisit: true, sourceReconciliation: "deferred", runtimeActivation: "pending" });
+      }
       for (const product of site.configuration.products) expect(resolveNormalizedRate(site, product.productKey)).toMatchObject({ status: "unavailable", amount: null, displayPrice: false, provisional: true, revisit: true });
     }
     expect(db.configurationValues.find(row => row.key === "nso.li-term.provisional-billing-fee")?.value).toMatchObject({ billMeFee: 0, revisit: true });

@@ -1,210 +1,135 @@
-import { getSurfaceField, getSurfaceFields } from "../../config/fields/storedSurfaces";
-import { getPrototypeLibrary } from "../../domain/prototypeLibrary";
-import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  Alert,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-} from "@mui/material";
-import {
-  deriveStateProvinceFromZipOrPostalCode,
-  formatZipOrPostalCode,
-} from "../../utils/zipToStateProvince";
-import {
-  parseStoredDate,
-  formatDateForStorage,
-  formatDateDisplay,
-} from "../../utils/dateFormatting";
+import { fieldCatalog } from "../../config/fields";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Alert, Box, Stack } from "@mui/material";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import ControlledFieldRenderer from "./ControlledFieldRenderer";
+import FieldRenderer from "./FieldRenderer";
+import type { FormRouteRenderProps } from "../../app/RoutePage";
+import type { FieldDefinition, FieldOption } from "../../config/fields/types";
+import { deriveStateProvinceFromZipOrPostalCode } from "../../utils/zipToStateProvince";
 import { calculateAge } from "../../utils/calculateAge";
 
-export type EligibilityValues = {
-  birthday: string;
-  zipCode: string;
-  state: string;
-};
-
-type EligibilityFieldsProps = {
+export type EligibilityValues = { birthday: string; zipCode: string; state: string };
+export type EligibilityPresentation = { fields?: FieldDefinition[]; eligibleStatesOnly?: boolean; maxAge?: number | null };
+const defaultFields = (["zip-postal-code", "state-province", "birth-date"] as const).map(id => fieldCatalog[id]);
+type QuoteProps = EligibilityPresentation & {
   values: EligibilityValues;
   onChange: (next: Partial<EligibilityValues>) => void;
-  /** When true, validation errors and age error are shown. */
   attempted: boolean;
-  /** External age error string (e.g. "age 80 or older" message). Cleared by caller. */
   ageError?: string;
-  /** ID prefix for label/select elements — avoids duplicate IDs when rendered multiple times. */
   idPrefix?: string;
 };
+type ApplicationProps = EligibilityPresentation & {
+  form: Pick<FormRouteRenderProps, "control" | "errors" | "watchedValues" | "setValue">;
+  fields: FieldDefinition[];
+};
+const emptyStateOptions: FieldOption[] = [];
+const fieldKeys = { birthday: "birth-date", zipCode: "zip-postal-code", state: "state-province" } as const;
+const valueKeys = { "birth-date": "birthday", "zip-postal-code": "zipCode", "state-province": "state" } as const;
 
-function getStateOptions() {
-  return getSurfaceField("quoteInputs", "state-province")?.options ?? [];
-}
-
-/**
- * Reusable DOB + ZIP + State field group.
- * Handles date formatting, auto-deriving state from ZIP, and field-level validation.
- *
- * ZIP auto-sets state on change; the user may then override state manually.
- * If the user edits ZIP again, state is re-derived from the new ZIP.
- *
- * Used on the Home page quote entry card and inside QuoteCalculator
- * when collecting eligibility before showing coverage estimates.
+/** Shared ZIP / State / Birthday group for application Eligibility and quote tools.
+ * The form adapter preserves application registration; the controlled adapter
+ * preserves quote-owned values. Both use the same derivation, feedback and layout.
  */
-export default function EligibilityFields({
-  values,
-  onChange,
-  attempted,
-  ageError,
-  idPrefix = "elig",
-}: EligibilityFieldsProps) {
-  const fields = getSurfaceFields("quoteInputs").filter(field => ["birth-date", "zip-postal-code", "state-province"].includes(field.id));
-  const definition = (id: string) => fields.find(field => field.id === id);
-  const stateOptions = useMemo(() => getStateOptions(), []);
-  const [dobFocused, setDobFocused] = useState(false);
-
-  // Track the zip that last auto-set the state, so we only re-derive when zip changes.
-  const lastDerivedZipRef = useRef<string>("");
-
-  // Auto-derive state from zip whenever zip changes (but not on manual state edits).
-  useEffect(() => {
-    if (values.zipCode === lastDerivedZipRef.current) return;
-
-    const derived = deriveStateProvinceFromZipOrPostalCode(
-      values.zipCode,
-      stateOptions,
-    );
-    lastDerivedZipRef.current = values.zipCode;
-
-    if (derived && derived !== values.state) {
-      onChange({ state: derived });
-    }
-  }, [values.zipCode, stateOptions, values.state, onChange]);
-
-  const errors = useMemo(() => {
-    const e: Record<string, string> = {};
-    if (!values.birthday && getSurfaceField("quoteInputs", "birth-date")?.required) {
-      e.birthday = "Date of birth is required.";
-    } else if (values.birthday && !/^\d{4}-\d{2}-\d{2}$/.test(values.birthday)) {
-      e.birthday = "Enter a complete date (MM/DD/YYYY).";
-    }
-    if (!values.zipCode && getSurfaceField("quoteInputs", "zip-postal-code")?.required) e.zipCode = "ZIP / postal code is required.";
-    if (!values.state && getSurfaceField("quoteInputs", "state-province")?.required) e.state = "State is required.";
-    return e;
-  }, [values.birthday, values.zipCode, values.state]);
-
-  /** Returns true if all fields pass validation. */
-  const isValid = Object.keys(errors).length === 0;
-  // Expose for callers that need to check validity before submitting
-  void isValid;
-
-  const stateLabelId = `${idPrefix}-state-label`;
-
-  function handleZipChange(rawValue: string) {
-    const formatted = formatZipOrPostalCode(rawValue);
-    // Reset the "last derived" ref so the effect re-runs for the new zip.
-    lastDerivedZipRef.current = "";
-    onChange({ zipCode: formatted });
-  }
-
-  function handleStateChange(newState: string) {
-    // Update the "last derived" zip ref to the current zip so the effect
-    // doesn't immediately override the user's manual selection.
-    lastDerivedZipRef.current = values.zipCode;
-    onChange({ state: newState });
-  }
-
-  const controls = {
-    'birth-date': (<TextField
-        label={definition("birth-date")?.label}
-        fullWidth
-        required={definition("birth-date")?.required}
-        disabled={definition("birth-date")?.disabled}
-        placeholder={definition("birth-date")?.placeholder ?? "MM/DD/YYYY"}
-        value={parseStoredDate(values.birthday)}
-        onChange={(event) => {
-          const formatted = formatDateDisplay(event.target.value);
-          const digits = formatted.replace(/\D/g, "");
-          if (digits.length === 8) {
-            onChange({ birthday: formatDateForStorage(formatted) });
-          } else {
-            onChange({ birthday: formatted });
-          }
-        }}
-        onFocus={() => setDobFocused(true)}
-        onBlur={() => setDobFocused(false)}
-        inputProps={{ inputMode: "numeric" }}
-        InputLabelProps={{ shrink: dobFocused || !!values.birthday }}
-        error={attempted && !!errors.birthday}
-        helperText={
-          attempted && errors.birthday ? errors.birthday : undefined
-        }
-      />),
-    'zip-postal-code': (<TextField
-        label={definition("zip-postal-code")?.label}
-        fullWidth
-        required={definition("zip-postal-code")?.required}
-        disabled={definition("zip-postal-code")?.disabled}
-        value={values.zipCode}
-        onChange={(event) => handleZipChange(event.target.value)}
-        inputProps={{ inputMode: definition("zip-postal-code")?.inputMode ?? "text", maxLength: definition("zip-postal-code")?.maxLength ?? 7 }}
-        error={attempted && !!errors.zipCode}
-        helperText={attempted ? errors.zipCode || undefined : undefined}
-      />),
-    'state-province': (<FormControl fullWidth required={definition("state-province")?.required} disabled={definition("state-province")?.disabled} error={attempted && !!errors.state}>
-        <InputLabel id={stateLabelId}>{definition("state-province")?.label}</InputLabel>
-        <Select
-          labelId={stateLabelId}
-          label={definition("state-province")?.label}
-          value={values.state}
-          onChange={(event) => handleStateChange(event.target.value)}
-        >
-          {stateOptions.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select>
-        {attempted && errors.state && (
-          <FormHelperText>{errors.state}</FormHelperText>
-        )}
-      </FormControl>)
+export default function EligibilityFields(props: QuoteProps | ApplicationProps) {
+  const application = "form" in props ? props : undefined;
+  const quote = "values" in props ? props : undefined;
+  const fields = (props.fields ?? defaultFields).filter(field => Object.hasOwn(valueKeys, field.id));
+  const values = quote?.values ?? {
+    zipCode: String(application?.form.watchedValues["zip-postal-code"] ?? ""),
+    state: String(application?.form.watchedValues["state-province"] ?? ""),
+    birthday: String(application?.form.watchedValues["birth-date"] ?? ""),
   };
-  return (
-    <Stack spacing={2}>
-      {fields.map(field => <Stack key={field.id}>{controls[field.id as keyof typeof controls]}</Stack>)}
+  const onChange = quote?.onChange;
+  const setValue = application?.form.setValue;
+  const update = useCallback((key: keyof EligibilityValues, value: string) => {
+    if (setValue) setValue(fieldKeys[key], value, { shouldDirty: true, shouldValidate: true });
+    else onChange?.({ [key]: value });
+  }, [setValue, onChange]);
+  const stateField = fields.find(field => field.id === "state-province");
+  const stateOptions = stateField?.options ?? emptyStateOptions;
+  const eligibleStatesOnly = props.eligibleStatesOnly;
+  const lastDerivedZip = useRef("");
+  const messageFrame = useRef<number | null>(null);
+  const messageTimeout = useRef<number | null>(null);
+  const [showInferredState, setShowInferredState] = useState(false);
+  const clearMessage = useCallback(() => {
+    if (messageFrame.current !== null) window.cancelAnimationFrame(messageFrame.current);
+    if (messageTimeout.current !== null) window.clearTimeout(messageTimeout.current);
+  }, []);
+  useEffect(() => clearMessage, [clearMessage]);
 
-      {ageError && <Alert severity="error">{ageError}</Alert>}
-    </Stack>
-  );
+  useEffect(() => {
+    if (values.zipCode === lastDerivedZip.current) return;
+    lastDerivedZip.current = values.zipCode;
+    clearMessage();
+    setShowInferredState(false);
+    if (values.zipCode.trim().length < 5) return;
+    const derived = deriveStateProvinceFromZipOrPostalCode(values.zipCode, stateOptions);
+    if (!derived) {
+      if (eligibleStatesOnly && values.state) update("state", "");
+      return;
+    }
+    if (derived !== values.state) update("state", derived);
+    messageFrame.current = window.requestAnimationFrame(() => setShowInferredState(true));
+    messageTimeout.current = window.setTimeout(() => setShowInferredState(false), 4000);
+  }, [values.zipCode, values.state, stateOptions, eligibleStatesOnly, update, clearMessage]);
+
+  const { errors: quoteErrors } = validateEligibility(values, { ...props, fields });
+  const stateEligibilityError = eligibleStatesOnly && values.zipCode.trim().length >= 5 &&
+    !deriveStateProvinceFromZipOrPostalCode(values.zipCode, stateOptions)
+    ? "The state for this ZIP / Postal Code may not be eligible for coverage." : undefined;
+  return <Stack spacing={2} useFlexGap>
+    {fields.map(field => {
+      const key = valueKeys[field.id as keyof typeof valueKeys];
+      const feedback = key === "state" && showInferredState ? <Box component="span" role="status" sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "success.main", fontWeight: 500 }}>
+        <CheckRoundedIcon sx={{ fontSize: 16 }} />Based on your ZIP / postal code
+      </Box> : undefined;
+      const onValueChange = () => {
+        if (key === "state") {
+          lastDerivedZip.current = values.zipCode;
+          clearMessage();
+          setShowInferredState(false);
+        }
+      };
+      const stateError = key === "state" ? stateEligibilityError : undefined;
+      return application ? <FieldRenderer key={field.id} field={field} control={application.form.control}
+        errors={stateError ? { ...application.form.errors, [field.id]: { type: "eligibility", message: stateError } } : application.form.errors}
+        margin="none" reserveFeedbackSpace feedback={feedback} onValueChange={onValueChange}
+      /> : <ControlledFieldRenderer key={field.id} field={{ ...field, id: `${quote?.idPrefix ?? "elig"}-${field.id}` }}
+        value={values[key]} error={stateError ?? (quote?.attempted ? quoteErrors[key] : undefined)}
+        reserveFeedbackSpace feedback={feedback}
+        onChange={value => { onValueChange(); update(key, String(value)); }}
+      />;
+    })}
+    {quote?.ageError && <Alert severity="error">{quote.ageError}</Alert>}
+  </Stack>;
 }
 
 /**
  * Validates eligibility values and returns field-level errors.
  * Also performs the age >= 80 check and returns an ageError string if applicable.
  */
-export function validateEligibility(values: EligibilityValues): {
+export function validateEligibility(values: EligibilityValues, { fields = defaultFields, maxAge = 80 }: EligibilityPresentation = {}): {
   errors: Record<string, string>;
   ageError: string;
   isValid: boolean;
 } {
   const errors: Record<string, string> = {};
-  if (!values.birthday && getSurfaceField("quoteInputs", "birth-date")?.required) {
+  if (!values.birthday && fields.find(field => field.id === "birth-date")?.required) {
     errors.birthday = "Date of birth is required.";
   } else if (values.birthday && !/^\d{4}-\d{2}-\d{2}$/.test(values.birthday)) {
     errors.birthday = "Enter a complete date (MM/DD/YYYY).";
   }
-  if (!values.zipCode && getSurfaceField("quoteInputs", "zip-postal-code")?.required) errors.zipCode = "ZIP / postal code is required.";
-  if (!values.state && getSurfaceField("quoteInputs", "state-province")?.required) errors.state = "State is required.";
+  if (!values.zipCode && fields.find(field => field.id === "zip-postal-code")?.required) errors.zipCode = "ZIP / postal code is required.";
+  if (!values.state && fields.find(field => field.id === "state-province")?.required) errors.state = "State is required.";
 
   let ageError = "";
   if (Object.keys(errors).length === 0) {
     const age = calculateAge(values.birthday);
-    if (!getPrototypeLibrary() && age !== null && age >= 80) {
+    if (maxAge !== null && age !== null && age >= maxAge) {
       ageError =
-        "We're sorry, but coverage is not available for applicants age 80 or older.";
+        `We're sorry, but coverage is not available for applicants age ${maxAge} or older.`;
     }
   }
 

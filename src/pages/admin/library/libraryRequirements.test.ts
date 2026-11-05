@@ -10,6 +10,14 @@ import { urlParameterRows } from './UrlParametersLibrary';
 const catalog: LibraryCatalog = { revision: 'test', data: JSON.parse(JSON.stringify(createReviewedMigrationDatabase())), analyticsTags: [] };
 
 describe('Library requirements ownership and relationships', () => {
+  it('exposes AMA scoped behavior and shared service/policy owners in the actual Rules view', () => {
+    const ama = libraryRequirementRows(catalog, 'ama');
+    expect(ama.find(row => row.key === 'rule-coverage-ama-active-work')).toMatchObject({ site: 'ama', implementation: expect.stringContaining('src/domain/effectiveSite.ts') });
+    expect(ama.some(row => row.key === 'ama.di-step-rated.active-work' && row.dataset === 'configurationValues')).toBe(true);
+    expect(ama.find(row => row.key === 'rule-persistence-resume-verification')?.implementation).toContain('scripts/applicant-saves.mjs');
+    expect(ama.find(row => row.key === 'rule-persistence-resume-verification')?.hierarchy).toEqual(['application', 'persistence', 'application-recovery']);
+    expect(libraryRequirementRows(catalog, 'asce').some(row => row.key === 'rule-coverage-ama-active-work')).toBe(false);
+  });
   it('accounts for every snapshot table exactly once', () => {
     const tables = Object.values(libraryOwners).flat();
     expect(new Set(tables).size).toBe(tables.length);
@@ -30,6 +38,16 @@ describe('Library requirements ownership and relationships', () => {
     const configurations = configurationRows(catalog, 'all');
     expect(configurations.find(row => row.key === definition.key)).toMatchObject({ owner: 'rules', values: 'See owning requirements' });
     expect(libraryRequirementRows(catalog, 'all').some(row => row.key === definition.key && row.dataset === 'configurationValues')).toBe(true);
+  });
+  it('derives collection settings from saved page assignments in Configurations', () => {
+    const rows = configurationRows(catalog, 'abe');
+    expect(rows.find(row => row.key === 'pages.requirements.beneficiary')).toMatchObject({ owner: 'configurations', values: 'Optional', source: 'site_pages.requirement' });
+    expect(rows.find(row => row.key === 'pages.requirements.payment')).toMatchObject({ owner: 'configurations', values: 'Optional' });
+    const changed = structuredClone(catalog);
+    changed.data.sitePages.find(row => row.siteKey === 'abe' && row.pageKey === 'payment')!.requirement = 'required';
+    expect(configurationRows(changed, 'abe').find(row => row.key === 'pages.requirements.payment')?.values).toBe('Required');
+    expect(rows.some(row => row.key === 'ownership.abe.page-participation')).toBe(false);
+    expect(rows.some(row => row.key === 'config-pages-requirements-beneficiary-payment')).toBe(false);
   });
   it('shows shared routing execution under Rules while configuration contains references', () => {
     const rows = libraryRequirementRows(catalog, 'asce');

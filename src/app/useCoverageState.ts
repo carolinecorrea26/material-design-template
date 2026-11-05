@@ -1,5 +1,11 @@
+import { getDisplayedPremium } from "../utils/coverageDisplay";
+import { rateDisplayForAmount, type RateDisplayState } from '../domain/rateDisplay';
+import { resolveSiteId } from "../data/activeSite";
+import { activeFeaturedProduct } from "../config/client/coverageProductScope";
 import { orderCoveragePresentation } from "../domain/coveragePresentation";
 import { reconcileApplicationRiders } from "../domain/applicationRiders";
+import { getPrototypeLibrary } from "../domain/prototypeLibrary";
+import { categoryEligibility as evaluateCategoryEligibility, readCategoryEligibilityPolicy, reconcileCategoryElections } from "../domain/categoryEligibilityPolicy";
 import { changeCoverageAmount, selectedRiderOnly } from "../domain/coverageRiderOnly";
 import { usePrototypeRates } from "./usePrototypeRates";
 import { initialCoverageCategories } from "../config/client/coverageCategoryScope";
@@ -18,26 +24,12 @@ import { useApplicationForm } from "./ApplicationFormContext";
 import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
 import { RATE_CALCULATION_DELAY_MS } from "../config/coverageConstants";
 
-export function getDisplayedPremium(
-  monthlyPremium: number,
-  rateFrequency: EstimatedRateFrequency,
-): number {
-  return rateFrequency === "annual"
-    ? Math.round(monthlyPremium * 12 * 100) / 100
-    : monthlyPremium;
-}
-
-export function getBenefitAmountLabel(categoryId: CoverageCategoryId): string {
-  if (categoryId === "DI" || categoryId === "OO") {
-    return "Monthly Benefit Amount";
-  }
-  return "Benefit Amount";
-}
-
+export { getDisplayedPremium, getBenefitAmountLabel } from "../utils/coverageDisplay";
 export function useCoverageState() {
   const activeClient = useMemo(() => getActiveClient(), []);
   const coverages = useMemo(() => getActiveClientCoverages(), []);
   const { values, setPageValues } = useApplicationForm();
+  const categoryPolicy = readCategoryEligibilityPolicy(getPrototypeLibrary()?.site.configuration.categoryEligibilityPolicies ?? []);
 
   function generateAmountChoices(coverage: CoverageDefinition, applicantId: CoverageApplicantId = "member"): number[] {
     return [0, ...resolveApplicationCoverage(coverage, applicantId, values, coverages).amounts];
@@ -50,9 +42,9 @@ export function useCoverageState() {
   const [showProducts, setShowProducts] = useState(false);
   const [productsLoading, setProductsLoading] = useState(false);
   const [summaryDrawerOpen, setSummaryDrawerOpen] = useState(false);
-  // Tracks whether the "Coverage added" drawer has been shown for the very
-  // first product added in this session. Subsequent adds use a snackbar.
-  const initialDrawerShownRef = useRef(false);
+  // Existing selections count as an established cart. Only the first addition
+  // to a previously empty cart opens the drawer; later additions use a snackbar.
+  const initialDrawerShownRef = useRef(Array.isArray(values.coverageSelections) && values.coverageSelections.length > 0);
   const [addedSnackbarOpen, setAddedSnackbarOpen] = useState(false);
   const rateCalculationTimersRef = useRef<Record<string, number>>({});
   const productsLoadingTimerRef = useRef<number | null>(null);
@@ -83,8 +75,8 @@ export function useCoverageState() {
   const selectionTimerRef = useRef<number | null>(null);
 
   // ── Category selection ──────────────────────────────────────────────────
-  const availableCategories = orderCoveragePresentation(coverages, activeClient.coverages, new URLSearchParams(window.location.search).get("featured_prod")).categories.map(id => coverageCategories.find(category => category.id === id)!).filter((category) =>
-    coverages.some((coverage) => coverage.categoryId === category.id),
+  const availableCategories = orderCoveragePresentation(coverages, activeClient.coverages, activeFeaturedProduct(resolveSiteId())).categories.map(id => coverageCategories.find(category => category.id === id)!).filter((category) =>
+    coverages.some((coverage) => coverage.categoryId === category.id) && evaluateCategoryEligibility(categoryPolicy, categoryPolicy ? values[categoryPolicy.fieldId] : undefined, category.id, true) === "eligible",
   );
 
   const [selectedCategories, setSelectedCategories] = useState<
@@ -101,6 +93,14 @@ export function useCoverageState() {
     const stored = Array.isArray(values.selectedCategoryChips) ? values.selectedCategoryChips : [];
     if (stored.join(",") !== selectedCategories.join(",")) setPageValues({ selectedCategoryChips: selectedCategories });
   }, [selectedCategories, values.selectedCategoryChips, setPageValues]);
+
+  const availableCategoryKey = availableCategories.map(category => category.id).join(",");
+  useEffect(() => {
+    const allowed = new Set(availableCategoryKey.split(","));
+    setSelectedCategories(previous => previous.some(category => !allowed.has(category)) ? previous.filter(category => allowed.has(category)) : previous);
+    const patch = reconcileCategoryElections(categoryPolicy, values, coverages);
+    if (patch) setPageValues(patch);
+  }, [availableCategoryKey, categoryPolicy, values, coverages, setPageValues]);
 
   // ── Category needs ─────────────────────────────────────────────────────
   const {
@@ -353,8 +353,10 @@ export function useCoverageState() {
     for (const product of coverages) for (const applicant of productApplicants[product.id] ?? []) {
       const result = resolveApplicationCoverage(product, applicant, values, coverages);
       const key = `${product.id}:${applicant}`;
-      if (amounts[key] !== 0 && !result.amounts.includes(amounts[key])) {
-        const next = result.amounts[0] ?? 0;
+      // No available choices can be a temporary conflict or missing information.
+      // Preserve the saved amount until a valid replacement is actually known.
+      if (result.amounts.length > 0 && amounts[key] !== 0 && !result.amounts.includes(amounts[key])) {
+        const next = result.amounts[0];
         if (amounts[key] !== next) { amounts[key] = next; changed = true; }
       }
       for (const [target, constraint] of [[waiting, result.waitingPeriod], [benefits, result.benefitPeriod]] as const) {
@@ -590,7 +592,7 @@ export function useCoverageState() {
     });
   }
 
-  const prototypeRates = usePrototypeRates(categoryProducts.flatMap(p => (productApplicants[p.id] ?? []).map(applicant => ({ productKey: p.id, applicant, amount: storedAmounts[`${p.id}:${applicant}`] ?? 0 }))), values, rateFrequency, 'coverage');
+  const prototypeRates = usePrototypeRates((showProducts ? categoryProducts : []).flatMap(p => getVisibleApplicants(p.applicants).filter(applicant => resolveApplicationCoverage(p, applicant, values, coverages).eligibility !== "ineligible").map(applicant => ({ productKey: p.id, applicant, amount: storedAmounts[`${p.id}:${applicant}`] ?? 0 }))), values, rateFrequency, 'coverage');
 
   // ── Premium calculation ────────────────────────────────────────────────
 
@@ -599,6 +601,7 @@ export function useCoverageState() {
     applicantId: CoverageApplicantId,
   ): number {
     const key = `${coverage.id}:${applicantId}`;
+    if (productApplicants[coverage.id]?.includes(applicantId) && storedAmounts[key] == null) return NaN;
     // Zero new base coverage is not a quoted zero premium for the rider.
     if (selectedRiderOnly(coverage, applicantId, values)) return NaN;
     if (prototypeRates.enabled) { const price = prototypeRates.premium(key); return rateFrequency === "annual" ? price / 12 : price; }
@@ -620,6 +623,14 @@ export function useCoverageState() {
     }
 
     return Math.round(premium * 100) / 100;
+  }
+
+  function getRateDisplay(productId: string, applicant: CoverageApplicantId): RateDisplayState {
+    const product = coverages.find(product => product.id === productId);
+    if (!product) return { status: 'hidden' };
+    if (selectedRiderOnly(product, applicant, values)) return { status: 'provided-separately' };
+    if (prototypeRates.enabled) return prototypeRates.display(`${productId}:${applicant}`);
+    return rateDisplayForAmount(getDisplayedPremium(calcApplicantPremium(product, applicant), rateFrequency));
   }
 
   const grandTotal = useMemo(() => {
@@ -682,7 +693,7 @@ export function useCoverageState() {
     }
 
     const activeSelections = Object.fromEntries(Object.entries(nextProductApplicants).filter(([id]) => nextSelectedCoverageIds.includes(id)));
-    return validateApplicationCoverages(coverages, nextValues) ?? coverageRelationshipErrors(coverages, activeSelections)[0];
+    return validateApplicationCoverages(coverages, nextValues, { deferProfileUnderwriting: true }) ?? coverageRelationshipErrors(coverages, activeSelections)[0];
   }
 
   return {
@@ -745,6 +756,7 @@ export function useCoverageState() {
     revealProducts,
     getVisibleApplicants,
     calcApplicantPremium,
+    getRateDisplay,
     validate,
 
     // Computed

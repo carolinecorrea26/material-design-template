@@ -1,43 +1,19 @@
+import HealthInformationHelp from "../components/health/HealthInformationHelp";
+import { getPrototypeLibrary } from "../domain/prototypeLibrary";
+import { configuredHealthQuestionnaire } from "../domain/configuredHealthQuestionnaire";
+import { configuredHealthQuestionEntries } from "../app/sections/ConfiguredHealthQuestions";
 import { getHealthDetailSurface, getHealthDetailSurfaceName, surfaceSemanticValues } from '../config/fields/storedSurfaces';
-import { helpChipDefinitions } from "../content/interactionLabels";
 import { QUESTIONS as questionDefinitions, createAnswerFields } from "../config/fields/healthDiFields";
 import { validateHealthPage } from '../config/healthFollowUps';
 import { applicantParticipatesInPage } from "../config/flowGates";
-import { useState } from "react";
-import { Stack, Typography } from "@mui/material";
+import { Stack } from "@mui/material";
 import FormRoutePage, { type FormRouteRenderProps } from "../app/RoutePage";
-import ApplicantSectionDivider from "../components/layout/ApplicantSectionDivider";
-import {
-  shouldShowApplicantLabel,
-} from "../utils/applicantVisibility";
-import YesNoDetailList, {
+import HealthQuestionList from "../app/sections/ConfiguredHealthQuestionList";
+import type { HealthQuestionEntry } from "../components/forms/HealthQuestionList";
+import { YesNoDetailQuestionFields,
   type YesNoDetailQuestion,
 } from "../components/forms/YesNoDetailList";
-import AppDrawer from "../components/layout/AppDrawer";
-import FormHelpChips from "../components/content/HelpChips";
 import type { FieldDefinition } from "../config/fields/types";
-
-// ─── Help content ─────────────────────────────────────────────────────────────
-
-const HELP_ITEMS = [
-  {
-    ...helpChipDefinitions.health,
-    title: "How is my health information used?",
-    content: (
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        sx={{ lineHeight: 1.7 }}
-      >
-        Some insurance products require health information as part of the
-        application process. Your health information is only used to review your
-        application and is handled securely in accordance with our privacy
-        practices. This information helps when providing a decision for your
-        requested coverage.
-      </Typography>
-    ),
-  },
-];
 
 // ─── DynamicList field definitions ───────────────────────────────────────────
 
@@ -125,13 +101,16 @@ interface QuestionSetProps {
   allFields: FieldDefinition[];
 }
 
-function QuestionSet({
+function questionEntries({
   applicant,
   control,
   errors,
   watchedValues,
   allFields,
-}: QuestionSetProps) {
+}: QuestionSetProps): HealthQuestionEntry[] {
+  const library = getPrototypeLibrary();
+  const questionnaire = library ? configuredHealthQuestionnaire(library.site, "health-di", applicant, watchedValues) : null;
+  if (questionnaire && questionnaire.status !== "unassigned") return configuredHealthQuestionEntries({ questionnaire, applicant, control, errors });
   const suffix = applicant === "spouse" ? "-spouse" : "";
   const questions: YesNoDetailQuestion[] = allFields.filter(field => field.id.startsWith("health-di-q") && field.id.endsWith("-spouse") === (applicant === "spouse")).map(field => {
     const answerId = field.id;
@@ -142,83 +121,41 @@ function QuestionSet({
       renderItem: item => question.renderItem(surfaceSemanticValues(getHealthDetailSurfaceName("health-di", answerId), item) as Record<string, string>) };
   });
 
-  return (
-    <YesNoDetailList
-      questions={questions}
-      control={control}
-      errors={errors}
-      watchedValues={watchedValues}
-    />
-  );
+  return questions.map((question, order) => ({
+    key: question.field.id.replace(/-spouse$/, ""), order, applicant,
+    content: <YesNoDetailQuestionFields question={question} control={control} errors={errors} watchedValues={watchedValues} />,
+  }));
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HealthDi() {
-  const [activeHelpId, setActiveHelpId] = useState<string | null>(null);
-  const activeHelpItem = HELP_ITEMS.find((i) => i.id === activeHelpId) ?? null;
-
   return (
     <FormRoutePage
       pageId="health-di"
       validate={values => validateHealthPage('health-di', values)}
-      help={
-        <>
-          <FormHelpChips items={HELP_ITEMS} onSelect={setActiveHelpId} />
-          <AppDrawer
-            open={!!activeHelpItem}
-            title={activeHelpItem?.title ?? ""}
-            onClose={() => setActiveHelpId(null)}
-          >
-            {activeHelpItem?.content}
-          </AppDrawer>
-        </>
-      }
-      devFillFields={(currentValues) => [
+      help={<HealthInformationHelp />}
+      devFillFields={(currentValues) => {
+        const library = getPrototypeLibrary();
+        const configured = library ? (["self", "spouse"] as const).map(applicant => ({ applicant, result: configuredHealthQuestionnaire(library.site, "health-di", applicant, currentValues) })) : [];
+        if (configured.some(({ result }) => result.status !== "unassigned")) return configured.flatMap(({ applicant, result }) => applicantParticipatesInPage("health-di", applicant, currentValues) ? result.fields : []);
+        return [
         ...(applicantParticipatesInPage("health-di", "self", currentValues)
           ? createAnswerFields("self")
           : []),
         ...(applicantParticipatesInPage("health-di", "spouse", currentValues)
           ? createAnswerFields("spouse")
           : []),
-      ]}
+      ]; }}
     >
       {({ control, errors, watchedValues, allFields }) => {
         const hasSelf = applicantParticipatesInPage("health-di", "self", watchedValues);
         const hasSpouse = applicantParticipatesInPage("health-di", "spouse", watchedValues);
 
-        return (
-          <Stack spacing={3}>
-            {hasSelf && (
-              <ApplicantSectionDivider
-                applicant="self"
-                showLabel={shouldShowApplicantLabel("self", watchedValues)}
-              >
-                <QuestionSet
-                  applicant="self"
-                  control={control}
-                  errors={errors}
-                  watchedValues={watchedValues}
-                  allFields={allFields}
-                />
-              </ApplicantSectionDivider>
-            )}
-            {hasSpouse && (
-              <ApplicantSectionDivider
-                applicant="spouse"
-                showLabel={shouldShowApplicantLabel("spouse", watchedValues)}
-              >
-                <QuestionSet
-                  applicant="spouse"
-                  control={control}
-                  errors={errors}
-                  watchedValues={watchedValues}
-                  allFields={allFields}
-                />
-              </ApplicantSectionDivider>
-            )}
-          </Stack>
-        );
+        return <HealthQuestionList values={watchedValues} entries={[
+          ...(hasSelf ? questionEntries({ applicant: "self", control, errors, watchedValues, allFields }) : []),
+          ...(hasSpouse ? questionEntries({ applicant: "spouse", control, errors, watchedValues, allFields }) : []),
+        ]} />;
       }}
     </FormRoutePage>
   );

@@ -1,3 +1,7 @@
+import { FieldDefinitionsContext } from "../components/forms/FieldDefinitionsContext";
+import { getPrototypeLibrary } from "../domain/prototypeLibrary";
+import { activeCoverageCategoryRestriction } from "../config/client/coverageCategoryScope";
+import { activeFeaturedProduct, activeCoverageProductRestriction, withCapturedCoverageEntryScope, restoreCoverageEntryScope } from "../config/client/coverageProductScope";
 import {
   createContext,
   useContext,
@@ -15,7 +19,9 @@ import { resolveSiteId } from "../data/activeSite";
 import { resolveActiveAssociationFromApplication } from "../data/activeAssociation";
 import { createApplicantSaveClient, forgetSavedApplication, readSavedApplication, rememberSavedApplication, type RecoveredApplication, type SavedApplication } from '../services/applicantSaveService';
 import { Alert } from '@mui/material';
-import DemoApplicationActions from '../components/ui/DemoApplicationActions';
+import DemoApplicationActions from '../components/demo/DemoApplicationActions';
+import { isApplicationSessionExpired, resetApplicationTimeout } from './applicationTimeout';
+import { applicationRecovery } from '../content/applicationRecovery';
 
 const AUTOFILL_QUERY_PARAM = "autofill";
 
@@ -70,6 +76,15 @@ function loadStoredValues(): ApplicationFormValues {
     }
   }
 
+  const entryParams = new URLSearchParams(window.location.search), siteKey = resolveSiteId();
+  if (entryParams.has("category") || entryParams.has("prods")) {
+    activeFeaturedProduct(siteKey); activeCoverageCategoryRestriction(siteKey); activeCoverageProductRestriction(siteKey);
+  } else {
+    restoreCoverageEntryScope(siteKey, parsedValues.coverageEntryScope);
+    if (entryParams.has("featured_prod")) activeFeaturedProduct(siteKey);
+  }
+  parsedValues = withCapturedCoverageEntryScope(siteKey, parsedValues);
+
   // Some links (e.g. the Information Architecture "Pages" table) need to
   // switch the active client to reach a gated page, which requires a full
   // reload. They pass ?autofill=<pageId> so that, once the app has booted
@@ -114,15 +129,15 @@ export function ApplicationFormProvider({
   useEffect(() => {
     try { window.sessionStorage.setItem(applicationStorageKey(siteKey), JSON.stringify(values)); }
     catch { setSaveError('Application changes could not be cached in this browser.'); }
-    if (!values.email) return;
+    if (!values.email || isApplicationSessionExpired(siteKey)) return;
     let current = true;
     void saveClient.save(values).then(application => {
       if (current && application) { setSavedApplication(application); setSaveError(''); }
-    }).catch(error => { if (current) setSaveError(`Progress could not be saved: ${error.message}`); });
+    }).catch(() => { if (current) setSaveError(`${applicationRecovery['save-failed'].message} ${applicationRecovery['save-failed'].guidance}`); });
     return () => { current = false; };
   }, [values, siteKey, saveClient]);
 
-  function setPageValues(pageValues: ApplicationFormValues) {
+  const setPageValues = useCallback((pageValues: ApplicationFormValues) => {
     if (Object.hasOwn(pageValues, "membership")) {
       setActiveAssociationId(
         resolveActiveAssociationFromApplication(resolveSiteId(), pageValues)
@@ -131,16 +146,17 @@ export function ApplicationFormProvider({
     }
     setValues(
       (currentValues) =>
-        withApplicantsApplying({
+        withApplicantsApplying(withCapturedCoverageEntryScope(siteKey, {
           ...currentValues,
           ...pageValues,
-        }) as ApplicationFormValues,
+        })) as ApplicationFormValues,
     );
-  }
+  }, [siteKey]);
 
   const resetValues = useCallback(() => {
     saveClient.cancelPending();
-    setValues({});
+    resetApplicationTimeout(siteKey);
+    setValues(withCapturedCoverageEntryScope(siteKey, {}));
     setActiveAssociationId(
       resolveActiveAssociationFromApplication(resolveSiteId()).association?.id ?? null,
     );
@@ -171,23 +187,27 @@ export function ApplicationFormProvider({
       },
       restoreApplication: application => {
         if (application.siteKey !== siteKey) throw new Error('Cannot restore an application from another Site');
+        resetApplicationTimeout(siteKey);
         saveClient.cancelPending();
         rememberSavedApplication(application);
         setSavedApplication(application);
-        const restored = withApplicantsApplying(application.values) as ApplicationFormValues;
+        restoreCoverageEntryScope(siteKey, application.values.coverageEntryScope);
+        const restored = withApplicantsApplying(withCapturedCoverageEntryScope(siteKey, application.values)) as ApplicationFormValues;
         setValues(restored);
         setActiveAssociationId(resolveActiveAssociationFromApplication(siteKey, restored).association?.id ?? null);
         setSaveError('');
       },
     }),
-    [activeAssociationId, values, savedApplication, saveClient, siteKey, resetValues],
+    [activeAssociationId, values, savedApplication, saveClient, siteKey, resetValues, setPageValues],
   );
 
   return (
     <ApplicationFormContext.Provider value={contextValue}>
+      <FieldDefinitionsContext value={getPrototypeLibrary()?.fields}>
       {saveError && <Alert severity="error">{saveError}</Alert>}
       {savedApplication && !saveError && <DemoApplicationActions application={savedApplication} siteKey={siteKey} />}
       {children}
+    </FieldDefinitionsContext>
     </ApplicationFormContext.Provider>
   );
 }

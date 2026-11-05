@@ -30,7 +30,8 @@ describe("approved ASCE business decisions (inspection only)", () => {
     expect(inspectAsceBusinessDecisions(db)).toHaveLength(6);
     expect(inspectAsceBusinessDecisions(db).every(d => d.approved)).toBe(true);
     const adapter = new LocalStorageAdapter(db);
-    const approvals = (await adapter.list("semanticRequirements")).filter(r => r.domain === "approved-business-decision");
+    const keys = new Set(asceBusinessDecisions.map(decision => `business-decision.${decision.key}`));
+    const approvals = (await adapter.list("semanticRequirements")).filter(r => keys.has(r.key));
     expect(approvals).toHaveLength(6);
     for (const row of approvals) {
       expect(row).toMatchObject({ subjectTable: "sites", subjectKey: "asce", status: "documented" });

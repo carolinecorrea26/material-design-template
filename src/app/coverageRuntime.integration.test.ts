@@ -2,7 +2,7 @@ import { resolveVisibleFields } from "../config/conditions/resolveVisibility";
 import { fieldCatalog } from "../config/fields";
 import { amaClient } from "../config/clients/ama";
 import { getPageCollectionDefaults } from "./RoutePage";
-import { isTpaMemberMatch } from "../components/ui/MemberVerification";
+import { isTpaMemberMatch } from "../components/verification/MemberVerification";
 import { describe, expect, it, vi, afterEach } from "vitest";
 import dayjs from "dayjs";
 import { createElement, act, useState, useEffect } from "react";
@@ -129,7 +129,7 @@ describe("application facts through live Coverage and routing", () => {
     expect(resolveVisibleFields([field],{membership:"member"})[0].options?.some(option => option.value === "spouse")).toBe(true);
   });
   it("generic runtime modules contain no known client identifiers", () => {
-    for (const file of ["src/domain/coverageRuntime.ts","src/domain/coverageRequirements.ts","src/utils/applicantFacts.ts","src/app/useCoverageState.ts","src/pages/Coverage.tsx","src/config/flowGates.ts","src/components/forms/ProductCatalog.tsx","src/config/fields/coverageFactFields.ts","src/components/forms/QuoteCalculator.tsx","src/components/ui/CoverageCart.tsx","src/pages/Review.tsx","src/pages/Eligibility.tsx","src/components/ui/MemberVerification.tsx"]) {
+    for (const file of ["src/domain/coverageRuntime.ts","src/domain/coverageRequirements.ts","src/utils/applicantFacts.ts","src/app/useCoverageState.ts","src/pages/Coverage.tsx","src/config/flowGates.ts","src/components/coverage/ProductCatalog.tsx","src/config/fields/coverageFactFields.ts","src/app/workflows/QuoteCalculator.tsx","src/components/coverage/CoverageCart.tsx","src/pages/Review.tsx","src/pages/Eligibility.tsx","src/components/verification/MemberVerification.tsx"]) {
       expect(readFileSync(file,"utf8"),file).not.toMatch(/\b(asce|ama|waepa|abe)\b/i);
     }
   });

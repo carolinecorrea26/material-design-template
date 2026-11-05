@@ -10,6 +10,8 @@ import {
   applicationSessionStorage,
   type ApplicationSessionState,
 } from "./applicationSessionStorage";
+import { resetApplicationTimeout } from './applicationTimeout';
+import { resolveSiteId } from '../data/activeSite';
 
 export type ApplicationSessionContextValue = ApplicationSessionState & {
   markReviewSubmitted: () => void;
@@ -41,6 +43,7 @@ export function ApplicationSessionProvider({
 
   const resetApplicationSession = useCallback(() => {
     applicationSessionStorage.clear();
+    resetApplicationTimeout(resolveSiteId());
     setState({ reviewSubmitted: false, advisorApplicantFlow: false });
   }, []);
 

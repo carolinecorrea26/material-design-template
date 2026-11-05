@@ -1,5 +1,10 @@
 # ASCE local database setup and verification
 
+Current runtime decision, October 22, 2026: the prototype, Library and generated
+requirements tables use `public/catalog/portal.json`. No live PostgreSQL or
+Supabase connection is enabled. See [the shared catalog workflow](../README.md#current-shared-catalog).
+The database verification and recorded results below are historical checks.
+
 October 13, 2026. Scope: local ASCE prototype, with the shared schema supporting the other existing Sites. The fresh and upgrade gate applies the entire ordered migration directory, generates the current reviewed seed, and exercises real PostgreSQL relationships. It never reads Supabase credentials or resets a configured portal database.
 
 ## Storage boundaries

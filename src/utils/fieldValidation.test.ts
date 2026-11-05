@@ -2,6 +2,13 @@ import { describe, expect, it } from "vitest";
 import { fieldValidationChecks, getFieldValidationRules } from "./fieldValidation";
 
 describe("shared form and Library validation", () => {
+  it.each(["radio", "dropdown", "searchable-select"] as const)("validates restored %s answers against the configured choices", inputType => {
+    const field = { id: "choice", label: "Choice", inputType, options: [{ value: "rn", label: "RN" }] };
+    const validate = getFieldValidationRules(field).validate!;
+    expect(validate("rn")).toBe(true);
+    for (const value of ["RN", "unknown", false, [], {}]) expect(validate(value)).toContain("Select an available");
+    expect(validate("")).toBe(true);
+  });
   it("preserves optional email blanks and rejects malformed addresses", () => {
     const field = { id: "email", label: "Email", inputType: "text" as const, format: "email" as const };
     const rules = getFieldValidationRules(field);
@@ -44,4 +51,15 @@ it("combines authored lengths with numeric/format checks and measures currency d
   const amount = getFieldValidationRules({ id: 'amount', label: 'Amount', inputType: 'text', format: 'currency', maxLength: 4 }).validate!;
   expect(amount('$1,000')).toBe(true);
   expect(amount('$10,000')).toContain('4 characters');
+});
+
+it.each(['00/2020', '13/2020', '1/2020', '012020', 'ab/2020', '01/20'])('rejects invalid health month/year %s in the shared editor', value => {
+  const validate = getFieldValidationRules({ id: 'onset', label: 'Date of onset', inputType: 'text', format: 'month-year' }).validate!;
+  expect(validate(value)).toContain('valid month and year');
+  expect(validate('01/2020')).toBe(true);
+  expect(validate('12/2020')).toBe(true);
+});
+it.each([['2024-02-29', true], ['2026-02-29', false], ['2026-02-30', false], ['2026-13-01', false]] as const)('checks calendar date %s in direct and dialog fields', (value, valid) => {
+  const result = getFieldValidationRules({ id: 'treatment', label: 'Treatment date', inputType: 'date' }).validate!(value);
+  expect(result === true).toBe(valid);
 });

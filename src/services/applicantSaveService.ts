@@ -1,5 +1,6 @@
 import { mockRequest } from '../mock/client';
 import { getPrototypeLibrary } from '../domain/prototypeLibrary';
+import { isApplicationSessionExpired } from '../app/applicationTimeout';
 
 export type SavedApplication = {
   mode: 'mock'; applicationId: string; siteKey: string; recipient: string;
@@ -32,6 +33,10 @@ export function createApplicantSaveClient(siteKey: string) {
       const capturedGeneration = generation;
       const task = queue.catch(() => {}).then(async () => {
         if (capturedGeneration !== generation) return null;
+        if (isApplicationSessionExpired(siteKey)) {
+          window.dispatchEvent(new Event('application:session-expired'));
+          throw new Error('Your session has expired. Resume your application to continue.');
+        }
         const library = getPrototypeLibrary(siteKey);
         if (!import.meta.env.VITE_MOCK_PLATFORM_ENABLED || !library || !snapshot.email) return null;
         const existing = readSavedApplication(siteKey);

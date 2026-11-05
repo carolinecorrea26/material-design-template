@@ -18,7 +18,7 @@ export default function StartEndFlowNode({ data }: FlowNodeComponentProps) {
           <FlagRoundedIcon fontSize="small" />
         )
       }
-      accentColor={isStart ? "success.main" : "secondary.main"}
+      accentColor={isStart ? "success.main" : "primary.main"}
     />
   );
 }

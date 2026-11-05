@@ -8,9 +8,10 @@ import FormHelpChips from "../content/HelpChips";
  * calls it directly.
  */
 const meta = {
-  title: "Layout/PageHeader",
+  id: "layout-pageheader",
+  title: "Components/Layout/Headings and dividers/Page header",
   component: PageHeader,
-  parameters: { layout: "padded" },
+  parameters: { docs: { description: { component: "Displays the page title, supporting copy, back action, and contextual help." } }, layout: "padded" },
 } satisfies Meta<typeof PageHeader>;
 
 export default meta;

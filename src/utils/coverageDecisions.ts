@@ -1,4 +1,4 @@
-import { applicationUnderwriting, type UnderwritingOutcome } from "../domain/coverageRuntime";
+import { applicationCoverageName, applicationUnderwriting, type UnderwritingOutcome } from "../domain/coverageRuntime";
 import { coverageCategories } from "../config/coverageCategories";
 import { getContent } from "../content";
 import type {
@@ -31,11 +31,6 @@ export type DecisionStatus = {
   activeStep: number;
 };
 
-const receiptContent = getContent().receipt;
-
-export const APPLICANT_LABELS: Record<CoverageApplicantId, string> =
-  getContent().shared.applicantLabels;
-
 const APPLICANT_SORT_ORDER: Record<CoverageApplicantId, number> = {
   member: 0,
   spouse: 1,
@@ -48,8 +43,6 @@ const DEMO_QD_DECISION_RESULTS: QdDecisionResult[] = [
   "soft-declined",
   "database-unavailable",
 ];
-
-export const DECISION_STEPS = receiptContent.decisionSteps;
 
 export function isQuickDecisionUnderwritingType(
   underwritingType: string,
@@ -143,6 +136,7 @@ export function getDecisionStatus(opts: {
   underwritingType: CoverageUnderwritingType;
   decisionResult: QdDecisionResult;
 }): DecisionStatus {
+  const receiptContent = getContent().receipt;
   const { underwritingType, decisionResult } = opts;
   const type = underwritingType.toUpperCase();
   if (type === "UNRESOLVED") return { label: "Requirements unresolved", color: "warning.main", description: "Contact support to resolve underwriting requirements.", activeStep: 1 };
@@ -284,7 +278,7 @@ export function buildSelectedCoverageEntries(
         ({
           coverageId,
           applicant,
-          coverage: { ...coverage, underwritingType: applicationUnderwriting(coverage, applicant, values).underwritingType ?? "UNRESOLVED" },
+          coverage: { ...coverage, name: applicationCoverageName(coverage, values), underwritingType: applicationUnderwriting(coverage, applicant, values).underwritingType ?? "UNRESOLVED" },
           underwriting: applicationUnderwriting(coverage, applicant, values),
         }) satisfies SelectedCoverageEntry,
     );

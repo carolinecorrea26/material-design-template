@@ -34,6 +34,6 @@ export default function ProductsLibrary({ siteKey }: { siteKey: string }) {
     { id: 'description', label: 'Description / identifiers', width: 380, value: row => row.description },
     { id: 'relationships', label: 'Relationships', width: 240, value: row => row.relationships },
     { id: 'scope', label: 'Scope', width: 180, value: row => row.scopeName, filter: true },
-    { id: 'requirements', label: 'Requirements', width: 180, value: row => row.product ? 'Business rules' : '—', render: row => row.product ? <LibraryLink domain="rules" filters={{ product: row.product }}>View business rules</LibraryLink> : '—' },
+    { id: 'requirements', label: 'Requirements', width: 180, value: row => row.product ? 'Coverage settings' : '—', render: row => row.product ? <LibraryLink domain="coverage" filters={{ dataset: 'productApplicantEligibility', product: row.product }}>View coverage settings</LibraryLink> : '—' },
   ]} />;
 }

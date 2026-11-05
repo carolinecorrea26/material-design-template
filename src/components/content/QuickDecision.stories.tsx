@@ -6,21 +6,15 @@ import QuickDecisionDrawerContent, {
   QuickDecisionMarkPlain,
 } from "./QuickDecisionExplainer";
 import QuickDecisionInfoBox from "./QuickDecisionInfoBox";
-import QuickDecisionIndicator from "../ui/QuickDecisionIndicator";
+import QuickDecisionIndicator from "../coverage/QuickDecisionIndicator";
 
-/**
- * The same QuickDecision℠ explainer content rendered through two different
- * chrome patterns — HowApplyingWorksPanel's drawer (QuickDecisionDrawerContent,
- * a full explainer body) and ProductCatalog/CoverageOptionsPanel's inline
- * collapsible banner (QuickDecisionInfoBox, which reuses the same content
- * component internally with plainMark). Documented together deliberately,
- * per the Phase 1 audit's explicit recommendation, rather than as unrelated
- * components — along with the third, visually inconsistent sibling
- * (QuickDecisionIndicator, a bare icon with no text) shown for comparison.
- */
+/** QuickDecision explainer content, inline disclosure, and brand marks. */
 const meta = {
-  title: "Content/QuickDecision",
-  parameters: { layout: "padded" },
+  id: "content-quickdecision",
+  title: "Components/Coverage and pricing/QuickDecision information",
+  component: QuickDecisionDrawerContent,
+  subcomponents: { QuickDecisionInfoBox, QuickDecisionIndicator },
+  parameters: { docs: { description: { component: "QuickDecision explainer, inline disclosure, and marks used by coverage components." } }, layout: "padded" },
 } satisfies Meta;
 
 export default meta;
@@ -36,7 +30,7 @@ export const InfoBoxInlineCollapse: StoryObj = {
     docs: {
       description: {
         story:
-          '"Show more" expands the same explainer content shown in the drawer surface below, inline, via aria-expanded/aria-controls on a role="button" span rather than a native button — click it to see both.',
+          '"Show more" expands the shared explainer inline. The native button exposes aria-expanded and aria-controls and supports keyboard activation.',
       },
     },
   },

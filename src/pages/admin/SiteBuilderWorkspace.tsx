@@ -1,5 +1,6 @@
 import { useCanEdit } from '../../admin/AccountContext';
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Alert, Autocomplete, Button, MenuItem, Paper, Stack, Step, StepLabel, Stepper, Tab, Tabs, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import { mockRequest } from '../../mock/client';
 import LibraryDraftEditor from './LibraryDraftEditor';
@@ -15,6 +16,16 @@ import { DEMO_ACTOR } from '../../services/serviceUtils';
 import { useServiceData } from '../../hooks/useServiceData';
 import { StatusChip, Workspace, WorkspaceHeader } from '../../components/admin/AdminPrimitives';
 import ResponsiveTableContainer from '../../components/docs/ResponsiveTableContainer';
+import ThemeConfigurationPreview from '../../components/docs/ThemeConfigurationPreview';
+import LibrarySiteSelector, { useLibrarySelection } from './library/LibrarySiteSelector';
+import { LibraryCatalogProvider, useLibraryCatalog } from './library/LibraryCatalogContext';
+import { resolvePrototypeLibrary } from '../../domain/prototypeLibrary';
+
+function SavedThemePreview({ siteKey }: { siteKey: string }) {
+  const catalog = useLibraryCatalog();
+  const client = siteKey === 'all' ? undefined : resolvePrototypeLibrary(catalog.data, siteKey, catalog.revision).client;
+  return <ThemeConfigurationPreview key={siteKey} client={client} />;
+}
 
 const steps = ['TPA', 'Client', 'Site and template', 'Library configuration', 'Site review', 'Scheduled launch'];
 const initial: SiteBuildIdentity = { siteKey: '', siteName: '', template: 'multi', organizationKey: '', organizationName: '', clientKey: '', clientName: '', newOrganization: false, newClient: false };
@@ -23,9 +34,11 @@ const emailValid = (value?: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value ?
 const editable = (row: BuilderDraftView) => row.canEdit ?? row.ownerId === DEMO_ACTOR;
 const sources = [...siteEntities].sort((a, b) => (clientEntities.find(c => c.id === a.clientId)?.acronym ?? a.clientId).localeCompare(clientEntities.find(c => c.id === b.clientId)?.acronym ?? b.clientId) || a.id.localeCompare(b.id));
 export default function SiteBuilderWorkspace() {
+  const [search] = useSearchParams();
+  const [previewSite, setPreviewSite] = useLibrarySelection();
   const canEdit = useCanEdit();
   const { data, error, loading, refresh } = useServiceData(() => siteBuilderService.getDrafts({ includeArchived: true }));
-  const [tab, setTab] = useState('new'), [step, setStep] = useState(0), [identity, setIdentity] = useState(initial);
+  const [tab, setTab] = useState(search.get('view') === 'theme' ? 'theme' : 'new'), [step, setStep] = useState(0), [identity, setIdentity] = useState(initial);
   const [editing, setEditing] = useState<{ id: string; draft: LibraryDraft } | null>(null);
   const [draftSite, setDraftSite] = useState('demo'), [draftError, setDraftError] = useState(''), [busy, setBusy] = useState(false);
   const [activeBuildStep, setActiveBuildStep] = useState(3);
@@ -63,7 +76,8 @@ export default function SiteBuilderWorkspace() {
     {kind === 'client' && <TextField label="Logo image URL (optional)" helperText="Use the client's approved image. Branding can also be completed during Library configuration." value={identity.clientLogo ?? ''} onChange={e => patch({ clientLogo: e.target.value })} />}
   </>;
   return <Workspace><WorkspaceHeader title="Site Builder" description="Build a Site, review its complete journey, then schedule its prototype release." />
-    <Tabs value={tab} onChange={(_, value) => { setTab(value); setDraftError(''); }} aria-label="Site Builder views"><Tab value="new" label="Build new site" /><Tab value="progress" label="Sites in progress" /></Tabs>
+    <Tabs value={tab} onChange={(_, value) => { setTab(value); setDraftError(''); }} aria-label="Site Builder views" variant="scrollable" scrollButtons="auto"><Tab value="new" label="Build new site" /><Tab value="progress" label="Sites in progress" /><Tab value="theme" label="Application theme preview" /></Tabs>
+    {tab === 'theme' && <><LibrarySiteSelector siteId={previewSite} onChange={setPreviewSite} /><LibraryCatalogProvider siteKey={previewSite}><SavedThemePreview siteKey={previewSite} /></LibraryCatalogProvider></>}
     {draftError && <Alert severity="error">{draftError}</Alert>}
     {tab === 'new' && <Paper variant="outlined" sx={{ p: { xs: 2, md: 3 } }}><Stack spacing={3}>
       <Stepper activeStep={source ? step : 0} alternativeLabel sx={{ overflowX: 'auto' }}>{steps.slice(0, 3).map(label => <Step key={label}><StepLabel>{label}</StepLabel></Step>)}</Stepper>

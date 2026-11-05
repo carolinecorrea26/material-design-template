@@ -15,6 +15,13 @@ import { usJurisdictions, type ResidencyPolicy } from "../domain/residencyPolicy
 const reference = "docs/step3-journey-adoption.md";
 const meta = (table: string, key: string) => ({ id: key, key, ...libraryMetadata(table, key, reference) });
 function persist(db: DatabaseSchema, siteKey: string, key: string, target: ConfigurationTarget, value: unknown, sourceReferences: string[], preserveDecision = false) {
+  // Explicitly reviewed association portfolios own their authored mappings and
+  // product choices. A legacy derivation cannot add newly enabled Associations
+  // to every product or replace reviewed identifier roles on a later pass.
+  if (target.kind === "product-journey-policy" && db.semanticRequirements.some(row => {
+    if (row.domain !== "approved-business-decision" || !["association-portfolio", "std-underwriting", "shared-source-life-questionnaires", "combined-life-health", "mcr-processing-and-inline-attestation", "abe-source-health-questionnaires"].includes(row.predicate) || !row.value || typeof row.value !== "object" || Array.isArray(row.value) || row.value.approvalStatus !== "approved" || !Array.isArray(row.value.destinations)) return false;
+    return row.value.destinations.some(destination => destination && typeof destination === "object" && !Array.isArray(destination) && destination.table === "configurationValues" && destination.key === key);
+  })) return;
   if (preserveDecision && target.kind === "product-selection-policy" && db.configurationValues.some(row => row.key === key && row.value !== null && typeof row.value === "object" && !Array.isArray(row.value) && row.value.version === 2 && row.value.amountSource === "rider-amount-rules")) return;
   db.configurationDefinitions = db.configurationDefinitions.filter(r => r.key !== key);
   db.configurationValues = db.configurationValues.filter(r => r.key !== key);
@@ -42,8 +49,8 @@ function exclusions(prose: string): string[] {
   for (const word of text.match(/\b[A-Z]{2}\b/g) ?? []) if (usJurisdictions.includes(`US-${word}`)) values.add(`US-${word}`);
   return [...values].sort();
 }
-function billing(siteKey: string): PaymentPolicy {
-  const common = { collection: "required" as const, defaultMethod: "bank-account" as const, defaultFrequency: "monthly" as const, frequencyLocked: false, synchronizeAcrossProducts: true };
+function billing(siteKey: string, collection: PaymentPolicy["collection"]): PaymentPolicy {
+  const common = { collection, defaultMethod: "bank-account" as const, defaultFrequency: "monthly" as const, frequencyLocked: false, synchronizeAcrossProducts: true };
   if (siteKey === "csea") return { ...common, collection: "none", methods: [], defaultMethod: null, defaultFrequency: null };
   if (siteKey.startsWith("waepa")) return { ...common, methods: [{ method: "bank-account", frequencies: ["monthly"] }, { method: "credit-card", frequencies: ["monthly"] }], frequencyLocked: true };
   if (siteKey === "isitrust") return { ...common, methods: [{ method: "bank-account", frequencies: ["monthly"] }, { method: "bill-me", frequencies: ["monthly"] }], frequencyLocked: true };
@@ -128,7 +135,7 @@ export function applyCoverageJourneyAdoption(db: DatabaseSchema) {
       selection.revisit = [...new Set([...selection.revisit, "Mock verification replaces the caller boolean at the journey boundary. Real policy lookup and effective-date/billing acceptance await integration.", "Added source-linked CIR, WOP, AD&D, CAT and AVMA FPO caps are candidate rules; unresolved rider definitions remain explicitly provisional."])];
       if (!isSelectionPolicy(selection)) throw new Error(`Invalid expanded selection ${siteKey}/${productKey}`);
       persist(db, siteKey, `${siteKey}.${productKey}.selection-policy`, { kind: "product-selection-policy", productKey }, selection, sourceRefs, product.riderOwnership === "relational");
-      const methods = billing(siteKey);
+      const methods = billing(siteKey, db.sitePages.find(row => row.siteKey === siteKey && row.pageKey === "payment")?.requirement ?? "required");
       const associationChoices = siteKey === "isitrust" ? db.siteAssociations.filter(a => a.siteKey === siteKey && a.enabled &&
         // User-confirmed Main R285/R286 restrictions; Site membership remains intact.
         (!['sh-hospital-income', 'sh-critical-illness'].includes(productKey) ||
