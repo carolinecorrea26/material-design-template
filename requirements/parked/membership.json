@@ -1,0 +1,6 @@
+{
+  "page": "membership",
+  "components": [
+    { "type": "membership" }
+  ]
+}

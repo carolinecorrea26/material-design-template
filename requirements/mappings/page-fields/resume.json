@@ -1,0 +1,6 @@
+{
+  "page": "resume",
+  "fields": [
+    {"field":"resume-email","people":["self"]}
+  ]
+}

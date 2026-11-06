@@ -1,0 +1,6 @@
+{
+  "component": "eligibility",
+  "configurations": ["eligible-states-only", "eligible-states"],
+  "rules": ["state-province-from-postal-code", "quote-entry-location-feedback"],
+  "presentation": ["eligible-state-options"]
+}

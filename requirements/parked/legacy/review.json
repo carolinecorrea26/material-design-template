@@ -1,0 +1,4 @@
+{
+  "page": "review",
+  "layout": { "sections": { "consent": { "for": "self" }, "spouse-consent": { "for": "spouse" } } }
+}

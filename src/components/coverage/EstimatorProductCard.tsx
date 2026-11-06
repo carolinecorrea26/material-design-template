@@ -6,6 +6,7 @@ import {
   Alert,
   Box,
   Stack,
+  Typography,
 } from "@mui/material";
 import ProductCardSurface from "../layout/ProductCard";
 import FeaturedBadge from "./FeaturedBadge";
@@ -41,12 +42,25 @@ type EstimatorProductCardProps = {
   rateSuffix: string;
   onToggleSelected: () => void;
   onAmountChange: (amount: number) => void;
+  /** Member riders offered with this product, using the Coverage page's rider policy. */
+  riders?: EstimatorRider[];
+  onRiderToggle?: (riderId: string) => void;
+  onRiderAmountChange?: (riderId: string, amount: number) => void;
+};
+
+export type EstimatorRider = {
+  id: string;
+  name: string;
+  description?: string;
+  checked: boolean;
+  disabled?: boolean;
+  amount?: { label: string; value: number; choices: number[] };
 };
 
 /**
  * Product card used inside the quote estimator (QuoteCalculator).
  * Simplified version of the full ProductCard in ProductCatalog — member-only,
- * no riders, no waiting periods.
+ * no waiting periods; offers the product's member riders.
  */
 export default function EstimatorProductCard({
   amountField: suppliedAmountField,
@@ -62,6 +76,9 @@ export default function EstimatorProductCard({
   rateSuffix,
   onToggleSelected,
   onAmountChange,
+  riders = [],
+  onRiderToggle,
+  onRiderAmountChange,
 }: EstimatorProductCardProps) {
   const amountField: FieldDefinition | null = suppliedAmountField === undefined ? { id: "quote-amount", label: product.categoryId === "DI" || product.categoryId === "OO" ? "Monthly benefit amount" : "Benefit amount", inputType: "dropdown" } : suppliedAmountField;
 
@@ -100,6 +117,32 @@ export default function EstimatorProductCard({
           </Stack>
         )}
       </Box>}
+
+      {riders.length > 0 && (
+        <Box>
+          <Typography variant="body2" sx={{ fontWeight: 700, mb: 1 }}>
+            Optional Benefit(s)
+          </Typography>
+          <Stack spacing={1}>
+            {riders.map(rider => (
+              <Box key={rider.id}>
+                <ControlledFieldRenderer
+                  field={{ id: `${product.id}-${rider.id}-member-selected`, label: rider.name, inputType: "checkbox", helperText: rider.description, disabled: rider.disabled }}
+                  value={rider.checked}
+                  onChange={() => onRiderToggle?.(rider.id)}
+                />
+                {rider.checked && rider.amount && (
+                  <ControlledFieldRenderer
+                    field={{ id: `${product.id}-${rider.id}-member-amount`, label: rider.amount.label, inputType: "dropdown", options: rider.amount.choices.map(amount => ({ value: String(amount), label: formatUSD(amount, 0) })) }}
+                    value={String(rider.amount.value)}
+                    onChange={value => onRiderAmountChange?.(rider.id, Number(value))}
+                  />
+                )}
+              </Box>
+            ))}
+          </Stack>
+        </Box>
+      )}
     </ProductCardSurface>
   );
 }

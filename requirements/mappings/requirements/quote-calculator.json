@@ -1,0 +1,39 @@
+{
+  "component": "quote-calculator",
+  "configurations": ["estimated-rate-frequency", "estimated-rate-frequency-toggle", "eligible-states-only", "eligible-states"],
+  "rules": ["quote-entry-location-feedback", "coverage-category-availability", "coverage-question-participation", "coverage-selection-policy"],
+  "presentation": ["eligible-state-options", "estimated-rate-states"],
+  "workflows": ["coverage-product-reveal", "coverage-product-selection", "quote-apply-carry-forward"],
+  "validations": [
+    {
+      "validation": "field-definition-checks",
+      "trigger": "see-quote-or-inline-continue",
+      "scope": "visible-fields"
+    },
+    {
+      "validation": "field-definition-checks",
+      "trigger": "apply",
+      "scope": "applicable-quote-fields"
+    },
+    {
+      "validation": "quote-category-required",
+      "trigger": "inline-category-continue",
+      "fields": ["coverage-categories"]
+    },
+    {
+      "validation": "quote-product-required",
+      "trigger": "apply",
+      "fields": ["add-coverage"]
+    },
+    {
+      "validation": "required-fields",
+      "trigger": "inline-entry-continue-or-apply",
+      "scope": "quote-entry-fields"
+    },
+    {
+      "validation": "date-value-format",
+      "trigger": "inline-entry-continue-or-apply",
+      "scope": "quote-entry-fields"
+    }
+  ]
+}

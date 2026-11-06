@@ -1,0 +1,6 @@
+{
+  "component": "app-menu",
+  "calculators": [
+    "needs-calculator"
+  ]
+}

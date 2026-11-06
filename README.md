@@ -165,7 +165,7 @@ Historical compatibility exports in `migration-artifacts/` can be recreated with
 before checking readiness. `npm run mock:seed` regenerates the separate
 `migration-artifacts/mock/` fixtures used by local development.
 
-Keep the original requirements workbooks, SQL migrations, review evidence and
+Keep the original requirements workbooks, review evidence and
 `.mock-platform/` saved state. Historical reports retain source decisions and
 acceptance evidence even where their runtime descriptions have been superseded.
 
@@ -211,7 +211,7 @@ Prototype startup: `npm run dev` loads `public/catalog/portal.json` with the loc
 
 Site Builder now supports new/existing TPA and client selection, Site template selection, validated Library editing, full journey previews and revision-specific readiness review. Accepted snapshots stage in prototype UAT and can be scheduled into the next release, executed in Releases on the scheduled date, and rolled back to a previously launched prototype snapshot. Majesco implementation remains separately tracked in Migration schedule. Published-data activation remains gated. See [steps 4–5 workflow and acceptance](docs/step45-builder-publication.md).
 
-Explicit legacy snapshot conversion is documented in [the page catalog upgrade guide](docs/page-catalog-migration.md); its PostgreSQL gate was archived.
+Optional conversion of older JSON snapshots is documented in [Stored field collections](docs/stored-field-collections.md#older-json-snapshots).
 
 ## Portal Library requirements ownership
 

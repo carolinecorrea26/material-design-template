@@ -1,0 +1,16 @@
+{
+  "help.beneficiary.what-is": [
+    "A beneficiary is the person, people, or trust you choose to receive the money from your policy when you pass away.",
+    "This can be a family member, friend, or trust, and you can update your beneficiary choices if your situation changes.",
+    "A primary beneficiary is the person or entity who would receive the policy proceeds first.",
+    "A contingent beneficiary would receive the policy proceeds if the primary beneficiary is unable to receive them.",
+    "You may add up to ten primary and ten contingent beneficiaries online. If no beneficiary is named, proceeds will be paid according to the policy provisions.",
+    "For dependent child coverage, the beneficiary is the member."
+  ],
+  "help.beneficiary.share": [
+    "The percentage share determines how much of the policy payout each beneficiary will receive.",
+    "You assign a percentage to each individual beneficiary, and the percentages for that designation must add up to 100%.",
+    "For example, if one beneficiary is assigned 60% and another is assigned 40%, they would receive those portions of the total benefit.",
+    "If you name a trust as beneficiary, 100% of the proceeds will be paid to the trust."
+  ]
+}

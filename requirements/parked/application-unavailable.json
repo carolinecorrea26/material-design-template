@@ -1,0 +1,6 @@
+{
+  "page": "application-unavailable",
+  "components": [
+    { "type": "application-unavailable" }
+  ]
+}

@@ -1,4 +1,4 @@
-import { getPrototypeLibrary } from "../domain/prototypeLibrary";
+import { getPrototypeLibrary, type PrototypeLibrary } from "../domain/prototypeLibrary";
 import type { CoverageCategoryId } from "./coverages/types";
 import type { FieldId } from "./fields/types";
 
@@ -61,8 +61,8 @@ export function getCategoryQuestionFieldIds(
   selectedCategories: CoverageCategoryId[],
   applicant: CoverageQuestionApplicant = "self",
   options?: { hideSmokerQuestion?: boolean },
+  library: PrototypeLibrary | null = getPrototypeLibrary(),
 ): FieldId[] {
-  const library = getPrototypeLibrary();
   const policy = library?.settings.coveragePolicy as { questionRequirements: typeof coverageQuestionRequirements; questionOverrides?: Partial<typeof coverageQuestionRequirements> } | undefined;
   const catalog = policy?.questionRequirements ?? coverageQuestionRequirements;
   const fields = new Set<FieldId>();

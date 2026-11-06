@@ -1,0 +1,7 @@
+{
+  "page": "session-expired",
+  "sections": [
+    "error-information",
+    "client-help"
+  ]
+}

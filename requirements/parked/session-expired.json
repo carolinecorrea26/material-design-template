@@ -1,0 +1,6 @@
+{
+  "page": "session-expired",
+  "components": [
+    { "type": "session-expired" }
+  ]
+}

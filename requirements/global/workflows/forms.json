@@ -1,0 +1,32 @@
+{
+  "workflows": [
+    {
+      "id": "form-next-validation",
+      "name": "Validate before advancing the application",
+      "status": "draft",
+      "statement": "Run registered field and page checks before saving; remain with errors if validation fails.",
+      "source": "src/app/RoutePage.tsx; src/app/RoutePage.navigation.test.tsx"
+    },
+    {
+      "id": "form-next-save",
+      "name": "Save before completing a form page",
+      "status": "draft",
+      "statement": "Await the configured save before advancing; preserve answers and show recovery guidance if saving fails.",
+      "source": "src/app/RoutePage.tsx; src/app/RoutePage.persistence.test.tsx"
+    },
+    {
+      "id": "form-next-intermediate-step",
+      "name": "Allow an intermediate step before navigation",
+      "status": "draft",
+      "statement": "An optional page callback can hold navigation after saving and resume it later.",
+      "source": "src/app/RoutePage.tsx; src/app/RoutePage.navigation.test.tsx"
+    },
+    {
+      "id": "form-next-action-state",
+      "name": "Prevent repeated Next actions during submission",
+      "status": "draft",
+      "statement": "Disable Next during submission or when the page disables it; show loading during transitions.",
+      "source": "src/app/RoutePage.tsx; src/components/navigation/PageNav.tsx"
+    }
+  ]
+}

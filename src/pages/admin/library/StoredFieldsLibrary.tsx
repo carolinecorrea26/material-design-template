@@ -40,13 +40,13 @@ export default function StoredFieldsLibrary({ siteKey }: { siteKey: string }) {
     <details>
       <summary>Page and section usage</summary>
       <Stack spacing={2} sx={{ mt: 2 }}>
-        <Typography variant="body2">One definition can be used in several places. Product controls are generated from product configuration and have no separate field record.</Typography>
+        <Typography variant="body2">One field can be used in several places. ASCE quote input usage (ZIP, state, date of birth, gender, tobacco, income, hours, active work and business expenses), including the Home eligibility card, is resolved from requirements JSON; other usages retain their saved definitions. When usages differ, the Fields table shows the saved definition. Product controls are generated from product configuration.</Typography>
         <BrowseTable label="Field usage" tableName="field-usage" searchOnly hiddenColumns={["displayId"]} rows={usages} rowKey={row => row.key} columns={[
           { id: "definition", label: "Field reference", width: 240, value: row => row.definitionKey ?? "—", render: row => row.definitionKey ? <LibraryLink domain="fields" filters={{ q: row.definitionKey }}>{row.definitionKey}</LibraryLink> : "—" },
           { id: "label", label: "Label", width: 280, value: row => row.field.label },
           { id: "page", label: "Page", width: 180, value: row => row.pages.join(", ") || "Unassigned", filter: true, filterValues: row => row.pages, render: row => row.pages.map(page => <div key={page}><LibraryLink domain="pages" filters={{ q: page }}>{page}</LibraryLink></div>) },
           { id: "section", label: "Section or tool", width: 280, value: row => row.surface, filter: true },
-          { id: "source", label: "Source", width: 160, value: row => row.definitionKey ? "Saved field" : "Product configuration" },
+          { id: "source", label: "Source", width: 160, value: row => row.source === "requirements-json" ? "Requirements JSON" : row.definitionKey ? "Saved field" : "Product configuration" },
         ]} />
       </Stack>
     </details>

@@ -12,6 +12,7 @@ import Membership from "../../pages/Membership";
 import { createReviewedMigrationDatabase } from "../../migration/fixtures";
 import { installPrototypeLibrary, resolvePrototypeLibrary, getPrototypeLibrary } from "../../domain/prototypeLibrary";
 import { getSurfaceField } from "../../config/fields/storedSurfaces";
+import { resolveMappedFields } from "../../domain/requirementFields";
 import type { DatabaseSchema } from "../../persistence/types";
 
 let db: DatabaseSchema;
@@ -38,6 +39,58 @@ async function type(input: HTMLInputElement, value: string) {
 }
 const radio = (field: string, label: string) => [...document.querySelectorAll<HTMLElement>(`[role="radiogroup"][aria-labelledby="${field}-label"] label.SelectionGroup-root`)].find(option => option.textContent?.trim() === label)!;
 const currentValues = () => JSON.parse(document.querySelector('[data-application-values]')!.textContent!);
+
+it.each([
+  { collectEligibility: false, oldSurface: false },
+  { collectEligibility: true, oldSurface: false },
+  { collectEligibility: false, oldSurface: true },
+  { collectEligibility: true, oldSurface: true },
+])('collects and carries tobacco with collectEligibility=$collectEligibility oldSurface=$oldSurface', async ({ collectEligibility, oldSurface }) => {
+  vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
+  vi.useFakeTimers();
+  vi.stubGlobal('requestAnimationFrame', () => 0);
+  vi.stubGlobal('cancelAnimationFrame', (id: number) => window.clearTimeout(id));
+  window.history.replaceState(null, '', '/?site=asce');
+  const library = resolvePrototypeLibrary(structuredClone(db), 'asce', 'test:tobacco');
+  if (oldSurface) library.fieldSurfaces.quoteInputs.mapping.fields = library.fieldSurfaces.quoteInputs.mapping.fields.filter(field => !['tobacco-last-used', 'tobacco-products'].includes(field.id));
+  installPrototypeLibrary(library);
+  container = document.createElement('div'); document.body.append(container); root = createRoot(container);
+  await act(async () => root!.render(<ApplicationFormProvider><ApplicationSessionProvider><MemoryRouter initialEntries={['/quote']}><Navigation /><Routes>
+    <Route path="/quote" element={<QuoteCalculator open onClose={() => {}} collectEligibility={collectEligibility} initialEligibility={{ birthday: '1990-01-15', zipCode: '10001', state: 'NY' }} />} />
+    <Route path="/membership" element={<Membership />} />
+    <Route path="/coverage" element={<Coverage />} />
+  </Routes></MemoryRouter></ApplicationSessionProvider></ApplicationFormProvider>));
+  const category = document.querySelector<HTMLInputElement>('input[name="coverage-categories"][value="LI"]');
+  if (category) await act(async () => category.click());
+  await act(async () => radio('gender', 'Female').click());
+  await act(async () => radio('smoker', 'No').click());
+  expect(document.body.textContent).not.toContain('Last Used');
+  await act(async () => radio('smoker', 'Yes').click());
+  expect(document.body.textContent).toContain('Last Used');
+  await act(async () => button('See my quote').click());
+  expect(document.body.textContent).toContain('Last Used is required.');
+  expect(document.body.textContent).toContain('Select at least one option.');
+  await type(labeledInput('Last Used'), '01152020');
+  const products = document.querySelector<HTMLElement>('[aria-labelledby="tobacco-products-label"]')!;
+  await act(async () => products.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })));
+  expect([...document.querySelectorAll<HTMLElement>('[role="option"]')].map(element => element.textContent?.trim())).toEqual(
+    resolveMappedFields({ component: "quote-calculator" }, { siteId: "asce" }).find(field => field.id === "tobacco-products")!.options!.map(option => option.label),
+  );
+  const option = document.querySelector<HTMLElement>('[role="option"]')!;
+  const optionLabel = option.textContent!;
+  await act(async () => option.click());
+  await act(async () => button('See my quote').click());
+  await act(async () => { await vi.advanceTimersByTimeAsync(1100); });
+  const select = document.querySelector<HTMLInputElement>('input[name="li-term-selection"]')!;
+  expect(select).not.toBeNull();
+  await act(async () => select.click());
+  await act(async () => button('Apply for coverage').click());
+  expect(currentValues()['tobacco-last-used']).toBe('2020-01-15');
+  expect(currentValues()['tobacco-products']).toHaveLength(1);
+  await act(async () => button('Inspect Coverage').click());
+  expect(labeledInput('Last Used').value).toBe('01/15/2020');
+  expect(document.body.textContent).toContain(optionLabel);
+}, 120000);
 
 it.each([
   { site: 'asce', product: 'li-term', radios: { gender: 'Female', smoker: 'No' }, inputs: {}, contextualInputs: [] },
@@ -122,4 +175,43 @@ it.each([
   await act(async () => button('Inspect Contact').click());
   expect(labeledInput('ZIP').value).toBe('10001');
   expect(document.querySelector<HTMLInputElement>('input[name="state"]')?.value).toBe('New York');
+}, 120000);
+
+it('offers member riders, prices them, and restores them on Coverage after Apply (CHG-002)', async () => {
+  vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
+  vi.useFakeTimers();
+  vi.stubGlobal('requestAnimationFrame', () => 0);
+  vi.stubGlobal('cancelAnimationFrame', (id: number) => window.clearTimeout(id));
+  window.history.replaceState(null, '', '/?site=asce');
+  installPrototypeLibrary(resolvePrototypeLibrary(structuredClone(db), 'asce', 'test:quote-riders'));
+  container = document.createElement('div'); document.body.append(container); root = createRoot(container);
+  await act(async () => root!.render(<ApplicationFormProvider><ApplicationSessionProvider><MemoryRouter initialEntries={['/quote']}><Navigation /><Routes>
+    <Route path="/quote" element={<QuoteCalculator open onClose={() => {}} initialEligibility={{ birthday: '1990-01-15', zipCode: '10001', state: 'NY' }} />} />
+    <Route path="/membership" element={<Membership />} />
+    <Route path="/coverage" element={<Coverage />} />
+  </Routes></MemoryRouter></ApplicationSessionProvider></ApplicationFormProvider>));
+  const category = document.querySelector<HTMLInputElement>('input[name="coverage-categories"][value="LI"]');
+  if (category) await act(async () => category.click());
+  await act(async () => radio('gender', 'Female').click());
+  await act(async () => radio('smoker', 'No').click());
+  await act(async () => button('See my quote').click());
+  await act(async () => { await vi.advanceTimersByTimeAsync(1100); });
+  await act(async () => document.querySelector<HTMLInputElement>('input[name="li-term-selection"]')!.click());
+  const rider = document.querySelector<HTMLInputElement>('input[name="li-term-cir-member-selected"]')!;
+  expect(rider).not.toBeNull();
+  expect(document.querySelector('input[name="li-term-spouse-cir-selected"]')).toBeNull();
+  const totalBefore = document.body.textContent;
+  await act(async () => rider.click());
+  const amount = document.getElementById("li-term-cir-member-amount")!;
+  await act(async () => amount.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })));
+  await act(async () => [...document.querySelectorAll<HTMLElement>('[role="option"]')].find(option => option.textContent?.trim() === '$100,000')!.click());
+  await act(async () => { await vi.advanceTimersByTimeAsync(1000); });
+  expect(document.body.textContent).not.toBe(totalBefore);
+  await act(async () => button('Apply for coverage').click());
+  expect(currentValues().coverageRiders).toEqual({ 'li-term:cir:member': true });
+  expect(currentValues().coverageRiderAmounts).toEqual({ 'li-term:cir:member': 100000 });
+  await act(async () => button('Inspect Coverage').click());
+  await act(async () => { await vi.advanceTimersByTimeAsync(1100); });
+  expect(currentValues().coverageRiders).toEqual({ 'li-term:cir:member': true });
+  expect(document.querySelector<HTMLInputElement>('input[name="li-term:cir:member-selected"]')?.checked).toBe(true);
 }, 120000);

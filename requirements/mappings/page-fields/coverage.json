@@ -1,0 +1,24 @@
+{
+  "page": "coverage",
+  "fields": [
+    {"field":"gender","people":["self","spouse"]},
+    {"field":"coverage-categories","people":["self"]},
+    {"field":"smoker","people":["self","spouse"]},
+    {"field":"tobacco-last-used","people":["self","spouse"]},
+    {"field":"tobacco-products","people":["self","spouse"]},
+    {"field":"hours-worked-per-week","people":["self","spouse"]},
+    {"field":"average-monthly-income","people":["self","spouse"]},
+    {"field":"self-employed-under-one-year","people":["self"]},
+    {"field":"actively-at-work","people":["self"]},
+    {"field":"monthly-business-expenses","people":["self"]},
+    {"field":"business-expense-responsibility","people":["self"]},
+    {"field":"average-employees-6-months","people":["self"]},
+    {"field":"coverage-amount","people":["self","spouse","child"]},
+    {"field":"add-coverage","people":["self","spouse","child"]},
+    {"field":"waiting-period","people":["self","spouse"]},
+    {"field":"benefit-option","people":["self","spouse"]},
+    {"field":"rider","people":["self","spouse"]},
+    {"field":"rider-amount","people":["self","spouse"]},
+    {"field":"rate-frequency","people":["self"]}
+  ]
+}

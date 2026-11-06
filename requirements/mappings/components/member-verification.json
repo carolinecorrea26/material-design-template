@@ -1,0 +1,6 @@
+{
+  "component": "member-verification",
+  "fields": [
+    {"field":"verification-method","people":["self"]}
+  ]
+}

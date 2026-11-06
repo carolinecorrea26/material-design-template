@@ -69,6 +69,12 @@ import {
   executeQuoteApplyTransition,
 } from "../../config/applicationTransitions";
 import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
+import { reconcileApplicationRiders } from "../../domain/applicationRiders";
+import { quoteRiders, selectedRidersMonthlyPremium } from "../../domain/coverageRiderPricing";
+import { getCoverageAmountChoices } from "../../utils/coverageAmounts";
+import { evaluateConditionDefinition } from "../../config/conditions/evaluateConditions";
+import { withRequirementFields } from "../../domain/requirementFields";
+import { quoteFollowUps } from "./quoteFollowUps";
 
 type EstimateGender = "male" | "female" | "";
 type EstimateYesNo = "yes" | "no" | "";
@@ -167,21 +173,25 @@ export default function QuoteCalculator({
   >(() => (singleAvailableCategory ? [singleAvailableCategory.id] : []));
 
   const requirements = getQuoteRequirements(activeClient, selectedCategories);
+  const allQuoteFields = withRequirementFields(getSurfaceFields('quoteInputs'), { component: "quote-calculator" }, resolveSiteId(), quoteFollowUps);
+  const quoteInputForm = useForm<Record<string, string | boolean | string[]>>({ defaultValues: Object.fromEntries(
+    allQuoteFields.map(field => {
+      const value = values[field.id];
+      return [field.id, typeof value === 'string' || typeof value === 'boolean' || Array.isArray(value) && value.every(item => typeof item === 'string') ? value : field.inputType === 'multi-select' || field.inputType === 'checkbox-group' ? [] : ''];
+    }),
+  ) });
+  const inputValues = useWatch({ control: quoteInputForm.control });
+  const showTobaccoFollowUps = evaluateConditionDefinition("condition-member-smoker", { ...values, smoker: inputValues.smoker ?? "" });
   const neededRoles = new Set([
     ...(requirements.needsGender ? ['gender'] : []), ...(requirements.needsSmoker ? ['smoker'] : []),
+    ...(showTobaccoFollowUps && requirements.needsTobaccoLastUsed ? ['tobacco-last-used'] : []),
+    ...(showTobaccoFollowUps && requirements.needsTobaccoProducts ? ['tobacco-products'] : []),
     ...(requirements.needsDi ? ['average-monthly-income'] : []), ...(requirements.needsHours ? ['hours-worked-per-week'] : []),
     ...(requirements.needsActiveWork ? ['actively-at-work'] : []),
     ...(requirements.needsExpenses ? ['monthly-business-expenses'] : []), ...(requirements.needsResponsibility ? ['business-expense-responsibility'] : []),
   ]);
-  const quoteInputFields = getSurfaceFields('quoteInputs').filter(field => neededRoles.has(field.id));
+  const quoteInputFields = allQuoteFields.filter(field => neededRoles.has(field.id));
   const needsAdditionalFields = quoteInputFields.length > 0;
-  const quoteInputForm = useForm<Record<string, string | boolean | string[]>>({ defaultValues: Object.fromEntries(
-    getSurfaceFields('quoteInputs').map(field => {
-      const value = values[field.id];
-      return [field.id, typeof value === 'string' || typeof value === 'boolean' || Array.isArray(value) && value.every(item => typeof item === 'string') ? value : ''];
-    }),
-  ) });
-  const inputValues = useWatch({ control: quoteInputForm.control });
   const gender = String(inputValues.gender ?? '') as EstimateGender;
   const smoker = String(inputValues.smoker ?? '') as EstimateYesNo;
   const avgIncome = String(inputValues['average-monthly-income'] ?? '').replace(/[^0-9]/g, '');
@@ -194,7 +204,7 @@ export default function QuoteCalculator({
     const value = inputValues[field.id];
     const invalid = fieldValidationChecks(field).find(check => !check.validate(value));
     if (invalid) fieldErrors[field.id] = invalid.message;
-    else if (value && field.options && !field.options.some(option => option.value === value)) fieldErrors[field.id] = `Choose an available ${field.label}.`;
+    else if (typeof value === 'string' && value && field.options && !field.options.some(option => option.value === value)) fieldErrors[field.id] = `Choose an available ${field.label}.`;
   }
   const isFieldsValid = Object.keys(fieldErrors).length === 0;
 
@@ -203,6 +213,8 @@ export default function QuoteCalculator({
   const [productApplicants, setProductApplicants] = useState<
     Record<string, CoverageApplicantId[]>
   >({});
+  const [riderChoices, setRiderChoices] = useState<Record<string, boolean>>({});
+  const [riderAmountChoices, setRiderAmountChoices] = useState<Record<string, number>>({});
   const [showProducts, setShowProducts] = useState(false);
   const [productsLoading, setProductsLoading] = useState(false);
   const [calculatingRates, setCalculatingRates] = useState<Set<string>>(
@@ -221,13 +233,17 @@ export default function QuoteCalculator({
     [coverages, selectedCategories, categoryPolicy, categoryAnswer, activeClient],
   );
 
+  const quoteRiderElections = reconcileApplicationRiders(
+    categoryProducts.map(product => ({ ...product, riders: quoteRiders(product) })),
+    { dependents: [], coverageAmounts: amountsByKey, coverageRiders: riderChoices, coverageRiderAmounts: riderAmountChoices },
+  );
   const factForm = useForm<Record<string, string | boolean | string[]>>({ defaultValues: Object.fromEntries(coverageFactFieldIds(coverages, values, "presented").map(id => [id, String(values[id] ?? "")])) });
   const contextualFacts = factForm.watch();
   const quoteValues = { ...values, ...contextualFacts, ...inputValues,
     "birth-date": collectEligibility ? eligibilityValues.birthday : initialEligibility?.birthday ?? values["birth-date"],
     "state-province": collectEligibility ? eligibilityValues.state : initialEligibility?.state ?? values["state-province"],
     "hours-worked-per-week": quoteInputFields.some(field => field.id === "hours-worked-per-week") ? hoursPerWeek : contextualFacts["hours-worked-per-week"] ?? values["hours-worked-per-week"], "average-monthly-income": avgIncome, "monthly-business-expenses": monthlyExpenses, "business-expense-responsibility": responsibilityPct,
-    productApplicants, coverageAmounts: amountsByKey, coverageSelections: categoryProducts.filter(product => (productApplicants[product.id] ?? []).length > 0).map(product => product.id) };
+    productApplicants, coverageAmounts: amountsByKey, ...quoteRiderElections, coverageSelections: categoryProducts.filter(product => (productApplicants[product.id] ?? []).length > 0).map(product => product.id) };
   const quoteBehavior = (product: CoverageDefinition, applicant: CoverageApplicantId = "member") => resolveApplicationCoverage(product, applicant, quoteValues, coverages, { deferUnansweredMembership: true });
 
   const workThresholds = categoryProducts.map(product => product.requirements?.eligibility?.find(rule => rule.applicantType === "member")?.minimumWorkHoursPerWeek);
@@ -356,8 +372,23 @@ export default function QuoteCalculator({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategories, needsAdditionalFields]);
 
+  function handleRiderToggle(product: CoverageDefinition, riderId: string) {
+    const key = `${product.id}:${riderId}:member`;
+    setRiderChoices(current => ({ ...current, [key]: !quoteRiderElections.coverageRiders[key] }));
+    markRateCalculating(`${product.id}:member`);
+  }
+
+  function handleRiderAmountChange(product: CoverageDefinition, riderId: string, amount: number) {
+    setRiderAmountChoices(current => ({ ...current, [`${product.id}:${riderId}:member`]: amount }));
+    markRateCalculating(`${product.id}:member`);
+  }
+
   function handleAmountChange(key: string, amount: number) {
     setAmountsByKey((current) => ({ ...current, [key]: amount }));
+    markRateCalculating(key);
+  }
+
+  function markRateCalculating(key: string) {
     setCalculatingRates((current) => new Set(current).add(key));
     if (rateTimersRef.current[key])
       window.clearTimeout(rateTimersRef.current[key]);
@@ -399,7 +430,7 @@ export default function QuoteCalculator({
     const key = `${product.id}:${applicant}`;
     if (prototypeRates.enabled) { const price = prototypeRates.premium(key); return rateFrequency === "annual" ? price / 12 : price; }
     const amount = amountsByKey[key] ?? 0;
-    return estimateMonthlyPremium(product.categoryId, amount);
+    return estimateMonthlyPremium(product.categoryId, amount) + selectedRidersMonthlyPremium(product, applicant, amount, quoteRiderElections.coverageRiders, quoteRiderElections.coverageRiderAmounts);
   }
 
   const grandTotal = useMemo(() => {
@@ -414,7 +445,7 @@ export default function QuoteCalculator({
       );
     }, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProducts, productApplicants, amountsByKey, prototypeRates]);
+  }, [selectedProducts, productApplicants, amountsByKey, riderChoices, riderAmountChoices, prototypeRates]);
 
   const costSummaryItems: TotalCostSummaryItem[] = useMemo(() => {
     const suffix = rateFrequency === "annual" ? "/yr" : "/mo";
@@ -441,7 +472,7 @@ export default function QuoteCalculator({
       };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProducts, productApplicants, amountsByKey, rateFrequency, calculatingRates, prototypeRates]);
+  }, [selectedProducts, productApplicants, amountsByKey, riderChoices, riderAmountChoices, rateFrequency, calculatingRates, prototypeRates]);
 
   function handleApply() {
     // Validate eligibility fields if collecting them here
@@ -479,11 +510,12 @@ export default function QuoteCalculator({
         selectedProductIds: selectedProducts.map((product) => product.id),
         productApplicants,
         coverageAmounts: amountsByKey,
+        ...quoteRiderElections,
         hideSmokerQuestion: activeClient.coverages.hideSmokerQuestion,
       },
       values,
-      [...coverageFactFieldIds(categoryProducts, quoteValues, "presented"), ...(requirements.needsActiveWork ? ['actively-at-work' as const] : [])].flatMap(id => {
-        const value = id === 'actively-at-work' ? inputValues[id] : contextualFacts[id];
+      [...coverageFactFieldIds(categoryProducts, quoteValues, "presented"), ...(requirements.needsActiveWork ? ['actively-at-work' as const] : []), ...(['tobacco-last-used', 'tobacco-products'] as const).filter(id => quoteInputFields.some(field => field.id === id))].flatMap(id => {
+        const value = id === 'actively-at-work' || id === 'tobacco-last-used' || id === 'tobacco-products' ? inputValues[id] : contextualFacts[id];
         return value === undefined ? [] : [{ fieldId: id, value }];
       }),
     );
@@ -563,7 +595,7 @@ export default function QuoteCalculator({
           (displayMode === "drawer" || inlineStep === 1) && (
             <Stack spacing={2}>
               {quoteInputFields.map((field, index) => {
-                const section = (id: string) => ['gender', 'smoker'].includes(id) ? sectionLabels.personalDetails : ['average-monthly-income', 'hours-worked-per-week', 'actively-at-work'].includes(id) ? sectionLabels.workAndIncome : sectionLabels.businessDetails;
+                const section = (id: string) => ['gender', 'smoker', 'tobacco-last-used', 'tobacco-products'].includes(id) ? sectionLabels.personalDetails : ['average-monthly-income', 'hours-worked-per-week', 'actively-at-work'].includes(id) ? sectionLabels.workAndIncome : sectionLabels.businessDetails;
                 return <Stack key={field.id} spacing={2}>
                   {(index === 0 || section(quoteInputFields[index - 1].id) !== section(field.id)) && <SectionDivider label={section(field.id)} variant="subsection" />}
                   <FieldRenderer field={field} onValueChange={handleQuoteFieldChange} control={quoteInputForm.control} errors={fieldsAttempted ? Object.fromEntries(Object.entries(fieldErrors).map(([id, message]) => [id, { type: 'validate', message }])) : {}} />
@@ -672,6 +704,14 @@ export default function QuoteCalculator({
                               onAmountChange={(amount) =>
                                 handleAmountChange(key, amount)
                               }
+                              riders={quoteRiders(product).map(rider => {
+                                const riderKey = `${product.id}:${rider.id}:member`;
+                                const checked = !!quoteRiderElections.coverageRiders[riderKey];
+                                return { id: rider.id, name: rider.name, description: rider.description, checked, disabled: !!rider.included || currentAmount <= 0,
+                                  amount: rider.hasAmount && rider.coverageAmounts ? { label: rider.amountLabel ?? "Rider Benefit Amount", value: quoteRiderElections.coverageRiderAmounts[riderKey] ?? rider.defaultAmount ?? 0, choices: [...(rider.included ? [] : [0]), ...getCoverageAmountChoices({ coverageAmounts: rider.coverageAmounts }, "member")] } : undefined };
+                              })}
+                              onRiderToggle={riderId => handleRiderToggle(product, riderId)}
+                              onRiderAmountChange={(riderId, amount) => handleRiderAmountChange(product, riderId, amount)}
                             />
                           );
                         })}

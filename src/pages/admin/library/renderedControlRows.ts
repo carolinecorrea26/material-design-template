@@ -48,7 +48,6 @@ export function renderedControlRows(catalog: LibraryCatalog, siteKey: string, fi
       if (definition.key === "share-preset") return [25, 50, 75, 100].map(percent => ({ ...definition, key: `share-preset:${percent}`, label: `${percent}%`, surface: "Add / Edit Beneficiary modal · percentage shortcuts" }));
       if (definition.key === "reference-rate-table") return referenceTables.map(({ product, table }) => ({ ...definition, key: `${definition.key}:${product.id}`, label: definition.kind === "drawer" ? table.title : "View rate table", surface: definition.kind === "drawer" ? `${table.title} drawer` : `Product card · ${product.name} · rate information` }));
       if (definition.key === "rate-reference-source") return referenceTables.filter(({ table }) => ["pdf", "link", "xml"].includes(table.kind)).map(({ product, table }) => ({ ...definition, key: `rate-reference-source:${product.id}`, label: table.kind === "pdf" ? "Open PDF" : "Open reference source", condition: "Reference table drawer open", surface: `${table.title} drawer · reference link` }));
-      if (definition.key === "help-drawer-estimate-cost") return [];
       return [definition];
     });
     for (const product of library.products.filter(product => product.brochureUrl)) definitions.push({ page: "coverage", kind: "link", key: `product-brochure:${product.id}`, label: product.name, events: ["activate"], sourceFile: "src/components/coverage/ProductCatalog.tsx", condition: "Product card displayed; brochure URL configured", surface: `Product card · ${product.name} · title link` });

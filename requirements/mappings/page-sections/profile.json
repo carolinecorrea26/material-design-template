@@ -1,0 +1,18 @@
+{
+  "page": "profile",
+  "sections": [
+    "personal",
+    "drivers-license",
+    "outside-us",
+    "travel-outside-us",
+    "physician",
+    "other-coverage",
+    "financial-questionnaire",
+    "spouse-personal",
+    "spouse-drivers-license",
+    "spouse-outside-us",
+    "spouse-travel-outside-us",
+    "spouse-physician",
+    "spouse-other-coverage"
+  ]
+}

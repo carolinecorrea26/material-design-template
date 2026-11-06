@@ -1,0 +1,39 @@
+{
+  "changes": [
+    {
+      "id": "CHG-001",
+      "description": "The quote asks the tobacco follow-up questions (Last Used, Product(s) Used) when the tobacco-use answer is Yes, and carries the answers into the application.",
+      "reason": "Keeps the quote calculator consistent with the Coverage page's tobacco questions."
+    },
+    {
+      "id": "CHG-002",
+      "description": "The quote offers each product's full options, including available riders with their configured amounts. Selected riders are included in the estimate and carried into the application.",
+      "reason": "Keeps the quote calculator consistent with the Coverage page's product options."
+    },
+    {
+      "id": "CHG-003",
+      "description": "Removed the Membership page's \"How much does it cost?\" help chip and quote calculator drawer. Home is the only quote entry point.",
+      "reason": "Sites that skip the landing page typically provide their own rate tool."
+    },
+    {
+      "id": "CHG-004",
+      "description": "The quote's state/province dropdown filters to eligible states the same way the application's state fields do.",
+      "reason": "Keeps quote entry consistent with the application fields."
+    },
+    {
+      "id": "CHG-005",
+      "description": "ASCE, ABE and WAEPA's separately named membership ID fields are one shared field, member-id. It is optional by default and required for ASCE. Recorded in the requirements; the prototype still uses the site-specific fields.",
+      "reason": "The fields collect the same answer, so they share one definition with site-level required settings."
+    },
+    {
+      "id": "CHG-006",
+      "description": "Catalog names shown in the library for ASCE quote inputs now come from the requirements JSON: \"Smoker\" is now \"Tobacco use\", \"Tobacco products\" is now \"Tobacco products used\", \"Zip code\" is now \"ZIP / postal code\", \"State\" is now \"State / province\" and \"Birthdate\" is now \"Date of birth\". Applicant-facing labels are unchanged.",
+      "reason": "Names come from the requirements JSON field definitions."
+    },
+    {
+      "id": "CHG-007",
+      "description": "ASCE's Chronic Illness Rider (CIR) on Group Term Life is a normal rider only. Applicants can no longer elect CIR on its own without base coverage.",
+      "reason": "ASCE requirements update: CIR is not offered as a CIR-only election."
+    }
+  ]
+}

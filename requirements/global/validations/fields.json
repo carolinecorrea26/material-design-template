@@ -1,0 +1,12 @@
+{
+  "validations": [
+    {
+      "id": "required-fields",
+      "name": "Check required field values",
+      "status": "draft",
+      "check": "required-fields",
+      "statement": "Reject missing values for mapped fields marked required in their effective field definitions. Do not maintain a second required setting here. The applicability mapping identifies which fields are checked.",
+      "source": "src/components/forms/EligibilityFields.tsx"
+    }
+  ]
+}

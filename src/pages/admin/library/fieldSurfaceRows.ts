@@ -1,4 +1,5 @@
 import { getPhoneTypeFieldId } from "../../../domain/phoneFields";
+import { resolveMappedFields, siteUsesRequirementFields } from "../../../domain/requirementFields";
 import type { LibraryCatalog } from "../../../services/libraryCatalogService";
 import type { FieldDefinition } from "../../../domain/fields";
 import { getSiteFieldInventory } from "../../../config/fields/inspectionInventory";
@@ -10,7 +11,7 @@ import { libraryApplicantText } from "./libraryApplicants";
 import { resolvePageCatalog } from "../../../domain/pageCatalog";
 import { isHealthQuestionnairePolicy } from "../../../domain/configuredHealthQuestionnaire";
 
-export type FieldSurfaceRow = { position?: number; key: string; field: FieldDefinition; definitionKey?: string; surface: string; pages: string[]; order: number | null; optionsNote?: string; tool?: boolean; presentation?: "inline" | "drawer" | "modal"; container?: string };
+export type FieldSurfaceRow = { position?: number; key: string; field: FieldDefinition; definitionKey?: string; surface: string; pages: string[]; order: number | null; optionsNote?: string; tool?: boolean; presentation?: "inline" | "drawer" | "modal"; container?: string; source?: "requirements-json" };
 
 /** Saved page definitions remain authoritative; inspection metadata identifies shared tool surfaces. */
 export function fieldSurfaceRows(catalog: LibraryCatalog, siteKey: string): FieldSurfaceRow[] {
@@ -72,7 +73,9 @@ export function fieldSurfaceRows(catalog: LibraryCatalog, siteKey: string): Fiel
     if (siteKey !== "all" && placement?.page === "home" && toolRows.some(tool => tool.field.id === row.key && tool.placements.some(placement => placement.pageId === "home" && placement.presentation === "inline"))) continue;
     const surface = !placement ? "Unassigned" : placement.page === "home" ? "Home eligibility card" : fieldSurfaceLabel(catalog, placement.page, placement.section, row.key);
     const section = catalog.data.pageSections.find(section => section.pageKey === placement?.page && section.definition.id === placement?.section);
-    rows.push({ position: (section?.position ?? 0) * 10000 + (placement?.order ?? 0), key: `${row.id}:${placement?.page ?? "unassigned"}`, field: row.definition, definitionKey: row.key, surface, pages: row.placements.map(placement => placement.page), order: placement ? placement.order + 1 : null });
+    // Sites loading from requirements JSON render the Home card from the quote mapping.
+    const jsonField = siteUsesRequirementFields(siteKey) && surface === "Home eligibility card" ? resolveMappedFields({ component: "quote-calculator" }, { siteId: siteKey }).find(field => field.id === row.key) : undefined;
+    rows.push({ position: (section?.position ?? 0) * 10000 + (placement?.order ?? 0), key: `${row.id}:${placement?.page ?? "unassigned"}`, field: jsonField ?? row.definition, definitionKey: row.key, surface, pages: row.placements.map(placement => placement.page), order: placement ? placement.order + 1 : null, source: jsonField ? "requirements-json" : undefined });
   }
   rows.push(...questionnaireRows.values());
   // Supplement page-owned/repeated controls from the renderer inventory. No
@@ -141,7 +144,7 @@ export function fieldSurfaceRows(catalog: LibraryCatalog, siteKey: string): Fiel
       const order = orders.get(field.id) ?? orders.size + 1;
       orders.set(field.id, order);
       toolOrders.set(orderKey, orders);
-      const result = { key, field, definitionKey: row.definitionKey ?? (saved ? field.id : undefined), surface, pages, order, tool: true, presentation, container: row.group!.label, optionsNote: !field.options?.length && ["dropdown", "radio", "checkbox-group"].includes(field.inputType) ? "Determined by selected products" : undefined };
+      const result: FieldSurfaceRow = { key, field, definitionKey: row.definitionKey ?? (saved ? field.id : undefined), surface, pages, order, tool: true, presentation, container: row.group!.label, source: siteKey !== "all" && row.status === "requirements-json" ? "requirements-json" : undefined, optionsNote: !field.options?.length && ["dropdown", "radio", "checkbox-group"].includes(field.inputType) ? "Determined by selected products" : undefined };
       seen.set(key, result);
       rows.push(result);
     }

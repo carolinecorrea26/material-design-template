@@ -1,0 +1,19 @@
+{
+  "component": "home",
+  "configurations": ["home-variant", "applying-steps-presentation", "form-template", "eligible-states-only", "eligible-states"],
+  "rules": ["state-province-from-postal-code", "quote-entry-location-feedback"],
+  "presentation": ["eligible-state-options"],
+  "workflows": ["home-quote-entry-handoff", "quote-entry-open-calculator", "form-template-selection", "home-start-and-resume"],
+  "validations": [
+    {
+      "validation": "required-fields",
+      "trigger": "get-quote",
+      "fields": ["zip-postal-code", "state-province", "birth-date"]
+    },
+    {
+      "validation": "date-value-format",
+      "trigger": "get-quote",
+      "fields": ["birth-date"]
+    }
+  ]
+}

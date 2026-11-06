@@ -1,0 +1,19 @@
+{
+  "rules": [
+    {
+      "id": "state-province-from-postal-code",
+      "name": "Derive state or province from location",
+      "status": "draft",
+      "fields": ["zip-postal-code", "state-province"],
+      "statement": "When the ZIP or postal code changes and a matching state or province can be determined from the available options, select it. The applicant can change the selection.",
+      "source": "src/components/forms/EligibilityFields.tsx"
+    },
+    {
+      "id": "quote-entry-location-feedback",
+      "name": "Handle location derivation against eligible-only options",
+      "status": "draft",
+      "statement": "When eligible-only presentation is enabled and a ZIP/postal code of at least five trimmed characters cannot be resolved against current options, clear the selected state and show location feedback.",
+      "source": "src/components/forms/EligibilityFields.tsx; src/app/sections/ConfiguredEligibilityFields.tsx"
+    }
+  ]
+}

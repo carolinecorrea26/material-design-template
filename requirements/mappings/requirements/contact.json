@@ -1,0 +1,5 @@
+{
+  "component": "contact",
+  "configurations": ["eligible-states-only", "eligible-states"],
+  "presentation": ["eligible-state-options"]
+}

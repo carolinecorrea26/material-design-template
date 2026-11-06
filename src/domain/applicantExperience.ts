@@ -1,3 +1,5 @@
+import type { FieldDefinition } from "./fields";
+
 /** Site-owned collection/presentation choices, persisted as Library configuration. */
 export type ApplicantExperience = {
   /** Shared contact behavior; absent flags preserve the template defaults. */
@@ -15,6 +17,12 @@ export type ApplicantExperience = {
   eligibilityDisqualifications?: Array<{ applicant: "member" | "spouse" | "child"; fieldId: string; value: string; message: string }>;
   membershipDisqualifications?: Array<{ fieldId: string; value: string; message: string }>;
 };
+
+export function filterEligibleStateOptions(field: FieldDefinition, experience: ApplicantExperience | undefined): FieldDefinition {
+  if (!experience?.eligibleStatesOnly || !["state-province", "state", "business-state", "mailing-state"].includes(field.id) || !field.options) return field;
+  return { ...field, options: field.options.filter(option => experience.eligibleStates?.includes(option.value.replace(/^US-/, ""))) };
+}
+
 export function isApplicantExperience(value: unknown): value is ApplicantExperience {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const v = value as ApplicantExperience;

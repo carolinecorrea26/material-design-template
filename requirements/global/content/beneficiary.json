@@ -1,0 +1,28 @@
+{
+  "beneficiary.title": "Add your beneficiaries",
+  "beneficiary.subhead": "Tell us who should receive benefits if a claim is paid.",
+  "beneficiary.breadcrumb": "Beneficiary",
+  "beneficiary.loading": ["Saving beneficiary information...", "Checking that the next section has what it needs..."],
+
+  "beneficiary.help.what-is": "What is a beneficiary?",
+  "beneficiary.help.share": "What is the % share?",
+
+  "beneficiary.add": "Add Beneficiary",
+  "beneficiary.designation.primary": "Primary",
+  "beneficiary.designation.contingent": "Contingent",
+
+  "beneficiary.note.replaces-prior": "I make the following beneficiary designation with respect to all life insurance under this insurance plan and, if I am already covered under the plan, I hereby revoke any prior beneficiary designation.",
+  "beneficiary.note.new-insurance": "I make the following beneficiary designation with respect to new insurance issued on the basis of this application. If you currently have insurance and wish to change your beneficiary, contact the Plan Administrator for the proper form",
+
+  "beneficiary.error.missing": "Please add beneficiary information before continuing.",
+  "beneficiary.no-products": "No self or spouse Life/AD product selections were found.",
+  "beneficiary.full": "No more beneficiaries can be added online for this coverage.",
+
+  "beneficiary.dialog.add-title": "Add Beneficiary",
+  "beneficiary.dialog.edit-title": "Edit Beneficiary",
+
+  "beneficiary.apply.title": "Apply to Other Coverages",
+  "beneficiary.apply.prompt": "Would you like to apply this beneficiary to other coverages?",
+  "beneficiary.apply.confirm": "Apply to Selected",
+  "beneficiary.apply.cancel": "Skip"
+}

@@ -14,7 +14,9 @@ export type StructuredApplicationStateKey =
   | "coverageSelections"
   | "selectedCategoryChips"
   | "productApplicants"
-  | "coverageAmounts";
+  | "coverageAmounts"
+  | "coverageRiders"
+  | "coverageRiderAmounts";
 
 export type StructuredValueMapping<Source extends Record<string, unknown>> = {
   target: StructuredApplicationStateKey;

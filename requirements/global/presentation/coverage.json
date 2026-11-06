@@ -1,0 +1,11 @@
+{
+  "presentation": [
+    {
+      "id": "estimated-rate-states",
+      "name": "Display estimated rate states",
+      "status": "draft",
+      "statement": "Display estimated rates including selected riders using the existing rate-display states and configured frequency.",
+      "source": "src/app/usePrototypeRates.ts; src/domain/rateDisplay.ts; src/app/useCoverageState.ts; src/app/workflows/QuoteCalculator.tsx"
+    }
+  ]
+}

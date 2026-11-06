@@ -1,0 +1,39 @@
+{
+  "coverage.title": "Your coverage options",
+  "coverage.subhead": "Explore and customize your coverage options. Please note that available options are based on eligibility information.",
+  "coverage.breadcrumb": "Coverage",
+  "coverage.loading": ["Saving your coverage selections...", "Preparing questions for the coverage you selected..."],
+
+  "coverage.portfolio.button": "View coverage portfolio",
+
+  "coverage.no-coverage": "No coverage is available through this link. Please contact your plan administrator for help.",
+  "coverage.selection-unavailable": "Some previously selected coverage is not available through this link. Remove those selections to continue, or return to the original application link.",
+  "coverage.selection-unavailable.action": "Remove unavailable selections",
+
+  "coverage.error.select-category": "Please select at least one coverage category.",
+  "coverage.error.correct": "Please correct the errors below before continuing.",
+
+  "coverage.section.personal": "Personal Details",
+  "coverage.section.work": "Work & Income",
+  "coverage.section.business": "Business Details",
+
+  "coverage.reveal.button": "See my coverage options",
+
+  "coverage.category.li.description": "Life coverage can help provide financial protection for the people who depend on you.",
+  "coverage.category.ad.description": "Accidental death and dismemberment coverage can help protect against covered accidental loss or injury.",
+  "coverage.category.di.description": "Disability coverage can help replace income if a covered disability affects your ability to work.",
+  "coverage.category.oo.description": "Office overhead coverage can help keep eligible business expenses paid during a covered disability.",
+  "coverage.category.sh.description": "Supplemental health coverage can help with out-of-pocket costs tied to covered health events.",
+
+  "coverage.select.member": "Select for myself",
+  "coverage.select.spouse": "Select for my spouse",
+  "coverage.select.child": "Select for my child",
+  "coverage.add": "Add coverage",
+  "coverage.estimated-cost": "Est. cost",
+  "coverage.total-cost": "Total Estimated Cost",
+
+  "coverage.dialog.dependent.title": "Dependent coverage",
+  "coverage.dialog.dependent.message": "To apply for dependent coverage, the member must be insured with this group coverage.",
+  "coverage.dialog.dependent.confirm": "Continue",
+  "coverage.dialog.dependent.cancel": "Cancel"
+}

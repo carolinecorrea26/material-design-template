@@ -18,6 +18,7 @@ import RulesLibrary from "./library/RulesLibrary";
 import ConfigurationsLibrary from "./library/ConfigurationsLibrary";
 import ValidationLibrary from "./library/ValidationLibrary";
 import AccessibilityLibrary from "./library/AccessibilityLibrary";
+import RequirementChangesLibrary from "./library/RequirementChangesLibrary";
 
 export const libraryTabs = [
   { id: "overview", label: "Overview" },
@@ -30,6 +31,7 @@ export const libraryTabs = [
   { id: "content", label: "Content" },
   { id: "accessibility", label: "Accessibility" },
   { id: "analytics", label: "Analytics" },
+  { id: "changes", label: "Requirement changes" },
 ];
 const domainDescriptions: Record<string, string> = {
   overview: "Client, association and TPA information, with an interactive Site preview.",
@@ -37,6 +39,7 @@ const domainDescriptions: Record<string, string> = {
   fields: "Browse field IDs, input labels, types, Storybook components, keyboards, options, defaults and helper text. Page and section usage is listed below the field catalog.",
   validation: "Page errors, field errors, and application recovery and processing states.",
   analytics: "Review the pages, fields, controls, overlays, and tools that need analytics tags, including event triggers, Site applicability, and tagging gaps.",
+  changes: "Agreed requirement changes from the fresh-start migration: change ID, description and reason.",
   accessibility: "Accessibility tracking setup, prototype concerns and WCAG 2.2 AA review.",
   coverage: "Inspect products, amounts, underwriting requirements, and coverage categories.",
   patterns: "Review reusable integration, calculation, and coverage patterns.",
@@ -92,7 +95,7 @@ export default function PortalLibrary() {
           <Typography component="h2" variant="h5" sx={{ fontWeight: 800 }}>{domain.label}</Typography>
           <Typography variant="body2" color="text.secondary">{domainDescriptions[domain.id]}</Typography>
         </Stack>
-        {domain.id === "accessibility" ? <AccessibilityLibrary siteKey={selection} /> : <LibraryCatalogProvider siteKey={selection}>
+        {domain.id === "accessibility" ? <AccessibilityLibrary siteKey={selection} /> : domain.id === "changes" ? <RequirementChangesLibrary /> : <LibraryCatalogProvider siteKey={selection}>
           {domain.id === "pages" ? <StoredPagesLibrary siteKey={selection} /> : domain.id === "fields" ? <StoredFieldsLibrary siteKey={selection} /> : domain.id === "overview" ? <LibraryOverview siteKey={selection} legacyPreview={domainId === "site-preview"} /> : domain.id === "rules" ? <RulesLibrary siteKey={selection} /> : domain.id === "configurations" ? <ConfigurationsLibrary domain={domainId} siteKey={selection} /> : domain.id === "flows" ? <StoredFlowsLibrary siteKey={selection} /> : domain.id === "analytics" ? <AnalyticsLibrary siteKey={selection} /> : domain.id === "content" ? <ContentLibrary domain={domainId} siteKey={selection} /> : domain.id === "validation" ? <ValidationLibrary siteKey={selection} /> : <StoredLibraryDomain domain={domain.id} siteKey={selection} />}
         </LibraryCatalogProvider>}
       </Stack>

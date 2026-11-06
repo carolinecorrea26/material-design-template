@@ -1,0 +1,6 @@
+{
+  "page": "health-li",
+  "components": [
+    { "type": "health-li" }
+  ]
+}

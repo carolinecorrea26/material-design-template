@@ -1,0 +1,15 @@
+{
+  "page": "coverage",
+  "sections": [
+    "portfolio",
+    "categories",
+    "self-personal",
+    "self-work",
+    "self-business",
+    "spouse-personal",
+    "spouse-work",
+    "reveal",
+    "products",
+    "summary"
+  ]
+}

@@ -1,5 +1,5 @@
 import { eligibilityFactCollectionFields, isEligibilityFactRequirements } from "../../domain/eligibilityFacts";
-import { isContactFieldAvailable } from "../../domain/applicantExperience";
+import { filterEligibleStateOptions, isContactFieldAvailable } from "../../domain/applicantExperience";
 import { getActiveClient } from "../client/getActiveClient";
 import type { PageId } from "../../types";
 import type { ApplicationFormValues } from "../../app/ApplicationFormContext";
@@ -71,7 +71,7 @@ export function getClientPageFields(
     values ?? {},
   );
 
-  const fields = visibleFields.map(field => experience?.eligibleStatesOnly && ["state-province", "state", "business-state", "mailing-state"].includes(field.id) && field.options ? { ...field, options: field.options.filter(o => experience.eligibleStates?.includes(o.value.replace(/^US-/, ""))) } : field);
+  const fields = visibleFields.map(field => filterEligibleStateOptions(field, experience));
   if (questionnaires.some(({ result }) => result.status !== "unassigned")) return questionnaires.flatMap(({ applicant, result }) => applicantParticipatesInPage(pageId, applicant, values ?? {}) ? result.status === "unassigned" ? fields.filter(field => field.id.endsWith("-spouse") === (applicant === "spouse")) : result.fields : []);
   if (pageId !== "membership") return fields;
 

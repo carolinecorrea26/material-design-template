@@ -67,16 +67,17 @@ describe("implemented field inventory", () => {
     expect(withTools.every(row => getFieldPlacements(row).every(p => p.pageId === "eligibility"))).toBe(true);
     expect(withTools.some(row => row.group?.id === "quote-calculator")).toBe(false);
   });
-  it.each(siteEntities.map(site => site.id))("records Membership quote access independently of Home for %s", siteId => {
+  it("lists ASCE quote riders with their Coverage carry-forward keys (CHG-002)", () => {
+    const tools = selectFieldInventory(getSiteFieldInventory("asce"), "tools", "home").filter(row => row.group?.id === "quote-calculator");
+    expect(tools.find(row => row.field.id === "quote-rider:li-term:cir:member")?.storage).toContain("coverageRiders[li-term:cir:member]");
+    expect(tools.find(row => row.field.id === "quote-rider-amount:li-term:cir:member")?.storage).toContain("coverageRiderAmounts[li-term:cir:member]");
+    expect(tools.some(row => row.field.id.includes(":spouse"))).toBe(false);
+  });
+
+  it.each(siteEntities.map(site => site.id))("offers the quote only from Home, never Membership, for %s", siteId => {
     const rows = getSiteFieldInventory(siteId);
-    const tools = selectFieldInventory(rows, "tools", "membership");
-    const quote = tools.filter(row => row.group?.id === "quote-calculator");
-    expect(quote.find(row => row.field.id === "birth-date")?.placements).toEqual([{
-      pageId: "membership", accessPath: "Help chip → How much does it cost?",
-      presentation: "drawer", condition: "Quote helper open",
-    }]);
-    expect(selectFieldInventory(rows, "pages", "membership").some(row => row.group)).toBe(false);
-    expect(selectFieldInventory(rows, "pages", "membership", true).some(row => row.group?.id === "quote-calculator")).toBe(true);
+    expect(selectFieldInventory(rows, "tools", "membership").some(row => row.group?.id === "quote-calculator")).toBe(false);
+    expect(selectFieldInventory(rows, "pages", "membership", true).some(row => row.group?.id === "quote-calculator")).toBe(false);
     const client = getEffectiveSiteConfig(siteId);
     const variant = client.features?.homePageVariant ?? "default";
     const hasHomeQuote = client.features?.defaultTemplate !== "single" && ["default", "quoteFirst"].includes(variant);

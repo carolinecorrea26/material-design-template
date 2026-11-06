@@ -1,0 +1,21 @@
+{
+  "configurations": [
+    {
+      "id": "eligible-states-only",
+      "name": "Only show eligible states",
+      "status": "draft",
+      "type": "boolean",
+      "default": false,
+      "source": "src/domain/applicantExperience.ts; src/config/clientFields/getClientPageFields.ts"
+    },
+    {
+      "id": "eligible-states",
+      "name": "Eligible state codes",
+      "status": "draft",
+      "type": "string-list",
+      "format": "state-code",
+      "default": [],
+      "source": "src/domain/applicantExperience.ts"
+    }
+  ]
+}

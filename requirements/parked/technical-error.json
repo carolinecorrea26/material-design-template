@@ -1,0 +1,6 @@
+{
+  "page": "technical-error",
+  "components": [
+    { "type": "technical-error" }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "validations": [
+    {
+      "id": "date-value-format",
+      "name": "Check the supplied date format",
+      "status": "draft",
+      "check": "date-format",
+      "statement": "A supplied date field value must match the internal YYYY-MM-DD format. This records the existing format check, not proof of calendar-date validity or age eligibility. The applicability mapping identifies the date field or entry scope; within an entry scope, this check applies only to date fields.",
+      "source": "src/components/forms/EligibilityFields.tsx"
+    }
+  ]
+}

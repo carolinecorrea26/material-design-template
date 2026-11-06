@@ -89,7 +89,7 @@ it("lists actual menu buttons and individual help chips rather than synthetic op
   expect(rows.some(row => row.label === "Open page help" || row.label === "Open Coverage needs calculator")).toBe(false);
   expect(rows.some(row => row.appearances.includes("Shared site layout"))).toBe(false);
   const membership = rows.filter(row => row.pageId === "membership" && row.kind === "button" && row.elementKey.startsWith("help-"));
-  expect(membership.map(row => row.label)).toEqual(["What are my coverage options?", "How does applying work?", "How much does it cost?"]);
+  expect(membership.map(row => row.label)).toEqual(["What are my coverage options?", "How does applying work?"]);
   expect(membership.every(row => row.components.some(component => component.label === "HelpChips"))).toBe(true);
   expect(rows.some(row => row.pageId === "coverage" && row.elementKey.startsWith("help-"))).toBe(false);
 });

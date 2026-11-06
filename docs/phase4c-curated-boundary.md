@@ -47,7 +47,7 @@ The gate inspects persisted compatibility products for all ten Sites and reconci
 
 ## Validation
 
-See `migration-artifacts/mcr-coverage.json`, `inventory.json`, `postgres-validation.json`, and `postgres.json` for reproducible reports. The original Phase 5 gate deferred the six named unknowns. Following business approval that exemption is removed: readiness now requires the approval records and canonical values to match. Current results are in the Phase 5 document; the counts below are historical.
+The original Phase 5 gate deferred the six named unknowns. Following business approval that exemption was removed: readiness requires the approval records and canonical values to match. The counts below are historical; PostgreSQL reports are no longer generated. JSON review reports can still be produced with `npm run migration:export`.
 
 - Full suite with PostgreSQL readback: 564/564 passed, 43 test files, no skips (before the additional effective-field-ID UI regression test).
 - Migration suite and all ten-Site behavioral equivalence tests passed; full suite includes seven new promotion-boundary tests.

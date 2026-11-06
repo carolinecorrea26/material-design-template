@@ -1,0 +1,24 @@
+{
+  "page": "contact",
+  "fields": [
+    {"field":"email","people":["spouse"]},
+    {"field":"phone","people":["spouse"]},
+    {"field":"phone-type","people":["spouse"]},
+    {"field":"street-address","people":["self"]},
+    {"field":"apt-suite","people":["self"]},
+    {"field":"city","people":["self"]},
+    {"field":"state","people":["self"]},
+    {"field":"zip-code","people":["self"]},
+    {"field":"correspondence-to","people":["self"]},
+    {"field":"business-name","people":["self"]},
+    {"field":"business-type","people":["self"]},
+    {"field":"business-address-same-as-home","people":["self"]},
+    {"field":"business-street-address","people":["self"]},
+    {"field":"business-apt-suite","people":["self"]},
+    {"field":"business-city","people":["self"]},
+    {"field":"business-state","people":["self"]},
+    {"field":"business-zip-code","people":["self"]},
+    {"field":"business-phone","people":["self"]},
+    {"field":"business-phone-type","people":["self"]}
+  ]
+}

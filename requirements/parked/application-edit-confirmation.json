@@ -1,0 +1,6 @@
+{
+  "page": "application-edit-confirmation",
+  "components": [
+    { "type": "application-edit-confirmation" }
+  ]
+}

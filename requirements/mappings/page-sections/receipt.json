@@ -1,0 +1,9 @@
+{
+  "page": "receipt",
+  "sections": [
+    "confirmation",
+    "coverage-decisions",
+    "application-summary",
+    "client-help"
+  ]
+}

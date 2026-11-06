@@ -2,7 +2,9 @@ import { act, useState } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import EligibilityFields, { type EligibilityValues } from './EligibilityFields';
-import { installPrototypeLibrary } from '../../domain/prototypeLibrary';
+import { installPrototypeLibrary, resolvePrototypeLibrary } from '../../domain/prototypeLibrary';
+import { createReviewedMigrationDatabase } from '../../migration/fixtures';
+import ConfiguredEligibilityFields from '../../app/sections/ConfiguredEligibilityFields';
 
 let root: Root;
 let container: HTMLDivElement;
@@ -14,6 +16,10 @@ function QuoteForm() {
     <button onClick={() => setAttempted(true)}>Validate quote</button>
     <output>{values.state}</output>
   </>;
+}
+function ConfiguredQuoteForm() {
+  const [values, setValues] = useState<EligibilityValues>({ zipCode: '', state: '', birthday: '' });
+  return <ConfiguredEligibilityFields values={values} attempted={false} onChange={next => setValues(current => ({ ...current, ...next }))} />;
 }
 beforeEach(async () => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
@@ -59,3 +65,20 @@ it('shares inferred-State feedback and preserves a manual choice until ZIP chang
   await enter('elig-zip-postal-code', '19019');
   expect(container.querySelector('output')!.textContent).toBe('PA');
 });
+it('shows only configured eligible states in the quote state dropdown', async () => {
+  window.history.replaceState(null, '', '/?site=csea');
+  const data = createReviewedMigrationDatabase();
+  for (const field of data.siteFieldConfigurations.filter(row => row.siteKey === 'csea' && row.pageKey === 'home')) field.hidden = false;
+  installPrototypeLibrary(resolvePrototypeLibrary(data, 'csea', 'test'));
+  await act(async () => root.render(<ConfiguredQuoteForm />));
+  await enter('elig-state-province', 'New');
+  const options = [...document.querySelectorAll<HTMLElement>('[role="option"]')].map(option => option.textContent);
+  expect(options).toContain('New York');
+  expect(options).toContain('New Jersey');
+  expect(options).not.toContain('New Hampshire');
+  const newYork = [...document.querySelectorAll<HTMLElement>('[role="option"]')].find(option => option.textContent === 'New York')!;
+  await act(async () => newYork.click());
+  await enter('elig-zip-postal-code', '90001');
+  expect(container.textContent).toContain('The state for this ZIP / Postal Code may not be eligible for coverage.');
+  expect(container.querySelector<HTMLInputElement>('[data-analytics-field="elig-state-province"] input')!.value).toBe('');
+}, 120000);

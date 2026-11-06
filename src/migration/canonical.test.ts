@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { createMigrationDatabase, migrationSiteKeys } from "./fixtures";
-import { canonicalSchemaSql, expandedTableSpecs } from "./canonical";
+import { expandedTableSpecs } from "./canonical";
 import { validateMigrationDatabase } from "./integrity";
 import { canonicalReference, mcrCoverageReport, mcrSource, parseAmount } from "./mcr";
 import { libraryDisplayId } from "../domain/provenance";
@@ -114,10 +114,9 @@ describe("canonical corrective Phase 4 gates", () => {
   it("has no client-ID conditionals in new behavioral logic", () => {
     for (const file of ["src/migration/mcr.ts", "src/migration/normalizeCoverage.ts", "src/pages/admin/library/PatternsFlagsLibrary.tsx", "src/services/libraryExport.ts"]) expect(readFileSync(file, "utf8")).not.toMatch(/(?:clientId|clientKey|siteId|siteKey)\s*===?\s*["'](?:ama|asce|waepa)/);
   });
-  it("exports the additive schema and deterministic coverage report for review", () => {
+  it("exports the coverage report for review", () => {
     if (process.env.MIGRATION_EXPORT_DIR) {
       const directory = resolve(process.env.MIGRATION_EXPORT_DIR); mkdirSync(directory, { recursive: true });
-      writeFileSync(resolve(directory, "canonical.sql"), canonicalSchemaSql());
       writeFileSync(resolve(directory, "mcr-coverage.json"), JSON.stringify(mcrCoverageReport(db), null, 2) + "\n");
       writeFileSync(resolve(directory, "mcr-unresolved.json"), JSON.stringify(db.sourceRequirements.filter(r => r.classification !== "MAPPED" && r.classification !== "INTENTIONALLY_EXCLUDED"), null, 2) + "\n");
     }

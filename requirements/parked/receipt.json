@@ -1,0 +1,6 @@
+{
+  "page": "receipt",
+  "components": [
+    { "type": "receipt" }
+  ]
+}

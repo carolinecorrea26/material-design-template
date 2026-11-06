@@ -4,6 +4,7 @@ import { resolveSiteId } from "../data/activeSite";
 import { activeFeaturedProduct } from "../config/client/coverageProductScope";
 import { orderCoveragePresentation } from "../domain/coveragePresentation";
 import { reconcileApplicationRiders } from "../domain/applicationRiders";
+import { selectedRidersMonthlyPremium } from "../domain/coverageRiderPricing";
 import { getPrototypeLibrary } from "../domain/prototypeLibrary";
 import { categoryEligibility as evaluateCategoryEligibility, readCategoryEligibilityPolicy, reconcileCategoryElections } from "../domain/categoryEligibilityPolicy";
 import { changeCoverageAmount, selectedRiderOnly } from "../domain/coverageRiderOnly";
@@ -606,22 +607,7 @@ export function useCoverageState() {
     if (selectedRiderOnly(coverage, applicantId, values)) return NaN;
     if (prototypeRates.enabled) { const price = prototypeRates.premium(key); return rateFrequency === "annual" ? price / 12 : price; }
     const amount = storedAmounts[key] ?? 0;
-    let premium = estimateMonthlyPremium(coverage.categoryId, amount);
-
-    if (coverage.riders && amount > 0) {
-      for (const rider of coverage.riders) {
-        const riderKey = `${coverage.id}:${rider.id}:${applicantId}`;
-        if (storedRiders[riderKey]) {
-          const riderAmount = rider.hasAmount
-            ? (storedRiderAmounts[riderKey] ?? 0)
-            : amount;
-          premium +=
-            estimateMonthlyPremium(coverage.categoryId, riderAmount) *
-            rider.premiumFactor;
-        }
-      }
-    }
-
+    const premium = estimateMonthlyPremium(coverage.categoryId, amount) + selectedRidersMonthlyPremium(coverage, applicantId, amount, storedRiders, storedRiderAmounts);
     return Math.round(premium * 100) / 100;
   }
 

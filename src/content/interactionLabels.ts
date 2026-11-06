@@ -10,7 +10,6 @@ export const menuTools = {
 export const helpChipDefinitions = {
   coverageOptions: { id: "coverage-options-available", label: "What are my coverage options?" },
   applying: { id: "application-process", label: "How does applying work?" },
-  estimate: { id: "estimate-cost", label: "How much does it cost?" },
   beneficiaryBasics: { id: "beneficiary-basics", label: "What is a beneficiary?" },
   beneficiaryShare: { id: "beneficiary-share", label: "What is the % share?" },
   payment: { id: "payment-handling", label: "How is my payment information handled?" },
@@ -18,7 +17,7 @@ export const helpChipDefinitions = {
 } as const;
 
 export const pageHelpChips: Record<string, readonly { id: string; label: string }[]> = {
-  membership: [helpChipDefinitions.coverageOptions, helpChipDefinitions.applying, helpChipDefinitions.estimate],
+  membership: [helpChipDefinitions.coverageOptions, helpChipDefinitions.applying],
   coverage: [],
   beneficiary: [helpChipDefinitions.beneficiaryBasics, helpChipDefinitions.beneficiaryShare],
   payment: [helpChipDefinitions.payment],

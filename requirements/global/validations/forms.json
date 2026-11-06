@@ -1,0 +1,20 @@
+{
+  "validations": [
+    {
+      "id": "field-definition-checks",
+      "name": "Validate using the effective field definition",
+      "status": "draft",
+      "check": "field-definition",
+      "statement": "Apply the shared checks defined by the effective field: required values/checks/selections, authored option membership, maximum length, configured formats, valid calendar dates and nonnegative numbers where applicable. Required flags and limits remain on the field definition, not copied here. Quote inputs additionally reject supplied values outside their authored options. Only fields participating in the mapped context are checked.",
+      "source": "src/utils/fieldValidation.ts; src/app/workflows/QuoteCalculator.tsx"
+    },
+    {
+      "id": "page-validation-callback",
+      "name": "Run the page-specific acceptance check",
+      "status": "draft",
+      "check": "page-check",
+      "statement": "After registered field checks pass, invoke the configured page validation callback with merged current application/form values. A returned error message blocks forward submission. Page-specific business checks must be authored separately; this defines only the shared invocation.",
+      "source": "src/app/RoutePage.tsx"
+    }
+  ]
+}

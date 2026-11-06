@@ -15,6 +15,7 @@
     "test:watch": "vitest",
     "test:asce": "vitest run src/migration/asceRequirements.test.ts src/migration/asceMcrParity.test.ts src/migration/asceBusinessDecisions.test.ts src/app/coverageRuntime.integration.test.ts src/pages/admin/library/libraryRequirements.test.ts src/persistence/mockOperationsAdapter.test.ts scripts/applicant-saves.test.mjs scripts/prototype-cutover.test.mjs",
     "golden:write": "node scripts/golden-effective-sites.mjs --write",
+    "requirements:check": "node scripts/check-requirements.mjs",
     "golden:check": "node scripts/golden-effective-sites.mjs --check",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "npm run storybook:catalog && storybook build",

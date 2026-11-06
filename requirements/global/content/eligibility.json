@@ -1,0 +1,7 @@
+{
+  "eligibility.title": "Confirm your eligibility",
+  "eligibility.subhead": "Answer a few questions to check eligibility and see your coverage options.",
+  "eligibility.breadcrumb": "Eligibility",
+  "eligibility.loading": ["Saving your eligibility information...", "Confirming which coverage options may apply..."],
+  "eligibility.resume-loaded": "Saved application loaded successfully."
+}

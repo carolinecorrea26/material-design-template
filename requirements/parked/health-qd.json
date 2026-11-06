@@ -1,0 +1,6 @@
+{
+  "page": "health-qd",
+  "components": [
+    { "type": "health-qd" }
+  ]
+}

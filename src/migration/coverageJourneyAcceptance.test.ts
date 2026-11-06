@@ -68,14 +68,19 @@ describe("Step 3 candidate acceptance after persistence", () => {
       writeFileSync(resolve(process.env.STEP3_ACCEPTANCE_DIR, "step3-contract-acceptance.json"), JSON.stringify({ scope: "persisted contracts and conditional mappings; scenario tests are separate", products: report, sourceApproval: "deferred", fullProductAcceptance: "pending", runtimeActivation: "pending" }, null, 2) + "\n");
     }
   });
-  for (const [siteKey, productKey] of [["asce", "li-term"], ["avma", "li-group-term"], ["waepa", "li-group-term"]]) {
+  it("asce offers CIR only as a normal rider, never on its own (CHG-007)", () => {
+    const selection = site("asce").configuration.products.find(p => p.productKey === "li-term")!.selectionPolicies[0].value as { modes: string[]; riderOnlyApplicants: string[] };
+    expect(selection.modes).not.toContain("rider-only");
+    expect(selection.riderOnlyApplicants).toEqual([]);
+  });
+  for (const [siteKey, productKey] of [["avma", "li-group-term"], ["waepa", "li-group-term"]]) {
     it(`${siteKey} verifies and maps CIR-only without new base life or new billing`, async () => {
       const s = site(siteKey);
       const rider = s.configuration.products.find(p => p.productKey === productKey)!.riders.find(r => r.definition?.value.id === "cir")!.key;
       const input = inputForRider(s, productKey, rider);
       const policies = createMockPolicyVerificationService([policyFixture(s, productKey)], now);
       const result = await evaluateCoverageJourney(s, input, { policies, now });
-      expect(result, JSON.stringify(result)).toMatchObject({ allowed: true, skipPayment: true, skipBeneficiary: true, submission: { amount: 0, existingAmount: 100000, existingPolicyId: "mock-existing-1", riders: [{ code: siteKey === "asce" ? "R37" : siteKey === "avma" ? "R44" : "R34" }] } });
+      expect(result, JSON.stringify(result)).toMatchObject({ allowed: true, skipPayment: true, skipBeneficiary: true, submission: { amount: 0, existingAmount: 100000, existingPolicyId: "mock-existing-1", riders: [{ code: siteKey === "avma" ? "R44" : "R34" }] } });
       expect((await evaluateCoverageJourney(s, { ...input, existingPolicy: undefined }, { policies, now })).allowed).toBe(false);
       expect((await evaluateCoverageJourney(s, { ...input, amount: 100000 }, { policies, now })).allowed).toBe(false);
       expect((await evaluateCoverageJourney(s, { ...input, jurisdiction: "US-CT" }, { policies, now })).allowed).toBe(false);
@@ -83,21 +88,21 @@ describe("Step 3 candidate acceptance after persistence", () => {
     });
   }
   it("rejects inactive, expired, wrong-scope, disallowed and failed policy verification", async () => {
-    const s = site("asce"), key = s.configuration.products.find(p => p.productKey === "li-term")!.riders[0].key;
-    const input = inputForRider(s, "li-term", key);
-    for (const patch of [{ status: "lapsed" as const }, { expiresAt: now() }, { siteKey: "avma" }, { permittedChanges: [] }]) {
-      const policies = createMockPolicyVerificationService([{ ...policyFixture(s, "li-term"), ...patch }], now);
+    const s = site("avma"), key = s.configuration.products.find(p => p.productKey === "li-group-term")!.riders.find(r => r.definition?.value.id === "cir")!.key;
+    const input = inputForRider(s, "li-group-term", key);
+    for (const patch of [{ status: "lapsed" as const }, { expiresAt: now() }, { siteKey: "asce" }, { permittedChanges: [] }]) {
+      const policies = createMockPolicyVerificationService([{ ...policyFixture(s, "li-group-term"), ...patch }], now);
       expect((await evaluateCoverageJourney(s, input, { policies, now })).allowed).toBe(false);
     }
     expect((await evaluateCoverageJourney(s, input, { policies: { verify: async () => { throw new Error("offline"); } }, now })).errors).toContain("Policy verification unavailable");
-    const forged = { ...policyFixture(s, "li-term"), productKey: "li-add" };
+    const forged = { ...policyFixture(s, "li-group-term"), productKey: "li-add" };
     expect((await evaluateCoverageJourney(s, input, { policies: { verify: async () => ({ status: "verified", source: "mock", policy: forged }) }, now })).allowed).toBe(false);
   });
   it("requires existing-policy increase totals above verified amount, ignores a caller's old amount", async () => {
-    const s = site("asce");
-    const fixture = policyFixture(s, "li-term");
+    const s = site("avma");
+    const fixture = policyFixture(s, "li-group-term");
     const policies = createMockPolicyVerificationService([fixture], now);
-    const input = answers(s, { ...inputForRider(s, "li-term", s.configuration.products.find(p => p.productKey === "li-term")!.riders[0].key), mode: "increase", amount: 150000, payment: { method: "bank-account", frequency: "monthly" } });
+    const input = answers(s, { ...inputForRider(s, "li-group-term", s.configuration.products.find(p => p.productKey === "li-group-term")!.riders.find(r => r.definition?.value.id === "cir")!.key), mode: "increase", amount: 150000, payment: { method: "bank-account", frequency: "monthly" } });
     expect((await evaluateCoverageJourney(s, input, { policies, now })).allowed).toBe(true);
     expect((await evaluateCoverageJourney(s, { ...input, amount: 100000 }, { policies, now })).allowed).toBe(false);
   });
@@ -180,16 +185,16 @@ describe("Step 3 candidate acceptance after persistence", () => {
     expect(resolveBilling(p, "bill-me", "quarterly", NaN).displayPrice).toBe(false);
   });
   it("requires scoped health answers and attestations, clears inactive tobacco and orphan answers, and requests yes details", async () => {
-    const s = site("asce"), key = s.configuration.products.find(p => p.productKey === "li-term")!.riders[0].key;
-    const input = inputForRider(s, "li-term", key);
+    const s = site("avma"), key = s.configuration.products.find(p => p.productKey === "li-group-term")!.riders.find(r => r.definition?.value.id === "cir")!.key;
+    const input = inputForRider(s, "li-group-term", key);
     const answer = { ...input.answers, "health-li-q1": "yes", "health-li-q1-spouse": "yes", "unused": "discard", "tobacco-products": ["cigarettes"] };
-    const q = resolveQuestionParticipation(s, "li-term", "member", "rider-only", answer, input.attestations, [key]);
+    const q = resolveQuestionParticipation(s, "li-group-term", "member", "rider-only", answer, input.attestations, [key]);
     expect(q.allowed).toBe(false); expect(q.missingFacts).toContain("health-li-q1.details");
     expect(q.cleanedAnswers).not.toHaveProperty("health-li-q1-spouse");
     expect(q.cleanedAnswers).not.toHaveProperty("unused");
     expect(q.cleanedAnswers).not.toHaveProperty("tobacco-products");
-    expect(resolveQuestionParticipation(s, "li-term", "member", "rider-only", { ...answer, "health-li-q1.details": "mock details" }, input.attestations, [key]).allowed).toBe(true);
-    const policies = createMockPolicyVerificationService([policyFixture(s, "li-term")], now);
+    expect(resolveQuestionParticipation(s, "li-group-term", "member", "rider-only", { ...answer, "health-li-q1.details": "mock details" }, input.attestations, [key]).allowed).toBe(true);
+    const policies = createMockPolicyVerificationService([policyFixture(s, "li-group-term")], now);
     expect((await evaluateCoverageJourney(s, { ...input, attestations: [] }, { policies, now })).allowed).toBe(false);
   });
   it("reapplies journey adoption without duplicate riders, shifted mappings or changed records", () => {

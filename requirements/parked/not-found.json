@@ -1,0 +1,6 @@
+{
+  "page": "not-found",
+  "components": [
+    { "type": "not-found" }
+  ]
+}

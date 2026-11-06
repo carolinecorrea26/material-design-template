@@ -10,11 +10,46 @@ import { buildSelectedCoverageEntries } from '../utils/coverageDecisions';
 import { createLibraryDraft, editDraftExperience, editDraftRiders } from './libraryDraft';
 import { cseaDiTable, cseaAddTable } from '../migration/cseaRateTables';
 import { csvRows, parseTextRateTable } from './rateTableImport';
+import { getClientPageFields } from '../config/clientFields/getClientPageFields';
+import { getSurfaceFields } from '../config/fields/storedSurfaces';
+import { quoteEligibilityPresentation } from '../app/sections/ConfiguredEligibilityFields';
+import { filterEligibleStateOptions } from './applicantExperience';
+import type { FieldDefinition } from './fields';
 const data = createReviewedMigrationDatabase();
 const library = resolvePrototypeLibrary(data, 'csea', 'prototype:test');
 const di = library.products.find(p => p.id === 'di-ltd')!;
 const facts = { membership: 'yes', 'birth-date': '1990-01-01', 'state-province': 'NY', 'hours-worked-per-week': 40, 'average-monthly-income': 5000, 'csea-occupation-group': 'group-1-clerical', dependents: ['spouse','child'], coverageSelections: ['di-ltd'], productApplicants: { 'di-ltd': ['member'] }, coverageAmounts: { 'di-ltd:member': 1000 }, coverageWaitingPeriods: { 'di-ltd:member': '0-day-accident-7-day-sickness' }, coverageMaxBenefitPeriods: { 'di-ltd:member': '12-months' } };
 afterEach(() => installPrototypeLibrary(null));
+it('filters quote and application state options using the same site setting without mutating stored options', () => {
+  window.history.replaceState(null, '', '/?site=csea');
+  const quoteData = structuredClone(data);
+  for (const field of quoteData.siteFieldConfigurations.filter(row => row.siteKey === 'csea' && row.pageKey === 'home')) field.hidden = false;
+  installPrototypeLibrary(resolvePrototypeLibrary(quoteData, 'csea', 'test'));
+  const raw = getSurfaceFields('quoteInputs').find(field => field.id === 'state-province')!.options!;
+  const quote = quoteEligibilityPresentation().fields.find(field => field.id === 'state-province')!.options!;
+  const application = getClientPageFields('eligibility').find(field => field.id === 'state-province')!.options!;
+  expect(quote).toEqual(raw.filter(option => ['NY', 'NJ', 'VT', 'PA', 'CT'].includes(option.value.replace(/^US-/, ''))));
+  expect(quote.map(option => option.value)).toEqual(application.map(option => option.value));
+  expect(quote.length).toBeGreaterThan(0);
+  expect(quote.length).toBeLessThan(raw.length);
+  expect(getSurfaceFields('quoteInputs').find(field => field.id === 'state-province')!.options).toEqual(raw);
+
+  window.history.replaceState(null, '', '/?site=asce');
+  installPrototypeLibrary(resolvePrototypeLibrary(data, 'asce', 'test'));
+  expect(quoteEligibilityPresentation().fields.find(field => field.id === 'state-province')!.options)
+    .toEqual(getSurfaceFields('quoteInputs').find(field => field.id === 'state-province')!.options);
+});
+it('preserves authored option order and labels, matching prefixed codes only when enabled', () => {
+  const field = { id: 'state-province', options: [
+    { value: 'US-NJ', label: 'New Jersey authored' },
+    { value: 'CA', label: 'California authored' },
+    { value: 'NY', label: 'New York authored' },
+  ] } as FieldDefinition;
+  expect(filterEligibleStateOptions(field, { eligibleStatesOnly: true, eligibleStates: ['NY', 'NJ'] }).options)
+    .toEqual([field.options![0], field.options![2]]);
+  expect(filterEligibleStateOptions(field, { eligibleStatesOnly: false, eligibleStates: ['NY'] })).toBe(field);
+  expect(filterEligibleStateOptions({ ...field, id: 'other' }, { eligibleStatesOnly: true, eligibleStates: ['NY'] }).options).toEqual(field.options);
+});
 it('persists CSEA state and notice collection settings, and combines attestation without the old question', () => {
   expect(library.client.applicantExperience).toMatchObject({ eligibleStatesOnly: true, eligibleStates: ['NY','NJ','VT','PA','CT'], childEligibility: { mode: 'notice-only' } });
   const membership = library.site.configuration.pages.find(p => p.key === 'membership')!;

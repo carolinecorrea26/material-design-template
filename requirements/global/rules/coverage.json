@@ -1,0 +1,25 @@
+{
+  "rules": [
+    {
+      "id": "coverage-category-availability",
+      "name": "Determine available coverage categories",
+      "status": "draft",
+      "statement": "A category is available when it has available products and passes the configured category eligibility decision.",
+      "source": "src/app/workflows/QuoteCalculator.tsx; src/app/useCoverageState.ts"
+    },
+    {
+      "id": "coverage-question-participation",
+      "name": "Select questions for the selected coverage",
+      "status": "draft",
+      "statement": "Include questions applicable to selected categories and participating applicants, subject to configured additions and exclusions.",
+      "source": "src/config/fields/homeQuoteFields.ts; src/app/workflows/QuoteCalculator.tsx; src/app/useCoverageState.ts"
+    },
+    {
+      "id": "coverage-selection-policy",
+      "name": "Resolve shared coverage eligibility and amount choices",
+      "status": "draft",
+      "statement": "Restrict product/applicant elections and amount choices according to current facts and configured product policies.",
+      "source": "src/domain/coverageRuntime.ts; src/app/workflows/QuoteCalculator.tsx; src/app/useCoverageState.ts; src/pages/Coverage.tsx"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import { getPhoneTypeFieldId } from "../../domain/phoneFields";
+import { resolveMappedFields, siteUsesRequirementFields } from "../../domain/requirementFields";
 import type { ResolvedFieldSurface } from "../../domain/fieldSurfaces";
 /** Inspection-only inventory: never feeds page rendering, validation, or persistence.
  * Includes conditional and repeated inputs in addition to the flat runtime registry.
@@ -28,6 +29,7 @@ import { BENEFICIARY_INDIVIDUAL_FIELDS, BENEFICIARY_TRUST_FIELDS, beneficiaryInf
 import { paymentMethodOptions, paymentFrequencyOptions, paymentInfoOptInField } from "./paymentFields";
 import type { FieldDefinition } from "./types";
 import type { PageId } from "../../types";
+import { quoteRiders } from "../../domain/coverageRiderPricing";
 
 export type FieldPlacement = {
   pageId: PageId;
@@ -171,10 +173,6 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
   }
   const quoteGroup = { id: "quote-calculator", label: surface("quoteInputs")?.inspectionLabel ?? "Quote calculator" };
   const quotePlacements: FieldPlacement[] = [];
-  if (enabled("membership")) quotePlacements.push({
-    pageId: "membership", accessPath: 'Help chip → How much does it cost?',
-    presentation: "drawer", condition: "Quote helper open",
-  });
   const homeVariant = client.features?.homePageVariant ?? "default";
   const homeQuoteEnabled = enabled("home") && client.features?.defaultTemplate !== "single" && ["default", "quoteFirst"].includes(homeVariant);
   if (homeQuoteEnabled) quotePlacements.push({
@@ -185,27 +183,40 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
   const addTool = (group: FieldGroup, placements: FieldPlacement[], field: FieldDefinition, condition: string, storage: string, definitionKey?: string) => {
     if (placements.length) result.push({field, definitionKey, pageId: null, group, placements, area: group.label, condition, storage, status: "component-defined", notes: [], sites: [siteId]});
   };
+  const quoteJsonFields = siteUsesRequirementFields(siteId) ? resolveMappedFields({ component: "quote-calculator" }, { siteId }) : [];
   // Home's default card collects eligibility before opening the tool. Other
   // inputs belong to the calculator, including its inline Home placement.
   for (let index = result.length - 1; index >= 0; index--) {
     const row = result[index];
     if (row.pageId === "home" && homeQuoteFieldIds.some(id => id === row.field.id)) {
       if (homeVariant !== "default" || !homeQuoteFieldIds.slice(0, 3).some(id => id === row.field.id)) result.splice(index, 1);
+      else {
+        const jsonField = quoteJsonFields.find(field => field.id === row.field.id);
+        if (jsonField) Object.assign(row, { field: jsonField, status: "requirements-json" });
+      }
     }
   }
-  const quoteQuestions = new Set(getQuoteQuestionFieldIds(client, products.map(p => p.categoryId)));
+  const quoteQuestions = new Set(getQuoteQuestionFieldIds(client, products.map(p => p.categoryId), library ?? null));
   for (const [index, id] of homeQuoteFieldIds.entries()) {
     if (index >= 3 && !quoteQuestions.has(id)) continue;
     const placements = index < 3 ? quotePlacements.filter(p => p.pageId !== "home" || homeVariant === "quoteFirst") : quotePlacements;
-    const field = surface("quoteInputs")?.mapping.fields.find(field => field.id === id);
+    const surfaceField = surface("quoteInputs")?.mapping.fields.find(field => field.id === id);
+    const jsonField = quoteJsonFields.find(field => field.id === id);
+    const field = jsonField && (surfaceField || !library || id.startsWith("tobacco-")) ? jsonField : surfaceField;
     if (library && !field) continue;
     addTool(quoteGroup, placements, field ?? catalog[id], index < 3 ? "Eligibility collected in calculator" : "Relevant coverage category selected", "Local quote state; copied to application when applying");
+    if (field === jsonField && jsonField && placements.length) result[result.length - 1].status = "requirements-json";
   }
   for (const product of products.filter(p => p.applicants.includes("member"))) {
     const selectedField = surface("quoteInputs")?.mapping.fields.find(field => field.id === "quote-selection");
     const amountField = surface("quoteInputs")?.mapping.fields.find(field => field.id === (["DI", "OO"].includes(product.categoryId) ? "quote-monthly-amount" : "quote-amount"));
     if (!library || selectedField) addTool(quoteGroup, quotePlacements, {...(selectedField ?? {label:`${product.name} selection`,inputType:"checkbox" as const}), id:`quote-selection:${product.id}`}, "Quote results shown", "Local quote state", selectedField?.id);
     if (!library || amountField) addTool(quoteGroup, quotePlacements, {...(amountField ?? {label:`${product.name} amount`,inputType:"dropdown" as const}), id:`quote-amount:${product.id}`}, "Quote product selected", "Local quote state", amountField?.id);
+    for (const rider of quoteRiders(product)) {
+      const riderKey = `${product.id}:${rider.id}:member`;
+      addTool(quoteGroup, quotePlacements, {id:`quote-rider:${riderKey}`,label:rider.name,inputType:"checkbox"}, "Quote product shown with a nonzero amount", `Local quote state; copied to coverageRiders[${riderKey}] when applying`);
+      if (rider.hasAmount && rider.coverageAmounts) addTool(quoteGroup, quotePlacements, {id:`quote-rider-amount:${riderKey}`,label:`${rider.name} amount`,inputType:"dropdown"}, "Quote rider selected", `Local quote state; copied to coverageRiderAmounts[${riderKey}] when applying`);
+    }
   }
   if (new Set(products.map(p => p.categoryId)).size > 1 && (!library || surface("quoteInputs")?.mapping.fields.some(field => field.id === "quote-categories"))) addTool(quoteGroup, quotePlacements, (surface("quoteInputs")?.mapping.fields.find(field => field.id === "quote-categories") ?? {id:"quote-categories",label:"Coverage categories",inputType:"checkbox-group"}), "Multiple coverage categories available", "Local quote state");
   if (client.coverages.estimatedRateDisplay?.showFrequencyToggle) {

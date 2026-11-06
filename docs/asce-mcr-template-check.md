@@ -12,7 +12,7 @@ October 8, 2026. Authority: the stored `04-MCR-new-version-full.xlsx` transcript
 | Main!Q165:Q167/T165:T167 | Child age, unmarried/student requirements | Existing shared child collection/eligibility checks retained. Children are collected as application facts; no new separate pricing or verification service was introduced. |
 | QD LI age/amount bands plus approved ASCE decisions | Member/spouse QD/FUW routing | Existing approved ages 18–69 (10-Year), 18–59 (20-Year) and older-age FUW bands retained. QD remains an external iframe/loading placeholder. |
 | SUP DI Health questions!A19:F19 | ASCE has DI; QD DI No; mutual exclusive No; TELE-Supp No; SUP DI No | The general shared catalog does not authorize adding Tele-Supp or supplemental DI to ASCE. Their absence is consistent with this MCR row. |
-| Main!H167:I167/L167 and Riders row 43 | CIR-only election, amount cap, age and residency | Existing normalized election policy carries these MCR rules. No real-time policy service is required. Browser parity between that policy and the displayed controls remains part of the page-by-page comparison. |
+| Main!H167:I167/L167 and Riders row 43 | CIR amount cap, age and residency (CIR-only election removed by ASCE update, CHG-007) | Existing normalized election policy carries these MCR rules; CIR is a normal rider only. No real-time policy service is required. Browser parity between that policy and the displayed controls remains part of the page-by-page comparison. |
 
 The new health catalog is shared globally. MCR Site/product applicability determines whether a specific questionnaire is relevant. Do not request additional application forms, real rates, underwriting decision services or document providers to complete this prototype.
 

@@ -1,0 +1,11 @@
+{
+  "component": "home",
+  "calculators": [
+    "quote-calculator"
+  ],
+  "fields": [
+    {"field":"zip-postal-code","people":["self"]},
+    {"field":"state-province","people":["self"]},
+    {"field":"birth-date","people":["self"]}
+  ]
+}

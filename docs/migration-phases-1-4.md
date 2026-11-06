@@ -1,6 +1,10 @@
 # Phase 1–4 migration review gate
 
-Historical Phase 1–4 report. Phase 4C is now closed and Phase 5 repository access is implemented; see [current Phase 5 status](phase5-repositories.md). Phase 6 remains out of scope.
+Historical Phase 1–4 report, not current runtime guidance. The database integration,
+SQL export and PostgreSQL verification tooling have been removed from the working
+tree. The prototype now uses the [JSON catalog](../README.md#current-shared-catalog).
+Phase 4C was closed and Phase 5 repository access implemented; see the historical
+[Phase 5 status](phase5-repositories.md).
 
 This implementation stops before Phase 5. The application, Admin Center, and preview still use their existing sources. No additional legacy files were removed, and no configured Supabase database was modified.
 
@@ -53,13 +57,10 @@ The gate covers the migrated configuration and declarative behaviors. It is not 
 
 ## Review artifacts and commands
 
-Generated artifacts are intentionally ignored by Git and reproducible:
+Current JSON review exports are intentionally ignored by Git:
 
 - `migration-artifacts/database.json`: complete local fixture database.
-- `migration-artifacts/seed.sql`: deterministic transactional review seed using semantic-key lookups for UUID foreign keys. Operational applications, changes, releases and audit history are not rewritten.
 - `migration-artifacts/inventory.json`: table counts and reference-validation results.
-- `migration-artifacts/postgres.json`: actual persisted PostgreSQL rows.
-- `migration-artifacts/postgres-validation.json`: PostgreSQL version, repeatability, constraints and RLS results.
 
 ```sh
 npm run migration:check
@@ -68,18 +69,8 @@ npm test
 npm run build
 ```
 
-To repeat the PostgreSQL gate, start a disposable review container and run the existing validation script:
-
-```sh
-docker run --detach --name portal-migration-review \
-  --env POSTGRES_PASSWORD=portal-review-only \
-  --tmpfs /var/lib/postgresql/data postgres:17
-MIGRATION_EXPORT_DIR=./migration-artifacts npm run migration:postgres
-MIGRATION_POSTGRES_READBACK=./migration-artifacts/postgres.json npm test
-docker rm --force portal-migration-review
-```
-
-The script never reads `.env` or configured database credentials. It creates and removes its own review database. The seed is intended for a disposable review schema; it does not delete stale records left by a different fixture revision.
+The historical PostgreSQL gate and its SQL artifacts are no longer part of the
+current project commands.
 
 ## Stop point
 

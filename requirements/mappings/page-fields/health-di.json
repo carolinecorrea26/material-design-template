@@ -1,0 +1,18 @@
+{
+  "page": "health-di",
+  "fields": [
+    {"field":"health-detail-onset","people":["self","spouse"]},
+    {"field":"health-detail-conditions","people":["self","spouse"]},
+    {"field":"health-detail-physician-address","people":["self","spouse"]},
+    {"field":"health-di-q1","people":["self","spouse"]},
+    {"field":"health-di-q2","people":["self","spouse"]},
+    {"field":"health-di-q3","people":["self","spouse"]},
+    {"field":"health-di-q4","people":["self","spouse"]},
+    {"field":"health-di-q5","people":["self","spouse"]},
+    {"field":"health-di-q6","people":["self","spouse"]},
+    {"field":"health-di-q7","people":["self","spouse"]},
+    {"field":"health-di-assistance-type","people":["self","spouse"]},
+    {"field":"health-di-fall-type","people":["self","spouse"]},
+    {"field":"health-di-details","people":["self","spouse"]}
+  ]
+}

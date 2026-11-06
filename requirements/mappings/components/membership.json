@@ -1,0 +1,13 @@
+{
+  "component": "membership",
+  "fields": [
+    {"field":"membership","people":["self"]},
+    {"field":"title","people":["self"]},
+    {"field":"first-name","people":["self"]},
+    {"field":"last-name","people":["self"]},
+    {"field":"email","people":["self"]},
+    {"field":"phone","people":["self"]},
+    {"field":"phone-type","people":["self"]},
+    {"field":"member-id","people":["self"]}
+  ]
+}

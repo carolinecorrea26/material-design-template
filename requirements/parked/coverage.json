@@ -1,0 +1,6 @@
+{
+  "page": "coverage",
+  "components": [
+    { "type": "coverage" }
+  ]
+}

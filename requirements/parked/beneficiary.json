@@ -1,0 +1,6 @@
+{
+  "page": "beneficiary",
+  "components": [
+    { "type": "beneficiary" }
+  ]
+}

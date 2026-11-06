@@ -1,0 +1,9 @@
+{
+  "component": "needs-calculator",
+  "fields": [
+    {"field":"needs-annual-income","people":["self"]},
+    {"field":"needs-years-to-replace","people":["self"]},
+    {"field":"needs-outstanding-debts","people":["self"]},
+    {"field":"needs-existing-coverage","people":["self"]}
+  ]
+}

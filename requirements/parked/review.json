@@ -1,0 +1,6 @@
+{
+  "page": "review",
+  "components": [
+    { "type": "review" }
+  ]
+}

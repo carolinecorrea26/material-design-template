@@ -1,0 +1,6 @@
+{
+  "page": "health-cir",
+  "components": [
+    { "type": "health-cir" }
+  ]
+}

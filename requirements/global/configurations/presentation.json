@@ -1,0 +1,31 @@
+{
+  "configurations": [
+    {
+      "id": "home-variant",
+      "name": "Home presentation",
+      "status": "draft",
+      "type": "enum",
+      "options": ["default", "hero-image", "welcome-back", "quoteFirst"],
+      "default": "default",
+      "source": "src/pages/Home.tsx"
+    },
+    {
+      "id": "applying-steps-presentation",
+      "name": "How applying works presentation",
+      "status": "draft",
+      "type": "enum",
+      "options": ["static", "animated"],
+      "default": "static",
+      "source": "src/config/homepagePresentation.ts"
+    },
+    {
+      "id": "form-template",
+      "name": "Application form template",
+      "status": "draft",
+      "type": "enum",
+      "options": ["multi", "single"],
+      "default": "multi",
+      "source": "src/config/template/resolveTemplate.ts"
+    }
+  ]
+}

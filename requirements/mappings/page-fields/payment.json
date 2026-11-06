@@ -1,0 +1,15 @@
+{
+  "page": "payment",
+  "fields": [
+    {"field":"payment-information-opt-in","people":["self"]},
+    {"field":"payment-method","people":["self"]},
+    {"field":"payment-frequency","people":["self"]},
+    {"field":"payment-shared-method","people":["self"]},
+    {"field":"payment-shared-frequency","people":["self"]},
+    {"field":"bank-name-on-account","people":["self"]},
+    {"field":"bank-institution","people":["self"]},
+    {"field":"bank-routing-number","people":["self"]},
+    {"field":"bank-account-number","people":["self"]},
+    {"field":"bank-authorization","people":["self"]}
+  ]
+}

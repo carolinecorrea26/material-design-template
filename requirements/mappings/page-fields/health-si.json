@@ -1,0 +1,13 @@
+{
+  "page": "health-si",
+  "fields": [
+    {"field":"health-si-q1","people":["self","spouse"]},
+    {"field":"health-si-q2","people":["self","spouse"]},
+    {"field":"health-si-q3","people":["self","spouse"]},
+    {"field":"health-si-q4","people":["self","spouse"]},
+    {"field":"health-si-q5","people":["self","spouse"]},
+    {"field":"health-detail-onset","people":["self","spouse"]},
+    {"field":"health-detail-conditions","people":["self","spouse"]},
+    {"field":"health-detail-physician-address","people":["self","spouse"]}
+  ]
+}

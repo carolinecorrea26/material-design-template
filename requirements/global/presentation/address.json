@@ -1,0 +1,11 @@
+{
+  "presentation": [
+    {
+      "id": "eligible-state-options",
+      "name": "Display the full or eligible-only location list",
+      "status": "draft",
+      "statement": "Display the authored state/province options, filtered by eligible state codes when eligible-states-only is enabled.",
+      "source": "src/domain/applicantExperience.ts; src/config/clientFields/getClientPageFields.ts; src/app/sections/ConfiguredEligibilityFields.tsx"
+    }
+  ]
+}

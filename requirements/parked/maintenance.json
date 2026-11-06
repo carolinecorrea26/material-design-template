@@ -1,0 +1,6 @@
+{
+  "page": "maintenance",
+  "components": [
+    { "type": "maintenance" }
+  ]
+}

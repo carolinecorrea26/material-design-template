@@ -1,0 +1,20 @@
+{
+  "prefilledFrom": {
+    "zip-postal-code": { "self": ["quote"] },
+    "state-province": { "self": ["quote"] },
+    "birth-date": { "self": ["quote"] },
+    "gender": { "self": ["quote"] },
+    "smoker": { "self": ["quote"] },
+    "hours-worked-per-week": { "self": ["quote"] },
+    "average-monthly-income": { "self": ["quote"] },
+    "monthly-business-expenses": { "self": ["quote"] },
+    "business-expense-responsibility": { "self": ["quote"] },
+    "state": { "self": ["state-province"] },
+    "zip-code": { "self": ["zip-postal-code"] }
+  },
+  "preset": {
+    "phone-type": "mobile",
+    "state-province": { "from": "zip-postal-code" },
+    "business-phone-type": "business"
+  }
+}

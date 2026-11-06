@@ -1,0 +1,6 @@
+{
+  "page": "unconfirmed-result",
+  "components": [
+    { "type": "unconfirmed-result" }
+  ]
+}

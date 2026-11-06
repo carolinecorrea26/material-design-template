@@ -124,7 +124,8 @@ export function applyCoverageJourneyAdoption(db: DatabaseSchema) {
         if (id === "catastrophic" && siteKey === "ama") r.minimumBase = 3000;
         if (id === "fpo" && siteKey === "avma") { r.minimumAge = 17; r.maximumAge = 49; r.amount = range(100, 7000, 100); r.amountCap = { baseFraction: 1, combinedMaximum: 12500, minimumNewAmount: 500 }; }
       }
-      const cirOnly = (siteKey === "asce" && productKey === "li-term") || (siteKey === "avma" && productKey === "li-group-term");
+      // CHG-007: ASCE CIR is a normal rider; it cannot be elected without base coverage.
+      const cirOnly = siteKey === "avma" && productKey === "li-group-term";
       if (cirOnly) { selection.modes = ["new", "increase", "rider-only"]; selection.riderOnlyApplicants = applicants.filter(a => a !== "child"); selection.skipPaymentForExisting = true; selection.healthForRiderOnly = true; }
       if (selection.childSchedule) {
         selection.childSchedule.primaryCoverageBasis = "member-or-spouse";

@@ -1,0 +1,6 @@
+{
+  "page": "eligibility",
+  "components": [
+    { "type": "eligibility" }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "workflows": [
+    {
+      "id": "form-template-selection",
+      "name": "Select the application template",
+      "status": "draft",
+      "statement": "Select the application template using the URL, stored template, site setting and default in precedence order.",
+      "source": "src/config/template/resolveTemplate.ts"
+    },
+    {
+      "id": "home-start-and-resume",
+      "name": "Start or resume from Home",
+      "status": "draft",
+      "statement": "Start the application or open the resume flow from Home.",
+      "source": "src/pages/Home.tsx; src/components/home/HomeHero.tsx"
+    },
+    {
+      "id": "form-next-destination",
+      "name": "Resolve the next participating application page",
+      "status": "draft",
+      "statement": "Resolve the next page using the page resolver or participating application order.",
+      "source": "src/app/RoutePage.tsx; src/config/formFlow.ts"
+    },
+    {
+      "id": "form-next-transition",
+      "name": "Advance the route or single-page section after save",
+      "status": "draft",
+      "statement": "After successful continuation, advance the route or single-page section with transition feedback.",
+      "source": "src/app/RoutePage.tsx; src/app/RoutePage.persistence.test.tsx"
+    }
+  ]
+}

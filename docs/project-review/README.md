@@ -1,6 +1,10 @@
 # Project structure and Library review
 
-October 13, 2026. Inventory generation only. Runtime cleanup progress is recorded in the ownership and implementation plan. The original completion gate remains **open**.
+October 13, 2026. This is a historical review, including archived SQL schema
+evidence; database rollout tasks and commands below are not current project
+instructions. The project now uses the [JSON catalog](../../README.md#current-shared-catalog).
+Retained ownership and requirement evidence must be interpreted separately from
+the old database implementation.
 
 The package covers **147 SQL tables**, **141 generic collections**, **100 Library snapshot tables**, **400 foreign keys** and **70 JSON columns**. 289 scalar reference/vocabulary candidates without FKs and 327 observed JSON leaf paths are registered. These are review coverage counts, not final ownership or reference acceptance.
 

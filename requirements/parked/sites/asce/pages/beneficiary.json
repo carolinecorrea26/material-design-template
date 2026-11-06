@@ -1,0 +1,9 @@
+{
+  "page": "beneficiary",
+  "notes": {
+    "li-term": "beneficiary.note.replaces-prior",
+    "li-add": "beneficiary.note.replaces-prior",
+    "li-10yr": "beneficiary.note.new-insurance",
+    "li-20yr": "beneficiary.note.new-insurance"
+  }
+}

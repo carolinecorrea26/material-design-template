@@ -10,7 +10,6 @@ import { reviewActiveSiteIdentities } from "./activeSiteIdentity";
 import { applyWaepaGiAmountAdoption, applyWaepaGiPortfolioAndPayment } from "./waepaGiAdoption";
 import { resolveEffectiveSite } from "../domain/effectiveSite";
 import { validateMigrationDatabase } from "./integrity";
-import { migrationSeedSql } from "./export";
 
 const baseline = createMigrationDatabase();
 const reviewed = createReviewedMigrationDatabase();
@@ -100,7 +99,7 @@ describe("Step 3 explicit identity and initial adoption", () => {
     expect(validateMigrationDatabase(reviewed)).toEqual([]);
     const source = reviewed.sourceRequirements.find(row => row.key === "mcr.main.H386")!;
     expect(source).toMatchObject({ promotionState: "SITE_CONFIGURATION", activeSiteKeys: ["waepa-gi"] });
-    expect(migrationSeedSql(reviewed)).toContain("mcr-fixed-member-offer");
+    expect(reviewed.coverageAmountPatterns.some(row => row.key.includes("mcr-fixed-member-offer"))).toBe(true);
     expect(createReviewedMigrationDatabase()).toEqual(reviewed);
   });
   it("shares the adopted rows through a persisted revision without mixing fresh reads", async () => {

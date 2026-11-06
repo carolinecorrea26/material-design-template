@@ -1,0 +1,21 @@
+{
+  "configurations": [
+    {
+      "id": "estimated-rate-frequency",
+      "name": "Default estimated rate frequency",
+      "status": "draft",
+      "type": "enum",
+      "options": ["monthly", "annual"],
+      "default": "monthly",
+      "source": "src/app/workflows/QuoteCalculator.tsx"
+    },
+    {
+      "id": "estimated-rate-frequency-toggle",
+      "name": "Show estimated rate frequency selector",
+      "status": "draft",
+      "type": "boolean",
+      "default": false,
+      "source": "src/app/workflows/QuoteCalculator.tsx"
+    }
+  ]
+}

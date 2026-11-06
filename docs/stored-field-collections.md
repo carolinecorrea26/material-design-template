@@ -21,15 +21,23 @@ Beneficiary and health bindings map canonical fields into repeated record proper
 
 Stored limits also apply to restored beneficiary/health records. Editing repeated records preserves values belonging to hidden fields. Missing/ambiguous surface configuration, unsafe/duplicate/reserved bindings, conflicting overrides, invalid limits and unsupported control options fail closed in an active stored prototype. Catalog-mode defaults remain available outside the active prototype. An unassigned page does not invalidate its globally stored collection definitions.
 
-## Database and older snapshots
+## Older JSON snapshots
 
-`supabase/migrations/202610090002_field_collections.sql` supplies the first collection batch. `supabase/migrations/202610090003_field_surfaces.sql` supplies the additional controls and follow-ups. Both preserve authored definitions and values when reapplied. These migrations were checked only in the disposable PostgreSQL database inside `portal-migration-review`; they have not been applied to staging or production.
+The optional converter inserts missing page, surface and collection metadata in
+older Library snapshots. It writes a new detached draft and a change report,
+preserves the source, and refuses to overwrite output files:
 
-The explicit snapshot converter described in [Page catalog upgrades](page-catalog-migration.md) inserts missing surface metadata as well as collection metadata. It produces a detached new draft, preserves the original release/draft, and requires normal review and publishing. It does not activate a release. Existing authored policies remain authoritative; conversion does not overwrite them to repair an invalid policy.
+```sh
+npm run pages:migrate-snapshot -- --input /absolute/path/old-snapshot.json --output /absolute/path/new-draft.json
+```
+
+For a record in a copy of local prototype state, add `--collection` with
+`drafts`, `releases` or `prototypeReleases` and `--id` with the record ID.
+The output is not published automatically: review the draft and collect fresh
+acceptance evidence before publishing. Existing authored values remain
+authoritative; invalid or ambiguous snapshots fail validation.
 
 ## Verification
-
-The [PostgreSQL report](field-surfaces-postgres-validation.json) covers thirteen migrations, legacy upgrades, preservation of authored values, double seed application, ten-Site readback equivalence, snapshot checks and RLS. Readback explicitly compares resolved surfaces and collections.
 
 Focused tests cover stored labels, bindings, field membership/order, limits, Site isolation, payment-policy filtering, restored-record validation, unsafe/conflicting definitions, original-preserving snapshot conversion, and actual repeated-field/calculator/verification rendering. Mock-service tests cover save/reload/restart, conversion, publication review, applicant saves and Site isolation. Browser checks exercised beneficiary add/edit, health-detail save, bank-field visibility and quote inputs/results using synthetic local data.
 

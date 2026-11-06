@@ -1,0 +1,8 @@
+{
+  "page": "payment",
+  "sections": [
+    "opt-in",
+    "payment-elections",
+    "banking-credit-card-information"
+  ]
+}

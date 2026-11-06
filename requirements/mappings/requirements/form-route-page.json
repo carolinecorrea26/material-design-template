@@ -1,0 +1,17 @@
+{
+  "component": "form-route-page",
+  "pages": ["membership", "eligibility", "coverage", "beneficiary", "contact", "profile", "review", "health-si", "health-li", "health-di", "health-ci", "health-cir", "payment", "docusign"],
+  "workflows": ["form-next-validation", "form-next-save", "form-next-intermediate-step", "form-next-action-state", "form-next-destination", "form-next-transition"],
+  "validations": [
+    {
+      "validation": "field-definition-checks",
+      "trigger": "next",
+      "scope": "registered-fields"
+    },
+    {
+      "validation": "page-validation-callback",
+      "trigger": "next",
+      "scope": "page"
+    }
+  ]
+}

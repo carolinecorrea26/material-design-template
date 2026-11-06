@@ -1,0 +1,6 @@
+{
+  "page": "profile",
+  "components": [
+    { "type": "profile" }
+  ]
+}

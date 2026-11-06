@@ -1,0 +1,6 @@
+{
+  "page": "advisor-send-confirmation",
+  "components": [
+    { "type": "advisor-send-confirmation" }
+  ]
+}

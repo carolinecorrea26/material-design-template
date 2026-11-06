@@ -22,6 +22,9 @@ export type QuoteApplySource = {
   selectedProductIds: string[];
   productApplicants: Record<string, CoverageApplicantId[]>;
   coverageAmounts: Record<string, number>;
+  /** Selected quote riders keyed `product:rider:applicant`, the Coverage page's keys. */
+  coverageRiders?: Record<string, boolean>;
+  coverageRiderAmounts?: Record<string, number>;
   hideSmokerQuestion?: boolean;
   /** The actual saved quote-field participation, including Site additions. */
   collectedFieldIds?: string[];
@@ -87,8 +90,17 @@ export const quoteApplyTransition: ApplicationTransitionDefinition<QuoteApplySou
           ),
         ),
     },
+    { target: "coverageRiders", resolve: (source) => selectedRiderEntries(source, source.coverageRiders, selected => selected === true) },
+    { target: "coverageRiderAmounts", resolve: (source) => selectedRiderEntries(source, source.coverageRiderAmounts, (_, key) => source.coverageRiders?.[key] === true) },
   ],
 };
+
+function selectedRiderEntries<Value>(source: QuoteApplySource, entries: Record<string, Value> | undefined, keep: (value: Value, key: string) => boolean) {
+  return Object.fromEntries(Object.entries(entries ?? {}).filter(([key, value]) => {
+    const [productId, , applicant] = key.split(":");
+    return source.selectedProductIds.includes(productId) && (source.productApplicants[productId] ?? []).some(id => id === applicant) && keep(value, key);
+  }));
+}
 
 /** Only collected contextual fields participate. Empty inputs cannot erase an
  * existing answer; canonical quote answers and selected coverage take precedence. */

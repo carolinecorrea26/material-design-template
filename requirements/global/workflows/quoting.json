@@ -1,0 +1,27 @@
+{
+  "workflows": [
+    {
+      "id": "home-quote-entry-handoff",
+      "name": "Keep Home quote-entry fields outside the calculator",
+      "status": "confirmed",
+      "fields": ["zip-postal-code", "state-province", "birth-date"],
+      "statement": "The calculator opened from Home does not display these quote-entry fields again. Home passes their values internally for calculation.",
+      "source": "src/pages/Home.tsx"
+    },
+    {
+      "id": "quote-entry-open-calculator",
+      "name": "Validate quote entry before opening the calculator",
+      "status": "draft",
+      "fields": ["zip-postal-code", "state-province", "birth-date"],
+      "statement": "Validate quote entry before opening the calculator; remain with errors if validation fails.",
+      "source": "src/components/home/HomeHero.tsx"
+    },
+    {
+      "id": "quote-apply-carry-forward",
+      "name": "Carry quote choices into the application",
+      "status": "draft",
+      "statement": "Apply validates applicable answers and selections, carries quote data including tobacco answers and selected riders into the application, closes the calculator and navigates to Membership.",
+      "source": "src/config/applicationTransitions/applicationTransitions.ts; src/config/applicationTransitions/executeApplicationTransition.ts; src/app/workflows/QuoteCalculator.tsx; docs/requirements-spec/page-review.md"
+    }
+  ]
+}

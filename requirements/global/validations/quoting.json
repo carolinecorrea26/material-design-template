@@ -1,0 +1,20 @@
+{
+  "validations": [
+    {
+      "id": "quote-category-required",
+      "name": "Select a coverage category before inline estimates",
+      "status": "draft",
+      "check": "category-selection",
+      "statement": "On inline Continue from the category/questions step, at least one coverage category must be selected.",
+      "source": "src/app/workflows/QuoteCalculator.tsx"
+    },
+    {
+      "id": "quote-product-required",
+      "name": "Select a product before Apply",
+      "status": "confirmed",
+      "check": "product-selection",
+      "statement": "At least one product must be selected before Apply.",
+      "source": "docs/requirements-spec/page-review.md; src/domain/coverageRuntime.ts"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "component": "eligibility",
+  "drawers": [
+    "member-verification"
+  ],
+  "fields": [
+    {"field":"membership","people":["spouse"]},
+    {"field":"first-name","people":["spouse","child"]},
+    {"field":"last-name","people":["spouse","child"]},
+    {"field":"zip-postal-code","people":["self"]},
+    {"field":"state-province","people":["self"]},
+    {"field":"birth-date","people":["self","spouse","child"]},
+    {"field":"dependents","people":["self"]},
+    {"field":"gender","people":["child"]},
+    {"field":"child-full-time-student","people":["child"]}
+  ]
+}

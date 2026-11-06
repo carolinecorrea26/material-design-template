@@ -8,10 +8,19 @@ import type { PageId } from "../../../types";
 import LibraryLink from "./LibraryLink";
 import { useLibraryCatalog } from "./LibraryCatalogContext";
 import { storedFieldRows, storedFieldVisibility, storedLibraryRows } from "./storedLibraryModel";
-import { fieldSurfaceRows } from "./fieldSurfaceRows";
+import { fieldSurfaceRows, type FieldSurfaceRow } from "./fieldSurfaceRows";
 import RecoveryStatesLibrary from "./RecoveryStatesLibrary";
 
 type ValidationRow = { id: string; page: string; field: string | null; label: string; level: string; rule: string; message: string; when: string; required: boolean | null };
+export function requirementsFieldValidationRows(usages: FieldSurfaceRow[]): ValidationRow[] {
+  return usages.filter(usage => usage.source === "requirements-json").flatMap(usage =>
+    usage.pages.flatMap(page => fieldValidationChecks(usage.field).map((check, index) => ({
+      id: `requirements:${usage.surface}:${page}:${usage.field.id}:${index}`,
+      page, field: usage.definitionKey ?? usage.field.id, label: usage.field.label,
+      level: "Field", rule: check.rule, message: check.message,
+      when: `When ${usage.surface} displays this field`, required: !!usage.field.required,
+    }))));
+}
 export default function ValidationLibrary({ siteKey }: { siteKey: string }) {
   const catalog = useLibraryCatalog();
   const [search, setSearch] = useSearchParams();
@@ -20,9 +29,11 @@ export default function ValidationLibrary({ siteKey }: { siteKey: string }) {
   const fields = storedFieldRows(catalog, siteKey);
   const referenced = new Set(fields.flatMap(field => field.placements.map(placement => `${placement.page}:${field.key}`)));
   const usageConditions = new Map<string, string>();
+  const usages = fieldSurfaceRows(catalog, siteKey);
   // Questionnaire, collection and tool references reuse saved definitions even
   // when they have no flat page_fields relationship.
-  for (const usage of fieldSurfaceRows(catalog, siteKey)) {
+  for (const usage of usages) {
+    if (usage.source === "requirements-json") continue;
     if (!usage.definitionKey) continue;
     const saved = catalog.data.fields.find(field => field.key === usage.definitionKey);
     if (!saved) continue;
@@ -39,6 +50,7 @@ export default function ValidationLibrary({ siteKey }: { siteKey: string }) {
     id: `${placement.page}:${field.key}:${index}`, page: placement.page, field: field.key, label: field.definition.label,
     level: "Field", rule: check.rule, message: check.message, when: usageConditions.get(`${placement.page}:${field.key}`) ?? storedFieldVisibility(catalog, field, fields), required: !!field.definition.required,
   }))));
+  rows.push(...requirementsFieldValidationRows(usages));
   for (const [index, entry] of errorMessages.entries()) {
     if (entry.level === "Page" && (entry.page === "global" || pages.includes(entry.page))) rows.push({ id: `page-validation:${index}`, page: entry.page, field: null, label: "Page", level: "Page", rule: entry.trigger, message: entry.message, when: entry.trigger, required: null });
   }

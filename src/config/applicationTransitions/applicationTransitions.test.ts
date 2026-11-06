@@ -60,6 +60,17 @@ describe("application transitions", () => {
     expect(result["monthly-business-expenses"]).toBeUndefined();
   });
 
+  it("carries selected riders for selected products and applicants only (CHG-002)", () => {
+    const result = executeApplicationTransition(quoteApplyTransition, {
+      ...quoteSource,
+      selectedProductIds: ["di-test"],
+      coverageRiders: { "di-test:cola:member": true, "di-test:off:member": false, "oo-test:cola:member": true },
+      coverageRiderAmounts: { "di-test:cola:member": 1000, "di-test:off:member": 500, "oo-test:cola:member": 2000 },
+    });
+    expect(result.coverageRiders).toEqual({ "di-test:cola:member": true });
+    expect(result.coverageRiderAmounts).toEqual({ "di-test:cola:member": 1000 });
+  });
+
   it("honors the quote smoker-question override", () => {
     const result = executeApplicationTransition(quoteApplyTransition, {
       ...quoteSource,

@@ -1,0 +1,15 @@
+{
+  "page": "health-di",
+  "layout": {
+    "sections": { "questions": { "for": "self" }, "spouse-questions": { "for": "spouse" } },
+    "dialogs": {
+      "q1-details": { "for": "self", "repeats": { "item": "Detail", "max": 10 } },
+      "q2-details": { "for": "self", "repeats": { "item": "Detail", "max": 10 } },
+      "q3-details": { "for": "self", "repeats": { "item": "Detail", "max": 10 } },
+      "q4-details": { "for": "self", "repeats": { "item": "Detail", "max": 10 } },
+      "q5-details": { "for": "self", "repeats": { "item": "Detail", "max": 10 } },
+      "q6-details": { "for": "self", "repeats": { "item": "Detail", "max": 10 } },
+      "q7-details": { "for": "self", "repeats": { "item": "Detail", "max": 10 } }
+    }
+  }
+}

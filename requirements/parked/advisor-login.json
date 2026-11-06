@@ -1,0 +1,6 @@
+{
+  "page": "advisor-login",
+  "components": [
+    { "type": "advisor-login" }
+  ]
+}

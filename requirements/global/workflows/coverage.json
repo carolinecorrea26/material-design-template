@@ -1,0 +1,18 @@
+{
+  "workflows": [
+    {
+      "id": "coverage-product-reveal",
+      "name": "Reveal coverage products",
+      "status": "draft",
+      "statement": "Validate applicable questions before reveal; remain with errors on failure and show loading during reveal.",
+      "source": "src/app/workflows/QuoteCalculator.tsx; src/app/useCoverageState.ts; src/pages/Coverage.tsx"
+    },
+    {
+      "id": "coverage-product-selection",
+      "name": "Select products and configured amounts",
+      "status": "draft",
+      "statement": "Offer selectable product/applicant combinations and riders with policy-resolved amounts; show recalculation when amounts change.",
+      "source": "src/app/workflows/QuoteCalculator.tsx; src/app/useCoverageState.ts"
+    }
+  ]
+}
