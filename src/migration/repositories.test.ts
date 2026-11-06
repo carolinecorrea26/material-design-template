@@ -65,7 +65,6 @@ describe("Phase 5 persisted compatibility transport", () => {
       constraint.minimumAgeYears = 90;
       constraint.maximumAgeYears = 99;
       constraint.studentMaximumAgeYears = 99;
-      constraint.unmarried = !constraint.unmarried;
       constraint.minimumWorkHours = 100;
     }
     expect(sample.eligibilityConstraints).not.toEqual(db.eligibilityConstraints);

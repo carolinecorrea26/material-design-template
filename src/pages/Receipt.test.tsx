@@ -73,16 +73,16 @@ it("resolves receipt copy, decision text, applicants and products again on reren
   expect(container.textContent).not.toContain("Your application has been saved.");
 });
 
-it("retains both document downloads and has no forward or back navigation", async () => {
+it("keeps document actions as placeholders and has no forward or back navigation", async () => {
   await act(async () => root.render(<Receipt />));
   const buttons = [...container.querySelectorAll("button")];
   await act(async () => buttons.find(button => button.textContent === "Application PDF")!.click());
   await act(async () => buttons.find(button => button.textContent === "Payment PDF")!.click());
-  expect(downloadApplicationPdf).toHaveBeenNthCalledWith(1, values);
-  expect(downloadApplicationPdf).toHaveBeenNthCalledWith(2, values, true);
+  expect(downloadApplicationPdf).not.toHaveBeenCalled();
+  expect(document.body.textContent).toContain("Document downloads are placeholders in this prototype.");
   expect(container.querySelectorAll("h1")).toHaveLength(1);
   const warning = container.querySelector('.MuiAlert-standardWarning')!;
-  const acknowledgement = container.querySelector('.MuiAlert-standardInfo')!;
+  const acknowledgement = [...container.querySelectorAll('.MuiAlert-standardInfo')].find(alert => alert.textContent?.includes(receiptDefaults.receivedMessage!))!;
   expect(acknowledgement.textContent).toContain(receiptDefaults.receivedMessage);
   expect(acknowledgement.textContent).toContain(receiptDefaults.paymentNotice);
   expect(warning.textContent).toContain(receiptDefaults.documentsNote);

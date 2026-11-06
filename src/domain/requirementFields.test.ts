@@ -4,10 +4,13 @@ import fieldDetails from "../../requirements/parked/field-details.json";
 import optionLists from "../../requirements/global/option-lists.json";
 import quoteMapping from "../../requirements/mappings/components/quote-calculator.json";
 import coverageMapping from "../../requirements/mappings/page-fields/coverage.json";
+import membershipMapping from "../../requirements/mappings/components/membership.json";
+import eligibilityMapping from "../../requirements/mappings/components/eligibility.json";
 import asceFields from "../../requirements/parked/sites/asce/fields.json";
 import catalog from "../../public/catalog/portal.json";
 import type { FieldDefinition } from "./fields";
-import { resolveMappedFields, siteUsesRequirementFields, withRequirementFields, type RequirementFieldSource } from "./requirementFields";
+import { resolveEffectiveSite } from "./effectiveSite";
+import { requirementAnswerKey, parseRequirementAnswerKey, requirementSectionNotes, resolveMappedFields, siteUsesRequirementFields, withRequirementFields, withRequirementPageFields, type RequirementFieldSource } from "./requirementFields";
 
 const quote = { component: "quote-calculator" } as const;
 const quoteInputIds = ["zip-postal-code", "state-province", "birth-date", "gender", "smoker", "tobacco-last-used", "tobacco-products", "average-monthly-income", "hours-worked-per-week", "actively-at-work", "monthly-business-expenses", "business-expense-responsibility"];
@@ -61,6 +64,18 @@ describe("requirement field loader", () => {
       broken.sites.asce.fields["coverage-categories"] = bad;
       expect(() => resolve(broken, quote, { siteId: "asce" }), JSON.stringify(bad)).toThrow();
     }
+  });
+
+  it("ASCE names the association in the spouse membership question and gets every Eligibility section note", () => {
+    expect(resolveMappedFields({ component: "eligibility" }, { siteId: "asce", person: "spouse" }).find(field => field.id === "membership")?.label)
+      .toBe("Is your spouse also a member of the American Society of Civil Engineers?");
+    expect(requirementSectionNotes("eligibility", "asce")).toEqual({
+      selfEligibility: "Throughout this site you will be referred to as a Member of the Civil Engineering profession.",
+      spouseSection: 'Domestic Partnership/Civil Union is determined by State Law and they will be referred to as "Spouse" throughout the application.',
+      childSection: "Only unmarried children are eligible for coverage.",
+    });
+    expect(requirementSectionNotes("eligibility", "abe")).toBeUndefined();
+    expect(() => requirementSectionNotes("eligibility", "asce", undefined, {})).toThrow(/not in the requirements content/);
   });
 
   it("only sites with a requirements folder load from JSON", () => {
@@ -140,6 +155,37 @@ describe("requirement field loader", () => {
   });
 });
 
+describe("rolled-out page fields", () => {
+  const membershipSource = () => { const data = source(); data.mappings.push(membershipMapping as never); return data; };
+  const saved = (id: string, extra: Partial<FieldDefinition> = {}) => ({ key: id, included: true, definition: { id, label: `Saved ${id}`, inputType: "text", helperText: "Saved help", ...extra } as FieldDefinition });
+
+  it("replaces the authored keys, keeps saved runtime keys, order and inclusion", () => {
+    const data = membershipSource();
+    detail(data, "member-id").label = "JSON membership ID";
+    const fields = [saved("phone", { phoneTypeFieldId: "phone-type", format: "phone" }), { ...saved("member-id"), included: false }, saved("not-mapped")];
+    const resolved = withRequirementPageFields("membership", fields, "asce", data);
+    expect(resolved.map(field => [field.key, field.included])).toEqual([["phone", true], ["member-id", false], ["not-mapped", true]]);
+    expect(resolved[0].definition).toMatchObject({ label: "Phone Number", phoneTypeFieldId: "phone-type", format: "phone" });
+    expect(resolved[0].definition.helperText).toBeUndefined();
+    expect(resolved[1].definition).toMatchObject({ label: "JSON membership ID", required: true });
+    expect(resolved[2]).toBe(fields[2]);
+  });
+
+  it("leaves sites without requirements and pages not yet rolled out unchanged", () => {
+    const fields = [saved("member-id")];
+    expect(withRequirementPageFields("membership", fields, "abe", membershipSource())).toBe(fields);
+    expect(withRequirementPageFields("profile", fields, "asce", membershipSource())).toBe(fields);
+  });
+
+  it("ASCE's saved Membership fields already match the requirements JSON", () => {
+    const page = resolveEffectiveSite(catalog.data as never, "asce").configuration.pages.find(entry => entry.key === "membership")!;
+    const included = page.fields.filter(field => field.included);
+    expect(included.map(field => field.definition.id)).toEqual(["membership", "first-name", "last-name", "email", "phone", "member-id"]);
+    const resolved = withRequirementPageFields("membership", included, "asce");
+    resolved.forEach((field, index) => expect(field.definition, field.key).toEqual(included[index].definition));
+  });
+});
+
 describe("requirement field loader across pages", () => {
   it("resolves page- and person-specific labels, required and helper text", () => {
     const data = source();
@@ -157,5 +203,58 @@ describe("requirement field loader across pages", () => {
       const ref = "component" in mapping ? { component: String(mapping.component) } : { page: String((mapping as { page: string }).page) };
       for (const person of ["self", "spouse", "child"] as const) expect(() => resolveMappedFields(ref, { person, siteId: "asce" })).not.toThrow();
     }
+  });
+});
+
+describe("site page include and hide", () => {
+  const eligibility = { component: "eligibility" } as const;
+  const ids = (siteId: string | undefined, person: "self" | "spouse" | "child", sitePages?: RequirementFieldSource["sitePages"]) => {
+    const data = { ...source(), mappings: [eligibilityMapping], sitePages } as RequirementFieldSource;
+    return resolveMappedFields(eligibility, { siteId, person, page: "eligibility", source: data }).map(field => field.id);
+  };
+
+  it("leaves default-off fields out unless the site includes them", () => {
+    expect(ids("asce", "child")).not.toContain("full-time-student");
+    expect(ids("asce", "child", { asce: { eligibility: { include: ["full-time-student"] } } })).toContain("full-time-student");
+    expect(ids(undefined, "child", { asce: { eligibility: { include: ["full-time-student"] } } })).not.toContain("full-time-student");
+  });
+
+  it("lets a site hide a default-on field", () => {
+    expect(ids("asce", "child", { asce: { eligibility: { hide: ["gender"] } } })).not.toContain("gender");
+  });
+
+  it("resolves ASCE's reviewed Eligibility fields for each person", () => {
+    const resolve = (person: "self" | "spouse" | "child") => resolveMappedFields(eligibility, { siteId: "asce", person, page: "eligibility" });
+    expect(resolve("self").map(field => field.id)).toEqual(["zip-postal-code", "state-province", "birth-date", "dependents"]);
+    expect(resolve("spouse").map(field => [field.id, field.label, field.required])).toEqual([
+      ["membership", "Is your spouse also a member of the American Society of Civil Engineers?", true],
+      ["first-name", "First Name", true], ["last-name", "Last Name", true], ["birth-date", "Date of Birth", true],
+    ]);
+    expect(resolve("child").map(field => field.id)).toEqual(["first-name", "last-name", "birth-date", "gender", "full-time-student"]);
+  });
+});
+
+
+describe("Eligibility answer keys and overlay", () => {
+  it("round-trips only mapped person and field pairs", () => {
+    for (const [field, person] of [["birth-date", "self"], ["membership", "spouse"], ["first-name", "child"], ["full-time-student", "child"]] as const) {
+      const key = requirementAnswerKey(field, person);
+      expect(parseRequirementAnswerKey(key)).toEqual({ field, person });
+    }
+    expect(parseRequirementAnswerKey("child-membership")).toBeUndefined();
+    expect(parseRequirementAnswerKey("spouse-full-time-student")).toBeUndefined();
+    expect(parseRequirementAnswerKey("child-firstName")).toBeUndefined();
+  });
+  it("resolves saved spouse IDs and removes excluded or hidden fields", () => {
+    const data = { ...source(), mappings: [eligibilityMapping], sitePages: { asce: { eligibility: { include: ["full-time-student"] } } } } as RequirementFieldSource;
+    const saved = (id: string) => ({ definition: { id, label: "old", inputType: "text" } as FieldDefinition });
+    const rows = [saved("spouse-membership"), saved("spouse-first-name"), saved("child-full-time-student"), saved("child-membership")];
+    const resolved = withRequirementPageFields("eligibility", rows, "asce", data);
+    expect(resolved.map(row => row.definition.id)).toEqual(["spouse-membership", "spouse-first-name", "child-full-time-student"]);
+    expect(resolved[0].definition).toMatchObject({ label: "Is your spouse also a member of the American Society of Civil Engineers?", required: true });
+    expect(resolved[1].definition).toMatchObject({ label: "First Name", required: true });
+    expect(resolved[2].definition.label).toBe("Is the child a full-time student?");
+    data.sitePages = { asce: { eligibility: { hide: ["first-name"] } } };
+    expect(withRequirementPageFields("eligibility", rows, "asce", data).map(row => row.definition.id)).toEqual(["spouse-membership"]);
   });
 });

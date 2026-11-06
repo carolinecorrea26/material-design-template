@@ -39,12 +39,11 @@ export default function PhysicianInformation({
   }
 
   return (
-    <>
-      <SectionDivider
-        label="Physician information"
-        variant="subsection"
-        sx={{ mb: 1 }}
-      />
+    <SectionDivider
+      label="Physician information"
+      variant="subsection"
+      sx={{ mb: 1 }}
+    >
 
       <FieldGrid columns="equal">
         {fieldIds
@@ -61,6 +60,6 @@ export default function PhysicianInformation({
         control={control as never}
         errors={errors as never}
       />
-    </>
+    </SectionDivider>
   );
 }

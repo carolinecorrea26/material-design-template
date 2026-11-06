@@ -97,7 +97,6 @@ const paymentFrequencyOptions = [
 
 export const fieldCatalog: Record<FieldId, FieldDefinition> = {
   "membership-status": { id: "membership-status", label: "Membership status", inputType: "radio", required: true, options: [{ value: "new", label: "New Member" }, { value: "current", label: "Current Member" }] },
-  "child-unmarried": { id: "child-unmarried", label: "Is the child unmarried?", inputType: "radio", options: yesNoOptions, required: true },
   "child-full-time-student": { id: "child-full-time-student", label: "Is the child a full-time student?", inputType: "radio", options: yesNoOptions, required: true },
   membership: {
     id: "membership",
@@ -246,8 +245,8 @@ export const fieldCatalog: Record<FieldId, FieldDefinition> = {
     required: false,
   },
 
-  "asce-member-id": {
-    id: "asce-member-id",
+  "member-id": {
+    id: "member-id",
     label: "Membership ID",
     inputType: "text",
     required: true,

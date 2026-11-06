@@ -1,7 +1,7 @@
 # Phase 4B validation — 2026-09-28
 
 Historical results only: SQL export and PostgreSQL commands have been removed.
-For current behavior, see the [JSON catalog](../README.md#current-shared-catalog).
+For current behavior, see the [JSON catalog](../../README.md#current-shared-catalog).
 
 **`phase5Ready: false`. The Phase 4B semantic completion gate fails.** Implementation/regression checks pass, but they do not override the unresolved authoritative mapping backlog.
 

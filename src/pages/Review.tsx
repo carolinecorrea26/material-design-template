@@ -19,7 +19,6 @@ import {
 import type { PageId } from "../types";
 import { getActiveClientCoverages } from "../config/client/getActiveClientCoverages";
 import { fieldCatalog } from "../config/fields";
-import { downloadApplicationPdf } from '../utils/applicationPdf';
 import ApplicationDocumentPreview from "../app/sections/ConfiguredApplicationDocumentPreview";
 import { getContent } from "../content";
 import type { ApplicationFormValues } from "../app/ApplicationFormContext";
@@ -147,7 +146,7 @@ const requestEditDialogContent =
               selfConsentField={fieldCatalog["review-self-consent"]} spouseConsentField={hasSpouse ? fieldCatalog["review-spouse-consent"] : undefined}
               additionalFields={allFields.filter(field => !["review-self-consent", "review-spouse-consent", ...experience.blocks.flatMap(block => block.fields.map(field => field.id))].includes(field.id))}
               applicantLabels={client.applicantLabels} showSelfLabel={shouldShowApplicantLabel("self", values)}
-              onPrint={printSection} onDownload={() => downloadApplicationPdf(values)} />
+              onPrint={printSection} />
             <ConfirmationDialog
               open={!isAdvisorApplicantFlow && editTargetPageId !== null}
               onClose={() => setEditTargetPageId(null)}

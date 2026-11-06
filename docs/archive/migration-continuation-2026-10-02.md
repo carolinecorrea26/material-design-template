@@ -18,7 +18,7 @@ and mock contract tests do not certify complete product policy acceptance.
   missing and no empty or fabricated rate-table link appears.
 - Provisional decisions and exact destinations are visible in the captured
   effective Site revision. Malformed policy versions are rejected by integrity
-  validation and execution. See [working choices](step3-provisional-decisions.md).
+  validation and execution. See [working choices](../step3-provisional-decisions.md).
 
 ## Draft Builder and Library Analytics
 

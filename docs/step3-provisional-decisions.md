@@ -35,7 +35,7 @@ The same authorization applies to gaps encountered while continuing Step 3. Thes
 | ISI family AD&D child with spouse | Use 10% of member benefit provisionally. Its spouse 50%/40% and child-only15% are explicit; the 10% branch is missing in Main282. |
 | NSO family AD&D percentages | Use spouse 50% without child /40% with child; child 15% without spouse /10% with spouse. Main320 establishes family coverage without the percentage schedule. All four percentages are provisional and need the NSO coverage-detail schedule. |
 
-See [the benefit/dependent adoption record](step3-benefit-dependent-adoption.md) for executable scope, inputs and outstanding acceptance work.
+See [the benefit/dependent adoption record](archive/step3-benefit-dependent-adoption.md) for executable scope, inputs and outstanding acceptance work.
 
 Validation: 358 migration tests passed (two PostgreSQL tests skipped in that ordinary unit command); both PostgreSQL tests passed separately against the reviewed candidate, including exact row readback and all ten Site snapshots. The domain/repository suite passed 57 tests. After fixing deterministic ordering of decision records, the affected domain/provisional suite passed 47 tests and the PostgreSQL gate passed again. TypeScript, lint and generated-report drift checks passed. The [PostgreSQL result](step3-postgres-validation.json) also confirms repeatable seeding, constraint rejection, RLS and concurrent snapshot consistency. The full application suite was not rerun for this increment; its previously documented standards-inventory expectation failure remains separate.
 
@@ -91,7 +91,7 @@ are synthetic regression definitions and do not create business approval records
 
 ### Journey continuation (October 5)
 
-The [journey adoption record](step3-journey-adoption.md) documents subsequent working values and executable slices. It supersedes the historical statements above that there is no mock policy service, ASCE/AVMA rider-only contracts are unimplemented, spouse-linked individual child schedules are absent, and CSEA dependent elections remain unimplemented. The live prototype remains unchanged.
+The [journey adoption record](archive/step3-journey-adoption.md) documents subsequent working values and executable slices. It supersedes the historical statements above that there is no mock policy service, ASCE/AVMA rider-only contracts are unimplemented, spouse-linked individual child schedules are absent, and CSEA dependent elections remain unimplemented. The live prototype remains unchanged.
 
 The user explicitly answered **“continue with reference table”** for CSEA. The candidate now stores a provisional HTML benefit reference with rates unavailable, rather than waiting for an insurer asset. It does not invent premium amounts. The authoritative table remains a source revisit item. Product journey decisions continue to record exact destinations and provisional status; completing these slices does not close the full Step 3 exception matrix.
 

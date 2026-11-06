@@ -1,4 +1,5 @@
 import ControlledFieldRenderer from "../forms/ControlledFieldRenderer";
+import { FieldGroup } from "../layout/SectionDivider";
 import type { CoverageCategory, CoverageCategoryId } from "../../config/coverageCategories";
 
 type CoverageCategorySelectorProps = {
@@ -20,6 +21,7 @@ export default function CoverageCategorySelector({
   errorMessage,
 }: CoverageCategorySelectorProps) {
   return (
+    <FieldGroup className="FieldGroup-root">
     <ControlledFieldRenderer
       field={{
         id: "coverage-categories",
@@ -36,5 +38,6 @@ export default function CoverageCategorySelector({
         if (changed) onToggle(changed.id);
       }}
     />
+    </FieldGroup>
   );
 }

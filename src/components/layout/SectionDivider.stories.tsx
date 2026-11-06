@@ -1,37 +1,54 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Stack } from "@mui/material";
+import { Stack, TextField } from "@mui/material";
 import BusinessRoundedIcon from "@mui/icons-material/BusinessRounded";
-import SectionDivider from "./SectionDivider";
+import SectionDivider, { FieldGroup } from "./SectionDivider";
+import FieldGrid from "./FieldGrid";
 
-/**
- * SectionDivider is a full-width Divider with a centered label chip. Every
- * real call site in the app uses the `variant="subsection"` preset — no
- * page passes `chipVariant` directly.
- *
- * A real bug was fixed here as part of Phase 2B: `chipVariant` used to
- * render inverted from its name (passing "filled" rendered an MUI
- * `variant="outlined"` chip and vice versa), and the `variant="subsection"`
- * preset itself set the wrong internal value to compensate. Both are now
- * correct — `chipVariant="filled"` renders filled, `"outlined"` renders
- * outlined — with zero visual change for any of the ~12 existing call
- * sites, since they all go through the `subsection` preset either way.
- */
 const meta = {
   id: "layout-sectiondivider",
   title: "Components/Layout/Headings and dividers/Section divider",
   component: SectionDivider,
-  parameters: { docs: { description: { component: "Separates and labels groups of related form content." } }, layout: "padded" },
+  parameters: { docs: { description: { component: "Field-group labels use uppercase text with slight letter spacing. Titled and untitled groups share a rounded surface matching the page background, with white inputs and generous space between sections. The prototype uses these same components." } }, layout: "padded" },
 } satisfies Meta<typeof SectionDivider>;
 
 export default meta;
 
 export const SubsectionPreset: StoryObj = {
   name: 'variant="subsection" (used by every real call site)',
-  render: () => <SectionDivider label="Business Information" variant="subsection" />,
+  render: () => <>
+    <SectionDivider label="Personal information" variant="subsection">
+      <Stack spacing={2}>
+        <FieldGrid columns="1fr 1fr" keepColumns>
+          <TextField label="Height (feet)" defaultValue="5" fullWidth />
+          <TextField label="Inches" defaultValue="6" fullWidth />
+        </FieldGrid>
+        <TextField label="Weight (lbs.)" defaultValue="150" fullWidth />
+      </Stack>
+    </SectionDivider>
+    <SectionDivider label="Physician information" variant="subsection">
+      <Stack spacing={2}>
+        <TextField label="Physician first name" fullWidth />
+        <TextField label="Physician last name" fullWidth />
+      </Stack>
+    </SectionDivider>
+  </>,
 };
 
 export const SubsectionWithIcon: StoryObj = {
   render: () => <SectionDivider label="Business Information" icon={BusinessRoundedIcon} variant="subsection" />,
+};
+
+export const UntitledGroup: StoryObj = {
+  render: () => <FieldGroup className="FieldGroup-root">
+    <Stack spacing={2}>
+      <FieldGrid columns="equal">
+        <TextField label="First name" fullWidth />
+        <TextField label="Last name" fullWidth />
+      </FieldGrid>
+      <TextField label="Phone number" fullWidth />
+      <TextField label="Email" fullWidth />
+    </Stack>
+  </FieldGroup>,
 };
 
 export const ChipFilled: StoryObj = {
@@ -50,7 +67,7 @@ export const ChipText: StoryObj = {
 };
 
 export const ColorDefault: StoryObj = {
-  name: 'chipColor="default" (used by the subsection preset)',
+  name: 'chipColor="default" (explicit chip example)',
   render: () => <SectionDivider label="Neutral gray" chipVariant="filled" chipColor="default" />,
 };
 

@@ -65,5 +65,15 @@
     { "name": "DetailsTable", "description": "Labeled values with a follow-up action: applicant email, send time and purge date, or the edit request details." },
 
     { "name": "ApplicationErrorState", "description": "The one layout for every error page: icon or number, heading, message, guidance and actions." }
+  ],
+  "elements": [
+    { "name": "PageAlert", "description": "Page-level alert under the header: notices (resumed application) and page errors (ineligibility, business validation)." },
+    { "name": "SectionNote", "description": "Standard info alert directly under a section header; text is the section's note content." },
+    { "name": "FieldGroup", "description": "A section's fields, laid out by the page; fields come from the page's field mapping." },
+    { "name": "DynamicList", "description": "Repeating entries (children, beneficiaries, companies): add or edit in a dialog, remove with confirmation, up to a maximum." },
+    { "name": "MemberVerification", "description": "Identity verification drawer opened when the TPA finds an existing member with active coverage." },
+    { "name": "VerificationAddress", "description": "Address dialog collected before verification when the TPA requires it." },
+    { "name": "Snackbar", "description": "Short confirmation toast." },
+    { "name": "HelpChip", "description": "Inline help chip that opens help content." }
   ]
 }

@@ -1,4 +1,4 @@
-> Current Library organization and main Site identities are described in [Portal Library ownership and schema review](../../docs/portal-library-model-review.md). Main Sites use client names such as `asce` and `waepa`; earlier `*-default` and `waepa-standard` names below are historical aliases.
+> Current Library organization and main Site identities are described in [Portal Library ownership and schema review](../../docs/archive/portal-library-model-review.md). Main Sites use client names such as `asce` and `waepa`; earlier `*-default` and `waepa-standard` names below are historical aliases.
 
 # Canonical domain and rules architecture
 

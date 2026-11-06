@@ -2,7 +2,7 @@
   "scope": "All explicit MUI icon imports under src and .storybook, separated by applicant, admin, development/reference and examples/tests. Import references are source evidence, not exhaustive runtime reachability. MUI internal default glyphs are owned by their controls.",
   "summary": {
     "applicantIcons": 49,
-    "allImportedIcons": 97,
+    "allImportedIcons": 95,
     "unusedImports": 0
   },
   "icons": [
@@ -64,18 +64,6 @@
           "file": "src/pages/Coverage.tsx",
           "line": 7,
           "scope": "applicant",
-          "used": true
-        }
-      ]
-    },
-    {
-      "icon": "AccountCircleRounded",
-      "usages": [
-        {
-          "icon": "AccountCircleRounded",
-          "file": "src/components/admin/AdminCenterShell.tsx",
-          "line": 26,
-          "scope": "admin",
           "used": true
         }
       ]
@@ -1183,18 +1171,6 @@
       ]
     },
     {
-      "icon": "NotificationsNoneRounded",
-      "usages": [
-        {
-          "icon": "NotificationsNoneRounded",
-          "file": "src/components/admin/AdminCenterShell.tsx",
-          "line": 25,
-          "scope": "admin",
-          "used": true
-        }
-      ]
-    },
-    {
       "icon": "OfflineBoltRounded",
       "usages": [
         {
@@ -1457,13 +1433,6 @@
     {
       "icon": "SearchRounded",
       "usages": [
-        {
-          "icon": "SearchRounded",
-          "file": "src/components/admin/AdminCenterShell.tsx",
-          "line": 24,
-          "scope": "admin",
-          "used": true
-        },
         {
           "icon": "SearchRounded",
           "file": "src/components/docs/IconsGuidelines.tsx",

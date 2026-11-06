@@ -9,6 +9,7 @@ import { buildPrototypeProduct } from "./prototypeProductProjection";
 import { buildPrototypeAssociationContext } from "./prototypeAssociationProjection";
 import { canonicalSiteKey } from "./siteIdentity.mjs";
 import { resolveSharedFieldDefinition } from "./fieldDefinitionOwnership";
+import { requirementSectionNotes, withRequirementPageFields } from "./requirementFields";
 
 export type PrototypeLibrary = ReturnType<typeof resolvePrototypeLibrary>;
 let active: PrototypeLibrary | null = null;
@@ -18,13 +19,17 @@ export function installPrototypeLibrary(library: PrototypeLibrary | null) { acti
  * from the persisted reviewed revision; no catalog imports or extraction. */
 export function resolvePrototypeLibrary(data: EffectiveSiteData, siteKey: string, revision: string) {
   const pages = resolvePageCatalog(data, siteKey);
-  const site = resolveEffectiveSite(data, siteKey);
+  const resolvedSite = resolveEffectiveSite(data, siteKey);
+  const site = { ...resolvedSite, configuration: { ...resolvedSite.configuration, pages: resolvedSite.configuration.pages.map(page => ({ ...page, fields: withRequirementPageFields(page.key, page.fields, siteKey) })) } };
   const associationContext = buildPrototypeAssociationContext(data, siteKey);
   const fieldCollections = resolveStoredFieldCollections(data, site);
   const fieldSurfaces = resolveStoredFieldSurfaces(data, site);
   const { client, settings, clientIdentity } = buildPrototypeClient(data, site);
   const products = site.configuration.products.map(product => buildPrototypeProduct(data, site, client, product));
-  const content = buildPrototypeContent(data, site);
+  const builtContent = buildPrototypeContent(data, site);
+  const eligibilityNotes = requirementSectionNotes("eligibility", siteKey);
+  const eligibilityContent = builtContent.pages.eligibility;
+  const content = eligibilityNotes && eligibilityContent ? { ...builtContent, pages: { ...builtContent.pages, eligibility: { ...eligibilityContent, sectionNotes: eligibilityNotes } } } : builtContent;
   const identity = data.sites.find(row => row.key === siteKey);
   const sourceSiteKey = data.sites.find(row => row.legacyClientId === identity?.legacyClientId && !row.id.startsWith('build-site-'))?.key ?? siteKey;
   const fields = data.fields.map(field => resolveSharedFieldDefinition(field, data.validationRules, site.configuration.fieldDefinitionOwnership).definition);

@@ -104,7 +104,8 @@ anything it does not mention is inherited. The same rule applies to every kind o
 |---|---|---|---|
 | **Page** | `parked/pages.json`, `requirement` (until Rules are reviewed) | required · optional · none | `sites/<site>/pages.json` |
 | **Section** | the page file; on unless marked `"default": "off"` | on · off | the site's page file, `"show": true` or `false` |
-| **Field on a page** | `parked/<page>.json` layout: on, or `optional` for off | on · off | the site's page file: `include` or `hide` |
+| **Field on a page** | the component or page mapping: on, or `"default": "off"` | on · off | the site's page file (`sites/<site>/pages/<page>.json`): `include` or `hide` |
+| **Section note** (info alert under the section header) | the page file, the section's `note` (a content key) | text or none | the site's page file, `notes: { <section>: <content key> }` |
 | **Field required or not** | the field list, `required` | true · false | `sites/<site>/fields.json` |
 | **Field wording and options** | the field list | | `sites/<site>/fields.json` |
 
@@ -161,8 +162,22 @@ The checker rejects a field mapping for a person its definition does not allow.
 Component/page mappings record possible participation. Section placement, field
 rendering order, and default visibility remain parked layout evidence until reviewed.
 
-A site file only says what it does differently: **`include`** an optional field, **`hide`** a
-default one, or re-word a field. A site never needs to repeat what it inherits.
+A mapping row is on by default; `"default": "off"` marks a field most sites do not ask. A site's
+page file says only what it does differently: **`include`** an off field or **`hide`** an on one,
+for example ASCE's `pages/eligibility.json` includes `full-time-student`. Wording and
+required changes go in the site's `fields.json`. A site never needs to repeat what it inherits,
+and the checker rejects an `include` of a field that is already on (or a `hide` of one already off).
+
+## Page structure (draft, Eligibility first)
+
+- **Page type and step**: `parked/pages.json` gives each page a `type` (form, entry, resume,
+  advisor, error); form pages also have a `step`. Order within a type follows `global/pages.json`.
+- **Component tree**: a page file's `components` nests PascalCase types from
+  `global/components.json`. A node can name a `mapping` (a known component) or a layout `section`.
+- **Section notes**: a section's `note` is a content key; a site page file overrides it under `notes`.
+- **Validations**: `level` is `field` or `page`; `message` is a content key; `code` is an optional
+  error code from `global/error-codes.json`. When a validation runs comes from the mapping binding's `trigger` (next, inline, change).
+- **Configuration types** also include `number` and a `string-list` with fixed `options`.
 
 ## Checking
 
@@ -234,6 +249,14 @@ names any follow-ups it places after a parent (the quote places the two tobacco
 follow-ups after tobacco use). Choice fields must name their options, an option
 list, or a runtime source such as `product-defined`. The quote calculator and Home
 card use the loader today; other records do not by themselves change runtime behavior.
+
+**Rolling out a reviewed page.** Once a page's JSON review is agreed, it is added to
+`requirementPages` in the loader. `resolvePrototypeLibrary` then replaces that page's
+saved field definitions with the JSON (label, type, required, options, help, format,
+autofill, name) for sites that load from JSON. The saved page still decides placement,
+order and inclusion, and keeps runtime-only keys such as phone bindings. Because the
+prototype, Portal Library and Storybook all resolve sites through
+`resolvePrototypeLibrary`, all three show the same definitions. Rolled out: **Membership and Eligibility**. Saved answer keys are the JSON field ID for self and `<person>-<field ID>` for others, using kebab-case. Use `requirementAnswerKey` and `parseRequirementAnswerKey` to convert between keys and mapped fields.
 
 - **Configurations** hold selectable settings and defaults. Enum records use `type: "enum"`,
   authored `options`, and a `default` that must be one of those options. Boolean records
@@ -446,10 +469,10 @@ Review evidence and unresolved behavior, not additional confirmed decisions:
   selected products; the broader Apply workflow remains draft.
   Previously answered quote questions remain visible on Coverage with answers
   prefilled and editable.
-  Current Apply revalidates eligibility only when entry was collected inside the
-  calculator. Revalidating applicable answers and selections on Apply is confirmed
-  but not yet implemented. Requiring at least one
-  selected product on Apply is confirmed but not yet enforced in the quote.
+  Apply requires at least one selected product and revalidates current quote
+  answers, contextual eligibility facts, amounts and coverage options in both
+  drawer and inline modes. Invalid input stays in the quote with an error.
+  Entry collected inside the calculator is also revalidated before continuation.
   Get an instant quote validates Home entry first and shows loading before opening;
   age and geographic decisions remain separate.
 - Current template precedence is a valid URL parameter (saved to session), valid

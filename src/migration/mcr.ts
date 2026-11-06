@@ -75,7 +75,7 @@ export function seedCanonicalCatalog(db: DatabaseSchema) {
   const lookupFields = ["first-name", "last-name", "birth-date"];
   const assignments: Array<{ clientKey: string; patternKey: string; configuration: Json }> = [
     { clientKey: "ama", patternKey: "tpa-coverage-based-verification", configuration: { ...coveragePolicy, lookupFields } },
-    { clientKey: "asce", patternKey: "tpa-coverage-based-verification", configuration: { ...coveragePolicy, lookupFields: [...lookupFields, "asce-member-id"] } },
+    { clientKey: "asce", patternKey: "tpa-coverage-based-verification", configuration: { ...coveragePolicy, lookupFields: [...lookupFields, "member-id"] } },
     { clientKey: "waepa", patternKey: "tpa-membership-based-auto-approval", configuration: { lookupFields, lexisNexis: false, portfolio: false, newMemberOutcome: "approve", existingMemberOutcome: "refer" } },
   ];
   for (const assignment of assignments) db.patternAssignments.push({ ...row("patternAssignments", `${assignment.clientKey}.${assignment.patternKey}`, "user:2026-09-30/tpa-flow-comparison"), patternKey: assignment.patternKey, clientKey: assignment.clientKey, siteKey: null, productKey: null, applicantKey: null, configuration: { ...(assignment.configuration as Record<string, Json>), status: "documented", active: false } });

@@ -31,7 +31,7 @@ describe("implemented field inventory", () => {
     const rows=getSiteFieldInventory(siteId);
     const client=getEffectiveSiteConfig(siteId);
     const products=getClientCoverages(client);
-    for (const [id,key] of [["child-first-name","firstName"],["child-last-name","lastName"],["child-birth-date","birthDate"],["child-gender","gender"]]) {
+    for (const [id,key] of [["child-first-name","child-first-name"],["child-last-name","child-last-name"],["child-birth-date","child-birth-date"],["child-gender","child-gender"]]) {
       expect(rows.find(r=>r.pageId==="eligibility" && r.field.id===id)?.storage).toBe(`children[].${key}`);
     }
     for (const page of ["health-si","health-li","health-di"] as const) {

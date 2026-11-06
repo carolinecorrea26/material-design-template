@@ -1472,7 +1472,6 @@ Owner: Site-scoped or optional Site dimension; inspect nullable links and any pa
 | minimum_age_years | numeric | true | — | minimumAgeYears: number \| null | [contract](../../src/persistence/types/underwritingCanonical.ts#L54) |
 | maximum_age_years | numeric | true | — | maximumAgeYears: number \| null | [contract](../../src/persistence/types/underwritingCanonical.ts#L55) |
 | student_maximum_age_years | numeric | true | — | studentMaximumAgeYears: number \| null | [contract](../../src/persistence/types/underwritingCanonical.ts#L56) |
-| unmarried | boolean | true | — | unmarried: boolean \| null | [contract](../../src/persistence/types/underwritingCanonical.ts#L57) |
 | minimum_work_hours | numeric | true | — | minimumWorkHours: number \| null | [contract](../../src/persistence/types/underwritingCanonical.ts#L58) |
 | display_id | bigint | false | — | displayId: number | [contract](../../src/domain/provenance.ts#L4) |
 | provided_by | text | true | — | providedBy: string \| null | [contract](../../src/domain/provenance.ts#L5) |

@@ -2,7 +2,7 @@ import { eligibilityFactSatisfied, eligibilityAgeMaximumSatisfied } from "./elig
 import type { CoverageApplicantId, CoverageDefinition, CoverageRequirements } from "./coverage";
 
 export type ApplicantFacts = {
-  ageYears?: number; ageDays?: number; honorablyDischargedServiceMember?: boolean; unmarried?: boolean; fullTimeStudent?: boolean;
+  ageYears?: number; ageDays?: number; honorablyDischargedServiceMember?: boolean; fullTimeStudent?: boolean;
   workHoursPerWeek?: number; averageMonthlyIncome?: number; activelyAtWork?: boolean; associationMember?: boolean; activeMilitary?: boolean;
   selfEmployed?: boolean; yearsSelfEmployed?: number;
   associationKey?: string; firmMemberCount?: number;
@@ -12,7 +12,6 @@ export type RequirementResult = "eligible" | "ineligible" | "needs-information";
 export function evaluateEligibility(requirements: CoverageRequirements | undefined, applicant: CoverageApplicantId, facts: ApplicantFacts): RequirementResult {
   const checks: Array<boolean | undefined> = [];
   for (const rule of requirements?.eligibility?.filter((r) => r.applicantType === applicant) ?? []) {
-    if (rule.unmarried) checks.push(facts.unmarried);
     if (rule.minimumAgeDays !== undefined) checks.push(facts.ageDays === undefined ? undefined : facts.ageDays >= rule.minimumAgeDays);
     if (rule.minimumAgeYears !== undefined) checks.push(facts.ageYears === undefined ? undefined : facts.ageYears >= rule.minimumAgeYears);
     if (rule.maximumAgeYears !== undefined) {

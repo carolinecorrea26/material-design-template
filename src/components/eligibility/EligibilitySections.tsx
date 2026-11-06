@@ -6,6 +6,7 @@ import EligibilityFields from "../forms/EligibilityFields";
 import DynamicList from "../forms/DynamicList";
 import ApplicantSectionDivider from "../layout/ApplicantSectionDivider";
 import FieldGrid from "../layout/FieldGrid";
+import { FieldGroup } from "../layout/SectionDivider";
 
 export type EligibilitySectionsProps = FormRouteRenderProps & {
   childNotice?: string;
@@ -33,22 +34,20 @@ export default function EligibilitySections({
         const content =
           section.id === "childSection" && childNotice ? <Alert severity="info">{childNotice}</Alert> : section.id === "childSection" ? (
             <>
-              <Alert severity="info" sx={{ mt: 1, mb: 2 }}>
-                Only unmarried children are eligible for coverage.
-              </Alert>
+              {sectionNotes.childSection === undefined && (
+                <Alert severity="info" sx={{ mt: 1, mb: 2 }}>
+                  Only unmarried children are eligible for coverage.
+                </Alert>
+              )}
               <DynamicList
                 control={control}
                 name={collection?.name ?? "children"}
                 label={collection?.label ?? "Child"}
                 maxItems={collection?.maxItems ?? 10}
-                mapping={collection?.mapping ?? {
-                  ...childMapping,
-                  fields: [...childMapping.fields, ...allFields.filter(field => field.id === "child-unmarried" || field.id === "child-full-time-student")],
-                  fieldToKey: { ...childMapping.fieldToKey, "child-unmarried": "unmarried", "child-full-time-student": "fullTimeStudent" },
-                }}
+                mapping={collection?.mapping ?? childMapping}
                 renderItem={(item) => (
                   <Typography variant="body2">
-                    {`${item.firstName} ${item.lastName}`.trim().toUpperCase()}
+                    {`${item["child-first-name"] ?? ""} ${item["child-last-name"] ?? ""}`.trim().toUpperCase()}
                   </Typography>
                 )}
               />
@@ -136,9 +135,9 @@ export default function EligibilitySections({
           );
 
         const note = sectionNotes[section.id];
-        const sectionContent = <>{note && <Alert severity="info" sx={{ mb: 2 }}>{note}</Alert>}{content}</>;
+        const sectionContent = <>{note && <Alert severity="info" sx={{ mb: 2 }}>{note}</Alert>}<FieldGroup className="FieldGroup-root">{content}</FieldGroup></>;
         return (
-          <div key={section.id}>
+          <div key={section.id} style={{ marginBottom: 32 }}>
             {section.applicant && section.applicant !== "self" ? (
               <ApplicantSectionDivider applicant={section.applicant} labels={applicantLabels}>
                 {sectionContent}

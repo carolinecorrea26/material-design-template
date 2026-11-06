@@ -19,7 +19,7 @@ The report retains `blockers`, `blockingCount`, `phase5Blockers`, `phase5Blockin
 
 Readiness is conditional on compatibility preservation. It is not permission to execute the incomplete normalized rules. Repository tests prove that changing normalized underwriting or eligibility rows cannot change repository-backed `ClientConfig` behavior across all ten Sites. A guarded adapter rejects reads outside an explicit compatibility table allowlist, so new normalized decision tables are isolated by default. A separate invariant removes every non-compatibility table and checks effective configuration, coverage, fields, pages and flows for every Site. Changing this allowlist requires deliberate architecture review; it must not be derived from the implementation's reads.
 
-The [approved ASCE decision register](asce-business-decisions.md) records the six exact readiness keys, approved answers, superseded conflicts and canonical target keys. Approval does not activate the runtime.
+The [approved ASCE decision register](../asce-business-decisions.md) records the six exact readiness keys, approved answers, superseded conflicts and canonical target keys. Approval does not activate the runtime.
 
 ## Validation
 

@@ -28,7 +28,7 @@ export async function runCoverageJourneyAcceptance(resolveSite: (siteKey: string
       const residency = product.residencyPolicies[0].value as { allowedJurisdictions: string[] };
       const input: CoverageJourneyInput = {
         ...mapping.when, productKey: product.productKey, amount, membershipConfirmed: true,
-        eligibility: { ageYears: Math.max(c.minimumAgeYears ?? 18, Math.min(40, c.maximumAgeYears ?? 64)), workHoursPerWeek: 40, firmMemberCount: 3, activeMilitary: false, activelyAtWork: true, membershipType: "physician", fullTimeStudent: true, unmarried: true, selectedPlans: [{ productKey: product.productKey, categoryKey: product.catalog!.value.categoryKey, applicantKey: "member" }] },
+        eligibility: { ageYears: Math.max(c.minimumAgeYears ?? 18, Math.min(40, c.maximumAgeYears ?? 64)), workHoursPerWeek: 40, firmMemberCount: 3, activeMilitary: false, activelyAtWork: true, membershipType: "physician", fullTimeStudent: true, selectedPlans: [{ productKey: product.productKey, categoryKey: product.catalog!.value.categoryKey, applicantKey: "member" }] },
         jurisdiction: residency.allowedJurisdictions[0], election: { riders: [], riderAmounts: {} },
         benefit: { monthlyIncome: 1000000, existingMonthlyBenefit: 0, memberCoverage: true, memberRequestedBenefit: 1000000, memberTotalMonthlyBenefit: 1000000, selfEmployed: false, selfEmployedYears: 10, retirement: false, monthlyLoanPayment: 1000000, eligibleMonthlyExpenses: 1000000, eligibleExpenseFraction: 1, selectedProducts: [product.productKey], otherMonthlyBenefits: Object.fromEntries((benefit?.aggregate?.productKeys ?? []).filter(k => k !== product.productKey).map(k => [k, 0])) },
         answers, attestations: [q.attestationKey],

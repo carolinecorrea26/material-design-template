@@ -6,7 +6,7 @@ import type { FieldCollectionDefinition } from "../domain/fieldCollections";
 export const abeEligibilityDecisionKey = "business-decision.rules-review.abe-eligibility-ages";
 /** Explicit ABE approval of qualified source cells; no change to the strict general parser. */
 export function applyAbeEligibilityAdoption(db: DatabaseSchema) {
-  const authority = "User decision October 21, 2026: adopt later effective ABE adult Life ages and workbook dependent ages, including Hospital Money's honorable-discharge extension; retain DI spouse 30-hour minimum; child unmarried requirement is a note without a question";
+  const authority = "User decision October 21, 2026: adopt later effective ABE adult Life ages and workbook dependent ages, including Hospital Money's honorable-discharge extension; retain DI spouse 30-hour minimum; retain the existing child eligibility informational note only";
   const meta = (table: string, key: string) => ({ id: key, key, ...libraryMetadata(table, key, authority) });
   const refs: string[] = [];
   const owners: Array<{ table: keyof DatabaseSchema; key: string; reviewedValue: unknown }> = [];

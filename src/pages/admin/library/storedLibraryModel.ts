@@ -1,3 +1,4 @@
+import { withRequirementPageFields } from "../../../domain/requirementFields";
 import { resolveStoredFieldSurfaces } from "../../../domain/fieldSurfaces";
 import { resolveStoredFieldCollections } from "../../../domain/fieldCollections";
 import type { LibraryCatalog } from "../../../services/libraryCatalogService";
@@ -79,7 +80,6 @@ export function childCollection(catalog: LibraryCatalog, siteKey: string) {
   const fields = collection ? collection.mapping.fields.map(field => ({ key: field.id, definition: field })) : section ? data.pageSectionFields.filter(row => row.sectionKey === section.key).sort((a, b) => a.position - b.position).flatMap(placement => {
     const definition = data.fields.find(field => field.key === placement.fieldKey);
     if (!definition) return [];
-    if (resolved && placement.fieldKey === "child-unmarried" && !data.eligibilityConstraints.some(rule => rule.siteKey === siteKey && rule.applicantTypeKey === "child" && rule.unmarried === true)) return [];
     if (resolved && placement.fieldKey === "child-full-time-student" && !data.eligibilityConstraints.some(rule => rule.siteKey === siteKey && rule.applicantTypeKey === "child" && rule.studentMaximumAgeYears !== null)) return [];
     const effective = resolved?.configuration.pages.find(page => page.key === "eligibility")?.fields.find(field => field.key === definition.key);
     if (effective && !effective.included) return [];
@@ -99,7 +99,8 @@ export function storedFieldRows(catalog: LibraryCatalog, siteKey: string): Store
   const result: StoredFieldRow[] = [];
   for (const page of storedLibraryRows(catalog, "pages", siteKey)) {
     const pageKey = String(page.key);
-    const effectivePage = resolved?.configuration.pages.find(row => row.key === pageKey);
+    const savedPage = resolved?.configuration.pages.find(row => row.key === pageKey);
+    const effectivePage = savedPage ? { ...savedPage, fields: withRequirementPageFields(pageKey, savedPage.fields, siteKey) } : undefined;
     const sections = data.pageSections.filter(section => section.pageKey === pageKey).sort((a, b) => a.position - b.position);
     const baseFields = data.pageFields.filter(row => row.pageKey === pageKey).sort((a, b) => a.position - b.position);
     const sectionFields = data.pageSectionFields.filter(row => sections.some(section => section.key === row.sectionKey));
@@ -122,7 +123,7 @@ export function storedFieldRows(catalog: LibraryCatalog, siteKey: string): Store
       // Membership renders fields added beyond its base personal/contact inputs
       // in its Membership Information subsection (including AMA physician fields).
       const sectionName = section?.definition.id ?? (pageKey === "membership" && !baseFields.some(row => row.fieldKey === key) ? "membershipInformation" : "Page");
-      result.push({ ...field, definition: effective?.definition ?? field.definition,
+      result.push({ ...field, definition: collection.fields.find(row => pageKey === "eligibility" && row.key === key)?.definition ?? effective?.definition ?? field.definition,
         placements: [{ page: pageKey, section: sectionName, order: sectionPlacement?.position ?? index, collection: section?.definition.collectionName ?? "" }],
       });
     }
@@ -178,7 +179,7 @@ export function storedFieldVisibility(catalog: LibraryCatalog, field: StoredFiel
 export function storedSectionLabel(catalog: LibraryCatalog, field: StoredFieldRow): string {
   const placement = field.placements[0];
   if (!placement) return "Unassigned";
-  if (placement.section === "membershipInformation") return field.key.startsWith("ama-physician-") ? "Physician Information" : field.key === "asce-member-id" ? "Additional Membership Information" : "Membership Information";
+  if (placement.section === "membershipInformation") return field.key.startsWith("ama-physician-") ? "Physician Information" : field.key === "member-id" ? "Additional Membership Information" : "Membership Information";
   const section = catalog.data.pageSections.find(row => row.pageKey === placement.page && row.definition.id === placement.section)?.definition;
   return section?.title ?? section?.description ?? (placement.section === "default" || placement.section === "Page" ? "Page fields" : placement.section.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^./, letter => letter.toUpperCase()));
 }

@@ -105,7 +105,7 @@ it('renders Review legal sections and document from explicit data without a Site
     isAdvisorApplicantFlow={false} showHealthQuestionsNote={false} showSelfLabel
     readAndSignText={'Example introduction.\n\nCONSENT: Example consent.'} beforeConsentNotices={[]} blocks={[]}
     selfConsentField={fieldCatalog['review-self-consent']} spouseConsentField={fieldCatalog['review-spouse-consent']}
-    additionalFields={[]} onPrint={() => {}} onDownload={() => {}} />}</Form>);
+    additionalFields={[]} onPrint={() => {}} />}</Form>);
   expect(html).toContain('Jordan Morgan');
   expect(html).toContain('Example Association');
   for (const id of ['review-self-consent', 'review-spouse-consent']) expect(html).toContain(`name="${id}"`);

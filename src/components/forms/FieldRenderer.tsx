@@ -842,6 +842,7 @@ function FieldRendererInput({
               fullWidth
               margin={labelVariant === "floating" ? margin : "none"}
               autoComplete={field.autoComplete}
+              name={controllerField.name}
               inputProps={{ inputMode: "numeric" }}
               value={displayValue}
               onChange={(event) => {

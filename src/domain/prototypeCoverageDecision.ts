@@ -53,8 +53,8 @@ export function prototypeCoverageDecision(productKey: string, applicant: Coverag
   choices = capped(choices);
   const selectionPolicy = product.selectionPolicies[0]?.value;
   if (applicant === 'child' && isSelectionPolicy(selectionPolicy) && selectionPolicy.childSchedule) {
-    const children = Array.isArray(values.children) && values.children.length ? values.children as Array<Record<string, unknown>> : [{ birthDate: values['child-birth-date'] }];
-    const scheduled = resolveScheduledChildren(library.site, productKey, children.map((child, index) => ({ key: String(child.id ?? index), birthDate: typeof child.birthDate === 'string' ? child.birthDate : '' })), dayjs().format('YYYY-MM-DD'), { member: selectedAmount(productKey, 'member'), spouse: selectedAmount(productKey, 'spouse') });
+    const children = Array.isArray(values.children) && values.children.length ? values.children as Array<Record<string, unknown>> : [{ 'child-birth-date': values['child-birth-date'] }];
+    const scheduled = resolveScheduledChildren(library.site, productKey, children.map((child, index) => ({ key: String(child.id ?? index), birthDate: typeof child['child-birth-date'] === 'string' ? child['child-birth-date'] : '' })), dayjs().format('YYYY-MM-DD'), { member: selectedAmount(productKey, 'member'), spouse: selectedAmount(productKey, 'spouse') });
     const amounts = [...new Set(scheduled.children.flatMap(child => child.allowed && child.amount !== null ? [child.amount] : []))];
     if (!scheduled.allowed) messages.push(...scheduled.children.filter(child => !child.allowed).map(child => child.reason || 'Child benefit is unavailable.'));
     if (amounts.length > 1) messages.push('Each child needs a separate scheduled benefit amount; this shared child election cannot represent these different benefits.');

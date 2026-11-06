@@ -156,8 +156,8 @@
       "options": [{ "value": "male", "label": "Male" }, { "value": "female", "label": "Female" }]
     },
     {
-      "id": "child-full-time-student",
-      "name": "Child full-time student",
+      "id": "full-time-student",
+      "name": "Full-time student",
       "type": "radio",
       "label": "Is the child a full-time student?",
       "required": true,

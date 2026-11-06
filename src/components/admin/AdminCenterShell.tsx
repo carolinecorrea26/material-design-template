@@ -1,29 +1,21 @@
 import { useAccount } from '../../admin/AccountContext';
 import MockAdminGate from "./MockAdminGate";
 import { useMemo, useRef, useState } from "react";
-import { Link as RouterLink, Outlet, useLocation } from "react-router-dom";
+import { Link as RouterLink, Navigate, Outlet, useLocation } from "react-router-dom";
 import {
   AppBar,
   Alert,
   Box,
   Divider,
   IconButton,
-  InputAdornment,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Menu,
-  MenuItem,
-  Stack,
-  TextField,
   Toolbar,
   Tooltip,
   Typography,
 } from "@mui/material";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
-import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import { visibleAdminNavigation } from "../../admin/navigation";
 import { internalPersonas, type Persona } from "../../admin/access";
 import { ThemeProvider } from "@mui/material/styles";
@@ -37,13 +29,15 @@ function AdminCenterContent() {
   const location = useLocation();
   const account = useAccount();
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem('adminRailCollapsed') === 'true');
-  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const dragStart = useRef<number | null>(null);
   const railWidth = collapsed ? 64 : expandedRailWidth;
-  const adminNavigation = visibleAdminNavigation(account?.status.canManageAccounts === true);
+  const adminNavigation = visibleAdminNavigation();
   const setRailCollapsed = (value: boolean) => { setCollapsed(value); localStorage.setItem('adminRailCollapsed', String(value)); };
   const persona = { ...internalPersonas[0], permissions: account?.status.canEdit === false ? internalPersonas[0].permissions.filter(permission => permission.endsWith('.read')) : internalPersonas[0].permissions };
 
+  if (!location.pathname.startsWith("/admin-center/library")) {
+    return <Navigate to={`/admin-center/library${location.search}`} replace />;
+  }
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#f5f7fa" }}>
@@ -58,27 +52,6 @@ function AdminCenterContent() {
             <Typography variant="caption" color="text.secondary">Administration Center</Typography>
             </Box>
           </Box>
-          <TextField
-            size="small"
-            placeholder="Search sites, changes, releases…"
-            aria-label="Global search"
-            slotProps={{ input: { startAdornment: <InputAdornment position="start"><SearchRoundedIcon fontSize="small" /></InputAdornment> } }}
-            sx={{ display: { xs: "none", md: "block" }, width: "min(440px, 35vw)" }}
-          />
-          <Box sx={{ flex: 1, display: { xs: "none", sm: "block" } }} />
-          <Stack direction="row" spacing={1.5} alignItems="center" sx={{ ml: "auto" }}>
-            <Tooltip title="Notifications (future)"><Box component="span" sx={{ display: { xs: "none", sm: "inline-flex" } }}><IconButton disabled aria-label="Notifications"><NotificationsNoneRoundedIcon /></IconButton></Box></Tooltip>
-            <Tooltip title="Account"><IconButton onClick={event => setMenuAnchor(event.currentTarget)} aria-label="Account menu" aria-controls={menuAnchor ? 'account-menu' : undefined} aria-haspopup="true" aria-expanded={!!menuAnchor}><AccountCircleRoundedIcon /></IconButton></Tooltip>
-            <Menu id="account-menu" anchorEl={menuAnchor} open={!!menuAnchor} onClose={() => setMenuAnchor(null)}>
-              <Box sx={{ px: 2, py: 1 }}><Typography fontWeight={700}>{account?.status.displayName ?? 'Your account'}</Typography><Typography variant="caption" color="text.secondary">{account?.status.email}</Typography></Box>
-              <Divider />
-              <MenuItem component={RouterLink} to="/admin-center/account/profile" onClick={() => setMenuAnchor(null)}>Profile</MenuItem>
-              <MenuItem component={RouterLink} to="/admin-center/account/settings" onClick={() => setMenuAnchor(null)}>Settings</MenuItem>
-              {account?.status.canManageAccounts && <MenuItem component={RouterLink} to="/admin-center/administration" onClick={() => setMenuAnchor(null)}>Account Management</MenuItem>}
-              <Divider />
-              <MenuItem disabled={!account || account.status.signInDisabled} onClick={() => { setMenuAnchor(null); account?.signOut(); }}>Sign out</MenuItem>
-            </Menu>
-          </Stack>
         </Toolbar>
       </AppBar>
 

@@ -33,14 +33,19 @@ for (const component of read(componentFile).components) {
   if (componentIds.has(component.id)) fail(componentFile, `duplicate component ${component.id}`);
   componentIds.add(component.id);
 }
+const sharedComponentIds = new Set(componentIds);
 for (const page of pageList) {
   const file = `${root}/parked/${page.id}.json`;
   if (!fs.existsSync(file)) continue;
-  const components = read(file).components ?? [];
-  pageComponents.set(page.id, components.map(component => component.type));
-  for (const component of components) {
-    if (componentIds.has(component.type)) fail(file, `duplicate component ${component.type}`);
-    componentIds.add(component.type);
+  // Field-mapping components on the page: a tree node's `mapping`, or an older draft's lowercase `type`.
+  const mapped = [];
+  const collect = list => { for (const component of list ?? []) { const id = component.mapping ?? (/^[a-z]/.test(component.type ?? '') ? component.type : undefined); if (id) mapped.push(id); collect(component.components); } };
+  collect(read(file).components);
+  pageComponents.set(page.id, mapped);
+  for (const id of mapped) {
+    if (sharedComponentIds.has(id)) continue;
+    if (componentIds.has(id)) fail(file, `duplicate component ${id}`);
+    componentIds.add(id);
   }
 }
 const componentMappings = new Map();
@@ -181,7 +186,8 @@ function checkFieldMappings(file, entries) {
   for (const entry of entries) {
     const field = fields.get(entry.field);
     if (!field) fail(file, `unknown field ${entry.field}`);
-    for (const key of Object.keys(entry)) if (!['field', 'people'].includes(key)) fail(file, `${entry.field} has unexpected property ${key}`);
+    for (const key of Object.keys(entry)) if (!['field', 'people', 'default'].includes(key)) fail(file, `${entry.field} has unexpected property ${key}`);
+    if (entry.default !== undefined && entry.default !== 'off') fail(file, `${entry.field} default must be "off" (fields are on unless marked)`);
     if (seen.has(entry.field)) fail(file, `duplicate field ${entry.field}`);
     seen.add(entry.field);
     if (!Array.isArray(entry.people) || entry.people.length === 0) fail(file, `${entry.field} must have a non-empty people array`);
@@ -203,6 +209,8 @@ const requirementKinds = ['configurations', 'rules', 'validations', 'presentatio
 // Type-specific keys for formula records; values are checked by the shared evaluator.
 const formulaTypeKeys = { 'category-rates': ['minimumMonthly', 'default', 'categories'], 'rider-factor': ['amount'], 'frequency-factors': ['factors'] };
 const allRequirementIds = new Set();
+const validationMessages = [];
+const errorCodes = new Set(fs.existsSync(`${root}/global/error-codes.json`) ? read(`${root}/global/error-codes.json`).codes : []);
 for (const kind of requirementKinds) {
   const ids = new Set();
   const records = [];
@@ -231,7 +239,7 @@ for (const kind of requirementKinds) {
       const allowed = ['id', 'name', 'status', 'source',
         ...(kind === 'configurations' ? ['type', 'options', 'default', 'format'] : ['statement']),
         ...(['rules', 'workflows'].includes(kind) ? ['fields'] : []),
-        ...(kind === 'validations' ? ['check'] : []),
+        ...(kind === 'validations' ? ['check', 'level', 'message', 'code'] : []),
         ...(kind === 'formulas' ? ['authority', 'type', ...(formulaTypeKeys[entry.type] ?? [])] : [])];
       for (const key of Object.keys(entry)) if (!allowed.includes(key)) fail(where, `unexpected property ${key}`);
       if (typeof entry.id !== 'string' || !kebab.test(entry.id)) fail(where, 'invalid requirement id');
@@ -248,12 +256,18 @@ for (const kind of requirementKinds) {
         if (entry.type === 'boolean') {
           if (typeof entry.default !== 'boolean') fail(where, 'boolean default must be true or false');
           if (Object.hasOwn(entry, 'options')) fail(where, 'boolean configuration must not declare options');
+        } else if (entry.type === 'number') {
+          if (typeof entry.default !== 'number' || !Number.isInteger(entry.default) || entry.default < 0) fail(where, 'number default must be a whole number of zero or more');
+          if (Object.hasOwn(entry, 'options')) fail(where, 'number configuration must not declare options');
+        } else if (entry.type === 'string-list' && Object.hasOwn(entry, 'options') && !Object.hasOwn(entry, 'format')) {
+          if (!Array.isArray(entry.options) || !entry.options.length || entry.options.some(option => typeof option !== 'string' || !kebab.test(option))) fail(where, 'options must be a non-empty array of lowercase hyphenated values');
+          else if (!Array.isArray(entry.default) || entry.default.some(value => !entry.options.includes(value)) || new Set(entry.default).size !== entry.default.length) fail(where, 'default must list authored options once each');
         } else if (entry.type === 'string-list') {
           if (entry.format !== 'state-code') fail(where, 'string-list format must be state-code');
           if (Object.hasOwn(entry, 'options')) fail(where, 'string-list configuration must not declare options');
           if (!Array.isArray(entry.default) || entry.default.some(value => typeof value !== 'string' || !/^[A-Z]{2}$/.test(value))) fail(where, 'state-code default must be an array of two-letter uppercase codes');
           else if (new Set(entry.default).size !== entry.default.length) fail(where, 'duplicate state code');
-        } else if (entry.type !== 'enum') fail(where, 'configuration type must be enum, boolean or string-list');
+        } else if (entry.type !== 'enum') fail(where, 'configuration type must be enum, boolean, number or string-list');
         else if (!Array.isArray(entry.options) || !entry.options.length || entry.options.some(option => typeof option !== 'string' || !option.trim())) {
           fail(where, 'options must be a non-empty array of strings');
         } else {
@@ -272,7 +286,10 @@ for (const kind of requirementKinds) {
           if (!['mock', 'requirement'].includes(entry.authority)) fail(where, 'authority must be mock or requirement');
           if (!Object.hasOwn(formulaTypeKeys, entry.type)) fail(where, `unknown formula type ${entry.type}`);
         }
-        if (kind === 'validations' && !['required-fields', 'date-format', 'field-definition', 'page-check', 'category-selection', 'product-selection'].includes(entry.check)) fail(where, `unknown validation check ${entry.check}`);
+        if (kind === 'validations' && entry.level !== undefined && !['field', 'page'].includes(entry.level)) fail(where, 'level must be field or page');
+        if (kind === 'validations' && entry.code !== undefined && !errorCodes.has(entry.code)) fail(where, `unknown error code ${entry.code} (see global/error-codes.json)`);
+        if (kind === 'validations' && entry.message !== undefined) validationMessages.push([where, entry.message]);
+        if (kind === 'validations' && !['required-fields', 'date-format', 'postal-code-format', 'field-definition', 'page-check', 'category-selection', 'product-selection'].includes(entry.check)) fail(where, `unknown validation check ${entry.check}`);
       }
     }
   }
@@ -365,6 +382,18 @@ for (const file of list(`${root}/global/content`)) for (const [key, text] of Obj
 }
 const usedContent = new Set();
 const useContent = (where, key) => { if (key === undefined) return; if (!content.has(key)) fail(where, `content ${key} does not exist`); usedContent.add(key); };
+for (const [where, key] of validationMessages) useContent(where, key);
+
+// Page types and steps (parked/pages.json); order within a type is the order of global/pages.json.
+const PAGE_TYPES = ['form', 'entry', 'resume', 'advisor', 'error'];
+const pageMeta = read(`${root}/parked/pages.json`).pages ?? {};
+for (const [id, meta] of Object.entries(pageMeta)) {
+  if (!pageIds.has(id)) fail(`${root}/parked/pages.json`, `unknown page ${id}`);
+  if (!PAGE_TYPES.includes(meta.type)) fail(`${root}/parked/pages.json`, `${id}: type must be one of ${PAGE_TYPES.join(', ')}`);
+  if ((meta.type === 'form') !== (typeof meta.step === 'string' && meta.step.trim() !== '')) fail(`${root}/parked/pages.json`, `${id}: form pages, and only form pages, name a step`);
+}
+// Component names a page's component tree may use.
+const componentNames = new Set(Object.values(read(`${root}/global/components.json`)).flat().map(component => component.name));
 const checkCondition = (where, condition) => {
   if (!condition || typeof condition !== 'object') return;
   if (condition.field && !fields.has(condition.field)) fail(where, `condition uses unknown field ${condition.field}`);
@@ -385,7 +414,14 @@ for (const file of list(`${root}/parked`).filter(f => !['pages.json', 'fields.js
   for (const key of Object.values(parked.content ?? {}).flat()) useContent(file, key);
   for (const help of parked.help ?? []) { useContent(file, help.chip ?? help); useContent(file, help.text); }
 
-  const checkComponents = list => { for (const component of list ?? []) { for (const fieldId of component.fields ?? []) if (!fields.has(fieldId)) fail(file, `component ${component.type} uses unknown field ${fieldId}`); checkComponents(component.components); } };
+  const checkComponents = list => { for (const component of list ?? []) {
+    for (const fieldId of component.fields ?? []) if (!fields.has(fieldId)) fail(file, `component ${component.type} uses unknown field ${fieldId}`);
+    // Lowercase types are field-mapping components (older drafts); named types come from global/components.json.
+    if (/^[A-Z]/.test(component.type ?? '') && !componentNames.has(component.type)) fail(file, `component ${component.type} is not in global/components.json`);
+    if (component.mapping !== undefined && !componentIds.has(component.mapping)) fail(file, `component ${component.type} maps unknown component ${component.mapping}`);
+    if (component.section !== undefined && !parked.layout?.sections?.[component.section]) fail(file, `component ${component.type} is in unknown section ${component.section}`);
+    checkComponents(component.components);
+  } };
   checkComponents(parked.components);
   const groups = [...Object.entries(parked.layout?.sections ?? {}).map(([id, g]) => ({ id, g, kind: 'section' })), ...Object.entries(parked.layout?.dialogs ?? {}).map(([id, g]) => ({ id, g, kind: 'dialog' }))];
   for (const { id, g, kind } of groups) {
@@ -394,7 +430,7 @@ for (const file of list(`${root}/parked`).filter(f => !['pages.json', 'fields.js
   }
   for (const [id, section] of Object.entries(parked.sections ?? {})) {
     if (!parked.layout?.sections?.[id]) fail(file, `parked section ${id} is not on the page`);
-    useContent(file, section.title); useContent(file, section.applicantTitle);
+    useContent(file, section.title); useContent(file, section.applicantTitle); useContent(file, section.note);
     for (const key of section.content ?? []) useContent(file, key);
     for (const key of Object.values(section.feedback ?? {}).flat()) useContent(file, key);
   }
@@ -437,6 +473,16 @@ for (const site of siteDirs) {
     const override = read(file);
     if (!parkedByPage.has(override.page)) { fail(file, `no layout for page ${override.page}`); continue; }
     for (const key of Object.values(override.notes ?? {})) useContent(file, key);
+    const onPage = new Map([...(mappings.get(override.page) ?? []), ...(possiblePageFields.get(override.page) ?? [])].map(row => [row.field, row]));
+    for (const [key, off] of [['include', true], ['hide', false]]) {
+      if (override[key] === undefined) continue;
+      if (!Array.isArray(override[key])) { fail(file, `${key} must be a list of field ids`); continue; }
+      for (const id of override[key]) {
+        const row = onPage.get(id);
+        if (!row) fail(file, `${key} names ${id}, which is not on ${override.page}`);
+        else if ((row.default === 'off') !== off) fail(file, off ? `include names ${id}, which is already on by default` : `hide names ${id}, which is already off by default`);
+      }
+    }
   }
 }
 
@@ -467,8 +513,14 @@ if (pageArg > -1) {
     if (!f) continue;
     const type = f.type ?? Object.values(f.configurations ?? {}).find(c => c.default)?.type ?? '?';
     for (const person of Array.isArray(row.people) ? row.people : []) {
-      console.log(`    ${f.id.padEnd(32)} ${type.padEnd(17)} ${f.required ? 'required' : 'optional'}  ${person}  [${row.component}]`);
+      console.log(`    ${f.id.padEnd(32)} ${type.padEnd(17)} ${f.required ? 'required' : 'optional'}  ${person}  [${row.component}]${row.default === 'off' ? '  default off' : ''}`);
     }
+  }
+  for (const site of siteDirs) {
+    const file = `${root}/parked/sites/${site}/pages/${id}.json`;
+    if (!fs.existsSync(file)) continue;
+    const { include = [], hide = [] } = read(file);
+    if (include.length || hide.length) console.log(`\n  ${site}: ${[include.length ? `includes ${include.join(', ')}` : '', hide.length ? `hides ${hide.join(', ')}` : ''].filter(Boolean).join('; ')}`);
   }
   const pageRequirementComponents = reachableComponents(pageComponents.get(id) ?? []);
   for (const component of requirementPageBindings.get(id) ?? []) pageRequirementComponents.add(component);

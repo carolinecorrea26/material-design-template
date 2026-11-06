@@ -18,6 +18,7 @@ type DisplayEntry = {
 
 type DisplayGroup = {
   title?: string;
+  coverageKey?: string;
   entries: DisplayEntry[];
 };
 
@@ -509,9 +510,9 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
   );
 
   const groups = selectedIds
-    .map((coverageId) => {
+    .flatMap((coverageId) => {
       const coverage = coverageById.get(coverageId);
-      if (!coverage) return null;
+      if (!coverage) return [];
 
       const visibleApplicants = getVisibleCoverageApplicants(
         coverage,
@@ -519,22 +520,15 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
         selectedDependents,
       );
 
-      const entries: DisplayEntry[] = [];
-      if (visibleApplicants.length > 0) {
-        entries.push({
-          label: "Applicants",
-          value: visibleApplicants.map(getApplicantLabel).join(", "),
-        });
-      }
-
-      for (const applicant of visibleApplicants) {
+      return visibleApplicants.map(applicant => {
+        const entries: DisplayEntry[] = [];
         const amount = formatCoverageAmount(
           coverageAmounts[`${coverage.id}:${applicant}`],
         );
 
         if (amount) {
           entries.push({
-            label: `${getApplicantLabel(applicant)} amount`,
+            label: "Amount",
             value: amount,
           });
         }
@@ -555,7 +549,7 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
 
         if (selectedRiders.length > 0) {
           entries.push({
-            label: `${getApplicantLabel(applicant)} riders`,
+            label: "Riders",
             value: selectedRiders.join(", "),
           });
         }
@@ -571,7 +565,7 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
               (option) => option.value === selectedValue,
             )?.label ?? selectedValue;
           entries.push({
-            label: `${getApplicantLabel(applicant)} waiting period`,
+            label: "Waiting period",
             value: selectedLabel,
           });
         }
@@ -587,12 +581,10 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
               (option) => option.value === selectedValue,
             )?.label ?? selectedValue;
           entries.push({
-            label: `${getApplicantLabel(applicant)} benefit option`,
+            label: "Benefit option",
             value: selectedLabel,
           });
         }
-      }
-
       if (
         coverage.waitingPeriodOptions &&
         coverage.waitingPeriodOptions.length > 0
@@ -639,9 +631,11 @@ function buildCoverageSection(values: ApplicationFormValues): DisplaySection {
       }
 
       return {
-        title: coverage.name,
+        title: `${coverage.name} - ${getApplicantLabel(applicant)}`,
+        coverageKey: `${coverage.id}:${applicant}`,
         entries,
       } satisfies DisplayGroup;
+      });
     })
     .filter(isNonNullable);
 
@@ -727,4 +721,3 @@ export function buildDocumentSections(values: ApplicationFormValues) {
     })
     .filter((section) => section.groups.length > 0);
 }
-

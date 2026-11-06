@@ -582,7 +582,6 @@ export const canonicalTableSpecs = {
       "minimum_age_years": "numeric",
       "maximum_age_years": "numeric",
       "student_maximum_age_years": "numeric",
-      "unmarried": "boolean",
       "minimum_work_hours": "numeric",
       "display_id": "bigint not null unique check (display_id > 0)",
       "provided_by": "text references public.provenance_tags(key)",

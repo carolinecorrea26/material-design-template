@@ -34,7 +34,7 @@ export default function PageNav({
         variant="contained"
         size="large"
         fullWidth
-        disabled={disabled}
+        disabled={disabled || isTransitioning}
         loading={isTransitioning}
         aria-label={isTransitioning ? `${nextLabel} — submitting` : undefined}
         endIcon={<ArrowForwardRoundedIcon />}

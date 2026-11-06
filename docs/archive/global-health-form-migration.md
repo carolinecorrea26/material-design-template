@@ -4,7 +4,7 @@ October 8, 2026. The user confirmed that the supplied health questions are a **s
 
 ## Preserved evidence
 
-The [original pasted text](health-source/legacy-health-catalog.txt) is preserved byte-for-byte. The [source register](../src/migration/sources/legacy-health-catalog.json) records its SHA-256 digest, 18 questionnaire sections, exact source lines and the final assignment table. Form boundaries and assignment rows were reconciled against the two supplied screenshots. Tests check the digest, complete question-section coverage and distinct variants. This register is migration-only and is not imported into the applicant runtime.
+The [original pasted text](../health-source/legacy-health-catalog.txt) is preserved byte-for-byte. The [source register](../../src/migration/sources/legacy-health-catalog.json) records its SHA-256 digest, 18 questionnaire sections, exact source lines and the final assignment table. Form boundaries and assignment rows were reconciled against the two supplied screenshots. Tests check the digest, complete question-section coverage and distinct variants. This register is migration-only and is not imported into the applicant runtime.
 
 The supplied material identifies GPA-DI-EZ-1/3, EZ-1/2/3/4, PR1/PRS1, CI-2014, CHR, amended GPA/GMA forms, GMA-L/H-TELE-SUPP, Supp DI, GPA-DI-EZ-3 variants, WAEPAWL and AKC variants. It includes prescribed-medication/treatment questions, time-bounded conditions and procedures, disability and daily-living questions, tobacco, measurements, state notices and extensive repeatable follow-ups.
 

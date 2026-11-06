@@ -2,7 +2,7 @@
 
 Historical Phase 1–4 report, not current runtime guidance. The database integration,
 SQL export and PostgreSQL verification tooling have been removed from the working
-tree. The prototype now uses the [JSON catalog](../README.md#current-shared-catalog).
+tree. The prototype now uses the [JSON catalog](../../README.md#current-shared-catalog).
 Phase 4C was closed and Phase 5 repository access implemented; see the historical
 [Phase 5 status](phase5-repositories.md).
 

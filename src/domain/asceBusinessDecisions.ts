@@ -21,7 +21,7 @@ function eligibility(productKey: string, maximumAgeYears: number): Decision {
     targets: ["member", "spouse"].map(applicantTypeKey => ({
       table: "eligibilityConstraints", key: `${siteKey}.${productKey}.approved-eligibility.${applicantTypeKey}`,
       values: { siteKey, productKey, applicantTypeKey, minimumAgeDays: null, minimumAgeYears: 18,
-        maximumAgeYears, studentMaximumAgeYears: null, unmarried: null, minimumWorkHours: null },
+        maximumAgeYears, studentMaximumAgeYears: null, minimumWorkHours: null },
     })),
   };
 }

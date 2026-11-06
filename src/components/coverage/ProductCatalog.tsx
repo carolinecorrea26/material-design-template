@@ -1,8 +1,8 @@
 import { combineRateDisplays, rateDisplayForAmount, type RateDisplayState } from '../../domain/rateDisplay';
 import { orderCoveragePresentation } from "../../domain/coveragePresentation";
 import EstimatedRate from "./EstimatedRate";
-import { getCoverageAmountChoices } from "../../utils/coverageAmounts";
 import { getRiderOnlyOptions, selectedRiderOnly } from "../../domain/coverageRiderOnly";
+import { applicationRiderOptions } from "../../domain/applicationRiders";
 import type { resolveApplicationCoverage } from "../../domain/coverageRuntime";
 import { residencyExclusionDiagnostic } from "../../domain/residencyPolicy";
 import {
@@ -716,7 +716,6 @@ export function ProductCard({
                 </Alert>
               )}
 
-              {behavior?.unresolvedRequirements.map(item => <Alert key={item.id} severity="warning" sx={{ mb: 1 }}>{item.description}</Alert>)}
               {behavior?.messages.filter(message => message !== residencyExclusionDiagnostic).map(message => <Alert key={message} severity="warning" sx={{ mb: 1 }}>{message}</Alert>)}
               {behavior?.notices.map(notice => <Alert key={notice} severity="info" sx={{ mb: 1 }}>{notice}</Alert>)}
               {behavior?.underwriting.status === "unresolved" && <Alert severity="warning">Underwriting requirements for this selection are unresolved. Contact support before continuing.</Alert>}
@@ -734,11 +733,13 @@ export function ProductCard({
                     else onAmountChange(key, Number(value));
                   }}
                 />
-                <ControlledFieldRenderer
-                  field={{ id: `${key}-selected`, label: "Add coverage", inputType: "checkbox" }}
-                  value={isSelected}
-                  onChange={() => onToggleApplicant(coverage.id, applicantId)}
-                />
+                <Box sx={{ pt: 1.5 }}>
+                  <ControlledFieldRenderer
+                    field={{ id: `${key}-selected`, label: "Add coverage", inputType: "checkbox", disabled: !isSelected && applicantId === "child" && behavior?.selectable === false }}
+                    value={isSelected}
+                    onChange={() => onToggleApplicant(coverage.id, applicantId)}
+                  />
+                </Box>
 
                 {/* Additional fields when applicant is selected */}
                 {((isSelected && currentAmount > 0) || isRiderOnly) && (
@@ -794,12 +795,13 @@ export function ProductCard({
                         .map((rider) => {
                         const riderKey = `${coverage.id}:${rider.id}:${applicantId}`;
                         const isChecked = !!storedRiders[riderKey];
+                        const options = applicationRiderOptions(coverage, rider, applicantId, applicationValues);
 
                         return (
                           <Box key={rider.id} sx={rider.displayAsProduct ? { border: "1px solid", borderColor: "divider", borderRadius: 1, p: 2 } : undefined}>
                             {rider.dependentApplicant && <ApplicantSectionLabel label={resolvedSectionTitles[coverageApplicantToSection[rider.dependentApplicant]]} sx={{ mb: 1 }} />}
                             <ControlledFieldRenderer
-                              field={{ id: `${riderKey}-selected`, label: rider.name, inputType: "checkbox", helperText: rider.description, disabled: isRiderOnly || rider.included }}
+                              field={{ id: `${riderKey}-selected`, label: rider.name, inputType: "checkbox", helperText: rider.description, disabled: isRiderOnly || rider.included || !options.available }}
                               value={isChecked}
                               onChange={() => onRiderToggle(coverage.id, rider.id, applicantId)}
                             />
@@ -811,7 +813,7 @@ export function ProductCard({
                                   field={{
                                     id: `${riderKey}-amount`, label: rider.amountLabel ?? "Rider Benefit Amount", inputType: "dropdown",
                                     disabled: isRiderOnly && standalone?.id !== rider.id,
-                                    options: [...(rider.included || rider.dependentApplicant || isRiderOnly ? [] : [0]), ...getCoverageAmountChoices({ coverageAmounts: rider.coverageAmounts }, applicantId)].map(amount => ({ value: String(amount), label: formatUSD(amount, 0) })),
+                                    options: [...(rider.included || rider.dependentApplicant || isRiderOnly || options.configured ? [] : [0]), ...options.choices].map(amount => ({ value: String(amount), label: formatUSD(amount, 0) })),
                                   }}
                                   value={String(storedRiderAmounts[riderKey] ?? rider.defaultAmount ?? 0)}
                                   onChange={value => onRiderAmountChange(coverage.id, rider.id, applicantId, Number(value))}

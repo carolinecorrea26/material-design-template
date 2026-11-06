@@ -17,9 +17,9 @@ export function applyReviewAndRateAdoption(db: DatabaseSchema) {
   const persist = (siteKey: string, key: string, target: ConfigurationTarget, value: unknown) => {
     db.configurationDefinitions = db.configurationDefinitions.filter(row => row.key !== key);
     db.configurationValues = db.configurationValues.filter(row => row.key !== key);
-    const metadata = { id: key, key, ...libraryMetadata("configurationDefinitions", key, "docs/step3-review-and-rating.md") };
+    const metadata = { id: key, key, ...libraryMetadata("configurationDefinitions", key, "docs/archive/step3-review-and-rating.md") };
     db.configurationDefinitions.push({ ...metadata, position: 0, definition: { path: null, metadata: { version: 1 }, target } });
-    db.configurationValues.push({ ...metadata, ...libraryMetadata("configurationValues", key, "docs/step3-review-and-rating.md"), position: 0, scope: "site", siteKey, clientKey: null, configurationKey: key, value: value as Json });
+    db.configurationValues.push({ ...metadata, ...libraryMetadata("configurationValues", key, "docs/archive/step3-review-and-rating.md"), position: 0, scope: "site", siteKey, clientKey: null, configurationKey: key, value: value as Json });
   };
   const cells = new Map(mcrSource.cells.map(cell => [`${cell.sheet}!${cell.cell}`, String(cell.value)]));
   for (const scope of activeSiteMigrationScope.sites) {
@@ -31,7 +31,7 @@ export function applyReviewAndRateAdoption(db: DatabaseSchema) {
     if (!hasAggregate && scope.mcrRequired) {
       const key = `provisional-decision.${scope.key}.life-aggregate-participation`;
       db.semanticRequirements = db.semanticRequirements.filter(row => row.key !== key);
-      db.semanticRequirements.push({ id: key, key, ...libraryMetadata("semanticRequirements", key, "docs/step3-review-and-rating.md"), domain: "provisional-source-decision", subjectTable: "sites", subjectKey: scope.key, predicate: "life-aggregate-participation", status: "documented", value: { authority: provisionalDecisionAuthority, selected: aggregateParticipation, revisit: true, sourceReconciliation: "deferred", runtimeActivation: "pending", destinations: [{ table: "configurationValues", key: `${scope.key}.life-aggregate-participation`, column: "value" }] } });
+      db.semanticRequirements.push({ id: key, key, ...libraryMetadata("semanticRequirements", key, "docs/archive/step3-review-and-rating.md"), domain: "provisional-source-decision", subjectTable: "sites", subjectKey: scope.key, predicate: "life-aggregate-participation", status: "documented", value: { authority: provisionalDecisionAuthority, selected: aggregateParticipation, revisit: true, sourceReconciliation: "deferred", runtimeActivation: "pending", destinations: [{ table: "configurationValues", key: `${scope.key}.life-aggregate-participation`, column: "value" }] } });
     }
     const review = reviewPolicyForSite(scope.key, client.reviewPolicy);
     // Explicit reviewed consent survives reapplying the historical compiler.
@@ -78,7 +78,7 @@ export function applyReviewAndRateAdoption(db: DatabaseSchema) {
       if (!scope.mcrRequired) continue;
       const decisionKey = `provisional-decision.${key}`;
       db.semanticRequirements = db.semanticRequirements.filter(row => row.key !== decisionKey);
-      db.semanticRequirements.push({ id: decisionKey, key: decisionKey, ...libraryMetadata("semanticRequirements", decisionKey, "docs/step3-review-and-rating.md"), domain: "provisional-source-decision", subjectTable: "sites", subjectKey: scope.key, predicate: "rate-input-policy", status: "documented", value: { authority: provisionalDecisionAuthority, selected: policy as unknown as Json, sourceReferences, sourceReconciliation: "deferred", runtimeActivation: "pending", revisit: true, destinations: [{ table: "configurationValues", key, column: "value" }] } });
+      db.semanticRequirements.push({ id: decisionKey, key: decisionKey, ...libraryMetadata("semanticRequirements", decisionKey, "docs/archive/step3-review-and-rating.md"), domain: "provisional-source-decision", subjectTable: "sites", subjectKey: scope.key, predicate: "rate-input-policy", status: "documented", value: { authority: provisionalDecisionAuthority, selected: policy as unknown as Json, sourceReferences, sourceReconciliation: "deferred", runtimeActivation: "pending", revisit: true, destinations: [{ table: "configurationValues", key, column: "value" }] } });
     }
   }
 }

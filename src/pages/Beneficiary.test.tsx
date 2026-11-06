@@ -65,7 +65,7 @@ it("copies a new beneficiary with separate IDs and blocks an incompatible target
   await act(async () => (dialog().querySelector("form") as HTMLFormElement).dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })));
   const targets = [...dialog().querySelectorAll('input[type="checkbox"]')] as HTMLInputElement[];
   expect(targets).toHaveLength(2); expect(targets.filter(target => target.disabled)).toHaveLength(1); expect(targets.filter(target => !target.disabled)).toHaveLength(1);
-  await act(async () => targets.find(target => !target.disabled)!.click());
+  expect(targets.find(target => !target.disabled)!.checked).toBe(true);
   await act(async () => button("Apply to Selected", dialog()).click());
   const saved = form.values.beneficiaries as Record<string, Array<Record<string, unknown>>>;
   expect(saved["li-10yr:member"][0]).toMatchObject({ firstName: "New", relationship: "Sibling", share: 100 });
@@ -73,6 +73,31 @@ it("copies a new beneficiary with separate IDs and blocks an incompatible target
   expect(saved["li-term:member"][0].id).not.toBe(saved["li-10yr:member"][0].id);
   expect(saved["li-term:member"][0]).not.toBe(saved["li-10yr:member"][0]);
   expect(saved["li-20yr:member"]).toHaveLength(1); expect(saved["li-20yr:member"][0].id).toBe("trust");
+});
+
+it("reuses existing beneficiaries across Self and Spouse with eligible targets preselected", async () => {
+  prepare();
+  form.values = { ...form.values, dependents: ["spouse"], productApplicants: { "li-10yr": ["member", "spouse"], "li-20yr": ["member", "spouse"] }, coverageAmounts: { "li-10yr:member": 100000, "li-10yr:spouse": 100000, "li-20yr:member": 100000, "li-20yr:spouse": 100000 } };
+  await render();
+  await act(async () => button("Apply to Other Coverages", container).click());
+  const targets = [...dialog().querySelectorAll<HTMLInputElement>('input[type="checkbox"]')];
+  expect(targets).toHaveLength(3);
+  expect(targets.every(target => target.checked && !target.disabled)).toBe(true);
+  expect(dialog().textContent).toContain("Spouse");
+  await act(async () => button("Apply to Selected", dialog()).click());
+  const saved = form.values.beneficiaries as Record<string, Array<Record<string, unknown>>>;
+  for (const key of ["li-20yr:member", "li-10yr:spouse", "li-20yr:spouse"]) expect(saved[key][0]).toMatchObject({ firstName: "Existing", share: 50 });
+  expect(new Set(Object.values(saved).flatMap(items => items.map(item => item.id))).size).toBe(4);
+});
+
+it("does not offer reuse when only the current coverage remains", async () => {
+  prepare();
+  form.values = { ...form.values, coverageSelections: ["li-10yr"] };
+  await render();
+  expect(button("Apply to Other Coverages", container)).toBeUndefined();
+  await act(async () => button("Edit", container).click());
+  await act(async () => dialog().querySelector("form")!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })));
+  expect(document.querySelector('[role="dialog"]')?.textContent).not.toContain("Apply to Other Coverages");
 });
 it("honors captured optional participation and renamed saved field bindings", async () => {
   prepare(); const edited = structuredClone(db);

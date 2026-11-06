@@ -1,3 +1,4 @@
+import { requirementAnswerKey } from '../domain/requirementFields';
 import { migrateFieldSurfaceData } from './fieldSurfaceDefaults';
 import { childMapping } from '../config/fields/eligibilityListFields';
 import { disabilityCompanyMapping } from '../config/fields/profileListFields';
@@ -16,8 +17,7 @@ export function migrateFieldCollectionData(data: EffectiveSiteData) {
   const definitions: Record<string, FieldCollectionDefinition> = {
     children: { pageKey: 'eligibility', sectionId: 'childSection', storageName: 'children', label: 'Child', maxItems: 10,
       fields: [...childMapping.fields.map(field => ({ fieldKey: field.id, valueKey: childMapping.fieldToKey[field.id as keyof typeof childMapping.fieldToKey], grid: childMapping.gridFields.includes(field.id) })),
-        { fieldKey: 'child-unmarried', valueKey: 'unmarried', childConstraint: 'unmarried' },
-        { fieldKey: 'child-full-time-student', valueKey: 'fullTimeStudent', childConstraint: 'studentMaximumAgeYears' }] },
+        { fieldKey: 'child-full-time-student', valueKey: requirementAnswerKey('full-time-student', 'child') }] },
   };
   for (const applicant of ['self', 'spouse'] as const) definitions[`${applicant}DisabilityCompanies`] = {
     pageKey: 'profile', sectionId: applicant === 'self' ? 'profileFinancialSelf' : 'profileFinancialSpouse', storageName: `${applicant}DisabilityCompanies`, label: 'Company', maxItems: 10,

@@ -1,6 +1,53 @@
 {
   "component": "eligibility",
-  "configurations": ["eligible-states-only", "eligible-states"],
-  "rules": ["state-province-from-postal-code", "quote-entry-location-feedback"],
-  "presentation": ["eligible-state-options"]
+  "configurations": [
+    "eligible-states-only",
+    "eligible-states",
+    "site-people",
+    "child-list-maximum",
+    "tpa-integration"
+  ],
+  "rules": [
+    "state-province-from-postal-code",
+    "quote-entry-location-feedback",
+    "dependents-from-site-people",
+    "repeating-entry-list",
+    "applicant-disqualifying-answer",
+    "tpa-member-lookup",
+    "applicant-product-eligibility"
+  ],
+  "validations": [
+    {
+      "validation": "postal-code-format",
+      "trigger": "inline",
+      "fields": [
+        "zip-postal-code"
+      ]
+    },
+    {
+      "validation": "date-value-format",
+      "trigger": "inline",
+      "fields": [
+        "birth-date"
+      ]
+    },
+    {
+      "validation": "eligible-state-required",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "child-required",
+      "trigger": "next",
+      "scope": "page"
+    },
+    {
+      "validation": "spouse-details-required",
+      "trigger": "next",
+      "scope": "page"
+    }
+  ],
+  "presentation": [
+    "eligible-state-options"
+  ]
 }

@@ -4,7 +4,7 @@ import { validatePaymentPolicy, type PaymentPolicy } from "../domain/paymentPoli
 import type { SourceCell } from "./mcr";
 
 const siteKey = "nso";
-const reference = "docs/step3-active-site-adoption.md#nso-life-amounts-and-payment";
+const reference = "docs/archive/step3-active-site-adoption.md#nso-life-amounts-and-payment";
 const metadata = (table: string, key: string, source: string) => ({ id: key, key, ...libraryMetadata(table, key, source) });
 const plans = [
   { row: 318, productKey: "li-term", gNumber: "G-30330-0", planCode: 101, min: 25000, max: 500000, increment: 25000, minimumAge: 17, maximumAge: 64, child: false },
@@ -65,7 +65,7 @@ export function applyNsoLifeAndPaymentAdoption(db: DatabaseSchema, cells: readon
       targets.push({ table: "coverageAmountPatterns", key: patternKey, cell, column: "amountType" }, { table: "productAmountRules", key: `${key}.amount-rule`, cell, column: "amountPatternKey" });
       const ageCell = `${applicantTypeKey === "member" ? "O" : applicantTypeKey === "spouse" ? "P" : "Q"}${row}`;
       const eligibilityKey = `${key}.ages`;
-      db.eligibilityConstraints.push({ ...metadata("eligibilityConstraints", eligibilityKey, `Main!${ageCell}`), productKey, siteKey, applicantTypeKey, minimumAgeDays: applicantTypeKey === "child" ? 15 : null, minimumAgeYears: applicantTypeKey === "child" ? null : plan.minimumAge, maximumAgeYears: applicantTypeKey === "child" ? 18 : plan.maximumAge, studentMaximumAgeYears: applicantTypeKey === "child" ? 25 : null, unmarried: null, minimumWorkHours: null });
+      db.eligibilityConstraints.push({ ...metadata("eligibilityConstraints", eligibilityKey, `Main!${ageCell}`), productKey, siteKey, applicantTypeKey, minimumAgeDays: applicantTypeKey === "child" ? 15 : null, minimumAgeYears: applicantTypeKey === "child" ? null : plan.minimumAge, maximumAgeYears: applicantTypeKey === "child" ? 18 : plan.maximumAge, studentMaximumAgeYears: applicantTypeKey === "child" ? 25 : null, minimumWorkHours: null });
       targets.push({ table: "eligibilityConstraints", key: eligibilityKey, cell: ageCell, column: "maximumAgeYears" });
     }
     for (const [kind, column, primary] of [["gNumber", "E", plan.gNumber], ["planCode", "G", String(plan.planCode)]] as const) {

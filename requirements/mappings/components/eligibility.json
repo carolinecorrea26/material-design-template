@@ -12,6 +12,6 @@
     {"field":"birth-date","people":["self","spouse","child"]},
     {"field":"dependents","people":["self"]},
     {"field":"gender","people":["child"]},
-    {"field":"child-full-time-student","people":["child"]}
+    {"field":"full-time-student","people":["child"],"default":"off"}
   ]
 }

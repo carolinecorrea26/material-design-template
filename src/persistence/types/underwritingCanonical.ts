@@ -54,7 +54,6 @@ export interface EligibilityConstraints extends LibraryMetadata {
   minimumAgeYears: number | null;
   maximumAgeYears: number | null;
   studentMaximumAgeYears: number | null;
-  unmarried: boolean | null;
   minimumWorkHours: number | null;
 }
 export interface CoverageDependencies extends LibraryMetadata {

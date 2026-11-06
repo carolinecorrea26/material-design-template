@@ -115,9 +115,10 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
                   }
                   variant="subsection"
                   sx={{ mb: 1 }}
-                />
-                <ProfilePersonalInformation applicant="self" fieldIds={section.fieldIds}
-                  allFields={allFields} control={control} errors={errors} watchedValues={watchedValues} />
+                >
+                  <ProfilePersonalInformation applicant="self" fieldIds={section.fieldIds}
+                    allFields={allFields} control={control} errors={errors} watchedValues={watchedValues} />
+                </SectionDivider>
               </ApplicantSectionDivider>
             </div>
           );
@@ -170,17 +171,19 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
                   }
                   variant="subsection"
                   sx={{ mb: 1 }}
-                />
-                {renderFinancialFields(
-                  "self",
-                  section.fieldIds,
-                  allFields,
-                  control,
-                  errors,
-                  watchedValues,
-                  selfHasLife,
-                  selfHasDisability, lifeReplacementNotice, disabilityCollections?.self,
-                )}
+                  note={<Alert severity="info" icon={false} sx={{ mb: 1.5 }}>{otherCoverageInfoNote}</Alert>}
+                >
+                  {renderFinancialFields(
+                    "self",
+                    section.fieldIds,
+                    allFields,
+                    control,
+                    errors,
+                    watchedValues,
+                    selfHasLife,
+                    selfHasDisability, lifeReplacementNotice, disabilityCollections?.self,
+                  )}
+                </SectionDivider>
               </ApplicantSectionDivider>
             </div>
           );
@@ -202,14 +205,15 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
                   }
                   variant="subsection"
                   sx={{ mb: 1 }}
-                />
-                {renderFinancialQuestionnaireFields(
-                  section.fieldIds,
-                  allFields,
-                  control,
-                  errors,
-                  watchedValues,
-                )}
+                >
+                  {renderFinancialQuestionnaireFields(
+                    section.fieldIds,
+                    allFields,
+                    control,
+                    errors,
+                    watchedValues,
+                  )}
+                </SectionDivider>
               </ApplicantSectionDivider>
             </div>
           );
@@ -231,9 +235,10 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
                   }
                   variant="subsection"
                   sx={{ mb: 1 }}
-                />
-                <ProfilePersonalInformation applicant="spouse" fieldIds={section.fieldIds}
-                  allFields={allFields} control={control} errors={errors} watchedValues={watchedValues} />
+                >
+                  <ProfilePersonalInformation applicant="spouse" fieldIds={section.fieldIds}
+                    allFields={allFields} control={control} errors={errors} watchedValues={watchedValues} />
+                </SectionDivider>
               </ApplicantSectionDivider>
             </div>
           );
@@ -286,17 +291,19 @@ export default function ProfileSections({ control, errors, watchedValues, allFie
                   }
                   variant="subsection"
                   sx={{ mb: 1 }}
-                />
-                {renderFinancialFields(
-                  "spouse",
-                  section.fieldIds,
-                  allFields,
-                  control,
-                  errors,
-                  watchedValues,
-                  spouseHasLife,
-                  spouseHasDisability, lifeReplacementNotice, disabilityCollections?.spouse,
-                )}
+                  note={<Alert severity="info" icon={false} sx={{ mb: 1.5 }}>{otherCoverageInfoNote}</Alert>}
+                >
+                  {renderFinancialFields(
+                    "spouse",
+                    section.fieldIds,
+                    allFields,
+                    control,
+                    errors,
+                    watchedValues,
+                    spouseHasLife,
+                    spouseHasDisability, lifeReplacementNotice, disabilityCollections?.spouse,
+                  )}
+                </SectionDivider>
               </ApplicantSectionDivider>
             </div>
           );
@@ -460,10 +467,6 @@ function renderFinancialFields(
 
   return (
     <>
-      <Alert severity="info" icon={false} sx={{ mb: 1.5 }}>
-        {otherCoverageInfoNote}
-      </Alert>
-
       {hasLife && (
         <>
           {renderField(hasOtherLifeId)}

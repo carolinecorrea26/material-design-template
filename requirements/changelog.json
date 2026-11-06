@@ -34,6 +34,56 @@
       "id": "CHG-007",
       "description": "ASCE's Chronic Illness Rider (CIR) on Group Term Life is a normal rider only. Applicants can no longer elect CIR on its own without base coverage.",
       "reason": "ASCE requirements update: CIR is not offered as a CIR-only election."
+    },
+    {
+      "id": "CHG-008",
+      "description": "Shared helper text uses line-height 1.2 and a 14px bottom margin.",
+      "reason": "Reviewed shared styling applies consistently to the prototype and its Storybook components."
+    },
+    {
+      "id": "CHG-009",
+      "description": "Beneficiaries can be applied to other eligible Self and Spouse coverages, with applicant headings when a spouse is applying. Eligible targets are preselected. Existing beneficiaries can also be reused. Do not offer Apply to Other Coverages when no other eligible coverage remains.",
+      "reason": "Avoids an unnecessary dialog for a single remaining coverage and supports household-wide reuse without bypassing allocation limits."
+    },
+    {
+      "id": "CHG-010",
+      "description": "Review is organized into 1. Preview your application and 2. Read and consent, using matching section styles. The preview shows estimated rates within each applicant's coverage group and uses labels such as Amount. Remove the bottom estimated-cost bar from Review and later pages and the download-application button from the preview. Receipt uses the reviewed decision, receipt and help structure; previously removed receipt elements stay removed. Document downloads are prototype placeholders, not generated PDFs.",
+      "reason": "Records the reviewed Review/Receipt layout and keeps estimates within the coverage summary rather than a separate sticky bar."
+    },
+    {
+      "id": "CHG-011",
+      "description": "Field-group section labels use uppercase text with slight letter spacing. Titled and untitled field groups use rounded containers matching the form-page background, with more spacing between sections and white input backgrounds. Membership groups the attestation, name, phone and email together. Form-page containers use reduced responsive padding and rounded corners.",
+      "reason": "Applies the reviewed Profile page treatment consistently through the shared field-group components in the prototype and Storybook."
+    },
+    {
+      "id": "CHG-012",
+      "description": "ASCE Membership page fields now load from the requirements JSON in the prototype, Portal Library and Storybook. ASCE's membership ID uses the shared member-id field (was asce-member-id), which is optional by default and required for ASCE. ABE and WAEPA still use their own membership ID fields. Applicant-facing labels and behavior are unchanged; the library name is now \"Member ID\".",
+      "reason": "First page rolled out after its JSON review was agreed, completing CHG-005 for ASCE."
+    },
+    {
+      "id": "CHG-013",
+      "description": "There is no child unmarried question or eligibility rule on any site. The \"Is the child unmarried?\" field, its validation, placement and the unmarried eligibility rule are removed. The Eligibility child section keeps its note: \"Only unmarried children are eligible for coverage.\"",
+      "reason": "Unmarried-child eligibility is communicated only by the note; no answer is collected."
+    },
+    {
+      "id": "CHG-014",
+      "description": "\"Is the child a full-time student?\" (field full-time-student, asked of the child) is off by default and ASCE includes it, set in the requirements the same way as any field on a site. Saved answer keys use one kebab-case rule: the field ID for the applicant, <person>-<field ID> for others (spouse-first-name, child-first-name, child-full-time-student); the child list's camelCase keys (firstName, birthDate, fullTimeStudent) are replaced.",
+      "reason": "Fields are turned on or off per effective site by the site's requirements file, not inferred from other rules."
+    },
+    {
+      "id": "CHG-015",
+      "description": "Eligibility section info alerts are content, read the same way for every section: the spouse section shows \"Domestic Partnership/Civil Union is determined by State Law and they will be referred to as \\\"Spouse\\\" throughout the application.\" (eligibility.note.spouse), the child section keeps \"Only unmarried children are eligible for coverage.\" (eligibility.note.children), and ASCE's self section shows \"Throughout this site you will be referred to as a Member of the Civil Engineering profession.\" (eligibility.note.member-profession, chosen in ASCE's eligibility page file).",
+      "reason": "Section notes are standardized content retrieved by page and section, ready to move into the CMS content files."
+    },
+    {
+      "id": "CHG-016",
+      "description": "ASCE asks the spouse \"Is your spouse also a member of the American Society of Civil Engineers?\" instead of \"Is your spouse also an active member?\".",
+      "reason": "ASCE names the association in both membership questions."
+    },
+    {
+      "id": "CHG-017",
+      "description": "On Eligibility, a disqualifying answer shows its reason when Next is clicked and the page does not continue; Next is no longer disabled.",
+      "reason": "Page-level problems are reported on Next, like the other page validations."
     }
   ]
 }

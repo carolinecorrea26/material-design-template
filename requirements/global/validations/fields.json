@@ -7,6 +7,15 @@
       "check": "required-fields",
       "statement": "Reject missing values for mapped fields marked required in their effective field definitions. Do not maintain a second required setting here. The applicability mapping identifies which fields are checked.",
       "source": "src/components/forms/EligibilityFields.tsx"
+    },
+    {
+      "id": "postal-code-format",
+      "name": "Check the ZIP or postal code format",
+      "status": "draft",
+      "check": "postal-code-format",
+      "level": "field",
+      "statement": "A supplied ZIP or postal code must be at least 5 characters (\"Enter a valid ZIP / Postal Code.\").",
+      "source": "src/utils/fieldValidation.ts"
     }
   ]
 }

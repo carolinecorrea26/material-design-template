@@ -14,7 +14,7 @@ export default meta;
 /** Explicit example field sets; application branch rules are covered by Whole page. */
 function exampleFields(capability: TemplateCapability, qualification: unknown) {
   const groups: Partial<Record<TemplateCapability, string[]>> = {
-    multipleTerms: ['asce-member-id'], optionalBeneficiaries: ['abe-member-id'],
+    multipleTerms: ['member-id'], optionalBeneficiaries: ['abe-member-id'],
     professionalEducation: ['avma-vet-college', 'avma-graduation-year', 'avma-occupation'],
     physicianMembership: ['ama-physician-type', 'ama-physician-title', 'ama-physician-first-name', 'ama-physician-last-name', 'ama-physician-birth-date', 'ama-physician-email'],
     nursingMembership: ['nurse-type'], occupationAndChildNotice: ['csea-occupation-group'],

@@ -24,7 +24,7 @@ The result is detached from the persisted input. It is a point-in-time candidate
 
 ## Approval and activation
 
-`runtimeActivation` remains `pending-phase-6` in both the persisted approval evidence and candidate model. Approval means user approval in this project, as recorded in [the existing decision register](asce-business-decisions.md). It does not assert separate Underwriting/Contracts sign-off or a production effective date. No database deployment, compatibility retirement or runtime activation is part of this pass.
+`runtimeActivation` remains `pending-phase-6` in both the persisted approval evidence and candidate model. Approval means user approval in this project, as recorded in [the existing decision register](../asce-business-decisions.md). It does not assert separate Underwriting/Contracts sign-off or a production effective date. No database deployment, compatibility retirement or runtime activation is part of this pass.
 
 ## Validation
 

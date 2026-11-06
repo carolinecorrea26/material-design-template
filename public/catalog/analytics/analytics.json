@@ -11033,38 +11033,6 @@
       }
     },
     {
-      "id": "portal.v1/eligibility/field/child-unmarried",
-      "pageId": "eligibility",
-      "elementKey": "child-unmarried",
-      "label": "Is the child unmarried?",
-      "kind": "field",
-      "events": [
-        "change"
-      ],
-      "trigger": "Selection or input changes; values excluded",
-      "sites": [
-        "asce"
-      ],
-      "status": "local-hook",
-      "permittedProperties": [
-        "siteKey",
-        "template",
-        "revision"
-      ],
-      "description": "Track interaction with Is the child unmarried?; never collect the entered value.",
-      "source": "prototype-definition",
-      "sourceFile": "src/config/fields/inspectionInventory.ts",
-      "condition": "Child selected; repeated for each child; Child selected; repeated for each child",
-      "adobe": {
-        "mapping": null,
-        "status": "not-configured"
-      },
-      "contentsquare": {
-        "mapping": null,
-        "status": "not-configured"
-      }
-    },
-    {
       "id": "portal.v1/eligibility/field/dependents",
       "pageId": "eligibility",
       "elementKey": "dependents",
@@ -23326,9 +23294,9 @@
       }
     },
     {
-      "id": "portal.v1/membership/field/asce-member-id",
+      "id": "portal.v1/membership/field/member-id",
       "pageId": "membership",
-      "elementKey": "asce-member-id",
+      "elementKey": "member-id",
       "label": "Membership ID",
       "kind": "field",
       "events": [

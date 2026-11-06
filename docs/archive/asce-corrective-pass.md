@@ -1,6 +1,6 @@
 # ASCE corrective pass before Phase 5
 
-Historical corrective-pass record. The six eligibility/older-age underwriting unknowns below have since been [explicitly approved in canonical records](asce-business-decisions.md). Compatibility authoring remains unchanged pending Phase 6.
+Historical corrective-pass record. The six eligibility/older-age underwriting unknowns below have since been [explicitly approved in canonical records](../asce-business-decisions.md). Compatibility authoring remains unchanged pending Phase 6.
 
 Source: `ASCE_Portal_Site_Rules.xlsx` supplied from Downloads; its source is
 `Master Client Requirements-08.27.2025_v77.xlsx`. The inventory is requirements

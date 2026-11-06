@@ -381,7 +381,7 @@
     {
       "table": "analyticsTags",
       "file": "public/catalog/analytics/analytics.json",
-      "rowCount": 936,
+      "rowCount": 935,
       "rowType": "AnalyticsTag",
       "properties": [
         {
@@ -1124,7 +1124,7 @@
           "description": "Stored row identity. Preserve existing values.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 80
+            "line": 79
           }
         },
         {
@@ -1135,7 +1135,7 @@
           "description": "Semantic identity used by key-based relationships. Preserve existing values.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 81
+            "line": 80
           }
         },
         {
@@ -1146,7 +1146,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 82
+            "line": 81
           }
         },
         {
@@ -1157,7 +1157,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 83
+            "line": 82
           }
         },
         {
@@ -1168,7 +1168,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 84
+            "line": 83
           }
         },
         {
@@ -1179,7 +1179,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 85
+            "line": 84
           }
         },
         {
@@ -1190,7 +1190,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 86
+            "line": 85
           }
         },
         {
@@ -1201,7 +1201,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 87
+            "line": 86
           }
         },
         {
@@ -1212,7 +1212,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 88
+            "line": 87
           }
         },
         {
@@ -1223,7 +1223,7 @@
           "description": "Ordering within the owning collection; not a universal journey sequence.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 89
+            "line": 88
           }
         },
         {
@@ -2290,7 +2290,7 @@
     {
       "table": "configurationDefinitions",
       "file": "public/catalog/configurations/configurations.json",
-      "rowCount": 919,
+      "rowCount": 920,
       "rowType": "ConfigurationDefinitionRow",
       "properties": [
         {
@@ -2460,7 +2460,7 @@
     {
       "table": "configurationValues",
       "file": "public/catalog/configurations/configurations.json",
-      "rowCount": 998,
+      "rowCount": 999,
       "rowType": "ConfigurationValueRow",
       "properties": [
         {
@@ -3170,7 +3170,7 @@
           "description": "Stored row identity. Preserve existing values.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 61
+            "line": 60
           }
         },
         {
@@ -3181,7 +3181,7 @@
           "description": "Semantic identity used by key-based relationships. Preserve existing values.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 62
+            "line": 61
           }
         },
         {
@@ -3192,7 +3192,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 63
+            "line": 62
           }
         },
         {
@@ -3203,7 +3203,7 @@
           "description": "Site selector; scope rules differ between scoped and Site assignment tables.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 64
+            "line": 63
           }
         },
         {
@@ -3214,7 +3214,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 65
+            "line": 64
           }
         },
         {
@@ -3225,7 +3225,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 66
+            "line": 65
           }
         },
         {
@@ -3236,7 +3236,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 67
+            "line": 66
           }
         },
         {
@@ -3247,7 +3247,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 68
+            "line": 67
           }
         },
         {
@@ -3709,17 +3709,6 @@
           }
         },
         {
-          "name": "unmarried",
-          "required": true,
-          "nullable": true,
-          "type": "boolean | null",
-          "description": "See the property declaration and owning domain contract.",
-          "declaration": {
-            "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 57
-          }
-        },
-        {
           "name": "minimumWorkHours",
           "required": true,
           "nullable": true,
@@ -3727,7 +3716,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 58
+            "line": 57
           }
         },
         {
@@ -4009,7 +3998,7 @@
     {
       "table": "fields",
       "file": "public/catalog/fields/fields.json",
-      "rowCount": 512,
+      "rowCount": 511,
       "rowType": "FieldRow",
       "properties": [
         {
@@ -4058,7 +4047,7 @@
           "typeDeclarations": [
             {
               "file": "src/domain/fields.ts",
-              "line": 211
+              "line": 210
             }
           ],
           "properties": [
@@ -4070,7 +4059,7 @@
               "description": "Stored row identity. Preserve existing values.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 212
+                "line": 211
               }
             },
             {
@@ -4081,7 +4070,7 @@
               "description": "Stable catalog name, separate from applicant-facing input copy.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 214
+                "line": 213
               }
             },
             {
@@ -4092,7 +4081,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 215
+                "line": 214
               }
             },
             {
@@ -4103,7 +4092,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 216
+                "line": 215
               }
             },
             {
@@ -4114,7 +4103,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 217
+                "line": 216
               }
             },
             {
@@ -4125,7 +4114,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 218
+                "line": 217
               },
               "typeDeclarations": [
                 {
@@ -4142,7 +4131,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 219
+                "line": 218
               }
             },
             {
@@ -4153,7 +4142,7 @@
               "description": "Optional authored limit, measured in unformatted characters.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 221
+                "line": 220
               }
             },
             {
@@ -4164,7 +4153,7 @@
               "description": "Permit fractional numeric facts, such as years of employment.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 223
+                "line": 222
               }
             },
             {
@@ -4175,7 +4164,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 224
+                "line": 223
               }
             },
             {
@@ -4186,7 +4175,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 225
+                "line": 224
               }
             },
             {
@@ -4197,7 +4186,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 226
+                "line": 225
               },
               "typeDeclarations": [
                 {
@@ -4246,7 +4235,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 227
+                "line": 226
               },
               "typeDeclarations": [
                 {
@@ -4295,7 +4284,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 228
+                "line": 227
               }
             },
             {
@@ -4306,7 +4295,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 229
+                "line": 228
               }
             },
             {
@@ -4317,7 +4306,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 230
+                "line": 229
               }
             },
             {
@@ -4328,7 +4317,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 231
+                "line": 230
               }
             },
             {
@@ -4339,7 +4328,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 232
+                "line": 231
               }
             },
             {
@@ -4350,7 +4339,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 233
+                "line": 232
               }
             },
             {
@@ -4361,7 +4350,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 234
+                "line": 233
               }
             },
             {
@@ -4372,7 +4361,7 @@
               "description": "Override the companion field ID (default: \"<number-field-id>-type\"); distinct answers must not share it",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 236
+                "line": 235
               }
             },
             {
@@ -4383,7 +4372,7 @@
               "description": "Whether to show the companion phone type selector (default: true)",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 238
+                "line": 237
               }
             },
             {
@@ -4394,7 +4383,7 @@
               "description": "Canonical executable visibility source for any configurable field.",
               "declaration": {
                 "file": "src/domain/fields.ts",
-                "line": 240
+                "line": 239
               }
             }
           ]
@@ -5437,7 +5426,7 @@
           "description": "Stored row identity. Preserve existing values.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 71
+            "line": 70
           }
         },
         {
@@ -5448,7 +5437,7 @@
           "description": "Semantic identity used by key-based relationships. Preserve existing values.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 72
+            "line": 71
           }
         },
         {
@@ -5459,7 +5448,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 73
+            "line": 72
           }
         },
         {
@@ -5470,7 +5459,7 @@
           "description": "Site selector; scope rules differ between scoped and Site assignment tables.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 74
+            "line": 73
           }
         },
         {
@@ -5481,7 +5470,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 75
+            "line": 74
           }
         },
         {
@@ -5492,7 +5481,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 76
+            "line": 75
           }
         },
         {
@@ -5503,7 +5492,7 @@
           "description": "See the property declaration and owning domain contract.",
           "declaration": {
             "file": "src/persistence/types/underwritingCanonical.ts",
-            "line": 77
+            "line": 76
           }
         },
         {
@@ -6197,7 +6186,7 @@
     {
       "table": "pageSectionFields",
       "file": "public/catalog/fields/fields.json",
-      "rowCount": 141,
+      "rowCount": 140,
       "rowType": "PageSectionFields",
       "properties": [
         {
@@ -8678,7 +8667,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 144
+                "line": 143
               }
             },
             {
@@ -8689,7 +8678,7 @@
               "description": "Stored row identity. Preserve existing values.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 141
+                "line": 140
               }
             },
             {
@@ -8700,7 +8689,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 138
+                "line": 137
               },
               "typeDeclarations": [
                 {
@@ -8717,7 +8706,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 139
+                "line": 138
               },
               "typeDeclarations": [
                 {
@@ -8766,7 +8755,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 140
+                "line": 139
               }
             },
             {
@@ -8777,7 +8766,7 @@
               "description": "Policy-issuing jurisdiction; independent from residency availability rules.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 149
+                "line": 148
               }
             },
             {
@@ -8788,7 +8777,7 @@
               "description": "External product brochure or certificate URL.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 151
+                "line": 150
               }
             },
             {
@@ -8799,7 +8788,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 152
+                "line": 151
               }
             },
             {
@@ -8810,7 +8799,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 153
+                "line": 152
               },
               "typeDeclarations": [
                 {
@@ -8827,7 +8816,7 @@
               "description": "Typed definition payload. Follow the linked TypeScript declarations for nested properties.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 154
+                "line": 153
               }
             },
             {
@@ -8838,7 +8827,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 155
+                "line": 154
               }
             },
             {
@@ -8849,7 +8838,7 @@
               "description": "Note displayed per-applicant inside the product card (supports {maxAmount} placeholder)",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 157
+                "line": 156
               }
             },
             {
@@ -8860,7 +8849,7 @@
               "description": "Per-applicant info notes displayed above the applicant fields",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 159
+                "line": 158
               },
               "typeDeclarations": [
                 {
@@ -8877,12 +8866,12 @@
               "description": "Product-level alert displayed below the product description",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 161
+                "line": 160
               },
               "typeDeclarations": [
                 {
                   "file": "src/domain/coverage.ts",
-                  "line": 161
+                  "line": 160
                 }
               ]
             },
@@ -8894,7 +8883,7 @@
               "description": "Structured content block displayed below the product warning",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 167
+                "line": 166
               },
               "typeDeclarations": [
                 {
@@ -8943,7 +8932,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 173
+                "line": 172
               },
               "typeDeclarations": [
                 {
@@ -8992,7 +8981,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 174
+                "line": 173
               },
               "typeDeclarations": [
                 {
@@ -9041,7 +9030,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 175
+                "line": 174
               },
               "typeDeclarations": [
                 {
@@ -9090,7 +9079,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 182
+                "line": 181
               },
               "typeDeclarations": [
                 {
@@ -9139,7 +9128,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 183
+                "line": 182
               },
               "typeDeclarations": [
                 {
@@ -9156,7 +9145,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 186
+                "line": 185
               },
               "typeDeclarations": [
                 {
@@ -9205,7 +9194,7 @@
               "description": "See the property declaration and owning domain contract.",
               "declaration": {
                 "file": "src/domain/coverage.ts",
-                "line": 187
+                "line": 186
               },
               "typeDeclarations": [
                 {
@@ -12365,7 +12354,7 @@
     {
       "table": "siteFieldConfigurations",
       "file": "public/catalog/fields/fields.json",
-      "rowCount": 189,
+      "rowCount": 188,
       "rowType": "SiteFieldConfigurationRow",
       "properties": [
         {
@@ -14301,7 +14290,7 @@
     {
       "table": "validationRules",
       "file": "public/catalog/validations/validation.json",
-      "rowCount": 189,
+      "rowCount": 188,
       "rowType": "ValidationRuleRow",
       "properties": [
         {

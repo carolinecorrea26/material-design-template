@@ -1,6 +1,6 @@
 # Portal Library refinement
 
-Current change boundaries and user-specified requirements are in [Portal Library acceptance criteria](portal-library-acceptance.md). These supersede conflicting historical descriptions below. Passing tests does not close the user's latest reported display regression.
+Current change boundaries and user-specified requirements are in [Portal Library acceptance criteria](../portal-library-acceptance.md). These supersede conflicting historical descriptions below. Passing tests does not close the user's latest reported display regression.
 
 ## Scope
 

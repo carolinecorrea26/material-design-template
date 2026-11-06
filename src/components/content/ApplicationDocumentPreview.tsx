@@ -1,8 +1,9 @@
 import { Box, Divider, IconButton, Stack, Typography } from "@mui/material";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import type { ReactNode } from "react";
 import type { PageId } from "../../types";
 
-export type ApplicationDocumentSection = { title: string; groups: { title?: string; entries: { label: string; value: string; fieldId?: string }[] }[] };
+export type ApplicationDocumentSection = { title: string; groups: { title?: string; entries: { label: string; value: ReactNode; fieldId?: string }[] }[] };
 export type ApplicationDocumentPreviewProps = {
   sections: ApplicationDocumentSection[];
   associationName: string;
@@ -26,7 +27,7 @@ function chunkSections<T>(items: T[], chunkSize: number) {
 
 const PLACEHOLDER = "—";
 
-function renderEntryValue(value: string) {
+function renderEntryValue(value: ReactNode) {
   return value || PLACEHOLDER;
 }
 

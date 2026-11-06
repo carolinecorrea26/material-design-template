@@ -6,9 +6,11 @@ import DynamicListItem from '../forms/DynamicListItem';
 import { type BeneficiaryItem, getBeneficiaryDisplayName, getDesignationLabel, getRelationshipLabel } from './beneficiaryRecords';
 
 /** Record presentation and actions; eligibility, capacity and persistence belong to the caller. */
-export default function BeneficiaryProductRecords({ productName, quickDecision, items, note, capacityMessage, onEdit, onRemove, onAdd, addButtonRef }: {
+export default function BeneficiaryProductRecords({ productName, quickDecision, items, note, capacityMessage, onEdit, onRemove, onAdd, onApply, canApply, addButtonRef }: {
   productName: string; quickDecision?: boolean; items: BeneficiaryItem[]; note?: string; capacityMessage?: string;
   onEdit: (item: BeneficiaryItem) => void; onRemove: (id: string) => void; onAdd: () => void; addButtonRef?: Ref<HTMLButtonElement>;
+  onApply?: (item: BeneficiaryItem) => void;
+  canApply?: (item: BeneficiaryItem) => boolean;
 }) {
   return <ProductCard productName={productName} quickDecision={quickDecision}>
     <Stack spacing={1.5}>
@@ -21,6 +23,7 @@ export default function BeneficiaryProductRecords({ productName, quickDecision, 
             itemLabel={`${getBeneficiaryDisplayName(item)}${item.beneficiaryType === 'individual' ? ` (${item.share}%)` : ''}`}>
             <Typography variant="subtitle2">{getBeneficiaryDisplayName(item)}</Typography>
             <Typography variant="caption" color="text.secondary">{getRelationshipLabel(item)}{item.beneficiaryType === 'individual' ? ` | ${item.share}%` : ''}</Typography>
+            {onApply && (!canApply || canApply(item)) && <Button size="small" onClick={() => onApply(item)}>Apply to Other Coverages</Button>}
           </DynamicListItem>)}
         </Stack> : null;
       })}

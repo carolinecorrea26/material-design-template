@@ -11,12 +11,12 @@ const roles = {
     'PaymentSections', 'ReviewSections', 'ProfileSections', 'BeneficiaryProductRecords', 'ContactSections', 'ResidentialAddress', 'BusinessInformation', 'SpouseContact', 'EligibilitySections', 'CoverageQuestions', 'ProductCatalog', 'ApplicationErrorState',
   ],
   'shared-piece': [
-    'ReceiptCoverageDecision', 'ApplicationEstimate',
+    'ReceiptCoverageDecision',
     'SharedPaymentControls', 'HealthInformationHelp', 'HealthQuestion', 'HealthQuestionList', 'ReviewStatement', 'LegalReviewSection', 'ApplicationReviewDrawerContent', 'DetailsTable', 'YesNoDetailList', 'EstimatedRate', 'ApplicationDocumentPreview', 'HelpChips',
     'LegalDocList', 'QuickDecisionExplainer', 'QuickDecisionIndicator', 'QuickDecisionInfoBox',
     'CoverageCart', 'CoverageCategorySelector', 'CoverageNeedsCalculator', 'CoverageOptionsPanel',
     'CoveragePortfolioDrawer', 'EligibilityFields', 'EstimatorProductCard', 'FeaturedBadge',
-    'HowApplyingWorksPanel', 'MemberVerification', 'PhysicianInformation', 'ProductCostBreakdown',
+    'HowApplyingWorksPanel', 'MemberVerification', 'VerificationAddress', 'PhysicianInformation', 'ProductCostBreakdown',
     'QuoteCalculator', 'RateFrequencyControl', 'RateFrequencyToggle', 'TotalCostSummary',
     'AppSnackbar', 'EmptyState', 'ExpiringCodeAlert', 'PageAlert', 'PageTransitionSkeleton',
     'ProcessingStatusPage', 'ProgressSavedSnackbar', 'ResendCountdownRow', 'ConditionalGroup',
@@ -46,7 +46,6 @@ const parts = {
   ],
   ReviewSections: [
     { name: 'Document preview', kind: 'slot', sourceSymbol: 'documentPreview', description: 'Caller supplies the application readout; its adapter resolves saved fields and edit targets.' },
-    { name: 'Download application PDF', kind: 'action', sourceSymbol: 'onDownload', description: 'Page supplies the PDF download callback; the view does not build application data.' },
   ],
   LegalReviewSection: [
     { name: 'Disclosure content', kind: 'slot', sourceSymbol: 'children', description: 'Supplied legal statement, native notice blocks or electronic disclosure.' },

@@ -20,4 +20,4 @@ The new health catalog is shared globally. MCR Site/product applicability determ
 
 This increment verifies the entries above and fixes the concrete mismatches found. Existing coverage runtime tests exercise DI work/age/income caps, required periods, spouse package, child eligibility, dependency and maximum-plan rules; the broader journey suite checks persisted mappings. That evidence does not substitute for a complete page-by-page field/content comparison of every MCR entry. The remaining review should list only exact MCR cell-to-template differences, especially CIR controls, field visibility/requiredness, exclusions and Review wording. Synthetic quote/payment consistency and component extraction are ordinary refactoring work, not requests for additional business sources.
 
-See [the revised execution register](asce-follow-up-execution.md), [save/resume](applicant-save-resume.md), and [shared health comparison](global-health-form-migration.md).
+See [the revised execution register](../asce-follow-up-execution.md), [save/resume](applicant-save-resume.md), and [shared health comparison](global-health-form-migration.md).

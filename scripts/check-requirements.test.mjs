@@ -460,7 +460,7 @@ test('one mapping can hold fields and role-based relationships', () => withRequi
     { field: 'birth-date', people: ['self', 'spouse', 'child'] },
     { field: 'dependents', people: ['self'] },
     { field: 'gender', people: ['child'] },
-    { field: 'child-full-time-student', people: ['child'] },
+    { field: 'full-time-student', people: ['child'], default: 'off' },
   ]);
 }));
 
@@ -555,11 +555,11 @@ test('Eligibility derives its original field and person pairs from components', 
   const expected = {
     membership: ['spouse'], 'first-name': ['spouse', 'child'], 'last-name': ['spouse', 'child'],
     'zip-postal-code': ['self'], 'state-province': ['self'], 'birth-date': ['self', 'spouse', 'child'],
-    dependents: ['self'], gender: ['child'], 'child-full-time-student': ['child'], 'verification-method': ['self'],
+    dependents: ['self'], gender: ['child'], 'full-time-student': ['child'], 'verification-method': ['self'],
   };
   const result = check(dir, '--page', 'eligibility');
   assert.equal(result.status, 0, result.output);
-  const rows = [...result.output.matchAll(/^\s+(\S+)\s+\S+\s+(?:required|optional)\s+(\S+)\s+\[([^\]]+)\]$/gm)];
+  const rows = [...result.output.matchAll(/^\s+(\S+)\s+\S+\s+(?:required|optional)\s+(\S+)\s+\[([^\]]+)\](?:\s+default off)?$/gm)];
   const actual = {};
   for (const [, field, person] of rows) (actual[field] ??= []).push(person);
   for (const people of Object.values(actual)) people.sort();
@@ -567,6 +567,9 @@ test('Eligibility derives its original field and person pairs from components', 
   assert.deepEqual(actual, expected);
   assert.match(result.output, /verification-method\s+.*self\s+\[member-verification\]/);
   assert.doesNotMatch(result.output, /\bsq-[123]\b/);
+  assert.match(result.output, /full-time-student\s+.*child\s+\[eligibility\]\s+default off/);
+  assert.match(result.output, /asce: includes full-time-student/);
+  assert.doesNotMatch(result.output, /child-unmarried/);
   assert.equal(fs.existsSync(path.join(dir, 'requirements/mappings/page-fields/eligibility.json')), false);
 }));
 
@@ -723,4 +726,33 @@ test('formula records declare authority, a known type and valid values', () => w
     /unexpected property extra/, /unknown formulas reference missing-formula/]) {
     assert.match(result.output, message);
   }
+}));
+
+test('site page files include only default-off fields and hide only default-on fields on that page', () => withRequirements(dir => {
+  const file = path.join(dir, 'requirements/parked/sites/asce/pages/eligibility.json');
+  fs.writeFileSync(file, JSON.stringify({ page: 'eligibility', include: ['gender', 'nope'], hide: ['full-time-student'] }));
+  const result = check(dir);
+  assert.notEqual(result.status, 0);
+  assert.match(result.output, /include names gender, which is already on by default/);
+  assert.match(result.output, /include names nope, which is not on eligibility/);
+  assert.match(result.output, /hide names full-time-student, which is already off by default/);
+}));
+
+test('a mapping default can only be off', () => withRequirements(dir => {
+  const file = path.join(dir, 'requirements/mappings/components/eligibility.json');
+  const mapping = JSON.parse(fs.readFileSync(file, 'utf8'));
+  mapping.fields.find(row => row.field === 'gender').default = 'on';
+  fs.writeFileSync(file, JSON.stringify(mapping));
+  const result = check(dir);
+  assert.notEqual(result.status, 0);
+  assert.match(result.output, /gender default must be "off"/);
+}));
+
+test('validation codes must be established error codes', () => withRequirements(dir => {
+  editRequirement(dir, 'validations', 'eligibility', document => {
+    document.validations[0].code = 'NOT_A_CODE';
+  });
+  const result = check(dir);
+  assert.notEqual(result.status, 0);
+  assert.match(result.output, /unknown error code NOT_A_CODE/);
 }));

@@ -2,12 +2,16 @@
 
 One page at a time. **Order: sections first, then fields.** Words (content) are not reviewed yet.
 
-| Page | Sections | Fields |
-|---|---|---|
-| Home | **agreed: 4 section groups** | not yet reviewed |
-| Membership | **agreed: 2 sections** | **agreed** |
-| Eligibility | **agreed: 3 sections** | **in review** |
-| Coverage, Beneficiary | written, not yet reviewed | not yet |
+| Page | Sections | Fields | Rolled out (prototype, Library, Storybook) |
+|---|---|---|---|
+| Home | **agreed: 4 section groups** | not yet reviewed | quote-entry fields only |
+| Membership | **agreed: 2 sections** | **agreed** | **fields, ASCE (reviewed)** |
+| Eligibility | **agreed: 3 sections** | **agreed** | **fields, answer keys and section notes, ASCE**; page structure **agreed** (runtime not yet) |
+| Coverage, Beneficiary | written, not yet reviewed | not yet | no |
+
+After a page's JSON is agreed it is rolled out: the prototype, Portal Library and
+Storybook read its field definitions from the JSON, and the result is reviewed on all
+three before the page is marked done.
 
 How to read the tables:
 
@@ -139,7 +143,9 @@ Other carry-forward details and the precise validation/error presentation requir
 The broader Apply workflow remains a draft; confirming these two carry-forward
 items and the product-selection check does not approve every detail of that workflow.
 The [product-selection validation](../../requirements/global/validations/quoting.json)
-is confirmed but not yet enforced by the quote calculator.
+is enforced by both drawer and inline quote Apply. Apply also revalidates the
+current quote answers, contextual eligibility facts and selected coverage before
+carrying them into the application; invalid input stays in the quote with an error.
 
 Next: review the remaining quote behavior, then ASCE's Hero participation and the
 rest of Home. Content wording remains unreviewed. The initial separate
@@ -222,11 +228,24 @@ Child is chosen. ASCE's old data has the same four blocks.
 | 2 | **spouse** | Spouse | Spouse chosen | The spouse's membership question, name and date of birth. |
 | 3 | **children** | Child | Child chosen | Children added one at a time (up to 10): name, date of birth, gender. |
 
-ASCE turns on one extra child question: full-time student.
+ASCE turns on one extra child question: full-time student. There is no child unmarried
+question or rule on any site; the child section's note ("Only unmarried children are eligible
+for coverage.") is the only mention.
 
-### Fields (in review)
+### Fields (agreed)
 
-Checked against ASCE's old data: same labels, types and required values.
+Checked against ASCE's old data: same labels, types and required values. The old data also
+had "Is the child unmarried?"; it was removed for every site (CHG-013).
+
+How these are set, the same way as every field on every page:
+
+- A field is on by default; the mapping marks it `"default": "off"` when most sites do not ask it.
+  A site's page file (`parked/sites/<site>/pages/eligibility.json`) `include`s an off field or
+  `hide`s an on one. ASCE includes `full-time-student`.
+- Field IDs come from the JSON: one field asked of a person (`first-name` for spouse and child),
+  not a spouse copy. Saved answer keys follow one kebab-case rule: the field ID for you, and
+  `<person>-<field ID>` for anyone else (`spouse-first-name`, `child-first-name`,
+  `child-full-time-student`; later `beneficiary-first-name`).
 
 | Section | Field | Type | Required | Shown when | Default |
 |---|---|---|---|---|---|
@@ -234,7 +253,7 @@ Checked against ASCE's old data: same labels, types and required values.
 | self | State / Province (`state-province`) | Searchable list of 67: states, DC, territories and Canadian provinces | Yes | always | on |
 | self | Date of Birth (`birth-date`) | Date | Yes | always | on |
 | self | Would you like to add dependent coverage? (`dependents`) | Checkboxes: Spouse, Child | No | always | on |
-| spouse | Is your spouse also an active member? (`membership`, spouse label) | Yes / No | Yes | Spouse chosen | on |
+| spouse | Is your spouse also an active member? (`membership`, spouse label; ASCE: "Is your spouse also a member of the American Society of Civil Engineers?") | Yes / No | Yes | Spouse chosen | on |
 | spouse | First Name (`first-name`) | Text | Yes | Spouse chosen | on |
 | spouse | Last Name (`last-name`) | Text | Yes | Spouse chosen | on |
 | spouse | Date of Birth (`birth-date`) | Date | Yes | Spouse chosen | on |
@@ -242,4 +261,27 @@ Checked against ASCE's old data: same labels, types and required values.
 | children (each) | Last Name (`last-name`) | Text | Yes | Child chosen | on |
 | children (each) | Date of Birth (`birth-date`) | Date | Yes | Child chosen | on |
 | children (each) | Gender (`gender`) | Male / Female | Yes | Child chosen | on |
-| children (each) | Is the child a full-time student? (`child-full-time-student`) | Yes / No | Yes | Child chosen | **optional**: ASCE turns it on |
+| children (each) | Is the child a full-time student? (`full-time-student`, saved as `child-full-time-student`) | Yes / No | Yes | Child chosen | **off**: ASCE includes it |
+
+### Section notes (CHG-015)
+
+Info alerts are content keys in `global/content/eligibility.json`, set per section in the page
+file (`note`); a site page file can override them under `notes`.
+
+| Section | Content key | ASCE text |
+|---|---|---|
+| self | `eligibility.note.member-profession` (ASCE only, via `notes.self`) | Throughout this site you will be referred to as a Member of the Civil Engineering profession. |
+| spouse | `eligibility.note.spouse` (all sites) | Domestic Partnership/Civil Union is determined by State Law and they will be referred to as "Spouse" throughout the application. |
+| children | `eligibility.note.children` (all sites) | Only unmarried children are eligible for coverage. |
+
+### Page structure (agreed)
+
+| Aspect | Where | Eligibility draft |
+|---|---|---|
+| Configuration | `parked/pages.json` | `type: form`, `step: getting-started`; order within the type follows `global/pages.json` (after Membership, before Coverage). |
+| Components | `parked/eligibility.json` `components` | FormRoutePage › ProgressStep, PageHeader, PageAlert, EligibilitySections (self/spouse FieldGroup + SectionNote, children DynamicList + SectionNote), PageNav; MemberVerification, VerificationAddress, Snackbar. |
+| Configurations | `global/configurations/people.json` | `site-people` (self, spouse, child), `child-list-maximum` (10), `tpa-integration` (none / member-lookup / membership-auto-approval); eligible states stay in `address.json`. |
+| Rules | `global/rules/eligibility.json` | repeating-entry-list, dependents-from-site-people, applicant-disqualifying-answer, tpa-member-lookup, applicant-product-eligibility (age limits per product). Autosave on Next is the existing `form-next-save`. |
+| Validations | `global/validations/eligibility.json` | Page level, on Next: eligible-state-required, child-required, spouse-details-required, each with a content message and code `VALIDATION_FAILED`. Inline (before Next): only format checks, ZIP (`postal-code-format`) and dates of birth (`date-value-format`). Everything else on Next. |
+| Error codes | `global/error-codes.json` | The 14 established recovery codes (`src/domain/recoveryIncident.ts`, Storybook's Error pages); a validation `code` must be one of them. |
+| Ineligible | rule `applicant-disqualifying-answer` | The reason shows when Next is clicked and the page does not continue; Next is no longer disabled (CHG-017). |

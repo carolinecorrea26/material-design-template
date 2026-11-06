@@ -34366,7 +34366,7 @@
               "displayId": 50362402830684,
               "key": "avma.di-ltd-plus.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -34578,7 +34578,7 @@
               "displayId": 191505121291746,
               "key": "avma.di-ltd-plus.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -34670,7 +34670,7 @@
               "displayId": 195694143531159,
               "key": "avma.di-ltd-plus.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -34716,7 +34716,7 @@
               "displayId": 54953333349836,
               "key": "avma.di-ltd-plus.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -34780,7 +34780,7 @@
               "displayId": 133580515858514,
               "key": "avma.di-ltd-plus.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -34814,7 +34814,7 @@
               "displayId": 30621547752661,
               "key": "avma.di-ltd.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -35059,7 +35059,7 @@
               "displayId": 246007964593801,
               "key": "avma.di-ltd.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -35151,7 +35151,7 @@
               "displayId": 169413033348412,
               "key": "avma.di-ltd.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -35197,7 +35197,7 @@
               "displayId": 201562679384545,
               "key": "avma.di-ltd.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -35315,7 +35315,7 @@
               "displayId": 280003332056771,
               "key": "avma.di-ltd.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -35375,7 +35375,7 @@
               "displayId": 159659602796808,
               "key": "avma.di-short-term.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -35587,7 +35587,7 @@
               "displayId": 29563956189334,
               "key": "avma.di-short-term.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -35679,7 +35679,7 @@
               "displayId": 226674329400283,
               "key": "avma.di-short-term.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -35725,7 +35725,7 @@
               "displayId": 87218935471592,
               "key": "avma.di-short-term.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -35806,7 +35806,7 @@
               "displayId": 32260060706430,
               "key": "avma.di-short-term.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -35840,7 +35840,7 @@
               "displayId": 3166542360895,
               "key": "avma.li-10yr.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36152,7 +36152,7 @@
               "displayId": 7016924952967,
               "key": "avma.li-10yr.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36244,7 +36244,7 @@
               "displayId": 215047219025762,
               "key": "avma.li-10yr.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36296,7 +36296,7 @@
               "displayId": 99850521059699,
               "key": "avma.li-10yr.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36353,7 +36353,7 @@
               "displayId": 253303639013917,
               "key": "avma.li-10yr.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36387,7 +36387,7 @@
               "displayId": 85318997762602,
               "key": "avma.li-20yr.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36699,7 +36699,7 @@
               "displayId": 183017848096340,
               "key": "avma.li-20yr.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36791,7 +36791,7 @@
               "displayId": 89251703503649,
               "key": "avma.li-20yr.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36843,7 +36843,7 @@
               "displayId": 29684661543330,
               "key": "avma.li-20yr.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36900,7 +36900,7 @@
               "displayId": 274854226073976,
               "key": "avma.li-20yr.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36934,7 +36934,7 @@
               "displayId": 6517948306330,
               "key": "avma.li-50plus.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -37171,7 +37171,7 @@
               "displayId": 140018465501764,
               "key": "avma.li-50plus.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -37260,7 +37260,7 @@
               "displayId": 222992410194225,
               "key": "avma.li-50plus.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -37309,7 +37309,7 @@
               "displayId": 188782831941522,
               "key": "avma.li-50plus.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -37358,7 +37358,7 @@
               "displayId": 169353377552008,
               "key": "avma.li-50plus.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -37392,7 +37392,7 @@
               "displayId": 94655448906984,
               "key": "avma.li-add.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -37616,7 +37616,7 @@
               "displayId": 233872556185334,
               "key": "avma.li-add.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -37708,7 +37708,7 @@
               "displayId": 66244620368443,
               "key": "avma.li-add.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -37752,7 +37752,7 @@
               "displayId": 7231502059464,
               "key": "avma.li-add.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -37772,7 +37772,7 @@
               "displayId": 226537007045854,
               "key": "avma.li-add.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -37806,7 +37806,7 @@
               "displayId": 58974370936981,
               "key": "avma.li-group-term.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -38225,7 +38225,7 @@
               "displayId": 251333396325961,
               "key": "avma.li-group-term.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -38317,7 +38317,7 @@
               "displayId": 265586091394684,
               "key": "avma.li-group-term.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -38366,7 +38366,7 @@
               "displayId": 171357663285793,
               "key": "avma.li-group-term.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -38423,7 +38423,7 @@
               "displayId": 18651698896259,
               "key": "avma.li-group-term.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -38495,7 +38495,7 @@
               "displayId": 165487599420411,
               "key": "avma.li-term.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -38653,7 +38653,7 @@
               "displayId": 251428374030635,
               "key": "avma.li-term.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -38745,7 +38745,7 @@
               "displayId": 41096163426310,
               "key": "avma.li-term.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -38789,7 +38789,7 @@
               "displayId": 42112786078991,
               "key": "avma.li-term.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -38809,7 +38809,7 @@
               "displayId": 75358137822041,
               "key": "avma.li-term.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -38843,7 +38843,7 @@
               "displayId": 156731959511892,
               "key": "avma.life-aggregate-participation",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -38862,7 +38862,7 @@
               "displayId": 122365618372613,
               "key": "avma.oo-professional.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -39076,7 +39076,7 @@
               "displayId": 49278507308153,
               "key": "avma.oo-professional.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -39168,7 +39168,7 @@
               "displayId": 110250911115148,
               "key": "avma.oo-professional.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -39214,7 +39214,7 @@
               "displayId": 221516010654801,
               "key": "avma.oo-professional.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -39303,7 +39303,7 @@
               "displayId": 21754426626835,
               "key": "avma.oo-professional.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -39368,7 +39368,7 @@
               "displayId": 82986159714425,
               "key": "avma.sh-critical-illness.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -39605,7 +39605,7 @@
               "displayId": 69991602274837,
               "key": "avma.sh-critical-illness.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -39685,7 +39685,7 @@
               "displayId": 67446562186296,
               "key": "avma.sh-critical-illness.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -39729,7 +39729,7 @@
               "displayId": 44494726436965,
               "key": "avma.sh-critical-illness.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -39749,7 +39749,7 @@
               "displayId": 154507764029575,
               "key": "avma.sh-critical-illness.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -39783,7 +39783,7 @@
               "displayId": 121221651794411,
               "key": "avma.sh-hospital-income.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -40097,7 +40097,7 @@
               "displayId": 161332339441499,
               "key": "avma.sh-hospital-income.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -40189,7 +40189,7 @@
               "displayId": 259989859152854,
               "key": "avma.sh-hospital-income.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -40233,7 +40233,7 @@
               "displayId": 103470508392575,
               "key": "avma.sh-hospital-income.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -40253,7 +40253,7 @@
               "displayId": 168239899681769,
               "key": "avma.sh-hospital-income.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -42227,14 +42227,14 @@
               "displayId": 23706802492825,
               "key": "rates.reviewed-presentation.global",
               "providedBy": null,
-              "sourceReference": "docs/step3-major-outstanding-items.md",
+              "sourceReference": "docs/archive/step3-major-outstanding-items.md",
               "table": "configurationValues"
             },
             {
               "displayId": 2916218911055,
               "key": "rates.reviewed-presentation.avma",
               "providedBy": null,
-              "sourceReference": "docs/step3-major-outstanding-items.md",
+              "sourceReference": "docs/archive/step3-major-outstanding-items.md",
               "table": "configurationValues"
             }
           ],
@@ -42395,7 +42395,7 @@
               "displayId": 257122590148733,
               "key": "avma.review-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -52601,7 +52601,7 @@
               "displayId": 156731959511892,
               "key": "avma.life-aggregate-participation",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -72914,7 +72914,7 @@
                   "displayId": 30621547752661,
                   "key": "avma.di-ltd.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -73250,7 +73250,7 @@
                   "displayId": 169413033348412,
                   "key": "avma.di-ltd.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -73298,7 +73298,7 @@
                   "displayId": 201562679384545,
                   "key": "avma.di-ltd.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -73345,7 +73345,7 @@
                   "displayId": 246007964593801,
                   "key": "avma.di-ltd.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -73543,7 +73543,7 @@
                   "displayId": 280003332056771,
                   "key": "avma.di-ltd.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 },
                 {
@@ -74013,7 +74013,7 @@
                   "displayId": 50362402830684,
                   "key": "avma.di-ltd-plus.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -74309,7 +74309,7 @@
                   "displayId": 195694143531159,
                   "key": "avma.di-ltd-plus.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -74357,7 +74357,7 @@
                   "displayId": 54953333349836,
                   "key": "avma.di-ltd-plus.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -74404,7 +74404,7 @@
                   "displayId": 191505121291746,
                   "key": "avma.di-ltd-plus.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -74482,7 +74482,7 @@
                   "displayId": 133580515858514,
                   "key": "avma.di-ltd-plus.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -74851,7 +74851,7 @@
                   "displayId": 159659602796808,
                   "key": "avma.di-short-term.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -75147,7 +75147,7 @@
                   "displayId": 226674329400283,
                   "key": "avma.di-short-term.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -75195,7 +75195,7 @@
                   "displayId": 87218935471592,
                   "key": "avma.di-short-term.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -75242,7 +75242,7 @@
                   "displayId": 29563956189334,
                   "key": "avma.di-short-term.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -75320,7 +75320,7 @@
                   "displayId": 32260060706430,
                   "key": "avma.di-short-term.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -75805,7 +75805,7 @@
                   "displayId": 3166542360895,
                   "key": "avma.li-10yr.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -76198,7 +76198,7 @@
                   "displayId": 215047219025762,
                   "key": "avma.li-10yr.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -76252,7 +76252,7 @@
                   "displayId": 99850521059699,
                   "key": "avma.li-10yr.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -76299,7 +76299,7 @@
                   "displayId": 7016924952967,
                   "key": "avma.li-10yr.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -76377,7 +76377,7 @@
                   "displayId": 253303639013917,
                   "key": "avma.li-10yr.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -76862,7 +76862,7 @@
                   "displayId": 85318997762602,
                   "key": "avma.li-20yr.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -77255,7 +77255,7 @@
                   "displayId": 89251703503649,
                   "key": "avma.li-20yr.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -77309,7 +77309,7 @@
                   "displayId": 29684661543330,
                   "key": "avma.li-20yr.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -77356,7 +77356,7 @@
                   "displayId": 183017848096340,
                   "key": "avma.li-20yr.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -77434,7 +77434,7 @@
                   "displayId": 274854226073976,
                   "key": "avma.li-20yr.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -77822,7 +77822,7 @@
                   "displayId": 6517948306330,
                   "key": "avma.li-50plus.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -78120,7 +78120,7 @@
                   "displayId": 222992410194225,
                   "key": "avma.li-50plus.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -78171,7 +78171,7 @@
                   "displayId": 188782831941522,
                   "key": "avma.li-50plus.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -78218,7 +78218,7 @@
                   "displayId": 140018465501764,
                   "key": "avma.li-50plus.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -78293,7 +78293,7 @@
                   "displayId": 169353377552008,
                   "key": "avma.li-50plus.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -78606,7 +78606,7 @@
                   "displayId": 94655448906984,
                   "key": "avma.li-add.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -78904,7 +78904,7 @@
                   "displayId": 66244620368443,
                   "key": "avma.li-add.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -78950,7 +78950,7 @@
                   "displayId": 7231502059464,
                   "key": "avma.li-add.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -78997,7 +78997,7 @@
                   "displayId": 233872556185334,
                   "key": "avma.li-add.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -79075,7 +79075,7 @@
                   "displayId": 226537007045854,
                   "key": "avma.li-add.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -79544,7 +79544,7 @@
                   "displayId": 58974370936981,
                   "key": "avma.li-group-term.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -80057,7 +80057,7 @@
                   "displayId": 265586091394684,
                   "key": "avma.li-group-term.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -80108,7 +80108,7 @@
                   "displayId": 171357663285793,
                   "key": "avma.li-group-term.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -80155,7 +80155,7 @@
                   "displayId": 251333396325961,
                   "key": "avma.li-group-term.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -80283,7 +80283,7 @@
                   "displayId": 18651698896259,
                   "key": "avma.li-group-term.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -80668,7 +80668,7 @@
                   "displayId": 165487599420411,
                   "key": "avma.li-term.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -80900,7 +80900,7 @@
                   "displayId": 41096163426310,
                   "key": "avma.li-term.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -80946,7 +80946,7 @@
                   "displayId": 42112786078991,
                   "key": "avma.li-term.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -80993,7 +80993,7 @@
                   "displayId": 251428374030635,
                   "key": "avma.li-term.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -81071,7 +81071,7 @@
                   "displayId": 75358137822041,
                   "key": "avma.li-term.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -81515,7 +81515,7 @@
                   "displayId": 122365618372613,
                   "key": "avma.oo-professional.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -81813,7 +81813,7 @@
                   "displayId": 110250911115148,
                   "key": "avma.oo-professional.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -81861,7 +81861,7 @@
                   "displayId": 221516010654801,
                   "key": "avma.oo-professional.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -81908,7 +81908,7 @@
                   "displayId": 49278507308153,
                   "key": "avma.oo-professional.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -81986,7 +81986,7 @@
                   "displayId": 21754426626835,
                   "key": "avma.oo-professional.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -82345,7 +82345,7 @@
                   "displayId": 82986159714425,
                   "key": "avma.sh-critical-illness.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -82643,7 +82643,7 @@
                   "displayId": 67446562186296,
                   "key": "avma.sh-critical-illness.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -82689,7 +82689,7 @@
                   "displayId": 44494726436965,
                   "key": "avma.sh-critical-illness.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -82736,7 +82736,7 @@
                   "displayId": 69991602274837,
                   "key": "avma.sh-critical-illness.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -82802,7 +82802,7 @@
                   "displayId": 154507764029575,
                   "key": "avma.sh-critical-illness.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -83188,7 +83188,7 @@
                   "displayId": 121221651794411,
                   "key": "avma.sh-hospital-income.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -83634,7 +83634,7 @@
                   "displayId": 259989859152854,
                   "key": "avma.sh-hospital-income.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -83680,7 +83680,7 @@
                   "displayId": 103470508392575,
                   "key": "avma.sh-hospital-income.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -83727,7 +83727,7 @@
                   "displayId": 161332339441499,
                   "key": "avma.sh-hospital-income.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -83805,7 +83805,7 @@
                   "displayId": 168239899681769,
                   "key": "avma.sh-hospital-income.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -83844,14 +83844,14 @@
               "displayId": 23706802492825,
               "key": "rates.reviewed-presentation.global",
               "providedBy": null,
-              "sourceReference": "docs/step3-major-outstanding-items.md",
+              "sourceReference": "docs/archive/step3-major-outstanding-items.md",
               "table": "configurationValues"
             },
             {
               "displayId": 2916218911055,
               "key": "rates.reviewed-presentation.avma",
               "providedBy": null,
-              "sourceReference": "docs/step3-major-outstanding-items.md",
+              "sourceReference": "docs/archive/step3-major-outstanding-items.md",
               "table": "configurationValues"
             }
           ],
@@ -83871,7 +83871,7 @@
               "displayId": 257122590148733,
               "key": "avma.review-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -92742,7 +92742,7 @@
                   "displayId": 12420292911261,
                   "key": "avma.li-10yr.child.journey-eligibility",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "eligibilityConstraints"
                 }
               ],
@@ -92855,7 +92855,7 @@
                   "displayId": 89262327958238,
                   "key": "avma.li-20yr.child.journey-eligibility",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "eligibilityConstraints"
                 }
               ],
@@ -93128,7 +93128,7 @@
                   "displayId": 26017819827419,
                   "key": "avma.li-group-term.child.journey-eligibility",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "eligibilityConstraints"
                 }
               ],
@@ -93415,7 +93415,7 @@
                   "displayId": 127553215087739,
                   "key": "avma.sh-hospital-income.child.journey-eligibility",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "eligibilityConstraints"
                 }
               ],
@@ -93591,7 +93591,7 @@
             "displayId": 224501627893909,
             "key": "provisional-decision.avma.di-ltd-plus.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -93832,7 +93832,7 @@
             "displayId": 138436475151945,
             "key": "provisional-decision.avma.di-ltd-plus.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -93935,7 +93935,7 @@
             "displayId": 152689170220668,
             "key": "provisional-decision.avma.di-ltd-plus.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -93999,7 +93999,7 @@
             "displayId": 222865941929347,
             "key": "provisional-decision.avma.di-ltd-plus.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -94190,7 +94190,7 @@
             "displayId": 92172870242398,
             "key": "provisional-decision.avma.di-ltd.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -94464,7 +94464,7 @@
             "displayId": 125100529646480,
             "key": "provisional-decision.avma.di-ltd.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -94567,7 +94567,7 @@
             "displayId": 202071013215993,
             "key": "provisional-decision.avma.di-ltd.journey-rider-set",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -94611,7 +94611,7 @@
             "displayId": 76035355531981,
             "key": "provisional-decision.avma.di-ltd.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -94675,7 +94675,7 @@
             "displayId": 160043928094764,
             "key": "provisional-decision.avma.di-ltd.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -94834,7 +94834,7 @@
             "displayId": 202248414713761,
             "key": "provisional-decision.avma.di-short-term.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -95075,7 +95075,7 @@
             "displayId": 150328777067677,
             "key": "provisional-decision.avma.di-short-term.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -95178,7 +95178,7 @@
             "displayId": 248455027504192,
             "key": "provisional-decision.avma.di-short-term.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -95242,7 +95242,7 @@
             "displayId": 211065203965967,
             "key": "provisional-decision.avma.di-short-term.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -95305,7 +95305,7 @@
             "displayId": 275474380146017,
             "key": "provisional-decision.avma.li-10yr.journey-eligibility",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -95342,7 +95342,7 @@
             "displayId": 233493473803426,
             "key": "provisional-decision.avma.li-10yr.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -95683,7 +95683,7 @@
             "displayId": 53043289626220,
             "key": "provisional-decision.avma.li-10yr.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -95786,7 +95786,7 @@
             "displayId": 121907652213849,
             "key": "provisional-decision.avma.li-10yr.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -95856,7 +95856,7 @@
             "displayId": 47856930330608,
             "key": "provisional-decision.avma.li-10yr.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -95919,7 +95919,7 @@
             "displayId": 19168316573766,
             "key": "provisional-decision.avma.li-20yr.journey-eligibility",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -95956,7 +95956,7 @@
             "displayId": 232368695903031,
             "key": "provisional-decision.avma.li-20yr.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -96297,7 +96297,7 @@
             "displayId": 139388129865951,
             "key": "provisional-decision.avma.li-20yr.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -96400,7 +96400,7 @@
             "displayId": 253984761151866,
             "key": "provisional-decision.avma.li-20yr.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -96470,7 +96470,7 @@
             "displayId": 214237622693845,
             "key": "provisional-decision.avma.li-20yr.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -96533,7 +96533,7 @@
             "displayId": 107372157471191,
             "key": "provisional-decision.avma.li-50plus.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -96799,7 +96799,7 @@
             "displayId": 254953439474687,
             "key": "provisional-decision.avma.li-50plus.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -96899,7 +96899,7 @@
             "displayId": 262695929441178,
             "key": "provisional-decision.avma.li-50plus.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -96966,7 +96966,7 @@
             "displayId": 96488459432565,
             "key": "provisional-decision.avma.li-50plus.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -97029,7 +97029,7 @@
             "displayId": 204066783827075,
             "key": "provisional-decision.avma.li-add.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -97282,7 +97282,7 @@
             "displayId": 18433297773235,
             "key": "provisional-decision.avma.li-add.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -97385,7 +97385,7 @@
             "displayId": 131048968560590,
             "key": "provisional-decision.avma.li-add.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -97447,7 +97447,7 @@
             "displayId": 135789517533505,
             "key": "provisional-decision.avma.li-add.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -97510,7 +97510,7 @@
             "displayId": 209703380722151,
             "key": "provisional-decision.avma.li-group-term.journey-eligibility",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -97547,7 +97547,7 @@
             "displayId": 271448198837220,
             "key": "provisional-decision.avma.li-group-term.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -97995,7 +97995,7 @@
             "displayId": 157519586838762,
             "key": "provisional-decision.avma.li-group-term.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -98098,7 +98098,7 @@
             "displayId": 219228681755327,
             "key": "provisional-decision.avma.li-group-term.journey-rider-set",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -98142,7 +98142,7 @@
             "displayId": 188157001164511,
             "key": "provisional-decision.avma.li-group-term.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -98209,7 +98209,7 @@
             "displayId": 78015067424186,
             "key": "provisional-decision.avma.li-group-term.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -98310,7 +98310,7 @@
             "displayId": 189435025155706,
             "key": "provisional-decision.avma.li-term.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -98497,7 +98497,7 @@
             "displayId": 41428574008484,
             "key": "provisional-decision.avma.li-term.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -98600,7 +98600,7 @@
             "displayId": 159285710684305,
             "key": "provisional-decision.avma.li-term.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -98662,7 +98662,7 @@
             "displayId": 124326203285992,
             "key": "provisional-decision.avma.li-term.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -98725,7 +98725,7 @@
             "displayId": 223507269753852,
             "key": "provisional-decision.avma.oo-professional.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -98968,7 +98968,7 @@
             "displayId": 110711387545602,
             "key": "provisional-decision.avma.oo-professional.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -99071,7 +99071,7 @@
             "displayId": 220531962913079,
             "key": "provisional-decision.avma.oo-professional.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -99135,7 +99135,7 @@
             "displayId": 153904167350386,
             "key": "provisional-decision.avma.oo-professional.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -99198,7 +99198,7 @@
             "displayId": 133443366904140,
             "key": "provisional-decision.avma.sh-critical-illness.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -99464,7 +99464,7 @@
             "displayId": 94827331461330,
             "key": "provisional-decision.avma.sh-critical-illness.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -99555,7 +99555,7 @@
             "displayId": 92009113530791,
             "key": "provisional-decision.avma.sh-critical-illness.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -99617,7 +99617,7 @@
             "displayId": 196599738866402,
             "key": "provisional-decision.avma.sh-critical-illness.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -99680,7 +99680,7 @@
             "displayId": 190168185273127,
             "key": "provisional-decision.avma.sh-hospital-income.journey-eligibility",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -99717,7 +99717,7 @@
             "displayId": 115349315900196,
             "key": "provisional-decision.avma.sh-hospital-income.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -100060,7 +100060,7 @@
             "displayId": 20296436652074,
             "key": "provisional-decision.avma.sh-hospital-income.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -100163,7 +100163,7 @@
             "displayId": 176439228280991,
             "key": "provisional-decision.avma.sh-hospital-income.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -100225,7 +100225,7 @@
             "displayId": 148818371569914,
             "key": "provisional-decision.avma.sh-hospital-income.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],

@@ -11,16 +11,6 @@
       "sourceReference": "prototype:validationRules/membership-status.validation"
     },
     {
-      "id": "child-unmarried.validation",
-      "key": "child-unmarried.validation",
-      "definition": {},
-      "position": 0,
-      "fieldKey": "child-unmarried",
-      "displayId": 51309382224586,
-      "providedBy": null,
-      "sourceReference": "prototype:validationRules/child-unmarried.validation"
-    },
-    {
       "id": "child-full-time-student.validation",
       "key": "child-full-time-student.validation",
       "definition": {},
@@ -191,14 +181,14 @@
       "sourceReference": "prototype:validationRules/waepa-member-id.validation"
     },
     {
-      "id": "asce-member-id.validation",
-      "key": "asce-member-id.validation",
+      "id": "member-id.validation",
+      "key": "member-id.validation",
       "definition": {},
       "position": 0,
-      "fieldKey": "asce-member-id",
+      "fieldKey": "member-id",
       "displayId": 233176945480433,
       "providedBy": null,
-      "sourceReference": "prototype:validationRules/asce-member-id.validation"
+      "sourceReference": "prototype:validationRules/member-id.validation"
     },
     {
       "id": "avma-vet-college.validation",

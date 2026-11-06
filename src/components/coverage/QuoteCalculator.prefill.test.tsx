@@ -199,11 +199,17 @@ it('offers member riders, prices them, and restores them on Coverage after Apply
   await act(async () => document.querySelector<HTMLInputElement>('input[name="li-term-selection"]')!.click());
   const rider = document.querySelector<HTMLInputElement>('input[name="li-term-cir-member-selected"]')!;
   expect(rider).not.toBeNull();
+  expect(rider.disabled).toBe(true);
+  await act(async () => document.getElementById("li-term-member-amount")!.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })));
+  await act(async () => [...document.querySelectorAll<HTMLElement>('[role="option"]')].find(option => option.textContent?.trim() === '$100,000')!.click());
+  expect(rider.disabled).toBe(false);
   expect(document.querySelector('input[name="li-term-spouse-cir-selected"]')).toBeNull();
   const totalBefore = document.body.textContent;
-  await act(async () => rider.click());
-  const amount = document.getElementById("li-term-cir-member-amount")!;
+  await act(async () => document.querySelector<HTMLInputElement>('input[name="li-term-cir-member-selected"]')!.click());
+  expect(document.querySelector<HTMLInputElement>('input[name="li-term-cir-member-selected"]')?.checked).toBe(true);
+  const amount = document.querySelector<HTMLElement>('[role="combobox"][aria-labelledby~="li-term-cir-member-amount-label"]')!;
   await act(async () => amount.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })));
+  expect([...document.querySelectorAll<HTMLElement>('[role="option"]')].map(option => option.textContent?.trim()).filter(label => label?.startsWith('$'))).toEqual(['$50,000', '$100,000']);
   await act(async () => [...document.querySelectorAll<HTMLElement>('[role="option"]')].find(option => option.textContent?.trim() === '$100,000')!.click());
   await act(async () => { await vi.advanceTimersByTimeAsync(1000); });
   expect(document.body.textContent).not.toBe(totalBefore);
@@ -214,4 +220,64 @@ it('offers member riders, prices them, and restores them on Coverage after Apply
   await act(async () => { await vi.advanceTimersByTimeAsync(1100); });
   expect(currentValues().coverageRiders).toEqual({ 'li-term:cir:member': true });
   expect(document.querySelector<HTMLInputElement>('input[name="li-term:cir:member-selected"]')?.checked).toBe(true);
+}, 120000);
+
+it.each(["drawer", "inline"] as const)("requires a current product selection before Apply from the %s quote", async displayMode => {
+  vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
+  vi.useFakeTimers();
+  vi.stubGlobal('requestAnimationFrame', () => 0);
+  vi.stubGlobal('cancelAnimationFrame', (id: number) => window.clearTimeout(id));
+  window.history.replaceState(null, '', '/?site=asce');
+  installPrototypeLibrary(resolvePrototypeLibrary(structuredClone(db), 'asce', 'test:quote-apply'));
+  const onClose = vi.fn();
+  container = document.createElement('div'); document.body.append(container); root = createRoot(container);
+  await act(async () => root!.render(<ApplicationFormProvider><ApplicationSessionProvider><MemoryRouter initialEntries={['/quote']}><Navigation /><Routes>
+    <Route path="/quote" element={<QuoteCalculator open onClose={onClose} displayMode={displayMode} initialEligibility={{ birthday: '1990-01-15', zipCode: '10001', state: 'NY' }} />} />
+    <Route path="/membership" element={<Membership />} />
+  </Routes></MemoryRouter></ApplicationSessionProvider></ApplicationFormProvider>));
+  if (displayMode === "inline") await act(async () => button('Continue').click());
+  const category = document.querySelector<HTMLInputElement>('input[name="coverage-categories"][value="LI"]');
+  if (category) await act(async () => category.click());
+  await act(async () => radio('gender', 'Female').click());
+  await act(async () => radio('smoker', 'No').click());
+  await act(async () => button(displayMode === "inline" ? 'Continue' : 'See my quote').click());
+  await act(async () => { await vi.advanceTimersByTimeAsync(1100); });
+  await act(async () => button('Apply for coverage').click());
+  expect(document.body.textContent).toContain('Please select at least one coverage to continue.');
+  expect(onClose).not.toHaveBeenCalled();
+  expect(currentValues().coverageSelections).toBeUndefined();
+  await act(async () => document.querySelector<HTMLInputElement>('input[name="li-term-selection"]')!.click());
+  await act(async () => button('Apply for coverage').click());
+  expect(onClose).toHaveBeenCalledOnce();
+  expect(currentValues().coverageSelections).toEqual(['li-term']);
+}, 120000);
+
+it("requires newly applicable DI facts before applying an already selected quote", async () => {
+  vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
+  vi.useFakeTimers();
+  vi.stubGlobal('requestAnimationFrame', () => 0);
+  vi.stubGlobal('cancelAnimationFrame', (id: number) => window.clearTimeout(id));
+  window.history.replaceState(null, '', '/?site=asce');
+  installPrototypeLibrary(resolvePrototypeLibrary(structuredClone(db), 'asce', 'test:quote-revalidation'));
+  const onClose = vi.fn();
+  container = document.createElement('div'); document.body.append(container); root = createRoot(container);
+  await act(async () => root!.render(<ApplicationFormProvider><ApplicationSessionProvider><MemoryRouter initialEntries={['/quote']}><Navigation /><Routes>
+    <Route path="/quote" element={<QuoteCalculator open onClose={onClose} initialEligibility={{ birthday: '1990-01-15', zipCode: '10001', state: 'NY' }} />} />
+    <Route path="/membership" element={<Membership />} />
+  </Routes></MemoryRouter></ApplicationSessionProvider></ApplicationFormProvider>));
+  await act(async () => document.querySelector<HTMLInputElement>('input[name="coverage-categories"][value="DI"]')!.click());
+  await act(async () => radio('gender', 'Female').click());
+  await type(labeledInput(getSurfaceField('quoteInputs', 'average-monthly-income')!.label), '9000');
+  await type(labeledInput(getSurfaceField('quoteInputs', 'hours-worked-per-week')!.label), '45');
+  await act(async () => button('See my quote').click());
+  await act(async () => { await vi.advanceTimersByTimeAsync(1100); });
+  await act(async () => radio('is-self-employed', 'No').click());
+  const select = document.querySelector<HTMLInputElement>('input[name="di-ltd-selection"]')!;
+  expect(select.disabled).toBe(false);
+  await act(async () => select.click());
+  await act(async () => radio('is-self-employed', 'Yes').click());
+  await act(async () => button('Apply for coverage').click());
+  expect(document.body.textContent).toContain('Please complete the coverage eligibility information before applying.');
+  expect(onClose).not.toHaveBeenCalled();
+  expect(currentValues().coverageSelections).toBeUndefined();
 }, 120000);

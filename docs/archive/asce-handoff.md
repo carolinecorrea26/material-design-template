@@ -2,7 +2,7 @@
 
 Status: **Ready for team development and testing in the local mock prototype**, 2026-10-05. This status does not authorize insurer submission, production publication or rate use. Real PRASE is excluded.
 
-Start with [acceptance and owners](asce-handoff-acceptance.md), [follow-up backlog](asce-follow-up-backlog.md), and [mock contracts](asce-mock-service-contracts.md). Existing approved rules remain in [ASCE business decisions](asce-business-decisions.md); older parity notes are historical, not a replacement for those decisions.
+Start with [acceptance and owners](asce-handoff-acceptance.md), [follow-up backlog](asce-follow-up-backlog.md), and [mock contracts](asce-mock-service-contracts.md). Existing approved rules remain in [ASCE business decisions](../asce-business-decisions.md); older parity notes are historical, not a replacement for those decisions.
 
 ## Startup
 

@@ -1,6 +1,27 @@
 {
   "page": "eligibility",
   "components": [
-    { "type": "eligibility" }
-  ]
+    { "type": "FormRoutePage", "components": [
+      { "type": "ProgressStep" },
+      { "type": "PageHeader" },
+      { "type": "PageAlert", "purpose": "resume-loaded notice; ineligibility reason" },
+      { "type": "EligibilitySections", "mapping": "eligibility", "components": [
+        { "type": "SectionNote", "section": "self" },
+        { "type": "FieldGroup", "section": "self" },
+        { "type": "SectionNote", "section": "spouse" },
+        { "type": "FieldGroup", "section": "spouse" },
+        { "type": "SectionNote", "section": "children" },
+        { "type": "DynamicList", "section": "children" }
+      ]},
+      { "type": "PageNav" }
+    ]},
+    { "type": "MemberVerification", "mapping": "member-verification" },
+    { "type": "VerificationAddress" },
+    { "type": "Snackbar", "purpose": "member verification result" }
+  ],
+  "sections": {
+    "self": { "title": "people.self" },
+    "spouse": { "title": "people.spouse", "note": "eligibility.note.spouse" },
+    "children": { "title": "people.child", "note": "eligibility.note.children" }
+  }
 }

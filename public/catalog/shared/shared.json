@@ -164,7 +164,7 @@
           "first-name",
           "last-name",
           "birth-date",
-          "asce-member-id"
+          "member-id"
         ],
         "status": "documented",
         "active": false

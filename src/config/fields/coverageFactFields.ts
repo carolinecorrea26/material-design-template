@@ -32,8 +32,6 @@ export function eligibilityFactFieldIds(products: CoverageDefinition[]): FieldId
   for (const product of products) for (const rule of product.requirements?.eligibility ?? []) {
     if (rule.applicantType !== "child") continue;
     if (rule.factRequirements?.some(fact => "extendsMaximumAgeTo" in fact)) ids.add("child-honorably-discharged-service-member" as FieldId);
-    if (rule.unmarried) ids.add("child-unmarried");
-    if (rule.fullTimeStudentMaximumAgeYears !== undefined) ids.add("child-full-time-student");
   }
   return [...ids];
 }

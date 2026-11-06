@@ -7,7 +7,7 @@ const pages = ['home', 'membership', 'eligibility', 'coverage', 'beneficiary', '
 const examples: Record<TemplateCapability, string[]> = {
  standard: ['pages-membership-whole-page--standard-membership', 'pages-home-hero--standard-quote', 'coverage-commerce-coveragequestions--supplemental-health-selected'],
  optionalBeneficiaries: ['pages-membership-additional-membership-information--optional-member-reference', 'pages-eligibility-children-information--child-service-eligibility', 'pages-beneficiary-whole-page--optional-participation', 'pages-home-whole-page--entry-notice'],
- multipleTerms: ['pages-membership-additional-membership-information--member-id', 'pages-eligibility-children-information--child-student-and-marital-status', 'pages-contact-whole-page--business-same-as-home'],
+ multipleTerms: ['pages-membership-additional-membership-information--member-id', 'pages-eligibility-children-information--child-student-and-marital-status', 'pages-contact-whole-page--business-same-as-home', 'coverage-commerce-quotecalculator--multiple-term-products'],
  physicianMembership: ['pages-membership-whole-page--professional-membership', 'pages-membership-additional-membership-information--physician-spouse', 'pages-membership-member-information--with-title', 'pages-contact-whole-page--member-and-spouse'],
  professionalEducation: ['pages-membership-additional-membership-information--professional-information'],
  occupationAndChildNotice: ['pages-membership-additional-membership-information--occupation-group', 'pages-eligibility-children-information--notice-only', 'pages-eligibility-your-information--allowed-residency-options', 'coverage-reference-rate-table--pdf'],

@@ -24,10 +24,11 @@ export default function BusinessInformation({ fields, control, errors, watchedVa
   const addressIds = addressFieldNames.map(id => `business-${id}`);
   const render = (field: AddressFieldsProps['fields'][number]) => <FieldRenderer key={field.id} field={field} control={control} errors={errors} />;
   return <Box sx={{ mt: 2 }}>
-    <SectionDivider label={title} variant="subsection" />
+    <SectionDivider label={title} variant="subsection">
     {showEmployerDetails && fields.filter(field => !addressIds.includes(field.id) && !['business-phone', 'business-address-same-as-home'].includes(field.id)).map(render)}
     {showEmployerDetails && fields.filter(field => field.id === 'business-address-same-as-home').map(render)}
     {(!sameAsHome || !showEmployerDetails) && <AddressFields fields={fields} control={control} errors={errors} prefix="business-" />}
     {showEmployerDetails && !sameAsHome && fields.filter(field => field.id === 'business-phone').map(render)}
+    </SectionDivider>
   </Box>;
 }

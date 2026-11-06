@@ -273,7 +273,7 @@ Implemented for the prototype:
 
 ## Timing evidence and open decision
 
-Searched both checked-in MCR sources (`mcr.json`, workbook `04-MCR-new-version-full.xlsx`, and `mcr-v78.json`, workbook `Master Client Requirements_09_28_2026_v78 (1).xlsx`) for session expiry, timeout, and 45/90-minute rules. Neither extract specifies an applicant session duration. `src/docs/pageflows.md` names session timeout as a utility state; the component inventories describe timeout feedback as a gap. The 30-minute cookie timeout in `docs/migration-continuation-2026-10-02.md` applies to administrator authentication, not the applicant form.
+Searched both checked-in MCR sources (`mcr.json`, workbook `04-MCR-new-version-full.xlsx`, and `mcr-v78.json`, workbook `Master Client Requirements_09_28_2026_v78 (1).xlsx`) for session expiry, timeout, and 45/90-minute rules. Neither extract specifies an applicant session duration. `src/docs/pageflows.md` names session timeout as a utility state; the component inventories describe timeout feedback as a gap. The 30-minute cookie timeout in `docs/archive/migration-continuation-2026-10-02.md` applies to administrator authentication, not the applicant form.
 
 `src/config/applicationSessionPolicy.ts` explicitly marks **45 minutes of inactivity, with a 2-minute warning**, as provisional prototype timing. Confirm both the limit and inactivity-versus-absolute-duration behavior with the application session service before production. No MCR requirement is claimed for these numbers.
 

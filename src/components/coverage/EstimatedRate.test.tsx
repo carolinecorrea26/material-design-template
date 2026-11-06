@@ -6,7 +6,7 @@ describe("estimated rates", () => {
   it("does not classify missing or invalid prices as technical failures", () => {
     for (const amount of [NaN, Infinity, -Infinity]) {
       const output = renderToStaticMarkup(<EstimatedRate amount={amount} suffix="/mo" sx={{ color: "error.main", fontSize: "2rem" }} />);
-      expect(output).toContain("Complete the required information");
+      expect(output).toBe("");
       expect(output).not.toContain("Estimate unavailable");
       expect(output).not.toContain("/mo");
       expect(output).not.toContain("$");

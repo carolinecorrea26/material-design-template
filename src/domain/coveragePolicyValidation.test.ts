@@ -13,7 +13,7 @@ const amountBand: DatabaseSchema["amountBands"][number] = {
 const option = (value: string): DatabaseSchema["amountOptions"][number] => ({ ...metadata, amountPatternKey: "test", value, label: value, position: 0 });
 const constraint: DatabaseSchema["eligibilityConstraints"][number] = {
   ...metadata, productKey: "life", siteKey: "test", applicantTypeKey: "member",
-  minimumAgeDays: null, minimumAgeYears: 18, maximumAgeYears: 65, studentMaximumAgeYears: null, unmarried: null, minimumWorkHours: 20,
+  minimumAgeDays: null, minimumAgeYears: 18, maximumAgeYears: 65, studentMaximumAgeYears: null, minimumWorkHours: 20,
 };
 const underwriting: DatabaseSchema["underwritingBands"][number] = {
   ...metadata, productKey: "life", siteKey: "test", applicantTypeKey: "member", pathway: "QD", status: "documented",

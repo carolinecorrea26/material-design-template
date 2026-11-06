@@ -1,0 +1,47 @@
+{
+  "rules": [
+    {
+      "id": "repeating-entry-list",
+      "name": "Add, edit and remove repeating entries",
+      "status": "draft",
+      "statement": "Entries are added or edited in a dialog and removed after confirmation, up to the configured maximum. Each saved entry is listed with edit and remove actions. Shared by children, beneficiaries and companies.",
+      "source": "src/components/forms/DynamicList.tsx"
+    },
+    {
+      "id": "dependents-from-site-people",
+      "name": "Offer only the people the site covers",
+      "status": "draft",
+      "fields": [
+        "dependents"
+      ],
+      "statement": "The dependents question offers the people the site covers besides the applicant; a person's section exists only when that person is offered and selected.",
+      "source": "proposed; sections shownWhen in requirements/parked/legacy/eligibility.json"
+    },
+    {
+      "id": "applicant-disqualifying-answer",
+      "name": "Stop on a disqualifying answer",
+      "status": "draft",
+      "statement": "When a participating person gives an answer the site marks as disqualifying, the reason shows as a page alert when Next is clicked and the page does not continue. Next stays enabled.",
+      "source": "src/pages/Eligibility.tsx; src/domain/applicantExperience.ts"
+    },
+    {
+      "id": "tpa-member-lookup",
+      "name": "Look up the applicant with the TPA on Next",
+      "status": "draft",
+      "fields": [
+        "first-name",
+        "last-name",
+        "birth-date"
+      ],
+      "statement": "After the page validates, sites with TPA integration look up the applicant. An existing member with active coverage must pass identity verification (collecting an address first when the TPA requires it) before the page continues; the lookup outcome and submission decision are saved with the application.",
+      "source": "src/pages/Eligibility.tsx; src/domain/tpaIntegration.ts"
+    },
+    {
+      "id": "applicant-product-eligibility",
+      "name": "Decide which products each person is eligible for",
+      "status": "draft",
+      "statement": "Each participating person's facts (age from date of birth, state, membership) decide which products and categories they are eligible for; Coverage shows only those. Age limits and eligible states are set per product.",
+      "source": "src/domain/prototypeCoverageDecision.ts; src/domain/dependentPolicy.ts; catalog productApplicantEligibility and eligibilityConstraints"
+    }
+  ]
+}

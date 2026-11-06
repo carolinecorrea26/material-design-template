@@ -16,7 +16,7 @@ export const Empty: StoryObj = {
   </EligibilityStoryForm>,
 };
 export const WithChild: StoryObj = {
-  render: () => <EligibilityStoryForm initialValues={{ dependents: ["child"], children: [{ firstName: "Avery", lastName: "Morgan", birthDate: "2015-05-14", gender: "female" }] }}>
+  render: () => <EligibilityStoryForm initialValues={{ dependents: ["child"], children: [{ "child-first-name": "Avery", "child-last-name": "Morgan", "child-birth-date": "2015-05-14", "child-gender": "female" }] }}>
     {props => <EligibilitySections {...props} pageSections={props.pageSections.filter(section => section.id === "childSection")} />}
   </EligibilityStoryForm>,
 };

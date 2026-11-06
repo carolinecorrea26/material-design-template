@@ -11953,7 +11953,7 @@
             "key": "abe.review-policy",
             "displayId": 257031724498908,
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md"
+            "sourceReference": "docs/archive/step3-review-and-rating.md"
           },
           {
             "table": "semanticRequirements",
@@ -12219,7 +12219,7 @@
             "key": "abe.review-policy",
             "displayId": 257031724498908,
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md"
+            "sourceReference": "docs/archive/step3-review-and-rating.md"
           },
           {
             "table": "semanticRequirements",

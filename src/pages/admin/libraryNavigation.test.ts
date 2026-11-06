@@ -121,7 +121,7 @@ describe("stored Portal Library navigation", () => {
     expect(table.textContent).toContain('No site assignment recorded');
     expect(container.querySelectorAll('table')).toHaveLength(1);
   });
-  it('keeps foundation references in Storybook and sends legacy component bookmarks to Pages', async () => {
+  it('keeps foundation references and exposes the Storybook component reference in Library', async () => {
     await render('/admin-center/library/themes?site=asce');
     expect(container.querySelector('a[href*="foundations-design-foundations--foundations"]')).not.toBeNull();
     expect(container.querySelector('a[href*="foundations-icons--icons"]')).not.toBeNull();
@@ -129,9 +129,8 @@ describe("stored Portal Library navigation", () => {
     expect(container.querySelector('table[aria-label="Accessibility concerns"]')).not.toBeNull();
     expect(container.querySelector('a[href*="guidelines-accessibility"]')).toBeNull();
     await render('/admin-center/library/components?site=asce');
-    expect(tab('Components')).toBeUndefined();
-    expect(tab('Pages').getAttribute('aria-selected')).toBe('true');
-    expect(container.querySelector('table[aria-label="Pages"]')).not.toBeNull();
+    expect(tab('Components').getAttribute('aria-selected')).toBe('true');
+    expect(container.querySelector('table[aria-label="Components"]')).not.toBeNull();
   });
   it("retains the AA target and shows scoped concerns with official tooling links", async () => {
     await render('/admin-center/library/accessibility?site=waepa-gi');
@@ -252,7 +251,7 @@ describe("stored Portal Library navigation", () => {
     expect([...container.querySelectorAll('[role="option"]')].some(option => option.textContent === "Validation")).toBe(false);
     const membership = [...container.querySelectorAll('table[aria-label="Pages"] tbody tr')].find(row => row.querySelector("a")?.textContent === "Membership")!;
     expect(membership.textContent).not.toContain("Membership ID");
-    expect(membership.querySelector('a[href*="q=asce-member-id"]')).not.toBeNull();
+    expect(membership.querySelector('a[href*="q=member-id"]')).not.toBeNull();
     expect(membership.querySelector("a")?.getAttribute("href")).toContain("/membership");
     expect(container.querySelector('table[aria-label="Pages"] thead')?.textContent).not.toContain("Preview");
     await click(tab("Fields"));
@@ -271,7 +270,7 @@ describe("stored Portal Library navigation", () => {
     expect(table.textContent).toContain("ama-physician-email");
     expect(container.querySelector('table[aria-label="Field usage"]')?.textContent).toContain("Membership page · Physician Information");
     expect(table.querySelector("thead")?.textContent).not.toContain("When shown");
-    expect(table.textContent).not.toContain("asce-member-id");
+    expect(table.textContent).not.toContain("member-id");
     await render("/admin-center/library/validation?site=ama&q=ama-physician-email");
     // The physician email validates its format only under the spouse condition.
     expect(container.querySelector('table[aria-label="Validation"]')?.textContent).toContain("Valid email address");
@@ -325,7 +324,7 @@ describe("stored Portal Library navigation", () => {
     expect(tab("Canonical Review")).toBeUndefined();
     expect(tab("Template Standards")).toBeUndefined();
     const mainTabs = () => [...container.querySelectorAll('[aria-label="Portal Library domains"] [role="tab"]')].map(tab => tab.textContent);
-    const expected = ['Overview', 'Pages', 'Fields', 'Flows', 'Rules', 'Validations', 'Configurations', 'Formulas', 'Content', 'Accessibility', 'Analytics', 'Requirement changes'];
+    const expected = ['Overview', 'Pages', 'Fields', 'Components', 'Flows', 'Rules', 'Validations', 'Configurations', 'Formulas', 'Content', 'Accessibility', 'Analytics', 'Fresh-start changelog'];
     expect(mainTabs()).toEqual(expected);
     await chooseSite("csea");
     expect(mainTabs()).toEqual(expected);
@@ -426,11 +425,11 @@ describe("stored Portal Library navigation", () => {
     expect(table.textContent).not.toContain("Fast Track");
   });
 
-  it("links page components directly to Storybook without a separate Library section", async () => {
+  it("links page components directly to Storybook alongside the Library component reference", async () => {
     vi.mocked(readLibraryCatalog).mockResolvedValue({ ...JSON.parse(readFileSync("public/catalog/portal.json", "utf8")), revision: "saved-components" });
     await render("/admin-center/library/pages?site=abe&q=resume-code");
     const table = container.querySelector('table[aria-label="Pages"]')!;
-    expect(tab("Components")).toBeUndefined();
+    expect(tab("Components")).toBeDefined();
     expect(table.querySelector('a[href*="pages-resume-whole-page--email-code"]')).not.toBeNull();
     expect(table.querySelector('a[href*="/library/components"]')).toBeNull();
     expect(table.textContent).not.toContain("Review page components");

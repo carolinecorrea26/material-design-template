@@ -60,6 +60,6 @@ Team development/testing can begin against the documented mock behavior, with th
 
 ## Follow-up engineering verification, October 5
 
-The [execution register](asce-follow-up-execution.md) tracks all twelve follow-ups and their missing inputs. The browser migration-compiler dependency was removed from aggregate inspection, and ordinary test worker/time budgets are committed. Mock submission now checks current Library/quote revision, quote expiry, supplied applicant and previously used payment IDs. Saved payload revisions are cached without carrying a stale revision across a save.
+The [execution register](../asce-follow-up-execution.md) tracks all twelve follow-ups and their missing inputs. The browser migration-compiler dependency was removed from aggregate inspection, and ordinary test worker/time budgets are committed. Mock submission now checks current Library/quote revision, quote expiry, supplied applicant and previously used payment IDs. Saved payload revisions are cached without carrying a stale revision across a save.
 
 Final complete ordinary suite: **958 passed, 4 PostgreSQL-only skipped, zero failures** across 90 files, with approved localhost-port access. Build and lint pass. The remaining application/catalog chunks still generate a size warning. This extends engineering evidence; it does not close source-dependent forms/rates/CIR/code decisions, durable applicant recovery, advanced browser journeys, live sign-in demonstration or production readiness.

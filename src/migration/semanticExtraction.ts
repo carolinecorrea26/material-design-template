@@ -82,7 +82,7 @@ export function extractMcrSemantics(db: DatabaseSchema, source: Source) {
       const age = parseAge(value('Main', ageCol, n));
       if (age) {
         const key = `${p}.${applicant}.age`;
-        db.eligibilityConstraints.push({ ...metadata('eligibilityConstraints', key, `Main!${ageCol}${n}`), productKey: p, siteKey: null, applicantTypeKey: applicant, minimumAgeDays: null, ...age, studentMaximumAgeYears: null, unmarried: null, minimumWorkHours: null });
+        db.eligibilityConstraints.push({ ...metadata('eligibilityConstraints', key, `Main!${ageCol}${n}`), productKey: p, siteKey: null, applicantTypeKey: applicant, minimumAgeDays: null, ...age, studentMaximumAgeYears: null, minimumWorkHours: null });
         link(get('Main', ageCol, n), 'eligibilityConstraints', key, 'maximumAgeYears');
       } else if (isNA(value('Main', ageCol, n))) fact(get('Main', ageCol, n), 'eligibility', 'products', p, `${applicant}.age-applicability`, false);
       const uw = value('Main', uwCol, n);

@@ -25,12 +25,17 @@ it.each([
 ])("renders %s's captured question and blocks No without collecting unrelated fields", async (site, label) => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true); window.history.replaceState(null, "", `/membership?site=${site}`);
   installPrototypeLibrary(resolvePrototypeLibrary(db, site, "membership-basics"));
-  form.values = { membership: "yes", "first-name": "Taylor", "last-name": "Morgan", email: "taylor@example.invalid", phone: "2025550123", "avma-vet-college": "Example College", "avma-graduation-year": "2000", "avma-occupation": "Small animal practice", "csea-occupation-group": "group-1-clerical", "asce-member-id": "12345", "nurse-type": "rn" };
+  form.values = { membership: "yes", "first-name": "Taylor", "last-name": "Morgan", email: "taylor@example.invalid", phone: "2025550123", "avma-vet-college": "Example College", "avma-graduation-year": "2000", "avma-occupation": "Small animal practice", "csea-occupation-group": "group-1-clerical", "member-id": "12345", "nurse-type": "rn" };
   const container = document.createElement("div"), root = createRoot(container); document.body.append(container);
   try {
     await act(async () => root.render(<MemoryRouter><Membership /></MemoryRouter>));
     expect(container.textContent).toContain(label);
-    if (site === "abe") { expect(container.querySelector('input[name="asce-member-id"]')).toBeNull(); expect(container.querySelector('input[name="abe-member-id"]')).not.toBeNull(); expect(container.querySelector<HTMLInputElement>('input[name="abe-member-id"]')!.required).toBe(false); }
+    const membershipGroup = container.querySelector('[aria-labelledby="membership-label"]')?.closest(".FieldGroup-root");
+    expect(membershipGroup).not.toBeNull();
+    for (const id of ["first-name", "last-name", "email", "phone"]) {
+      expect(container.querySelector(`[name="${id}"]`)?.closest(".FieldGroup-root"), id).toBe(membershipGroup);
+    }
+    if (site === "abe") { expect(container.querySelector('input[name="member-id"]')).toBeNull(); expect(container.querySelector('input[name="abe-member-id"]')).not.toBeNull(); expect(container.querySelector<HTMLInputElement>('input[name="abe-member-id"]')!.required).toBe(false); }
     if (site === "avma") for (const key of ["avma-graduation-year", "avma-occupation"]) expect(container.querySelector(`[name="${key}"]`)).not.toBeNull();
     if (site === "csea") {
       expect(container.textContent).toContain("Yes (Group 1 Clerical)"); expect(container.textContent).toContain("No (Group 2 Non-Clerical)");

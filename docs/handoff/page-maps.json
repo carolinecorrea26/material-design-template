@@ -76,7 +76,7 @@
             "site:ama.membership.ama-physician-email.override",
             "site:asce.membership.title.override",
             "site:asce.membership.membership.override",
-            "site:asce.membership.asce-member-id.override",
+            "site:asce.membership.member-id.override",
             "site:avma.membership.title.override",
             "site:avma.membership.membership.override",
             "site:avma.membership.avma-vet-college.override",
@@ -132,7 +132,7 @@
             "waepa-member-first-name",
             "waepa-member-last-name",
             "waepa-member-id",
-            "asce-member-id",
+            "member-id",
             "avma-vet-college",
             "avma-graduation-year",
             "avma-occupation",
@@ -171,7 +171,7 @@
             "waepa-member-first-name.validation",
             "waepa-member-last-name.validation",
             "waepa-member-id.validation",
-            "asce-member-id.validation",
+            "member-id.validation",
             "avma-vet-college.validation",
             "avma-graduation-year.validation",
             "avma-occupation.validation",
@@ -196,14 +196,9 @@
             "component-quick-decision-indicator",
             "component-quick-decision-info-box",
             "component-coverage-cart",
-            "component-coverage-category-selector",
             "component-coverage-needs-calculator",
             "component-coverage-options-panel",
-            "component-eligibility-fields",
-            "component-estimator-product-card",
-            "component-featured-badge",
             "component-how-applying-works-panel",
-            "component-quote-calculator",
             "component-rate-frequency-control",
             "component-rate-frequency-toggle",
             "component-total-cost-summary",
@@ -221,7 +216,6 @@
             "component-app-header",
             "component-app-menu",
             "component-app-shell",
-            "component-category-header",
             "component-client-help-banner",
             "component-field-grid",
             "component-form-shell",
@@ -236,7 +230,6 @@
             "component-app-drawer",
             "component-app-modal",
             "component-cookie-dialog",
-            "component-controlled-field-renderer",
             "component-form-route-page",
             "component-button",
             "component-additional-membership-information",
@@ -251,8 +244,7 @@
             "component-application-review-drawer-content",
             "component-phone-field",
             "component-offline-banner",
-            "component-link",
-            "component-application-estimate"
+            "component-link"
           ]
         },
         {
@@ -353,7 +345,6 @@
             "eligibility.childSection.child-last-name",
             "eligibility.childSection.child-birth-date",
             "eligibility.childSection.child-gender",
-            "eligibility.childSection.child-unmarried",
             "eligibility.childSection.child-full-time-student",
             "eligibility.childSection.child-honorably-discharged-service-member"
           ]
@@ -364,7 +355,6 @@
           "keys": [
             "abe.eligibility.spouse-membership.authored.override",
             "ama.eligibility.dependents.authored.override",
-            "asce.eligibility.child-unmarried.requirement",
             "asce.eligibility.child-full-time-student.requirement",
             "site:isitrust.eligibility.spouse-membership.exclude",
             "site:waepa.eligibility.spouse-membership.include",
@@ -376,7 +366,6 @@
           "table": "fields",
           "file": "public/catalog/fields/fields.json",
           "keys": [
-            "child-unmarried",
             "child-full-time-student",
             "zip-postal-code",
             "state-province",
@@ -397,7 +386,6 @@
           "table": "validationRules",
           "file": "public/catalog/validations/validation.json",
           "keys": [
-            "child-unmarried.validation",
             "child-full-time-student.validation",
             "zip-postal-code.validation",
             "state-province.validation",
@@ -456,6 +444,7 @@
             "component-page-shell",
             "component-page-title",
             "component-product-card",
+            "component-section-divider",
             "component-page-nav",
             "component-progress-step",
             "component-app-drawer",
@@ -470,11 +459,12 @@
             "component-site-support",
             "component-recovery-alert",
             "component-reference-rate-table-link",
+            "component-address-fields",
             "component-application-review-drawer-content",
             "component-phone-field",
             "component-offline-banner",
             "component-link",
-            "component-application-estimate"
+            "component-verification-address"
           ]
         },
         {
@@ -758,8 +748,7 @@
             "component-application-review-drawer-content",
             "component-phone-field",
             "component-offline-banner",
-            "component-link",
-            "component-application-estimate"
+            "component-link"
           ]
         },
         {

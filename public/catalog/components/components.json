@@ -121,11 +121,6 @@
         "parts": [],
         "usages": [
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Advisor Login → Application Estimate",
-            "pageKey": "advisor-login"
-          },
-          {
             "source": "src/components/coverage/CoverageCart.tsx",
             "label": "Advisor Login → Coverage Cart",
             "pageKey": "advisor-login"
@@ -136,11 +131,6 @@
             "pageKey": "advisor-login"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Advisor Send Confirmation → Application Estimate",
-            "pageKey": "advisor-send-confirmation"
-          },
-          {
             "source": "src/components/coverage/CoverageCart.tsx",
             "label": "Advisor Send Confirmation → Coverage Cart",
             "pageKey": "advisor-send-confirmation"
@@ -149,11 +139,6 @@
             "source": "src/components/coverage/TotalCostSummary.tsx",
             "label": "Advisor Send Confirmation → Total Cost Summary",
             "pageKey": "advisor-send-confirmation"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Application Edit Confirmation → Application Estimate",
-            "pageKey": "application-edit-confirmation"
           },
           {
             "source": "src/components/coverage/CoverageCart.tsx",
@@ -176,11 +161,6 @@
             "pageKey": "application-unavailable"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Beneficiary → Application Estimate",
-            "pageKey": "beneficiary"
-          },
-          {
             "source": "src/components/coverage/CoverageCart.tsx",
             "label": "Beneficiary → Coverage Cart",
             "pageKey": "beneficiary"
@@ -191,11 +171,6 @@
             "pageKey": "beneficiary"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Contact → Application Estimate",
-            "pageKey": "contact"
-          },
-          {
             "source": "src/components/coverage/CoverageCart.tsx",
             "label": "Contact → Coverage Cart",
             "pageKey": "contact"
@@ -204,11 +179,6 @@
             "source": "src/components/coverage/TotalCostSummary.tsx",
             "label": "Contact → Total Cost Summary",
             "pageKey": "contact"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Coverage → Application Estimate",
-            "pageKey": "coverage"
           },
           {
             "source": "src/components/coverage/CoverageCart.tsx",
@@ -231,11 +201,6 @@
             "pageKey": "coverage"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Docusign → Application Estimate",
-            "pageKey": "docusign"
-          },
-          {
             "source": "src/components/coverage/CoverageCart.tsx",
             "label": "Docusign → Coverage Cart",
             "pageKey": "docusign"
@@ -244,11 +209,6 @@
             "source": "src/components/coverage/TotalCostSummary.tsx",
             "label": "Docusign → Total Cost Summary",
             "pageKey": "docusign"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Eligibility → Application Estimate",
-            "pageKey": "eligibility"
           },
           {
             "source": "src/components/coverage/CoverageCart.tsx",
@@ -281,11 +241,6 @@
             "pageKey": "error-500"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health CI → Application Estimate",
-            "pageKey": "health-ci"
-          },
-          {
             "source": "src/components/coverage/CoverageCart.tsx",
             "label": "Health CI → Coverage Cart",
             "pageKey": "health-ci"
@@ -294,11 +249,6 @@
             "source": "src/components/coverage/TotalCostSummary.tsx",
             "label": "Health CI → Total Cost Summary",
             "pageKey": "health-ci"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health CIR → Application Estimate",
-            "pageKey": "health-cir"
           },
           {
             "source": "src/components/coverage/CoverageCart.tsx",
@@ -311,11 +261,6 @@
             "pageKey": "health-cir"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health DI → Application Estimate",
-            "pageKey": "health-di"
-          },
-          {
             "source": "src/components/coverage/CoverageCart.tsx",
             "label": "Health DI → Coverage Cart",
             "pageKey": "health-di"
@@ -324,11 +269,6 @@
             "source": "src/components/coverage/TotalCostSummary.tsx",
             "label": "Health DI → Total Cost Summary",
             "pageKey": "health-di"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health LI → Application Estimate",
-            "pageKey": "health-li"
           },
           {
             "source": "src/components/coverage/CoverageCart.tsx",
@@ -341,11 +281,6 @@
             "pageKey": "health-li"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health QD → Application Estimate",
-            "pageKey": "health-qd"
-          },
-          {
             "source": "src/components/coverage/CoverageCart.tsx",
             "label": "Health QD → Coverage Cart",
             "pageKey": "health-qd"
@@ -354,11 +289,6 @@
             "source": "src/components/coverage/TotalCostSummary.tsx",
             "label": "Health QD → Total Cost Summary",
             "pageKey": "health-qd"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health SI → Application Estimate",
-            "pageKey": "health-si"
           },
           {
             "source": "src/components/coverage/CoverageCart.tsx",
@@ -396,29 +326,14 @@
             "pageKey": "maintenance"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Membership → Application Estimate",
-            "pageKey": "membership"
-          },
-          {
             "source": "src/components/coverage/CoverageCart.tsx",
             "label": "Membership → Coverage Cart",
-            "pageKey": "membership"
-          },
-          {
-            "source": "src/components/coverage/EstimatorProductCard.tsx",
-            "label": "Membership → Estimator Product Card",
             "pageKey": "membership"
           },
           {
             "source": "src/components/coverage/TotalCostSummary.tsx",
             "label": "Membership → Total Cost Summary",
             "pageKey": "membership"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Payment → Application Estimate",
-            "pageKey": "payment"
           },
           {
             "source": "src/app/sections/ConfiguredEstimatedRate.tsx",
@@ -434,11 +349,6 @@
             "source": "src/components/coverage/TotalCostSummary.tsx",
             "label": "Payment → Total Cost Summary",
             "pageKey": "payment"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Profile → Application Estimate",
-            "pageKey": "profile"
           },
           {
             "source": "src/components/coverage/CoverageCart.tsx",
@@ -496,8 +406,8 @@
             "pageKey": "resume-method"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Review → Application Estimate",
+            "source": "src/app/sections/ConfiguredApplicationDocumentPreview.tsx",
+            "label": "Review → Configured Application Document Preview",
             "pageKey": "review"
           },
           {
@@ -558,41 +468,6 @@
             "section": "Components / Pages / Receipt / Sections",
             "pageKey": "receipt",
             "position": 1
-          },
-          {
-            "label": "Eligibility",
-            "storyId": "pages-eligibility-whole-page--member",
-            "section": "Components / Pages / Eligibility / Whole page",
-            "pageKey": "eligibility",
-            "position": 0
-          },
-          {
-            "label": "Docusign",
-            "storyId": "pages-esign-whole-page--pending",
-            "section": "Components / Pages / Docusign / Whole page",
-            "pageKey": "docusign",
-            "position": 0
-          },
-          {
-            "label": "Advisor Login",
-            "storyId": "pages-advisor-whole-page--start",
-            "section": "Components / Pages / Advisor Login / Whole page",
-            "pageKey": "advisor-login",
-            "position": 0
-          },
-          {
-            "label": "Advisor Send Confirmation",
-            "storyId": "pages-advisor-whole-page--sent-to-applicant",
-            "section": "Components / Pages / Advisor Send Confirmation / Whole page",
-            "pageKey": "advisor-send-confirmation",
-            "position": 0
-          },
-          {
-            "label": "Application Edit Confirmation",
-            "storyId": "pages-advisor-whole-page--edit-request-sent",
-            "section": "Components / Pages / Application Edit Confirmation / Whole page",
-            "pageKey": "application-edit-confirmation",
-            "position": 0
           },
           {
             "label": "Receipt",
@@ -2286,7 +2161,8 @@
         "source": "src/components/coverage/CoverageCategorySelector.tsx",
         "role": "shared-piece",
         "contains": [
-          "component-controlled-field-renderer"
+          "component-controlled-field-renderer",
+          "component-section-divider"
         ],
         "parts": [],
         "usages": [
@@ -2299,11 +2175,6 @@
             "source": "src/app/workflows/QuoteCalculator.tsx",
             "label": "Home → Quote Calculator",
             "pageKey": "home"
-          },
-          {
-            "source": "src/app/workflows/QuoteCalculator.tsx",
-            "label": "Membership → Quote Calculator",
-            "pageKey": "membership"
           }
         ],
         "examples": [
@@ -2799,11 +2670,6 @@
             "source": "src/components/home/HomeHero.tsx",
             "label": "Home → Home Hero",
             "pageKey": "home"
-          },
-          {
-            "source": "src/app/sections/ConfiguredEligibilityFields.tsx",
-            "label": "Membership → Configured Eligibility Fields",
-            "pageKey": "membership"
           }
         ],
         "examples": [
@@ -2849,11 +2715,6 @@
             "source": "src/app/sections/ConfiguredEstimatorProductCard.tsx",
             "label": "Home → Configured Estimator Product Card",
             "pageKey": "home"
-          },
-          {
-            "source": "src/app/sections/ConfiguredEstimatorProductCard.tsx",
-            "label": "Membership → Configured Estimator Product Card",
-            "pageKey": "membership"
           }
         ],
         "examples": [
@@ -2892,11 +2753,6 @@
             "source": "src/components/coverage/EstimatorProductCard.tsx",
             "label": "Home → Estimator Product Card",
             "pageKey": "home"
-          },
-          {
-            "source": "src/components/coverage/EstimatorProductCard.tsx",
-            "label": "Membership → Estimator Product Card",
-            "pageKey": "membership"
           }
         ],
         "examples": [
@@ -3315,11 +3171,6 @@
             "source": "src/pages/Home.tsx",
             "label": "Home → Home",
             "pageKey": "home"
-          },
-          {
-            "source": "src/app/sections/ConfiguredMembershipHelp.tsx",
-            "label": "Membership → Configured Membership Help",
-            "pageKey": "membership"
           }
         ],
         "examples": [
@@ -3454,11 +3305,6 @@
           {
             "source": "src/components/coverage/CoverageCart.tsx",
             "label": "Membership → Coverage Cart",
-            "pageKey": "membership"
-          },
-          {
-            "source": "src/app/workflows/QuoteCalculator.tsx",
-            "label": "Membership → Quote Calculator",
             "pageKey": "membership"
           },
           {
@@ -3818,11 +3664,6 @@
             "source": "src/components/coverage/CoverageCart.tsx",
             "label": "Maintenance → Coverage Cart",
             "pageKey": "maintenance"
-          },
-          {
-            "source": "src/app/sections/ConfiguredTotalCostSummary.tsx",
-            "label": "Membership → Configured Total Cost Summary",
-            "pageKey": "membership"
           },
           {
             "source": "src/components/coverage/CoverageCart.tsx",
@@ -4188,11 +4029,6 @@
           {
             "source": "src/components/coverage/CoverageCart.tsx",
             "label": "Membership → Coverage Cart",
-            "pageKey": "membership"
-          },
-          {
-            "source": "src/app/workflows/QuoteCalculator.tsx",
-            "label": "Membership → Quote Calculator",
             "pageKey": "membership"
           },
           {
@@ -5376,6 +5212,11 @@
             "pageKey": "docusign"
           },
           {
+            "source": "src/components/forms/AddressFields.tsx",
+            "label": "Eligibility → Address Fields",
+            "pageKey": "eligibility"
+          },
+          {
             "source": "src/components/forms/ControlledFieldRenderer.tsx",
             "label": "Eligibility → Controlled Field Renderer",
             "pageKey": "eligibility"
@@ -5536,18 +5377,8 @@
             "pageKey": "membership"
           },
           {
-            "source": "src/components/forms/ControlledFieldRenderer.tsx",
-            "label": "Membership → Controlled Field Renderer",
-            "pageKey": "membership"
-          },
-          {
             "source": "src/components/coverage/CoverageNeedsCalculator.tsx",
             "label": "Membership → Coverage Needs Calculator",
-            "pageKey": "membership"
-          },
-          {
-            "source": "src/components/forms/EligibilityFields.tsx",
-            "label": "Membership → Eligibility Fields",
             "pageKey": "membership"
           },
           {
@@ -5558,11 +5389,6 @@
           {
             "source": "src/components/membership/MembershipStatus.tsx",
             "label": "Membership → Membership Status",
-            "pageKey": "membership"
-          },
-          {
-            "source": "src/app/workflows/QuoteCalculator.tsx",
-            "label": "Membership → Quote Calculator",
             "pageKey": "membership"
           },
           {
@@ -7668,11 +7494,6 @@
             "pageKey": "home"
           },
           {
-            "source": "src/app/workflows/QuoteCalculator.tsx",
-            "label": "Membership → Quote Calculator",
-            "pageKey": "membership"
-          },
-          {
             "source": "src/components/layout/CategoryCard.tsx",
             "label": "Payment → Category Card",
             "pageKey": "payment"
@@ -7901,6 +7722,11 @@
             "pageKey": "contact"
           },
           {
+            "source": "src/components/forms/AddressFields.tsx",
+            "label": "Eligibility → Address Fields",
+            "pageKey": "eligibility"
+          },
+          {
             "source": "src/components/forms/DynamicList.tsx",
             "label": "Eligibility → Dynamic List",
             "pageKey": "eligibility"
@@ -7981,6 +7807,11 @@
             "label": "Layout",
             "storyId": "layout-fieldgrid--stacked-fields",
             "section": "Components / Forms / Field groups"
+          },
+          {
+            "label": "Section divider",
+            "storyId": "layout-sectiondivider--subsection-preset",
+            "section": "Components / Layout / Headings and dividers"
           },
           {
             "label": "Eligibility",
@@ -8510,11 +8341,6 @@
             "source": "src/app/workflows/QuoteCalculator.tsx",
             "label": "Home → Quote Calculator",
             "pageKey": "home"
-          },
-          {
-            "source": "src/app/workflows/QuoteCalculator.tsx",
-            "label": "Membership → Quote Calculator",
-            "pageKey": "membership"
           },
           {
             "source": "src/app/RoutePage.tsx",
@@ -9375,11 +9201,6 @@
             "pageKey": "membership"
           },
           {
-            "source": "src/components/coverage/EstimatorProductCard.tsx",
-            "label": "Membership → Estimator Product Card",
-            "pageKey": "membership"
-          },
-          {
             "source": "src/components/coverage/CoverageCart.tsx",
             "label": "Payment → Coverage Cart",
             "pageKey": "payment"
@@ -9472,7 +9293,7 @@
       "definition": {
         "name": "SectionDivider",
         "section": "Components / Layout / Headings and dividers",
-        "description": "Separates and labels groups of related form content.",
+        "description": "Labels field-group sections with uppercase, letter-spaced text. Titled and untitled groups share a rounded FieldGroup surface matching the page background, with white inputs and increased section spacing.",
         "storyId": "layout-sectiondivider--subsection-preset",
         "source": "src/components/layout/SectionDivider.tsx",
         "role": "shared-piece",
@@ -9485,9 +9306,64 @@
             "pageKey": "contact"
           },
           {
+            "source": "src/components/contact/ContactSections.tsx",
+            "label": "Contact → Contact Sections",
+            "pageKey": "contact"
+          },
+          {
+            "source": "src/components/contact/ResidentialAddress.tsx",
+            "label": "Contact → Residential Address",
+            "pageKey": "contact"
+          },
+          {
+            "source": "src/components/contact/SpouseContact.tsx",
+            "label": "Contact → Spouse Contact",
+            "pageKey": "contact"
+          },
+          {
+            "source": "src/components/coverage/CoverageCategorySelector.tsx",
+            "label": "Coverage → Coverage Category Selector",
+            "pageKey": "coverage"
+          },
+          {
             "source": "src/components/coverage/CoverageQuestions.tsx",
             "label": "Coverage → Coverage Questions",
             "pageKey": "coverage"
+          },
+          {
+            "source": "src/components/eligibility/EligibilitySections.tsx",
+            "label": "Eligibility → Eligibility Sections",
+            "pageKey": "eligibility"
+          },
+          {
+            "source": "src/components/forms/HealthQuestionList.tsx",
+            "label": "Health CI → Health Question List",
+            "pageKey": "health-ci"
+          },
+          {
+            "source": "src/components/forms/HealthQuestionList.tsx",
+            "label": "Health CIR → Health Question List",
+            "pageKey": "health-cir"
+          },
+          {
+            "source": "src/components/forms/HealthQuestionList.tsx",
+            "label": "Health DI → Health Question List",
+            "pageKey": "health-di"
+          },
+          {
+            "source": "src/components/forms/HealthQuestionList.tsx",
+            "label": "Health LI → Health Question List",
+            "pageKey": "health-li"
+          },
+          {
+            "source": "src/components/forms/HealthQuestionList.tsx",
+            "label": "Health SI → Health Question List",
+            "pageKey": "health-si"
+          },
+          {
+            "source": "src/components/coverage/CoverageCategorySelector.tsx",
+            "label": "Home → Coverage Category Selector",
+            "pageKey": "home"
           },
           {
             "source": "src/app/workflows/QuoteCalculator.tsx",
@@ -9500,8 +9376,8 @@
             "pageKey": "membership"
           },
           {
-            "source": "src/app/workflows/QuoteCalculator.tsx",
-            "label": "Membership → Quote Calculator",
+            "source": "src/pages/Membership.tsx",
+            "label": "Membership → Membership",
             "pageKey": "membership"
           },
           {
@@ -9525,6 +9401,13 @@
             "label": "Section divider",
             "storyId": "layout-sectiondivider--subsection-preset",
             "section": "Components / Layout / Headings and dividers"
+          },
+          {
+            "label": "Eligibility",
+            "storyId": "pages-eligibility-whole-page--member",
+            "section": "Components / Pages / Eligibility / Whole page",
+            "pageKey": "eligibility",
+            "position": 0
           }
         ],
         "storybookPath": "?path=/story/layout-sectiondivider--subsection-preset"
@@ -9880,11 +9763,6 @@
             "pageKey": "advisor-login"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Advisor Login → Application Estimate",
-            "pageKey": "advisor-login"
-          },
-          {
             "source": "src/components/home/HowApplyingWorksPanel.tsx",
             "label": "Advisor Login → How Applying Works Panel",
             "pageKey": "advisor-login"
@@ -9910,11 +9788,6 @@
             "pageKey": "advisor-send-confirmation"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Advisor Send Confirmation → Application Estimate",
-            "pageKey": "advisor-send-confirmation"
-          },
-          {
             "source": "src/components/home/HowApplyingWorksPanel.tsx",
             "label": "Advisor Send Confirmation → How Applying Works Panel",
             "pageKey": "advisor-send-confirmation"
@@ -9937,11 +9810,6 @@
           {
             "source": "src/components/layout/AppMenu.tsx",
             "label": "Application Edit Confirmation → App Menu",
-            "pageKey": "application-edit-confirmation"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Application Edit Confirmation → Application Estimate",
             "pageKey": "application-edit-confirmation"
           },
           {
@@ -9995,11 +9863,6 @@
             "pageKey": "beneficiary"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Beneficiary → Application Estimate",
-            "pageKey": "beneficiary"
-          },
-          {
             "source": "src/pages/Beneficiary.tsx",
             "label": "Beneficiary → Beneficiary",
             "pageKey": "beneficiary"
@@ -10030,11 +9893,6 @@
             "pageKey": "contact"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Contact → Application Estimate",
-            "pageKey": "contact"
-          },
-          {
             "source": "src/components/home/HowApplyingWorksPanel.tsx",
             "label": "Contact → How Applying Works Panel",
             "pageKey": "contact"
@@ -10057,11 +9915,6 @@
           {
             "source": "src/components/layout/AppMenu.tsx",
             "label": "Coverage → App Menu",
-            "pageKey": "coverage"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Coverage → Application Estimate",
             "pageKey": "coverage"
           },
           {
@@ -10105,11 +9958,6 @@
             "pageKey": "docusign"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Docusign → Application Estimate",
-            "pageKey": "docusign"
-          },
-          {
             "source": "src/components/home/HowApplyingWorksPanel.tsx",
             "label": "Docusign → How Applying Works Panel",
             "pageKey": "docusign"
@@ -10132,11 +9980,6 @@
           {
             "source": "src/components/layout/AppMenu.tsx",
             "label": "Eligibility → App Menu",
-            "pageKey": "eligibility"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Eligibility → Application Estimate",
             "pageKey": "eligibility"
           },
           {
@@ -10215,11 +10058,6 @@
             "pageKey": "health-ci"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health CI → Application Estimate",
-            "pageKey": "health-ci"
-          },
-          {
             "source": "src/components/health/HealthInformationHelp.tsx",
             "label": "Health CI → Health Information Help",
             "pageKey": "health-ci"
@@ -10247,11 +10085,6 @@
           {
             "source": "src/components/layout/AppMenu.tsx",
             "label": "Health CIR → App Menu",
-            "pageKey": "health-cir"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health CIR → Application Estimate",
             "pageKey": "health-cir"
           },
           {
@@ -10285,11 +10118,6 @@
             "pageKey": "health-di"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health DI → Application Estimate",
-            "pageKey": "health-di"
-          },
-          {
             "source": "src/components/health/HealthInformationHelp.tsx",
             "label": "Health DI → Health Information Help",
             "pageKey": "health-di"
@@ -10317,11 +10145,6 @@
           {
             "source": "src/components/layout/AppMenu.tsx",
             "label": "Health LI → App Menu",
-            "pageKey": "health-li"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health LI → Application Estimate",
             "pageKey": "health-li"
           },
           {
@@ -10355,11 +10178,6 @@
             "pageKey": "health-qd"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health QD → Application Estimate",
-            "pageKey": "health-qd"
-          },
-          {
             "source": "src/components/health/HealthInformationHelp.tsx",
             "label": "Health QD → Health Information Help",
             "pageKey": "health-qd"
@@ -10387,11 +10205,6 @@
           {
             "source": "src/components/layout/AppMenu.tsx",
             "label": "Health SI → App Menu",
-            "pageKey": "health-si"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health SI → Application Estimate",
             "pageKey": "health-si"
           },
           {
@@ -10485,11 +10298,6 @@
             "pageKey": "membership"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Membership → Application Estimate",
-            "pageKey": "membership"
-          },
-          {
             "source": "src/components/home/HowApplyingWorksPanel.tsx",
             "label": "Membership → How Applying Works Panel",
             "pageKey": "membership"
@@ -10497,11 +10305,6 @@
           {
             "source": "src/components/membership/MembershipHelp.tsx",
             "label": "Membership → Membership Help",
-            "pageKey": "membership"
-          },
-          {
-            "source": "src/app/workflows/QuoteCalculator.tsx",
-            "label": "Membership → Quote Calculator",
             "pageKey": "membership"
           },
           {
@@ -10522,11 +10325,6 @@
           {
             "source": "src/components/layout/AppMenu.tsx",
             "label": "Payment → App Menu",
-            "pageKey": "payment"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Payment → Application Estimate",
             "pageKey": "payment"
           },
           {
@@ -10557,11 +10355,6 @@
           {
             "source": "src/components/layout/AppMenu.tsx",
             "label": "Profile → App Menu",
-            "pageKey": "profile"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Profile → Application Estimate",
             "pageKey": "profile"
           },
           {
@@ -10690,11 +10483,6 @@
             "pageKey": "review"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Review → Application Estimate",
-            "pageKey": "review"
-          },
-          {
             "source": "src/components/home/HowApplyingWorksPanel.tsx",
             "label": "Review → How Applying Works Panel",
             "pageKey": "review"
@@ -10804,38 +10592,10 @@
             "section": "Components / Feedback and overlays / Dialogs and drawers / Containers"
           },
           {
-            "label": "Eligibility",
-            "storyId": "pages-eligibility-whole-page--member",
-            "section": "Components / Pages / Eligibility / Whole page",
-            "pageKey": "eligibility",
-            "position": 0
-          },
-          {
             "label": "Docusign",
             "storyId": "pages-esign-whole-page--pending",
             "section": "Components / Pages / Docusign / Whole page",
             "pageKey": "docusign",
-            "position": 0
-          },
-          {
-            "label": "Advisor Login",
-            "storyId": "pages-advisor-whole-page--start",
-            "section": "Components / Pages / Advisor Login / Whole page",
-            "pageKey": "advisor-login",
-            "position": 0
-          },
-          {
-            "label": "Advisor Send Confirmation",
-            "storyId": "pages-advisor-whole-page--sent-to-applicant",
-            "section": "Components / Pages / Advisor Send Confirmation / Whole page",
-            "pageKey": "advisor-send-confirmation",
-            "position": 0
-          },
-          {
-            "label": "Application Edit Confirmation",
-            "storyId": "pages-advisor-whole-page--edit-request-sent",
-            "section": "Components / Pages / Application Edit Confirmation / Whole page",
-            "pageKey": "application-edit-confirmation",
             "position": 0
           },
           {
@@ -10971,6 +10731,11 @@
           {
             "source": "src/components/forms/DynamicList.tsx",
             "label": "Eligibility → Dynamic List",
+            "pageKey": "eligibility"
+          },
+          {
+            "source": "src/components/verification/VerificationAddress.tsx",
+            "label": "Eligibility → Verification Address",
             "pageKey": "eligibility"
           },
           {
@@ -11564,21 +11329,6 @@
             "source": "src/components/coverage/EstimatorProductCard.tsx",
             "label": "Home → Estimator Product Card",
             "pageKey": "home"
-          },
-          {
-            "source": "src/components/coverage/CoverageCategorySelector.tsx",
-            "label": "Membership → Coverage Category Selector",
-            "pageKey": "membership"
-          },
-          {
-            "source": "src/components/forms/EligibilityFields.tsx",
-            "label": "Membership → Eligibility Fields",
-            "pageKey": "membership"
-          },
-          {
-            "source": "src/components/coverage/EstimatorProductCard.tsx",
-            "label": "Membership → Estimator Product Card",
-            "pageKey": "membership"
           }
         ],
         "examples": [
@@ -11851,11 +11601,6 @@
             "pageKey": "advisor-login"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Advisor Login → Application Estimate",
-            "pageKey": "advisor-login"
-          },
-          {
             "source": "src/components/feedback/ApplicationRecoveryActions.tsx",
             "label": "Advisor Login → Application Recovery Actions",
             "pageKey": "advisor-login"
@@ -11901,11 +11646,6 @@
             "pageKey": "advisor-send-confirmation"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Advisor Send Confirmation → Application Estimate",
-            "pageKey": "advisor-send-confirmation"
-          },
-          {
             "source": "src/components/feedback/ApplicationRecoveryActions.tsx",
             "label": "Advisor Send Confirmation → Application Recovery Actions",
             "pageKey": "advisor-send-confirmation"
@@ -11948,11 +11688,6 @@
           {
             "source": "src/pages/ApplicationEditConfirmation.tsx",
             "label": "Application Edit Confirmation → Application Edit Confirmation",
-            "pageKey": "application-edit-confirmation"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Application Edit Confirmation → Application Estimate",
             "pageKey": "application-edit-confirmation"
           },
           {
@@ -12031,11 +11766,6 @@
             "pageKey": "beneficiary"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Beneficiary → Application Estimate",
-            "pageKey": "beneficiary"
-          },
-          {
             "source": "src/components/feedback/ApplicationRecoveryActions.tsx",
             "label": "Beneficiary → Application Recovery Actions",
             "pageKey": "beneficiary"
@@ -12091,11 +11821,6 @@
             "pageKey": "contact"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Contact → Application Estimate",
-            "pageKey": "contact"
-          },
-          {
             "source": "src/components/feedback/ApplicationRecoveryActions.tsx",
             "label": "Contact → Application Recovery Actions",
             "pageKey": "contact"
@@ -12133,11 +11858,6 @@
           {
             "source": "src/components/layout/AppModal.tsx",
             "label": "Coverage → App Modal",
-            "pageKey": "coverage"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Coverage → Application Estimate",
             "pageKey": "coverage"
           },
           {
@@ -12186,11 +11906,6 @@
             "pageKey": "docusign"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Docusign → Application Estimate",
-            "pageKey": "docusign"
-          },
-          {
             "source": "src/components/feedback/ApplicationRecoveryActions.tsx",
             "label": "Docusign → Application Recovery Actions",
             "pageKey": "docusign"
@@ -12233,11 +11948,6 @@
           {
             "source": "src/components/layout/AppModal.tsx",
             "label": "Eligibility → App Modal",
-            "pageKey": "eligibility"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Eligibility → Application Estimate",
             "pageKey": "eligibility"
           },
           {
@@ -12366,11 +12076,6 @@
             "pageKey": "health-ci"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health CI → Application Estimate",
-            "pageKey": "health-ci"
-          },
-          {
             "source": "src/components/feedback/ApplicationRecoveryActions.tsx",
             "label": "Health CI → Application Recovery Actions",
             "pageKey": "health-ci"
@@ -12418,11 +12123,6 @@
           {
             "source": "src/components/layout/AppModal.tsx",
             "label": "Health CIR → App Modal",
-            "pageKey": "health-cir"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health CIR → Application Estimate",
             "pageKey": "health-cir"
           },
           {
@@ -12476,11 +12176,6 @@
             "pageKey": "health-di"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health DI → Application Estimate",
-            "pageKey": "health-di"
-          },
-          {
             "source": "src/components/feedback/ApplicationRecoveryActions.tsx",
             "label": "Health DI → Application Recovery Actions",
             "pageKey": "health-di"
@@ -12528,11 +12223,6 @@
           {
             "source": "src/components/layout/AppModal.tsx",
             "label": "Health LI → App Modal",
-            "pageKey": "health-li"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health LI → Application Estimate",
             "pageKey": "health-li"
           },
           {
@@ -12586,11 +12276,6 @@
             "pageKey": "health-qd"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health QD → Application Estimate",
-            "pageKey": "health-qd"
-          },
-          {
             "source": "src/components/feedback/ApplicationRecoveryActions.tsx",
             "label": "Health QD → Application Recovery Actions",
             "pageKey": "health-qd"
@@ -12628,11 +12313,6 @@
           {
             "source": "src/components/layout/AppModal.tsx",
             "label": "Health SI → App Modal",
-            "pageKey": "health-si"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Health SI → Application Estimate",
             "pageKey": "health-si"
           },
           {
@@ -12771,11 +12451,6 @@
             "pageKey": "membership"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Membership → Application Estimate",
-            "pageKey": "membership"
-          },
-          {
             "source": "src/components/feedback/ApplicationRecoveryActions.tsx",
             "label": "Membership → Application Recovery Actions",
             "pageKey": "membership"
@@ -12788,11 +12463,6 @@
           {
             "source": "src/components/navigation/PageNav.tsx",
             "label": "Membership → Page Nav",
-            "pageKey": "membership"
-          },
-          {
-            "source": "src/app/workflows/QuoteCalculator.tsx",
-            "label": "Membership → Quote Calculator",
             "pageKey": "membership"
           },
           {
@@ -12818,11 +12488,6 @@
           {
             "source": "src/components/layout/AppModal.tsx",
             "label": "Payment → App Modal",
-            "pageKey": "payment"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Payment → Application Estimate",
             "pageKey": "payment"
           },
           {
@@ -12868,11 +12533,6 @@
           {
             "source": "src/components/layout/AppModal.tsx",
             "label": "Profile → App Modal",
-            "pageKey": "profile"
-          },
-          {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Profile → Application Estimate",
             "pageKey": "profile"
           },
           {
@@ -13106,11 +12766,6 @@
             "pageKey": "review"
           },
           {
-            "source": "src/components/coverage/ApplicationEstimate.tsx",
-            "label": "Review → Application Estimate",
-            "pageKey": "review"
-          },
-          {
             "source": "src/components/feedback/ApplicationRecoveryActions.tsx",
             "label": "Review → Application Recovery Actions",
             "pageKey": "review"
@@ -13133,11 +12788,6 @@
           {
             "source": "src/components/feedback/RecoveryAlert.tsx",
             "label": "Review → Recovery Alert",
-            "pageKey": "review"
-          },
-          {
-            "source": "src/components/review/ReviewSections.tsx",
-            "label": "Review → Review Sections",
             "pageKey": "review"
           },
           {
@@ -13280,7 +12930,8 @@
           "component-dynamic-list",
           "component-eligibility-fields",
           "component-field-grid",
-          "component-field-renderer"
+          "component-field-renderer",
+          "component-section-divider"
         ],
         "parts": [],
         "usages": [
@@ -13562,7 +13213,7 @@
       "definition": {
         "name": "MembershipHelp",
         "section": "Components / Pages / Membership / Sections",
-        "description": "The membership page's coverage, applying and estimate help actions.",
+        "description": "The membership page's coverage and applying help actions.",
         "storyId": "pages-membership-introduction-and-help--default",
         "source": "src/components/membership/MembershipHelp.tsx",
         "role": "page-section",
@@ -14852,41 +14503,6 @@
             "section": "Components / Coverage and pricing"
           },
           {
-            "label": "Eligibility",
-            "storyId": "pages-eligibility-whole-page--member",
-            "section": "Components / Pages / Eligibility / Whole page",
-            "pageKey": "eligibility",
-            "position": 0
-          },
-          {
-            "label": "Docusign",
-            "storyId": "pages-esign-whole-page--pending",
-            "section": "Components / Pages / Docusign / Whole page",
-            "pageKey": "docusign",
-            "position": 0
-          },
-          {
-            "label": "Advisor Login",
-            "storyId": "pages-advisor-whole-page--start",
-            "section": "Components / Pages / Advisor Login / Whole page",
-            "pageKey": "advisor-login",
-            "position": 0
-          },
-          {
-            "label": "Advisor Send Confirmation",
-            "storyId": "pages-advisor-whole-page--sent-to-applicant",
-            "section": "Components / Pages / Advisor Send Confirmation / Whole page",
-            "pageKey": "advisor-send-confirmation",
-            "position": 0
-          },
-          {
-            "label": "Application Edit Confirmation",
-            "storyId": "pages-advisor-whole-page--edit-request-sent",
-            "section": "Components / Pages / Application Edit Confirmation / Whole page",
-            "pageKey": "application-edit-confirmation",
-            "position": 0
-          },
-          {
             "label": "Receipt",
             "storyId": "pages-receipt-whole-page--received",
             "section": "Components / Pages / Receipt / Whole page",
@@ -14916,6 +14532,7 @@
           "component-business-information",
           "component-field-renderer",
           "component-residential-address",
+          "component-section-divider",
           "component-spouse-contact"
         ],
         "parts": [],
@@ -14969,6 +14586,11 @@
             "pageKey": "contact"
           },
           {
+            "source": "src/components/verification/VerificationAddress.tsx",
+            "label": "Eligibility → Verification Address",
+            "pageKey": "eligibility"
+          },
+          {
             "source": "src/components/forms/PhysicianInformation.tsx",
             "label": "Profile → Physician Information",
             "pageKey": "profile"
@@ -14979,6 +14601,13 @@
             "label": "Address",
             "storyId": "forms-field-groups-address-fields--default",
             "section": "Components / Forms / Field groups"
+          },
+          {
+            "label": "Eligibility",
+            "storyId": "pages-eligibility-whole-page--member",
+            "section": "Components / Pages / Eligibility / Whole page",
+            "pageKey": "eligibility",
+            "position": 0
           }
         ],
         "storybookPath": "?path=/story/forms-field-groups-address-fields--default"
@@ -15076,7 +14705,8 @@
         "role": "page-section",
         "contains": [
           "component-address-fields",
-          "component-field-renderer"
+          "component-field-renderer",
+          "component-section-divider"
         ],
         "parts": [],
         "usages": [
@@ -15113,7 +14743,8 @@
         "source": "src/components/contact/SpouseContact.tsx",
         "role": "page-section",
         "contains": [
-          "component-field-renderer"
+          "component-field-renderer",
+          "component-section-divider"
         ],
         "parts": [],
         "usages": [
@@ -15740,7 +15371,6 @@
         "role": "page-section",
         "contains": [
           "component-applicant-section-divider",
-          "component-button",
           "component-field-renderer",
           "component-legal-review-section",
           "component-review-statement"
@@ -15751,12 +15381,6 @@
             "kind": "slot",
             "sourceSymbol": "documentPreview",
             "description": "Caller supplies the application readout; its adapter resolves saved fields and edit targets."
-          },
-          {
-            "name": "Download application PDF",
-            "kind": "action",
-            "sourceSymbol": "onDownload",
-            "description": "Page supplies the PDF download callback; the view does not build application data."
           }
         ],
         "usages": [
@@ -15862,7 +15486,8 @@
         "source": "src/components/forms/HealthQuestionList.tsx",
         "role": "shared-piece",
         "contains": [
-          "component-applicant-section-divider"
+          "component-applicant-section-divider",
+          "component-section-divider"
         ],
         "parts": [
           {
@@ -17948,163 +17573,6 @@
       }
     },
     {
-      "id": "component-application-estimate",
-      "key": "component-application-estimate",
-      "position": 108,
-      "displayId": 228027444373372,
-      "providedBy": null,
-      "sourceReference": "src/components/coverage/ApplicationEstimate.tsx",
-      "definition": {
-        "name": "ApplicationEstimate",
-        "section": "Components / Coverage and pricing",
-        "description": "One reserved bottom surface keeps the estimate and the page action together on small screens.",
-        "storyId": "components-coverage-and-pricing-application-estimate--with-next",
-        "source": "src/components/coverage/ApplicationEstimate.tsx",
-        "role": "shared-piece",
-        "contains": [
-          "component-app-drawer",
-          "component-button",
-          "component-estimated-rate"
-        ],
-        "parts": [],
-        "usages": [
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Advisor Login → Configured Application Estimate",
-            "pageKey": "advisor-login"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Advisor Send Confirmation → Configured Application Estimate",
-            "pageKey": "advisor-send-confirmation"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Application Edit Confirmation → Configured Application Estimate",
-            "pageKey": "application-edit-confirmation"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Beneficiary → Configured Application Estimate",
-            "pageKey": "beneficiary"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Contact → Configured Application Estimate",
-            "pageKey": "contact"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Coverage → Configured Application Estimate",
-            "pageKey": "coverage"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Docusign → Configured Application Estimate",
-            "pageKey": "docusign"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Eligibility → Configured Application Estimate",
-            "pageKey": "eligibility"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Health CI → Configured Application Estimate",
-            "pageKey": "health-ci"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Health CIR → Configured Application Estimate",
-            "pageKey": "health-cir"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Health DI → Configured Application Estimate",
-            "pageKey": "health-di"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Health LI → Configured Application Estimate",
-            "pageKey": "health-li"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Health QD → Configured Application Estimate",
-            "pageKey": "health-qd"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Health SI → Configured Application Estimate",
-            "pageKey": "health-si"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Membership → Configured Application Estimate",
-            "pageKey": "membership"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Payment → Configured Application Estimate",
-            "pageKey": "payment"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Profile → Configured Application Estimate",
-            "pageKey": "profile"
-          },
-          {
-            "source": "src/app/sections/ConfiguredApplicationEstimate.tsx",
-            "label": "Review → Configured Application Estimate",
-            "pageKey": "review"
-          }
-        ],
-        "examples": [
-          {
-            "label": "Application estimate",
-            "storyId": "components-coverage-and-pricing-application-estimate--with-next",
-            "section": "Components / Coverage and pricing"
-          },
-          {
-            "label": "Eligibility",
-            "storyId": "pages-eligibility-whole-page--member",
-            "section": "Components / Pages / Eligibility / Whole page",
-            "pageKey": "eligibility",
-            "position": 0
-          },
-          {
-            "label": "Docusign",
-            "storyId": "pages-esign-whole-page--pending",
-            "section": "Components / Pages / Docusign / Whole page",
-            "pageKey": "docusign",
-            "position": 0
-          },
-          {
-            "label": "Advisor Login",
-            "storyId": "pages-advisor-whole-page--start",
-            "section": "Components / Pages / Advisor Login / Whole page",
-            "pageKey": "advisor-login",
-            "position": 0
-          },
-          {
-            "label": "Advisor Send Confirmation",
-            "storyId": "pages-advisor-whole-page--sent-to-applicant",
-            "section": "Components / Pages / Advisor Send Confirmation / Whole page",
-            "pageKey": "advisor-send-confirmation",
-            "position": 0
-          },
-          {
-            "label": "Application Edit Confirmation",
-            "storyId": "pages-advisor-whole-page--edit-request-sent",
-            "section": "Components / Pages / Application Edit Confirmation / Whole page",
-            "pageKey": "application-edit-confirmation",
-            "position": 0
-          }
-        ],
-        "storybookPath": "?path=/story/components-coverage-and-pricing-application-estimate--with-next"
-      }
-    },
-    {
       "id": "component-receipt-decisions",
       "key": "component-receipt-decisions",
       "position": 109,
@@ -18193,6 +17661,49 @@
           }
         ],
         "storybookPath": "?path=/story/components-pages-receipt-sections-application-receipt--mixed-payment-choices"
+      }
+    },
+    {
+      "id": "component-verification-address",
+      "key": "component-verification-address",
+      "position": 110,
+      "displayId": 184082160995785,
+      "providedBy": null,
+      "sourceReference": "src/components/verification/VerificationAddress.tsx",
+      "definition": {
+        "name": "VerificationAddress",
+        "section": "Components / Feedback and overlays / Dialogs and drawers / Application dialogs",
+        "description": "Collects and validates the full residential address before configured member verification, using the shared Contact address fields.",
+        "storyId": "coverage-commerce-memberverification--address-before-verification",
+        "source": "src/components/verification/VerificationAddress.tsx",
+        "role": "shared-piece",
+        "contains": [
+          "component-address-fields",
+          "component-app-modal"
+        ],
+        "parts": [],
+        "usages": [
+          {
+            "source": "src/pages/Eligibility.tsx",
+            "label": "Eligibility → Eligibility",
+            "pageKey": "eligibility"
+          }
+        ],
+        "examples": [
+          {
+            "label": "Member verification",
+            "storyId": "coverage-commerce-memberverification--address-before-verification",
+            "section": "Components / Feedback and overlays / Dialogs and drawers / Application dialogs"
+          },
+          {
+            "label": "Eligibility",
+            "storyId": "pages-eligibility-whole-page--member",
+            "section": "Components / Pages / Eligibility / Whole page",
+            "pageKey": "eligibility",
+            "position": 0
+          }
+        ],
+        "storybookPath": "?path=/story/coverage-commerce-memberverification--address-before-verification"
       }
     }
   ]

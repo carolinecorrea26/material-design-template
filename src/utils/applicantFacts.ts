@@ -20,7 +20,6 @@ export function applicationApplicantFacts(values: Record<string, unknown>, appli
     associationKey: typeof (values.association ?? values.membership) === "string" ? String(values.association ?? values.membership) : undefined,
     ageYears: age?.ageYears,
     ageDays: age?.ageDays,
-    unmarried: booleanFact(values[`${prefix}unmarried`]),
     honorablyDischargedServiceMember: booleanFact(values[`${prefix}honorably-discharged-service-member`]),
     fullTimeStudent: booleanFact(values[`${prefix}full-time-student`]),
     workHoursPerWeek: numericFact(values[`${prefix}hours-worked-per-week`]),
@@ -39,9 +38,6 @@ export function applicationApplicantFactSet(values: Record<string, unknown>, app
   if (applicant !== "child" || !Array.isArray(values.children) || values.children.length === 0) return [applicationApplicantFacts(values, applicant, dayjs(), productKey)];
   return values.children.map((item: Record<string, unknown>) => applicationApplicantFacts({
     association: values.association ?? values.membership,
-    "child-birth-date": item.birthDate,
-    "child-unmarried": item.unmarried,
-    "child-full-time-student": item.fullTimeStudent,
-    "child-honorably-discharged-service-member": item.honorablyDischargedServiceMember,
+    ...item,
   }, "child"));
 }

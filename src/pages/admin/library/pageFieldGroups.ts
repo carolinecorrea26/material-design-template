@@ -17,6 +17,9 @@ export function pageModalFields(catalog: LibraryCatalog, siteKey: string): Modal
   for (const site of sites) {
     const effective = resolveEffectiveSite(catalog.data, site);
     const surfaces = resolveStoredFieldSurfaces(catalog.data, effective);
+    if (effective.configuration.configurations.some(row => row.key === "tpaIntegration.requireAddressBeforeVerification" && row.value === true)) {
+      result.push({ pageKey: "eligibility", label: "Verification address modal", keys: new Set(["street-address", "apt-suite", "city", "state", "zip-code"]) });
+    }
     for (const surface of Object.values(surfaces)) {
       const group = surface.libraryGroup;
       if (!group) continue;

@@ -4,7 +4,7 @@ Generated from the reviewed semantic mapping and pinned MCR snapshot. This is a 
 
 **70 assignments:** 57 source-linked, 2 blocked and 11 synthetic demo fixtures.
 
-The reviewed candidate has **70 enabled assignments** and **1 unresolved identity mappings**. Standard CSEA DI uses a documented provisional row 246 mapping. Its user-confirmed standalone member AD&D product remains enabled in the mock scope with unresolved exact source identifiers. The WAEPAGI inherited disability assignment is disabled by the approved source-first portfolio decision. Source reconciliation is deferred by the October 2 user instruction; [the provisional decisions](step3-provisional-decisions.md) must be revisited.
+The reviewed candidate has **70 enabled assignments** and **1 unresolved identity mappings**. Standard CSEA DI uses a documented provisional row 246 mapping. Its user-confirmed standalone member AD&D product remains enabled in the mock scope with unresolved exact source identifiers. The WAEPAGI inherited disability assignment is disabled by the approved source-first portfolio decision. Source reconciliation is deferred by the October 2 user instruction; [the provisional decisions](../step3-provisional-decisions.md) must be revisited.
 
 | Site | Prototype product | MCR product row | Prototype plan | MCR plan evidence | Status |
 | --- | --- | --- | --- | --- | --- |

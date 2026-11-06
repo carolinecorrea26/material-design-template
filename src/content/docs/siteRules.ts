@@ -209,7 +209,7 @@ const siteRuleInventory: (Omit<RuleDefinition, "id"> & { id?: RuleDefinition["id
     area: "Eligibility",
     rule: "Child records via DynamicList",
     behavior:
-      "When Child is selected and applicantExperience.childEligibility.mode is details (the default), DynamicList collects children[].firstName, lastName, birthDate and gender using the effective field definitions. Unmarried and full-time-student questions are added when applicable product eligibility rules require them. Records support Add, Edit and Remove; at least one child is required to continue. Client or Site configuration can choose notice-only instead, showing the configured note without collecting or requiring records. CSEA uses notice-only.",
+      "When Child is selected and applicantExperience.childEligibility.mode is details (the default), DynamicList collects children[].firstName, lastName, birthDate and gender using the effective field definitions. The full-time-student question is added when applicable product eligibility rules require it. Records support Add, Edit and Remove; at least one child is required to continue. Client or Site configuration can choose notice-only instead, showing the configured note without collecting or requiring records. CSEA uses notice-only.",
     ref: "src/pages/Eligibility.tsx; src/components/forms/DynamicList.tsx",
   },
   {

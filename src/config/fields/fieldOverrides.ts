@@ -142,7 +142,7 @@ export const siteFieldOverrides: ScopedFieldOverride[] = [
       label: "Are you a member of the American Society of Civil Engineers?",
     },
   }),
-  includeMembershipField("asce", "asce-member-id"),
+  includeMembershipField("asce", "member-id"),
 
   hideMembershipTitle("avma"),
   membershipOverride("avma", "membership", {

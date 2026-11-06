@@ -12,6 +12,8 @@ export type RequirementFieldSource = {
   optionLists: unknown;
   mappings: unknown[];
   sites: Record<string, unknown>;
+  /** Site page files (`parked/sites/<site>/pages/<page>.json`): `include` default-off fields, `hide` default-on ones. */
+  sitePages?: Record<string, Record<string, unknown>>;
 };
 
 const jsonModules = (modules: Record<string, unknown>) => Object.values(modules).map(module => (module as { default?: unknown }).default ?? module);
@@ -25,6 +27,11 @@ const defaultSource = (): RequirementFieldSource => ({
   ],
   sites: Object.fromEntries(Object.entries(import.meta.glob("../../requirements/parked/sites/*/fields.json", { eager: true }))
     .map(([path, module]) => [path.split("/").at(-2)!, (module as { default?: unknown }).default ?? module])),
+  sitePages: Object.entries(import.meta.glob("../../requirements/parked/sites/*/pages/*.json", { eager: true })).reduce<Record<string, Record<string, unknown>>>((sites, [path, module]) => {
+    const site = path.split("/").at(-3)!;
+    (sites[site] ??= {})[path.split("/").at(-1)!.replace(/\.json$/, "")] = (module as { default?: unknown }).default ?? module;
+    return sites;
+  }, {}),
 });
 
 const inputTypes = new Set<FieldInputType>(["text", "number", "date", "radio", "dropdown", "searchable-select", "checkbox", "checkbox-group", "multi-select", "percent"]);
@@ -64,7 +71,7 @@ export function siteUsesRequirementFields(siteId: string, source: RequirementFie
  */
 export function resolveMappedFields(
   mapping: RequirementMapping,
-  { siteId, person = "self", source = defaultSource() }: { siteId?: string; person?: RequirementPerson; source?: RequirementFieldSource } = {},
+  { siteId, person = "self", page, source = defaultSource() }: { siteId?: string; person?: RequirementPerson; page?: string; source?: RequirementFieldSource } = {},
 ): FieldDefinition[] {
   if (!object(source.fieldIds) || !Array.isArray(source.fieldIds.fields) ||
       !object(source.fieldDetails) || !Array.isArray(source.fieldDetails.fields) || !object(source.optionLists)) throw new Error("Invalid field requirements");
@@ -77,13 +84,21 @@ export function resolveMappedFields(
   const details = source.fieldDetails.fields as unknown[];
   const lists = source.optionLists;
   const rows = matches[0].fields as unknown[];
+  const pageKey = page ?? ("page" in mapping ? mapping.page : undefined);
+  const sitePage = siteId === undefined || pageKey === undefined ? undefined : source.sitePages?.[siteId]?.[pageKey];
+  if (sitePage !== undefined && (!object(sitePage) || ["include", "hide"].some(key => sitePage[key] !== undefined && !(Array.isArray(sitePage[key]) && (sitePage[key] as unknown[]).every(text)))))
+    throw new Error(`Invalid site page file: ${siteId}/${pageKey}`);
+  const included = new Set(object(sitePage) && Array.isArray(sitePage.include) ? sitePage.include as string[] : []);
+  const hidden = new Set(object(sitePage) && Array.isArray(sitePage.hide) ? sitePage.hide as string[] : []);
   const keys = "page" in mapping ? [mapping.page, person, "default"] : [person, "default"];
   if (new Set(rows.map(row => object(row) ? row.field : undefined)).size !== rows.length) throw new Error(`Duplicate field in ${mappingName(mapping)}`);
 
   return rows.flatMap(row => {
     if (!object(row) || !text(row.field) || !Array.isArray(row.people)) throw new Error(`Invalid field mapping row in ${mappingName(mapping)}`);
+    if (row.default !== undefined && row.default !== "off") throw new Error(`Invalid field default in ${mappingName(mapping)}: ${row.field}`);
     if (!row.people.includes(person)) return [];
     const id = row.field;
+    if (row.default === "off" ? !included.has(id) : hidden.has(id)) return [];
     const listed = registered.filter(entry => object(entry) && entry.id === id);
     const found = details.filter(entry => object(entry) && entry.id === id);
     if (listed.length !== 1 || found.length !== 1 || !object(found[0])) throw new Error(`Missing or ambiguous field requirement: ${id}`);
@@ -148,6 +163,86 @@ export function resolveMappedFields(
       definition.options = options;
     } else if (object(override) && override.options !== undefined) throw new Error(`Invalid site option override: ${siteId}/${id}`);
     return [definition];
+  });
+}
+
+/** Stable saved-answer key for a mapped field and person. */
+export function requirementAnswerKey(fieldId: string, person: RequirementPerson): string {
+  return person === "self" ? fieldId : `${person}-${fieldId}`;
+}
+
+/** Parse only fields actually mapped to the indicated person. */
+export function parseRequirementAnswerKey(key: string, source: RequirementFieldSource = defaultSource()): { field: string; person: RequirementPerson } | undefined {
+  const person: RequirementPerson = key.startsWith("spouse-") ? "spouse" : key.startsWith("child-") ? "child" : "self";
+  const field = person === "self" ? key : key.slice(person.length + 1);
+  return source.mappings.some(mapping => object(mapping) && Array.isArray(mapping.fields) && mapping.fields.some(row => object(row) && row.field === field && Array.isArray(row.people) && row.people.includes(person))) ? { field, person } : undefined;
+}
+
+/** Pages whose saved field definitions come from the requirements JSON. A page is added once its JSON review is agreed. */
+export const requirementPages: Record<string, RequirementMapping> = {
+  membership: { component: "membership" },
+  eligibility: { component: "eligibility" },
+};
+
+const requirementContent = (): Record<string, unknown> => Object.assign({}, ...jsonModules(import.meta.glob("../../requirements/global/content/*.json", { eager: true })));
+const requirementPageFiles = () => jsonModules(import.meta.glob("../../requirements/parked/*.json", { eager: true }));
+
+// Runtime section ids for the requirements' section ids, per rolled-out page with section notes.
+const runtimeSections: Record<string, Record<string, string>> = {
+  eligibility: { self: "selfEligibility", spouse: "spouseSection", children: "childSection" },
+};
+
+/**
+ * Section info alerts for a rolled-out page, keyed by runtime section id: the
+ * site's page file chooses first (`notes`), then the page's section `note`.
+ */
+export function requirementSectionNotes(
+  pageKey: string,
+  siteId: string,
+  source: RequirementFieldSource = defaultSource(),
+  content: Record<string, unknown> = requirementContent(),
+  pages: unknown[] = requirementPageFiles(),
+): Record<string, string> | undefined {
+  const sections = runtimeSections[pageKey];
+  if (!sections || !requirementPages[pageKey] || !siteUsesRequirementFields(siteId, source)) return undefined;
+  const page = pages.find(file => object(file) && file.page === pageKey) as { sections?: Record<string, { note?: string }> } | undefined;
+  const siteNotes = (source.sitePages?.[siteId]?.[pageKey] as { notes?: Record<string, string> } | undefined)?.notes ?? {};
+  const notes: Record<string, string> = {};
+  for (const [section, runtimeId] of Object.entries(sections)) {
+    const key = siteNotes[section] ?? page?.sections?.[section]?.note;
+    if (!key) continue;
+    if (typeof content[key] !== "string") throw new Error(`Section note ${key} for ${pageKey}/${section} is not in the requirements content`);
+    notes[runtimeId] = content[key] as string;
+  }
+  return notes;
+}
+
+// Keys the requirements JSON owns; anything else on a saved definition (validators, phone bindings) is kept.
+const authoredKeys = ["label", "inputType", "required", "displayName", "format", "inputMode", "allowDecimal", "multiline", "placeholder", "helperText", "autoComplete", "options"] as const;
+
+/**
+ * Replace a rolled-out page's saved field definitions with the requirements JSON
+ * for sites that load from JSON. Placement, order and inclusion stay with the page.
+ */
+export function withRequirementPageFields<T extends { definition: FieldDefinition }>(
+  pageKey: string,
+  fields: T[],
+  siteId: string,
+  source: RequirementFieldSource = defaultSource(),
+): T[] {
+  const mapping = requirementPages[pageKey];
+  if (!mapping || !siteUsesRequirementFields(siteId, source)) return fields;
+  const resolved = new Map<RequirementPerson, Map<string, FieldDefinition>>();
+  for (const person of ["self", "spouse", "child"] as const) {
+    resolved.set(person, new Map(resolveMappedFields(mapping, { siteId, page: pageKey, person, source }).map(field => [field.id, field])));
+  }
+  return fields.flatMap(field => {
+    const parsed = parseRequirementAnswerKey(field.definition.id, source);
+    const definition = parsed && resolved.get(parsed.person)?.get(parsed.field);
+    if (!definition) return pageKey === "eligibility" ? [] : [field];
+    const kept: Record<string, unknown> = { ...field.definition };
+    for (const key of authoredKeys) delete kept[key];
+    return [{ ...field, definition: { ...kept, ...definition, id: field.definition.id } as FieldDefinition }];
   });
 }
 

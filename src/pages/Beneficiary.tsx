@@ -291,6 +291,21 @@ export default function Beneficiary() {
     });
   }
 
+  const allApplicantProducts = [...applicantProducts.member, ...applicantProducts.spouse];
+  function canApplyBeneficiary(product: ProductContext, item: BeneficiaryItem) {
+    return !validateBeneficiaryRecords([...getProductBeneficiaries(product.productKey), item], getFieldSurface("beneficiaryIndividual"), getFieldSurface("beneficiaryTrust"));
+  }
+  function offerApplyToOthers(source: ProductContext, item: BeneficiaryItem) {
+    const targets = allApplicantProducts.filter(product => product.productKey !== source.productKey && canApplyBeneficiary(product, item));
+    if (!targets.length) return false;
+    setApplyToOthersItem(item);
+    setApplyToOthersSource(source);
+    setApplyToOthersSelected(targets.map(product => product.productKey));
+    setApplyToOthersError(null);
+    setApplyToOthersOpen(true);
+    return true;
+  }
+
   function openAddModal(product: ProductContext) {
     setActiveProduct(product);
     setEditingId(null);
@@ -453,29 +468,16 @@ export default function Beneficiary() {
 
     upsertProductBeneficiaries(activeProduct.productKey, nextList);
 
-    // After saving (not editing), offer to apply to other products
-    if (!editingId) {
-      const applicantId = activeProduct.applicantId;
-      const otherProducts = applicantProducts[
-        applicantId === "member" ? "member" : "spouse"
-      ].filter((p) => p.productKey !== activeProduct.productKey);
-
-      if (otherProducts.length > 0) {
-        setApplyToOthersItem(nextItem);
-        setApplyToOthersSource(activeProduct);
-        setApplyToOthersSelected([]);
-        setApplyToOthersError(null);
-        setApplyToOthersOpen(true);
-        closeModal();
-        return;
-      }
-    }
-
+    if (!editingId) offerApplyToOthers(activeProduct, nextItem);
     closeModal();
   }
 
   function applyBeneficiaryToSelected() {
     if (!applyToOthersItem || !applyToOthersSource) return;
+    if (!applyToOthersSelected.length) {
+      setApplyToOthersError("Select at least one coverage or skip this step.");
+      return;
+    }
 
     const nextBeneficiaries = { ...beneficiariesByProduct };
 
@@ -519,6 +521,8 @@ export default function Beneficiary() {
       quickDecision={coverages.some(coverage => coverage.id === product.coverageId && !coverage.underwritingBands?.length && coverage.underwritingType === "QD")}
       capacityMessage={isProductFullyMaxed(product.productKey) ? content.beneficiary.noMoreOnlineMessage : undefined}
       onEdit={item => openEditModal(product, item)} onRemove={id => removeBeneficiary(product.productKey, id)} onAdd={() => openAddModal(product)}
+      onApply={allApplicantProducts.some(target => target.productKey !== product.productKey) ? item => offerApplyToOthers(product, item) : undefined}
+      canApply={item => allApplicantProducts.some(target => target.productKey !== product.productKey && canApplyBeneficiary(target, item))}
       addButtonRef={element => { addBeneficiaryButtonRefs.current[product.productKey] = element; }} />;
   }
 
@@ -927,16 +931,15 @@ export default function Beneficiary() {
                 </Typography>
                 {(() => {
                   if (!applyToOthersSource) return null;
-                  const applicantKey =
-                    applyToOthersSource.applicantId === "member"
-                      ? "member"
-                      : "spouse";
-                  const otherProducts = applicantProducts[applicantKey].filter(
+                  const otherProducts = allApplicantProducts.filter(
                     (p) => p.productKey !== applyToOthersSource.productKey,
                   );
                   return (
-                    <Stack spacing={1}>
-                      {otherProducts.map((product) => (
+                    <Stack spacing={2}>
+                      {(["member", "spouse"] as const).map(applicant => {
+                        const products = otherProducts.filter(product => product.applicantId === applicant);
+                        return products.length ? <ApplicantSectionDivider key={applicant} applicant={applicant === "member" ? "self" : "spouse"} showLabel={applicantProducts.spouse.length > 0}>
+                        <Stack spacing={1}>{products.map((product) => (
                         <Box
                           key={product.productKey}
                           sx={{
@@ -950,13 +953,14 @@ export default function Beneficiary() {
                               id: `apply-beneficiary-${product.productKey}`,
                               label: product.coverageName,
                               inputType: "checkbox",
-                              disabled: !!applyToOthersItem && !!validateBeneficiaryRecords([...(Array.isArray(beneficiariesByProduct[product.productKey]) ? beneficiariesByProduct[product.productKey] : []), applyToOthersItem], getFieldSurface("beneficiaryIndividual"), getFieldSurface("beneficiaryTrust")),
+                              disabled: !!applyToOthersItem && !canApplyBeneficiary(product, applyToOthersItem),
                             }}
                             value={applyToOthersSelected.includes(product.productKey)}
                             onChange={checked => setApplyToOthersSelected(prev => checked ? [...prev, product.productKey] : prev.filter(key => key !== product.productKey))}
                           />
                         </Box>
-                      ))}
+                      ))}</Stack></ApplicantSectionDivider> : null;
+                      })}
                     </Stack>
                   );
                 })()}

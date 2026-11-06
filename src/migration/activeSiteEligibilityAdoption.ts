@@ -32,13 +32,13 @@ export function applyActiveSiteAgeAdoption(db: DatabaseSchema, cells: readonly S
   for (const item of work) {
     const { siteKey, productKey, applicantTypeKey, reference, ages } = item;
     const key = `${siteKey}.${productKey}.reviewed-age.${applicantTypeKey}`;
-    // Adopt the age dimension without clearing separately recorded work/unmarried
+    // Adopt the age dimension without clearing separately recorded work/student
     // constraints. Provenance for any other dimension remains on its own source.
     const existing = db.eligibilityConstraints.filter(c => c.siteKey === siteKey && c.productKey === productKey && c.applicantTypeKey === applicantTypeKey);
     if (existing.length > 1) throw new Error(`Ambiguous age target: ${key}`);
     const other = existing[0];
     const constraintKey = other?.key ?? key;
-    const constraint = { ...metadata("eligibilityConstraints", constraintKey, other && [other.minimumAgeDays, other.studentMaximumAgeYears, other.unmarried, other.minimumWorkHours].some(value => value !== null) ? `${reference}; other dimensions: ${other.sourceReference}` : reference), productKey, siteKey, applicantTypeKey, minimumAgeDays: other?.minimumAgeDays ?? null, ...ages, studentMaximumAgeYears: other?.studentMaximumAgeYears ?? null, unmarried: other?.unmarried ?? null, minimumWorkHours: other?.minimumWorkHours ?? null };
+    const constraint = { ...metadata("eligibilityConstraints", constraintKey, other && [other.minimumAgeDays, other.studentMaximumAgeYears, other.minimumWorkHours].some(value => value !== null) ? `${reference}; other dimensions: ${other.sourceReference}` : reference), productKey, siteKey, applicantTypeKey, minimumAgeDays: other?.minimumAgeDays ?? null, ...ages, studentMaximumAgeYears: other?.studentMaximumAgeYears ?? null, minimumWorkHours: other?.minimumWorkHours ?? null };
     db.eligibilityConstraints = db.eligibilityConstraints.filter(c => c.siteKey !== siteKey || c.productKey !== productKey || c.applicantTypeKey !== applicantTypeKey);
     db.eligibilityConstraints.push(constraint);
     const requirementKey = `mcr.main.${reference.split("!")[1]}`;

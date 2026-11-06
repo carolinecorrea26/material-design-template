@@ -12,7 +12,7 @@ import { mcrSource } from "./mcr";
 import { isBenefitPolicy } from "../domain/benefitPolicy";
 import { usJurisdictions, type ResidencyPolicy } from "../domain/residencyPolicy";
 
-const reference = "docs/step3-journey-adoption.md";
+const reference = "docs/archive/step3-journey-adoption.md";
 const meta = (table: string, key: string) => ({ id: key, key, ...libraryMetadata(table, key, reference) });
 function persist(db: DatabaseSchema, siteKey: string, key: string, target: ConfigurationTarget, value: unknown, sourceReferences: string[], preserveDecision = false) {
   // Explicitly reviewed association portfolios own their authored mappings and
@@ -76,7 +76,7 @@ export function applyCoverageJourneyAdoption(db: DatabaseSchema) {
         let constraint = db.eligibilityConstraints.find(c => c.siteKey === siteKey && c.productKey === productKey && c.applicantTypeKey === applicant.applicantKey);
         if (!constraint) {
           const key = `${siteKey}.${productKey}.${applicant.applicantKey}.journey-eligibility`;
-          constraint = { ...meta("eligibilityConstraints", key), siteKey, productKey, applicantTypeKey: applicant.applicantKey, minimumAgeDays: null, minimumAgeYears: null, maximumAgeYears: null, studentMaximumAgeYears: null, unmarried: null, minimumWorkHours: null };
+          constraint = { ...meta("eligibilityConstraints", key), siteKey, productKey, applicantTypeKey: applicant.applicantKey, minimumAgeDays: null, minimumAgeYears: null, maximumAgeYears: null, studentMaximumAgeYears: null, minimumWorkHours: null };
           db.eligibilityConstraints.push(constraint);
         }
         if (constraint.minimumAgeYears === null && constraint.minimumAgeDays === null) { constraint.minimumAgeYears = applicant.applicantKey === "child" ? 0 : 18; constraintDestinations.push({ table: "eligibilityConstraints", key: constraint.key, column: "minimumAgeYears" }); }

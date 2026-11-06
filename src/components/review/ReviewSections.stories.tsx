@@ -24,7 +24,7 @@ function SectionsExample({ spouse = false, advisor = false }: { spouse?: boolean
       readAndSignText={reviewContent.readAndSignContent}
       beforeConsentNotices={[]} blocks={[]} additionalFields={[]}
       selfConsentField={fieldCatalog['review-self-consent']} spouseConsentField={spouse ? fieldCatalog['review-spouse-consent'] : undefined}
-      onPrint={fn()} onDownload={fn()} />
+      onPrint={fn()} />
   </>}</SectionStoryForm>;
 }
 export const Default: StoryObj = { render: () => <SectionsExample /> };

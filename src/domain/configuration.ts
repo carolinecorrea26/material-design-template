@@ -344,6 +344,7 @@ export type ClientConfig = {
   tpaIntegration?: {
     mode: "coverage-verification" | "membership-auto-approval";
     lookupFields: string[];
+    requireAddressBeforeVerification?: boolean;
     prototypeRecords?: Array<{ facts: Record<string, string>; activeCoverage: boolean }>;
   };
   /** Per-client configuration for the "Questions? We're here to help" contact box in outbound emails. */

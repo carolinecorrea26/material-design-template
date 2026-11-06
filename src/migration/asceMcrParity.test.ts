@@ -17,7 +17,7 @@ it('permits child Life without medical underwriting and preserves one-plan exclu
   installPrototypeLibrary(library);
   const term = library.products.find(product => product.id === 'li-10yr')!;
   expect(term.requirements?.maximumPlans).toContainEqual({ applicantType: 'child', categoryId: 'LI', count: 1 });
-  expect(applicationUnderwriting(term, 'child', { children: [{ birthDate: '2016-01-01', unmarried: 'yes', fullTimeStudent: 'no' }], coverageAmounts: { 'li-10yr:child': 10000 } })).toMatchObject({ status: 'resolved', underwritingType: 'NA' });
+  expect(applicationUnderwriting(term, 'child', { children: [{ "child-birth-date": '2016-01-01', "child-full-time-student": 'no' }], coverageAmounts: { 'li-10yr:child': 10000 } })).toMatchObject({ status: 'resolved', underwritingType: 'NA' });
 });
 it('uses the MCR AD&D increments', () => {
   const accident = library.products.find(product => product.id === 'li-add')!;

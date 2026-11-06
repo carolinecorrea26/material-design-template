@@ -34551,7 +34551,7 @@
               "displayId": 37799044615208,
               "key": "asce.di-ltd.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -35172,7 +35172,7 @@
               "displayId": 188982831878966,
               "key": "asce.di-ltd.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -35267,7 +35267,7 @@
               "displayId": 271896116160763,
               "key": "asce.di-ltd.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -35313,7 +35313,7 @@
               "displayId": 14789013096328,
               "key": "asce.di-ltd.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -35428,7 +35428,7 @@
               "displayId": 40420429669918,
               "key": "asce.di-ltd.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -35462,7 +35462,7 @@
               "displayId": 10748161384068,
               "key": "asce.li-10yr.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -35776,7 +35776,7 @@
               "displayId": 223453146527242,
               "key": "asce.li-10yr.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -35868,7 +35868,7 @@
               "displayId": 97212693733503,
               "key": "asce.li-10yr.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -35933,7 +35933,7 @@
               "displayId": 279899715430692,
               "key": "asce.li-10yr.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -35989,7 +35989,7 @@
               "displayId": 268978550528858,
               "key": "asce.li-10yr.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36023,7 +36023,7 @@
               "displayId": 49945055617285,
               "key": "asce.li-20yr.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36337,7 +36337,7 @@
               "displayId": 212017198096249,
               "key": "asce.li-20yr.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36429,7 +36429,7 @@
               "displayId": 272989601903244,
               "key": "asce.li-20yr.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36494,7 +36494,7 @@
               "displayId": 172342984238417,
               "key": "asce.li-20yr.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36550,7 +36550,7 @@
               "displayId": 131483184684051,
               "key": "asce.li-20yr.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36584,7 +36584,7 @@
               "displayId": 142561691133317,
               "key": "asce.li-add.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36884,7 +36884,7 @@
               "displayId": 160706060378361,
               "key": "asce.li-add.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36972,7 +36972,7 @@
               "displayId": 221678464185356,
               "key": "asce.li-add.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -37016,7 +37016,7 @@
               "displayId": 257915654497745,
               "key": "asce.li-add.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -37074,7 +37074,7 @@
               "displayId": 37863770264723,
               "key": "asce.li-add.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -37108,7 +37108,7 @@
               "displayId": 178773073233068,
               "key": "asce.li-term.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -37529,7 +37529,7 @@
               "displayId": 7035650815666,
               "key": "asce.li-term.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -37621,7 +37621,7 @@
               "displayId": 179230679236743,
               "key": "asce.li-term.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -37663,7 +37663,7 @@
               "displayId": 149944353707100,
               "key": "asce.li-term.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -37719,7 +37719,7 @@
               "displayId": 156992090663490,
               "key": "asce.li-term.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -37800,7 +37800,7 @@
               "displayId": 175116416020371,
               "key": "asce.life-aggregate-participation",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -39798,14 +39798,14 @@
               "displayId": 23706802492825,
               "key": "rates.reviewed-presentation.global",
               "providedBy": null,
-              "sourceReference": "docs/step3-major-outstanding-items.md",
+              "sourceReference": "docs/archive/step3-major-outstanding-items.md",
               "table": "configurationValues"
             },
             {
               "displayId": 120564243999562,
               "key": "rates.reviewed-presentation.asce",
               "providedBy": null,
-              "sourceReference": "docs/step3-major-outstanding-items.md",
+              "sourceReference": "docs/archive/step3-major-outstanding-items.md",
               "table": "configurationValues"
             }
           ],
@@ -39939,7 +39939,7 @@
               "displayId": 245822556998220,
               "key": "asce.review-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -50148,7 +50148,7 @@
               "displayId": 175116416020371,
               "key": "asce.life-aggregate-participation",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -70676,7 +70676,7 @@
                   "displayId": 37799044615208,
                   "key": "asce.di-ltd.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -71463,7 +71463,7 @@
                   "displayId": 271896116160763,
                   "key": "asce.di-ltd.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -71511,7 +71511,7 @@
                   "displayId": 14789013096328,
                   "key": "asce.di-ltd.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -71558,7 +71558,7 @@
                   "displayId": 188982831878966,
                   "key": "asce.di-ltd.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -71639,7 +71639,7 @@
                   "displayId": 40420429669918,
                   "key": "asce.di-ltd.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -72153,7 +72153,7 @@
                   "displayId": 10748161384068,
                   "key": "asce.li-10yr.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -72574,7 +72574,7 @@
                   "displayId": 97212693733503,
                   "key": "asce.li-10yr.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -72641,7 +72641,7 @@
                   "displayId": 279899715430692,
                   "key": "asce.li-10yr.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -72688,7 +72688,7 @@
                   "displayId": 223453146527242,
                   "key": "asce.li-10yr.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -72766,7 +72766,7 @@
                   "displayId": 268978550528858,
                   "key": "asce.li-10yr.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -73497,7 +73497,7 @@
                   "displayId": 49945055617285,
                   "key": "asce.li-20yr.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -73918,7 +73918,7 @@
                   "displayId": 272989601903244,
                   "key": "asce.li-20yr.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -73985,7 +73985,7 @@
                   "displayId": 172342984238417,
                   "key": "asce.li-20yr.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -74032,7 +74032,7 @@
                   "displayId": 212017198096249,
                   "key": "asce.li-20yr.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -74110,7 +74110,7 @@
                   "displayId": 131483184684051,
                   "key": "asce.li-20yr.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -74723,7 +74723,7 @@
                   "displayId": 142561691133317,
                   "key": "asce.li-add.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -75097,7 +75097,7 @@
                   "displayId": 221678464185356,
                   "key": "asce.li-add.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -75143,7 +75143,7 @@
                   "displayId": 257915654497745,
                   "key": "asce.li-add.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -75190,7 +75190,7 @@
                   "displayId": 160706060378361,
                   "key": "asce.li-add.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -75264,7 +75264,7 @@
                   "displayId": 37863770264723,
                   "key": "asce.li-add.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -75799,7 +75799,7 @@
                   "displayId": 178773073233068,
                   "key": "asce.li-term.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -76314,7 +76314,7 @@
                   "displayId": 179230679236743,
                   "key": "asce.li-term.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -76358,7 +76358,7 @@
                   "displayId": 149944353707100,
                   "key": "asce.li-term.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -76405,7 +76405,7 @@
                   "displayId": 7035650815666,
                   "key": "asce.li-term.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -76629,7 +76629,7 @@
                     "displayId": 156992090663490,
                     "key": "asce.li-term.selection-policy",
                     "providedBy": null,
-                    "sourceReference": "docs/step3-journey-adoption.md",
+                    "sourceReference": "docs/archive/step3-journey-adoption.md",
                     "table": "configurationValues"
                   },
                   {
@@ -76750,7 +76750,7 @@
                   "displayId": 156992090663490,
                   "key": "asce.li-term.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 },
                 {
@@ -76940,14 +76940,14 @@
               "displayId": 23706802492825,
               "key": "rates.reviewed-presentation.global",
               "providedBy": null,
-              "sourceReference": "docs/step3-major-outstanding-items.md",
+              "sourceReference": "docs/archive/step3-major-outstanding-items.md",
               "table": "configurationValues"
             },
             {
               "displayId": 120564243999562,
               "key": "rates.reviewed-presentation.asce",
               "providedBy": null,
-              "sourceReference": "docs/step3-major-outstanding-items.md",
+              "sourceReference": "docs/archive/step3-major-outstanding-items.md",
               "table": "configurationValues"
             }
           ],
@@ -76967,7 +76967,7 @@
               "displayId": 245822556998220,
               "key": "asce.review-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -86382,7 +86382,7 @@
                   "displayId": 80709024123521,
                   "key": "asce.li-add.child.journey-eligibility",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "eligibilityConstraints"
                 }
               ],
@@ -86595,7 +86595,7 @@
             "displayId": 79313607632739,
             "key": "provisional-decision.asce.di-ltd.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -87245,7 +87245,7 @@
             "displayId": 18044339255059,
             "key": "provisional-decision.asce.di-ltd.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -87351,7 +87351,7 @@
             "displayId": 240791071819822,
             "key": "provisional-decision.asce.di-ltd.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -87415,7 +87415,7 @@
             "displayId": 52469854343585,
             "key": "provisional-decision.asce.di-ltd.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -87478,7 +87478,7 @@
             "displayId": 54600462980109,
             "key": "provisional-decision.asce.li-10yr.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -87821,7 +87821,7 @@
             "displayId": 20931489761857,
             "key": "provisional-decision.asce.li-10yr.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -87924,7 +87924,7 @@
             "displayId": 253212063930676,
             "key": "provisional-decision.asce.li-10yr.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -88007,7 +88007,7 @@
             "displayId": 77276377495291,
             "key": "provisional-decision.asce.li-10yr.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -88070,7 +88070,7 @@
             "displayId": 102969755752716,
             "key": "provisional-decision.asce.li-20yr.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -88413,7 +88413,7 @@
             "displayId": 11202190698130,
             "key": "provisional-decision.asce.li-20yr.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -88516,7 +88516,7 @@
             "displayId": 219252200795367,
             "key": "provisional-decision.asce.li-20yr.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -88599,7 +88599,7 @@
             "displayId": 218321922588834,
             "key": "provisional-decision.asce.li-20yr.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -88662,7 +88662,7 @@
             "displayId": 214455220761725,
             "key": "provisional-decision.asce.li-add.journey-eligibility",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -88699,7 +88699,7 @@
             "displayId": 171188516026574,
             "key": "provisional-decision.asce.li-add.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -89028,7 +89028,7 @@
             "displayId": 149171154882752,
             "key": "provisional-decision.asce.li-add.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -89127,7 +89127,7 @@
             "displayId": 256030259363421,
             "key": "provisional-decision.asce.li-add.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -89189,7 +89189,7 @@
             "displayId": 146333390671932,
             "key": "provisional-decision.asce.li-add.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -89252,7 +89252,7 @@
             "displayId": 139686530653793,
             "key": "provisional-decision.asce.li-term.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -89702,7 +89702,7 @@
             "displayId": 46558103940445,
             "key": "provisional-decision.asce.li-term.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -89805,7 +89805,7 @@
             "displayId": 112495890224512,
             "key": "provisional-decision.asce.li-term.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -89865,7 +89865,7 @@
             "displayId": 203322424394959,
             "key": "provisional-decision.asce.li-term.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],

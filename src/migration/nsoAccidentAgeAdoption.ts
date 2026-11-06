@@ -40,7 +40,7 @@ export function applyNsoAccidentChildAgeAdoption(db: DatabaseSchema) {
     authority, sourceReconciliation: "source-adopted", runtimeActivation: "reviewed-seed", scope: ["nso"], productKeys: ["li-add"], sourceReferences: ["Main!Q320"],
     selected: { maximumAgeYears: 18, studentMaximumAgeYears: 25 },
     owners: [{ table: "eligibilityConstraints", key: row.key, reviewedValue: structuredClone(row) }],
-    interpretation: "Use the shared full-time-student child field and canonical student extension. Ages 19–25 require Yes; older children are ineligible. Preserve other child constraints and the separately provisional family benefit percentages. No unmarried requirement is inferred from Main!T320=No.",
+    interpretation: "Use the shared full-time-student child field and canonical student extension. Ages 19–25 require Yes; older children are ineligible. Preserve other child constraints and the separately provisional family benefit percentages.",
   } as unknown as Json };
   const index = db.semanticRequirements.findIndex(row => row.key === key); if (index < 0) db.semanticRequirements.push(record); else db.semanticRequirements[index] = record;
 }

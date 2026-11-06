@@ -12,7 +12,7 @@ import { useForm, useWatch } from "react-hook-form";
 import FieldRenderer from "../../components/forms/FieldRenderer";
 import { fieldCatalog } from "../../config/fields";
 import { coverageFactFieldIds } from "../../config/fields/coverageFactFields";
-import { resolveApplicationCoverage } from "../../domain/coverageRuntime";
+import { resolveApplicationCoverage, validateApplicationCoverages } from "../../domain/coverageRuntime";
 import { numericFact } from "../../utils/applicantFacts";
 import { categoryEligibility, readCategoryEligibilityPolicy } from "../../domain/categoryEligibilityPolicy";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -68,10 +68,9 @@ import { useApplicationForm } from "../ApplicationFormContext";
 import {
   executeQuoteApplyTransition,
 } from "../../config/applicationTransitions";
-import { reconcileApplicationRiders } from "../../domain/applicationRiders";
+import { applicationRiderOptions, reconcileApplicationRiders } from "../../domain/applicationRiders";
 import { productMonthlyPremium, quoteRiders } from "../../domain/pricing";
 import { getDisplayedPremium } from "../../utils/coverageDisplay";
-import { getCoverageAmountChoices } from "../../utils/coverageAmounts";
 import { evaluateConditionDefinition } from "../../config/conditions/evaluateConditions";
 import { withRequirementFields } from "../../domain/requirementFields";
 import { quoteFollowUps } from "./quoteFollowUps";
@@ -199,6 +198,7 @@ export default function QuoteCalculator({
   const monthlyExpenses = String(inputValues['monthly-business-expenses'] ?? '').replace(/[^0-9]/g, '');
   const responsibilityPct = String(inputValues['business-expense-responsibility'] ?? '');
   const [fieldsAttempted, setFieldsAttempted] = useState(false);
+  const [applyError, setApplyError] = useState("");
   const fieldErrors: Record<string, string> = {};
   for (const field of quoteInputFields) {
     const value = inputValues[field.id];
@@ -233,17 +233,18 @@ export default function QuoteCalculator({
     [coverages, selectedCategories, categoryPolicy, categoryAnswer, activeClient],
   );
 
-  const quoteRiderElections = reconcileApplicationRiders(
-    categoryProducts.map(product => ({ ...product, riders: quoteRiders(product) })),
-    { dependents: [], coverageAmounts: amountsByKey, coverageRiders: riderChoices, coverageRiderAmounts: riderAmountChoices },
-  );
   const factForm = useForm<Record<string, string | boolean | string[]>>({ defaultValues: Object.fromEntries(coverageFactFieldIds(coverages, values, "presented").map(id => [id, String(values[id] ?? "")])) });
   const contextualFacts = factForm.watch();
-  const quoteValues = { ...values, ...contextualFacts, ...inputValues,
+  const quoteFacts = { ...values, ...contextualFacts, ...inputValues,
     "birth-date": collectEligibility ? eligibilityValues.birthday : initialEligibility?.birthday ?? values["birth-date"],
     "state-province": collectEligibility ? eligibilityValues.state : initialEligibility?.state ?? values["state-province"],
     "hours-worked-per-week": quoteInputFields.some(field => field.id === "hours-worked-per-week") ? hoursPerWeek : contextualFacts["hours-worked-per-week"] ?? values["hours-worked-per-week"], "average-monthly-income": avgIncome, "monthly-business-expenses": monthlyExpenses, "business-expense-responsibility": responsibilityPct,
-    productApplicants, coverageAmounts: amountsByKey, ...quoteRiderElections, coverageSelections: categoryProducts.filter(product => (productApplicants[product.id] ?? []).length > 0).map(product => product.id) };
+    productApplicants, coverageAmounts: amountsByKey };
+  const quoteRiderElections = reconcileApplicationRiders(
+    categoryProducts.map(product => ({ ...product, riders: quoteRiders(product) })),
+    { ...quoteFacts, dependents: [], coverageRiders: riderChoices, coverageRiderAmounts: riderAmountChoices },
+  );
+  const quoteValues = { ...quoteFacts, ...quoteRiderElections, coverageSelections: categoryProducts.filter(product => (productApplicants[product.id] ?? []).length > 0).map(product => product.id) };
   const quoteBehavior = (product: CoverageDefinition, applicant: CoverageApplicantId = "member") => resolveApplicationCoverage(product, applicant, quoteValues, coverages, { deferUnansweredMembership: true });
 
   const workThresholds = categoryProducts.map(product => product.requirements?.eligibility?.find(rule => rule.applicantType === "member")?.minimumWorkHoursPerWeek);
@@ -266,6 +267,7 @@ export default function QuoteCalculator({
    * coverage question or category selection is edited after the quote was
    * already revealed — mirrors the Coverage page's handleCoverageQuestionChange. */
   function handleQuoteFieldChange() {
+    setApplyError("");
     if (showProducts) {
       setShowProducts(false);
       setFieldsAttempted(false);
@@ -471,7 +473,22 @@ export default function QuoteCalculator({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProducts, productApplicants, amountsByKey, riderChoices, riderAmountChoices, rateFrequency, calculatingRates, prototypeRates]);
 
-  function handleApply() {
+  async function handleApply() {
+    setFieldsAttempted(true);
+    setApplyError("");
+    if (!isFieldsValid) {
+      setApplyError("Please correct the quote answers before applying.");
+      return;
+    }
+    if (!await factForm.trigger(coverageFactFieldIds(categoryProducts, quoteValues, "presented"))) {
+      setApplyError("Please complete the coverage eligibility information before applying.");
+      return;
+    }
+    const coverageError = validateApplicationCoverages(coverages, quoteValues, { deferUnansweredMembership: true, deferProfileUnderwriting: true });
+    if (coverageError) {
+      setApplyError(coverageError);
+      return;
+    }
     // Validate eligibility fields if collecting them here
     if (collectEligibility) {
       setEligibilityAttempted(true);
@@ -535,6 +552,7 @@ export default function QuoteCalculator({
   const calculatorContent = (
     <Stack spacing={3}>
         {coverages.length === 0 && <Alert severity="info">{coverageLinkUnavailableMessage}</Alert>}
+        {applyError && <Alert severity="error">{applyError}</Alert>}
         {displayMode === "inline" && (
           <PageHeader
             title={inlineStepCopy.title}
@@ -698,8 +716,9 @@ export default function QuoteCalculator({
                               riders={quoteRiders(product).map(rider => {
                                 const riderKey = `${product.id}:${rider.id}:member`;
                                 const checked = !!quoteRiderElections.coverageRiders[riderKey];
-                                return { id: rider.id, name: rider.name, description: rider.description, checked, disabled: !!rider.included || currentAmount <= 0,
-                                  amount: rider.hasAmount && rider.coverageAmounts ? { label: rider.amountLabel ?? "Rider Benefit Amount", value: quoteRiderElections.coverageRiderAmounts[riderKey] ?? rider.defaultAmount ?? 0, choices: [...(rider.included ? [] : [0]), ...getCoverageAmountChoices({ coverageAmounts: rider.coverageAmounts }, "member")] } : undefined };
+                                const options = applicationRiderOptions(product, rider, "member", quoteValues);
+                                return { id: rider.id, name: rider.name, description: rider.description, checked, disabled: !!rider.included || currentAmount <= 0 || !options.available,
+                                  amount: rider.hasAmount && rider.coverageAmounts ? { label: rider.amountLabel ?? "Rider Benefit Amount", value: quoteRiderElections.coverageRiderAmounts[riderKey] ?? rider.defaultAmount ?? 0, choices: [...(rider.included || options.configured ? [] : [0]), ...options.choices] } : undefined };
                               })}
                               onRiderToggle={riderId => handleRiderToggle(product, riderId)}
                               onRiderAmountChange={(riderId, amount) => handleRiderAmountChange(product, riderId, amount)}

@@ -41,8 +41,11 @@ export default function PaymentSections({ control, errors, showPaymentQuestions,
         </CategoryCard>
       </Stack>)}
       {bankFields.length > 0 && <Stack spacing={1.5} sx={{ pt: 1 }}>
-        <SectionDivider label="Banking Information" variant="subsection" />
-        {bankFields.map(field => <FieldRenderer key={field.id} field={field} control={control} errors={errors} />)}
+        <SectionDivider label="Banking Information" variant="subsection">
+          <Stack spacing={1.5}>
+            {bankFields.map(field => <FieldRenderer key={field.id} field={field} control={control} errors={errors} />)}
+          </Stack>
+        </SectionDivider>
       </Stack>}
     </>}
     <Box sx={{ mt: 3, color: 'text.secondary' }}>

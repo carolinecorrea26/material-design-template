@@ -20,11 +20,13 @@ import ValidationLibrary from "./library/ValidationLibrary";
 import AccessibilityLibrary from "./library/AccessibilityLibrary";
 import RequirementChangesLibrary from "./library/RequirementChangesLibrary";
 import FormulasLibrary from "./library/FormulasLibrary";
+import ComponentCatalogTable from "../../components/docs/ComponentCatalogTable";
 
 export const libraryTabs = [
   { id: "overview", label: "Overview" },
   { id: "pages", label: "Pages" },
   { id: "fields", label: "Fields" },
+  { id: "components", label: "Components" },
   { id: "flows", label: "Flows" },
   { id: "rules", label: "Rules" },
   { id: "validation", label: "Validations" },
@@ -33,12 +35,13 @@ export const libraryTabs = [
   { id: "content", label: "Content" },
   { id: "accessibility", label: "Accessibility" },
   { id: "analytics", label: "Analytics" },
-  { id: "changes", label: "Requirement changes" },
+  { id: "changes", label: "Fresh-start changelog" },
 ];
 const domainDescriptions: Record<string, string> = {
   overview: "Client, association and TPA information, with an interactive Site preview.",
   pages: "Browse pages by flow, requirement and available fields, grouped by page, modal and drawer. Select a Site to see its configured requirements, including pages set to none. Page sequence is defined by the navigation rules for each flow.",
   fields: "Browse field IDs, input labels, types, Storybook components, keyboards, options, defaults and helper text. Page and section usage is listed below the field catalog.",
+  components: "The complete shared component reference used by Storybook, with examples and application placements.",
   validation: "Page errors, field errors, and application recovery and processing states.",
   analytics: "Review the pages, fields, controls, overlays, and tools that need analytics tags, including event triggers, Site applicability, and tagging gaps.",
   formulas: "Pricing and calculation formulas from requirements/global/formulas. Mock formulas stand in where actual rate requirements do not exist; Library rate modifiers, billing and reference rate tables still apply.",
@@ -56,7 +59,12 @@ const domainDescriptions: Record<string, string> = {
   communications: "Inspect transactional email templates and their contact configuration.",
   themes: "Inspect branding, icons and design foundations, with interactive theme previews for the selected scope.",
 };
-const aliases: Record<string, string> = { components: "pages", "client-information": "overview", "site-preview": "overview", templates: "configurations", themes: "configurations", products: "configurations", coverage: "configurations", "coverage-review": "configurations", "url-parameters": "configurations", features: "configurations", emails: "content", communications: "content", documents: "content", "pages-fields": "pages", "site-details": "pages", "site-overview": "pages", patterns: "rules", flags: "rules", validations: "validation" };
+const aliases: Record<string, string> = { "client-information": "overview", "site-preview": "overview", templates: "configurations", themes: "configurations", products: "configurations", coverage: "configurations", "coverage-review": "configurations", "url-parameters": "configurations", features: "configurations", emails: "content", communications: "content", documents: "content", "pages-fields": "pages", "site-details": "pages", "site-overview": "pages", patterns: "rules", flags: "rules", validations: "validation" };
+
+function LibraryComponents() {
+  const { data } = useLibraryCatalog();
+  return <ComponentCatalogTable rows={data.components} />;
+}
 
 function StoredSitePreview({ siteKey }: { siteKey: string }) {
   const catalog = useLibraryCatalog();
@@ -99,7 +107,7 @@ export default function PortalLibrary() {
           <Typography variant="body2" color="text.secondary">{domainDescriptions[domain.id]}</Typography>
         </Stack>
         {domain.id === "accessibility" ? <AccessibilityLibrary siteKey={selection} /> : domain.id === "changes" ? <RequirementChangesLibrary /> : domain.id === "formulas" ? <FormulasLibrary /> : <LibraryCatalogProvider siteKey={selection}>
-          {domain.id === "pages" ? <StoredPagesLibrary siteKey={selection} /> : domain.id === "fields" ? <StoredFieldsLibrary siteKey={selection} /> : domain.id === "overview" ? <LibraryOverview siteKey={selection} legacyPreview={domainId === "site-preview"} /> : domain.id === "rules" ? <RulesLibrary siteKey={selection} /> : domain.id === "configurations" ? <ConfigurationsLibrary domain={domainId} siteKey={selection} /> : domain.id === "flows" ? <StoredFlowsLibrary siteKey={selection} /> : domain.id === "analytics" ? <AnalyticsLibrary siteKey={selection} /> : domain.id === "content" ? <ContentLibrary domain={domainId} siteKey={selection} /> : domain.id === "validation" ? <ValidationLibrary siteKey={selection} /> : <StoredLibraryDomain domain={domain.id} siteKey={selection} />}
+          {domain.id === "components" ? <LibraryComponents /> : domain.id === "pages" ? <StoredPagesLibrary siteKey={selection} /> : domain.id === "fields" ? <StoredFieldsLibrary siteKey={selection} /> : domain.id === "overview" ? <LibraryOverview siteKey={selection} legacyPreview={domainId === "site-preview"} /> : domain.id === "rules" ? <RulesLibrary siteKey={selection} /> : domain.id === "configurations" ? <ConfigurationsLibrary domain={domainId} siteKey={selection} /> : domain.id === "flows" ? <StoredFlowsLibrary siteKey={selection} /> : domain.id === "analytics" ? <AnalyticsLibrary siteKey={selection} /> : domain.id === "content" ? <ContentLibrary domain={domainId} siteKey={selection} /> : domain.id === "validation" ? <ValidationLibrary siteKey={selection} /> : <StoredLibraryDomain domain={domain.id} siteKey={selection} />}
         </LibraryCatalogProvider>}
       </Stack>
       </Box>

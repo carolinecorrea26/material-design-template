@@ -33,3 +33,26 @@ it("shows the narrowed portfolio and offers explicit removal without silently de
   expect(form.setPageValues).toHaveBeenCalledWith({ coverageSelections: ["di-step-rated"] });
   expect(form.values.coverageAmounts).toEqual({ "di-step-rated:member": 1000, "li-term:member": 100000 });
 });
+
+it("disables other ASCE child Life selections but keeps the selected plan removable", async () => {
+  vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true); vi.useFakeTimers();
+  window.history.replaceState(null, "", "/coverage?site=asce");
+  installPrototypeLibrary(resolvePrototypeLibrary(db, "asce", "child-exclusivity"));
+  form.values = {
+    membership: "yes", "birth-date": "1990-01-15", "state-province": "NY", dependents: ["child"],
+    children: [{ "child-first-name": "Example", "child-last-name": "Child", "child-birth-date": "2016-01-01", "child-full-time-student": "no" }],
+    coverageSelections: ["li-term", "li-10yr"],
+    productApplicants: { "li-term": ["member"], "li-10yr": ["child"] },
+    coverageAmounts: { "li-term:member": 100000, "li-10yr:child": 10000 },
+    selectedCategoryChips: ["LI"],
+  };
+  form.setPageValues.mockImplementation(patch => Object.assign(form.values, patch));
+  container = document.createElement("div"); document.body.append(container); root = createRoot(container);
+  await act(async () => root!.render(<MemoryRouter><Coverage /></MemoryRouter>));
+  await act(async () => vi.advanceTimersByTimeAsync(1500));
+  const child = (product: string) => container.querySelector<HTMLInputElement>(`input[name="${product}:child-selected"]`)!;
+  expect(child("li-10yr").checked).toBe(true);
+  expect(child("li-10yr").disabled).toBe(false);
+  expect(child("li-term").disabled).toBe(true);
+  expect(child("li-20yr").disabled).toBe(true);
+});

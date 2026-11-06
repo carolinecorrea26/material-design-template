@@ -58,7 +58,7 @@ describe("Phase 6B normalized domain configuration", () => {
         const applicant = site.products.find(p => p.productKey === scope.productKey)!.applicants.find(a => a.applicantKey === scope.applicantKey)!;
         const c = applicant.constraints!.value;
         const product = site.configuration.products.find(p => p.productKey === scope.productKey)!;
-        const facts = { ageYears: c.minimumAgeYears ?? 1, ageDays: c.minimumAgeDays ?? 365, unmarried: c.unmarried ?? false, fullTimeStudent: false, workHoursPerWeek: c.minimumWorkHours ?? 0,
+        const facts = { ageYears: c.minimumAgeYears ?? 1, ageDays: c.minimumAgeDays ?? 365, fullTimeStudent: false, workHoursPerWeek: c.minimumWorkHours ?? 0,
           selectedPlans: product.dependencies.filter(r => r.value.applicantTypeKey === scope.applicantKey).map(({ value: r }) => ({ productKey: scope.productKey, categoryKey: r.categoryKey, applicantKey: r.requiresApplicantKey })) };
         expect(resolveEffectiveEligibility(site, scope.productKey, scope.applicantKey, facts).status, `${siteKey}/${scope.productKey}/${scope.applicantKey}`).toBe("resolved");
         if (scope.decisions.includes("underwriting")) {
@@ -118,16 +118,15 @@ describe("Phase 6B normalized domain configuration", () => {
     changed.configurationValues.push({ ...value, id: "duplicate", key: "duplicate" });
     expect(() => resolveEffectiveSite(changed, "asce")).toThrow("Ambiguous configurationValues");
   });
-  it("executes child age/day, student, unmarried, and dependent coverage constraints", () => {
+  it("executes child age/day, student, and dependent coverage constraints", () => {
     const site = resolveEffectiveSite(db, "asce");
     const product = site.products.find(p => p.applicants.some(a => a.applicantKey === "child" && a.constraints))!;
     const child = product.applicants.find(a => a.applicantKey === "child")!;
     const c = child.constraints!.value;
-    const facts = { ageDays: Math.max(c.minimumAgeDays ?? 0, 365), ageYears: c.minimumAgeYears ?? 1, unmarried: true, fullTimeStudent: false, selectedPlans: [{ productKey: product.productKey, categoryKey: "LI", applicantKey: "member" }] };
+    const facts = { ageDays: Math.max(c.minimumAgeDays ?? 0, 365), ageYears: c.minimumAgeYears ?? 1, fullTimeStudent: false, selectedPlans: [{ productKey: product.productKey, categoryKey: "LI", applicantKey: "member" }] };
     expect(resolveEffectiveEligibility(site, product.productKey, "child", facts)).toMatchObject({ status: "resolved", eligible: true });
     expect(resolveEffectiveEligibility(site, product.productKey, "child")).toMatchObject({ status: "needs-information" });
     if (c.minimumAgeDays !== null) expect(resolveEffectiveEligibility(site, product.productKey, "child", { ...facts, ageDays: c.minimumAgeDays - 1 })).toMatchObject({ status: "resolved", eligible: false });
-    if (c.unmarried) expect(resolveEffectiveEligibility(site, product.productKey, "child", { ...facts, unmarried: false })).toMatchObject({ status: "resolved", eligible: false });
     if (c.maximumAgeYears !== null && c.studentMaximumAgeYears !== null) {
       expect(resolveEffectiveEligibility(site, product.productKey, "child", { ...facts, ageYears: c.maximumAgeYears + 1, fullTimeStudent: false })).toMatchObject({ status: "resolved", eligible: false });
       expect(resolveEffectiveEligibility(site, product.productKey, "child", { ...facts, ageYears: c.studentMaximumAgeYears, fullTimeStudent: true })).toMatchObject({ status: "resolved", eligible: true });

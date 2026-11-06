@@ -1,0 +1,37 @@
+{
+  "validations": [
+    {
+      "id": "eligible-state-required",
+      "name": "State must be eligible",
+      "status": "draft",
+      "check": "page-check",
+      "level": "page",
+      "message": "eligibility.error.state-not-eligible",
+      "statement": "When eligible-states-only is on and the ZIP or postal code does not resolve to an eligible state, the page shows an error.",
+      "source": "src/pages/Eligibility.tsx",
+      "code": "VALIDATION_FAILED"
+    },
+    {
+      "id": "child-required",
+      "name": "At least one child when Child is selected",
+      "status": "draft",
+      "check": "page-check",
+      "level": "page",
+      "message": "eligibility.error.child-required",
+      "statement": "When Child is selected as a dependent, at least one child must be added.",
+      "source": "src/pages/Eligibility.tsx",
+      "code": "VALIDATION_FAILED"
+    },
+    {
+      "id": "spouse-details-required",
+      "name": "Spouse details when Spouse is selected",
+      "status": "draft",
+      "check": "page-check",
+      "level": "page",
+      "message": "eligibility.error.spouse-details",
+      "statement": "When Spouse is selected as a dependent, the spouse's details must be entered.",
+      "source": "src/pages/Eligibility.tsx",
+      "code": "VALIDATION_FAILED"
+    }
+  ]
+}

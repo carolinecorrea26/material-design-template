@@ -17,7 +17,7 @@ export type EffectiveApplicant = {
   applicantKey: string;
   provenance: RuleProvenance[];
   eligibility: ResolvedValue<{ minimumAge: number; maximumAge: number }> | null;
-  constraints: ResolvedValue<{ minimumAgeDays: number | null; minimumAgeYears: number | null; maximumAgeYears: number | null; studentMaximumAgeYears: number | null; unmarried: boolean | null; minimumWorkHours: number | null }> | null;
+  constraints: ResolvedValue<{ minimumAgeDays: number | null; minimumAgeYears: number | null; maximumAgeYears: number | null; studentMaximumAgeYears: number | null; minimumWorkHours: number | null }> | null;
   underwriting: ResolvedValue<{ minimumAge: number; maximumAge: number; minimumAmount: number; maximumAmount: number; minimumAmountExclusive: boolean; pathway: string }>[];
 };
 /** Phase 6B candidate. Unimplemented domains are explicit; this is not a browser configuration. */
@@ -66,9 +66,9 @@ export function resolveEffectiveSite(data: EffectiveSiteData, siteKey: string): 
       if (constraints.length > 1) throw new Error(`Ambiguous eligibility: ${product.productKey}/${applicant.applicantKey}`);
       if (constraints.length === 1) {
         const c = constraints[0];
-        const { minimumAgeDays, minimumAgeYears, maximumAgeYears, studentMaximumAgeYears, unmarried, minimumWorkHours } = c;
+        const { minimumAgeDays, minimumAgeYears, maximumAgeYears, studentMaximumAgeYears, minimumWorkHours } = c;
         validateEligibilityConstraint(c);
-        result.constraints = { value: { minimumAgeDays, minimumAgeYears, maximumAgeYears, studentMaximumAgeYears, unmarried, minimumWorkHours }, provenance: [provenance("eligibilityConstraints", c)] };
+        result.constraints = { value: { minimumAgeDays, minimumAgeYears, maximumAgeYears, studentMaximumAgeYears, minimumWorkHours }, provenance: [provenance("eligibilityConstraints", c)] };
       }
       if (!supported) return result;
       const inScope = (r: { siteKey: string | null; productKey: string; applicantTypeKey: string | null }) => (r.siteKey === siteKey || r.siteKey === null) && r.productKey === product.productKey && (r.applicantTypeKey === applicant.applicantKey || r.applicantTypeKey === null);
@@ -106,7 +106,7 @@ export function resolveEffectiveSite(data: EffectiveSiteData, siteKey: string): 
     const c = a.constraints!.value;
     const policy = configuration.products.find(product => product.productKey === p.productKey)!;
     // The underwriting API accepts age and amount only; additional eligibility facts cannot be supplied.
-    const ageOnly = c.minimumAgeDays === null && c.studentMaximumAgeYears === null && c.unmarried === null && c.minimumWorkHours === null
+    const ageOnly = c.minimumAgeDays === null && c.studentMaximumAgeYears === null && c.minimumWorkHours === null
       && !policy.dependencies.some(r => r.value.applicantTypeKey === a.applicantKey)
       && !policy.maximumPlans.some(r => r.value.applicantTypeKey === a.applicantKey);
     const decisions: ("eligibility" | "underwriting")[] = ["eligibility"];
@@ -118,7 +118,7 @@ export function resolveEffectiveSite(data: EffectiveSiteData, siteKey: string): 
 }
 
 export type EffectiveDecision = { status: "resolved" | "needs-information" | "unresolved" | "ineligible"; eligible?: boolean; pathway?: string; reason?: string; provenance: RuleProvenance[] };
-export type EligibilityFacts = { ageYears?: number; ageDays?: number; fullTimeStudent?: boolean; unmarried?: boolean; workHoursPerWeek?: number; activeMilitary?: boolean; activelyAtWork?: boolean; associationMember?: boolean; membershipType?: string;
+export type EligibilityFacts = { ageYears?: number; ageDays?: number; fullTimeStudent?: boolean; workHoursPerWeek?: number; activeMilitary?: boolean; activelyAtWork?: boolean; associationMember?: boolean; membershipType?: string;
   associationKey?: string;
   honorablyDischargedServiceMember?: boolean;
   firmMemberCount?: number;
@@ -160,7 +160,7 @@ export function resolveEffectiveEligibility(site: EffectiveSite, productKey: str
   if (categoryDecision !== "eligible") return { status: categoryDecision === "ineligible" ? "resolved" : "needs-information", eligible: false, reason: "Applicant type does not establish eligibility for this category", provenance: [...provenance, ...site.configuration.categoryEligibilityPolicies.flatMap(policy => policy.provenance)] };
   const valid = (n: unknown, integer = false): n is number => typeof n === "number" && Number.isFinite(n) && n >= 0 && (!integer || Number.isInteger(n));
   const ageRequired = c.minimumAgeYears !== null || c.maximumAgeYears !== null || c.studentMaximumAgeYears !== null;
-  if (ageRequired && !valid(facts.ageYears, true) || c.minimumAgeDays !== null && !valid(facts.ageDays, true) || c.unmarried !== null && typeof facts.unmarried !== "boolean" || c.minimumWorkHours !== null && !valid(facts.workHoursPerWeek)) return { status: "needs-information", provenance };
+  if (ageRequired && !valid(facts.ageYears, true) || c.minimumAgeDays !== null && !valid(facts.ageDays, true) || c.minimumWorkHours !== null && !valid(facts.workHoursPerWeek)) return { status: "needs-information", provenance };
   let maximum = c.maximumAgeYears;
   if (c.studentMaximumAgeYears !== null && (maximum === null || facts.ageYears! > maximum)) {
     if (typeof facts.fullTimeStudent !== "boolean") return { status: "needs-information", provenance };
@@ -168,7 +168,7 @@ export function resolveEffectiveEligibility(site: EffectiveSite, productKey: str
   }
   const maximumSatisfied = maximum === null ? true : eligibilityAgeMaximumSatisfied(facts.ageYears, maximum, execution.facts.flatMap(rule => rule.value as EligibilityFactRequirement[]), facts);
   if (maximumSatisfied === undefined) return { status: "needs-information", provenance };
-  let eligible = (c.minimumAgeDays === null || facts.ageDays! >= c.minimumAgeDays) && (c.minimumAgeYears === null || facts.ageYears! >= c.minimumAgeYears) && maximumSatisfied && (c.unmarried === null || facts.unmarried === c.unmarried) && (c.minimumWorkHours === null || facts.workHoursPerWeek! >= c.minimumWorkHours);
+  let eligible = (c.minimumAgeDays === null || facts.ageDays! >= c.minimumAgeDays) && (c.minimumAgeYears === null || facts.ageYears! >= c.minimumAgeYears) && maximumSatisfied && (c.minimumWorkHours === null || facts.workHoursPerWeek! >= c.minimumWorkHours);
   for (const rule of execution.facts) for (const requirement of rule.value as EligibilityFactRequirement[]) {
     if ("extendsMaximumAgeTo" in requirement) continue;
     const satisfied = eligibilityFactSatisfied(requirement, facts[requirement.fact]);

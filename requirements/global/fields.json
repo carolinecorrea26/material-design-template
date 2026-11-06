@@ -13,7 +13,7 @@
     { "id": "birth-date" },
     { "id": "dependents" },
     { "id": "gender" },
-    { "id": "child-full-time-student" },
+    { "id": "full-time-student" },
     { "id": "coverage-categories" },
     { "id": "smoker" },
     { "id": "tobacco-last-used" },

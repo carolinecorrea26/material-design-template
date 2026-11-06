@@ -49,7 +49,7 @@ describe("resolveClientConfigurations", () => {
 it("documents additional fields from the runtime Membership registry", () => {
   const row = (id: keyof typeof clients) => resolveClientConfigurations(clients[id]).find(row => row.key === "ClientConfig.fields.membership.extra")!;
   expect(row("asce").page.id).toBe("membership");
-  expect(row("asce").effective).toEqual(["asce-member-id"]);
+  expect(row("asce").effective).toEqual(["member-id"]);
   expect(row("ama").effective).toEqual(expect.arrayContaining(["ama-physician-type", "ama-physician-first-name"]));
   expect(row("waepa").effective).toEqual(expect.arrayContaining(["waepa-declaration", "waepa-attestation", "waepa-employer"]));
   expect(row("waepagi").effective).toEqual([]);

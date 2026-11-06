@@ -21,11 +21,6 @@
     "On Next, the applicant is checked against the TPA's member records. When the match needs identity verification, a verification dialog opens before the page continues.",
     "When a saved application has just been resumed, a notice confirms it was loaded."
   ],
-  "sections": {
-    "self": { "title": "people.self" },
-    "spouse": { "title": "people.spouse" },
-    "children": { "title": "people.child" }
-  },
   "shownWhen": {
     "sections": {
       "spouse": { "field": "dependents", "of": "self", "includes": "spouse" },

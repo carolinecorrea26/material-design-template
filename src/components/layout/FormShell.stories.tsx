@@ -18,7 +18,7 @@ export default meta;
 
 export const Default: StoryObj = {
   render: () => (
-    <FormShell sx={{ px: { xs: 2, sm: "48px" }, py: { xs: 2, sm: "32px" }, maxWidth: 480 }}>
+    <FormShell sx={{ maxWidth: 480 }}>
       <Typography variant="body1">
         Any page content — FormShell only supplies the radius, shadow, and
         background surface.

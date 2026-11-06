@@ -704,8 +704,7 @@ A field can be referenced on several pages or in repeated records. Product, appl
 | `payment` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
 | `docusign` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
 | `receipt` | Needs calculator drawer | `needs-annual-income`; `needs-years-to-replace`; `needs-outstanding-debts`; `needs-existing-coverage` |
-| `membership` | Quote calculator drawer | `quote-categories`; `zip-postal-code`; `state-province`; `birth-date`; `gender`; `smoker`; `average-monthly-income`; `hours-worked-per-week`; `monthly-business-expenses`; `business-expense-responsibility`; `quote-selection`; `quote-monthly-amount`; `quote-amount` |
-| `home` | Quote calculator drawer | `quote-categories`; `gender`; `smoker`; `average-monthly-income`; `hours-worked-per-week`; `monthly-business-expenses`; `business-expense-responsibility`; `quote-selection`; `quote-monthly-amount`; `quote-amount` |
+| `home` | Quote calculator drawer | `quote-categories`; `gender`; `smoker`; `average-monthly-income`; `hours-worked-per-week`; `monthly-business-expenses`; `business-expense-responsibility`; Chronic Illness Rider (CIR) (product control); `quote-selection`; `quote-monthly-amount`; `quote-amount` |
 <!-- ABE-FIELD-USAGE:END -->
 
 Field references come from saved page and section placements, Site overrides, field surface/collection configuration and health questionnaire assignments. The CI-only and combined CI forms reference their own saved definitions; Member and Spouse reuse each definition with separate answers. Generic Life and DI fields remain available for their applicable processing paths. Health SI is excluded for ABE.
@@ -779,7 +778,7 @@ This first-pass Components inventory comes from the same saved catalog as Portal
 | `component-page-shell` | PageShell | Provides a shared page container and layout. | Components / Layout / Containers | `layout-pageshell--default` |
 | `component-page-title` | PageTitle | Displays the page heading, subtitle and supporting actions. | Components / Layout / Headings and dividers | `layout-pagetitle--title-only` |
 | `component-product-card` | ProductCard | Shared product container with a weight-800 title, optional brochure link, QD indicator, description and page-specific content. | Components / Content and data display / Cards | `layout-productcard--unselected` |
-| `component-section-divider` | SectionDivider | Separates and labels groups of related form content. | Components / Layout / Headings and dividers | `layout-sectiondivider--subsection-preset` |
+| `component-section-divider` | SectionDivider | Labels field-group sections with uppercase, letter-spaced text. Titled and untitled groups share a rounded FieldGroup surface matching the page background, with white inputs and increased section spacing. | Components / Layout / Headings and dividers | `layout-sectiondivider--subsection-preset` |
 | `component-page-nav` | PageNav | Provides the application page's Next or submit action. | Components / Navigation | `navigation-pagenav--default` |
 | `component-progress-step` | ProgressStep | Main application steps (Getting started, Choose your coverage and later stages), with Breadcrumbs exported from the same module for pages within the current main step; visibility follows the active flow and template. | Components / Navigation | `navigation-progressstep--collapsed-steps` |
 | `component-app-drawer` | AppDrawer | Displays supporting content in a drawer with a close action. | Components / Feedback and overlays / Dialogs and drawers / Containers | `overlays-appdrawer--default` |
@@ -797,7 +796,7 @@ This first-pass Components inventory comes from the same saved catalog as Portal
 | `component-underwriter-credentials` | UnderwriterCredentials | Insurer logo, name, ratings, supporting description and footnote. | Components / Pages / Home / Sections | `pages-home-new-york-life-credentials--default` |
 | `component-additional-membership-information` | AdditionalMembershipInformation | Conditional membership questions, including physician and WAEPA follow-ups. | Components / Pages / Membership / Sections | `pages-membership-additional-membership-information--member-id` |
 | `component-member-information` | MemberInformation | Applicant name, email and phone collected after membership is confirmed. | Components / Pages / Membership / Sections | `pages-membership-member-information--default` |
-| `component-membership-help` | MembershipHelp | The membership page's coverage, applying and estimate help actions. | Components / Pages / Membership / Sections | `pages-membership-introduction-and-help--default` |
+| `component-membership-help` | MembershipHelp | The membership page's coverage and applying help actions. | Components / Pages / Membership / Sections | `pages-membership-introduction-and-help--default` |
 | `component-membership-status` | MembershipStatus | Membership question with the page's existing link, eligibility and non-member feedback. | Components / Pages / Membership / Sections | `pages-membership-membership-status--default` |
 | `component-application-error-state` | ApplicationErrorState | One page template for 404/500, session timeout, maintenance, unavailable applications and technical/payment/submission failures. | Components / Pages / Error pages | `pages-error-pages--not-found` |
 | `component-application-recovery-actions` | ApplicationRecoveryActions | Shared recovery actions for unavailable, expired and failed application pages. | Components / Feedback and overlays / Alerts | `pages-shared-application-recovery-actions--default` |
@@ -829,9 +828,9 @@ This first-pass Components inventory comes from the same saved catalog as Portal
 | `component-receipt-next-steps` | ReceiptNextSteps | Receipt acknowledgement with client-supplied payment and welcome-kit guidance. | Components / Pages / Receipt / Sections | `receipt-receiptnextsteps--default` |
 | `component-offline-banner` | OfflineBanner | Application-wide connection notice, above the header and client help bar. | Components / Feedback and overlays / Banners | `feedback-technical-error--offline` |
 | `component-link` | Link | Link component used by the portal. | Components / Actions | `components-actions-links--standard` |
-| `component-application-estimate` | ApplicationEstimate | One reserved bottom surface keeps the estimate and the page action together on small screens. | Components / Coverage and pricing | `components-coverage-and-pricing-application-estimate--with-next` |
 | `component-receipt-decisions` | ReceiptDecisions | Decision letters on the main page; the application receipt and help sit alongside them. | Components / Pages / Receipt / Sections | `components-pages-receipt-sections-decision-section--conditionally-approved` |
 | `component-receipt-application-summary` | ReceiptApplicationSummary | A receipt of the selected coverage and payment instructions; never a claim that payment was taken. | Components / Pages / Receipt / Sections | `components-pages-receipt-sections-application-receipt--mixed-payment-choices` |
+| `component-verification-address` | VerificationAddress | Collects and validates the full residential address before configured member verification, using the shared Contact address fields. | Components / Feedback and overlays / Dialogs and drawers / Application dialogs | `coverage-commerce-memberverification--address-before-verification` |
 <!-- ABE-COMPONENT-CATALOG:END -->
 
 ### Initial review findings
@@ -884,7 +883,7 @@ Ages use completed years at the last birthday on the application date. Child min
 
 DI requires at least 30 work hours per week for member and spouse. Professional Overhead requires the member's 30-hour minimum and a firm size of 1–5 members.
 
-Hospital Money evaluates the service-discharge answer separately for each child. Ages 26–29 require Yes; age 30 is excluded. The unmarried-child requirement is a note, not a question.
+Hospital Money evaluates the service-discharge answer separately for each child. Ages 26–29 require Yes; age 30 is excluded. The existing unmarried-child informational note is retained; no eligibility fact is collected or evaluated.
 
 #### Coverage amounts
 

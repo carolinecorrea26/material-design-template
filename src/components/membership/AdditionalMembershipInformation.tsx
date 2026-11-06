@@ -135,7 +135,7 @@ export default function AdditionalMembershipInformation({ fields: additionalFiel
             : "Additional Membership Information"
         }
         variant="subsection"
-      />
+      >
       {hasAmaPhysicianFields && (
         <Alert severity="info" sx={{ mt: 1 }}>
           To apply as a spouse of a physician, please include the
@@ -207,6 +207,7 @@ export default function AdditionalMembershipInformation({ fields: additionalFiel
           )}
         </Stack>
       )}
+      </SectionDivider>
     </Box>
   );
 }

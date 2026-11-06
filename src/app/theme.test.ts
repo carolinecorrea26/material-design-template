@@ -1,11 +1,13 @@
 // @vitest-environment node
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { Button, ThemeProvider } from "@mui/material";
+import { Button, FormHelperText, FormLabel, Link, TextField, ThemeProvider } from "@mui/material";
 import { describe, expect, it } from "vitest";
 import { createTheme } from "@mui/material/styles";
 import { createAppTheme } from "./theme";
 import type { ThemeColorId } from "../config/clients/types";
+import SectionDivider from "../components/layout/SectionDivider";
+import FormShell from "../components/layout/FormShell";
 
 const presetPrimaryColors: Record<
   ThemeColorId,
@@ -18,6 +20,46 @@ const presetPrimaryColors: Record<
 };
 
 describe("createAppTheme", () => {
+  it.each(["default", "teal"] as const)("styles field groups with uppercase labels, a light %s surface and white inputs", preset => {
+    const theme = createAppTheme(preset);
+    const html = renderToStaticMarkup(createElement(ThemeProvider, { theme },
+      createElement(SectionDivider, { label: "Personal information", variant: "subsection" },
+        createElement(TextField, { label: "Weight", defaultValue: "150" })),
+    ));
+    expect(html).toMatch(/<section\b[^>]*aria-label="Personal information"/);
+    expect(html).toContain("text-transform:uppercase");
+    expect(html).toContain("letter-spacing:0.06em");
+    expect(html).not.toContain("MuiChip-root");
+    expect(html).toContain("FieldGroup-root");
+    expect(html).toContain("border-radius:16px");
+    expect(html).toContain("margin-bottom:32px");
+    expect(html).toContain(`background-color:${theme.palette.background.default}`);
+    expect(html).toContain("background-color:#fff");
+  });
+  it("uses compact responsive padding and rounded corners on the shared form shell", () => {
+    const html = renderToStaticMarkup(createElement(ThemeProvider, { theme: createAppTheme() },
+      createElement(FormShell, null, "Form content"),
+    ));
+    expect(html).toContain("border-radius:16px");
+    expect(html).toContain("padding:16px");
+    expect(html).toContain("padding:24px");
+    expect(html).not.toContain("padding:48px");
+  });
+  it("uses the reviewed shared field and link styling and disables loading buttons", () => {
+    const theme = createAppTheme();
+    const html = renderToStaticMarkup(createElement(ThemeProvider, { theme },
+      createElement(FormHelperText, null, "Help"),
+      createElement(FormLabel, null, "Label"),
+      createElement(Link, { href: "#" }, "Link"),
+      createElement(Button, { loading: true }, "Saving"),
+    ));
+    expect(html).toContain("line-height:1.2");
+    expect(html).toContain("margin-bottom:14px");
+    expect(html).toContain("font-weight:500");
+    expect(html).toContain("font-weight:700");
+    expect(html).toContain("text-decoration:none");
+    expect(html).toMatch(/<button[^>]*disabled=""/);
+  });
   it.each(["contained", "outlined", "text"] as const)("renders %s buttons as pills by default, including disabled and loading states", variant => {
     const theme = createAppTheme();
     for (const state of [{}, { disabled: true }, { loading: true }]) {

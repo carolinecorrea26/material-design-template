@@ -3,6 +3,9 @@ import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "@mui/material";
 import MemberVerification from "./MemberVerification";
+import VerificationAddress from "./VerificationAddress";
+import { addressFieldNames } from "../forms/AddressFields";
+import { fieldCatalog } from "../../config/fields";
 
 /**
  * MemberVerification is a multi-step identity-verification modal shown on
@@ -61,4 +64,10 @@ export const Interactive: StoryObj<typeof meta> = {
       },
     },
   },
+};
+
+export const AddressBeforeVerification: StoryObj<typeof meta> = {
+  name: "Address before member verification",
+  render: () => <VerificationAddress fields={addressFieldNames.map(id => fieldCatalog[id])} values={{ state: "NY", "zip-code": "10001" }} onContinue={fn()} onClose={fn()} />,
+  parameters: { docs: { description: { story: "When configured for the Site, collect the full residential address before opening member verification. This uses the same address fields and validation as Contact." } } },
 };

@@ -197,7 +197,7 @@ const CONFIGURATION_AVAILABLE_OPTIONS: Partial<Record<string, string>> = {
   "ClientConfig.reviewPolicy": "Ordered blocks with canonical field IDs, paragraphs, optional unordered lists, after-list content and source references; applicant/product/mode/association/jurisdiction predicates; conditional consent; health-question participation and optional adult medical-underwriting guards for medical authorization and its introductory statement; source wording variants by jurisdiction and underwriting; optional point-size and before-signature placement; jurisdiction fraud text and Site overrides",
   "overrides[].requirements.exclusiveProducts": "Array of enabled product keys that cannot coexist across applicants",
   "overrides[].rateInputs": "version 1; dimensions required / ignored / provisional; authority source / provisional; source references; jurisdiction dimension/class overrides; rateClass catalog with single / fixed / tobacco / unresolved selection",
-  "ClientConfig.tpaIntegration": "mode: coverage-verification or membership-auto-approval; lookupFields: field IDs (ASCE adds asce-member-id); prototypeRecords: facts and activeCoverage boolean",
+  "ClientConfig.tpaIntegration": "mode: coverage-verification or membership-auto-approval; lookupFields: field IDs (ASCE adds member-id); prototypeRecords: facts and activeCoverage boolean",
   "ClientConfig.branding": "name; acronym; logo asset path; logo alt text; optional icons.quickDecision asset path",
   "ClientConfig.theme":
     "Preset: default, teal, purple, dark-blue; or one custom primary color. Optional primaryAction: { main: hex, tone: light or dark } overrides filled primary buttons; otherwise buttons inherit the theme color. buttonShape: pill (default) or standard.",

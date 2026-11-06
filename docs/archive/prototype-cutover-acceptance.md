@@ -27,7 +27,7 @@ The persistence test starts an isolated mock server, reads ABE's persisted snaps
 
 Browser spot checks verified ABE Home and Review, ASCE's restricted DI Coverage journey with an actual mock premium, CSEA's price-free Home, and Demo Home/Coverage. ABE Review visibly contains the fraud notice, required acknowledgements and optional identity fields. ASCE's income-dependent amount range and selected periods produce a synthetic mock estimate. These browser checks supplement the all-Site contract tests; they are not a claim that every client completed a signed browser submission.
 
-Evidence files: [ASCE mock estimate](prototype-cutover-asce-mock-rate.jpg), [Library runtime tests](../src/domain/prototypeLibrary.test.ts), [persisted edit/restart test](../scripts/prototype-cutover.test.mjs), [all stored mapping test](../src/migration/coverageJourneyExceptionMatrix.test.ts), and [prior reviewed contract acceptance](step3-prototype-acceptance.md).
+Evidence files: [ASCE mock estimate](prototype-cutover-asce-mock-rate.jpg), [Library runtime tests](../../src/domain/prototypeLibrary.test.ts), [persisted edit/restart test](../../scripts/prototype-cutover.test.mjs), [all stored mapping test](../../src/migration/coverageJourneyExceptionMatrix.test.ts), and [prior reviewed contract acceptance](step3-prototype-acceptance.md).
 
 ## Reproducing a Library-driven change
 

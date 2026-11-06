@@ -1,4 +1,3 @@
-import ConfiguredApplicationEstimate from './sections/ConfiguredApplicationEstimate';
 import { getPrototypeLibrary } from "../domain/prototypeLibrary";
 import { configuredHealthQuestionnaire } from "../domain/configuredHealthQuestionnaire";
 import { attachPageAnalytics, emitPageAnalytics } from "../analytics/runtime";
@@ -614,15 +613,12 @@ export default function FormRoutePage({
       <Box ref={analyticsRoot} data-analytics-page={pageId}>
         <FormShell
           sx={{
-            ...(formHeader ? { p: 0, overflow: "hidden" } : {
-              px: { xs: 2, sm: "48px" },
-              py: { xs: 2, sm: "32px" },
-            }),
+            ...(formHeader ? { p: 0, overflow: "hidden" } : {}),
             mb: hasMainSteps ? 1 : 0,
           }}
         >
           {formHeader}
-          <Box sx={formHeader ? { px: { xs: 2, sm: "48px" }, py: { xs: 2, sm: "32px" } } : undefined}>
+          <Box sx={formHeader ? { p: { xs: 2, sm: 3 } } : undefined}>
           {(hasMainSteps || isSinglePage) && (
             <Box sx={{ mb: 1.5 }}>
               <Breadcrumbs pageId={pageId} />
@@ -668,7 +664,6 @@ export default function FormRoutePage({
             !(typeof hideNextButton === "function"
               ? hideNextButton(watchedValues)
               : hideNextButton) && (
-              (pageId === 'review' ? <ConfiguredApplicationEstimate values={watchedValues as ApplicationFormValues} actions={
               <PageNav
                 formId={`${pageId}-form`}
                 isTransitioning={isTransitioning}
@@ -678,17 +673,6 @@ export default function FormRoutePage({
                     : Boolean(disableNextButton))
                 }
               />
-              } /> : (
-              <PageNav
-                formId={`${pageId}-form`}
-                isTransitioning={isTransitioning}
-                disabled={
-                  isSubmitting || (typeof disableNextButton === "function"
-                    ? disableNextButton(watchedValues)
-                    : Boolean(disableNextButton))
-                }
-              />
-              ))
             )}
           </Box>
         </FormShell>

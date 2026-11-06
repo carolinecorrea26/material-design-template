@@ -33079,14 +33079,14 @@
               "displayId": 23706802492825,
               "key": "rates.reviewed-presentation.global",
               "providedBy": null,
-              "sourceReference": "docs/step3-major-outstanding-items.md",
+              "sourceReference": "docs/archive/step3-major-outstanding-items.md",
               "table": "configurationValues"
             },
             {
               "displayId": 206660416412822,
               "key": "rates.reviewed-presentation.waepa",
               "providedBy": null,
-              "sourceReference": "docs/step3-major-outstanding-items.md",
+              "sourceReference": "docs/archive/step3-major-outstanding-items.md",
               "table": "configurationValues"
             }
           ],
@@ -33177,7 +33177,7 @@
               "displayId": 12372422330443,
               "key": "waepa-gi.review-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -33421,7 +33421,7 @@
               "displayId": 8912826089799,
               "key": "waepa-gi.li-group-term.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -33609,7 +33609,7 @@
               "displayId": 102096029397610,
               "key": "waepa-gi.li-group-term.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -33652,7 +33652,7 @@
               "displayId": 239285797345963,
               "key": "waepa-gi.li-group-term.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -33751,7 +33751,7 @@
               "displayId": 252879424511173,
               "key": "waepa-gi.li-group-term.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -33785,7 +33785,7 @@
               "displayId": 143366496013014,
               "key": "waepa-gi.life-aggregate-participation",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -43526,7 +43526,7 @@
               "displayId": 143366496013014,
               "key": "waepa-gi.life-aggregate-participation",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -63363,7 +63363,7 @@
                   "displayId": 211372157166194,
                   "key": "waepa-gi.li-group-term.child.gi",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-active-site-adoption.md#waepagi-portfolio-and-payment-decision",
+                  "sourceReference": "docs/archive/step3-active-site-adoption.md#waepagi-portfolio-and-payment-decision",
                   "table": "productApplicantEligibility"
                 }
               ],
@@ -63382,7 +63382,7 @@
                   "displayId": 219385258099166,
                   "key": "waepa-gi.li-group-term.member.gi",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-active-site-adoption.md#waepagi-portfolio-and-payment-decision",
+                  "sourceReference": "docs/archive/step3-active-site-adoption.md#waepagi-portfolio-and-payment-decision",
                   "table": "productApplicantEligibility"
                 }
               ],
@@ -63401,7 +63401,7 @@
                   "displayId": 240593257785105,
                   "key": "waepa-gi.li-group-term.spouse.gi",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-active-site-adoption.md#waepagi-portfolio-and-payment-decision",
+                  "sourceReference": "docs/archive/step3-active-site-adoption.md#waepagi-portfolio-and-payment-decision",
                   "table": "productApplicantEligibility"
                 }
               ],
@@ -63553,7 +63553,7 @@
                   "displayId": 8912826089799,
                   "key": "waepa-gi.li-group-term.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -63779,7 +63779,7 @@
                   "displayId": 102096029397610,
                   "key": "waepa-gi.li-group-term.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -63824,7 +63824,7 @@
                   "displayId": 239285797345963,
                   "key": "waepa-gi.li-group-term.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -63954,7 +63954,7 @@
                   "displayId": 252879424511173,
                   "key": "waepa-gi.li-group-term.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -64021,14 +64021,14 @@
               "displayId": 23706802492825,
               "key": "rates.reviewed-presentation.global",
               "providedBy": null,
-              "sourceReference": "docs/step3-major-outstanding-items.md",
+              "sourceReference": "docs/archive/step3-major-outstanding-items.md",
               "table": "configurationValues"
             },
             {
               "displayId": 206660416412822,
               "key": "rates.reviewed-presentation.waepa",
               "providedBy": null,
-              "sourceReference": "docs/step3-major-outstanding-items.md",
+              "sourceReference": "docs/archive/step3-major-outstanding-items.md",
               "table": "configurationValues"
             }
           ],
@@ -64048,7 +64048,7 @@
               "displayId": 12372422330443,
               "key": "waepa-gi.review-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -72827,7 +72827,7 @@
                 "displayId": 253820485452233,
                 "key": "waepa-gi.li-group-term.member",
                 "providedBy": null,
-                "sourceReference": "docs/step3-active-site-adoption.md#waepagi-portfolio-and-payment-decision",
+                "sourceReference": "docs/archive/step3-active-site-adoption.md#waepagi-portfolio-and-payment-decision",
                 "table": "siteProductApplicants"
               }
             ],
@@ -72908,7 +72908,7 @@
             "displayId": 214179851929790,
             "key": "provisional-decision.waepa-gi.li-group-term.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -73089,7 +73089,7 @@
             "displayId": 78346188775981,
             "key": "provisional-decision.waepa-gi.li-group-term.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -73246,7 +73246,7 @@
             "displayId": 86147659970316,
             "key": "provisional-decision.waepa-gi.li-group-term.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -73309,7 +73309,7 @@
             "displayId": 162190130079471,
             "key": "provisional-decision.waepa-gi.life-aggregate-participation",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],

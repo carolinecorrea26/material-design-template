@@ -3,7 +3,7 @@ import type { ClientConfig } from "./types";
 import { rangeAssignments } from "../coverages/amounts";
 
 const lifeRequirements: import("../../domain/coverage").CoverageRequirements = {
-  eligibility: [{ applicantType: "child", unmarried: true, minimumAgeDays: 14, maximumAgeYears: 22, fullTimeStudentMaximumAgeYears: 24 }],
+  eligibility: [{ applicantType: "child", minimumAgeDays: 14, maximumAgeYears: 22, fullTimeStudentMaximumAgeYears: 24 }],
   dependencies: [{ applicantType: "child", requiresApplicant: "member", categoryId: "LI", sameProduct: false }],
   maximumPlans: [{ applicantType: "child", categoryId: "LI", count: 1 }],
 };
@@ -16,10 +16,10 @@ export const asceClient: ClientConfig = {
   theme: { type: "preset", preset: "default" },
   flows: { overrides: { tpaVerification: {
     ...tpaVerificationFlow,
-    intro: "ASCE follows the standard coverage-verification policy, with Membership ID required in addition to First Name, Last Name and DOB. Existing member + active coverage proceeds to LexisNexis; pass enables portfolio and TPA auto-approval, fail/skipped goes to TPA admin manual review without a portfolio.",
-    nodes: tpaVerificationFlow.nodes.map(node => node.id === "tpa-eligibility-lookup" ? { ...node, description: "Look up First Name, Last Name, DOB and Membership ID. Return existing-member and active-coverage status." } : node),
+    intro: "ASCE lookup uses Membership ID, First Name, Last Name, DOB and state. When triggered, collect the full residential address before opening member verification. Existing member + active coverage proceeds to LexisNexis; pass enables portfolio and TPA auto-approval, fail/skipped goes to TPA admin manual review without a portfolio.",
+    nodes: tpaVerificationFlow.nodes.map(node => node.id === "tpa-eligibility-lookup" ? { ...node, description: "Look up First Name, Last Name, DOB, Membership ID and state. When triggered, collect the full residential address before member verification. Return existing-member and active-coverage status." } : node),
   } } },
-  tpaIntegration: { mode: "coverage-verification", lookupFields: ["first-name", "last-name", "birth-date", "asce-member-id"], prototypeRecords: [{ facts: { "first-name": "Taylor", "last-name": "Morgan", "birth-date": "1990-08-26", "asce-member-id": "ASCE12345" }, activeCoverage: true }] },
+  tpaIntegration: { mode: "coverage-verification", requireAddressBeforeVerification: true, lookupFields: ["first-name", "last-name", "birth-date", "member-id", "state-province"], prototypeRecords: [{ facts: { "first-name": "Taylor", "last-name": "Morgan", "birth-date": "1990-08-26", "member-id": "ASCE12345", "state-province": "NY" }, activeCoverage: true }] },
   branding: {
     name: "American Society of Civil Engineers",
     acronym: "ASCE",
@@ -41,6 +41,7 @@ export const asceClient: ClientConfig = {
     },
   },
   pages: {
+    excluded: ["health-si", "health-li", "health-di", "health-ci", "health-cir"],
     requirements: {
       beneficiary: "required",
       payment: "required",

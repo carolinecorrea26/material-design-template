@@ -17,12 +17,12 @@ for (const [source, products] of Object.entries(sources)) describe(`ASCE require
   const life = products.find((p) => p.id === "li-10yr")!;
   const di = products.find((p) => p.id === "di-ltd")!;
   it.each([
-    [13, 0, true, false, "ineligible"], [14, 0, true, false, "eligible"],
-    [8000, 22, true, false, "eligible"], [8400, 23, true, false, "ineligible"],
-    [8400, 23, true, true, "eligible"], [9000, 24, true, true, "eligible"],
-    [9400, 25, true, true, "ineligible"], [8000, 22, false, true, "ineligible"],
-  ] as const)("child days=%s age=%s unmarried=%s student=%s", (ageDays, ageYears, unmarried, fullTimeStudent, expected) => {
-    for (const product of products.filter((p) => p.categoryId === "LI")) expect(evaluateEligibility(product.requirements, "child", { ageDays, ageYears, unmarried, fullTimeStudent })).toBe(expected);
+    [13, 0, false, "ineligible"], [14, 0, false, "eligible"],
+    [8000, 22, false, "eligible"], [8400, 23, false, "ineligible"],
+    [8400, 23, true, "eligible"], [9000, 24, true, "eligible"],
+    [9400, 25, true, "ineligible"], [8000, 22, true, "eligible"],
+  ] as const)("child days=%s age=%s student=%s", (ageDays, ageYears, fullTimeStudent, expected) => {
+    for (const product of products.filter((p) => p.categoryId === "LI")) expect(evaluateEligibility(product.requirements, "child", { ageDays, ageYears, fullTimeStudent })).toBe(expected);
   });
   it("requires missing child facts rather than claiming eligibility", () => expect(evaluateEligibility(life.requirements, "child", {})).toBe("needs-information"));
   it("requires member Life, permits a different Life product, rejects non-Life member coverage", () => {

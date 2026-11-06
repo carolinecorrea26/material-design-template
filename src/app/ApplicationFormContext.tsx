@@ -1,3 +1,4 @@
+import { requirementAnswerKey } from "../domain/requirementFields";
 import { FieldDefinitionsContext } from "../components/forms/FieldDefinitionsContext";
 import { getPrototypeLibrary } from "../domain/prototypeLibrary";
 import { activeCoverageCategoryRestriction } from "../config/client/coverageCategoryScope";
@@ -19,7 +20,6 @@ import { resolveSiteId } from "../data/activeSite";
 import { resolveActiveAssociationFromApplication } from "../data/activeAssociation";
 import { createApplicantSaveClient, forgetSavedApplication, readSavedApplication, rememberSavedApplication, type RecoveredApplication, type SavedApplication } from '../services/applicantSaveService';
 import { Alert } from '@mui/material';
-import DemoApplicationActions from '../components/demo/DemoApplicationActions';
 import { isApplicationSessionExpired, resetApplicationTimeout } from './applicationTimeout';
 import { applicationRecovery } from '../content/applicationRecovery';
 
@@ -61,6 +61,26 @@ type ApplicationFormProviderProps = {
   children: ReactNode;
 };
 
+export function normalizeChildValues<T extends Record<string, unknown>>(values: T): T {
+  if (!Array.isArray(values.children)) return values;
+  const keys: Record<string, string> = {
+    firstName: requirementAnswerKey("first-name", "child"), lastName: requirementAnswerKey("last-name", "child"), birthDate: requirementAnswerKey("birth-date", "child"),
+    gender: requirementAnswerKey("gender", "child"), fullTimeStudent: requirementAnswerKey("full-time-student", "child"),
+    honorablyDischargedServiceMember: requirementAnswerKey("honorably-discharged-service-member", "child"),
+  };
+  return { ...values, children: values.children.map(item => {
+    if (!item || typeof item !== "object" || Array.isArray(item)) return item;
+    const child = { ...(item as Record<string, unknown>) };
+    for (const [oldKey, newKey] of Object.entries(keys)) {
+      if (Object.hasOwn(child, oldKey)) {
+        if (!Object.hasOwn(child, newKey)) child[newKey] = child[oldKey];
+        delete child[oldKey];
+      }
+    }
+    return child;
+  }) } as T;
+}
+
 function loadStoredValues(): ApplicationFormValues {
   const storageKey = applicationStorageKey(resolveSiteId());
   // Historical unscoped values cannot safely be assigned to a household or Site.
@@ -83,7 +103,7 @@ function loadStoredValues(): ApplicationFormValues {
     restoreCoverageEntryScope(siteKey, parsedValues.coverageEntryScope);
     if (entryParams.has("featured_prod")) activeFeaturedProduct(siteKey);
   }
-  parsedValues = withCapturedCoverageEntryScope(siteKey, parsedValues);
+  parsedValues = withCapturedCoverageEntryScope(siteKey, normalizeChildValues(parsedValues));
 
   // Some links (e.g. the Information Architecture "Pages" table) need to
   // switch the active client to reach a gated page, which requires a full
@@ -192,7 +212,7 @@ export function ApplicationFormProvider({
         rememberSavedApplication(application);
         setSavedApplication(application);
         restoreCoverageEntryScope(siteKey, application.values.coverageEntryScope);
-        const restored = withApplicantsApplying(withCapturedCoverageEntryScope(siteKey, application.values)) as ApplicationFormValues;
+        const restored = withApplicantsApplying(withCapturedCoverageEntryScope(siteKey, normalizeChildValues(application.values))) as ApplicationFormValues;
         setValues(restored);
         setActiveAssociationId(resolveActiveAssociationFromApplication(siteKey, restored).association?.id ?? null);
         setSaveError('');
@@ -205,7 +225,6 @@ export function ApplicationFormProvider({
     <ApplicationFormContext.Provider value={contextValue}>
       <FieldDefinitionsContext value={getPrototypeLibrary()?.fields}>
       {saveError && <Alert severity="error">{saveError}</Alert>}
-      {savedApplication && !saveError && <DemoApplicationActions application={savedApplication} siteKey={siteKey} />}
       {children}
     </FieldDefinitionsContext>
     </ApplicationFormContext.Provider>

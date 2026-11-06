@@ -377,7 +377,7 @@ export const changeLog: ChangeLogEntry[] = [
     id: "CL-006",
     date: "2026-08-24",
     area: "Eligibility",
-    summary: "Added child-section eligibility notice for unmarried-children coverage rule",
+    summary: "Added child-section eligibility notice for unmarried-children informational note",
     details:
       "On the Eligibility page, the Child dependent section now displays an info alert directly under the section header: 'Only unmarried children are eligible for coverage.' The notice appears at the top of the child section before child entries are added via DynamicList.",
   },

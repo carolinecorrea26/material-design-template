@@ -36,17 +36,20 @@ describe("client TPA policies", () => {
       ).toBe(true);
     },
   );
-  it("ASCE lookup requires Membership ID while AMA uses name and DOB", () => {
+  it("ASCE lookup requires Membership ID and state while AMA uses name and DOB", () => {
     expect(lookupPrototypeTpa(clients.ama, facts).existingMember).toBe(true);
     expect(lookupPrototypeTpa(clients.asce, facts).existingMember).toBe(false);
     expect(
       lookupPrototypeTpa(clients.asce, {
         ...facts,
-        "asce-member-id": "ASCE12345",
+        "member-id": "ASCE12345",
+        "state-province": "NY",
       }).existingMember,
     ).toBe(true);
+    expect(lookupPrototypeTpa(clients.asce, { ...facts, "member-id": "ASCE12345", "state-province": "CA" }).existingMember).toBe(false);
+    expect(clients.asce.tpaIntegration?.requireAddressBeforeVerification).toBe(true);
     expect(
-      lookupPrototypeTpa(clients.asce, { ...facts, "asce-member-id": "wrong" })
+      lookupPrototypeTpa(clients.asce, { ...facts, "member-id": "wrong" })
         .existingMember,
     ).toBe(false);
   });

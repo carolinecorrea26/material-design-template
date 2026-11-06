@@ -172,7 +172,8 @@
       "examples": [
         "pages-membership-additional-membership-information--member-id",
         "pages-eligibility-children-information--child-student-and-marital-status",
-        "pages-contact-whole-page--business-same-as-home"
+        "pages-contact-whole-page--business-same-as-home",
+        "coverage-commerce-quotecalculator--multiple-term-products"
       ],
       "pages": {
         "home": [
@@ -185,10 +186,10 @@
           "zip-postal-code"
         ],
         "membership": [
-          "asce-member-id",
           "email",
           "first-name",
           "last-name",
+          "member-id",
           "membership",
           "phone"
         ],
@@ -199,7 +200,6 @@
           "child-full-time-student",
           "child-gender",
           "child-last-name",
-          "child-unmarried",
           "dependents",
           "spouse-birth-date",
           "spouse-first-name",

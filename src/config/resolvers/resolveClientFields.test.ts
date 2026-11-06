@@ -59,7 +59,7 @@ describe("resolveClientFieldsForPage", () => {
   it("adds ASCE's required membership ID field", () => {
     const fields = resolveClientFieldsForPage("membership", clients.asce);
     const membership = fields.find((f) => f.fieldId === "membership");
-    const memberId = fields.find((f) => f.fieldId === "asce-member-id");
+    const memberId = fields.find((f) => f.fieldId === "member-id");
 
     expect(membership?.row.label).toBe(
       "Are you a member of the American Society of Civil Engineers?",

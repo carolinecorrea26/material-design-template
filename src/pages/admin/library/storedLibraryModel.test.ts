@@ -1,3 +1,4 @@
+import { withRequirementPageFields } from "../../../domain/requirementFields";
 import { describe, expect, it } from "vitest";
 import { createReviewedMigrationDatabase } from "../../../migration/fixtures";
 import { childCollection, storedApplicationPageRows, storedFieldRows, storedLibraryRows, storedPageFieldGroups, storedFieldVisibility } from "./storedLibraryModel";
@@ -52,10 +53,10 @@ describe("stored Library collection and scope", () => {
   });
   it("lists ASCE membership ID and AMA physician inputs with scoped placement and conditions", () => {
     const asce = storedFieldRows(catalog, "asce");
-    const id = asce.find(field => field.key === "asce-member-id")!;
+    const id = asce.find(field => field.key === "member-id")!;
     expect(id.definition.required).toBe(true);
     expect(id.placements[0]).toMatchObject({ page: "membership", section: "membershipInformation" });
-    expect(storedPageFieldGroups(catalog, "asce", "membership", asce).find(group => group.section === "membershipInformation")?.fields.map(field => field.key)).toContain("asce-member-id");
+    expect(storedPageFieldGroups(catalog, "asce", "membership", asce).find(group => group.section === "membershipInformation")?.fields.map(field => field.key)).toContain("member-id");
     const ama = storedFieldRows(catalog, "ama");
     const physicianKeys = ["ama-physician-type", "ama-physician-title", "ama-physician-first-name", "ama-physician-last-name", "ama-physician-birth-date", "ama-physician-email"];
     expect(ama.filter(field => field.placements[0]?.page === "membership").map(field => field.key)).toEqual(expect.arrayContaining(physicianKeys));
@@ -68,15 +69,21 @@ describe("stored Library collection and scope", () => {
       const resolved = resolveEffectiveSite(catalog.data, site.key);
       const collection = childCollection(catalog, site.key);
       for (const page of resolved.configuration.pages.filter(page => page.requirement !== "none" && page.definition?.value.type !== "internal")) {
-        for (const field of page.fields) {
+        for (const field of withRequirementPageFields(page.key, page.fields, site.key)) {
           const listed = fields.find(row => row.key === field.key && row.placements[0]?.page === page.key);
           const collectionField = catalog.data.pageSectionFields.some(row => row.fieldKey === field.key && row.sectionKey === collection.section?.key);
           const included = field.included && (!collectionField || collection.collects && collection.fields.some(row => row.key === field.key));
           expect(!!listed, `${site.key}/${page.key}/${field.key}`).toBe(included);
-          if (listed) expect(listed.definition).toEqual(field.definition);
+          if (listed) expect(listed.definition).toEqual(collection.fields.find(row => page.key === "eligibility" && row.key === field.key)?.definition ?? field.definition);
         }
       }
     }
+  });
+  it("shows ASCE Eligibility spouse and child requirements in the Library", () => {
+    const fields = storedFieldRows(catalog, "asce");
+    const eligibility = (key: string) => fields.find(row => row.key === key && row.placements[0]?.page === "eligibility");
+    expect(eligibility("spouse-membership")?.definition.label).toBe("Is your spouse also a member of the American Society of Civil Engineers?");
+    expect(eligibility("child-full-time-student")?.definition.label).toBe("Is the child a full-time student?");
   });
   it("orders pages and their field rows in application sequence and includes Home inputs", () => {
     expect(storedLibraryRows(catalog, "pages", "all").slice(0, 3).map(row => row.key)).toEqual(["home", "membership", "eligibility"]);

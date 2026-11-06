@@ -83,17 +83,28 @@ export function createAppTheme(
       MuiToolbar: { styleOverrides: { root: { gap: 16 } } },
       MuiContainer: { defaultProps: { maxWidth: "md" } },
       MuiLink: {
-        defaultProps: { underline: "always" },
-        styleOverrides: { root: { textUnderlineOffset: "0.12em" } },
+        defaultProps: { underline: "none" },
+        styleOverrides: { root: { fontWeight: 700, textDecoration: "none", "&:hover": { textDecoration: "none" } } },
+      },
+      MuiCssBaseline: {
+        styleOverrides: { a: { fontWeight: 700, textDecoration: "none" } },
+      },
+      MuiFormHelperText: {
+        styleOverrides: { root: { lineHeight: 1.2, marginBottom: "14px" } },
       },
       MuiFormLabel: {
         styleOverrides: {
+          root: { fontWeight: 500 },
           asterisk: ({ theme }) => ({ color: theme.palette.error.main }),
         },
+      },
+      MuiFormControlLabel: {
+        styleOverrides: { label: { fontWeight: 500 } },
       },
       // Keep entered answers distinct from labels and placeholder prompts.
       MuiInputBase: {
         styleOverrides: {
+          root: ({ theme }) => ({ backgroundColor: theme.palette.common.white }),
           input: { fontWeight: 700, "&::placeholder": { fontWeight: 400 } },
         },
       },

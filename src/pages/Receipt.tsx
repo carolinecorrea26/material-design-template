@@ -8,7 +8,7 @@ import { groupReceiptDecisions } from "../domain/receiptGroups";
 import ApplicantSectionDivider from "../app/sections/ConfiguredApplicantSectionDivider";
 import { useEffect, useMemo, useState } from "react";
 import ProductCard from "../components/layout/ProductCard";
-import { Alert, Stack, Typography } from "@mui/material";
+import { Alert, Snackbar, Stack, Typography } from "@mui/material";
 import PageShell from "../components/layout/PageShell";
 import FormShell from "../components/layout/FormShell";
 import ReceiptConfirmation from "../components/receipt/ReceiptConfirmation";
@@ -31,7 +31,6 @@ import {
 import { getContent } from "../content";
 import SiteSupport from "../components/layout/SiteSupport";
 
-import { downloadApplicationPdf } from '../utils/applicationPdf';
 
 const RECEIPT_CONFIRMATION_KEY = "receiptConfirmationNumber";
 
@@ -73,6 +72,7 @@ export default function Receipt() {
   const coverages = getActiveClientCoverages();
 
   const [confirmationNumber, setConfirmationNumber] = useState("");
+  const [documentPlaceholderOpen, setDocumentPlaceholderOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -110,14 +110,17 @@ export default function Receipt() {
 
   return (
     <PageShell title={getPageTitle("receipt")} maxWidth="lg" noTitle>
+      <Snackbar open={documentPlaceholderOpen} autoHideDuration={4000} onClose={() => setDocumentPlaceholderOpen(false)}>
+        <Alert severity="info" onClose={() => setDocumentPlaceholderOpen(false)}>Document downloads are placeholders in this prototype.</Alert>
+      </Snackbar>
       <FormShell sx={{ p: { xs: 3, md: 5 } }}>
         <Stack spacing={4}>
           <ReceiptConfirmation
             title={getPageTitle("receipt")}
             content={receiptContent}
             confirmationNumber={confirmationNumber}
-            onDownloadApplication={() => downloadApplicationPdf(values)}
-            onDownloadPayment={() => downloadApplicationPdf(values, true)}
+            onDownloadApplication={() => setDocumentPlaceholderOpen(true)}
+            onDownloadPayment={() => setDocumentPlaceholderOpen(true)}
           />
 
           <ReceiptDecisions title={receiptContent.coverageDecisions.title} description={receiptContent.coverageDecisions.description}

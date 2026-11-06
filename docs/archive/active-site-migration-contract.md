@@ -25,7 +25,7 @@ Other MCR clients remain archived for later migration. Adding a client, Site, or
 
 Caroline subsequently confirmed CSEA is the standard Site. The [platform clarifications](platform-conflict-clarifications.md) narrow supplemental migration candidates to rates, coverage, eligibility, health-question rules and direct dependencies, and authorize legacy calculation fallback where no applicable replacement exists. The filter naming change uses unique Site acronyms without changing stored keys.
 
-The machine contract is [activeSiteScope.ts](../src/migration/activeSiteScope.ts). Existing migration fixture and promotion inventories share that scope. Application configuration and runtime adapters are unchanged.
+The machine contract is [activeSiteScope.ts](../../src/migration/activeSiteScope.ts). Existing migration fixture and promotion inventories share that scope. Application configuration and runtime adapters are unchanged.
 
 ## Source authority
 
@@ -35,7 +35,7 @@ The machine contract is [activeSiteScope.ts](../src/migration/activeSiteScope.ts
 | `05-requirements-to-fill-out-checklist.xlsx`, extracted in the same snapshot | Completeness and discrepancy evidence | Differences from the workbook require explicit reconciliation |
 | `siteconfig-customization-reference.html`, pinned in the platform review register | Reported legacy Site behavior, custom overrides, field/payment/flow rules and service dependencies | Confirm currency and exact Site/product/variant applicability; reconcile policy values with MCR and exact decisions; retire obsolete mechanisms deliberately |
 | Current prototype configuration and components | Existing template pages, fields, sections, flows, layout and behavior | Compare coverage policy against MCR; preserve or explicitly change template behavior |
-| [ASCE decision register](asce-business-decisions.md) and persisted approval records | Six existing approved decisions and their exact canonical targets | Retain exact approval evidence; do not extend approval to unrelated rules or claim external sign-off |
+| [ASCE decision register](../asce-business-decisions.md) and persisted approval records | Six existing approved decisions and their exact canonical targets | Retain exact approval evidence; do not extend approval to unrelated rules or claim external sign-off |
 | Both New UX workbook sheets | Historical and proposed experience references | Adopt only explicitly reviewed changes; do not overwrite the implemented template from extraction |
 
 An exact approved decision supersedes conflicting source evidence only for its recorded targets. Outside those targets, conflicting sources remain unresolved. Existing prototype behavior is a compatibility baseline, not automatic proof of coverage policy correctness. MCR coverage policy and template presentation have different ownership; resolve conflicts deliberately rather than treating one source as authoritative for everything.

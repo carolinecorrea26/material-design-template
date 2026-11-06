@@ -6,7 +6,6 @@ export function formatCoverageRequirements(requirements?: CoverageRequirements):
   const lines: string[] = [];
   for (const rule of requirements.eligibility ?? []) {
     const facts: string[] = [];
-    if (rule.unmarried) facts.push("unmarried");
     if (rule.minimumAgeDays !== undefined) facts.push(`at least ${rule.minimumAgeDays} days old`);
     if (rule.minimumAgeYears !== undefined) facts.push(`age ${rule.minimumAgeYears} or older`);
     if (rule.maximumAgeYears !== undefined) facts.push(`through age ${rule.maximumAgeYears}`);

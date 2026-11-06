@@ -9942,12 +9942,6 @@
           "nullable": true
         },
         {
-          "name": "unmarried",
-          "type": "boolean",
-          "default": null,
-          "nullable": true
-        },
-        {
           "name": "minimum_work_hours",
           "type": "numeric",
           "default": null,
@@ -10106,15 +10100,6 @@
             "allowsNull": true,
             "source": "src/persistence/types/underwritingCanonical.ts",
             "line": 56
-          },
-          {
-            "name": "unmarried",
-            "sqlName": "unmarried",
-            "type": "boolean | null",
-            "optional": false,
-            "allowsNull": true,
-            "source": "src/persistence/types/underwritingCanonical.ts",
-            "line": 57
           },
           {
             "name": "minimumWorkHours",
@@ -43571,31 +43556,31 @@
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/active-site-coverage-audit.json",
+      "file": "docs/archive/active-site-coverage-audit.json",
       "bytes": 1768447,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/active-site-identity-review.json",
+      "file": "docs/archive/active-site-identity-review.json",
       "bytes": 4015867,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/active-site-migration-contract.md",
+      "file": "docs/archive/active-site-migration-contract.md",
       "bytes": 15137,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/active-site-migration-inventory.md",
+      "file": "docs/archive/active-site-migration-inventory.md",
       "bytes": 9585,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/applicant-save-resume.md",
+      "file": "docs/archive/applicant-save-resume.md",
       "bytes": 4151,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
@@ -43607,7 +43592,7 @@
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-corrective-pass.md",
+      "file": "docs/archive/asce-corrective-pass.md",
       "bytes": 7691,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
@@ -43619,7 +43604,7 @@
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-follow-up-backlog.md",
+      "file": "docs/archive/asce-follow-up-backlog.md",
       "bytes": 752,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
@@ -43631,169 +43616,169 @@
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-acceptance.md",
+      "file": "docs/archive/asce-handoff-acceptance.md",
       "bytes": 8590,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/build.log",
+      "file": "docs/archive/asce-handoff-evidence/build.log",
       "bytes": 1279,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/build.txt",
+      "file": "docs/archive/asce-handoff-evidence/build.txt",
       "bytes": 1279,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/cutover-final.log",
+      "file": "docs/archive/asce-handoff-evidence/cutover-final.log",
       "bytes": 769,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/cutover-final.txt",
+      "file": "docs/archive/asce-handoff-evidence/cutover-final.txt",
       "bytes": 769,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/focused-final.txt",
+      "file": "docs/archive/asce-handoff-evidence/focused-final.txt",
       "bytes": 3160,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/focused-suite.log",
+      "file": "docs/archive/asce-handoff-evidence/focused-suite.log",
       "bytes": 4826,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/focused-suite.txt",
+      "file": "docs/archive/asce-handoff-evidence/focused-suite.txt",
       "bytes": 4826,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/full-suite.log",
+      "file": "docs/archive/asce-handoff-evidence/full-suite.log",
       "bytes": 28346,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/full-suite.txt",
+      "file": "docs/archive/asce-handoff-evidence/full-suite.txt",
       "bytes": 28346,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/lint.log",
+      "file": "docs/archive/asce-handoff-evidence/lint.log",
       "bytes": 54,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/lint.txt",
+      "file": "docs/archive/asce-handoff-evidence/lint.txt",
       "bytes": 54,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/receipt-preview.jpg",
+      "file": "docs/archive/asce-handoff-evidence/receipt-preview.jpg",
       "bytes": 63151,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/receipt.jpg",
+      "file": "docs/archive/asce-handoff-evidence/receipt.jpg",
       "bytes": 217550,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/receipt.txt",
+      "file": "docs/archive/asce-handoff-evidence/receipt.txt",
       "bytes": 5770,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/resumed-di.jpg",
+      "file": "docs/archive/asce-handoff-evidence/resumed-di.jpg",
       "bytes": 204975,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/resumed-di.txt",
+      "file": "docs/archive/asce-handoff-evidence/resumed-di.txt",
       "bytes": 5499,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/services-final.log",
+      "file": "docs/archive/asce-handoff-evidence/services-final.log",
       "bytes": 460,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff-evidence/services-final.txt",
+      "file": "docs/archive/asce-handoff-evidence/services-final.txt",
       "bytes": 460,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-handoff.md",
+      "file": "docs/archive/asce-handoff.md",
       "bytes": 7338,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-mcr-template-check.md",
+      "file": "docs/archive/asce-mcr-template-check.md",
       "bytes": 3533,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-mock-service-contracts.md",
+      "file": "docs/archive/asce-mock-service-contracts.md",
       "bytes": 5718,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/asce-runtime-parity.md",
+      "file": "docs/archive/asce-runtime-parity.md",
       "bytes": 9370,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/canonical-identity-review.json",
+      "file": "docs/archive/canonical-identity-review.json",
       "bytes": 62102,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/canonical-mcr-inventory.md",
+      "file": "docs/archive/canonical-mcr-inventory.md",
       "bytes": 47317,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/canonical-mcr-normalization.md",
+      "file": "docs/archive/canonical-mcr-normalization.md",
       "bytes": 10925,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/canonical-validation.md",
+      "file": "docs/archive/canonical-validation.md",
       "bytes": 5474,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/data-architecture-audit.md",
+      "file": "docs/archive/data-architecture-audit.md",
       "bytes": 3496,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
@@ -43805,13 +43790,13 @@
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/field-inventory-audit.md",
+      "file": "docs/archive/field-inventory-audit.md",
       "bytes": 4948,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/field-placement-model.md",
+      "file": "docs/archive/field-placement-model.md",
       "bytes": 1683,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
@@ -43823,7 +43808,7 @@
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/global-health-form-migration.md",
+      "file": "docs/archive/global-health-form-migration.md",
       "bytes": 5232,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
@@ -43835,31 +43820,31 @@
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/legacy-platform-migration-review.md",
+      "file": "docs/archive/legacy-platform-migration-review.md",
       "bytes": 29381,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/legacy-platform-review-register.json",
+      "file": "docs/archive/legacy-platform-review-register.json",
       "bytes": 478515,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/mcr-coverage.json",
+      "file": "docs/archive/mcr-coverage.json",
       "bytes": 20579,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/migration-continuation-2026-10-02.md",
+      "file": "docs/archive/migration-continuation-2026-10-02.md",
       "bytes": 11607,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/migration-phases-1-4.md",
+      "file": "docs/archive/migration-phases-1-4.md",
       "bytes": 9516,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
@@ -43877,37 +43862,37 @@
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/phase4c-curated-boundary.md",
+      "file": "docs/archive/phase4c-curated-boundary.md",
       "bytes": 7176,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/phase5-repositories.md",
+      "file": "docs/archive/phase5-repositories.md",
       "bytes": 7189,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/phase6a-effective-site.md",
+      "file": "docs/archive/phase6a-effective-site.md",
       "bytes": 4918,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/phase6b-effective-site.md",
+      "file": "docs/archive/phase6b-effective-site.md",
       "bytes": 5831,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/platform-conflict-clarifications.md",
+      "file": "docs/archive/platform-conflict-clarifications.md",
       "bytes": 7393,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/platform-conflict-source-evidence.json",
+      "file": "docs/archive/platform-conflict-source-evidence.json",
       "bytes": 40557,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
@@ -43919,13 +43904,13 @@
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/portal-library-model-review.md",
+      "file": "docs/archive/portal-library-model-review.md",
       "bytes": 11607,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/portal-library-refinement.md",
+      "file": "docs/archive/portal-library-refinement.md",
       "bytes": 11097,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
@@ -43937,19 +43922,19 @@
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/portal-operational-tables.md",
+      "file": "docs/archive/portal-operational-tables.md",
       "bytes": 6564,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/prototype-cutover-acceptance.md",
+      "file": "docs/archive/prototype-cutover-acceptance.md",
       "bytes": 6505,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/prototype-cutover-asce-mock-rate.jpg",
+      "file": "docs/archive/prototype-cutover-asce-mock-rate.jpg",
       "bytes": 37339,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
@@ -44051,49 +44036,49 @@
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/shared-data-revision-contract.md",
+      "file": "docs/archive/shared-data-revision-contract.md",
       "bytes": 7717,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step3-abe-review-corrected.png",
+      "file": "docs/archive/step3-abe-review-corrected.png",
       "bytes": 66281,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step3-abe-review.jpg",
+      "file": "docs/archive/step3-abe-review.jpg",
       "bytes": 29781,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step3-active-site-adoption.md",
+      "file": "docs/archive/step3-active-site-adoption.md",
       "bytes": 23373,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step3-benefit-dependent-adoption.md",
+      "file": "docs/archive/step3-benefit-dependent-adoption.md",
       "bytes": 15158,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step3-contract-acceptance.json",
+      "file": "docs/archive/step3-contract-acceptance.json",
       "bytes": 23866,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step3-exception-acceptance.json",
+      "file": "docs/archive/step3-exception-acceptance.json",
       "bytes": 274,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step3-exception-adoption.md",
+      "file": "docs/archive/step3-exception-adoption.md",
       "bytes": 8456,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
@@ -44105,13 +44090,13 @@
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step3-identity-crosswalk.md",
+      "file": "docs/archive/step3-identity-crosswalk.md",
       "bytes": 11208,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step3-journey-adoption.md",
+      "file": "docs/archive/step3-journey-adoption.md",
       "bytes": 9755,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
@@ -44123,7 +44108,7 @@
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step3-major-outstanding-items.md",
+      "file": "docs/archive/step3-major-outstanding-items.md",
       "bytes": 8430,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
@@ -44135,7 +44120,7 @@
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step3-prototype-acceptance.md",
+      "file": "docs/archive/step3-prototype-acceptance.md",
       "bytes": 6259,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
@@ -44147,49 +44132,49 @@
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step3-review-and-rating.md",
+      "file": "docs/archive/step3-review-and-rating.md",
       "bytes": 7193,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step3-review-rate-acceptance.json",
+      "file": "docs/archive/step3-review-rate-acceptance.json",
       "bytes": 186,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step45-builder-publication.md",
+      "file": "docs/archive/step45-builder-publication.md",
       "bytes": 6648,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step45-evidence/client-information.jpg",
+      "file": "docs/archive/step45-evidence/client-information.jpg",
       "bytes": 137279,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step45-evidence/releases-desktop.jpg",
+      "file": "docs/archive/step45-evidence/releases-desktop.jpg",
       "bytes": 88410,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step45-evidence/review-desktop.jpg",
+      "file": "docs/archive/step45-evidence/review-desktop.jpg",
       "bytes": 95831,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step45-evidence/review-mobile.jpg",
+      "file": "docs/archive/step45-evidence/review-mobile.jpg",
       "bytes": 46007,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/step6-admin-authentication.md",
+      "file": "docs/archive/step6-admin-authentication.md",
       "bytes": 12787,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
@@ -44201,13 +44186,13 @@
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/stored-fields-beneficiary.png",
+      "file": "docs/archive/stored-fields-beneficiary.png",
       "bytes": 34132,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"
     },
     {
-      "file": "docs/tpa-flow-review.md",
+      "file": "docs/archive/tpa-flow-review.md",
       "bytes": 6294,
       "disposition": "documentation-review",
       "reason": "Classify current reference, generated inventory and historical evidence; preserve imported evidence"

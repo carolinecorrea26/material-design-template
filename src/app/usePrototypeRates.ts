@@ -23,7 +23,7 @@ export function prototypeRateRequest(productKey: string, applicant: CoverageAppl
   const policy = resolveCoverageJourneyPolicy(library.site, productKey);
   const prefix = applicant === 'member' ? '' : `${applicant}-`;
   const child = applicant === 'child' && Array.isArray(values.children) ? values.children[0] as Record<string, unknown> | undefined : undefined;
-  const applicantValues = child ? { ...values, 'child-birth-date': child.birthDate, 'child-gender': child.gender } : values;
+  const applicantValues = child ? { ...values, 'child-birth-date': child['child-birth-date'], 'child-gender': child['child-gender'] } : values;
   const scoped = (name: string) => (values[name] as Record<string, unknown> | undefined)?.[`${productKey}:${applicant}`] ?? (values[name] as Record<string, unknown> | undefined)?.[productKey];
   const booleanFact = (value: unknown) => value === true || value === 'yes' ? true : value === false || value === 'no' ? false : undefined;
   const membership = (library.client.applicantExperience?.membershipLookup ? currentMembershipLookup(values)?.isMember : undefined) ?? booleanFact(values[`prototype-fact:${productKey}:member:membership`]) ?? booleanFact(values.membership) ?? booleanFact(values['is-member']) ?? booleanFact(values['membership-confirmed']);

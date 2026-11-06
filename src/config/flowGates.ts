@@ -161,7 +161,7 @@ export function resolvePageParticipation(
 
 /** Applicant participation uses the same resolved outcome as page participation. */
 export function applicantParticipatesInPage(pageId: PageId, applicant: "self" | "member" | "spouse" | "child", values: Record<string, unknown>, coverages: CoverageDefinition[] = getActiveClientCoverages()): boolean {
-  if (pageId === "health-cir" && getClientPageRequirement(pageId) === "none") return false;
+  if (getClientPageRequirement(pageId) === "none") return false;
   const gate = getFlowGateDefinition(pageId)?.gate;
   const type = applicant === "self" ? "member" : applicant;
   if (pageId === "beneficiary") return buildSelectedCoverageEntries(values as ApplicationFormValues, coverages).some(entry => entry.applicant === type && getCoverageAmountRequested(values as ApplicationFormValues, entry.coverageId, entry.applicant) !== null && collectsBeneficiaries(getPrototypeLibrary()?.site, entry.coverage.id, entry.coverage.categoryId, type, typeof values.membership === "string" ? values.membership : undefined, !gate || coverageSatisfiesFlowGate(entry.coverage, gate)));

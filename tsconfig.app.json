@@ -24,5 +24,8 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  // Only ASCE is active: other sites' tests are paused, so only the ASCE suite is type-checked.
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"],
+  "files": ["src/app/ApplicationFormContext.test.ts", "src/domain/requirementFields.test.ts", "src/domain/fieldCollections.test.ts", "src/components/forms/storedFieldCollections.test.tsx", "src/config/fields/inspectionInventory.test.ts", "src/domain/asceSurfaceParity.test.ts", "src/migration/asceRequirements.test.ts", "src/migration/asceMcrParity.test.ts", "src/migration/asceBusinessDecisions.test.ts", "src/app/coverageRuntime.integration.test.ts", "src/components/coverage/QuoteCalculator.prefill.test.tsx", "src/pages/admin/library/storedLibraryModel.test.ts", "src/pages/admin/library/libraryRequirements.test.ts", "src/pages/admin/library/fieldSurfaceRows.test.ts", "src/persistence/mockOperationsAdapter.test.ts"]
 }

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Alert, Box, Button, List, ListItem, Stack, Typography } from "@mui/material";
+import { Alert, Box, List, ListItem, Stack, Typography } from "@mui/material";
 import ReportRoundedIcon from "@mui/icons-material/ReportRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import type { FormRouteRenderProps } from "../../app/RoutePage";
@@ -19,13 +19,13 @@ export type ReviewSectionsProps = Pick<FormRouteRenderProps, "control" | "errors
   readAndSignText: string; beforeConsentNotices: ReviewBlock[]; blocks: ReviewBlock[];
   selfConsentField: FieldDefinition; spouseConsentField?: FieldDefinition; additionalFields: FieldDefinition[];
   applicantLabels?: ClientApplicantLabels; showSelfLabel: boolean;
-  onPrint: () => void; onDownload: () => void;
+  onPrint: () => void;
 };
 
 /** Review composition receives resolved copy, fields, applicant state and document content; the page owns policy and routing. */
 export default function ReviewSections({ control, errors, reviewContent, documentPreview,
   isAdvisorApplicantFlow, showHealthQuestionsNote, remainingSteps, readAndSignText, beforeConsentNotices, blocks,
-  selfConsentField, spouseConsentField, additionalFields, applicantLabels, showSelfLabel, onPrint, onDownload }: ReviewSectionsProps) {
+  selfConsentField, spouseConsentField, additionalFields, applicantLabels, showSelfLabel, onPrint }: ReviewSectionsProps) {
   return (
   <Stack spacing={2.5}>
     {isAdvisorApplicantFlow ? (
@@ -70,12 +70,10 @@ export default function ReviewSections({ control, errors, reviewContent, documen
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} justifyContent="space-between" sx={{ mb: 2 }}>
         <Box><Typography id="application-preview-heading" component="h2" variant="h5">1. Preview your application</Typography><Typography variant="body2" color="text.secondary">Check your answers and use Edit to make corrections before continuing.</Typography></Box>
 
-    <Button variant="outlined" onClick={onDownload}>Download application PDF</Button>
-
       </Stack>
       {documentPreview}
     </Box>
-    <Box component="section" aria-labelledby="application-consent-heading" sx={{ borderTop: '3px solid', borderColor: 'primary.main', bgcolor: 'action.hover', borderRadius: 2, p: { xs: 2, md: 3 } }}>
+    <Box component="section" aria-labelledby="application-consent-heading">
     <Typography id="application-consent-heading" component="h2" variant="h5" sx={{ mb: 1 }}>2. Read and consent</Typography>
     <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>Read the statements and electronic consent below, then confirm your agreement to continue.</Typography>
 

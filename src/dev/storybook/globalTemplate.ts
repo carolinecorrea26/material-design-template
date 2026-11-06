@@ -8,7 +8,7 @@ const hasField = (library: PrototypeLibrary, key: string) => library.site.config
 export const templateCapabilities = {
   standard: (library: PrototypeLibrary) => library.site.configuration.pages.find(page => page.key === 'membership')?.fields.filter(field => field.included).length === 5 && !library.associationContext.selection && library.products.some(product => product.categoryId === 'SH'),
   optionalBeneficiaries: (library: PrototypeLibrary) => hasField(library, 'abe-member-id'),
-  multipleTerms: (library: PrototypeLibrary) => hasField(library, 'asce-member-id'),
+  multipleTerms: (library: PrototypeLibrary) => hasField(library, 'member-id'),
   physicianMembership: (library: PrototypeLibrary) => hasField(library, 'ama-physician-type'),
   professionalEducation: (library: PrototypeLibrary) => hasField(library, 'avma-vet-college'),
   occupationAndChildNotice: (library: PrototypeLibrary) => hasField(library, 'csea-occupation-group'),
@@ -44,7 +44,8 @@ function genericPresentation<T>(value: T, names: string[]): T {
 }
 export function buildGlobalTemplate(catalog: SharedCatalog, capability: TemplateCapability = 'standard'): PrototypeLibrary {
   const sources = templateSourceLibraries(catalog);
-  const source = sources.find(templateCapabilities[capability]);
+  // While the bundle carries a single site (ASCE-only switch), every capability renders from it.
+  const source = sources.find(templateCapabilities[capability]) ?? (sources.length === 1 ? sources[0] : undefined);
   if (!source) throw new Error(`Missing global template capability: ${capability}`);
   const names = sources.flatMap(library => [library.clientIdentity.name, ...library.associationContext.allAssociations.map(association => association.name)]);
   const library = genericPresentation(structuredClone(source), names);

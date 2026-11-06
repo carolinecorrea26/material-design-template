@@ -133,7 +133,6 @@ function buildPrototypeRequirements(data: EffectiveSiteData, siteKey: string, pr
         ...(row.minimumAgeYears !== null ? { minimumAgeYears: row.minimumAgeYears } : {}),
         ...(row.maximumAgeYears !== null ? { maximumAgeYears: row.maximumAgeYears } : {}),
         ...(row.studentMaximumAgeYears !== null ? { fullTimeStudentMaximumAgeYears: row.studentMaximumAgeYears } : {}),
-        ...(row.unmarried !== null ? { unmarried: row.unmarried } : {}),
         ...(row.minimumWorkHours !== null ? { minimumWorkHoursPerWeek: row.minimumWorkHours } : {}),
         factRequirements: product.eligibilityFacts.filter(rule => rule.applicantKey === row.applicantTypeKey).flatMap(rule => {
           if (!isEligibilityFactRequirements(rule.value)) throw new Error(`Unsupported eligibility facts: ${rule.key}`);

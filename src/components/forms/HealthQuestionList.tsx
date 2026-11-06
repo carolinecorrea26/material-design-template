@@ -1,6 +1,7 @@
 import { useId, type ReactNode } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import ApplicantSectionDivider from "../layout/ApplicantSectionDivider";
+import { FieldGroup } from "../layout/SectionDivider";
 import type { ClientApplicantLabels } from "../../config/clients/types";
 import { shouldShowApplicantLabel } from "../../utils/applicantVisibility";
 
@@ -28,7 +29,7 @@ export default function HealthQuestionList({ entries, values, labels }: { entrie
       component="section" key={entry.applicant} aria-label={entry.applicant === "self" ? "Member" : "Spouse"} data-health-applicant={entry.applicant}
     >
       <ApplicantSectionDivider labels={labels} applicant={entry.applicant} showLabel={shouldShowApplicantLabel(entry.applicant, values)}>
-        {entry.content}
+        <FieldGroup className="FieldGroup-root">{entry.content}</FieldGroup>
       </ApplicantSectionDivider>
     </Box>)}
   </Stack>)}</Stack>;

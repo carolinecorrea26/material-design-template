@@ -48,4 +48,6 @@ export const adminNavigation: AdminNavigationGroup[] = [
     { label: "Contentsquare", path: "/admin-center/contentsquare", icon: TrackChangesRoundedIcon },
   ] },
 ];
-export const visibleAdminNavigation = (canManage: boolean) => adminNavigation.map(group => ({ ...group, items: group.items.filter(item => !item.masterAdminOnly || canManage) }));
+export const visibleAdminNavigation = () => adminNavigation
+  .map(group => ({ ...group, items: group.items.filter(item => item.label === "Portal Library" || item.label === "Storybook") }))
+  .filter(group => group.items.length > 0);

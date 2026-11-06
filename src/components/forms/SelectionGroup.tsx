@@ -67,12 +67,12 @@ export default function SelectionGroup({
         opacity: disabled ? theme.palette.action.disabledOpacity : 1,
         pointerEvents: disabled ? "none" : undefined,
         transition: theme.transitions.create(["background-color", "border-color"]),
-        "& .SelectionGroup-label": { fontWeight: 700, fontSize: "0.875rem" },
+        "& .SelectionGroup-label": { fontWeight: 500, fontSize: "0.875rem" },
         // Share selected styles for explicit state and native checkbox/radio inputs.
         "&[data-checked='true'], &:has(:checked)": {
           borderColor: theme.palette.primary.main,
           bgcolor: alpha(theme.palette.primary.main, 0.1),
-          "& .SelectionGroup-label": { fontWeight: 700, color: "text.primary" },
+          "& .SelectionGroup-label": { fontWeight: 500, color: "text.primary" },
           "& .SelectionGroup-icon": { color: theme.palette.primary.main },
         },
         "@media (hover: hover)": disabled ? undefined : {

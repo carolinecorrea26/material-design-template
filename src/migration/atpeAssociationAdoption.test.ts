@@ -156,14 +156,15 @@ it("enforces the approved ATPE 10-Year age bounds in both runtime paths and reta
   expect(validateMigrationDatabase(edited)).toContain(`Invalid association eligibility policy ${row.key}`);
 });
 
-it("uses dedicated ATPE adult ages and unmarried birth-through-25 child participation", () => {
+it("uses dedicated ATPE adult ages and birth-through-25 child participation", () => {
   const library = resolvePrototypeLibrary(db, "isitrust", "atpe-age-boundaries"); installPrototypeLibrary(library);
   for (const productKey of ["li-group-term", "li-add", "sh-hospital-income", "sh-critical-illness", "li-50plus"]) for (const applicantKey of ["member", "spouse"]) {
     for (const [ageYears, eligible] of [[17, false], [18, true], [64, true], [65, false]] as const) expect(resolveEffectiveEligibility(library.site, productKey, applicantKey, { ageYears, associationKey: atpeAssociationKey, selectedPlans: [{ productKey, categoryKey: "LI", applicantKey: "member" }] })).toMatchObject({ status: "resolved", eligible });
   }
   for (const productKey of ["li-group-term", "sh-hospital-income"]) {
-    for (const [ageYears, unmarried, eligible] of [[0, true, true], [25, true, true], [26, true, false], [15, false, false]] as const) expect(resolveEffectiveEligibility(library.site, productKey, "child", { ageYears, ageDays: ageYears * 366, unmarried, associationKey: atpeAssociationKey, selectedPlans: [{ productKey, categoryKey: productKey === "li-group-term" ? "LI" : "SH", applicantKey: "member" }] })).toMatchObject({ status: "resolved", eligible });
-    expect(resolveEffectiveEligibility(library.site, productKey, "child", { ageYears: 10, ageDays: 3660, associationKey: atpeAssociationKey }).status).toBe("needs-information");
+    for (const [ageYears, eligible] of [[0, true], [25, true], [26, false], [15, true]] as const) expect(resolveEffectiveEligibility(library.site, productKey, "child", { ageYears, ageDays: ageYears * 366, associationKey: atpeAssociationKey, selectedPlans: [{ productKey, categoryKey: productKey === "li-group-term" ? "LI" : "SH", applicantKey: "member" }] })).toMatchObject({ status: "resolved", eligible });
+    expect(resolveEffectiveEligibility(library.site, productKey, "child", { ageYears: 10, ageDays: 3660, associationKey: atpeAssociationKey })).toMatchObject({ status: "resolved", eligible: true });
+    expect(resolveEffectiveEligibility(library.site, productKey, "child", { associationKey: atpeAssociationKey }).status).toBe("needs-information");
   }
   for (const ageYears of [19, 20, 54, 55]) expect(resolveEffectiveEligibility(library.site, "li-20yr", "member", { ageYears, associationKey: atpeAssociationKey })).toMatchObject({ status: "resolved", eligible: ageYears >= 20 && ageYears <= 54 });
   const graded = library.products.find(product => product.id === "li-50plus")!;

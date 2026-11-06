@@ -1,7 +1,7 @@
 import type { SiteEnvironment, SiteEnvironmentLink } from "../domain/sites";
 
 // Source: ASCE_Portal_Site_Rules.xlsx, URLs!A2:D8.
-// GI/NCGI URLs are reference-only in docs/asce-corrective-pass.md.
+// GI/NCGI URLs are reference-only in docs/archive/asce-corrective-pass.md.
 export const siteEnvironmentLinks: SiteEnvironmentLink[] = [
   { key: "asce-production", environment: "production", linkType: "launch", label: "ASCE production", url: "https://asce.nylinsure.com", active: true },
   { key: "asce-pre-production", environment: "pre-production", linkType: "launch", label: "ASCE pre-production", url: "https://ascepreview.nylinsure2.com", active: true },

@@ -1,3 +1,4 @@
+import { requirementAnswerKey, resolveMappedFields, siteUsesRequirementFields } from "./requirementFields";
 import { resolveSharedFieldDefinition } from "./fieldDefinitionOwnership";
 import type { EffectiveSiteData } from './effectiveSite';
 import type { resolveEffectiveSite } from './effectiveSite';
@@ -6,12 +7,13 @@ import type { FieldDefinition } from './fields';
 export type FieldCollectionDefinition = {
   pageKey: string; sectionId: string; storageName: string; label: string; maxItems: number;
   libraryGroup?: { label: string; applicant?: "self" | "spouse"; afterFieldKey?: string };
-  fields: { fieldKey: string; valueKey: string; grid?: boolean; childConstraint?: 'unmarried' | 'studentMaximumAgeYears' }[];
+  fields: { fieldKey: string; valueKey: string; grid?: boolean; childConstraint?: 'studentMaximumAgeYears' }[];
 };
 export type ResolvedFieldCollection = { name: string; label: string; maxItems: number; pageKey: string; sectionId: string;
   libraryGroup?: FieldCollectionDefinition['libraryGroup'];
   mapping: { fields: FieldDefinition[]; fieldToKey: Record<string, string>; gridFields: string[] } };
 const safeKey = (value: unknown): value is string => typeof value === 'string' && /^[a-zA-Z][a-zA-Z0-9]*$/.test(value) && !['constructor', 'prototype', '__proto__'].includes(value);
+const safeValueKey = (value: unknown): value is string => typeof value === 'string' && /^[a-zA-Z][a-zA-Z0-9-]*$/.test(value) && !['constructor', 'prototype', '__proto__'].includes(value);
 
 /** Saved configuration owns collection membership, order, bindings and layout.
  * Field values use the same global/Client/Site precedence as ordinary inputs. */
@@ -33,14 +35,15 @@ export function resolveStoredFieldCollections(data: EffectiveSiteData, site: Ret
     const fields: FieldDefinition[] = [], fieldToKey: Record<string, string> = {}, gridFields: string[] = [];
     const fieldKeys = new Set<string>(), valueKeys = new Set<string>();
     for (const binding of definition.fields) {
-      if (!binding || typeof binding.fieldKey !== 'string' || !safeKey(binding.valueKey) || fieldKeys.has(binding.fieldKey) || valueKeys.has(binding.valueKey) || binding.grid !== undefined && typeof binding.grid !== 'boolean' || binding.childConstraint !== undefined && !['unmarried', 'studentMaximumAgeYears'].includes(binding.childConstraint)) throw new Error(`Invalid collection binding: ${key}`);
+      if (!binding || typeof binding.fieldKey !== 'string' || !safeValueKey(binding.valueKey) || fieldKeys.has(binding.fieldKey) || valueKeys.has(binding.valueKey) || binding.grid !== undefined && typeof binding.grid !== 'boolean' || binding.childConstraint !== undefined && binding.childConstraint !== 'studentMaximumAgeYears') throw new Error(`Invalid collection binding: ${key}`);
       fieldKeys.add(binding.fieldKey); valueKeys.add(binding.valueKey);
       const saved = data.fields.find(field => field.key === binding.fieldKey);
       if (!saved || saved.definition.id !== binding.fieldKey) throw new Error(`Missing collection field: ${binding.fieldKey}`);
       // Children also own relational section placements. Removal there removes
       // the repeated input, even if an old binding remains in configuration.
       if (section.definition.value.collectionName && !section.fields.some(field => field.value.fieldKey === binding.fieldKey)) continue;
-      if (binding.childConstraint && !data.eligibilityConstraints.some(rule => rule.siteKey === site.siteKey && rule.applicantTypeKey === 'child' && (binding.childConstraint === 'unmarried' ? rule.unmarried === true : rule.studentMaximumAgeYears !== null))) continue;
+      if (binding.childConstraint && !data.eligibilityConstraints.some(rule => rule.siteKey === site.siteKey && rule.applicantTypeKey === 'child' && rule.studentMaximumAgeYears !== null)) continue;
+      if (key === 'children' && binding.fieldKey === 'child-full-time-student' && !siteUsesRequirementFields(site.siteKey) && !data.eligibilityConstraints.some(rule => rule.siteKey === site.siteKey && rule.applicantTypeKey === 'child' && rule.studentMaximumAgeYears !== null)) continue;
       let field = resolveSharedFieldDefinition(saved, data.validationRules, site.configuration.fieldDefinitionOwnership).definition;
       let included = true;
       const rank = { global: 0, client: 1, site: 2 };
@@ -55,10 +58,19 @@ export function resolveStoredFieldCollections(data: EffectiveSiteData, site: Ret
         field = { ...field, ...row.values }; included = row.hidden !== null ? !row.hidden : row.include ?? included;
       }
       if (!included) continue;
-      fields.push(field); fieldToKey[field.id] = binding.valueKey;
+      fields.push(field); fieldToKey[field.id] = key === 'children' && field.id.startsWith('child-') ? requirementAnswerKey(field.id.slice(6), 'child') : binding.valueKey;
       if (binding.grid) gridFields.push(field.id);
     }
     if (section.definition.value.collectionName) fields.sort((a, b) => section.fields.findIndex(field => field.value.fieldKey === a.id) - section.fields.findIndex(field => field.value.fieldKey === b.id));
+    if (key === 'children' && siteUsesRequirementFields(site.siteKey)) {
+      fields.splice(0, fields.length, ...resolveMappedFields({ component: 'eligibility' }, { siteId: site.siteKey, person: 'child', page: 'eligibility' }).map(field => ({ ...field, id: requirementAnswerKey(field.id, 'child') })));
+      for (const id of Object.keys(fieldToKey)) delete fieldToKey[id];
+      gridFields.splice(0, gridFields.length);
+      for (const field of fields) {
+        fieldToKey[field.id] = field.id;
+        if (field.id === 'child-first-name' || field.id === 'child-last-name') gridFields.push(field.id);
+      }
+    }
     result[key] = { name: definition.storageName, label: definition.label, maxItems: definition.maxItems, pageKey: definition.pageKey, sectionId: definition.sectionId, libraryGroup: definition.libraryGroup, mapping: { fields, fieldToKey, gridFields } };
   }
   return result;

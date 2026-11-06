@@ -71,7 +71,7 @@ it('uses normalized DI periods and child collection pricing facts in the persist
   const library = resolvePrototypeLibrary(db, 'asce', 'test');
   installPrototypeLibrary(library);
   const di = library.products.find(p => p.id === 'di-ltd')!;
-  const values = { membership: 'yes', 'birth-date': '1990-01-01', 'state-province': 'IL', gender: 'male', 'hours-worked-per-week': 30, 'average-monthly-income': 10000, 'is-self-employed': 'yes', 'years-self-employed': 0.5, coverageSelections: ['di-ltd'], productApplicants: { 'di-ltd': ['member'] }, coverageAmounts: { 'di-ltd:member': 1050 }, coverageWaitingPeriods: { 'di-ltd:member': '90-days' }, coverageMaxBenefitPeriods: { 'di-ltd:member': '5-years' }, children: [{ birthDate: '2016-01-01', gender: 'male', unmarried: 'yes', fullTimeStudent: 'no' }] };
+  const values = { membership: 'yes', 'birth-date': '1990-01-01', 'state-province': 'IL', gender: 'male', 'hours-worked-per-week': 30, 'average-monthly-income': 10000, 'is-self-employed': 'yes', 'years-self-employed': 0.5, coverageSelections: ['di-ltd'], productApplicants: { 'di-ltd': ['member'] }, coverageAmounts: { 'di-ltd:member': 1050 }, coverageWaitingPeriods: { 'di-ltd:member': '90-days' }, coverageMaxBenefitPeriods: { 'di-ltd:member': '5-years' }, children: [{ "child-birth-date": '2016-01-01', "child-gender": 'male', "child-full-time-student": 'no' }] };
   expect(resolveApplicationCoverage(di, 'member', values, library.products)).toMatchObject({ selectable: true, waitingPeriod: { requiredValue: '90-days' }, benefitPeriod: { requiredValue: '5-years' } });
   expect(validateApplicationCoverages(library.products, values)).toBeUndefined();
   const request = prototypeRateRequest('li-term', 'child', 10000, values, 'monthly')!;

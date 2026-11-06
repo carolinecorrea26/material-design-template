@@ -25,7 +25,7 @@ The current display has been rejected by the user. Passing tests does not establ
 | LIB-03 | Search is the first control, at the far left of every table's filter section. Additional view selectors and categorical filters follow it. Export actions stay separate. | Assert first filter control in Pages, Fields, Validation and Analytics; check desktop and wrapped layout. |
 | LIB-04 | Page listings and page-based field views follow Home → Membership → Eligibility → Coverage → the remaining configured application sequence. Fields on each page follow their configured order. Pages includes fields without section relationships, including Home inputs. | Model ordering test; browser check of the first three page rows and their field links. |
 | LIB-05 | A selected Site shows its effective fields and definitions, including scoped additions and overrides. Hidden or excluded fields do not appear as collected inputs. Definitions must be resolved per page, not borrowed from another page's occurrence of the same field. | Compare each active Site/page with its resolved included fields; check field link destinations. |
-| LIB-06 | ASCE Membership includes the required Membership ID field (`asce-member-id`) under its additional membership information. AMA Membership includes all six physician fields for the Spouse of Physician member type, with that condition visible. Both appear in Pages and Fields and in applicable Validation rows. | ASCE/AMA model and navigation tests; browser spot checks. |
+| LIB-06 | ASCE Membership includes the required Membership ID field (`member-id`) under its additional membership information. AMA Membership includes all six physician fields for the Spouse of Physician member type, with that condition visible. Both appear in Pages and Fields and in applicable Validation rows. | ASCE/AMA model and navigation tests; browser spot checks. |
 | LIB-07 | Effective client page lists exclude internal reference pages such as Design System, Site Details, Portal Admin and the old mock email page. Related section/field listings use the same scope. | All-active-Site scope tests; browser check. |
 | LIB-08 | Eligibility child collection inputs link to their actual field rows. A Site configured for notice-only child eligibility does not list child detail inputs as collected. Do not reintroduce the removed child explanation banner. | WAEPA/CSEA collection tests and link round trip. |
 | LIB-09 | Flows retains its flow selection tabs and diagrams, with the selected flow in the URL. There is no Flow table above the tabs. | Flow navigation test; visual diagram check. |
@@ -57,7 +57,7 @@ Verified CSEA Pages at 2054×1167: narrow left tab rail, Pages content alongside
 - `src/domain/prototypeLibrary.test.ts`: persisted CSEA single-page configuration and suppressed calculated pricing.
 - `src/utils/fieldValidation.test.ts`: validation descriptions and executable form checks share the same source.
 
-Earlier notes in `portal-library-refinement.md` are historical where they conflict with these explicit corrections.
+Earlier notes in `archive/portal-library-refinement.md` are historical where they conflict with these explicit corrections.
 
 ## Fields presentation follow-up — October 9, 2026
 

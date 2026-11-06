@@ -1,6 +1,6 @@
 # Portal data architecture audit
 
-This audit records an earlier incremental persistence design. For current stored applicant activation, Library reads and remaining compatibility boundaries, use the [runtime ownership and cleanup plan](project-review/ownership-and-cleanup-plan.md). In mock mode the installed stored revision now supplies applicant products, pages, fields and configuration; the code-driven decisions below are historical migration context.
+This audit records an earlier incremental persistence design. For current stored applicant activation, Library reads and remaining compatibility boundaries, use the [runtime ownership and cleanup plan](../project-review/ownership-and-cleanup-plan.md). In mock mode the installed stored revision now supplies applicant products, pages, fields and configuration; the code-driven decisions below are historical migration context.
 
 ## Current sources and persistence boundary
 

@@ -79,7 +79,7 @@ export const BreakpointsAndResponsiveDesign = () => {
       <DocsSection
         title="forceMobileLayout"
         description={
-          `A client-configurable "single" form template pins md/lg/xl to an unreachable width (1e6) while leaving xs/sm untouched, so every useMediaQuery(breakpoints.up("md")) structural check below resolves to its narrow-screen branch regardless of actual browser width. sm stays real specifically so sm-level padding (e.g. FormShell's px: { xs: 2, sm: "48px" }) still applies on an actual desktop browser.`
+          `A client-configurable "single" form template pins md/lg/xl to an unreachable width (1e6) while leaving xs/sm untouched, so every useMediaQuery(breakpoints.up("md")) structural check below resolves to its narrow-screen branch regardless of actual browser width. sm stays real specifically so sm-level padding (e.g. FormShell's 16px mobile and 24px larger-screen padding) still applies on an actual desktop browser.`
         }
       >
         <Stack direction={{ xs: "column", md: "row" }} spacing={2}>

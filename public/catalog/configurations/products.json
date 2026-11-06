@@ -77671,7 +77671,7 @@
       "key": "step3.avma.li-group-term.cir",
       "displayId": 58513120013608,
       "providedBy": null,
-      "sourceReference": "docs/step3-journey-adoption.md",
+      "sourceReference": "docs/archive/step3-journey-adoption.md",
       "position": 0,
       "definition": {
         "id": "cir",
@@ -77689,7 +77689,7 @@
       "key": "step3.avma.di-ltd.fpo",
       "displayId": 114097239047593,
       "providedBy": null,
-      "sourceReference": "docs/step3-journey-adoption.md",
+      "sourceReference": "docs/archive/step3-journey-adoption.md",
       "position": 0,
       "definition": {
         "id": "fpo",

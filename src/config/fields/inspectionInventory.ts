@@ -1,3 +1,4 @@
+import { requirementAnswerKey } from "../../domain/requirementFields";
 import { getPhoneTypeFieldId } from "../../domain/phoneFields";
 import { resolveMappedFields, siteUsesRequirementFields } from "../../domain/requirementFields";
 import type { ResolvedFieldSurface } from "../../domain/fieldSurfaces";
@@ -95,7 +96,7 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
       }
     }
   }
-  const childKeys: Record<string,string> = {...childMapping.fieldToKey,"child-unmarried":"unmarried","child-full-time-student":"fullTimeStudent","child-honorably-discharged-service-member":"honorablyDischargedServiceMember"};
+  const childKeys: Record<string,string> = {...childMapping.fieldToKey,"child-full-time-student":requirementAnswerKey("full-time-student", "child"),"child-honorably-discharged-service-member":requirementAnswerKey("honorably-discharged-service-member", "child")};
   if (library) for (const field of library.fieldCollections.children.mapping.fields) {
     const key = library.fieldCollections.children.mapping.fieldToKey[field.id];
     const registered = result.find(row => row.pageId === "eligibility" && row.field.id === field.id);
@@ -104,7 +105,7 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
   }
   else for (const [id,key] of Object.entries(childKeys)) {
     const registered = result.find(r => r.pageId === "eligibility" && r.field.id === id);
-    if (id === "child-unmarried" || id === "child-full-time-student" || id === "child-honorably-discharged-service-member") {
+    if (id === "child-full-time-student" || id === "child-honorably-discharged-service-member") {
       if (registered) Object.assign(registered, {area:"childSection",storage:`children[].${key}`,condition:"Child selected; repeated for each child"});
     } else add("eligibility", catalog[id], "childSection", "Child selected; repeated for each child", `children[].${key}`);
   }
@@ -163,7 +164,14 @@ export function getSiteFieldInventory(siteId: string, library?: PrototypeLibrary
     }
   }
   add("coverage",{id:"selectedCategoryChips",label:"Coverage categories",inputType:"checkbox-group"},"Coverage selection","Select coverage categories","selectedCategoryChips","component-defined");
-  if (client.features?.memberVerificationMatchFacts) {
+  if (client.features?.memberVerificationMatchFacts || client.tpaIntegration?.mode === "coverage-verification") {
+    if (client.tpaIntegration?.requireAddressBeforeVerification) {
+      const addressIds = new Set(["street-address", "apt-suite", "city", "state", "zip-code"]);
+      const addressFields = library
+        ? library.site.configuration.pages.find(page => page.key === "contact")?.fields.filter(field => field.included).map(field => field.definition) ?? []
+        : Object.values(catalog);
+      for (const field of addressFields.filter(field => addressIds.has(field.id))) add("eligibility", field, "Verification address", "TPA match triggers address collection before member verification", field.id, "site-configured");
+    }
     for (const field of surfaceFields("verificationControls", [{id:"verification-method",label:"Verification Method",inputType:"radio",options:["text","voice","security-questions","skip"].map(value=>({value,label:value}))}])) add("eligibility", field, "Member verification", "Configured member match; verification dialog open", "Local dialog state", library ? "site-configured" : "component-defined");
     for (const field of surfaceFields("verificationQuestions", SECURITY_QUESTIONS.map(question => ({id:question.id,label:question.question,inputType:"radio",options:question.options.map(value=>({value,label:value}))})))) add("eligibility", field, "Member verification / sample security questions", "Security questions verification method selected", "Local dialog state", library ? "site-configured" : "component-defined");
   }

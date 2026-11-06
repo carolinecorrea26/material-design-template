@@ -1381,16 +1381,6 @@
       "position": 3
     },
     {
-      "id": "eligibility.childSection.child-unmarried",
-      "key": "eligibility.childSection.child-unmarried",
-      "displayId": 201529695535578,
-      "providedBy": null,
-      "sourceReference": "prototype:eligibility/children",
-      "sectionKey": "eligibility.childSection",
-      "fieldKey": "child-unmarried",
-      "position": 4
-    },
-    {
       "id": "eligibility.childSection.child-full-time-student",
       "key": "eligibility.childSection.child-full-time-student",
       "displayId": 68956318824120,
@@ -1405,7 +1395,7 @@
       "key": "eligibility.childSection.child-honorably-discharged-service-member",
       "displayId": 29348059944945,
       "providedBy": null,
-      "sourceReference": "User decision October 21, 2026: adopt later effective ABE adult Life ages and workbook dependent ages, including Hospital Money's honorable-discharge extension; retain DI spouse 30-hour minimum; child unmarried requirement is a note without a question",
+      "sourceReference": "User decision October 21, 2026: adopt later effective ABE adult Life ages and workbook dependent ages, including Hospital Money's honorable-discharge extension; retain DI spouse 30-hour minimum; retain the existing child eligibility informational note only",
       "sectionKey": "eligibility.childSection",
       "fieldKey": "child-honorably-discharged-service-member",
       "position": 30011
@@ -7865,31 +7855,6 @@
       }
     },
     {
-      "id": "child-unmarried",
-      "key": "child-unmarried",
-      "definition": {
-        "id": "child-unmarried",
-        "label": "Is the child unmarried?",
-        "inputType": "radio",
-        "options": [
-          {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          }
-        ],
-        "required": true,
-        "displayName": "Child unmarried"
-      },
-      "position": 1,
-      "displayId": 165997361063812,
-      "providedBy": null,
-      "sourceReference": "prototype:fields/child-unmarried"
-    },
-    {
       "id": "child-full-time-student",
       "key": "child-full-time-student",
       "definition": {
@@ -9991,19 +9956,19 @@
       "sourceReference": "prototype:fields/waepa-member-id"
     },
     {
-      "id": "asce-member-id",
-      "key": "asce-member-id",
+      "id": "member-id",
+      "key": "member-id",
       "definition": {
-        "id": "asce-member-id",
+        "id": "member-id",
         "label": "Membership ID",
         "inputType": "text",
-        "required": true,
-        "displayName": "Asce member ID"
+        "required": false,
+        "displayName": "Member ID"
       },
       "position": 19,
       "displayId": 183538176694187,
       "providedBy": null,
-      "sourceReference": "prototype:fields/asce-member-id"
+      "sourceReference": "prototype:fields/member-id"
     },
     {
       "id": "avma-vet-college",
@@ -20944,7 +20909,7 @@
       "key": "child-honorably-discharged-service-member",
       "displayId": 239529310988075,
       "providedBy": null,
-      "sourceReference": "User decision October 21, 2026: adopt later effective ABE adult Life ages and workbook dependent ages, including Hospital Money's honorable-discharge extension; retain DI spouse 30-hour minimum; child unmarried requirement is a note without a question",
+      "sourceReference": "User decision October 21, 2026: adopt later effective ABE adult Life ages and workbook dependent ages, including Hospital Money's honorable-discharge extension; retain DI spouse 30-hour minimum; retain the existing child eligibility informational note only",
       "position": 30011,
       "definition": {
         "id": "child-honorably-discharged-service-member",
@@ -25184,20 +25149,22 @@
       "sourceReference": "prototype:siteFieldConfigurations/site:asce.membership.membership.override"
     },
     {
-      "id": "site:asce.membership.asce-member-id.override",
-      "key": "site:asce.membership.asce-member-id.override",
+      "id": "site:asce.membership.member-id.override",
+      "key": "site:asce.membership.member-id.override",
       "scope": "site",
       "clientKey": null,
       "siteKey": "asce",
       "pageKey": "membership",
-      "fieldKey": "asce-member-id",
+      "fieldKey": "member-id",
       "position": 13,
       "include": true,
       "hidden": null,
-      "values": {},
+      "values": {
+        "required": true
+      },
       "displayId": 163902321449089,
       "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/site:asce.membership.asce-member-id.override"
+      "sourceReference": "prototype:siteFieldConfigurations/site:asce.membership.member-id.override"
     },
     {
       "id": "site:avma.membership.title.override",
@@ -26259,22 +26226,6 @@
       "displayId": 3739052823389,
       "providedBy": null,
       "sourceReference": "prototype:siteFieldConfigurations/asce.coverage.years-self-employed.requirement"
-    },
-    {
-      "id": "asce.eligibility.child-unmarried.requirement",
-      "key": "asce.eligibility.child-unmarried.requirement",
-      "scope": "site",
-      "clientKey": null,
-      "siteKey": "asce",
-      "pageKey": "eligibility",
-      "fieldKey": "child-unmarried",
-      "position": 11000,
-      "include": true,
-      "hidden": null,
-      "values": {},
-      "displayId": 164630835775299,
-      "providedBy": null,
-      "sourceReference": "prototype:siteFieldConfigurations/asce.eligibility.child-unmarried.requirement"
     },
     {
       "id": "asce.eligibility.child-full-time-student.requirement",
@@ -28018,7 +27969,7 @@
       "key": "site:abe.eligibility.child-honorably-discharged-service-member.include",
       "displayId": 161366152516884,
       "providedBy": null,
-      "sourceReference": "User decision October 21, 2026: adopt later effective ABE adult Life ages and workbook dependent ages, including Hospital Money's honorable-discharge extension; retain DI spouse 30-hour minimum; child unmarried requirement is a note without a question",
+      "sourceReference": "User decision October 21, 2026: adopt later effective ABE adult Life ages and workbook dependent ages, including Hospital Money's honorable-discharge extension; retain DI spouse 30-hour minimum; retain the existing child eligibility informational note only",
       "position": 30011,
       "scope": "site",
       "siteKey": "abe",

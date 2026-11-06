@@ -1,3 +1,4 @@
+import { requirementAnswerKey } from "../../domain/requirementFields";
 import { fieldCatalog } from "./index";
 export const childMapping = {
   fields: [
@@ -7,10 +8,10 @@ export const childMapping = {
     fieldCatalog["child-gender"],
   ],
   fieldToKey: {
-    "child-first-name": "firstName",
-    "child-last-name": "lastName",
-    "child-birth-date": "birthDate",
-    "child-gender": "gender",
+    "child-first-name": requirementAnswerKey("first-name", "child"),
+    "child-last-name": requirementAnswerKey("last-name", "child"),
+    "child-birth-date": requirementAnswerKey("birth-date", "child"),
+    "child-gender": requirementAnswerKey("gender", "child"),
   } as const,
   gridFields: ["child-first-name", "child-last-name"],
 };

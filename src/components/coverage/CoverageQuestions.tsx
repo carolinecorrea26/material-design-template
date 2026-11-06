@@ -5,7 +5,7 @@ import type { CoverageCategory } from "../../config/coverageCategories";
 import type { CoverageDefinition } from "../../domain/coverage";
 import ApplicantSectionDivider from "../layout/ApplicantSectionDivider";
 import ConditionalGroup from "../forms/ConditionalGroup";
-import SectionDivider from "../layout/SectionDivider";
+import SectionDivider, { FieldGroup } from "../layout/SectionDivider";
 import type { FormRouteRenderProps } from "../../app/RoutePage";
 import type { CoverageCategoryId } from "../../config/coverages/types";
 import type {
@@ -44,9 +44,9 @@ export default function CoverageQuestions(props: CoverageQuestionSectionProps) {
       errorMessage={props.categoryErrorMessage}
     />}
     <CoverageFollowupQuestions {...props} />
-    {(props.factFields ?? []).map(field => {
+    {!!props.factFields?.length && <FieldGroup className="FieldGroup-root">{props.factFields.map(field => {
       return <FieldRenderer key={field.id} field={field} control={props.control} errors={props.errors} onValueChange={props.onFieldChange} />;
-    })}
+    })}</FieldGroup>}
   </Stack>;
 }
 
@@ -99,20 +99,18 @@ function CoverageFollowupQuestions(props: CoverageQuestionsProps) {
         </Stack>
       );
 
+      const fields = isConditional ? <ConditionalGroup>{content}</ConditionalGroup> : content;
       return (
         <Box key={section.id}>
-          {section.description && (
+          {section.description ? (
             <SectionDivider
               label={section.description}
               variant="subsection"
               sx={{ mb: 2 }}
-            />
-          )}
-          {isConditional ? (
-            <ConditionalGroup>{content}</ConditionalGroup>
-          ) : (
-            content
-          )}
+            >
+              {fields}
+            </SectionDivider>
+          ) : <FieldGroup className="FieldGroup-root">{fields}</FieldGroup>}
         </Box>
       );
     });

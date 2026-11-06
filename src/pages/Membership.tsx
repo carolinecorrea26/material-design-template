@@ -1,6 +1,7 @@
 import { useApplicationForm } from "../app/ApplicationFormContext";
 import MembershipStatus from "../components/membership/MembershipStatus";
 import MemberInformation from "../components/membership/MemberInformation";
+import { FieldGroup } from "../components/layout/SectionDivider";
 import AdditionalMembershipInformation from "../components/membership/AdditionalMembershipInformation";
 import MembershipHelp from "../app/sections/ConfiguredMembershipHelp";
 import { clearWAEPAFields } from "../components/membership/membershipFieldReset";
@@ -85,6 +86,7 @@ export default function Membership() {
 
         return (
           <>
+            <FieldGroup className="FieldGroup-root">
             <MembershipStatus
               membershipField={membershipField}
               client={client}
@@ -108,10 +110,10 @@ export default function Membership() {
                 }
               }}
             />
+            {showMembershipFollowUpFields && <MemberInformation fields={remainingFields} control={control} errors={errors} />}
+            </FieldGroup>
             {showMembershipFollowUpFields && (
               <>
-                <MemberInformation fields={remainingFields} control={control} errors={errors} />
-
                 {hasAdditionalFields && (
                   <AdditionalMembershipInformation
                     fields={additionalFields}

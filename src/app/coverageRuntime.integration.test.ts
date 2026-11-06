@@ -33,12 +33,12 @@ describe("application facts through live Coverage and routing", () => {
     expect(resolveApplicationCoverage(di,"member",{...facts(),"hours-worked-per-week":"29"},products).selectable).toBe(false);
     expect(resolveApplicationCoverage(di,"member",{...facts(),"hours-worked-per-week":""},products).eligibilityStatus).toBe("needs-information");
   });
-  it.each([[22,"no","yes",true],[23,"no","yes",false],[24,"yes","yes",true],[25,"yes","yes",false],[22,"yes","no",false]])("child age %s student %s unmarried %s", (age,student,unmarried,allowed) => {
-    const values = { "child-birth-date": dob(Number(age)), "child-full-time-student": student, "child-unmarried": unmarried, productApplicants: {"li-term":["member"]} };
+  it.each([[22,"no",true],[23,"no",false],[24,"yes",true],[25,"yes",false],[22,"yes",true]])("child age %s student %s", (age,student,allowed) => {
+    const values = { "child-birth-date": dob(Number(age)), "child-full-time-student": student, productApplicants: {"li-term":["member"]} };
     expect(resolveApplicationCoverage(life,"child",values,products).selectable).toBe(allowed);
   });
   it("enforces infant boundary, dependencies and one child plan", () => {
-    const values = {"child-birth-date":dayjs().subtract(14,"day").format("YYYY-MM-DD"),"child-unmarried":"yes", productApplicants:{"li-term":["member"]}};
+    const values = {"child-birth-date":dayjs().subtract(14,"day").format("YYYY-MM-DD"),productApplicants:{"li-term":["member"]}};
     expect(resolveApplicationCoverage(life,"child",values,products).selectable).toBe(true);
     expect(resolveApplicationCoverage(life,"child",{...values,"child-birth-date":dayjs().subtract(13,"day").format("YYYY-MM-DD")},products).selectable).toBe(false);
     expect(resolveApplicationCoverage(life,"child",{...values,productApplicants:{}},products).selectable).toBe(false);
@@ -76,7 +76,7 @@ describe("application facts through live Coverage and routing", () => {
   it("collects only contextual normalized requirement fields", () => {
     expect(coverageFactFieldIds([di],facts())).toEqual(["is-self-employed"]);
     expect(coverageFactFieldIds([di],{...facts(),"is-self-employed":"yes"})).toContain("years-self-employed");
-    expect(eligibilityFactFieldIds([life])).toContain("child-unmarried");
+    expect(eligibilityFactFieldIds([life])).toEqual([]);
   });
   it("live hook allows adding ineligible DI, blocks continuation, and repairs restored required amounts/options", async () => {
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
@@ -107,18 +107,19 @@ describe("application facts through live Coverage and routing", () => {
     expect(validateApplicationCoverages(products, original)).toBeUndefined();
     expect(validateApplicationCoverages(products, {...original, "is-self-employed":"yes", "years-self-employed":"0.5"})).toContain("available benefit amount");
     expect(resolveApplicationCoverage(life,"child",{
-      "child-birth-date":dob(20),"child-unmarried":"yes",
+      "child-birth-date":dob(20),
       coverageSelections:["li-term"],productApplicants:{"li-term":["member"]},coverageAmounts:{"li-term:member":0},
     },products).selectable).toBe(false);
   });
   it("uses all existing children instead of an independent child birth date", () => {
-    const values = {productApplicants:{"li-term":["member"]}, "child-birth-date":dob(20), "child-unmarried":"yes", children:[{birthDate:dob(22),unmarried:"yes"},{birthDate:dob(24),unmarried:"yes",fullTimeStudent:"yes"}]};
+    const values = {productApplicants:{"li-term":["member"]}, "child-birth-date":dob(20), children:[{"child-birth-date":dob(22)},{"child-birth-date":dob(24),"child-full-time-student":"yes"}]};
     expect(resolveApplicationCoverage(life,"child",values,products).selectable).toBe(true);
-    expect(resolveApplicationCoverage(life,"child",{...values,children:[...values.children,{birthDate:dob(25),unmarried:"yes",fullTimeStudent:"yes"}]},products).selectable).toBe(false);
-    expect(resolveApplicationCoverage(life,"child",{...values,children:[{birthDate:dob(20)}]},products).eligibility).toBe("needs-information");
+    expect(resolveApplicationCoverage(life,"child",{...values,children:[...values.children,{"child-birth-date":dob(25),"child-full-time-student":"yes"}]},products).selectable).toBe(false);
+    expect(resolveApplicationCoverage(life,"child",{...values,children:[{"child-birth-date":dob(20)}]},products).eligibility).toBe("eligible");
+    expect(resolveApplicationCoverage(life,"child",{...values,children:[{}]},products).eligibility).toBe("needs-information");
   });
   it("restores persisted child collections and resolves fact-based verification", () => {
-    const children = [{birthDate:dob(20),unmarried:"yes",fullTimeStudent:"no"}];
+    const children = [{"child-birth-date":dob(20),"child-full-time-student":"no"}];
     expect(getPageCollectionDefaults("eligibility",{children})).toEqual({children});
     expect(isTpaMemberMatch(undefined,{"first-name":"Caroline"})).toBe(false);
     expect(isTpaMemberMatch({"first-name":"Caroline"},{"first-name":" caroline "})).toBe(true);

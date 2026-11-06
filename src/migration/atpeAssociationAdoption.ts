@@ -38,7 +38,7 @@ export const atpeEligibilitySelections: Array<{ productKey: string; row: number;
   ] })),
   ...[{ productKey: "li-group-term", row: 179 }, { productKey: "li-add", row: 182 }, { productKey: "sh-hospital-income", row: 183 }, { productKey: "sh-critical-illness", row: 184 }].map(slice => ({ ...slice, rules: [
     ...(["member", "spouse"] as const).map(applicantKey => ({ associationKey: atpeAssociationKey, applicantKey, eligible: true, minimumAgeYears: 18, maximumAgeYears: 64, ageBounds: "replace" as const })),
-    ...([179, 183].includes(slice.row) ? [{ associationKey: atpeAssociationKey, applicantKey: "child" as const, eligible: true, minimumAgeDays: 0, minimumAgeYears: 0, maximumAgeYears: 25, ageBounds: "replace" as const, unmarried: true }] : slice.row === 182 ? [{ associationKey: atpeAssociationKey, applicantKey: "child" as const, eligible: true, minimumAgeYears: 0, maximumAgeYears: 19, studentMaximumAgeYears: 26, ageBounds: "replace" as const }] : []),
+    ...([179, 183].includes(slice.row) ? [{ associationKey: atpeAssociationKey, applicantKey: "child" as const, eligible: true, minimumAgeDays: 0, minimumAgeYears: 0, maximumAgeYears: 25, ageBounds: "replace" as const, }] : slice.row === 182 ? [{ associationKey: atpeAssociationKey, applicantKey: "child" as const, eligible: true, minimumAgeYears: 0, maximumAgeYears: 19, studentMaximumAgeYears: 26, ageBounds: "replace" as const }] : []),
   ] })),
   { productKey: "li-50plus", row: 185, rules: (["member", "spouse"] as const).map(applicantKey => ({ associationKey: atpeAssociationKey, applicantKey, eligible: true, minimumAgeYears: 18, maximumAgeYears: 64, ageBounds: "replace" as const })) },
 ];

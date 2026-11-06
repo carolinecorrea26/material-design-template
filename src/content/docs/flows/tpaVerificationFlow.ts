@@ -3,7 +3,7 @@ import type { FlowDefinition } from "./types";
 export const tpaVerificationFlow: FlowDefinition = {
   id: "tpaVerification",
   title: "TPA Member Verification Flow",
-  intro: "After membership attestation, look up First Name, Last Name and DOB (plus configured client fields). Existing members with active coverage proceed to LexisNexis identity verification. A pass enables the coverage portfolio and TPA auto-approval at submission; failure or skipping sends the application to the TPA admin for manual review without a portfolio. AMA uses this standard flow. ASCE also requires Membership ID.",
+  intro: "After membership attestation, use the configured prototype TPA lookup. Existing members with active coverage proceed to simulated identity verification. AMA uses First Name, Last Name and DOB. ASCE also requires Membership ID and state; when matched, an alert collects the full residential address before the member verification modal opens. A pass enables the coverage portfolio; failure or skipping continues without a portfolio. No real verification provider is required for the prototype.",
   nodes: [
     { id: "tpa-membership", kind: "page", pageId: "membership", label: "Membership attestation", description: "Applicant claims membership eligibility before the TPA lookup." },
     {
@@ -30,7 +30,7 @@ export const tpaVerificationFlow: FlowDefinition = {
       kind: "decision",
       label: "Choose Verification Method",
       description:
-        "Applicant may verify by text code, voice code, or security questions, or proceed without verification.",
+        "Where configured, collect the full residential address with an alert first. Then offer simulated text code, voice code or security questions, or proceed without verification.",
     },
     {
       id: "tpa-security-questions",

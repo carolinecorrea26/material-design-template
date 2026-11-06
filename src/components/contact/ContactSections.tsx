@@ -1,4 +1,3 @@
-import { Typography } from "@mui/material";
 import FieldRenderer from "../forms/FieldRenderer";
 import type { FormRouteRenderProps } from '../../app/RoutePage';
 import type { ClientApplicantLabels } from '../../config/clients/types';
@@ -7,6 +6,7 @@ import ApplicantSectionDivider from '../layout/ApplicantSectionDivider';
 import ResidentialAddress from './ResidentialAddress';
 import BusinessInformation from './BusinessInformation';
 import SpouseContact from './SpouseContact';
+import SectionDivider, { FieldGroup } from '../layout/SectionDivider';
 
 export type ContactSectionsProps = Pick<FormRouteRenderProps, 'control' | 'errors' | 'watchedValues' | 'allFields' | 'pageSections' | 'setValue'> & {
   showBusinessSection: boolean;
@@ -31,7 +31,10 @@ export default function ContactSections({ control, errors, watchedValues, allFie
         <SpouseContact fields={fieldsFor(section.id)} control={control} errors={errors} />
       </ApplicantSectionDivider>;
       if (section.id === 'contactBusinessInfo') return null;
-      const fields = <>{section.title && <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>{section.title}</Typography>}{fieldsFor(section.id).map(field => <FieldRenderer key={field.id} field={field} control={control} errors={errors} />)}</>;
+      const inputs = fieldsFor(section.id).map(field => <FieldRenderer key={field.id} field={field} control={control} errors={errors} />);
+      const fields = section.title
+        ? <SectionDivider label={section.title} variant="subsection">{inputs}</SectionDivider>
+        : <FieldGroup className="FieldGroup-root" sx={{ mb: 4 }}>{inputs}</FieldGroup>;
       return section.applicant ? <ApplicantSectionDivider key={section.id} applicant={section.applicant} labels={applicantLabels} showLabel={showApplicantLabels[section.applicant] ?? true}>{fields}</ApplicantSectionDivider> : <div key={section.id}>{fields}</div>;
     })}
   </>;

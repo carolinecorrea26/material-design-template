@@ -53,7 +53,7 @@ export function applyProvisionalSourceDecisions(db: DatabaseSchema, cells: reado
     db.eligibilityConstraints.push({ ...metadata("eligibilityConstraints", key), siteKey, productKey, applicantTypeKey,
       ...(previous && db.semanticRequirements.some(row => row.domain === "reviewed-work-eligibility" && row.subjectKey === key) ? { sourceReference: previous.sourceReference } : {}),
       minimumAgeDays: previous?.minimumAgeDays ?? null, minimumAgeYears, maximumAgeYears,
-      studentMaximumAgeYears: previous?.studentMaximumAgeYears ?? null, unmarried: previous?.unmarried ?? null,
+      studentMaximumAgeYears: previous?.studentMaximumAgeYears ?? null,
       minimumWorkHours: previous?.minimumWorkHours ?? null, ...overrides,
     });
     return { table: "eligibilityConstraints", key, column: "maximumAgeYears" } satisfies Destination;

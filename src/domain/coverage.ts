@@ -109,7 +109,6 @@ export type CoverageRequirements = {
     minimumAgeYears?: number;
     maximumAgeYears?: number;
     fullTimeStudentMaximumAgeYears?: number;
-    unmarried?: boolean;
     minimumWorkHoursPerWeek?: number;
     factRequirements?: import("./eligibilityFacts").EligibilityFactRequirement[];
   }>;

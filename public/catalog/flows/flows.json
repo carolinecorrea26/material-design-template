@@ -71,7 +71,7 @@
       "definition": {
         "id": "tpaVerification",
         "title": "TPA Member Verification Flow",
-        "intro": "After membership attestation, look up First Name, Last Name and DOB (plus configured client fields). Existing members with active coverage proceed to LexisNexis identity verification. A pass enables the coverage portfolio and TPA auto-approval at submission; failure or skipping sends the application to the TPA admin for manual review without a portfolio. AMA uses this standard flow. ASCE also requires Membership ID."
+        "intro": "After membership attestation, use the configured prototype TPA lookup. Existing members with active coverage proceed to simulated identity verification. AMA uses First Name, Last Name and DOB. ASCE also requires Membership ID and state; when matched, an alert collects the full residential address before the member verification modal opens. A pass enables the coverage portfolio; failure or skipping continues without a portfolio. No real verification provider is required for the prototype."
       },
       "position": 5,
       "displayId": 98412108367981,
@@ -84,7 +84,7 @@
       "definition": {
         "id": "tpaVerification",
         "title": "TPA Member Verification Flow",
-        "intro": "ASCE follows the standard coverage-verification policy, with Membership ID required in addition to First Name, Last Name and DOB. Existing member + active coverage proceeds to LexisNexis; pass enables portfolio and TPA auto-approval, fail/skipped goes to TPA admin manual review without a portfolio."
+        "intro": "ASCE lookup uses Membership ID, First Name, Last Name, DOB and state. When triggered, collect the full residential address before opening member verification. Existing member + active coverage proceeds to LexisNexis; pass enables portfolio and TPA auto-approval, fail/skipped goes to TPA admin manual review without a portfolio."
       },
       "position": 0,
       "displayId": 72648973495693,
@@ -1154,7 +1154,7 @@
         "id": "tpa-eligibility-lookup",
         "kind": "external",
         "label": "TPA Eligibility Lookup",
-        "description": "Look up First Name, Last Name, DOB and Membership ID. Return existing-member and active-coverage status."
+        "description": "Look up First Name, Last Name, DOB, Membership ID and state. When triggered, collect the full residential address before member verification. Return existing-member and active-coverage status."
       },
       "position": 1,
       "flowKey": "client:asce.tpaVerification",
@@ -1199,7 +1199,7 @@
         "id": "tpa-method-decision",
         "kind": "decision",
         "label": "Choose Verification Method",
-        "description": "Applicant may verify by text code, voice code, or security questions, or proceed without verification."
+        "description": "Collect the full residential address with an alert before opening member verification. Then offer simulated text code, voice code or security questions, or proceed without verification."
       },
       "position": 4,
       "flowKey": "client:asce.tpaVerification",

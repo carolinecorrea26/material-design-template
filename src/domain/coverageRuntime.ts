@@ -83,7 +83,7 @@ export function resolveApplicationCoverage(product: CoverageDefinition, applican
   const relationshipErrors = coverageRelationshipErrors(products, selections);
   const messages = [
     ...(!product.applicants.includes(applicant) ? ["This applicant is not supported."] : []),
-    ...(eligibility === "needs-information" ? [applicant === "child" ? "Complete each child’s birth date, unmarried and student information on Eligibility before adding coverage." : "Complete the applicant eligibility information before adding coverage."] : []),
+    ...(eligibility === "needs-information" ? [applicant === "child" ? "Complete each child’s birth date and student information on Eligibility before adding coverage." : "Complete the applicant eligibility information before adding coverage."] : []),
     ...(eligibility === "ineligible" ? ["This applicant does not meet the coverage eligibility requirements."] : []),
     ...(limit && limit.maximum === undefined ? ["Complete income and employment information to determine available benefits."] : []),
     ...relationshipErrors,
@@ -104,7 +104,7 @@ export function resolveApplicationCoverage(product: CoverageDefinition, applican
   };
 }
 
-export function validateApplicationCoverages(products: CoverageDefinition[], values: Record<string, unknown>, options?: { deferProfileUnderwriting?: boolean }): string | undefined {
+export function validateApplicationCoverages(products: CoverageDefinition[], values: Record<string, unknown>, options?: { deferProfileUnderwriting?: boolean; deferUnansweredMembership?: boolean }): string | undefined {
   const selected = Array.isArray(values.coverageSelections) ? values.coverageSelections : [];
   const applicants = (values.productApplicants ?? {}) as Record<string, CoverageApplicantId[]>;
   if (!selected.length) return "Please select at least one coverage to continue.";
@@ -113,7 +113,7 @@ export function validateApplicationCoverages(products: CoverageDefinition[], val
     if (!product) return "A selected product is no longer available.";
     if (!applicants[product.id]?.length) return "Please select an applicant for each selected coverage.";
     for (const applicant of applicants[product.id] ?? []) {
-      const result = resolveApplicationCoverage(product, applicant, values, products);
+      const result = resolveApplicationCoverage(product, applicant, values, products, options);
       if (!result.selectable) return `${product.name}: ${result.messages[0]}`;
       const key = `${product.id}:${applicant}`;
       const amount = (values.coverageAmounts as Record<string, number> | undefined)?.[key];

@@ -61,8 +61,23 @@ export function readCatalogParts() {
   return { formatVersion: 1, data: tables, analyticsTags };
 }
 
+// Sites the deployment bundle carries. Only ASCE is active while it is being finalized; the
+// part files keep every site, so adding a key back here and rebuilding restores it.
+export const activeSites = ['asce'];
+
+/** The part files filtered to the active sites: the bundle the prototype, Library and Storybook load. */
+export function activeCatalog(catalog = readCatalogParts()) {
+  const inactive = catalog.data.sites.filter(site => !activeSites.includes(site.key));
+  const keys = new Set(inactive.map(site => site.key)), ids = new Set(inactive.map(site => site.id));
+  const data = Object.fromEntries(Object.entries(catalog.data).map(([table, rows]) => [table, table === 'sites'
+    ? rows.filter(site => activeSites.includes(site.key))
+    : rows.filter(row => !(keys.has(row?.siteKey) || ids.has(row?.siteId)))]));
+  validateIdentityCatalog(data);
+  return { ...catalog, data, analyticsTags: catalog.analyticsTags.filter(tag => !keys.has(tag?.siteKey)) };
+}
+
 export function writeCatalogBundle() {
-  const catalog = readCatalogParts();
+  const catalog = activeCatalog();
   fs.writeFileSync(bundlePath, JSON.stringify(catalog) + '\n');
   return catalog;
 }

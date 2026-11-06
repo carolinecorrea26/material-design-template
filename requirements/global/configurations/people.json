@@ -1,0 +1,42 @@
+{
+  "configurations": [
+    {
+      "id": "site-people",
+      "name": "People the site covers",
+      "status": "draft",
+      "type": "string-list",
+      "options": [
+        "self",
+        "spouse",
+        "child"
+      ],
+      "default": [
+        "self",
+        "spouse",
+        "child"
+      ],
+      "source": "proposed; dependents field options"
+    },
+    {
+      "id": "child-list-maximum",
+      "name": "Most children an applicant can add",
+      "status": "draft",
+      "type": "number",
+      "default": 10,
+      "source": "src/components/forms/DynamicList.tsx"
+    },
+    {
+      "id": "tpa-integration",
+      "name": "TPA member lookup",
+      "status": "draft",
+      "type": "enum",
+      "options": [
+        "none",
+        "member-lookup",
+        "membership-auto-approval"
+      ],
+      "default": "none",
+      "source": "src/domain/tpaIntegration.ts"
+    }
+  ]
+}

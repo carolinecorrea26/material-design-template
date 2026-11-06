@@ -19,13 +19,13 @@ describe("user-authorized provisional source choices", () => {
   it("enforces provisional ages, work hours and child ages without a student extension", () => {
     for (const [siteKey, productKey, applicantKey] of [["nso", "di-ltd", "member"], ["avma", "li-20yr", "member"], ["avma", "li-20yr", "spouse"]]) {
       const site = resolveEffectiveSite(db, siteKey);
-      const facts = { ageYears: 59, workHoursPerWeek: 20, unmarried: true, selectedPlans: [{ applicantKey: "member", categoryKey: "life", productKey }] };
+      const facts = { ageYears: 59, workHoursPerWeek: 20, selectedPlans: [{ applicantKey: "member", categoryKey: "life", productKey }] };
       expect(resolveEffectiveEligibility(site, productKey, applicantKey, facts)).toMatchObject({ status: "resolved", eligible: true });
       expect(resolveEffectiveEligibility(site, productKey, applicantKey, { ...facts, ageYears: 60 })).toMatchObject({ status: "resolved", eligible: false });
       if (siteKey === "nso") expect(resolveEffectiveEligibility(site, productKey, applicantKey, { ...facts, workHoursPerWeek: 19 })).toMatchObject({ eligible: false });
     }
     const ama = resolveEffectiveSite(db, "ama");
-    const child = { membershipType: "physician", ageYears: 26, ageDays: 9500, unmarried: true, selectedPlans: [{ applicantKey: "member", categoryKey: "life", productKey: "li-preferred" }] };
+    const child = { membershipType: "physician", ageYears: 26, ageDays: 9500, selectedPlans: [{ applicantKey: "member", categoryKey: "life", productKey: "li-preferred" }] };
     expect(resolveEffectiveEligibility(ama, "li-preferred", "child", child)).toMatchObject({ status: "resolved", eligible: true });
     expect(resolveEffectiveEligibility(ama, "li-preferred", "child", { ...child, ageYears: 27, fullTimeStudent: true })).toMatchObject({ eligible: false });
     expect(resolveEffectiveEligibility(ama, "li-preferred", "child", { ...child, ageYears: 0, ageDays: 13 })).toMatchObject({ eligible: false });

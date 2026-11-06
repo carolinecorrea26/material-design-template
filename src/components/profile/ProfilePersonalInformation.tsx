@@ -34,8 +34,7 @@ export default function ProfilePersonalInformation({ applicant = "self", fieldId
 
   return (
     <>
-      {/* Height fields use the shared stacked default. */}
-      <FieldGrid gap={2}>
+      <FieldGrid columns="1fr 1fr" gap={2} keepColumns>
         {fieldIds
           .filter((id) => heightFields.has(id))
           .map((fieldId) => renderField(fieldId, "none"))}

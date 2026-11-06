@@ -1,6 +1,6 @@
 # Phase 4C — Curated migration boundary
 
-Current status: `phase5Ready: true`, `phase6Ready: true` after the six [ASCE business decisions](asce-business-decisions.md) were explicitly approved and recorded canonically. Phase 4C is closed. Phase 5 preserves compatibility behavior; approval does not activate a normalized runtime. The original six-blocker inventory below is historical. See [Phase 5](phase5-repositories.md).
+Current status: `phase5Ready: true`, `phase6Ready: true` after the six [ASCE business decisions](../asce-business-decisions.md) were explicitly approved and recorded canonically. Phase 4C is closed. Phase 5 preserves compatibility behavior; approval does not activate a normalized runtime. The original six-blocker inventory below is historical. See [Phase 5](phase5-repositories.md).
 
 ## Source accounting
 

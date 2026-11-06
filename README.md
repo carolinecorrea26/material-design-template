@@ -82,38 +82,37 @@ those fixtures and does not overwrite the shared JSON catalog.
 Current architecture review: [project structure and Library review](docs/project-review/README.md).
 Its table counts, SQL dictionaries and relationship diagrams describe the archived schema.
 
+## Requirements (fresh start)
+
+Site requirements are being rewritten from scratch under [`requirements/`](requirements/),
+starting with ASCE. The model, naming and layering rules are in the
+[requirements specification](docs/requirements-spec/README.md); explicitly requested
+changes are recorded in [`requirements/changelog.json`](requirements/changelog.json)
+and shown in Admin Center. `golden/` holds reference snapshots for comparison, not a target.
+
 ## ASCE development/testing handoff
 
 Storage boundaries and verification: no database is used. Configuration comes from the
 JSON catalog; operational demo data stays in browser storage and `.mock-platform/`.
-`npm run test:asce` runs the focused ASCE runtime tests.
+`npm test` runs the focused ASCE tests (`test:asce`) while ASCE is being finalized; other
+sites' tests are paused. `npm run test:all` runs the full all-sites suite.
 
-Start with [ASCE handoff and startup](docs/asce-handoff.md),
-[acceptance and owners](docs/asce-handoff-acceptance.md),
-[mock contracts](docs/asce-mock-service-contracts.md), and
-[follow-up backlog](docs/asce-follow-up-backlog.md).
-Current follow-up status and required source inputs are in the
-[execution register](docs/asce-follow-up-execution.md).
+Other sites are switched off: `activeSites` in `scripts/catalog-parts.mjs` limits the built
+bundle (`public/catalog/portal.json`) to ASCE, so the prototype, Library and Storybook load only
+ASCE (Storybook's generic template renders every capability from it). The catalog parts keep every
+site. `tsconfig.app.json` type-checks only the ASCE tests, and `catalog:check` skips the ABE
+document. To switch a site back on, add it to `activeSites` and run `node scripts/build-catalog.mjs`.
+
+Current ASCE scope and open corrections are in the
+[execution register](docs/asce-follow-up-execution.md). Still-binding decisions:
+[approved ASCE business decisions](docs/asce-business-decisions.md),
+[provisional source decisions](docs/step3-provisional-decisions.md) and the
+[Portal Library acceptance criteria](docs/portal-library-acceptance.md).
 The accepted scope is the local mock prototype; real PRASE remains excluded.
-The October 8 increment adds [durable mock applicant save/resume](docs/applicant-save-resume.md)
-and [shared health catalog intake and remaining form gaps](docs/global-health-form-migration.md).
-The [ASCE MCR template check](docs/asce-mcr-template-check.md) records corrected
-CIR/AD&D increments, child medical-underwriting behavior and MCR health scope.
 Account sign-in is temporarily disabled in the local development startup until
-the user requests restoration. Application-data PDFs are available on Review and Receipt.
+the user requests restoration. Document actions on Review and Receipt are placeholders.
 
 ## Persistent portal data
-
-The current migration scope and acceptance criteria are defined in
-[Active Site migration contract](docs/active-site-migration-contract.md).
-It covers the ten current prototype Sites, including the synthetic Demo, with
-per-product review in the [generated inventory](docs/active-site-migration-inventory.md)
-and [JSON register](docs/active-site-coverage-audit.json). Other MCR clients remain
-archived for later migration. `npm run migration:scope-audit` regenerates this
-review baseline; add `-- --check` to detect drift without rewriting it.
-Historical phase readiness does not establish complete MCR migration or runtime
-activation readiness. The default local mock consumes the persisted Library;
-production activation and complete source acceptance remain gated.
 
 The current configuration source is the shared JSON catalog described above.
 Operational demo services retain local persistence. No database is configured.
@@ -169,47 +168,20 @@ Keep the original requirements workbooks, review evidence and
 `.mock-platform/` saved state. Historical reports retain source decisions and
 acceptance evidence even where their runtime descriptions have been superseded.
 
-## Historical migration reviews
+## Local development
 
-The following phase reports record earlier migration work and acceptance boundaries.
-Use the shared catalog section above for the current runtime and startup instructions.
-See [canonical schema and MCR normalization](docs/canonical-mcr-normalization.md) and
-the [source/table inventory](docs/canonical-mcr-inventory.md) for retained source evidence.
-
-## Phase 4C status
-
-Phase 4C is closed successfully and Phase 5 repository access is implemented. `phase5Ready: true`, `phase6Ready: true`: the six [ASCE business decisions](docs/asce-business-decisions.md) now have approved canonical records and persisted approval evidence. This is readiness for a deliberate Phase 6 implementation, not runtime activation. Application and Library reads preserve existing compatibility behavior; Admin foundational reads use the existing persistence adapters. See [Phase 5 repository boundaries and validation](docs/phase5-repositories.md) and [Phase 4C curation](docs/phase4c-curated-boundary.md).
-
-Step 2 adds an opt-in shared read boundary and consistent normalized snapshots. See [the shared data and revision contract](docs/shared-data-revision-contract.md) for integration and remaining gates (its SQL function was archived). The applicant runtime remains on its existing adapter.
-
-Before Step 3, the [legacy platform review and revised plan](docs/legacy-platform-migration-review.md) compares the supplied Site configuration reference against current template capabilities. Its [review register](docs/legacy-platform-review-register.json) preserves all 203 property-guide entries and scoped behavior evidence; recommendations remain pending, and the active Site scope is unchanged.
-
-Step 3 clarification register: [major outstanding items and confirmed rate behavior](docs/step3-major-outstanding-items.md). CIR-only selection and existing-policy changes are tracked separately.
-
-Step 3 migration review: [scoped adoption and required rule work](docs/step3-active-site-adoption.md), [explicit identity crosswalk](docs/step3-identity-crosswalk.md). Run `npm run migration:adoption-review -- --check` to verify the generated review artifacts. The reviewed compiler seeds the persisted mock Library; the default development prototype consumes that snapshot.
-
-Latest Step 3 verification: [exception acceptance, portfolio gates and runtime data sources](docs/step3-exception-adoption.md). All 1,838 persisted journey mappings execute after serialization and PostgreSQL readback. The default local mock now consumes the persisted Library; full Step 3 product acceptance and production activation remain pending. The compatibility catalog is available through `dev:catalog`.
-
-Portal Library uses one Effective Site scope selector, initially All. All browses the full catalog and preserves default field placements independently of client overrides. Site scope shows enabled applicant pages/products, effective fields/rules and applicable shared standards. The Templates domain presents Multi-page and Single-page layout previews, plus a planned Fast Track entry; a selected Site shows its configured default template. Legacy scope query parameters remain readable, while new Library links preserve only the selected Site and domain filters. This inspection change does not activate the reviewed migration in the live applicant form.
-
-### Local migration mock platform
+### Local mock platform
 
 `npm run mock:dev` starts a separate preview at `http://127.0.0.1:5180`, with
 synthetic PRASE/payment endpoints and Caroline's local password/TOTP/recovery
 setup with an authenticator QR code (`caroline@example.invalid`; no emails sent).
-See [Step 6 admin setup](docs/step6-admin-authentication.md) for sign-in and recovery. Mock mode uses local data
-and does not call any database. See
-[the continuation record](docs/migration-continuation-2026-10-02.md) for setup,
-implemented scope, validation and remaining publication/activation gates.
-
-Current Step 3 status: [prototype migration acceptance](docs/step3-prototype-acceptance.md), including Review notices/fields, coverage exclusions, rate participation and mock PRASE. The separate [prototype cutover acceptance](docs/prototype-cutover-acceptance.md) records the persisted mock runtime and remaining provisional behavior.
-
+Mock mode uses local data and does not call any database.
 
 Prototype startup: `npm run dev` loads `public/catalog/portal.json` with the local mock services at [localhost:5180](http://127.0.0.1:5180/). `npm run mock:dev` is the equivalent explicit command. Saved Site drafts remain in `.mock-platform/server-state.json` and take precedence only for their Site during local preview. `npm run dev:catalog` runs the shared catalog directly without mock services. Both use the same base JSON file as the Netlify build. Real PRASE remains excluded.
 
 ### Site build, review and prototype release
 
-Site Builder now supports new/existing TPA and client selection, Site template selection, validated Library editing, full journey previews and revision-specific readiness review. Accepted snapshots stage in prototype UAT and can be scheduled into the next release, executed in Releases on the scheduled date, and rolled back to a previously launched prototype snapshot. Majesco implementation remains separately tracked in Migration schedule. Published-data activation remains gated. See [steps 4–5 workflow and acceptance](docs/step45-builder-publication.md).
+Site Builder now supports new/existing TPA and client selection, Site template selection, validated Library editing, full journey previews and revision-specific readiness review. Accepted snapshots stage in prototype UAT and can be scheduled into the next release, executed in Releases on the scheduled date, and rolled back to a previously launched prototype snapshot. Majesco implementation remains separately tracked in Migration schedule. Published-data activation remains gated.
 
 Optional conversion of older JSON snapshots is documented in [Stored field collections](docs/stored-field-collections.md#older-json-snapshots).
 
@@ -217,4 +189,11 @@ Optional conversion of older JSON snapshots is documented in [Stored field colle
 
 Portal Library owns site requirements and design guidance; Storybook contains component examples. Rules & configuration groups Business rules, Products & riders, Configurations, URL parameters and Validations. Main Site keys use the client name (`asce`, `waepa`, etc.); distinct variants such as `waepa-gi` remain separate and old bookmarks are accepted.
 
-See [the ownership and schema review](docs/portal-library-model-review.md). ASCE information accuracy, applicant verification and the full PDF export are the subsequent phases.
+Portal Library uses one Effective Site scope selector, initially All. All browses the full catalog and preserves default field placements independently of client overrides. Site scope shows enabled applicant pages/products, effective fields/rules and applicable shared standards. The Templates domain presents Multi-page and Single-page layout previews, plus a planned Fast Track entry; a selected Site shows its configured default template. Legacy scope query parameters remain readable, while new Library links preserve only the selected Site and domain filters. This inspection change does not activate the reviewed migration in the live applicant form.
+
+## Historical migration reviews
+
+Earlier phase, Step 3–6, canonical/MCR, active-site and ASCE handoff reports are kept in
+[`docs/archive/`](docs/archive/) for traceability only. They predate the fresh-start
+requirements model and do not describe current behavior. Code and generated catalog
+records still cite them as `source`/`reference` evidence.

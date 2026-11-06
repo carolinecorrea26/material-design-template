@@ -121,7 +121,7 @@ it.each(activeSiteMigrationScope.sites)("$key preserves spouse and single-child 
     const values: Record<string, unknown> = {
       association: input.associationKey, ...(key === "waepa" && applicant === "spouse" ? { "spouse-membership": "no" } : {}), ...(key === "ama" ? { membership: "physician", "actively-at-work": "yes" } : {}),
       "birth-date": "1990-01-01", [`${applicant}-birth-date`]: dayjs().subtract(input.eligibility.ageYears!, "year").format("YYYY-MM-DD"),
-      "state-province": input.jurisdiction!.replace(/^US-/, ""), [`${applicant}-unmarried`]: "yes", [`${applicant}-full-time-student`]: "yes",
+      "state-province": input.jurisdiction!.replace(/^US-/, ""), [`${applicant}-full-time-student`]: "yes",
       [`${applicant}-hours-worked-per-week`]: 40, [`${applicant}-average-monthly-income`]: 1000000,
       coverageSelections: [product.id], productApplicants: { [product.id]: ["member", applicant] },
       coverageAmounts: { [`${product.id}:member`]: input.memberAmount, [`${product.id}:${applicant}`]: input.amount },
@@ -138,7 +138,7 @@ it.each(activeSiteMigrationScope.sites)("$key preserves spouse and single-child 
 it("uses the stored WAEPA infant benefit schedule for an actual child collection", () => {
   const library = resolvePrototypeLibrary(db, "waepa", "accuracy-check"); installPrototypeLibrary(library);
   const product = library.products.find(p => p.id === "li-group-term")!;
-  const values = { "birth-date": "1990-01-01", "state-province": "VA", "prototype-fact:li-group-term:member:activeMilitary": "no", coverageSelections: [product.id], productApplicants: { [product.id]: ["member", "child"] }, coverageAmounts: { [`${product.id}:member`]: 100000, [`${product.id}:child`]: 1000 }, children: [{ birthDate: dayjs().subtract(90, "day").format("YYYY-MM-DD"), unmarried: "yes", fullTimeStudent: "no", gender: "male" }] };
+  const values = { "birth-date": "1990-01-01", "state-province": "VA", "prototype-fact:li-group-term:member:activeMilitary": "no", coverageSelections: [product.id], productApplicants: { [product.id]: ["member", "child"] }, coverageAmounts: { [`${product.id}:member`]: 100000, [`${product.id}:child`]: 1000 }, children: [{ "child-birth-date": dayjs().subtract(90, "day").format("YYYY-MM-DD"), "child-full-time-student": "no", "child-gender": "male" }] };
   const result = resolveApplicationCoverage(product, "child", values, library.products);
   expect(result.selectable, result.messages.join("; ")).toBe(true);
   expect(result.amounts).toEqual([1000]);
@@ -146,6 +146,6 @@ it("uses the stored WAEPA infant benefit schedule for an actual child collection
   const spouseResult = resolveApplicationCoverage(product, "child", spousePrimary, library.products);
   expect(spouseResult.selectable, spouseResult.messages.join("; ")).toBe(true);
   expect(spouseResult.amounts).toEqual([1000]);
-  const mixedChildren = { ...values, children: [...values.children, { ...values.children[0], birthDate: dayjs().subtract(5, "year").format("YYYY-MM-DD") }] };
+  const mixedChildren = { ...values, children: [...values.children, { ...values.children[0], "child-birth-date": dayjs().subtract(5, "year").format("YYYY-MM-DD") }] };
   expect(resolveApplicationCoverage(product, "child", mixedChildren, library.products).selectable).toBe(false);
 });

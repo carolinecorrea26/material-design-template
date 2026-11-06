@@ -4,7 +4,7 @@ import { resolveCoverageJourneyPolicy } from "./coverageJourneyPolicy";
 
 /** Scoped bounds narrow the base by default. An explicit replacement replaces
  * only age bounds; work, participation and other facts retain their owners. */
-export type AssociationEligibilityPolicy = { version: 1; rules: Array<{ associationKey: string; applicantKey: "member" | "spouse" | "child"; eligible: boolean; minimumAgeDays?: number; minimumAgeYears?: number; maximumAgeYears?: number; studentMaximumAgeYears?: number; ageBounds?: "replace"; unmarried?: boolean }> };
+export type AssociationEligibilityPolicy = { version: 1; rules: Array<{ associationKey: string; applicantKey: "member" | "spouse" | "child"; eligible: boolean; minimumAgeDays?: number; minimumAgeYears?: number; maximumAgeYears?: number; studentMaximumAgeYears?: number; ageBounds?: "replace"; }> };
 const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
 export function isAssociationEligibilityPolicy(value: unknown): value is AssociationEligibilityPolicy {
   if (!object(value) || value.version !== 1 || !Array.isArray(value.rules) || !value.rules.length) return false;
@@ -15,7 +15,7 @@ export function isAssociationEligibilityPolicy(value: unknown): value is Associa
     if (seen.has(key)) return false;
     seen.add(key);
     for (const name of ["minimumAgeDays", "minimumAgeYears", "maximumAgeYears", "studentMaximumAgeYears"]) if (rule[name] !== undefined && (typeof rule[name] !== "number" || !Number.isInteger(rule[name]) || rule[name] < 0)) return false;
-    return !(typeof rule.minimumAgeYears === "number" && typeof rule.maximumAgeYears === "number" && rule.minimumAgeYears > rule.maximumAgeYears) && (rule.studentMaximumAgeYears === undefined || typeof rule.maximumAgeYears === "number" && Number(rule.studentMaximumAgeYears) > rule.maximumAgeYears) && (rule.ageBounds === undefined || rule.ageBounds === "replace" && (rule.minimumAgeYears !== undefined || rule.minimumAgeDays !== undefined) && rule.maximumAgeYears !== undefined) && (rule.unmarried === undefined || typeof rule.unmarried === "boolean");
+    return !(typeof rule.minimumAgeYears === "number" && typeof rule.maximumAgeYears === "number" && rule.minimumAgeYears > rule.maximumAgeYears) && (rule.studentMaximumAgeYears === undefined || typeof rule.maximumAgeYears === "number" && Number(rule.studentMaximumAgeYears) > rule.maximumAgeYears) && (rule.ageBounds === undefined || rule.ageBounds === "replace" && (rule.minimumAgeYears !== undefined || rule.minimumAgeDays !== undefined) && rule.maximumAgeYears !== undefined);
   });
 }
 export function resolveAssociationEligibility(site: EffectiveSite, productKey: string, applicantKey: string, facts: ApplicantFacts): { result: RequirementResult; reason?: string; invalid?: boolean; replacesAgeBounds?: boolean } {
@@ -30,9 +30,9 @@ export function resolveAssociationEligibility(site: EffectiveSite, productKey: s
   if (!rule) return { result: "eligible" };
   if (!rule.eligible) return { result: "ineligible" };
   const replacesAgeBounds = rule.ageBounds === "replace";
-  if ((rule.minimumAgeYears !== undefined || rule.maximumAgeYears !== undefined) && (facts.ageYears === undefined || !Number.isInteger(facts.ageYears) || facts.ageYears < 0) || rule.minimumAgeDays !== undefined && (facts.ageDays === undefined || !Number.isInteger(facts.ageDays) || facts.ageDays < 0) || rule.unmarried !== undefined && typeof facts.unmarried !== "boolean") return { result: "needs-information", replacesAgeBounds };
+  if ((rule.minimumAgeYears !== undefined || rule.maximumAgeYears !== undefined) && (facts.ageYears === undefined || !Number.isInteger(facts.ageYears) || facts.ageYears < 0) || rule.minimumAgeDays !== undefined && (facts.ageDays === undefined || !Number.isInteger(facts.ageDays) || facts.ageDays < 0)) return { result: "needs-information", replacesAgeBounds };
   const exceedsOrdinaryAge = rule.maximumAgeYears !== undefined && facts.ageYears! > rule.maximumAgeYears;
   if (exceedsOrdinaryAge && rule.studentMaximumAgeYears !== undefined && facts.ageYears! <= rule.studentMaximumAgeYears && typeof facts.fullTimeStudent !== "boolean") return { result: "needs-information", replacesAgeBounds };
-  const eligible = (rule.minimumAgeDays === undefined || facts.ageDays! >= rule.minimumAgeDays) && (rule.minimumAgeYears === undefined || facts.ageYears! >= rule.minimumAgeYears) && (!exceedsOrdinaryAge || rule.studentMaximumAgeYears !== undefined && facts.ageYears! <= rule.studentMaximumAgeYears && facts.fullTimeStudent === true) && (rule.unmarried === undefined || facts.unmarried === rule.unmarried);
+  const eligible = (rule.minimumAgeDays === undefined || facts.ageDays! >= rule.minimumAgeDays) && (rule.minimumAgeYears === undefined || facts.ageYears! >= rule.minimumAgeYears) && (!exceedsOrdinaryAge || rule.studentMaximumAgeYears !== undefined && facts.ageYears! <= rule.studentMaximumAgeYears && facts.fullTimeStudent === true);
   return { result: eligible ? "eligible" : "ineligible", replacesAgeBounds };
 }

@@ -6103,7 +6103,7 @@
                 "key": "abe.di-ltd.selection-policy",
                 "displayId": 194252358796654,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -6112,7 +6112,7 @@
                 "key": "abe.di-ltd.selection-policy",
                 "displayId": 194252358796654,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "abe",
@@ -6599,7 +6599,7 @@
                 "key": "abe.di-ltd-plus.selection-policy",
                 "displayId": 29833151602597,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -6608,7 +6608,7 @@
                 "key": "abe.di-ltd-plus.selection-policy",
                 "displayId": 29833151602597,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "abe",
@@ -7093,7 +7093,7 @@
                 "key": "abe.di-mtd.selection-policy",
                 "displayId": 176598789856967,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -7102,7 +7102,7 @@
                 "key": "abe.di-mtd.selection-policy",
                 "displayId": 176598789856967,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "abe",
@@ -7512,7 +7512,7 @@
                 "key": "abe.li-10yr.selection-policy",
                 "displayId": 16463581113002,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -7521,7 +7521,7 @@
                 "key": "abe.li-10yr.selection-policy",
                 "displayId": 16463581113002,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "abe",
@@ -7931,7 +7931,7 @@
                 "key": "abe.li-20yr.selection-policy",
                 "displayId": 280952783966947,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -7940,7 +7940,7 @@
                 "key": "abe.li-20yr.selection-policy",
                 "displayId": 280952783966947,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "abe",
@@ -8251,7 +8251,7 @@
                 "key": "abe.li-50plus.selection-policy",
                 "displayId": 137159458678655,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -8260,7 +8260,7 @@
                 "key": "abe.li-50plus.selection-policy",
                 "displayId": 137159458678655,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "abe",
@@ -8688,7 +8688,7 @@
                 "key": "abe.li-add.selection-policy",
                 "displayId": 127299438007107,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -8697,7 +8697,7 @@
                 "key": "abe.li-add.selection-policy",
                 "displayId": 127299438007107,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "abe",
@@ -9147,7 +9147,7 @@
                 "key": "abe.li-term.selection-policy",
                 "displayId": 192158111880466,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -9156,7 +9156,7 @@
                 "key": "abe.li-term.selection-policy",
                 "displayId": 192158111880466,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "abe",
@@ -9514,7 +9514,7 @@
                 "key": "abe.oo-professional.selection-policy",
                 "displayId": 207240939806228,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -9523,7 +9523,7 @@
                 "key": "abe.oo-professional.selection-policy",
                 "displayId": 207240939806228,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "abe",
@@ -9834,7 +9834,7 @@
                 "key": "abe.sh-critical-illness.selection-policy",
                 "displayId": 168886928005956,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -9843,7 +9843,7 @@
                 "key": "abe.sh-critical-illness.selection-policy",
                 "displayId": 168886928005956,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "abe",
@@ -10253,7 +10253,7 @@
                 "key": "abe.sh-hospital-money.selection-policy",
                 "displayId": 204484908321417,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -10262,7 +10262,7 @@
                 "key": "abe.sh-hospital-money.selection-policy",
                 "displayId": 204484908321417,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "abe",
@@ -10800,7 +10800,7 @@
                 "key": "ama.di-level-rated.selection-policy",
                 "displayId": 268016798150294,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -10809,7 +10809,7 @@
                 "key": "ama.di-level-rated.selection-policy",
                 "displayId": 268016798150294,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "ama",
@@ -11529,7 +11529,7 @@
                 "key": "ama.di-step-rated.selection-policy",
                 "displayId": 30043197981706,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -11538,7 +11538,7 @@
                 "key": "ama.di-step-rated.selection-policy",
                 "displayId": 30043197981706,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "ama",
@@ -13188,7 +13188,7 @@
                 "key": "ama.li-10yr.selection-policy",
                 "displayId": 16662776899715,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               },
               {
                 "table": "riderAmountRules",
@@ -13239,7 +13239,7 @@
                 "key": "ama.li-10yr.selection-policy",
                 "displayId": 16662776899715,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "ama",
@@ -14985,7 +14985,7 @@
                 "key": "ama.li-15yr.selection-policy",
                 "displayId": 99063397792634,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               },
               {
                 "table": "riderAmountRules",
@@ -15036,7 +15036,7 @@
                 "key": "ama.li-15yr.selection-policy",
                 "displayId": 99063397792634,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "ama",
@@ -16782,7 +16782,7 @@
                 "key": "ama.li-20yr.selection-policy",
                 "displayId": 242406185709514,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               },
               {
                 "table": "riderAmountRules",
@@ -16833,7 +16833,7 @@
                 "key": "ama.li-20yr.selection-policy",
                 "displayId": 242406185709514,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "ama",
@@ -18579,7 +18579,7 @@
                 "key": "ama.li-preferred.selection-policy",
                 "displayId": 15756305877278,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               },
               {
                 "table": "riderAmountRules",
@@ -18630,7 +18630,7 @@
                 "key": "ama.li-preferred.selection-policy",
                 "displayId": 15756305877278,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "ama",
@@ -19532,7 +19532,7 @@
                 "key": "ama.li-premier-accident.selection-policy",
                 "displayId": 111082651957907,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -19541,7 +19541,7 @@
                 "key": "ama.li-premier-accident.selection-policy",
                 "displayId": 111082651957907,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "ama",
@@ -19877,7 +19877,7 @@
                 "key": "ama.li-term.selection-policy",
                 "displayId": 61482279334007,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -19886,7 +19886,7 @@
                 "key": "ama.li-term.selection-policy",
                 "displayId": 61482279334007,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "ama",
@@ -20243,7 +20243,7 @@
                 "key": "ama.oo-office-overhead.selection-policy",
                 "displayId": 16442994103387,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -20252,7 +20252,7 @@
                 "key": "ama.oo-office-overhead.selection-policy",
                 "displayId": 16442994103387,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "ama",
@@ -20662,7 +20662,7 @@
                 "key": "ama.sh-hospital-income.selection-policy",
                 "displayId": 175582017351919,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -20671,7 +20671,7 @@
                 "key": "ama.sh-hospital-income.selection-policy",
                 "displayId": 175582017351919,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "ama",
@@ -21124,7 +21124,7 @@
                 "key": "asce.di-ltd.selection-policy",
                 "displayId": 40420429669918,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -21133,7 +21133,7 @@
                 "key": "asce.di-ltd.selection-policy",
                 "displayId": 40420429669918,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "asce",
@@ -21522,7 +21522,7 @@
                 "key": "asce.li-10yr.selection-policy",
                 "displayId": 268978550528858,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -21531,7 +21531,7 @@
                 "key": "asce.li-10yr.selection-policy",
                 "displayId": 268978550528858,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "asce",
@@ -21920,7 +21920,7 @@
                 "key": "asce.li-20yr.selection-policy",
                 "displayId": 131483184684051,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -21929,7 +21929,7 @@
                 "key": "asce.li-20yr.selection-policy",
                 "displayId": 131483184684051,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "asce",
@@ -22318,7 +22318,7 @@
                 "key": "asce.li-add.selection-policy",
                 "displayId": 37863770264723,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -22327,7 +22327,7 @@
                 "key": "asce.li-add.selection-policy",
                 "displayId": 37863770264723,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "asce",
@@ -22886,7 +22886,7 @@
                 "key": "asce.li-term.selection-policy",
                 "displayId": 156992090663490,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               },
               {
                 "table": "riderAmountRules",
@@ -22937,7 +22937,7 @@
                 "key": "asce.li-term.selection-policy",
                 "displayId": 156992090663490,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "asce",
@@ -23094,7 +23094,7 @@
                   "key": "asce.li-term.selection-policy",
                   "displayId": 156992090663490,
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md"
+                  "sourceReference": "docs/archive/step3-journey-adoption.md"
                 },
                 {
                   "table": "riderAmountRules",
@@ -23815,7 +23815,7 @@
                 "key": "avma.di-ltd.selection-policy",
                 "displayId": 280003332056771,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               },
               {
                 "table": "riderAmountRules",
@@ -23845,7 +23845,7 @@
                 "key": "avma.di-ltd.selection-policy",
                 "displayId": 280003332056771,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "avma",
@@ -24271,7 +24271,7 @@
                 "key": "avma.di-ltd-plus.selection-policy",
                 "displayId": 133580515858514,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -24280,7 +24280,7 @@
                 "key": "avma.di-ltd-plus.selection-policy",
                 "displayId": 133580515858514,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "avma",
@@ -24577,7 +24577,7 @@
                 "key": "avma.di-short-term.selection-policy",
                 "displayId": 32260060706430,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -24586,7 +24586,7 @@
                 "key": "avma.di-short-term.selection-policy",
                 "displayId": 32260060706430,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "avma",
@@ -25014,7 +25014,7 @@
                 "key": "avma.li-10yr.selection-policy",
                 "displayId": 253303639013917,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -25023,7 +25023,7 @@
                 "key": "avma.li-10yr.selection-policy",
                 "displayId": 253303639013917,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "avma",
@@ -25451,7 +25451,7 @@
                 "key": "avma.li-20yr.selection-policy",
                 "displayId": 274854226073976,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -25460,7 +25460,7 @@
                 "key": "avma.li-20yr.selection-policy",
                 "displayId": 274854226073976,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "avma",
@@ -25771,7 +25771,7 @@
                 "key": "avma.li-50plus.selection-policy",
                 "displayId": 169353377552008,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -25780,7 +25780,7 @@
                 "key": "avma.li-50plus.selection-policy",
                 "displayId": 169353377552008,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "avma",
@@ -26091,7 +26091,7 @@
                 "key": "avma.li-add.selection-policy",
                 "displayId": 226537007045854,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -26100,7 +26100,7 @@
                 "key": "avma.li-add.selection-policy",
                 "displayId": 226537007045854,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "avma",
@@ -26559,7 +26559,7 @@
                 "key": "avma.li-group-term.selection-policy",
                 "displayId": 18651698896259,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -26568,7 +26568,7 @@
                 "key": "avma.li-group-term.selection-policy",
                 "displayId": 18651698896259,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "avma",
@@ -27066,7 +27066,7 @@
                 "key": "avma.li-term.selection-policy",
                 "displayId": 75358137822041,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -27075,7 +27075,7 @@
                 "key": "avma.li-term.selection-policy",
                 "displayId": 75358137822041,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "avma",
@@ -27380,7 +27380,7 @@
                 "key": "avma.oo-professional.selection-policy",
                 "displayId": 21754426626835,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -27389,7 +27389,7 @@
                 "key": "avma.oo-professional.selection-policy",
                 "displayId": 21754426626835,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "avma",
@@ -27700,7 +27700,7 @@
                 "key": "avma.sh-critical-illness.selection-policy",
                 "displayId": 154507764029575,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -27709,7 +27709,7 @@
                 "key": "avma.sh-critical-illness.selection-policy",
                 "displayId": 154507764029575,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "avma",
@@ -28119,7 +28119,7 @@
                 "key": "avma.sh-hospital-income.selection-policy",
                 "displayId": 168239899681769,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -28128,7 +28128,7 @@
                 "key": "avma.sh-hospital-income.selection-policy",
                 "displayId": 168239899681769,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "avma",
@@ -28860,7 +28860,7 @@
                 "key": "csea.di-ltd.selection-policy",
                 "displayId": 74095229159434,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               },
               {
                 "table": "riderAmountRules",
@@ -28890,7 +28890,7 @@
                 "key": "csea.di-ltd.selection-policy",
                 "displayId": 74095229159434,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "csea",
@@ -29025,7 +29025,7 @@
                   "key": "csea.di-ltd.selection-policy",
                   "displayId": 74095229159434,
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md"
+                  "sourceReference": "docs/archive/step3-journey-adoption.md"
                 },
                 {
                   "table": "riderAmountRules",
@@ -29413,7 +29413,7 @@
                 "key": "csea.li-add.selection-policy",
                 "displayId": 101277586221623,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -29422,7 +29422,7 @@
                 "key": "csea.li-add.selection-policy",
                 "displayId": 101277586221623,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "csea",
@@ -29717,7 +29717,7 @@
                 "key": "nso.di-ltd.selection-policy",
                 "displayId": 115024461019876,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -29726,7 +29726,7 @@
                 "key": "nso.di-ltd.selection-policy",
                 "displayId": 115024461019876,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "nso",
@@ -30115,7 +30115,7 @@
                 "key": "nso.li-10yr.selection-policy",
                 "displayId": 192788634798888,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -30124,7 +30124,7 @@
                 "key": "nso.li-10yr.selection-policy",
                 "displayId": 192788634798888,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "nso",
@@ -30513,7 +30513,7 @@
                 "key": "nso.li-20yr.selection-policy",
                 "displayId": 27604495134349,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -30522,7 +30522,7 @@
                 "key": "nso.li-20yr.selection-policy",
                 "displayId": 27604495134349,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "nso",
@@ -30833,7 +30833,7 @@
                 "key": "nso.li-50plus.selection-policy",
                 "displayId": 261518657762381,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -30842,7 +30842,7 @@
                 "key": "nso.li-50plus.selection-policy",
                 "displayId": 261518657762381,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "nso",
@@ -31546,7 +31546,7 @@
                 "key": "nso.li-add.selection-policy",
                 "displayId": 132085498588313,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -31555,7 +31555,7 @@
                 "key": "nso.li-add.selection-policy",
                 "displayId": 132085498588313,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "nso",
@@ -31866,7 +31866,7 @@
                 "key": "nso.li-term.selection-policy",
                 "displayId": 275399874491584,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -31875,7 +31875,7 @@
                 "key": "nso.li-term.selection-policy",
                 "displayId": 275399874491584,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "nso",
@@ -32176,7 +32176,7 @@
                 "key": "isitrust.di-ltd.selection-policy",
                 "displayId": 16467119521113,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -32185,7 +32185,7 @@
                 "key": "isitrust.di-ltd.selection-policy",
                 "displayId": 16467119521113,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "isitrust",
@@ -32468,7 +32468,7 @@
                 "key": "isitrust.di-short-term.selection-policy",
                 "displayId": 19899418338288,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -32477,7 +32477,7 @@
                 "key": "isitrust.di-short-term.selection-policy",
                 "displayId": 19899418338288,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "isitrust",
@@ -32887,7 +32887,7 @@
                 "key": "isitrust.li-10yr.selection-policy",
                 "displayId": 90331411210995,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -32896,7 +32896,7 @@
                 "key": "isitrust.li-10yr.selection-policy",
                 "displayId": 90331411210995,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "isitrust",
@@ -33306,7 +33306,7 @@
                 "key": "isitrust.li-20yr.selection-policy",
                 "displayId": 35108599994810,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -33315,7 +33315,7 @@
                 "key": "isitrust.li-20yr.selection-policy",
                 "displayId": 35108599994810,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "isitrust",
@@ -33626,7 +33626,7 @@
                 "key": "isitrust.li-50plus.selection-policy",
                 "displayId": 5096618367766,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -33635,7 +33635,7 @@
                 "key": "isitrust.li-50plus.selection-policy",
                 "displayId": 5096618367766,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "isitrust",
@@ -35041,7 +35041,7 @@
                 "key": "isitrust.li-add.selection-policy",
                 "displayId": 41849042987668,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -35050,7 +35050,7 @@
                 "key": "isitrust.li-add.selection-policy",
                 "displayId": 41849042987668,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "isitrust",
@@ -35460,7 +35460,7 @@
                 "key": "isitrust.li-group-term.selection-policy",
                 "displayId": 207823986746765,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -35469,7 +35469,7 @@
                 "key": "isitrust.li-group-term.selection-policy",
                 "displayId": 207823986746765,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "isitrust",
@@ -35755,7 +35755,7 @@
                 "key": "isitrust.oo-professional.selection-policy",
                 "displayId": 158321559347513,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -35764,7 +35764,7 @@
                 "key": "isitrust.oo-professional.selection-policy",
                 "displayId": 158321559347513,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "isitrust",
@@ -36075,7 +36075,7 @@
                 "key": "isitrust.sh-critical-illness.selection-policy",
                 "displayId": 260299597951269,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -36084,7 +36084,7 @@
                 "key": "isitrust.sh-critical-illness.selection-policy",
                 "displayId": 260299597951269,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "isitrust",
@@ -36668,7 +36668,7 @@
                 "key": "isitrust.sh-hospital-income.selection-policy",
                 "displayId": 207022053640383,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -36677,7 +36677,7 @@
                 "key": "isitrust.sh-hospital-income.selection-policy",
                 "displayId": 207022053640383,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "isitrust",
@@ -36964,7 +36964,7 @@
                 "key": "waepa.di-short-term.selection-policy",
                 "displayId": 74636841657351,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -36973,7 +36973,7 @@
                 "key": "waepa.di-short-term.selection-policy",
                 "displayId": 74636841657351,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "waepa",
@@ -37634,7 +37634,7 @@
                 "key": "waepa.li-group-term.selection-policy",
                 "displayId": 233304151706802,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -37643,7 +37643,7 @@
                 "key": "waepa.li-group-term.selection-policy",
                 "displayId": 233304151706802,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "waepa",
@@ -38006,7 +38006,7 @@
                 "key": "waepa-gi.li-group-term.selection-policy",
                 "displayId": 252879424511173,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md"
+                "sourceReference": "docs/archive/step3-journey-adoption.md"
               }
             ],
             "storedValues": [
@@ -38015,7 +38015,7 @@
                 "key": "waepa-gi.li-group-term.selection-policy",
                 "displayId": 252879424511173,
                 "providedBy": null,
-                "sourceReference": "docs/step3-journey-adoption.md",
+                "sourceReference": "docs/archive/step3-journey-adoption.md",
                 "position": 0,
                 "scope": "site",
                 "siteKey": "waepa-gi",

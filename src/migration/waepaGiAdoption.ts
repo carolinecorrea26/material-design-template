@@ -6,7 +6,7 @@ import type { SourceCell } from "./mcr";
 const siteKey = "waepa-gi";
 const productKey = "li-group-term";
 const decisionKey = "migration-decision.waepa-gi.member-fixed-offer";
-const reference = "docs/step3-active-site-adoption.md#waepagi-fixed-offer";
+const reference = "docs/archive/step3-active-site-adoption.md#waepagi-fixed-offer";
 const metadata = (table: string, key: string, source: string) => ({ id: key, key, ...libraryMetadata(table, key, source) });
 
 /** First reviewed Step 3 slice. Mutates only an explicitly cloned review database.
@@ -66,7 +66,7 @@ export function applyWaepaGiPortfolioAndPayment(db: DatabaseSchema) {
   const site = db.sites.find(row => row.key === siteKey);
   if (!site || db.clients.find(client => client.id === site.clientId)?.key !== "waepa") throw new Error("Invalid WAEPAGI portfolio target");
   const decision = "migration-decision.waepa-gi.source-portfolio-and-payment";
-  const evidence = "docs/step3-active-site-adoption.md#waepagi-portfolio-and-payment-decision";
+  const evidence = "docs/archive/step3-active-site-adoption.md#waepagi-portfolio-and-payment-decision";
   for (const row of db.siteProducts.filter(row => row.siteId === site.id)) row.enabled = row.productKey === productKey;
   for (const row of db.siteCoverages.filter(row => row.siteId === site.id)) row.enabled = row.coverageKey === productKey;
   for (const row of db.siteRiders.filter(row => row.siteId === site.id)) row.enabled = false;
@@ -114,7 +114,7 @@ export function applyWaepaGiEligibilityAdoption(db: DatabaseSchema, cells: reado
   if (age.length !== 1 || age[0].value !== "\n\n18- through 39\n\nNot available to members called to active military duty\n\n" || age[0].formula !== null) throw new Error("WAEPAGI eligibility source changed");
   const key = `${siteKey}.${productKey}.gi-entry-age`;
   db.eligibilityConstraints = db.eligibilityConstraints.filter(row => row.siteKey !== siteKey || row.productKey !== productKey || row.applicantTypeKey !== "member");
-  db.eligibilityConstraints.push({ ...metadata("eligibilityConstraints", key, reference), siteKey, productKey, applicantTypeKey: "member", minimumAgeDays: null, minimumAgeYears: 18, maximumAgeYears: 39, studentMaximumAgeYears: null, unmarried: null, minimumWorkHours: null });
+  db.eligibilityConstraints.push({ ...metadata("eligibilityConstraints", key, reference), siteKey, productKey, applicantTypeKey: "member", minimumAgeDays: null, minimumAgeYears: 18, maximumAgeYears: 39, studentMaximumAgeYears: null, minimumWorkHours: null });
   const configurationKey = `${siteKey}.${productKey}.military-exclusion`;
   db.configurationDefinitions = db.configurationDefinitions.filter(row => row.key !== configurationKey);
   db.configurationDefinitions.push({ ...metadata("configurationDefinitions", configurationKey, reference), position: 0, definition: { path: null, metadata: null, target: { kind: "product-eligibility-facts", productKey, applicantKey: "member" } } });

@@ -77,4 +77,4 @@ The readiness inspector requires exactly one matching approval and each exact ca
 
 With the approved fixture: `phase5Ready: true`, `phase6Ready: true`, zero blockers, zero integrity errors. This authorizes planning the separately reviewed Phase 6 implementation; it does not switch repositories or activate normalized rules. The intended later path remains persisted approved data → normalized domain model → EffectiveSite → application runtime.
 
-Other source issues in [the corrective pass](asce-corrective-pass.md) remain recorded. This approval resolves these six requirements only.
+Other source issues in [the corrective pass](archive/asce-corrective-pass.md) remain recorded. This approval resolves these six requirements only.

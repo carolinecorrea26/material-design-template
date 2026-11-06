@@ -6,11 +6,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import FormRoutePage from "../app/RoutePage";
 import EligibilitySections from "../app/sections/ConfiguredEligibilitySections";
 import MemberVerification from "../components/verification/MemberVerification";
+import VerificationAddress from "../components/verification/VerificationAddress";
+import { addressFieldNames } from "../components/forms/AddressFields";
 import { lookupPrototypeTpa, resolveTpaOutcome, tpaOutcomeValues, type TpaResolution } from "../domain/tpaIntegration";
 import {
   deriveStateProvinceFromZipOrPostalCode,
 } from "../utils/zipToStateProvince";
-import { useApplicationForm } from "../app/ApplicationFormContext";
+import { useApplicationForm, type ApplicationFormValues } from "../app/ApplicationFormContext";
 import { getActiveClient } from "../config/client/getActiveClient";
 
 export default function Eligibility() {
@@ -28,8 +30,10 @@ export default function Eligibility() {
   );
 
   const [memberVerificationOpen, setMemberVerificationOpen] = useState(false);
+  const [verificationAddressValues, setVerificationAddressValues] = useState<ApplicationFormValues | null>(null);
   // Track the lookup inputs so changes require a fresh verification attempt.
   const tpaCompletedRef = useRef<string | null>(null);
+  const tpaPendingRef = useRef<string | null>(null);
   const tpaMemberRef = useRef<TpaResolution>({ existingMember: false, activeCoverage: false });
   // Ref to the hidden form submit button so we can trigger it after modal close.
   const formSubmitRef = useRef<HTMLButtonElement | null>(null);
@@ -40,6 +44,7 @@ export default function Eligibility() {
   }, [location.pathname, navigate, resumeLoadedFromRouteState]);
 
   function handleModalClose(verified: boolean) {
+    tpaCompletedRef.current = tpaPendingRef.current;
     setPageValues(tpaOutcomeValues(tpaMemberRef.current, resolveTpaOutcome(client, tpaMemberRef.current, verified)));
     setMemberVerificationOpen(false);
     // Programmatically re-submit the form now that the modal is done.
@@ -83,20 +88,29 @@ export default function Eligibility() {
             }
           }
 
+          return undefined;
+        }}
+        onBeforeNext={({ values: nextValues }) => {
           const member = lookupPrototypeTpa(client, nextValues);
           const outcome = resolveTpaOutcome(client, member);
           const lookupKey = JSON.stringify([client.id, client.tpaIntegration, member,
             (client.tpaIntegration?.lookupFields ?? ["first-name", "last-name", "birth-date", ...Object.keys(client.features?.memberVerificationMatchFacts ?? {})]).map(field => nextValues[field])]);
           if (outcome.verifyIdentity && tpaCompletedRef.current !== lookupKey) {
             tpaMemberRef.current = member;
-            tpaCompletedRef.current = lookupKey;
+            tpaPendingRef.current = lookupKey;
             setPageValues(tpaOutcomeValues(member, resolveTpaOutcome(client, member, false)));
-            setMemberVerificationOpen(true);
-            return "\u200b";
+            if (client.tpaIntegration?.requireAddressBeforeVerification) {
+              setVerificationAddressValues({
+                ...nextValues,
+                state: nextValues.state ?? nextValues["state-province"],
+                "zip-code": nextValues["zip-code"] ?? nextValues["zip-postal-code"],
+              });
+            } else setMemberVerificationOpen(true);
+            return false;
           }
           if (!outcome.verifyIdentity) setPageValues(tpaOutcomeValues(member, outcome));
 
-          return undefined;
+          return true;
         }}
       >
         {(props) => (
@@ -115,6 +129,16 @@ export default function Eligibility() {
         )}
       </FormRoutePage>
 
+      {verificationAddressValues && <VerificationAddress
+        fields={getClientPageFields("contact", verificationAddressValues).filter(field => addressFieldNames.some(id => id === field.id))}
+        values={verificationAddressValues}
+        onContinue={address => {
+          setPageValues(address);
+          setVerificationAddressValues(null);
+          setMemberVerificationOpen(true);
+        }}
+        onClose={() => setVerificationAddressValues(null)}
+      />}
       <MemberVerification
         open={memberVerificationOpen}
         onClose={handleModalClose}

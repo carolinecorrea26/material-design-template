@@ -41,6 +41,11 @@ it("shows and collapses member/spouse license, travel and existing-Life follow-u
   for (const prefix of ["", "spouse-"]) Object.assign(form.values, { [`${prefix}has-drivers-license`]: "yes", [`${prefix}intend-live-outside-us`]: "yes", [`${prefix}travel-outside-us-six-months`]: "yes", [`${prefix}has-other-life-insurance`]: "yes" });
   await render();
   for (const prefix of ["", "spouse-"]) {
+    for (const id of ["height-feet", "height-inches", "physician-first-name", "has-other-life-insurance"]) {
+      expect(field(`${prefix}${id}`)?.closest(".FieldGroup-root"), `${prefix}${id} field group`).not.toBeNull();
+    }
+  }
+  for (const prefix of ["", "spouse-"]) {
     for (const id of ["drivers-license-number", "outside-us-country", "outside-us-months", "travel-outside-us-country", "existing-life-insurance-amount"]) expect(field(`${prefix}${id}`), `${prefix}${id}`).not.toBeNull();
   }
   expect(field("total-net-worth")).toBeNull();

@@ -1,4 +1,4 @@
-> Current ownership: Storybook contains component examples only. Design foundations, implementation guidance and requirements belong to Portal Library. See [Portal Library ownership and schema review](../../docs/portal-library-model-review.md) and the generated schema inventory. The migration narrative below is historical where it differs from that model.
+> Current ownership: Storybook contains component examples only. Design foundations, implementation guidance and requirements belong to Portal Library. See [Portal Library ownership and schema review](../../docs/archive/portal-library-model-review.md) and the generated schema inventory. The migration narrative below is historical where it differs from that model.
 
 ## Payment review — October 28, 2026
 

@@ -1,0 +1,19 @@
+{
+  "source": "src/domain/recoveryIncident.ts (recoveryCodes); shown in Storybook: Components/Pages/Error pages",
+  "codes": [
+    "PAGE_NOT_FOUND",
+    "PAGE_LOAD_FAILED",
+    "SESSION_EXPIRED",
+    "TECHNICAL_ERROR",
+    "MAINTENANCE",
+    "VALIDATION_FAILED",
+    "OFFLINE",
+    "SAVE_FAILED",
+    "SAVE_CONFLICT",
+    "APPLICATION_UNAVAILABLE",
+    "OPERATION_PENDING",
+    "OPERATION_TIMED_OUT",
+    "OUTCOME_UNKNOWN",
+    "OPERATION_COMPLETE"
+  ]
+}

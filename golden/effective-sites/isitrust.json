@@ -35960,7 +35960,7 @@
               "displayId": 37726083192326,
               "key": "isitrust.di-ltd.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36004,7 +36004,7 @@
               "displayId": 238445613010703,
               "key": "isitrust.di-ltd.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36089,7 +36089,7 @@
               "displayId": 16467119521113,
               "key": "isitrust.di-ltd.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36141,7 +36141,7 @@
               "displayId": 63813934112857,
               "key": "isitrust.di-short-term.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36185,7 +36185,7 @@
               "displayId": 167737275877450,
               "key": "isitrust.di-short-term.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36252,7 +36252,7 @@
               "displayId": 19899418338288,
               "key": "isitrust.di-short-term.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36304,7 +36304,7 @@
               "displayId": 112357303938284,
               "key": "isitrust.li-10yr.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36354,7 +36354,7 @@
               "displayId": 182024606743601,
               "key": "isitrust.li-10yr.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36398,7 +36398,7 @@
               "displayId": 90331411210995,
               "key": "isitrust.li-10yr.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36450,7 +36450,7 @@
               "displayId": 101192132289247,
               "key": "isitrust.li-20yr.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36500,7 +36500,7 @@
               "displayId": 248490913303556,
               "key": "isitrust.li-20yr.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36544,7 +36544,7 @@
               "displayId": 35108599994810,
               "key": "isitrust.li-20yr.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36596,7 +36596,7 @@
               "displayId": 93729991426259,
               "key": "isitrust.li-50plus.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36638,7 +36638,7 @@
               "displayId": 205114051359120,
               "key": "isitrust.li-50plus.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36658,7 +36658,7 @@
               "displayId": 5096618367766,
               "key": "isitrust.li-50plus.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36710,7 +36710,7 @@
               "displayId": 251579863793525,
               "key": "isitrust.li-add.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36754,7 +36754,7 @@
               "displayId": 203468542611422,
               "key": "isitrust.li-add.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36827,7 +36827,7 @@
               "displayId": 41849042987668,
               "key": "isitrust.li-add.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36879,7 +36879,7 @@
               "displayId": 68507689913155,
               "key": "isitrust.li-group-term.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36899,7 +36899,7 @@
               "displayId": 207823986746765,
               "key": "isitrust.li-group-term.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -36933,7 +36933,7 @@
               "displayId": 107314817345486,
               "key": "isitrust.life-aggregate-participation",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -36970,7 +36970,7 @@
               "displayId": 59443397680102,
               "key": "isitrust.oo-professional.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -37014,7 +37014,7 @@
               "displayId": 128069361396463,
               "key": "isitrust.oo-professional.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -37084,7 +37084,7 @@
               "displayId": 158321559347513,
               "key": "isitrust.oo-professional.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -37136,7 +37136,7 @@
               "displayId": 102287538260810,
               "key": "isitrust.sh-critical-illness.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -37185,7 +37185,7 @@
               "displayId": 264064947553035,
               "key": "isitrust.sh-critical-illness.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -37229,7 +37229,7 @@
               "displayId": 260299597951269,
               "key": "isitrust.sh-critical-illness.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -37281,7 +37281,7 @@
               "displayId": 170398988679152,
               "key": "isitrust.sh-hospital-income.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -37325,7 +37325,7 @@
               "displayId": 160390971741997,
               "key": "isitrust.sh-hospital-income.rate-modifier-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -37345,7 +37345,7 @@
               "displayId": 207022053640383,
               "key": "isitrust.sh-hospital-income.selection-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -37619,14 +37619,14 @@
               "displayId": 23706802492825,
               "key": "rates.reviewed-presentation.global",
               "providedBy": null,
-              "sourceReference": "docs/step3-major-outstanding-items.md",
+              "sourceReference": "docs/archive/step3-major-outstanding-items.md",
               "table": "configurationValues"
             },
             {
               "displayId": 112876295510977,
               "key": "rates.reviewed-presentation.isitrust",
               "providedBy": null,
-              "sourceReference": "docs/step3-major-outstanding-items.md",
+              "sourceReference": "docs/archive/step3-major-outstanding-items.md",
               "table": "configurationValues"
             },
             {
@@ -37925,7 +37925,7 @@
               "displayId": 172795448116731,
               "key": "isitrust.di-ltd.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -50778,7 +50778,7 @@
               "displayId": 237762493360290,
               "key": "isitrust.di-short-term.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -55252,7 +55252,7 @@
               "displayId": 16152062915557,
               "key": "isitrust.li-10yr.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -60935,7 +60935,7 @@
               "displayId": 248831797979108,
               "key": "isitrust.li-20yr.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -65965,7 +65965,7 @@
               "displayId": 135231169330432,
               "key": "isitrust.li-50plus.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -68936,7 +68936,7 @@
               "displayId": 260635648075150,
               "key": "isitrust.li-50plus.journey-residency",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md; Master Client Requirements_09_28_2026_v78 (1).xlsx#Main!N185; User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
+              "sourceReference": "docs/archive/step3-journey-adoption.md; Master Client Requirements_09_28_2026_v78 (1).xlsx#Main!N185; User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
               "table": "configurationValues"
             }
           ],
@@ -69078,7 +69078,7 @@
               "displayId": 213862801929510,
               "key": "isitrust.li-add.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -73608,7 +73608,7 @@
               "displayId": 186761764258639,
               "key": "isitrust.li-group-term.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -79673,7 +79673,7 @@
               "displayId": 217057530461714,
               "key": "isitrust.li-group-term.rate-input-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -79852,7 +79852,7 @@
               "displayId": 255712575226331,
               "key": "isitrust.oo-professional.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -81424,7 +81424,7 @@
               "displayId": 181358290799715,
               "key": "isitrust.review-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -81703,7 +81703,7 @@
               "displayId": 275972826798631,
               "key": "isitrust.sh-critical-illness.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -84587,7 +84587,7 @@
               "displayId": 131258009696113,
               "key": "isitrust.sh-hospital-income.journey-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-journey-adoption.md",
+              "sourceReference": "docs/archive/step3-journey-adoption.md",
               "table": "configurationValues"
             }
           ],
@@ -106151,7 +106151,7 @@
               "displayId": 107314817345486,
               "key": "isitrust.life-aggregate-participation",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -126168,7 +126168,7 @@
                   "displayId": 172795448116731,
                   "key": "isitrust.di-ltd.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -139060,7 +139060,7 @@
                   "displayId": 37726083192326,
                   "key": "isitrust.di-ltd.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -139106,7 +139106,7 @@
                   "displayId": 238445613010703,
                   "key": "isitrust.di-ltd.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -139209,7 +139209,7 @@
                   "displayId": 16467119521113,
                   "key": "isitrust.di-ltd.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -139565,7 +139565,7 @@
                   "displayId": 237762493360290,
                   "key": "isitrust.di-short-term.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -141250,7 +141250,7 @@
                   "displayId": 63813934112857,
                   "key": "isitrust.di-short-term.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -141296,7 +141296,7 @@
                   "displayId": 167737275877450,
                   "key": "isitrust.di-short-term.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -141398,7 +141398,7 @@
                   "displayId": 19899418338288,
                   "key": "isitrust.di-short-term.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -142068,7 +142068,7 @@
                   "displayId": 16152062915557,
                   "key": "isitrust.li-10yr.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -147340,7 +147340,7 @@
                   "displayId": 112357303938284,
                   "key": "isitrust.li-10yr.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -147392,7 +147392,7 @@
                   "displayId": 182024606743601,
                   "key": "isitrust.li-10yr.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -147521,7 +147521,7 @@
                   "displayId": 90331411210995,
                   "key": "isitrust.li-10yr.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -148541,7 +148541,7 @@
                   "displayId": 248831797979108,
                   "key": "isitrust.li-20yr.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -153513,7 +153513,7 @@
                   "displayId": 101192132289247,
                   "key": "isitrust.li-20yr.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -153565,7 +153565,7 @@
                   "displayId": 248490913303556,
                   "key": "isitrust.li-20yr.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -153696,7 +153696,7 @@
                   "displayId": 35108599994810,
                   "key": "isitrust.li-20yr.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -154263,7 +154263,7 @@
                   "displayId": 135231169330432,
                   "key": "isitrust.li-50plus.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -157308,7 +157308,7 @@
                   "displayId": 93729991426259,
                   "key": "isitrust.li-50plus.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -157352,7 +157352,7 @@
                   "displayId": 205114051359120,
                   "key": "isitrust.li-50plus.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -157399,7 +157399,7 @@
                   "displayId": 260635648075150,
                   "key": "isitrust.li-50plus.journey-residency",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md; Master Client Requirements_09_28_2026_v78 (1).xlsx#Main!N185; User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md; Master Client Requirements_09_28_2026_v78 (1).xlsx#Main!N185; User approval October 20, 2026: add ATPE to ISITRUST with all seven ATPE products; Group Term uses current Main!N179",
                   "table": "configurationValues"
                 }
               ],
@@ -157456,7 +157456,7 @@
                   "displayId": 5096618367766,
                   "key": "isitrust.li-50plus.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -159079,7 +159079,7 @@
                   "displayId": 213862801929510,
                   "key": "isitrust.li-add.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -163492,7 +163492,7 @@
                   "displayId": 251579863793525,
                   "key": "isitrust.li-add.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -163538,7 +163538,7 @@
                   "displayId": 203468542611422,
                   "key": "isitrust.li-add.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -163648,7 +163648,7 @@
                   "displayId": 41849042987668,
                   "key": "isitrust.li-add.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -164526,7 +164526,7 @@
                   "displayId": 186761764258639,
                   "key": "isitrust.li-group-term.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -170685,7 +170685,7 @@
                   "displayId": 217057530461714,
                   "key": "isitrust.li-group-term.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -170755,7 +170755,7 @@
                   "displayId": 68507689913155,
                   "key": "isitrust.li-group-term.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -170917,7 +170917,7 @@
                   "displayId": 207823986746765,
                   "key": "isitrust.li-group-term.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -171277,7 +171277,7 @@
                   "displayId": 255712575226331,
                   "key": "isitrust.oo-professional.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -172864,7 +172864,7 @@
                   "displayId": 59443397680102,
                   "key": "isitrust.oo-professional.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -172910,7 +172910,7 @@
                   "displayId": 128069361396463,
                   "key": "isitrust.oo-professional.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -173010,7 +173010,7 @@
                   "displayId": 158321559347513,
                   "key": "isitrust.oo-professional.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -173603,7 +173603,7 @@
                   "displayId": 275972826798631,
                   "key": "isitrust.sh-critical-illness.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -176429,7 +176429,7 @@
                   "displayId": 102287538260810,
                   "key": "isitrust.sh-critical-illness.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -176480,7 +176480,7 @@
                   "displayId": 264064947553035,
                   "key": "isitrust.sh-critical-illness.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -176590,7 +176590,7 @@
                   "displayId": 260299597951269,
                   "key": "isitrust.sh-critical-illness.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -177630,7 +177630,7 @@
                   "displayId": 131258009696113,
                   "key": "isitrust.sh-hospital-income.journey-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -181750,7 +181750,7 @@
                   "displayId": 170398988679152,
                   "key": "isitrust.sh-hospital-income.rate-input-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -181796,7 +181796,7 @@
                   "displayId": 160390971741997,
                   "key": "isitrust.sh-hospital-income.rate-modifier-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-review-and-rating.md",
+                  "sourceReference": "docs/archive/step3-review-and-rating.md",
                   "table": "configurationValues"
                 }
               ],
@@ -181929,7 +181929,7 @@
                   "displayId": 207022053640383,
                   "key": "isitrust.sh-hospital-income.selection-policy",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "configurationValues"
                 }
               ],
@@ -181968,14 +181968,14 @@
               "displayId": 23706802492825,
               "key": "rates.reviewed-presentation.global",
               "providedBy": null,
-              "sourceReference": "docs/step3-major-outstanding-items.md",
+              "sourceReference": "docs/archive/step3-major-outstanding-items.md",
               "table": "configurationValues"
             },
             {
               "displayId": 112876295510977,
               "key": "rates.reviewed-presentation.isitrust",
               "providedBy": null,
-              "sourceReference": "docs/step3-major-outstanding-items.md",
+              "sourceReference": "docs/archive/step3-major-outstanding-items.md",
               "table": "configurationValues"
             },
             {
@@ -182005,7 +182005,7 @@
               "displayId": 181358290799715,
               "key": "isitrust.review-policy",
               "providedBy": null,
-              "sourceReference": "docs/step3-review-and-rating.md",
+              "sourceReference": "docs/archive/step3-review-and-rating.md",
               "table": "configurationValues"
             }
           ],
@@ -190917,7 +190917,7 @@
                   "displayId": 158096847990443,
                   "key": "isitrust.li-10yr.child.journey-eligibility",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "eligibilityConstraints"
                 }
               ],
@@ -190964,7 +190964,7 @@
                   "displayId": 73954833662732,
                   "key": "isitrust.li-20yr.member.journey-eligibility",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "eligibilityConstraints"
                 }
               ],
@@ -190997,7 +190997,7 @@
                   "displayId": 239318671487425,
                   "key": "isitrust.li-20yr.spouse.journey-eligibility",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "eligibilityConstraints"
                 }
               ],
@@ -191030,7 +191030,7 @@
                   "displayId": 45574132198776,
                   "key": "isitrust.li-20yr.child.journey-eligibility",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "eligibilityConstraints"
                 }
               ],
@@ -191223,7 +191223,7 @@
                   "displayId": 131484793203768,
                   "key": "isitrust.li-add.child.journey-eligibility",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "eligibilityConstraints"
                 }
               ],
@@ -191336,7 +191336,7 @@
                   "displayId": 137040928934093,
                   "key": "isitrust.li-group-term.child.journey-eligibility",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "eligibilityConstraints"
                 }
               ],
@@ -191576,7 +191576,7 @@
                   "displayId": 264203972696841,
                   "key": "isitrust.sh-hospital-income.child.journey-eligibility",
                   "providedBy": null,
-                  "sourceReference": "docs/step3-journey-adoption.md",
+                  "sourceReference": "docs/archive/step3-journey-adoption.md",
                   "table": "eligibilityConstraints"
                 }
               ],
@@ -191884,7 +191884,7 @@
             "displayId": 147728236619624,
             "key": "provisional-decision.isitrust.di-ltd.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -204714,7 +204714,7 @@
             "displayId": 4784559438454,
             "key": "provisional-decision.isitrust.di-ltd.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -204795,7 +204795,7 @@
             "displayId": 118631600332219,
             "key": "provisional-decision.isitrust.di-ltd.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -204857,7 +204857,7 @@
             "displayId": 179097871854430,
             "key": "provisional-decision.isitrust.di-ltd.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -204920,7 +204920,7 @@
             "displayId": 196082705530167,
             "key": "provisional-decision.isitrust.di-short-term.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -206550,7 +206550,7 @@
             "displayId": 110946087628511,
             "key": "provisional-decision.isitrust.di-short-term.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -206626,7 +206626,7 @@
             "displayId": 225542718914426,
             "key": "provisional-decision.isitrust.di-short-term.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -206688,7 +206688,7 @@
             "displayId": 16816220535253,
             "key": "provisional-decision.isitrust.di-short-term.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -206751,7 +206751,7 @@
             "displayId": 257093322419527,
             "key": "provisional-decision.isitrust.li-10yr.journey-eligibility",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -206788,7 +206788,7 @@
             "displayId": 3223087960004,
             "key": "provisional-decision.isitrust.li-10yr.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -210974,7 +210974,7 @@
             "displayId": 88251193509962,
             "key": "provisional-decision.isitrust.li-10yr.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -211052,7 +211052,7 @@
             "displayId": 217046923693119,
             "key": "provisional-decision.isitrust.li-10yr.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -211120,7 +211120,7 @@
             "displayId": 276662166624922,
             "key": "provisional-decision.isitrust.li-10yr.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -211183,7 +211183,7 @@
             "displayId": 213547655155752,
             "key": "provisional-decision.isitrust.li-20yr.journey-eligibility",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -211240,7 +211240,7 @@
             "displayId": 223585173349445,
             "key": "provisional-decision.isitrust.li-20yr.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -215426,7 +215426,7 @@
             "displayId": 213350136036537,
             "key": "provisional-decision.isitrust.li-20yr.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -215505,7 +215505,7 @@
             "displayId": 44748284551244,
             "key": "provisional-decision.isitrust.li-20yr.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -215573,7 +215573,7 @@
             "displayId": 34232563041107,
             "key": "provisional-decision.isitrust.li-20yr.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -215636,7 +215636,7 @@
             "displayId": 179269227169313,
             "key": "provisional-decision.isitrust.li-50plus.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -218499,7 +218499,7 @@
             "displayId": 150691567377437,
             "key": "provisional-decision.isitrust.li-50plus.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -218565,7 +218565,7 @@
             "displayId": 248817817813952,
             "key": "provisional-decision.isitrust.li-50plus.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -218625,7 +218625,7 @@
             "displayId": 199742332007055,
             "key": "provisional-decision.isitrust.li-50plus.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -218764,7 +218764,7 @@
             "displayId": 73946955792552,
             "key": "provisional-decision.isitrust.li-add.journey-eligibility",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -218801,7 +218801,7 @@
             "displayId": 19908396521925,
             "key": "provisional-decision.isitrust.li-add.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -222971,7 +222971,7 @@
             "displayId": 8295491352889,
             "key": "provisional-decision.isitrust.li-add.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -223039,7 +223039,7 @@
             "displayId": 121168616578252,
             "key": "provisional-decision.isitrust.li-add.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -223101,7 +223101,7 @@
             "displayId": 257323482141907,
             "key": "provisional-decision.isitrust.li-add.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -223164,7 +223164,7 @@
             "displayId": 114293475437313,
             "key": "provisional-decision.isitrust.li-group-term.journey-eligibility",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -223201,7 +223201,7 @@
             "displayId": 45063657104066,
             "key": "provisional-decision.isitrust.li-group-term.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -227387,7 +227387,7 @@
             "displayId": 153786595879948,
             "key": "provisional-decision.isitrust.li-group-term.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -227468,7 +227468,7 @@
             "displayId": 43336480704249,
             "key": "provisional-decision.isitrust.li-group-term.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -227535,7 +227535,7 @@
             "displayId": 253756900707344,
             "key": "provisional-decision.isitrust.li-group-term.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -227598,7 +227598,7 @@
             "displayId": 223451748376147,
             "key": "provisional-decision.isitrust.life-aggregate-participation",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -227630,7 +227630,7 @@
             "displayId": 147472173524982,
             "key": "provisional-decision.isitrust.oo-professional.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -229162,7 +229162,7 @@
             "displayId": 135593016364584,
             "key": "provisional-decision.isitrust.oo-professional.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -229238,7 +229238,7 @@
             "displayId": 27159901916773,
             "key": "provisional-decision.isitrust.oo-professional.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -229300,7 +229300,7 @@
             "displayId": 185993561095492,
             "key": "provisional-decision.isitrust.oo-professional.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -229363,7 +229363,7 @@
             "displayId": 112841176479654,
             "key": "provisional-decision.isitrust.sh-critical-illness.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -232010,7 +232010,7 @@
             "displayId": 201857476844440,
             "key": "provisional-decision.isitrust.sh-critical-illness.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -232079,7 +232079,7 @@
             "displayId": 169723893263093,
             "key": "provisional-decision.isitrust.sh-critical-illness.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -232146,7 +232146,7 @@
             "displayId": 34866644766996,
             "key": "provisional-decision.isitrust.sh-critical-illness.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -232209,7 +232209,7 @@
             "displayId": 23681779744197,
             "key": "provisional-decision.isitrust.sh-hospital-income.journey-eligibility",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -232246,7 +232246,7 @@
             "displayId": 27024421806230,
             "key": "provisional-decision.isitrust.sh-hospital-income.journey-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -236116,7 +236116,7 @@
             "displayId": 157727730826056,
             "key": "provisional-decision.isitrust.sh-hospital-income.journey-residency",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],
@@ -236196,7 +236196,7 @@
             "displayId": 150869457739013,
             "key": "provisional-decision.isitrust.sh-hospital-income.rate-input-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-review-and-rating.md",
+            "sourceReference": "docs/archive/step3-review-and-rating.md",
             "table": "semanticRequirements"
           }
         ],
@@ -236258,7 +236258,7 @@
             "displayId": 42549448761444,
             "key": "provisional-decision.isitrust.sh-hospital-income.selection-policy",
             "providedBy": null,
-            "sourceReference": "docs/step3-journey-adoption.md",
+            "sourceReference": "docs/archive/step3-journey-adoption.md",
             "table": "semanticRequirements"
           }
         ],

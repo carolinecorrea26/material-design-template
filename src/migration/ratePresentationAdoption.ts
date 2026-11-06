@@ -3,7 +3,7 @@ import type { DatabaseSchema, Json } from "../persistence/types";
 import { libraryMetadata } from "../domain/provenance";
 import { defaultRatePresentation } from "../domain/ratePresentation";
 import { activeSiteMigrationScope } from "./activeSiteScope";
-const reference = "docs/step3-major-outstanding-items.md";
+const reference = "docs/archive/step3-major-outstanding-items.md";
 const key = "rates.reviewed-presentation";
 const metadata = (table: string, identity: string) => ({ id: identity, key: identity, ...libraryMetadata(table, identity, reference) });
 export function applyRatePresentationAdoption(db: DatabaseSchema) {
