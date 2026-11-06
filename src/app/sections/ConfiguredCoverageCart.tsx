@@ -8,7 +8,7 @@ import { getActiveClientCoverages } from "../../config/client/getActiveClientCov
 import { getResolvedApplicantLabels } from "../../config/formSectionTitle";
 import { applicationCoverageName, applicationUnderwriting, resolveApplicationCoverage } from "../../domain/coverageRuntime";
 import { selectedRiderOnly } from "../../domain/coverageRiderOnly";
-import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
+import { productMonthlyPremium } from "../../domain/pricing";
 import { rateDisplayForAmount, type RateDisplayState } from "../../domain/rateDisplay";
 import { getResolvedFormFlow } from "../../config/formFlow";
 import { getConfiguredPages, getPagePath } from "../../config/pages";
@@ -129,16 +129,7 @@ export function useSummaryData() {
             monthlyEstimate = NaN;
             totalMonthly = NaN;
           } else if (amount != null && amount > 0) {
-            let base = estimateMonthlyPremium(coverage.categoryId, amount);
-            if (coverage.riders) {
-              for (const rider of coverage.riders) {
-                const riderKey = `${covId}:${rider.id}:${applicantId}`;
-                if (riders[riderKey]) {
-                  base += base * rider.premiumFactor;
-                }
-              }
-            }
-            monthlyEstimate = rates.enabled ? rates.premium(amountKey) : base;
+            monthlyEstimate = rates.enabled ? rates.premium(amountKey) : productMonthlyPremium(coverage, applicantId, amount, riders, riderAmounts);
             totalMonthly += monthlyEstimate;
           }
 

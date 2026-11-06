@@ -709,3 +709,18 @@ test('choice fields must name their options or an option source', () => withRequ
   assert.notEqual(result.status, 0);
   assert.match(result.output, /monthly-benefit-amount is a dropdown with no options or option source/);
 }));
+
+test('formula records declare authority, a known type and valid values', () => withRequirements(dir => {
+  editRequirement(dir, 'formulas', 'pricing', document => {
+    document.formulas[0].authority = 'guess';
+    document.formulas[1].type = 'surcharge';
+    document.formulas[2].extra = true;
+  });
+  editRequirementMapping(dir, 'coverage', mapping => { mapping.formulas.push('missing-formula'); });
+  const result = check(dir);
+  assert.notEqual(result.status, 0);
+  for (const message of [/authority must be mock or requirement/, /Expected one rider-factor formula/, /unknown formula type surcharge/,
+    /unexpected property extra/, /unknown formulas reference missing-formula/]) {
+    assert.match(result.output, message);
+  }
+}));

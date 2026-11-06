@@ -4,7 +4,7 @@ import { coverageCategories } from '../src/config/coverageCategories';
 import type { PrototypeLibrary } from '../src/domain/prototypeLibrary';
 import type { CoverageApplicantId } from '../src/config/coverages/types';
 import { getCoverageAmountChoices } from '../src/utils/coverageAmounts';
-import { estimateMonthlyPremium } from '../src/utils/estimateMonthlyPremium';
+import { baseMonthlyPremium } from '../src/domain/pricing';
 /** Local selection interactions with authored product inputs; no application/rating service. */
 export default function ProductCatalogExample({ fixture }: { fixture: PrototypeLibrary }) {
   const products = fixture.products.filter(product => product.categoryId === 'LI').map(product => ({ ...product, featured: product.featured ?? false }));
@@ -16,7 +16,7 @@ export default function ProductCatalogExample({ fixture }: { fixture: PrototypeL
   const [periods, setPeriods] = useState<Record<string, string>>({});
   const [frequency, setFrequency] = useState<'monthly' | 'annual'>('monthly');
   const selected = products.filter(product => applicants[product.id]?.length).map(product => product.id);
-  const premium = (product: typeof products[number], applicant: CoverageApplicantId) => estimateMonthlyPremium(product.categoryId, amounts[`${product.id}:${applicant}`] ?? 0);
+  const premium = (product: typeof products[number], applicant: CoverageApplicantId) => baseMonthlyPremium(product.categoryId, amounts[`${product.id}:${applicant}`] ?? 0);
   return <ProductCatalog presentation={{ coverageConfig: fixture.client.coverages, applicantLabels: fixture.client.applicantLabels, helpPhone: fixture.client.support.helpPhone }}
     availableCategories={[...coverageCategories]} selectedCategories={['LI']} categoryProducts={products} categoryEligibility={{}} allCategoriesIneligible={false} hasQdCategorySelected={false}
     selectedCoverageIds={selected} productApplicants={applicants} storedAmounts={amounts} storedRiders={riders} storedRiderAmounts={riderAmounts}

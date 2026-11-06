@@ -16,6 +16,7 @@ import { readLibraryCatalog, type LibraryCatalog } from "../../services/libraryC
 import { createReviewedMigrationDatabase } from "../../migration/fixtures";
 import { analyticsTagId, type AnalyticsTag } from "../../domain/analytics";
 import { requirementChanges } from "./library/RequirementChangesLibrary";
+import { formulas } from "./library/FormulasLibrary";
 vi.mock("../../services/libraryCatalogService", () => ({ readLibraryCatalog: vi.fn() }));
 const savedTag: AnalyticsTag = { id: analyticsTagId("eligibility", "field", "stored-test"), elementKey: "stored-test", pageId: "eligibility", label: "Stored analytics control", kind: "field", events: ["change"], sites: ["csea"], status: "proposed", trigger: "change", permittedProperties: ["siteKey"], description: "Stored description", source: "prototype-definition", sourceFile: "test", condition: "Child selected", adobe: { mapping: null, status: "not-configured" }, contentsquare: { mapping: null, status: "not-configured" } };
 const catalog: LibraryCatalog = { revision: "test", data: JSON.parse(JSON.stringify(createReviewedMigrationDatabase())), analyticsTags: [savedTag] };
@@ -324,7 +325,7 @@ describe("stored Portal Library navigation", () => {
     expect(tab("Canonical Review")).toBeUndefined();
     expect(tab("Template Standards")).toBeUndefined();
     const mainTabs = () => [...container.querySelectorAll('[aria-label="Portal Library domains"] [role="tab"]')].map(tab => tab.textContent);
-    const expected = ['Overview', 'Pages', 'Fields', 'Flows', 'Rules', 'Validations', 'Configurations', 'Content', 'Accessibility', 'Analytics', 'Requirement changes'];
+    const expected = ['Overview', 'Pages', 'Fields', 'Flows', 'Rules', 'Validations', 'Configurations', 'Formulas', 'Content', 'Accessibility', 'Analytics', 'Requirement changes'];
     expect(mainTabs()).toEqual(expected);
     await chooseSite("csea");
     expect(mainTabs()).toEqual(expected);
@@ -335,6 +336,14 @@ describe("stored Portal Library navigation", () => {
     expect([...table.querySelectorAll('thead th')].map(cell => cell.textContent)).toEqual(["Change", "Description", "Reason"]);
     expect([...table.querySelectorAll('tbody tr')].map(row => row.querySelector('td')?.textContent)).toEqual(requirementChanges.map(change => change.id));
     expect(table.textContent).toContain("Sites that skip the landing page typically provide their own rate tool.");
+  });
+  it("lists formula records with their mock or requirement authority", async () => {
+    await render("/admin-center/library/formulas");
+    const table = container.querySelector('table[aria-label="Formulas"]')!;
+    expect([...table.querySelectorAll('thead th')].map(cell => cell.textContent)).toEqual(["Formula", "Status", "Authority", "Statement", "Values"]);
+    expect([...table.querySelectorAll('tbody tr')].map(row => row.querySelector('td span')?.textContent)).toEqual(formulas.map(formula => formula.id));
+    expect(table.textContent).toContain("LI: $0.12 per $1,000");
+    expect(table.textContent).toContain("Mock");
   });
   it("keeps collection fields in Fields and page previews on page names", async () => {
     await render("/admin-center/library/pages?site=waepa&q=eligibility");

@@ -3,12 +3,19 @@ import { resolveRatePresentation } from '../domain/ratePresentation';
 import { currentMembershipLookup } from "../domain/membershipLookup";
 import { useEffect, useState } from 'react';
 import { getPrototypeLibrary } from '../domain/prototypeLibrary';
+import { selectedRiderCharges } from '../domain/pricing';
 import { quoteCandidateWithMock } from '../domain/mockRating';
 import { resolveCoverageJourneyPolicy } from '../domain/coverageJourneyPolicy';
 import { candidateMockRatingService } from '../mock/client';
 import { applicationApplicantFacts } from '../utils/applicantFacts';
 import type { CoverageApplicantId } from '../domain/coverage';
 import type { PaymentFrequency, PaymentMethod } from '../domain/paymentPolicy';
+
+/** Selected riders priced on their own or the base amount; the mock rating server adds them to the base premium. */
+function riderCharges(library: NonNullable<ReturnType<typeof getPrototypeLibrary>>, productKey: string, applicant: CoverageApplicantId, amount: number, values: Record<string, unknown>) {
+  const product = library.products.find(product => product.id === productKey);
+  return product ? selectedRiderCharges(product, applicant, amount, values.coverageRiders as Record<string, boolean> | undefined, values.coverageRiderAmounts as Record<string, number> | undefined).map(({ amount, premiumFactor }) => ({ amount, premiumFactor })) : [];
+}
 
 export function prototypeRateRequest(productKey: string, applicant: CoverageApplicantId, amount: number, values: Record<string, unknown>, frequency: PaymentFrequency) {
   const library = getPrototypeLibrary();
@@ -22,7 +29,7 @@ export function prototypeRateRequest(productKey: string, applicant: CoverageAppl
   const membership = (library.client.applicantExperience?.membershipLookup ? currentMembershipLookup(values)?.isMember : undefined) ?? booleanFact(values[`prototype-fact:${productKey}:member:membership`]) ?? booleanFact(values.membership) ?? booleanFact(values['is-member']) ?? booleanFact(values['membership-confirmed']);
   const association = values.association ?? (policy?.associationChoices.some(choice => choice.key === values.membership) || typeof values.membership === 'string' && library.site.assignedAssociationKeys.includes(values.membership) ? values.membership : undefined);
   const jurisdiction = String(values['state-province'] ?? values.state ?? '').replace(/^US-/, '');
-  return { productKey, facts: { amount, applicant, age: applicationApplicantFacts(applicantValues, applicant).ageYears, jurisdiction, gender: applicantValues[`${prefix}gender`], tobacco: values[`${prefix}smoker`], tobaccoLastUsed: values[`${prefix}tobacco-last-used`], membership, waitingPeriod: scoped('coverageWaitingPeriods'), benefitPeriod: scoped('coverageMaxBenefitPeriods'), association, riders: Object.entries(values.coverageRiders as Record<string, boolean> ?? {}).filter(([key, selected]) => selected && key.startsWith(`${productKey}:`) && key.endsWith(`:${applicant}`)).map(([key]) => key.split(':')[1]) }, payment: { method: (values[`payment-method:${productKey}`] ?? values['payment-method'] ?? policy?.payment.defaultMethod) as PaymentMethod, frequency: ({ annually: 'annual', semiannually: 'semiannual' } as Record<string, PaymentFrequency>)[String(values[`payment-frequency:${productKey}`])] ?? values[`payment-frequency:${productKey}`] as PaymentFrequency ?? frequency } };
+  return { productKey, riders: riderCharges(library, productKey, applicant, amount, values), facts: { amount, applicant, age: applicationApplicantFacts(applicantValues, applicant).ageYears, jurisdiction, gender: applicantValues[`${prefix}gender`], tobacco: values[`${prefix}smoker`], tobaccoLastUsed: values[`${prefix}tobacco-last-used`], membership, waitingPeriod: scoped('coverageWaitingPeriods'), benefitPeriod: scoped('coverageMaxBenefitPeriods'), association, riders: Object.entries(values.coverageRiders as Record<string, boolean> ?? {}).filter(([key, selected]) => selected && key.startsWith(`${productKey}:`) && key.endsWith(`:${applicant}`)).map(([key]) => key.split(':')[1]) }, payment: { method: (values[`payment-method:${productKey}`] ?? values['payment-method'] ?? policy?.payment.defaultMethod) as PaymentMethod, frequency: ({ annually: 'annual', semiannually: 'semiannual' } as Record<string, PaymentFrequency>)[String(values[`payment-frequency:${productKey}`])] ?? values[`payment-frequency:${productKey}`] as PaymentFrequency ?? frequency } };
 }
 /** Key every response to all rate inputs. A stale response can never price a new election. */
 export function usePrototypeRates(requests: Array<{ productKey: string; applicant: CoverageApplicantId; amount: number }>, values: Record<string, unknown>, frequency: PaymentFrequency, purpose: 'coverage' | 'quote-tool') {
@@ -43,7 +50,7 @@ export function usePrototypeRates(requests: Array<{ productKey: string; applican
       else if (!row.request.facts.amount) display = { status: 'needs-information' };
       else {
         try {
-          const quote = await quoteCandidateWithMock(library.site, row.request.productKey, row.request.facts, row.request.payment, candidateMockRatingService, Date.now(), purpose);
+          const quote = await quoteCandidateWithMock(library.site, row.request.productKey, row.request.facts, row.request.payment, candidateMockRatingService, Date.now(), purpose, row.request.riders);
           display = rateDisplayFromQuote(quote);
         } catch { display = { status: 'unavailable', reason: 'technical' }; }
       }

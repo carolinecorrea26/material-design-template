@@ -132,8 +132,8 @@ requirements, Home hides, the tobacco condition and field validators still
 determine when and how they apply. Quote eligibility inputs, product
 selection/amount controls, other fields and sites remain on their existing paths. Coverage's saved field definitions have not yet moved to
 the fresh-start JSON. The estimator offers each product's member riders (not
-dependent-attached riders) for all sites, prices selected riders with Coverage's
-formula, and carries them into Coverage's rider keys on Apply (CHG-002). The
+dependent-attached riders) for all sites, prices selected riders with the shared
+[pricing formulas](../../requirements/global/formulas/pricing.json) (mock, draft), and carries them into Coverage's rider keys on Apply (CHG-002). The
 library lists them as quote rider rows with their carry-forward keys.
 Other carry-forward details and the precise validation/error presentation require review.
 The broader Apply workflow remains a draft; confirming these two carry-forward

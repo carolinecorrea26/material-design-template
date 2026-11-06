@@ -1,0 +1,65 @@
+{
+  "formulas": [
+    {
+      "id": "base-premium",
+      "name": "Base monthly premium",
+      "status": "draft",
+      "authority": "mock",
+      "source": "Prototype mock rate (previously estimateMonthlyPremium and the mock rating server flat $0.25 per $1,000)",
+      "statement": "Mock monthly premium for a product amount, priced by coverage category. PRASE is not connected; replace with actual rate requirements where they exist.",
+      "type": "category-rates",
+      "minimumMonthly": 1,
+      "default": {
+        "basis": "per-thousand",
+        "rate": 0.25
+      },
+      "categories": {
+        "LI": {
+          "basis": "per-thousand",
+          "rate": 0.12
+        },
+        "AD": {
+          "basis": "per-thousand",
+          "rate": 0.05
+        },
+        "DI": {
+          "basis": "percent-of-amount",
+          "rate": 2
+        },
+        "OO": {
+          "basis": "percent-of-amount",
+          "rate": 1.8
+        },
+        "SH": {
+          "basis": "percent-of-amount",
+          "rate": 1
+        }
+      }
+    },
+    {
+      "id": "rider-premium",
+      "name": "Rider monthly premium",
+      "status": "draft",
+      "authority": "mock",
+      "source": "Prototype Coverage rider pricing (previously coverageRiderPricing)",
+      "statement": "A selected rider adds its amount (or the base amount when the rider has no amount of its own) priced at the product's base rate, times the rider's premium factor. The minimum applies to the base premium only.",
+      "type": "rider-factor",
+      "amount": "rider-amount-or-base"
+    },
+    {
+      "id": "payment-frequency-factors",
+      "name": "Months per payment",
+      "status": "draft",
+      "authority": "mock",
+      "source": "Prototype payment frequency multipliers (previously paymentFields and the mock rating server)",
+      "statement": "Converts a monthly premium to the selected payment frequency. Site billing policies in the Library (annual credit, fees, annual factors) apply instead where they exist.",
+      "type": "frequency-factors",
+      "factors": {
+        "monthly": 1,
+        "quarterly": 3,
+        "semiannual": 6,
+        "annual": 12
+      }
+    }
+  ]
+}

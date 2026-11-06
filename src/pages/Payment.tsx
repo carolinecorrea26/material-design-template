@@ -17,7 +17,7 @@ import { paymentMethodOptions, paymentFrequencyOptions, PAYMENT_INFO_OPT_IN_FIEL
 import { useRef, useState } from "react";
 import { Alert, Box, Button, Stack, Typography } from "@mui/material";
 import PaymentSections from "../components/payment/PaymentSections";
-import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
+import { monthsPerPayment, productMonthlyPremium } from "../domain/pricing";
 import FormRoutePage from "../app/RoutePage";
 
 import { getCoverageCategorySectionLabel } from "../config/coverageCategories";
@@ -122,8 +122,7 @@ function getApplicantLabel(applicant: string): string {
 }
 
 function getFrequencyMultiplier(frequency: string): number {
-  const option = paymentFrequencyOptions.find((o) => o.value === frequency);
-  return option?.multiplier ?? 1;
+  return monthsPerPayment(frequency);
 }
 
 function getFrequencyLabel(frequency: string): string {
@@ -374,9 +373,12 @@ export default function Payment() {
               const applicantPremiums = product.applicants.map(
                 (applicantEntry) => ({
                   applicant: applicantEntry.applicant,
-                  monthlyPremium: estimateMonthlyPremium(
-                    product.categoryId,
+                  monthlyPremium: productMonthlyPremium(
+                    { id: product.coverageId, categoryId: product.categoryId, riders: getActiveClientCoverages().find(coverage => coverage.id === product.coverageId)?.riders },
+                    applicantEntry.applicant as CoverageApplicantId,
                     applicantEntry.amount,
+                    values.coverageRiders as Record<string, boolean> | undefined,
+                    values.coverageRiderAmounts as Record<string, number> | undefined,
                   ),
                 }),
               );

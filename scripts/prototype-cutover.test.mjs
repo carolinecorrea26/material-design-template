@@ -8,6 +8,10 @@ import { readFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createMockPlatform, totp } from './mock-platform.mjs';
+import { monthlyPremium, pricingFormulas } from '../src/domain/pricingFormulas.mjs';
+import pricingDocument from '../requirements/global/formulas/pricing.json';
+
+const liTermAnnual = monthlyPremium(pricingFormulas(pricingDocument), 'LI', 10000) * 12;
 import { effectiveSiteSnapshotTables, normalizedSnapshotTables } from '../src/persistence/catalogTables';
 
 it.each(['abe', 'asce'])('%s persists Library page, field, pricing and billing edits through save/reload/restart without catalog edits', async siteKey => {
@@ -35,7 +39,7 @@ it.each(['abe', 'asce'])('%s persists Library page, field, pricing and billing e
     const installed = validatePrototypeEnvelope(abe, siteKey);
     const policy = resolveCoverageJourneyPolicy(installed.site, 'li-term');
     const frequency = policy.payment.methods.find(m => m.method === 'bill-me').frequencies.includes('monthly') ? 'monthly' : policy.payment.methods.find(m => m.method === 'bill-me').frequencies[0];
-    const expectedAmount = resolveBilling({ ...policy, billing: { ...policy.billing, feePerCollection: { ...policy.billing.feePerCollection, 'bill-me': 2 } } }, 'bill-me', frequency, 30).amount;
+    const expectedAmount = resolveBilling({ ...policy, billing: { ...policy.billing, feePerCollection: { ...policy.billing.feePerCollection, 'bill-me': 2 } } }, 'bill-me', frequency, liTermAnnual).amount;
     const payload = editDraftBilling(editDraftRates(editDraftField(abe.payload, 'eligibility', 'birth-date', { label: 'Persisted cutover DOB' }), { version: 1, praseConfigured: true, quoteToolEnabled: false, coverageQuoteEnabled: true }, 'li-term', null), 'li-term', { ...policy.billing, feePerCollection: { ...policy.billing.feePerCollection, 'bill-me': 2 } });
     payload.data.pages.find(page => page.key === 'eligibility').definition.path = '/saved-eligibility';
     const membership = payload.data.sitePages.find(page => page.siteKey === siteKey && page.pageKey === 'membership');
@@ -57,7 +61,7 @@ it.each(['abe', 'asce'])('%s persists Library page, field, pricing and billing e
     const fieldCatalog = await request('/library/catalog', { siteKey, tables: fieldTables });
     for (const table of fieldTables) expect(fieldCatalog.data[table]).toEqual(edited.payload.data[table]);
     expect(resolveRatePresentation(validatePrototypeEnvelope(edited, siteKey).site, 'li-term').quoteToolEnabled).toBe(false);
-    expect(resolveBilling(resolveCoverageJourneyPolicy(validatePrototypeEnvelope(edited, siteKey).site, 'li-term'), 'bill-me', frequency, 30).amount).toBe(expectedAmount);
+    expect(resolveBilling(resolveCoverageJourneyPolicy(validatePrototypeEnvelope(edited, siteKey).site, 'li-term'), 'bill-me', frequency, liTermAnnual).amount).toBe(expectedAmount);
     expect(validatePrototypeEnvelope(edited, siteKey).client.fields.eligibility.overrides['birth-date'].label).toBe('Persisted cutover DOB');
     expect((await request('/rates/quote', { siteKey, productKey: 'li-term', amount: 10000, frequency, paymentMethod: 'bill-me' })).premiumCents).toBe(Math.round(expectedAmount * 100));
     expect(edited.revision).not.toBe(abe.revision);
@@ -74,7 +78,7 @@ it.each(['abe', 'asce'])('%s persists Library page, field, pricing and billing e
     expect(restarted.revision).toBe(edited.revision);
     expect(restarted.draft.id).toBe(saved.id);
     expect(JSON.stringify(database)).not.toContain('Persisted cutover DOB');
-    expect(resolveBilling(resolveCoverageJourneyPolicy(validatePrototypeEnvelope(restarted, siteKey).site, 'li-term'), 'bill-me', frequency, 30).amount).toBe(expectedAmount);
+    expect(resolveBilling(resolveCoverageJourneyPolicy(validatePrototypeEnvelope(restarted, siteKey).site, 'li-term'), 'bill-me', frequency, liTermAnnual).amount).toBe(expectedAmount);
   } finally {
     if (server) await new Promise(resolve => server.close(resolve));
     rmSync(directory, { recursive: true, force: true });

@@ -193,6 +193,7 @@ requirements/
     validations/dates.json         reusable date-format check
     validations/forms.json         field-definition and page callback checks
     validations/quoting.json        inline quote category check
+    formulas/pricing.json          mock base, rider and payment-frequency pricing
     flows/ analytics/              (later)
   mappings/
     components/<component>.json    component fields and related components
@@ -248,6 +249,16 @@ card use the loader today; other records do not by themselves change runtime beh
   Checks currently include `required-fields`, `date-format`, `field-definition`,
   `page-check`, `category-selection`, and `product-selection`. They are documentation,
   not an executable validation engine.
+- **Formulas** are typed calculation records with a `statement`, a `type` and
+  that type's values: `category-rates` (per-$1,000 or percent-of-amount rate by
+  coverage category, a default rate and a monthly minimum), `rider-factor`
+  (rider amount or base amount, times the rider's premium factor) and
+  `frequency-factors` (months per payment). `authority` is `mock` until an actual
+  rate requirement replaces the values, then `requirement`.
+  [`pricingFormulas.mjs`](../../src/domain/pricingFormulas.mjs) evaluates them for
+  both the prototype and the mock rating server, so every screen and the server
+  price the same way. Library rate modifiers, billing (annual credit, fees, annual
+  factors) and reference rate tables still apply on top; PRASE is not connected.
 - Each definition has a stable `id`, team-facing `name`, `status` (`draft` or
   `confirmed`), and implementation evidence in `source`. IDs are unique within
   the entire inventory across its subject files and categories. Neither `page` nor `component`

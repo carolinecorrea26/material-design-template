@@ -4,11 +4,12 @@ import type { EffectiveSite } from "./effectiveSite";
 import { collectRateInputs, isRateInputPolicy, type RateDimension, type RateFacts } from "./rateInputPolicy";
 import { resolveBilling, resolveCoverageJourneyPolicy } from "./coverageJourneyPolicy";
 import type { PaymentMethod, PaymentFrequency } from "./paymentPolicy";
+import type { RiderCharge } from "./pricingFormulas.mjs";
 
-export type MockRatingService = { quote: (request: { siteKey: string; productKey: string; amount: number; frequency: "annual"; dimensions: Partial<Record<RateDimension, unknown>> }) => Promise<{ mode: string; premiumCents: number; expiresAt: number; authority: string }> };
+export type MockRatingService = { quote: (request: { siteKey: string; productKey: string; amount: number; frequency: "annual"; dimensions: Partial<Record<RateDimension, unknown>>; riders?: RiderCharge[] }) => Promise<{ mode: string; premiumCents: number; expiresAt: number; authority: string }> };
 /** Explicit mock boundary. Authoritative rates stay unavailable; this result
  * cannot be mistaken for a release-ready insurance quote. CSEA has no price. */
-export async function quoteCandidateWithMock(site: EffectiveSite, productKey: string, facts: RateFacts, payment: { method: PaymentMethod; frequency: PaymentFrequency }, service: MockRatingService, now = Date.now(), purpose: "quote-tool" | "coverage" = "quote-tool") {
+export async function quoteCandidateWithMock(site: EffectiveSite, productKey: string, facts: RateFacts, payment: { method: PaymentMethod; frequency: PaymentFrequency }, service: MockRatingService, now = Date.now(), purpose: "quote-tool" | "coverage" = "quote-tool", riders: RiderCharge[] = []) {
   const fail = (status: "unavailable" | "error" | "needs-information", reason: string, failureKind: "technical" | "configuration" | "inputs" = "configuration") => ({ status, failureKind, displayPrice: false, amount: null, authority: "Synthetic test rates; not an insurance quote", reason });
   const presentation = resolveRatePresentation(site, productKey, typeof facts.association === "string" ? facts.association : undefined);
   if (presentation.status !== "resolved") return fail("error", "Invalid rate presentation policy");
@@ -24,7 +25,7 @@ export async function quoteCandidateWithMock(site: EffectiveSite, productKey: st
   if (collected.missing.length) return fail("needs-information", `Required rate inputs: ${collected.missing.join(", ")}`, "inputs");
   if (typeof facts.amount !== "number" || !Number.isSafeInteger(facts.amount) || facts.amount <= 0) return fail("error", "Invalid rate amount", "inputs");
   try {
-    const quote = await service.quote({ siteKey: site.siteKey, productKey, amount: facts.amount, frequency: "annual", dimensions: collected.inputs });
+    const quote = await service.quote({ siteKey: site.siteKey, productKey, amount: facts.amount, frequency: "annual", dimensions: collected.inputs, ...(riders.length ? { riders } : {}) });
     if (quote.mode !== "mock" || !Number.isSafeInteger(quote.premiumCents) || quote.premiumCents < 0 || !Number.isFinite(quote.expiresAt) || quote.expiresAt <= now || !quote.authority?.includes("Synthetic")) return fail("error", "Invalid or expired mock rate response", "technical");
     const modifiers = product!.rateModifierPolicies;
     if (modifiers.length !== 1 || !isRateModifierPolicy(modifiers[0].value)) return fail("error", "No unique valid rate modifier policy");

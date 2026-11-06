@@ -19,6 +19,7 @@ import ConfigurationsLibrary from "./library/ConfigurationsLibrary";
 import ValidationLibrary from "./library/ValidationLibrary";
 import AccessibilityLibrary from "./library/AccessibilityLibrary";
 import RequirementChangesLibrary from "./library/RequirementChangesLibrary";
+import FormulasLibrary from "./library/FormulasLibrary";
 
 export const libraryTabs = [
   { id: "overview", label: "Overview" },
@@ -28,6 +29,7 @@ export const libraryTabs = [
   { id: "rules", label: "Rules" },
   { id: "validation", label: "Validations" },
   { id: "configurations", label: "Configurations" },
+  { id: "formulas", label: "Formulas" },
   { id: "content", label: "Content" },
   { id: "accessibility", label: "Accessibility" },
   { id: "analytics", label: "Analytics" },
@@ -39,6 +41,7 @@ const domainDescriptions: Record<string, string> = {
   fields: "Browse field IDs, input labels, types, Storybook components, keyboards, options, defaults and helper text. Page and section usage is listed below the field catalog.",
   validation: "Page errors, field errors, and application recovery and processing states.",
   analytics: "Review the pages, fields, controls, overlays, and tools that need analytics tags, including event triggers, Site applicability, and tagging gaps.",
+  formulas: "Pricing and calculation formulas from requirements/global/formulas. Mock formulas stand in where actual rate requirements do not exist; Library rate modifiers, billing and reference rate tables still apply.",
   changes: "Agreed requirement changes from the fresh-start migration: change ID, description and reason.",
   accessibility: "Accessibility tracking setup, prototype concerns and WCAG 2.2 AA review.",
   coverage: "Inspect products, amounts, underwriting requirements, and coverage categories.",
@@ -95,7 +98,7 @@ export default function PortalLibrary() {
           <Typography component="h2" variant="h5" sx={{ fontWeight: 800 }}>{domain.label}</Typography>
           <Typography variant="body2" color="text.secondary">{domainDescriptions[domain.id]}</Typography>
         </Stack>
-        {domain.id === "accessibility" ? <AccessibilityLibrary siteKey={selection} /> : domain.id === "changes" ? <RequirementChangesLibrary /> : <LibraryCatalogProvider siteKey={selection}>
+        {domain.id === "accessibility" ? <AccessibilityLibrary siteKey={selection} /> : domain.id === "changes" ? <RequirementChangesLibrary /> : domain.id === "formulas" ? <FormulasLibrary /> : <LibraryCatalogProvider siteKey={selection}>
           {domain.id === "pages" ? <StoredPagesLibrary siteKey={selection} /> : domain.id === "fields" ? <StoredFieldsLibrary siteKey={selection} /> : domain.id === "overview" ? <LibraryOverview siteKey={selection} legacyPreview={domainId === "site-preview"} /> : domain.id === "rules" ? <RulesLibrary siteKey={selection} /> : domain.id === "configurations" ? <ConfigurationsLibrary domain={domainId} siteKey={selection} /> : domain.id === "flows" ? <StoredFlowsLibrary siteKey={selection} /> : domain.id === "analytics" ? <AnalyticsLibrary siteKey={selection} /> : domain.id === "content" ? <ContentLibrary domain={domainId} siteKey={selection} /> : domain.id === "validation" ? <ValidationLibrary siteKey={selection} /> : <StoredLibraryDomain domain={domain.id} siteKey={selection} />}
         </LibraryCatalogProvider>}
       </Stack>

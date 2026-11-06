@@ -4,7 +4,7 @@ import { resolveSiteId } from "../data/activeSite";
 import { activeFeaturedProduct } from "../config/client/coverageProductScope";
 import { orderCoveragePresentation } from "../domain/coveragePresentation";
 import { reconcileApplicationRiders } from "../domain/applicationRiders";
-import { selectedRidersMonthlyPremium } from "../domain/coverageRiderPricing";
+import { productMonthlyPremium } from "../domain/pricing";
 import { getPrototypeLibrary } from "../domain/prototypeLibrary";
 import { categoryEligibility as evaluateCategoryEligibility, readCategoryEligibilityPolicy, reconcileCategoryElections } from "../domain/categoryEligibilityPolicy";
 import { changeCoverageAmount, selectedRiderOnly } from "../domain/coverageRiderOnly";
@@ -22,7 +22,6 @@ import type { CoverageCategoryId } from "../config/coverages/types";
 import type { CoverageApplicantId } from "../config/coverages/types";
 import type { EstimatedRateFrequency } from "../config/clients/types";
 import { useApplicationForm } from "./ApplicationFormContext";
-import { estimateMonthlyPremium } from "../utils/estimateMonthlyPremium";
 import { RATE_CALCULATION_DELAY_MS } from "../config/coverageConstants";
 
 export { getDisplayedPremium, getBenefitAmountLabel } from "../utils/coverageDisplay";
@@ -607,8 +606,7 @@ export function useCoverageState() {
     if (selectedRiderOnly(coverage, applicantId, values)) return NaN;
     if (prototypeRates.enabled) { const price = prototypeRates.premium(key); return rateFrequency === "annual" ? price / 12 : price; }
     const amount = storedAmounts[key] ?? 0;
-    const premium = estimateMonthlyPremium(coverage.categoryId, amount) + selectedRidersMonthlyPremium(coverage, applicantId, amount, storedRiders, storedRiderAmounts);
-    return Math.round(premium * 100) / 100;
+    return productMonthlyPremium(coverage, applicantId, amount, storedRiders, storedRiderAmounts);
   }
 
   function getRateDisplay(productId: string, applicant: CoverageApplicantId): RateDisplayState {

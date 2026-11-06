@@ -1,4 +1,5 @@
 import { normalizeSiteReferences } from '../src/domain/siteIdentity.mjs';
+import { monthlyPremium, pricingFormulas } from '../src/domain/pricingFormulas.mjs';
 import { verifyRegistration, verifyAuthentication } from './webauthn.mjs';
 import { accountGroups, memberAccounts, publicAccount } from './account-groups.mjs';
 import { builderRelease } from './builder-release.mjs';
@@ -32,7 +33,9 @@ const safeEqual = (a, b) => typeof a === 'string' && typeof b === 'string' && a.
 const passwordHash = (password, salt) => pbkdf2Sync(password, salt, 210000, 32, 'sha256').toString('hex');
 const fail = (status, message) => { throw Object.assign(new Error(message), { status }); };
 const passwordLifetime = 30 * 24 * 60 * 60 * 1000;
-const frequencies = { monthly: 1, quarterly: 3, semiannual: 6, annual: 12 };
+/** Mock pricing shared with the app; PRASE is not connected. */
+const pricing = pricingFormulas(JSON.parse(readFileSync(new URL('../requirements/global/formulas/pricing.json', import.meta.url), 'utf8')));
+const frequencies = pricing.frequency.factors;
 const siteKeys = ['demo','abe','ama','asce','avma','csea','nso','isitrust','waepa','waepa-gi'];
 
 /** Local simulation only. It never calls PRASE, a payment processor or email. */
@@ -388,13 +391,15 @@ export function createMockPlatform({ database, prototypeTables = Object.keys(dat
         return respond(200, result ?? { removed: true });
       }
       if (path === '/rates/quote') {
-        strictKeys(body, ['siteKey','productKey','amount','frequency','dimensions','paymentMethod','revision','environment']);
+        strictKeys(body, ['siteKey','productKey','amount','frequency','dimensions','paymentMethod','revision','environment','riders']);
+        if (body.riders !== undefined && (!Array.isArray(body.riders) || body.riders.length > 50 || body.riders.some(rider => !rider || typeof rider !== 'object' || Array.isArray(rider) || Object.keys(rider).some(key => !['amount','premiumFactor'].includes(key)) || !Number.isFinite(rider.amount) || rider.amount <= 0 || rider.amount > 10000000 || !Number.isFinite(rider.premiumFactor) || rider.premiumFactor < 0 || rider.premiumFactor > 10))) fail(400, 'Invalid mock rider charges');
         if (body.dimensions !== undefined && (!body.dimensions || typeof body.dimensions !== 'object' || Array.isArray(body.dimensions) || Object.keys(body.dimensions).some(key => !['rateClass','membership','age','gender','tobacco','jurisdiction','amount','applicant','waitingPeriod','benefitPeriod','association','riders'].includes(key)))) fail(400, 'Invalid mock rating inputs');
         if (!availableSite(body.siteKey) || !requiredProducts(body.siteKey, body.environment).includes(body.productKey) || !Number.isSafeInteger(body.amount) || body.amount <= 0 || body.amount > 10000000 || !Object.hasOwn(frequencies, body.frequency)) fail(400, 'Invalid mock quote dimensions');
         const revision = prototypeRevision(body.siteKey, body.environment);
         if (body.revision !== undefined && body.revision !== revision) fail(409, 'Prototype Library changed; reload before requesting a quote');
         if (body.dimensions?.applicant !== undefined && !['member','spouse','child'].includes(body.dimensions.applicant)) fail(400, 'Invalid applicant dimension');
-        const monthlyCents = Math.max(100, Math.ceil(body.amount / 1000 * 25));
+        const categoryKey = prototypePayload(body.siteKey, body.environment).data.products?.find(product => product.key === body.productKey)?.categoryKey ?? '';
+        const monthlyCents = Math.round(monthlyPremium(pricing, categoryKey, body.amount, body.riders ?? []) * 100);
         let premiumCents = monthlyCents * frequencies[body.frequency];
         if (body.paymentMethod !== undefined) {
           const data = prototypePayload(body.siteKey, body.environment).data;

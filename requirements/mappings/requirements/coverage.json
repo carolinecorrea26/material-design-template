@@ -1,7 +1,24 @@
 {
   "component": "coverage",
-  "configurations": ["estimated-rate-frequency", "estimated-rate-frequency-toggle"],
-  "rules": ["coverage-category-availability", "coverage-question-participation", "coverage-selection-policy"],
-  "presentation": ["estimated-rate-states"],
-  "workflows": ["coverage-product-reveal", "coverage-product-selection"]
+  "configurations": [
+    "estimated-rate-frequency",
+    "estimated-rate-frequency-toggle"
+  ],
+  "rules": [
+    "coverage-category-availability",
+    "coverage-question-participation",
+    "coverage-selection-policy"
+  ],
+  "presentation": [
+    "estimated-rate-states"
+  ],
+  "workflows": [
+    "coverage-product-reveal",
+    "coverage-product-selection"
+  ],
+  "formulas": [
+    "base-premium",
+    "rider-premium",
+    "payment-frequency-factors"
+  ]
 }

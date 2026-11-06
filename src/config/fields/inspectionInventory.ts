@@ -29,7 +29,7 @@ import { BENEFICIARY_INDIVIDUAL_FIELDS, BENEFICIARY_TRUST_FIELDS, beneficiaryInf
 import { paymentMethodOptions, paymentFrequencyOptions, paymentInfoOptInField } from "./paymentFields";
 import type { FieldDefinition } from "./types";
 import type { PageId } from "../../types";
-import { quoteRiders } from "../../domain/coverageRiderPricing";
+import { quoteRiders } from "../../domain/pricing";
 
 export type FieldPlacement = {
   pageId: PageId;

@@ -44,7 +44,7 @@ import {
   getDisplayedPremium,
   getBenefitAmountLabel,
 } from "../../utils/coverageDisplay";
-import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
+import { baseMonthlyPremium, riderMonthlyPremium } from "../../domain/pricing";
 
 type ResolvedCoverage = import("../../domain/coverage").CoverageDefinition & { featured: boolean };
 
@@ -107,9 +107,7 @@ function collectBreakdownRiderItems({
         : amount;
       if (riderAmount <= 0) continue;
 
-      const riderPremium =
-        estimateMonthlyPremium(coverage.categoryId, riderAmount) *
-        rider.premiumFactor;
+      const riderPremium = riderMonthlyPremium(coverage.categoryId, { amount: riderAmount, premiumFactor: rider.premiumFactor });
       if (riderPremium <= 0) continue;
 
       const riderLabel = isMultiApplicant
@@ -554,7 +552,7 @@ export function ProductCard({
     const key = `${coverage.id}:${applicantId}`;
     const amount = storedAmounts[key] ?? 0;
     if (amount <= 0) return sum;
-    return sum + estimateMonthlyPremium(coverage.categoryId, amount);
+    return sum + baseMonthlyPremium(coverage.categoryId, amount);
   }, 0);
 
   const riderItems = collectBreakdownRiderItems({

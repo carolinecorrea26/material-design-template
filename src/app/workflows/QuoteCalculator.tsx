@@ -68,9 +68,9 @@ import { useApplicationForm } from "../ApplicationFormContext";
 import {
   executeQuoteApplyTransition,
 } from "../../config/applicationTransitions";
-import { estimateMonthlyPremium } from "../../utils/estimateMonthlyPremium";
 import { reconcileApplicationRiders } from "../../domain/applicationRiders";
-import { quoteRiders, selectedRidersMonthlyPremium } from "../../domain/coverageRiderPricing";
+import { productMonthlyPremium, quoteRiders } from "../../domain/pricing";
+import { getDisplayedPremium } from "../../utils/coverageDisplay";
 import { getCoverageAmountChoices } from "../../utils/coverageAmounts";
 import { evaluateConditionDefinition } from "../../config/conditions/evaluateConditions";
 import { withRequirementFields } from "../../domain/requirementFields";
@@ -421,7 +421,7 @@ export default function QuoteCalculator({
     }
   }
 
-  const prototypeRates = usePrototypeRates((showProducts ? categoryProducts : []).flatMap(p => (quoteBehavior(p).eligibility === "ineligible" ? [] : ["member" as CoverageApplicantId]).map(applicant => ({ productKey: p.id, applicant, amount: amountsByKey[`${p.id}:${applicant}`] ?? 0 }))), { ...quoteValues, gender, smoker }, rateFrequency, 'quote-tool');
+  const prototypeRates = usePrototypeRates((showProducts ? categoryProducts : []).flatMap(p => (quoteBehavior(p).eligibility === "ineligible" ? [] : ["member" as CoverageApplicantId]).map(applicant => ({ productKey: p.id, applicant, amount: amountsByKey[`${p.id}:${applicant}`] ?? 0 }))), { ...quoteValues, gender, smoker, ...quoteRiderElections }, rateFrequency, 'quote-tool');
 
   function getApplicantPremium(
     product: CoverageDefinition,
@@ -430,7 +430,7 @@ export default function QuoteCalculator({
     const key = `${product.id}:${applicant}`;
     if (prototypeRates.enabled) { const price = prototypeRates.premium(key); return rateFrequency === "annual" ? price / 12 : price; }
     const amount = amountsByKey[key] ?? 0;
-    return estimateMonthlyPremium(product.categoryId, amount) + selectedRidersMonthlyPremium(product, applicant, amount, quoteRiderElections.coverageRiders, quoteRiderElections.coverageRiderAmounts);
+    return productMonthlyPremium(product, applicant, amount, quoteRiderElections.coverageRiders, quoteRiderElections.coverageRiderAmounts);
   }
 
   const grandTotal = useMemo(() => {
@@ -455,10 +455,7 @@ export default function QuoteCalculator({
         (sum, applicant) => sum + getApplicantPremium(product, applicant),
         0,
       );
-      const displayedProductTotal =
-        rateFrequency === "annual"
-          ? Math.round(productTotal * 12 * 100) / 100
-          : productTotal;
+      const displayedProductTotal = getDisplayedPremium(productTotal, rateFrequency);
       const isCalculating = applicants.some((applicant) =>
         calculatingRates.has(`${product.id}:${applicant}`),
       );
@@ -526,10 +523,7 @@ export default function QuoteCalculator({
   }
 
   const rateSuffix = rateFrequency === "annual" ? "/yr" : "/mo";
-  const displayedGrandTotal =
-    rateFrequency === "annual"
-      ? Math.round(grandTotal * 12 * 100) / 100
-      : grandTotal;
+  const displayedGrandTotal = getDisplayedPremium(grandTotal, rateFrequency);
   const inlineStepCopy =
     inlineStep === 1 && singleAvailableCategory
       ? {
@@ -681,10 +675,7 @@ export default function QuoteCalculator({
                             product,
                             "member",
                           );
-                          const displayedPremium =
-                            rateFrequency === "annual"
-                              ? Math.round(premium * 12 * 100) / 100
-                              : premium;
+                          const displayedPremium = getDisplayedPremium(premium, rateFrequency);
 
                           return (
                             <EstimatorProductCard

@@ -3,6 +3,7 @@
 //   --page <id>  prints one page's mapped sections, fields and people
 //   --map        prints which pages each field is on
 import fs from 'node:fs';
+import { pricingFormulas } from '../src/domain/pricingFormulas.mjs';
 import path from 'node:path';
 
 const root = 'requirements';
@@ -198,7 +199,9 @@ for (const [component, entries] of componentFields) checkFieldMappings(`${root}/
 
 // Fresh-start requirements are declarative records, not executable expressions.
 const requirementRecords = new Map();
-const requirementKinds = ['configurations', 'rules', 'validations', 'presentation', 'workflows'];
+const requirementKinds = ['configurations', 'rules', 'validations', 'presentation', 'workflows', 'formulas'];
+// Type-specific keys for formula records; values are checked by the shared evaluator.
+const formulaTypeKeys = { 'category-rates': ['minimumMonthly', 'default', 'categories'], 'rider-factor': ['amount'], 'frequency-factors': ['factors'] };
 const allRequirementIds = new Set();
 for (const kind of requirementKinds) {
   const ids = new Set();
@@ -215,6 +218,9 @@ for (const kind of requirementKinds) {
       fail(file, `${kind} must be an array`);
       continue;
     }
+    if (kind === 'formulas' && path.basename(file) === 'pricing.json') {
+      try { pricingFormulas(document); } catch (error) { fail(file, error.message); }
+    }
     for (const entry of document[kind]) {
       if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
         fail(file, `${kind} entry must be an object`);
@@ -225,7 +231,8 @@ for (const kind of requirementKinds) {
       const allowed = ['id', 'name', 'status', 'source',
         ...(kind === 'configurations' ? ['type', 'options', 'default', 'format'] : ['statement']),
         ...(['rules', 'workflows'].includes(kind) ? ['fields'] : []),
-        ...(kind === 'validations' ? ['check'] : [])];
+        ...(kind === 'validations' ? ['check'] : []),
+        ...(kind === 'formulas' ? ['authority', 'type', ...(formulaTypeKeys[entry.type] ?? [])] : [])];
       for (const key of Object.keys(entry)) if (!allowed.includes(key)) fail(where, `unexpected property ${key}`);
       if (typeof entry.id !== 'string' || !kebab.test(entry.id)) fail(where, 'invalid requirement id');
       if (ids.has(entry.id)) fail(where, `duplicate ${kind} id ${entry.id}`);
@@ -260,6 +267,10 @@ for (const kind of requirementKinds) {
             if (new Set(entry.fields).size !== entry.fields.length) fail(where, 'duplicate field reference');
             for (const id of entry.fields) if (!fields.has(id)) fail(where, `unknown field ${id}`);
           }
+        }
+        if (kind === 'formulas') {
+          if (!['mock', 'requirement'].includes(entry.authority)) fail(where, 'authority must be mock or requirement');
+          if (!Object.hasOwn(formulaTypeKeys, entry.type)) fail(where, `unknown formula type ${entry.type}`);
         }
         if (kind === 'validations' && !['required-fields', 'date-format', 'field-definition', 'page-check', 'category-selection', 'product-selection'].includes(entry.check)) fail(where, `unknown validation check ${entry.check}`);
       }

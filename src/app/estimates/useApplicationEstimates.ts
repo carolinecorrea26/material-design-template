@@ -4,14 +4,15 @@ import { getPrototypeLibrary } from '../../domain/prototypeLibrary';
 import { associationRatesSuppressed } from '../../domain/ratePresentation';
 import { combineRateDisplays, rateDisplayForAmount, type RateDisplayState } from '../../domain/rateDisplay';
 import { getCoverageAmountRequested, getOrderedDecisionEntries } from '../../utils/coverageDecisions';
-import { estimateMonthlyPremium } from '../../utils/estimateMonthlyPremium';
+import { monthsPerPayment, productMonthlyPremium } from '../../domain/pricing';
 import { usePrototypeRates } from '../usePrototypeRates';
 import type { ApplicationFormValues } from '../ApplicationFormContext';
 import { getContent } from '../../content';
 
 export function paymentPeriod(value: unknown) {
   const key = String(value ?? 'monthly');
-  return ({ monthly: { label: 'monthly', months: 1 }, quarterly: { label: 'quarterly', months: 3 }, semiannual: { label: 'semiannually', months: 6 }, semiannually: { label: 'semiannually', months: 6 }, annual: { label: 'annually', months: 12 }, annually: { label: 'annually', months: 12 } } as Record<string, { label: string; months: number }>)[key] ?? { label: 'monthly', months: 1 };
+  const label = ({ monthly: 'monthly', quarterly: 'quarterly', semiannual: 'semiannually', semiannually: 'semiannually', annual: 'annually', annually: 'annually' } as Record<string, string>)[key];
+  return label ? { label, months: monthsPerPayment(key) } : { label: 'monthly', months: 1 };
 }
 export function paymentPeriodSuffix(value: unknown) {
   return ({ 1: '/mo', 3: '/quarter', 6: '/6 months', 12: '/yr' } as Record<number, string>)[paymentPeriod(value).months];
@@ -35,7 +36,7 @@ export function useApplicationEstimates(values: ApplicationFormValues) {
   const hidden = library && associationRatesSuppressed(library.site, values);
   const items = entries.map((entry, index) => {
     const period = paymentPeriod(values[`payment-frequency:${entry.coverageId}`]);
-    const display: RateDisplayState = hidden ? { status: 'hidden' } : rates.enabled ? rates.display(`${entry.coverageId}:${entry.applicant}`) : requests[index].amount > 0 ? rateDisplayForAmount(estimateMonthlyPremium(entry.coverage.categoryId, requests[index].amount) * period.months) : { status: 'needs-information' };
+    const display: RateDisplayState = hidden ? { status: 'hidden' } : rates.enabled ? rates.display(`${entry.coverageId}:${entry.applicant}`) : requests[index].amount > 0 ? rateDisplayForAmount(productMonthlyPremium(entry.coverage, entry.applicant, requests[index].amount, values.coverageRiders as Record<string, boolean> | undefined, values.coverageRiderAmounts as Record<string, number> | undefined) * period.months) : { status: 'needs-information' };
     return { id: `${entry.coverageId}:${entry.applicant}`, name: `${entry.coverage.name} · ${getContent().shared.applicantLabels[entry.applicant]}`, period: period.label, display, monthly: monthlyEquivalent(display, period.months) };
   });
   return { items, ...estimateSummary(items) };

@@ -7,10 +7,10 @@ export const paymentMethodOptions = [
 ] as const;
 
 export const paymentFrequencyOptions = [
-  { value: "monthly", label: "Monthly", multiplier: 1 },
-  { value: "quarterly", label: "Quarterly", multiplier: 3 },
-  { value: "semiannually", label: "Semiannually", multiplier: 6 },
-  { value: "annually", label: "Annually", multiplier: 12 },
+  { value: "monthly", label: "Monthly" },
+  { value: "quarterly", label: "Quarterly" },
+  { value: "semiannually", label: "Semiannually" },
+  { value: "annually", label: "Annually" },
 ] as const;
 
 export const PAYMENT_INFO_OPT_IN_FIELD_ID = "payment-information-opt-in";

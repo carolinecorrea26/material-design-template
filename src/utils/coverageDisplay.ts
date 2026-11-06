@@ -1,13 +1,12 @@
 import type { EstimatedRateFrequency } from "../config/clients/types";
 import type { CoverageCategoryId } from "../config/coverages/types";
+import { monthlyToFrequency } from "../domain/pricing";
 
 export function getDisplayedPremium(
   monthlyPremium: number,
   rateFrequency: EstimatedRateFrequency,
 ): number {
-  return rateFrequency === "annual"
-    ? Math.round(monthlyPremium * 12 * 100) / 100
-    : monthlyPremium;
+  return rateFrequency === "annual" ? monthlyToFrequency(monthlyPremium, "annual") : monthlyPremium;
 }
 
 export function getBenefitAmountLabel(categoryId: CoverageCategoryId): string {
